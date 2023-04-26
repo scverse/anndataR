@@ -9,6 +9,11 @@
 * Flexible Data Access: Access obs, var, obsp, and other slots directly, giving you the freedom to manipulate your data as needed.
 * Smooth Data Conversion: Effortlessly convert your AnnData objects to SingleCellExperiment or Seurat objects for downstream analysis.
 
+## Design docs
+
+* [Design document](doc/design.md): interface, OO-framework, approach
+* [Challenges in reading h5ad files in R](doc/challenges.md)
+
 ## Installation
 
 You can install the latest version of `{magicann}` from GitHub:

@@ -1,4 +1,6 @@
-# Proposed interface
+# Design document
+
+## Proposed interface
 
 ``` r
 library(magicann)/library(annmu)
@@ -31,11 +33,6 @@ from_seurat(seu)
 som <- adata$to_soma()
 from_soma(som)
 ```
-
-## Alternative notation
-
-- `ReadH5AD`, `ReadH5MU`, `WriteH5AD`, `WriteH5MU`, `adata$ToSCE()`,
-  `adata$ToSeurat()`
 
 ## Class diagram
 
@@ -73,3 +70,17 @@ classDiagram
 ## OO-framework
 
 S4, RC, or R6?
+
+- S4 offers formal class definitions and multiple dispatch, making it suitable for complex projects, but may be verbose and slower compared to other systems.
+- RC provides reference semantics, familiar syntax, and encapsulation, yet it is less popular and can have performance issues. 
+- R6 presents a simple and efficient OOP system with reference semantics and growing popularity, but lacks multiple dispatch and the formality of S4. 
+
+Choosing an OOP system depends on the project requirements, developer familiarity, and desired balance between formality, performance, and ease of use.
+
+## Approach
+
+* Implement inheritance objects for `AbstractAnnData`, `BackedH5AD`, `InMemoryAnnData`
+* Only containing `X`, `obs`, `var` for now
+* `read_h5ad`, `write_h5ad`
+* `$to_sce()` and `$to_seurat()`
+* Explore adding `BackedZarr`
