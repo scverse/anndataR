@@ -42,19 +42,19 @@ from_soma(som)
 ``` mermaid
 classDiagram
   class AbstractAnnData {
-    Matrix X
-    List[Matrix] layers
-    DataFrame obs
-    DataFrame var
-    List[Matrix] obsp
-    List[Matrix] varp
-    List[Matrix] obsm
-    List[Matrix] varm
-    List uns
-    int n_obs
-    int n_vars
-    Array[String] obs_names
-    Array[String] var_names
+    X: Matrix
+    layers: List[Matrix]
+    obs: DataFrame
+    var: DataFrame
+    obsp: List[Matrix]
+    varp: List[Matrix]
+    obsm: List[Matrix]
+    varm: List[Matrix]
+    uns: List
+    n_obs: int
+    n_vars: int
+    obs_names: Array[String]
+    var_names: Array[String]
     subset(...): AbstractAnnData
     to_sce(): SingleCellExperiment
     to_seurat(): Seurat
@@ -65,9 +65,9 @@ classDiagram
   AbstractAnnData <|-- InMemoryAnnData
 
   class Package {
-    AbstractAnnData read_h5ad()
-    AbstractMuData read_h5mu()
-  }
+    read_h5ad(): AbstractAnnData
+    read_h5mu(): AbstractMuData
+  } 
 ```
 
 ## OO-framework
