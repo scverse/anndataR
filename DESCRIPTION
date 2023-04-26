@@ -1,0 +1,15 @@
+Package: scverseio
+Title: Bioconductor I/O for scverse data standards
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Danila",
+           family = "Bredikhin",
+           role = c("aut", "cre"),
+           email = "danila.bredikhin@embl.de",
+           comment = c(ORCID = "0000-0001-8089-6983"))
+Description: I/O functions to work with H5AD and H5MU files and SCE and MAE objects through an intermediate representation
+License: BSD-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
