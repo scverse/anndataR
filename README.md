@@ -1,6 +1,6 @@
 # `magicann`: Unveil the Magic of AnnData in R
 
-`{magicann}` is an R package that brings the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyze your single-cell data. With a touch of magic, `{magicann}` lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var, osbm, obsp), or convert the data into SingleCellExperiment and Seurat objects. Our magician mascot ensures that your data analysis is always enchanting and fun!
+`{magicann}` is an R package that brings the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyze your single-cell data. With a touch of magic, `{magicann}` lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var, obsm, obsp), or convert the data into SingleCellExperiment and Seurat objects. Our magician mascot ensures that your data analysis is always enchanting and fun!
 
 ## Features
 
