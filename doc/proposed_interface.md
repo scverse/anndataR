@@ -60,9 +60,9 @@ classDiagram
     to_seurat(): Seurat
     write_h5ad(): Unit
   }
-  AbstractAnnData &lt;|-- BackedH5AD
-  AbstractAnnData &lt;|-- BackedZarr
-  AbstractAnnData &lt;|-- InMemoryAnnData
+  AbstractAnnData <|-- BackedH5AD
+  AbstractAnnData <|-- BackedZarr
+  AbstractAnnData <|-- InMemoryAnnData
 
   class Package {
     AbstractAnnData read_h5ad()
