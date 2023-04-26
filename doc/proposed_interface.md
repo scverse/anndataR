@@ -1,7 +1,6 @@
 # Proposed interface
 
-
-```r
+``` r
 library(magicann)/library(annmu)
 
 # read from h5ad/h5mu file
@@ -35,22 +34,36 @@ from_soma(som)
 
 ## Alternative notation
 
-* `ReadH5AD`, `ReadH5MU`, `WriteH5AD`, `WriteH5MU`, `adata$ToSCE()`, `adata$ToSeurat()`
+- `ReadH5AD`, `ReadH5MU`, `WriteH5AD`, `WriteH5MU`, `adata$ToSCE()`,
+  `adata$ToSeurat()`
 
 ## Class diagram
 
-```mermaid
+``` mermaid
 classDiagram
   class AbstractAnnData {
     +Matrix X
+    +List[Matrix] layers
     +DataFrame obs
     +DataFrame var
     +List[Matrix] obsp
     +List[Matrix] varp
     +List[Matrix] obsm
     +List[Matrix] varm
+    +List uns
+    +int n_obs
+    +int n_vars
+    +Array[String] obs_names
+    +Array[String] var_names
     +subset(...): AbstractAnnData
     +toSCE(): SingleCellExperiment
     +toSeurat(): Seurat
   }
+  AbstractAnnData &lt;|-- BackedH5AD
+  AbstractAnnData &lt;|-- BackedZarr
+  AbstractAnnData &lt;|-- InMemoryAnnData
 ```
+
+## OO-framework
+
+S4 or R6?
