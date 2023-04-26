@@ -36,3 +36,21 @@ from_soma(som)
 ## Alternative notation
 
 * `ReadH5AD`, `ReadH5MU`, `WriteH5AD`, `WriteH5MU`, `adata$ToSCE()`, `adata$ToSeurat()`
+
+## Class diagram
+
+```mermaid
+classDiagram
+  class AbstractAnnData {
+    +Matrix X
+    +DataFrame obs
+    +DataFrame var
+    +List[Matrix] obsp
+    +List[Matrix] varp
+    +List[Matrix] obsm
+    +List[Matrix] varm
+    +subset(...): AbstractAnnData
+    +toSCE(): SingleCellExperiment
+    +toSeurat(): Seurat
+  }
+```
