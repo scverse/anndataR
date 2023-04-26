@@ -1,3 +1,0 @@
-helloWorld <- function() {
-	print("hello!")
-}
