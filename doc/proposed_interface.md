@@ -72,4 +72,4 @@ classDiagram
 
 ## OO-framework
 
-S4 or R6?
+S4, RC, or R6?
