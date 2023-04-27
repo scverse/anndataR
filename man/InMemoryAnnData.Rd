@@ -17,6 +17,10 @@ Implementation of an in memory AnnData object.
 \item{\code{obs}}{The obs slot}
 
 \item{\code{var}}{The var slot}
+
+\item{\code{obs_names}}{The obs_names slot}
+
+\item{\code{var_names}}{The var_names slot}
 }
 \if{html}{\out{</div>}}
 }
@@ -43,19 +47,21 @@ Implementation of an in memory AnnData object.
 Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(X = NULL, obs = NULL, var = NULL, shape = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(X = NULL, obs, var, obs_names = NULL, var_names = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{A #observations × #variables data matrix. A view of the data is used if the data type matches, otherwise, a copy is made.}
+\item{\code{X}}{The X slot}
 
-\item{\code{obs}}{Key-indexed one-dimensional observations annotation of length #observations.}
+\item{\code{obs}}{The obs slot}
 
-\item{\code{var}}{Key-indexed one-dimensional variables annotation of length #variables.}
+\item{\code{var}}{The var slot}
 
-\item{\code{shape}}{Shape list (#observations, #variables). Can only be provided if \code{X} is \code{NULL}.}
+\item{\code{obs_names}}{The obs_names slot}
+
+\item{\code{var_names}}{The var_names slot}
 }
 \if{html}{\out{</div>}}
 }

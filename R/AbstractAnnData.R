@@ -23,27 +23,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     },
     #' @field obs_names The obs_names slot
     obs_names = function(value) {
-      if (missing(value)) {
-        names <- names(self$obs)
-        if (is.null(names)) {
-          names <- character()
-        }
-        names
-      } else {
-        .abstract_function()
-      }
+      .abstract_function()
     },
     #' @field var_names The var_names slot
     var_names = function(value) {
-      if (missing(value)) {
-        names <- names(self$var)
-        if (is.null(names)) {
-          names <- character()
-        }
-        names
-      } else {
-        .abstract_function()
-      }
+      .abstract_function()
     }
   ),
   public = list(
