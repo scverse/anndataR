@@ -6,7 +6,7 @@ format: gfm
 :::{.content-hidden}
 Rendered using:
 ```
-quarto render doc/design.qmd; sed -i 's#&lt;#<#g' doc/design.md
+quarto render doc/design.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' doc/design.md
 ```
 :::
 

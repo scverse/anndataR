@@ -90,7 +90,7 @@ classDiagram
     read_h5ad(path, backend): AbstractAnnData
     read_h5mu(path, backend): AbstractMuData
   }
-  anndatar --&gt; AbstractAnnData
+  anndatar --> AbstractAnnData
 ```
 
 Notation:
