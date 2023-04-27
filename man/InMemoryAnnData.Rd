@@ -32,6 +32,7 @@ Implementation of an in memory AnnData object.
 <ul>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="dim"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-dim'><code>anndatar::AbstractAnnData$dim()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndatar::AbstractAnnData$to_inmemory()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -42,17 +43,19 @@ Implementation of an in memory AnnData object.
 Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(X = NULL, obs = NULL, var = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(X = NULL, obs = NULL, var = NULL, shape = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{The count matrix}
+\item{\code{X}}{A #observations × #variables data matrix. A view of the data is used if the data type matches, otherwise, a copy is made.}
 
-\item{\code{obs}}{The associated observation metadata}
+\item{\code{obs}}{Key-indexed one-dimensional observations annotation of length #observations.}
 
-\item{\code{var}}{The associated variables metadata}
+\item{\code{var}}{Key-indexed one-dimensional variables annotation of length #variables.}
+
+\item{\code{shape}}{Shape list (#observations, #variables). Can only be provided if \code{X} is \code{NULL}.}
 }
 \if{html}{\out{</div>}}
 }

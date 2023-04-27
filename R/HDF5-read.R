@@ -46,25 +46,16 @@ read_h5ad_element <- function(file, name, encoding, version) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a Matrix/sparse matrix/DelayedArray???, or a vector if 1D
-read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
-  tryCatch(
-    error = function(cnd){
-      print(paste0("An error occurred when reading ", name, " in file."))
-      conditionMessage(cnd)
-    },
-    {
-      if(version == c("0.2.0")){
-        # TODO: ideally, native = TRUE should take care of the row order and column order, 
-        # but it doesn't
-        darr <- t(h5read(file, name))
-        # If the dense array is a 1D matrix, convert to vector
-        if(dim(darr)[2] == 1){
-          darr <- as.vector(darr)
-        }
-        darr
-      }
+read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
+    version <- match.arg(version)
+    # TODO: ideally, native = TRUE should take care of the row order and column order, 
+    # but it doesn't
+    darr <- t(rhdf5::h5read(file, name))
+    # If the dense array is a 1D matrix, convert to vector
+    if(dim(darr)[2] == 1){
+      darr <- as.vector(darr)
     }
-  )
+    darr
 }
 
 #' Read H5AD sparse array
@@ -79,27 +70,24 @@ read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
 #' @return a sparse matrix/DelayedArray???, or a vector if 1D
 read_h5ad_sparse_array <- function(file, name, version = c("0.1.0"),
                                    type = c("csr", "csc")) {
-  tryCatch(
-    error = function(cnd){
-      conditionMessage(cnd)
-    },
-    if(version == c("0.1.0")){
-      data <- h5read(file, paste0(name, "/data"))
-      indices <- h5read(file, paste0(name, "/indices"))
-      indptr <- h5read(file, paste0(name, "/indptr"))
-      shape <- h5readAttributes(file, name)$shape
-      
-      if(type == "csc"){
-        mtx <- sparseMatrix(i = indices, p = indptr, x = data, dims = shape, repr = "C", index1 = F)
-      } else {
-        mtx <- sparseMatrix(j = indices, p = indptr, x = data, dims = shape, repr = "R", index1 = F)
-      }
-      if(dim(mtx)[2] == 1){
-        mtx <- as.vector(mtx)
-      }
-      mtx
+  
+    version <- match.arg(version)
+    type <- match.arg(version)
+
+    data <- rhdf5::h5read(file, paste0(name, "/data"))
+    indices <- rhdf5::h5read(file, paste0(name, "/indices"))
+    indptr <- rhdf5::h5read(file, paste0(name, "/indptr"))
+    shape <- rhdf5::h5readAttributes(file, name)$shape
+    
+    if(type == "csc"){
+      mtx <- sparseMatrix(i = indices, p = indptr, x = data, dims = shape, repr = "C", index1 = F)
+    } else {
+      mtx <- sparseMatrix(j = indices, p = indptr, x = data, dims = shape, repr = "R", index1 = F)
     }
-  )
+    if(dim(mtx)[2] == 1){
+      mtx <- as.vector(mtx)
+    }
+    mtx
 }
 
 #' Read H5AD nullable boolean
