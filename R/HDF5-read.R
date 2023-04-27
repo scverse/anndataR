@@ -134,7 +134,29 @@ read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
 #'
 #' @return a factor
 read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
-  NULL
+  
+  version <- match.arg(version)
+  
+  element <- rhdf5::h5read(file, name)
+  
+  # Get codes and convert to 1-based indexing
+  codes <- element[["codes"]] + 1
+  
+  if (!is.vector(codes)) {
+    stop("There is currently no support for multidimensional categorical arrays")
+  }
+  
+  # Set missing values
+  codes[codes == 0] <- NA
+  
+  levels <- element[["categories"]]
+  
+  # {rhdf5} doesn't yet support ENUM type attributes so we can't tell if the
+  # categorical should be ordered, 
+  # see https://github.com/grimbough/rhdf5/issues/125
+  ordered <- FALSE
+  
+  factor(levels[codes], levels=levels, ordered=ordered)
 }
 
 #' Read H5AD string scalar
