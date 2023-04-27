@@ -66,21 +66,19 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     },
     #' @description Dimensions of the AnnData object
     dim = function() {
-      n_row <- 0L
-      if (!is.null(self$obs)) {
-        n_row <- NROW(self$obs)
-      } else if (!is.null(self$X)) {
-        n_row <- NROW(self$X)
-      }
-
-      n_col <- 0L
-      if (!is.null(self$var)) {
-        n_col <- NROW(self$var)
-      } else if (!is.null(self$X)) {
-        n_col <- NCOL(self$X)
-      }
-
-      c(n_row, n_col)
+      c(
+        nrow(self$obs),
+        nrow(self$var)
+      )
+    },
+    #' @description Return a new AnnData object with all objects loaded into memory.
+    to_inmemory = function() {
+      # should probably be stored in a separate file
+      InMemoryAnnData$new(
+        X = self$X,
+        obs = self$obs,
+        var = self$var
+      )
     }
   )
 )
