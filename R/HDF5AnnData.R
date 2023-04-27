@@ -1,27 +1,41 @@
 #' @title HDF5AnnData
 #'
 #' @description
-#' Representation of an anndata object, disk-backed.
-HDF5AnnData <- R6Class("HDF5AnnData",
+#' Implementation of an in memory AnnData object.
+HDF5AnnData <- R6::R6Class("HDF5AnnData",
   inherit = AbstractAnnData,
   private = list(
-    .h5object = NULL
+    .h5obj = NULL
+  ),
+  active = list(
+    X = function(value) {
+      if (missing(value)) {
+        # return X
+      } else {
+        # set X
+      }
+    },
+    obs = function(value) {
+      if (missing(value)) {
+        # return obs
+      } else {
+        # set obs
+      }
+    },
+    var = function(value) {
+      if (missing(value)) {
+        # return var
+      } else {
+        # set var
+      }
+    }
   ),
   public = list(
-    initialize = function(h5object){
-      private$.h5object <- h5object
-    },
-    
-    X = function() {
-      
-    },
-    
-    obs = function() {
-      
-    },
-    
-    var = function() {
-      
+    #' @description HDF5AnnData constructor
+    #' 
+    #' @param h5obj The rhdf5 object
+    initialize = function(h5obj) {
+      private$.h5obj <- h5obj
     }
   )
 )
