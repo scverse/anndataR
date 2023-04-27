@@ -30,8 +30,9 @@ Implementation of an in memory AnnData object.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="dim"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-dim'><code>anndatar::AbstractAnnData$dim()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndatar::AbstractAnnData$shape()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndatar::AbstractAnnData$to_inmemory()</code></a></span></li>
 </ul>
 </details>
 }}

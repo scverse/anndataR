@@ -26,7 +26,7 @@ test_that("create inmemory anndata", {
   expect_equal(ad$X, X)
   expect_equal(ad$obs, obs)
   expect_equal(ad$var, var)
-  expect_identical(ad$dim(), dim(X))
+  expect_identical(ad$shape(), dim(X))
 })
 
 test_that("InMemoryAnnData$new() fails gracefully", {
@@ -44,13 +44,13 @@ test_that("InMemoryAnnData$new() validates dimensions", {
 
 test_that("dim() works", {
   ad <- InMemoryAnnData$new(shape = c(1L, 1L))
-  expect_identical(ad$dim(), c(1L, 1L))
+  expect_identical(ad$shape(), c(1L, 1L))
 
   ## from obs and var, or if that fails X
   ad <- InMemoryAnnData$new(obs = data.frame(x = 1:3), shape = c(3L, 0L))
-  expect_identical(ad$dim(), c(3L, 0L))
+  expect_identical(ad$shape(), c(3L, 0L))
   ad <- InMemoryAnnData$new(var = data.frame(x = 1:5), shape = c(0L, 5L))
-  expect_identical(ad$dim(), c(0L, 5L))
+  expect_identical(ad$shape(), c(0L, 5L))
   ad <- InMemoryAnnData$new(X = matrix(0L, 3L, 5L))
-  expect_identical(ad$dim(), c(3L, 5L))
+  expect_identical(ad$shape(), c(3L, 5L))
 })
