@@ -7,7 +7,13 @@
 #'
 #' @return A named list with the encoding and version
 read_hdf5_encoding <- function(file, path) {
-  NULL
+  tryCatch(
+    error = function(cnd){
+      print(paste0("An error occurred when reading ", name, " in file ", file, "."))
+      conditionMessage(cnd)
+    },
+    h5readAttributes(test_file, "X")
+  )
 }
 
 #' Read HDF5 dense array
@@ -20,5 +26,17 @@ read_hdf5_encoding <- function(file, path) {
 #'
 #' @return a Matrix/sparse matrix/DelayedArray???
 read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
-  NULL
+  tryCatch(
+    error = function(cnd){
+      print(paste0("An error occurred when reading ", name, " in file."))
+      conditionMessage(cnd)
+    },
+    {
+      if(version == c("0.2.0")){
+        h5read(file, name)
+      }
+    }
+  )
 }
+
+
