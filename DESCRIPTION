@@ -31,10 +31,12 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports:
     Matrix,
+    methods,
     R6
 Suggests:
     knitr,
     rmarkdown,
+    Seurat,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3

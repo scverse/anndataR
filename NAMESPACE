@@ -2,3 +2,7 @@
 
 importFrom(Matrix,as.matrix)
 importFrom(R6,R6Class)
+importFrom(Seurat,AddMetaData)
+importFrom(Seurat,CreateAssayObject)
+importFrom(Seurat,CreateSeuratObject)
+importFrom(methods,is)
