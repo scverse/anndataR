@@ -17,7 +17,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.X
       } else {
-        private$.X <- value
+        private$.X <- .inmemoryanndata_check_matrix(value, self$obs, self$var)
       }
     },
     #' @field obs The obs slot
@@ -25,6 +25,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.obs
       } else {
+        # TODO: add checks
         private$.obs <- value
       }
     },
@@ -33,6 +34,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.var
       } else {
+        # TODO: add checks
         private$.var <- value
       }
     }
@@ -88,10 +90,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       }
 
       # check matrix
-      if (!is.null(X)) {
-        if (nrow(X) != nrow(obs)) stop("$obs should have the same number of rows as $X.")
-        if (ncol(X) != nrow(var)) stop("$obs should have the same number of rows as $X.")
-      }
+      X <- .inmemoryanndata_check_matrix(X, obs, var)
 
       private$.X <- X
       private$.obs <- obs
@@ -99,3 +98,15 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     }
   )
 )
+
+.inmemoryanndata_check_matrix <- function(mat, obs, var) {
+  if (!is.null(mat)) {
+    if (nrow(mat) != nrow(obs)) stop("$X should have the same number of rows as $obs has rows.")
+    if (ncol(mat) != nrow(var)) stop("$X should have the same number of columns as $var has rows.")
+
+    rownames(mat) <- rownames(obs)
+    colnames(mat) <- rownames(var)
+  }
+
+  mat
+}
