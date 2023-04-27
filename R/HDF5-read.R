@@ -45,7 +45,7 @@ read_h5ad_element <- function(file, name, encoding, version) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
-#' @return a Matrix/sparse matrix/DelayedArray???
+#' @return a Matrix/sparse matrix/DelayedArray???, or a vector if 1D
 read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
   tryCatch(
     error = function(cnd){
@@ -54,7 +54,14 @@ read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
     },
     {
       if(version == c("0.2.0")){
-        h5read(file, name)
+        # TODO: ideally, native = TRUE should take care of the row order and column order, 
+        # but it doesn't
+        darr <- t(h5read(file, name))
+        # If the dense array is a 1D matrix, convert to vector
+        if(dim(darr)[2] == 1){
+          darr <- as.vector(darr)
+        }
+        darr
       }
     }
   )
@@ -69,10 +76,30 @@ read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
 #' @param version Encoding version of the element to read
 #' @param type Type of the sparse matrix, either "csr" or "csc"
 #'
-#' @return a sparse matrix/DelayedArray???
+#' @return a sparse matrix/DelayedArray???, or a vector if 1D
 read_h5ad_sparse_array <- function(file, name, version = c("0.1.0"),
                                    type = c("csr", "csc")) {
-  NULL
+  tryCatch(
+    error = function(cnd){
+      conditionMessage(cnd)
+    },
+    if(version == c("0.1.0")){
+      data <- h5read(file, paste0(name, "/data"))
+      indices <- h5read(file, paste0(name, "/indices"))
+      indptr <- h5read(file, paste0(name, "/indptr"))
+      shape <- h5readAttributes(file, name)$shape
+      
+      if(type == "csc"){
+        mtx <- sparseMatrix(i = indices, p = indptr, x = data, dims = shape, repr = "C", index1 = F)
+      } else {
+        mtx <- sparseMatrix(j = indices, p = indptr, x = data, dims = shape, repr = "R", index1 = F)
+      }
+      if(dim(mtx)[2] == 1){
+        mtx <- as.vector(mtx)
+      }
+      mtx
+    }
+  )
 }
 
 #' Read H5AD nullable boolean

@@ -15,8 +15,15 @@
 import numpy as np
 import pandas as pd
 import anndata as ad
+from scipy import sparse
 
-adata = ad.read_h5ad("krumsiek11.h5ad")
+adata = ad.read_h5ad("inst/extdata/krumsiek11.h5ad")
+
+adata.obsm["dense"] = np.add(*np.indices((adata.shape[0], 10)))
+adata.obsm["sparse_csr"] = sparse.csr_matrix(np.add(*np.indices((adata.shape[0], 10))))
+adata.obsm["sparse_csc"] = sparse.csc_matrix(np.add(*np.indices((adata.shape[0], 10))))
+adata.obsm["sparse_csr_1"] = sparse.csr_matrix(np.add(*np.indices((adata.shape[0], 1))))
+adata.obsm["sparse_csc_1"] = sparse.csc_matrix(np.add(*np.indices((adata.shape[0], 1))))
 
 # add string column to rowData/var. Make the entries unique so it's
 # saved as str instead of factor
@@ -51,4 +58,4 @@ adata.uns["dummy_bool2"] = pd.array([True, False, None])
 adata.uns["dummy_int"] = [1,2,3]
 adata.uns["dummy_int2"] = pd.array([1,2,None])
 
-adata.write("krumsiek11_augmented_v0-8.h5ad")
+adata.write("inst/extdata/krumsiek11_augmented_sparse1_v0-8.h5ad")
