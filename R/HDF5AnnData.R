@@ -2,27 +2,26 @@
 #'
 #' @description
 #' Representation of an anndata object, disk-backed.
-#' @importFrom R6 R6Class
 HDF5AnnData <- R6Class("HDF5AnnData",
-    public = list(
-      inherit = AbstractAnnData,
-      h5object = NULL,
-
-      initialize = function(h5object = NULL){
-        self$h5object = h5object
-      },
+  inherit = AbstractAnnData,
+  private = list(
+    .h5object = NULL
+  ),
+  public = list(
+    initialize = function(h5object){
+      private$.h5object <- h5object
+    },
+    
+    X = function() {
       
-      X = function(){
-        
-      },
+    },
+    
+    obs = function() {
       
-      obs = function(){
-        
-      },
+    },
+    
+    var = function() {
       
-      var = function(){
-        
-      }
-      
-    )
+    }
   )
+)

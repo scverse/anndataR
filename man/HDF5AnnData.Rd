@@ -6,6 +6,9 @@
 \description{
 Representation of an anndata object, disk-backed.
 }
+\section{Super class}{
+\code{\link[anndatar:AbstractAnnData]{anndatar::AbstractAnnData}} -> \code{HDF5AnnData}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -16,12 +19,19 @@ Representation of an anndata object, disk-backed.
 \item \href{#method-HDF5AnnData-clone}{\code{HDF5AnnData$clone()}}
 }
 }
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="write_h5ad"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-write_h5ad'><code>anndatar::AbstractAnnData$write_h5ad()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(h5object = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(h5object)}\if{html}{\out{</div>}}
 }
 
 }
