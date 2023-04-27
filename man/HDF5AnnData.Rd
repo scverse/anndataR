@@ -4,63 +4,45 @@
 \alias{HDF5AnnData}
 \title{HDF5AnnData}
 \description{
-Representation of an anndata object, disk-backed.
+Implementation of an in memory AnnData object.
 }
 \section{Super class}{
 \code{\link[anndatar:AbstractAnnData]{anndatar::AbstractAnnData}} -> \code{HDF5AnnData}
+}
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{X}}{The X slot}
+
+\item{\code{obs}}{The obs slot}
+
+\item{\code{var}}{The var slot}
+}
+\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-HDF5AnnData-new}{\code{HDF5AnnData$new()}}
-\item \href{#method-HDF5AnnData-X}{\code{HDF5AnnData$X()}}
-\item \href{#method-HDF5AnnData-obs}{\code{HDF5AnnData$obs()}}
-\item \href{#method-HDF5AnnData-var}{\code{HDF5AnnData$var()}}
 \item \href{#method-HDF5AnnData-clone}{\code{HDF5AnnData$clone()}}
 }
 }
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
-<ul>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="write_h5ad"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-write_h5ad'><code>anndatar::AbstractAnnData$write_h5ad()</code></a></span></li>
-</ul>
-</details>
-}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-new}{}}}
 \subsection{Method \code{new()}}{
+HDF5AnnData constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(h5object)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(h5obj)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{h5obj}}{The rhdf5 object}
 }
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-X"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-X}{}}}
-\subsection{Method \code{X()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$X()}\if{html}{\out{</div>}}
+\if{html}{\out{</div>}}
 }
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-obs"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-obs}{}}}
-\subsection{Method \code{obs()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$obs()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-var"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-var}{}}}
-\subsection{Method \code{var()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$var()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-clone"></a>}}

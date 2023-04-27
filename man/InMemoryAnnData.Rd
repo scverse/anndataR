@@ -9,6 +9,17 @@ Implementation of an in memory AnnData object.
 \section{Super class}{
 \code{\link[anndatar:AbstractAnnData]{anndatar::AbstractAnnData}} -> \code{InMemoryAnnData}
 }
+\section{Active bindings}{
+\if{html}{\out{<div class="r6-active-bindings">}}
+\describe{
+\item{\code{X}}{The X slot}
+
+\item{\code{obs}}{The obs slot}
+
+\item{\code{var}}{The var slot}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{

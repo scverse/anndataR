@@ -8,6 +8,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     .h5obj = NULL
   ),
   active = list(
+    #' @description The X slot
     X = function(value) {
       if (missing(value)) {
         # return X
@@ -15,6 +16,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
         # set X
       }
     },
+    #' @description The obs slot
     obs = function(value) {
       if (missing(value)) {
         # return obs
@@ -22,6 +24,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
         # set obs
       }
     },
+    #' @description The var slot
     var = function(value) {
       if (missing(value)) {
         # return var
