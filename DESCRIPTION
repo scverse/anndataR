@@ -11,8 +11,15 @@ Authors@R: c(
         family = "Cannoodt",
         role = c("aut"),
         email = "rcannood@gmail.com",
-        comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")))
-Description: I/O functions to work with H5AD and H5MU files and SCE and MAE objects through an intermediate representation.
+        comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
+    person(given = "Martin",
+        family = "Morgan",
+        role = "aut",
+        email = "mtmorgan.bioc@gmail.com",
+        comment = c(ORCID = "0000-0002-5874-8148")))
+Description: I/O functions to work with H5AD and H5MU files and
+    SingleCellExperiment and MultiAssayExperiment objects through an
+    intermediate representation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
