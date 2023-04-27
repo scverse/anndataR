@@ -82,7 +82,7 @@ read_h5ad_sparse_array <- function(file, name, version = c("0.1.0"),
                                    type = c("csr", "csc")) {
   
     version <- match.arg(version)
-    type <- match.arg(version)
+    type <- match.arg(type)
 
     data <- rhdf5::h5read(file, paste0(name, "/data"))
     indices <- rhdf5::h5read(file, paste0(name, "/indices"))
@@ -208,9 +208,18 @@ read_h5ad_numeric_scalar <- function(file, name, version = c("0.2.0")) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
-#' @return a numeric vector of length 1
+#' @return a named list 
 read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
-  NULL
+  version <- match.arg(version)
+  
+  contents <- h5ls(file&name, recursive = F)
+  lapply(seq_len(nrow(contents)), function(i){
+    r <- contents[i,]
+    new_name <- paste0(name, r$group, r$name)
+    encoding <- h5readAttributes(file, new_name)
+    read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
+  })
+  
 }
 
 #' Read H5AD data frame
