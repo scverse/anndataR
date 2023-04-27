@@ -12,7 +12,6 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     .var = NULL
   ),
   active = list(
-
     #' @field X The X slot
     X = function(value) {
       if (missing(value)) {

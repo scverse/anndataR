@@ -14,14 +14,47 @@ Abstract class representing an anndata object. Defines the interface.
 \item{\code{obs}}{The obs slot}
 
 \item{\code{var}}{The var slot}
+
+\item{\code{obs_names}}{The obs_names slot}
+
+\item{\code{var_names}}{The var_names slot}
 }
 \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
+\item \href{#method-AbstractAnnData-print}{\code{AbstractAnnData$print()}}
+\item \href{#method-AbstractAnnData-dim}{\code{AbstractAnnData$dim()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-print"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-print}{}}}
+\subsection{Method \code{print()}}{
+Print AnnData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$print(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{optional arguments to print method.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-dim"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-dim}{}}}
+\subsection{Method \code{dim()}}{
+Dimensions of the AnnData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$dim()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-clone"></a>}}
