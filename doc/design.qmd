@@ -79,16 +79,19 @@ classDiagram
   AbstractAnnData <|-- H5AnnData
   class H5AnnData {
     init(h5file): H5AnnData
+    to_inmemory(): InMemoryAnnData
   }
 
   AbstractAnnData <|-- ZarrAnnData
   class ZarrAnnData {
     init(zarrFile): ZarrAnnData
+    to_inmemory(): InMemoryAnnData
   }
 
   AbstractAnnData <|-- InMemoryAnnData
   class InMemoryAnnData {
     init(X, obs, var, ...): InMemoryAnnData
+    to_h5anndata(): H5AnnData
   }
 
   AbstractAnnData <|-- ReticulateAnnData
