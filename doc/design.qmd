@@ -12,7 +12,7 @@ quarto render doc/design.qmd; sed -i 's#&lt;#<#g' doc/design.md
 
 ## Proposed interface
 
-``` r
+```r
 library(magicann)/library(anndatar)
 
 # read from h5ad/h5mu file
@@ -21,12 +21,20 @@ adata <- read_h5ad("dataset.h5ad", backed = TRUE)
 mdata <- read_h5mu("dataset.h5mu")
 mdata <- read_h5mu("dataset.h5mu", backed = TRUE)
 
-# optional feature 1: python-like interface
+# anndata-like interface (the Python package)
 adata$X
 adata$obs
 adata$var
 
-# optional feature 2: bioconductor-like interface
+# optional feature 1: S3 helper functions for a base R-like interface
+adata[1:10, 2:30]
+dim(adata)
+dimnames(adata)
+as.matrix(adata, layer = NULL)
+as.matrix(adata, layer = "counts")
+t(adata)
+
+# optional feature 2: S3 helper functions for a bioconductor-like interface
 rowData(adata)
 colData(adata)
 reducedDimNames(adata)
@@ -35,7 +43,7 @@ reducedDimNames(adata)
 sce <- adata$to_sce()
 from_sce(sce)
 
-# optional feature 3: converters from/to seurat
+# optional feature 3: converters from/to Seurat
 seu <- adata$to_seurat()
 from_seurat(seu)
 
@@ -116,6 +124,16 @@ Choosing an OOP system depends on the project requirements, developer familiarit
 
 * Implement inheritance objects for `AbstractAnnData`, `H5AnnData`, `InMemoryAnnData`
 * Only containing `X`, `obs`, `var` for now
-* `read_h5ad`, `write_h5ad`
-* `$to_sce()` and `$to_seurat()`
-* Explore adding `ZarrAnnData`
+* Implement base R S3 generics
+* Implement `read_h5ad()`, `$write_h5ad()`
+* Implement `$to_sce()`
+* Add simple unit tests
+
+Optional:
+
+* Add more fields (obsp, obsm, varp, varm, ...) --> see class diagram
+* Start implementing MuData
+* Implement `$to_seurat()`
+* Implement `ZarrAnnData`
+* Implement `ReticulateAnnData`
+* Implement Bioconductor S3 generics
