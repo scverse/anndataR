@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(scverseio)
+library(anndatar)
 
-test_check("scverseio")
+test_check("anndatar")
