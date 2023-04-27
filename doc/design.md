@@ -61,9 +61,14 @@ classDiagram
     *obs_names: Array[String]
     *var_names: Array[String]
     *subset(...): AbstractAnnData
-    *to_sce(): SingleCellExperiment
-    *to_seurat(): Seurat
     *write_h5ad(): Unit
+    
+    to_sce(): SingleCellExperiment
+    to_seurat(): Seurat
+    
+    to_h5anndata(): H5AnnData
+    to_zarranndata(): ZarrAnnData
+    to_inmemory(): InMemoryAnnData
   }
 
   AbstractAnnData <|-- H5AnnData
@@ -78,7 +83,7 @@ classDiagram
 
   AbstractAnnData <|-- InMemoryAnnData
   class InMemoryAnnData {
-    init(X, obs, var, ...): InMemoryAnnData
+    init(X, obs, var, shape, ...): InMemoryAnnData
   }
 
   AbstractAnnData <|-- ReticulateAnnData

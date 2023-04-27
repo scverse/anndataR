@@ -27,6 +27,14 @@ Implementation of an in memory AnnData object.
 \item \href{#method-HDF5AnnData-clone}{\code{HDF5AnnData$clone()}}
 }
 }
+\if{html}{\out{
+<details open><summary>Inherited methods</summary>
+<ul>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="dim"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-dim'><code>anndatar::AbstractAnnData$dim()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
+</ul>
+</details>
+}}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-new}{}}}
