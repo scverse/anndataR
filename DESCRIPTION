@@ -21,7 +21,7 @@ Authors@R: c(
         family = "Deconinck",
         role = c("aut"),
         email = "louise.deconinck@gmail.com",
-        comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")),
+        comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck"))
 Description: I/O functions to work with H5AD and H5MU files and
     SingleCellExperiment and MultiAssayExperiment objects through an
     intermediate representation.
