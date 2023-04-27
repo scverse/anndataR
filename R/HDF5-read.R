@@ -16,6 +16,16 @@ read_hdf5_encoding <- function(file, path) {
   )
 }
 
+#' Read H5AD element
+#'
+#' Read an element from a H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param encoding The encoding of the element to read
+#' @param version The encoding version of the element to read
+#'
+#' @return Value depending on the encoding
 read_h5ad_element <- function(file, name, encoding, version) {
   switch (encoding,
     "array" = read_h5ad_dense_array(file, name, version = version),
@@ -139,7 +149,29 @@ read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
 #'
 #' @return a factor
 read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
-  NULL
+  
+  version <- match.arg(version)
+  
+  element <- rhdf5::h5read(file, name)
+  
+  # Get codes and convert to 1-based indexing
+  codes <- element[["codes"]] + 1
+  
+  if (!is.vector(codes)) {
+    stop("There is currently no support for multidimensional categorical arrays")
+  }
+  
+  # Set missing values
+  codes[codes == 0] <- NA
+  
+  levels <- element[["categories"]]
+  
+  # {rhdf5} doesn't yet support ENUM type attributes so we can't tell if the
+  # categorical should be ordered, 
+  # see https://github.com/grimbough/rhdf5/issues/125
+  ordered <- FALSE
+  
+  factor(levels[codes], levels=levels, ordered=ordered)
 }
 
 #' Read H5AD string scalar
