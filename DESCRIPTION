@@ -1,4 +1,4 @@
-Package: scverseio
+Package: anndatar
 Title: Bioconductor I/O for scverse data standards
 Version: 0.0.0.9000
 Authors@R: c(
