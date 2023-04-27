@@ -38,6 +38,16 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     #' 
     #' @param h5obj The rhdf5 object
     initialize = function(h5obj) {
+      attrs <- rhdf5::h5readAttributes(h5obj, "/")
+      
+      if (!("encoding-type") %in% names(attrs) ||
+          !("encoding-version" %in% names(attrs))) {
+        stop(
+          "H5AD files without encodings are not supported ",
+          "(this file may have been created with Python anndata prior to v0.8.0)"
+        )
+      }
+      
       private$.h5obj <- h5obj
     }
   )
