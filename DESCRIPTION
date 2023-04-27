@@ -30,8 +30,9 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports:
-  R6
-Suggests: 
+    Matrix,
+    R6
+Suggests:
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

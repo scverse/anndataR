@@ -3,3 +3,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
+^README\.qmd$
+^\.metals$
+^\.vscode$

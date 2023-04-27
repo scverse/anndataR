@@ -1,3 +1,5 @@
+library(Matrix)
+
 test_that("create inmemory anndata", {
   # construct dummy X
   X <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
