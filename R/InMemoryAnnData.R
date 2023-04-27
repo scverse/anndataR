@@ -2,24 +2,40 @@
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
-InMemoryAnnData <- R6Class("InMemoryAnnData",
+InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   inherit = AbstractAnnData,
   private = list(
     .X = NULL,
     .obs = NULL,
     .var = NULL
   ),
+  active = list(
+    X = function(value) {
+      if (missing(value)) {
+        private$.X
+      } else {
+        private$.X <- value
+        # self
+      }
+    },
+    obs = function(value) {
+      if (missing(value)) {
+        private$.obs
+      } else {
+        private$.obs <- value
+        # self
+      }
+    },
+    var = function(value) {
+      if (missing(value)) {
+        private$.var
+      } else {
+        private$.var <- value
+        # self
+      }
+    }
+  ),
   public = list(
-    X = function() {
-      self$.X
-    },
-    obs = function() {
-      self$.obs
-    },
-    var = function() {
-      self$.var
-    },
-  
     #' @description Creates a new instance of an in memory AnnData object.
     #' Inherits from AbstractAnnData
     #' 
@@ -27,9 +43,10 @@ InMemoryAnnData <- R6Class("InMemoryAnnData",
     #' @param obs The associated observation metadata
     #' @param var The associated variables metadata
     initialize = function(X = NULL, obs = NULL, var = NULL) {
-     private$.X <- X
-     private$.obs <- obs
-     private$.var <- var
+      private$.X <- X
+      private$.obs <- obs
+      private$.var <- var
     }
   )
 )
+
