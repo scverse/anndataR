@@ -2,13 +2,13 @@
 #'
 #' @title Convert AnnData to SingleCellExperiment
 #'
-#' @description `AnnData_to_SingleCellExperiment()` converts an
-#'     AnnData object to a SingleCellExperiment.
+#' @description `to_SingleCellExperiment()` converts an AnnData object
+#'     to a SingleCellExperiment.
 #'
 #' @param object an AnnData object, e.g., InMemoryAnnData
 #'
-#' @return `AnnData_to_SingleCellExperiment()` returns a
-#'     SingleCellExperiment representing the content of `object`.
+#' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
+#'     representing the content of `object`.
 #'
 #' @examples
 #' ad <- InMemoryAnnData$new(
