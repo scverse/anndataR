@@ -11,7 +11,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   ),
   active = list(
 
-    #' @description The X slot
+    #' @field X The X slot
     X = function(value) {
       if (missing(value)) {
         private$.X
@@ -19,7 +19,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         private$.X <- value
       }
     },
-    #' @description The obs slot
+    #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
         private$.obs
@@ -27,7 +27,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         private$.obs <- value
       }
     },
-    #' @description The var slot
+    #' @field var The var slot
     var = function(value) {
       if (missing(value)) {
         private$.var
