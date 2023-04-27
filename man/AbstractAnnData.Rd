@@ -9,66 +9,7 @@ Abstract class representing an anndata object. Defines the interface.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-AbstractAnnData-X}{\code{AbstractAnnData$X()}}
-\item \href{#method-AbstractAnnData-obs}{\code{AbstractAnnData$obs()}}
-\item \href{#method-AbstractAnnData-var}{\code{AbstractAnnData$var()}}
-\item \href{#method-AbstractAnnData-write_h5ad}{\code{AbstractAnnData$write_h5ad()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-X"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-X}{}}}
-\subsection{Method \code{X()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$X()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-obs"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-obs}{}}}
-\subsection{Method \code{obs()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obs()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-var"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-var}{}}}
-\subsection{Method \code{var()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$var()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-write_h5ad"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-write_h5ad}{}}}
-\subsection{Method \code{write_h5ad()}}{
-Write h5ad
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$write_h5ad(
-  filename = NULL,
-  compression = NULL,
-  compression_opts = NULL,
-  as_dense = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{filename}}{Filename of data file. Defaults to backing file.}
-
-\item{\code{compression}}{compression}
-
-\item{\code{compression_opts}}{compression options}
-
-\item{\code{as_dense}}{Sparse arrays in AnnData obect to write as dense.}
-}
-\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

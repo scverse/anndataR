@@ -12,46 +12,9 @@ Implementation of an in memory AnnData object.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-InMemoryAnnData-X}{\code{InMemoryAnnData$X()}}
-\item \href{#method-InMemoryAnnData-obs}{\code{InMemoryAnnData$obs()}}
-\item \href{#method-InMemoryAnnData-var}{\code{InMemoryAnnData$var()}}
 \item \href{#method-InMemoryAnnData-new}{\code{InMemoryAnnData$new()}}
 \item \href{#method-InMemoryAnnData-clone}{\code{InMemoryAnnData$clone()}}
 }
-}
-\if{html}{\out{
-<details open><summary>Inherited methods</summary>
-<ul>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="write_h5ad"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-write_h5ad'><code>anndatar::AbstractAnnData$write_h5ad()</code></a></span></li>
-</ul>
-</details>
-}}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-InMemoryAnnData-X"></a>}}
-\if{latex}{\out{\hypertarget{method-InMemoryAnnData-X}{}}}
-\subsection{Method \code{X()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$X()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-InMemoryAnnData-obs"></a>}}
-\if{latex}{\out{\hypertarget{method-InMemoryAnnData-obs}{}}}
-\subsection{Method \code{obs()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$obs()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-InMemoryAnnData-var"></a>}}
-\if{latex}{\out{\hypertarget{method-InMemoryAnnData-var}{}}}
-\subsection{Method \code{var()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$var()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InMemoryAnnData-new"></a>}}
