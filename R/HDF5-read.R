@@ -1,9 +1,9 @@
-#' Read HDF5 encoding
+#' Read H5AD encoding
 #'
-#' Read the encoding and version of an element in a HDF5 file
+#' Read the encoding and version of an element in a H5AD file
 #'
-#' @param file Path to a HDF5 file or an open HDF5 handle
-#' @param name Name of the element within the HDF5 file
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
 #'
 #' @return A named list with the encoding and version
 read_hdf5_encoding <- function(file, path) {
@@ -16,13 +16,34 @@ read_hdf5_encoding <- function(file, path) {
   )
 }
 
-#' Read HDF5 dense array
+read_h5ad_element <- function(file, name, encoding, version) {
+  switch (encoding,
+    "array" = read_h5ad_dense_array(file, name, version = version),
+    "csr_matrix" = read_h5ad_sparse_array(file, name, version = version,
+                                          type = "csr"),
+    "csc_matrix" = read_h5ad_sparse_array(file, name, version = version,
+                                          type = "csc"),
+    "dataframe" = read_h5ad_data_frame(file, name, version = version),
+    "dict" = read_h5ad_mapping(file, name, version = version),
+    "string" = read_h5ad_string_scalar(file, name, version = version),
+    "numeric-scalar" = read_h5ad_numeric_scalar(file, name, version = version),
+    "categorical" = read_h5ad_categorical(file, name, version = version),
+    "string-array" = read_h5ad_string_array(file, name, version = version),
+    "nullable-integer" = read_h5ad_nullable_integer(file, name,
+                                                    version = version),
+    "nullable-integer" = read_h5ad_nullable_boolean(file, name,
+                                                    version = version),
+    stop("No function for reading H5AD encoding: ", encoding)
+  )
+}
+
+#' Read H5AD dense array
 #'
-#' Read a dense array from an HDF5 file
+#' Read a dense array from an H5AD file
 #'
-#' @param file Path to a HDF5 file or an open HDF5 handle
-#' @param name Name of the element within the HDF5 file
-#' @param version Encoding version of the dense array
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
 #'
 #' @return a Matrix/sparse matrix/DelayedArray???
 read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
@@ -39,4 +60,122 @@ read_hdf5_dense_array <- function(file, name, version = c("0.2.0")) {
   )
 }
 
+#' Read H5AD sparse array
+#'
+#' Read a sparse array from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#' @param type Type of the sparse matrix, either "csr" or "csc"
+#'
+#' @return a sparse matrix/DelayedArray???
+read_h5ad_sparse_array <- function(file, name, version = c("0.1.0"),
+                                   type = c("csr", "csc")) {
+  NULL
+}
+
+#' Read H5AD nullable boolean
+#'
+#' Read a nullable boolean from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a boolean vector
+read_h5ad_nullable_boolean <- function(file, name, version = c("0.1.0")) {
+  NULL
+}
+
+#' Read H5AD nullable integer
+#'
+#' Read a nullable integer from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return an integer vector
+read_h5ad_nullable_integer <- function(file, name, version = c("0.1.0")) {
+  NULL
+}
+
+#' Read H5AD string array
+#'
+#' Read a string array from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a character vector/matrix???
+read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
+  NULL
+}
+
+#' Read H5AD categorical
+#'
+#' Read a categorical from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a factor
+read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
+  NULL
+}
+
+#' Read H5AD string scalar
+#'
+#' Read a string scalar from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a character vector of length 1
+read_h5ad_string_scalar <- function(file, name, version = c("0.2.0")) {
+  NULL
+}
+
+#' Read H5AD numeric scalar
+#'
+#' Read a numeric scalar from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a numeric vector of length 1
+read_h5ad_numeric_scalar <- function(file, name, version = c("0.2.0")) {
+  NULL
+}
+
+#' Read H5AD mapping
+#'
+#' Read a mapping from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a numeric vector of length 1
+read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
+  NULL
+}
+
+#' Read H5AD data frame
+#'
+#' Read a data frame from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a data.frame
+read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
+  NULL
+}
 
