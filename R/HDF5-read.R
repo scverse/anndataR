@@ -10,6 +10,16 @@ read_h5ad_encoding <- function(file, path) {
   NULL
 }
 
+#' Read H5AD element
+#'
+#' Read an element from a H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param encoding The encoding of the element to read
+#' @param version The encoding version of the element to read
+#'
+#' @return Value depending on the encoding
 read_h5ad_element <- function(file, name, encoding, version) {
   switch (encoding,
     "array" = read_h5ad_dense_array(file, name, version = version),
