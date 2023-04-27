@@ -1,4 +1,14 @@
-# Design document
+---
+title: Design document
+format: gfm
+---
+
+:::{.content-hidden}
+Rendered using:
+```
+quarto render doc/design.qmd; sed -i 's#&lt;#<#g' doc/design.md
+```
+:::
 
 ## Proposed interface
 
@@ -36,7 +46,7 @@ from_soma(som)
 
 ## Class diagram
 
-``` mermaid
+```{mermaid}
 classDiagram
   class AbstractAnnData {
     *X: Matrix
@@ -82,39 +92,30 @@ classDiagram
     read_h5ad(path, backend): AbstractAnnData
     read_h5mu(path, backend): AbstractMuData
   }
-  anndatar --&gt; AbstractAnnData
+  anndatar --> AbstractAnnData
 ```
 
 Notation:
 
-- `X: Matrix` - variable `X` is of type `Matrix`
-- `*X: Matrix` - variable `X` is abstract
-- `to_sce(): SingleCellExperiment` - function `to_sce` returns object of
-  type `SingleCellExperiment`
-- `*to_sce()` - function `to_sce` is abstract
+  - `X: Matrix` - variable `X` is of type `Matrix`
+  - `*X: Matrix` - variable `X` is abstract
+  - `to_sce(): SingleCellExperiment` - function `to_sce` returns object of type `SingleCellExperiment`
+  - `*to_sce()` - function `to_sce` is abstract
 
 ## OO-framework
 
 S4, RC, or R6?
 
-- S4 offers formal class definitions and multiple dispatch, making it
-  suitable for complex projects, but may be verbose and slower compared
-  to other systems.
-- RC provides reference semantics, familiar syntax, and encapsulation,
-  yet it is less popular and can have performance issues.
-- R6 presents a simple and efficient OOP system with reference semantics
-  and growing popularity, but lacks multiple dispatch and the formality
-  of S4.
+- S4 offers formal class definitions and multiple dispatch, making it suitable for complex projects, but may be verbose and slower compared to other systems.
+- RC provides reference semantics, familiar syntax, and encapsulation, yet it is less popular and can have performance issues. 
+- R6 presents a simple and efficient OOP system with reference semantics and growing popularity, but lacks multiple dispatch and the formality of S4. 
 
-Choosing an OOP system depends on the project requirements, developer
-familiarity, and desired balance between formality, performance, and
-ease of use.
+Choosing an OOP system depends on the project requirements, developer familiarity, and desired balance between formality, performance, and ease of use.
 
 ## Approach
 
-- Implement inheritance objects for `AbstractAnnData`, `H5AnnData`,
-  `InMemoryAnnData`
-- Only containing `X`, `obs`, `var` for now
-- `read_h5ad`, `write_h5ad`
-- `$to_sce()` and `$to_seurat()`
-- Explore adding `ZarrAnnData`
+* Implement inheritance objects for `AbstractAnnData`, `H5AnnData`, `InMemoryAnnData`
+* Only containing `X`, `obs`, `var` for now
+* `read_h5ad`, `write_h5ad`
+* `$to_sce()` and `$to_seurat()`
+* Explore adding `ZarrAnnData`
