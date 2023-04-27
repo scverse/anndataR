@@ -175,10 +175,17 @@ read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
   
   levels <- element[["categories"]]
   
-  # {rhdf5} doesn't yet support ENUM type attributes so we can't tell if the
-  # categorical should be ordered, 
-  # see https://github.com/grimbough/rhdf5/issues/125
-  ordered <- FALSE
+  ordered <- element[["ordered"]]
+  if (is.na(ordered)) {
+    # This version of {rhdf5} doesn't yet support ENUM type attributes so we
+    # can't tell if the categorical should be ordered, 
+    # see https://github.com/grimbough/rhdf5/issues/125
+    warning(
+      "Unable to determine if categorical '", name,
+      "' is ordered, assuming it isn't"
+    )
+    ordered <- FALSE
+  }
   
   factor(levels[codes], levels=levels, ordered=ordered)
 }
