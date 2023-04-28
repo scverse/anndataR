@@ -79,7 +79,7 @@ read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
     # but it doesn't
     darr <- t(rhdf5::h5read(file, name))
     # If the dense array is a 1D matrix, convert to vector
-    if(any(dim(res$dummy_num) == 1)){
+    if(any(dim(darr) == 1)){
       darr <- as.vector(darr)
     }
     darr
@@ -288,7 +288,6 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a data.frame
-#' @importFrom dplyr %>% filter
 read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   version <- match.arg(version)
   
@@ -296,7 +295,7 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   column_order <- rhdf5::h5readAttributes(file, name)$`column-order`
   
   # We already read the index of the dataframe
-  contents <- h5ls(file&name, recursive = F) %>% filter(name != "_index")
+  contents <- subset(h5ls(file&name, recursive = F), subset = name != "_index")
   # To keep the names
   to_iterate <- seq_len(nrow(contents))
   names(to_iterate) <- contents$name 
