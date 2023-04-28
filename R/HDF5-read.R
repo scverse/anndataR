@@ -6,8 +6,8 @@
 #' @param name Name of the element within the H5AD file
 #'
 #' @return A named list with the encoding and version
-read_h5ad_encoding <- function(file, path) {
-  attrs <- rhdf5::h5readAttributes(file, path)
+read_h5ad_encoding <- function(file, name) {
+  attrs <- rhdf5::h5readAttributes(file, name)
   
   list(
     encoding = attrs[["encoding-type"]],
