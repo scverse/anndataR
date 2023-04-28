@@ -51,8 +51,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @description Dimensions of the AnnData object
     shape = function() {
       c(
-        nrow(self$obs),
-        nrow(self$var)
+        self$n_obs(),
+        self$n_vars()
       )
     },
     #' @description Number of observations in the AnnData object

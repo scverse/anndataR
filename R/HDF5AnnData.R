@@ -6,17 +6,19 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
   inherit = AbstractAnnData,
   private = list(
     .h5obj = NULL,
+    .n_obs = NULL,
+    .n_vars = NULL,
     
     #' @description validate a value matches the observations dimension
     .validate_n_obs = function(value) {
-      if (nrow(value) != self$n_obs) {
+      if (nrow(value) != self$n_obs()) {
         stop("Dimensions of value does not match the number of observations")
       }
     },
     
     #' @description validate a value matches the variables dimension
     .validate_n_vars = function(value) {
-      if (nrow(value) != self$n_vars) {
+      if (nrow(value) != self$n_vars()) {
         stop("Dimensions of value does not match the number of variables")
       }
     },
@@ -25,7 +27,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     .validate_shape = function(value) {
       message(dim(value))
       message(self$shape)
-      if (!identical(dim(value), self$shape)) {
+      if (!identical(dim(value), self$shape())) {
         stop("Dimensions of value does not match the object shape")
       }
     }
@@ -37,24 +39,23 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
         read_h5ad_element(private$.h5obj, "/X")
       } else {
         private$.validate_shape(value)
-        message("HERE")
         write_h5ad_element(value, private$.h5obj, "/X")
       }
     },
     #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
-        # return obs
+        read_h5ad_element(private$.h5obj, "/obs")
       } else {
-        # set obs
+        write_h5ad_element(value, private$.h5obj, "/obs")
       }
     },
     #' @field var The var slot
     var = function(value) {
       if (missing(value)) {
-        # return var
+        read_h5ad_element(private$.h5obj, "/var")
       } else {
-        # set var
+        write_h5ad_element(value, private$.h5obj, "/var")
       }
     }
   ),
@@ -74,6 +75,22 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
       }
       
       private$.h5obj <- h5obj
+    },
+    
+    #' @description Number of observations in the AnnData object
+    n_obs = function() {
+      if (is.null(private$.n_obs)) {
+        private$.n_obs <- nrow(self$obs)
+      }
+      private$.n_obs
+    },
+    
+    #' @description Number of variables in the AnnData object
+    n_vars = function() {
+      if (is.null(private$.n_vars)) {
+        private$.n_vars <- nrow(self$var)
+      }
+      private$.n_vars
     }
   )
 )

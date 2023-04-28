@@ -266,7 +266,7 @@ read_h5ad_numeric_scalar <- function(file, name, version = c("0.2.0")) {
 read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
   version <- match.arg(version)
   
-  contents <- h5ls(file&name, recursive = F)
+  contents <- rhdf5::h5ls(file&name, recursive = F)
   # To keep the names
   to_iterate <- seq_len(nrow(contents))
   names(to_iterate) <- contents$name 
