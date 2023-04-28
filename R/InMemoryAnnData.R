@@ -7,9 +7,11 @@
 #'
 #' @examples
 #' ad <- InMemoryAnnData$new(
-#'     X = matrix(1:5, 3L, 5L),
-#'     obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
-#'     var = data.frame(gene = 1:5, row.names = letters[1:5])
+#'   X = matrix(1:5, 3L, 5L),
+#'   obs = data.frame(cell = 1:3),
+#'   var = data.frame(gene = 1:5),
+#'   obs_names = LETTERS[1:3],
+#'   var_names = letters[1:5]
 #' )
 #' ad
 #'
@@ -24,20 +26,22 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     .var_names = NULL,
 
     #' @description validate a matrix (.X or .layers[...])
-    .validate_matrix = function(mat, obj_name) {
+    #' @param mat A matrix to validate
+    #' @param label Must be `"X"` or `"layer[[...]]"` where `...` is the name of a layer.
+    .validate_matrix = function(mat, label) {
       if (!is.null(mat)) {
         if (nrow(mat) != nrow(self$obs))
-          stop("nrow(", obj_name, ") should be the same as nrow(obs)")
+          stop("nrow(", label, ") should be the same as nrow(obs)")
         if (ncol(mat) != nrow(self$var))
-          stop("ncol(", obj_name, ") should be the same as nrow(var)")
+          stop("ncol(", label, ") should be the same as nrow(var)")
       
         if (!is.null(rownames(mat))) {
-          warning("rownames(", obj_name, ") should be NULL, removing them from the matrix")
+          warning("rownames(", label, ") should be NULL, removing them from the matrix")
           rownames(mat) <- NULL
         }
       
         if (!is.null(colnames(mat))) {
-          warning("colnames(", obj_name, ") should be NULL, removing them from the matrix")
+          warning("colnames(", label, ") should be NULL, removing them from the matrix")
           colnames(mat) <- NULL
         }
       }
@@ -45,40 +49,26 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       mat
     },
 
-    #' @description validate an obs data frame
-    .validate_obs = function(obs) {
-      if (is.null(obs)) stop("obs should be a data frame")
-      if (.row_names_info(obs) > 0) {
-        warning("obs should not have any dimnames, removing them from the matrix")
-        rownames(obs) <- NULL
+    #' @description validate an obs or a var data frame
+    #' @param df A data frame to validate. Should be an obs or a var.
+    #' @param label Must be `"obs"` or `"var"`
+    .validate_obsvar_dataframe = function(df, label) {
+      if (is.null(df)) stop(label, " should be a data frame")
+      if (.row_names_info(df) > 0) {
+        warning(label, " should not have any dimnames, removing them from the matrix")
+        rownames(df) <- NULL
       }
-      obs
+      df
     },
 
-    #' @description validate a var data frame
-    .validate_var = function(var) {
-      if (is.null(var)) stop("var should be a data frame")
-      if (.row_names_info(var) > 0) {
-        warning("var should not have any rownames, removing them from the matrix")
-        rownames(var) <- NULL
+    #' @description validate an obs_names or a var_names vector
+    #' @param names A vector to validate
+    #' @param label Must be `"obs"` or `"var"`
+    .validate_obsvar_names = function(names, label) {
+      if (!is.null(names)) {
+        if (length(names) != nrow(self$obs)) stop("length(", label, "_names) should be the same as nrow(", label, ")")
       }
-      var
-    },
-
-    #' @description validate an obs_names vector
-    .validate_obs_names = function(obs_names) {
-      if (!is.null(obs_names)) {
-        if (length(obs_names) != nrow(self$obs)) stop("length(obs_names) should be the same as nrow(obs)")
-      }
-      obs_names
-    },
-
-    #' @description validate a var_names vector
-    .validate_var_names = function(var_names) {
-      if (!is.null(var_names)) {
-        if (length(var_names) != nrow(self$var)) stop("length(var_names) should be the same as nrow(var)")
-      }
-      var_names
+      names
     }
   ),
   active = list(
@@ -95,7 +85,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.obs
       } else {
-        private$.obs <- self$.validate_obs(value)
+        private$.obs <- self$.validate_obsvar_dataframe(value, "obs")
       }
     },
     #' @field var The var slot
@@ -103,7 +93,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.var
       } else {
-        private$.var <- self$.validate_var(value)
+        private$.var <- self$.validate_obsvar_dataframe(value, "var")
       }
     },
     #' @field obs_names The obs_names slot
@@ -111,7 +101,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.obs_names
       } else {
-        private$.obs_names <- self$.validate_obs_names(value)
+        private$.obs_names <- self$.validate_obsvar_names(value, "obs")
       }
     },
     #' @field var_names The var_names slot
@@ -119,7 +109,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.var_names
       } else {
-        private$.var_names <- self$.validate_var_names(value)
+        private$.var_names <- self$.validate_obsvar_names(value, "var")
       }
     }
   ),
@@ -133,21 +123,14 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' @param obs_names The obs_names slot
     #' @param var_names The var_names slot
     initialize = function(X = NULL, obs, var, obs_names = NULL, var_names = NULL) {
-      # check obs and var first
-      obs <- private$.validate_obs(obs)
-      var <- private$.validate_var(var)
-      private$.obs <- obs
-      private$.var <- var
+      # check obs and var first, because these objects are used by other validators
+      private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
+      private$.var <- private$.validate_obsvar_dataframe(var, "var")
 
-      # check inputs
-      X <- private$.validate_matrix(X, "X")
-      obs_names <- private$.validate_obs_names(obs_names)
-      var_names <- private$.validate_var_names(var_names)
-
-      # store results
-      private$.X <- X
-      private$.obs_names <- obs_names
-      private$.var_names <- var_names
+      # then check other values
+      private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs")
+      private$.var_names <- private$.validate_obsvar_names(var_names, "var")
+      private$.X <- private$.validate_matrix(X, "X")
     }
   )
 )
