@@ -211,7 +211,7 @@ read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
   levels <- element[["categories"]]
   
   ordered <- element[["ordered"]]
-  if (is.na(ordered)) {
+  if (is.null(ordered)) {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
     # can't tell if the categorical should be ordered, 
     # see https://github.com/grimbough/rhdf5/issues/125
@@ -291,25 +291,19 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   version <- match.arg(version)
   
-  index <- rhdf5::h5read(file, paste0(name, "/_index"))
-  column_order <- rhdf5::h5readAttributes(file, name)$`column-order`
+  attributes <- rhdf5::h5readAttributes(file, name)
+  index_name <- attributes$`_index`
+  column_order <- attributes$`column-order`
   
-  # We already read the index of the dataframe
-  contents <- subset(h5ls(file&name, recursive = F), subset = name != "_index")
-  # To keep the names
-  to_iterate <- seq_len(nrow(contents))
-  names(to_iterate) <- contents$name 
-  lapply(to_iterate, function(i){
-    r <- contents[i,]
-    new_name <- paste0(name, r$group, r$name)
+  columns <- list()
+  for(col_name in column_order){
+    new_name <- file.path(name, col_name)
     encoding <- rhdf5::h5readAttributes(file, new_name)
-    read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
-  })
+    columns[[col_name]] <- read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
+  }
   
-  # Gather into a dataframe and set the right column order
-  dfres <- data.frame(res, row.names = index)
-  dfres <- dfres[, column_order]
-  dfres
+  index <- columns[[index_name]]
+  data.frame(columns, row.names = index)
   
 }
 
