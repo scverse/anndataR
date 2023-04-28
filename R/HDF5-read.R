@@ -8,7 +8,8 @@
 #' @return A named list with the encoding and version
 #' @importFrom rhdf5 h5readAttributes
 read_h5ad_encoding <- function(file, path) {
-  rhdf5::h5readAttributes(test_file, path)
+  attr <- rhdf5::h5readAttributes(test_file, path)
+  attr[c("encoding-type", "encoding-version")]
 }
 
 #' Read H5AD element
@@ -58,7 +59,7 @@ read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
     # but it doesn't
     darr <- t(rhdf5::h5read(file, name))
     # If the dense array is a 1D matrix, convert to vector
-    if(any(dim(res$dummy_num) == 1)){
+    if(any(dim(darr) == 1)){
       darr <- as.vector(darr)
     }
     darr
@@ -249,7 +250,7 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
   # To keep the names
   to_iterate <- seq_len(nrow(contents))
   names(to_iterate) <- contents$name 
-  lapply(to_iterate), function(i){
+  lapply(to_iterate, function(i){
     r <- contents[i,]
     new_name <- paste0(name, r$group, r$name)
     encoding <- rhdf5::h5readAttributes(file, new_name)
@@ -267,7 +268,6 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a data.frame
-#' @importFrom dplyr %>% filter
 read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   version <- match.arg(version)
   
@@ -275,7 +275,7 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   column_order <- rhdf5::h5readAttributes(file, name)$`column-order`
   
   # We already read the index of the dataframe
-  contents <- h5ls(file&name, recursive = F) %>% filter(name != "_index")
+  contents <- subset(h5ls(file&"obs", recursive = F), subset = name != "_index")
   # To keep the names
   to_iterate <- seq_len(nrow(contents))
   names(to_iterate) <- contents$name 
