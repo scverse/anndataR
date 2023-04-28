@@ -107,7 +107,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.layers
       } else {
-        private$.layers <- self$.validate_layers(value)
+        private$.layers <- private$.validate_layers(value)
+        self
       }
     },
     #' @field obs The obs slot
