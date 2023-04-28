@@ -11,9 +11,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     #' @field X The X slot
     X = function(value) {
       if (missing(value)) {
-        # return X
+        read_h5ad_element(private$.h5obj, "/X")
       } else {
-        # set X
+        .abstract_function()
       }
     },
     #' @field obs The obs slot

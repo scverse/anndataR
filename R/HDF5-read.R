@@ -34,7 +34,7 @@ read_h5ad_element <- function(file, name, encoding = NULL, version = NULL) {
   if (is.null(encoding)) {
     encoding_list <- read_h5ad_encoding(file, name)
     encoding <- encoding_list$encoding
-    encoding$version <- encoding_list$version
+    version <- encoding_list$version
   }
   
   switch (encoding,
@@ -67,15 +67,18 @@ read_h5ad_element <- function(file, name, encoding = NULL, version = NULL) {
 #'
 #' @return a Matrix/sparse matrix/DelayedArray???, or a vector if 1D
 read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
-    version <- match.arg(version)
-    # TODO: ideally, native = TRUE should take care of the row order and column order, 
-    # but it doesn't
-    darr <- t(rhdf5::h5read(file, name))
-    # If the dense array is a 1D matrix, convert to vector
-    if(dim(darr)[2] == 1){
-      darr <- as.vector(darr)
-    }
-    darr
+  
+  version <- match.arg(version)
+  # TODO: ideally, native = TRUE should take care of the row order and column order, 
+  # but it doesn't
+  darr <- t(rhdf5::h5read(file, name))
+  
+  # If the dense array is a 1D matrix, convert to vector
+  if(dim(darr)[2] == 1){
+    darr <- as.vector(darr)
+  }
+  
+  darr
 }
 
 #' Read H5AD sparse array
