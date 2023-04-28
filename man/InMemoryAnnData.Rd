@@ -8,9 +8,11 @@ Implementation of an in memory AnnData object.
 }
 \examples{
 ad <- InMemoryAnnData$new(
-    X = matrix(1:5, 3L, 5L),
-    obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
-    var = data.frame(gene = 1:5, row.names = letters[1:5])
+  X = matrix(1:5, 3L, 5L),
+  obs = data.frame(cell = 1:3),
+  var = data.frame(gene = 1:5),
+  obs_names = LETTERS[1:3],
+  var_names = letters[1:5]
 )
 ad
 
@@ -22,6 +24,8 @@ ad
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{X}}{The X slot}
+
+\item{\code{layers}}{The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with \code{obs} and \code{var}.}
 
 \item{\code{obs}}{The obs slot}
 
@@ -58,22 +62,26 @@ ad
 validate a matrix (.X or .layers\link{...})
 
 
-validate an obs data frame
+validate layers
 
 
-validate a var data frame
+validate an obs or a var data frame
 
 
-validate an obs_names vector
-
-
-validate a var_names vector
+validate an obs_names or a var_names vector
 
 
 Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(X = NULL, obs, var, obs_names = NULL, var_names = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
+  X = NULL,
+  obs,
+  var,
+  obs_names = NULL,
+  var_names = NULL,
+  layers = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -88,6 +96,20 @@ Inherits from AbstractAnnData
 \item{\code{obs_names}}{The obs_names slot}
 
 \item{\code{var_names}}{The var_names slot}
+
+\item{\code{layers}}{The layers slot. Either NULL  or a named list, where all elements have dimensions consistent with \code{obs} and \code{var}.}
+
+\item{\code{mat}}{A matrix to validate}
+
+\item{\code{label}}{Must be \code{"X"} or \code{"layer[[...]]"} where \code{...} is the name of a layer.}
+
+\item{\code{df}}{A data frame to validate. Should be an obs or a var.}
+
+\item{\code{label}}{Must be \code{"obs"} or \code{"var"}}
+
+\item{\code{names}}{A vector to validate}
+
+\item{\code{label}}{Must be \code{"obs"} or \code{"var"}}
 }
 \if{html}{\out{</div>}}
 }

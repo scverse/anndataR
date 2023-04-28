@@ -19,9 +19,11 @@ to a SingleCellExperiment.
 }
 \examples{
 ad <- InMemoryAnnData$new(
-    X = matrix(1:5, 3L, 5L),
-    obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
-    var = data.frame(gene = 1:5, row.names = letters[1:5])
+  X = matrix(1:5, 3L, 5L),
+  obs = data.frame(cell = 1:3),
+  var = data.frame(gene = 1:5),
+  obs_names = LETTERS[1:3],
+  var_names = letters[1:5]
 )
 to_SingleCellExperiment(ad)
 
