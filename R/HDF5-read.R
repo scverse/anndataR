@@ -9,6 +9,13 @@
 read_h5ad_encoding <- function(file, name) {
   attrs <- rhdf5::h5readAttributes(file, name)
   
+  if (!("encoding-type") %in% names(attrs) ||
+      !("encoding-version" %in% names(attrs))) {
+    stop(
+      "Encoding not found for element '", name, "' in '", file, "'"
+    )
+  }
+  
   list(
     encoding = attrs[["encoding-type"]],
     version = attrs[["encoding-version"]]
