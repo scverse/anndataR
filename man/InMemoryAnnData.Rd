@@ -6,6 +6,15 @@
 \description{
 Implementation of an in memory AnnData object.
 }
+\examples{
+ad <- InMemoryAnnData$new(
+    X = matrix(1:5, 3L, 5L),
+    obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
+    var = data.frame(gene = 1:5, row.names = letters[1:5])
+)
+ad
+
+}
 \section{Super class}{
 \code{\link[anndatar:AbstractAnnData]{anndatar::AbstractAnnData}} -> \code{InMemoryAnnData}
 }
@@ -34,6 +43,8 @@ Implementation of an in memory AnnData object.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndatar::AbstractAnnData$n_obs()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndatar::AbstractAnnData$n_vars()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndatar::AbstractAnnData$shape()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndatar::AbstractAnnData$to_inmemory()</code></a></span></li>
