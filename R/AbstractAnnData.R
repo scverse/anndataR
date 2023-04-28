@@ -23,27 +23,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     },
     #' @field obs_names The obs_names slot
     obs_names = function(value) {
-      if (missing(value)) {
-        names <- names(self$obs)
-        if (is.null(names)) {
-          names <- character()
-        }
-        names
-      } else {
-        .abstract_function()
-      }
+      .abstract_function()
     },
     #' @field var_names The var_names slot
     var_names = function(value) {
-      if (missing(value)) {
-        names <- names(self$var)
-        if (is.null(names)) {
-          names <- character()
-        }
-        names
-      } else {
-        .abstract_function()
-      }
+      .abstract_function()
     }
   ),
   public = list(
@@ -57,7 +41,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
       }
       cat(
         "class: ", class(self)[[1]], "\n",
-        "dim: ", self$dim()[1], " x ", self$dim()[2], "\n",
+        "dim: ", self$shape()[[1]], " x ", self$shape()[[2]], "\n",
         "X: ", X_info, "\n",
         pretty_print("obs", self$obs_names), "\n",
         pretty_print("var", self$var_names), "\n",
@@ -65,7 +49,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
       )
     },
     #' @description Dimensions of the AnnData object
-    dim = function() {
+    shape = function() {
       c(
         nrow(self$obs),
         nrow(self$var)

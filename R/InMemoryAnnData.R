@@ -9,7 +9,67 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   private = list(
     .X = NULL,
     .obs = NULL,
-    .var = NULL
+    .var = NULL,
+    .obs_names = NULL,
+    .var_names = NULL,
+
+    #' @description validate a matrix (.X or .layers[...])
+    .validate_matrix = function(mat, obj_name) {
+      if (!is.null(mat)) {
+        if (nrow(mat) != nrow(self$obs))
+          stop("nrow(", obj_name, ") should be the same as nrow(obs)")
+        if (ncol(mat) != nrow(self$var))
+          stop("ncol(", obj_name, ") should be the same as nrow(var)")
+      
+        if (!is.null(rownames(mat))) {
+          warning("rownames(", obj_name, ") should be NULL, removing them from the matrix")
+          rownames(mat) <- NULL
+        }
+      
+        if (!is.null(colnames(mat))) {
+          warning("colnames(", obj_name, ") should be NULL, removing them from the matrix")
+          colnames(mat) <- NULL
+        }
+      }
+
+      mat
+    },
+
+    #' @description validate an obs data frame
+    .validate_obs = function(obs) {
+      if (is.null(obs)) stop("obs should be a data frame")
+      if (.row_names_info(obs) >= 0) {
+        warning("obs should not have any dimnames, removing them from the matrix")
+        rownames(obs) <- NULL
+      }
+      obs
+    },
+
+    #' @description validate a var data frame
+    .validate_var = function(var) {
+      if (is.null(var)) stop("var should be a data frame")
+      if (.row_names_info(var) >= 0) {
+        warning("var should not have any rownames, removing them from the matrix")
+        rownames(var) <- NULL
+      }
+      var
+    },
+
+    #' @description validate an obs_names vector
+    .validate_obs_names = function(obs_names) {
+      if (!is.null(obs_names)) {
+        if (length(obs_names) != nrow(self$obs)) stop("length(obs_names) should be the same as nrow(obs)")
+      }
+      obs_names
+    },
+
+    #' @description validate a var_names vector
+    .validate_var_names = function(var_names) {
+      if (!is.null(var_names)) {
+        if (length(var_names) != nrow(self$var)) stop("length(var_names) should be the same as nrow(var)")
+      }
+      var_names
+    }
   ),
   active = list(
     #' @field X The X slot
@@ -17,7 +77,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.X
       } else {
-        private$.X <- value
+        private$.X <- self$.validate_matrix(value, "X")
       }
     },
     #' @field obs The obs slot
@@ -25,7 +85,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.obs
       } else {
-        private$.obs <- value
+        private$.obs <- self$.validate_obs(value)
       }
     },
     #' @field var The var slot
@@ -33,7 +93,23 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.var
       } else {
-        private$.var <- value
+        private$.var <- self$.validate_var(value)
+      }
+    },
+    #' @field obs_names The obs_names slot
+    obs_names = function(value) {
+      if (missing(value)) {
+        private$.obs_names
+      } else {
+        private$.obs_names <- self$.validate_obs_names(value)
+      }
+    },
+    #' @field var_names The var_names slot
+    var_names = function(value) {
+      if (missing(value)) {
+        private$.var_names
+      } else {
+        private$.var_names <- self$.validate_var_names(value)
       }
     }
   ),
@@ -41,61 +117,28 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' @description Creates a new instance of an in memory AnnData object.
     #' Inherits from AbstractAnnData
     #' 
-    #' @param X A #observations × #variables data matrix. A view of the data is used if the data type matches, otherwise, a copy is made.
-    #' @param obs Key-indexed one-dimensional observations annotation of length #observations.
-    #' @param var Key-indexed one-dimensional variables annotation of length #variables.
-    #' @param shape Shape list (#observations, #variables). Can only be provided if `X` is `NULL`.
-    initialize = function(X = NULL, obs = NULL, var = NULL, shape = NULL) {
-      
-      # check nrow size
-      nrow <- nrow(X)
-      if (is.null(nrow)) nrow <- nrow(obs)
-      if (is.null(nrow) && !is.null(shape)) nrow <- shape[[1]]
-      if (is.null(nrow)) stop("If $X, $obs and $var are NULL, shape should be set to the dimensions of the AnnData.")
-
-      # check ncol size
-      ncol <- ncol(X)
-      if (is.null(ncol)) ncol <- nrow(var)
-      if (is.null(ncol) && !is.null(shape)) ncol <- shape[[2]]
-      if (is.null(ncol)) stop("If $X, $obs and $var are NULL, shape should be set to the dimensions of the AnnData.")
-
-      # check for obs names
-      obs_names <- rownames(X)
-      if (is.null(obs_names)) obs_names <- rownames(obs)
-      if (is.null(obs_names)) obs_names <- as.character(seq_len(nrow))
-
-      # check for var names
-      var_names <- colnames(X)
-      if (is.null(var_names)) var_names <- rownames(var)
-      if (is.null(var_names)) var_names <- as.character(seq_len(ncol))
-
-      # construct obs if it doesn't exist
-      if (is.null(obs)) {
-        obs <- data.frame(row.names = obs_names)
-      }
-      if (!is.data.frame(obs)) stop("$obs should be a data frame.")
-      if (is.null(rownames(obs))) {
-        rownames(obs) <- obs_names
-      }
-
-      # construct var if it doesn't exist
-      if (is.null(var)) {
-        var <- data.frame(row.names = var_names)
-      }
-      if (!is.data.frame(var)) stop("$var should be a data frame.")
-      if (is.null(rownames(var))) {
-        rownames(var) <- var_names
-      }
-
-      # check matrix
-      if (!is.null(X)) {
-        if (nrow(X) != nrow(obs)) stop("$obs should have the same number of rows as $X.")
-        if (ncol(X) != nrow(var)) stop("$obs should have the same number of rows as $X.")
-      }
-
-      private$.X <- X
+    #' @param X The X slot
+    #' @param obs The obs slot
+    #' @param var The var slot
+    #' @param obs_names The obs_names slot
+    #' @param var_names The var_names slot
+    initialize = function(X = NULL, obs, var, obs_names = NULL, var_names = NULL) {
+      # check obs and var first
+      obs <- private$.validate_obs(obs)
+      var <- private$.validate_var(var)
       private$.obs <- obs
       private$.var <- var
+
+      # check inputs
+      X <- private$.validate_matrix(X, "X")
+      obs_names <- private$.validate_obs_names(obs_names)
+      var_names <- private$.validate_var_names(var_names)
+
+      # store results
+      private$.X <- X
+      private$.obs_names <- obs_names
+      private$.var_names <- var_names
     }
   )
 )
+

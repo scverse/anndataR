@@ -25,7 +25,8 @@ Abstract class representing an anndata object. Defines the interface.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-AbstractAnnData-print}{\code{AbstractAnnData$print()}}
-\item \href{#method-AbstractAnnData-dim}{\code{AbstractAnnData$dim()}}
+\item \href{#method-AbstractAnnData-shape}{\code{AbstractAnnData$shape()}}
+\item \href{#method-AbstractAnnData-to_inmemory}{\code{AbstractAnnData$to_inmemory()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -47,12 +48,22 @@ Print AnnData object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-dim"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-dim}{}}}
-\subsection{Method \code{dim()}}{
+\if{html}{\out{<a id="method-AbstractAnnData-shape"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-shape}{}}}
+\subsection{Method \code{shape()}}{
 Dimensions of the AnnData object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$dim()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$shape()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_inmemory"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_inmemory}{}}}
+\subsection{Method \code{to_inmemory()}}{
+Return a new AnnData object with all objects loaded into memory.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_inmemory()}\if{html}{\out{</div>}}
 }
 
 }
