@@ -66,7 +66,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' @param label Must be `"obs"` or `"var"`
     .validate_obsvar_names = function(names, label) {
       if (!is.null(names)) {
-        if (length(names) != nrow(self$obs)) stop("length(", label, "_names) should be the same as nrow(", label, ")")
+        if (length(names) != nrow(self[[label]])) stop("length(", label, "_names) should be the same as nrow(", label, ")")
       }
       names
     }
