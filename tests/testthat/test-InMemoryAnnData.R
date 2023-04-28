@@ -155,6 +155,7 @@ test_that("'layers' works", {
   expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
   layers <- list(A = matrix(0, 3, 5), B = matrix(0, 5, 3))
   expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+})
 
 # WRITING -----------------------------------------------------------------
 
