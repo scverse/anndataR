@@ -20,5 +20,5 @@ ad <- InMemoryAnnData$new(
   var = data.frame(gene = 1:5),
   var_names = letters[1:5]
 )
-to_Seurat(obj)
+to_Seurat(ad)
 }
