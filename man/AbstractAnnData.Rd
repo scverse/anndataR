@@ -26,6 +26,8 @@ Abstract class representing an anndata object. Defines the interface.
 \itemize{
 \item \href{#method-AbstractAnnData-print}{\code{AbstractAnnData$print()}}
 \item \href{#method-AbstractAnnData-shape}{\code{AbstractAnnData$shape()}}
+\item \href{#method-AbstractAnnData-n_obs}{\code{AbstractAnnData$n_obs()}}
+\item \href{#method-AbstractAnnData-n_vars}{\code{AbstractAnnData$n_vars()}}
 \item \href{#method-AbstractAnnData-to_inmemory}{\code{AbstractAnnData$to_inmemory()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
@@ -54,6 +56,26 @@ Print AnnData object
 Dimensions of the AnnData object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$shape()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-n_obs"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-n_obs}{}}}
+\subsection{Method \code{n_obs()}}{
+Number of observations in the AnnData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_obs()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-n_vars"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-n_vars}{}}}
+\subsection{Method \code{n_vars()}}{
+Number of variables in the AnnData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_vars()}\if{html}{\out{</div>}}
 }
 
 }

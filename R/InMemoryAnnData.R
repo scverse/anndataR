@@ -4,6 +4,16 @@
 #' Implementation of an in memory AnnData object.
 #' 
 #' @importFrom Matrix as.matrix
+#'
+#' @examples
+#' ad <- InMemoryAnnData$new(
+#'     X = matrix(1:5, 3L, 5L),
+#'     obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
+#'     var = data.frame(gene = 1:5, row.names = letters[1:5])
+#' )
+#' ad
+#'
+#' @export
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   inherit = AbstractAnnData,
   private = list(
@@ -38,7 +48,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' @description validate an obs data frame
     .validate_obs = function(obs) {
       if (is.null(obs)) stop("obs should be a data frame")
-      if (.row_names_info(obs) >= 0) {
+      if (.row_names_info(obs) > 0) {
         warning("obs should not have any dimnames, removing them from the matrix")
         rownames(obs) <- NULL
       }
@@ -48,7 +58,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' @description validate a var data frame
     .validate_var = function(var) {
       if (is.null(var)) stop("var should be a data frame")
-      if (.row_names_info(var) >= 0) {
+      if (.row_names_info(var) > 0) {
         warning("var should not have any rownames, removing them from the matrix")
         rownames(var) <- NULL
       }
@@ -141,4 +151,3 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     }
   )
 )
-

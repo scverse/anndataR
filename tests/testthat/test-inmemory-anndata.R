@@ -35,6 +35,26 @@ test_that("create inmemory anndata", {
   expect_identical(ad$shape(), c(10L, 20L))
 })
 
+test_that("with empty obs", {
+  ad <- InMemoryAnnData$new(
+    obs = data.frame(),
+    var = var,
+    obs_names = c(),
+    var_names = var_names
+  )
+  expect_identical(ad$shape(), c(0L, 20L))
+})
+
+test_that("with empty var", {
+  ad <- InMemoryAnnData$new(
+    obs = obs,
+    var = data.frame(),
+    obs_names = obs_names,
+    var_names = c()
+  )
+  expect_identical(ad$shape(), c(10L, 0L))
+})
+
 test_that("InMemoryAnnData$new() fails gracefully", {
   expect_error(InMemoryAnnData$new())
   expect_error(InMemoryAnnData$new(obs = data.frame(x = 1:3)))
