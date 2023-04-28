@@ -2,4 +2,5 @@
 
 export(to_Seurat)
 importFrom(Matrix,as.matrix)
+importFrom(Matrix,t)
 importFrom(R6,R6Class)
