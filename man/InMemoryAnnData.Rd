@@ -44,6 +44,21 @@ Implementation of an in memory AnnData object.
 \if{html}{\out{<a id="method-InMemoryAnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-InMemoryAnnData-new}{}}}
 \subsection{Method \code{new()}}{
+validate a matrix (.X or .layers\link{...})
+
+
+validate an obs data frame
+
+
+validate a var data frame
+
+
+validate an obs_names vector
+
+
+validate a var_names vector
+
+
 Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData
 \subsection{Usage}{

@@ -2,12 +2,7 @@
 #' 
 #' @param obj An AnnData object
 #' 
-#' @importFrom methods is
-#' @importFrom Seurat CreateAssayObject AddMetaData CreateSeuratObject
-#' 
 #' @export
-#' @examples
-
 #' @examples
 #' ad <- InMemoryAnnData$new(
 #'   X = matrix(1:5, 3L, 5L),
@@ -16,19 +11,26 @@
 #'   var = data.frame(gene = 1:5),
 #'   var_names = letters[1:5]
 #' )
-#' ad$to_Seurat()
+#' to_Seurat(obj)
 to_Seurat <- function(obj) {
-  if (!is(obj, "AbstractAnnData")) stop("Argument 'obj' should be an AnnData object.")
+  requireNamespace("Seurat")
+
+  stopifnot(is(obj, "AbstractAnnData"))
+
+  # translate var
+  var_ <- obj$var
+  rownames(var_) <- obj$var_names
+
+  # translate obs
+  obs_ <- obj$obs
+  rownames(obs_) <- obj$obs_names
 
   # create assay object
-  X_assay_metadata <- obj$var
-  rownames(X_assay_metadata) <- obj$var_names
   X_assay <- Seurat::CreateAssayObject(counts = obj$X)
-  X_assay <- Seurat::AddMetaData(X_assay, metadata = X_assay_metadata)
+  X_assay <- Seurat::AddMetaData(X_assay, metadata = var_)
 
-  seurat_obj_metadata <- obj$obs
-  rownames(seurat_obj_metadata) <- obj$obs_names
-  seurat_obj <- Seurat::CreateSeuratObject(X_assay, meta.data = seurat_obj_metadata)
+  # create seurat object
+  seurat_obj <- Seurat::CreateSeuratObject(X_assay, meta.data = obs_)
   
   seurat_obj
 }
