@@ -36,7 +36,7 @@ read_h5ad_element <- function(file, name, encoding, version) {
     "string-array" = read_h5ad_string_array(file, name, version = version),
     "nullable-integer" = read_h5ad_nullable_integer(file, name,
                                                     version = version),
-    "nullable-integer" = read_h5ad_nullable_boolean(file, name,
+    "nullable-boolean" = read_h5ad_nullable_boolean(file, name,
                                                     version = version),
     stop("No function for reading H5AD encoding: ", encoding)
   )
@@ -107,7 +107,19 @@ read_h5ad_sparse_array <- function(file, name, version = c("0.1.0"),
 #'
 #' @return a boolean vector
 read_h5ad_nullable_boolean <- function(file, name, version = c("0.1.0")) {
-  NULL
+  
+  version <- match.arg(version)
+  
+  element <- rhdf5::h5read(file, name)
+  
+  # Get mask and convert to Boolean
+  mask <- as.logical(element[["mask"]])
+  
+  # Get values and set missing
+  element <- as.integer(element[["values"]])
+  element[mask] <- NA
+  
+  return(element)
 }
 
 #' Read H5AD nullable integer
@@ -120,7 +132,19 @@ read_h5ad_nullable_boolean <- function(file, name, version = c("0.1.0")) {
 #'
 #' @return an integer vector
 read_h5ad_nullable_integer <- function(file, name, version = c("0.1.0")) {
-  NULL
+  
+  version <- match.arg(version)
+  
+  element <- rhdf5::h5read(file, name)
+  
+  # Get mask and convert to Boolean
+  mask <- as.logical(element[["mask"]])
+  
+  # Get values and set missing
+  element <- as.logical(element[["values"]])
+  element[mask] <- NA
+  
+  return(element)
 }
 
 #' Read H5AD string array
@@ -163,10 +187,17 @@ read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
   
   levels <- element[["categories"]]
   
-  # {rhdf5} doesn't yet support ENUM type attributes so we can't tell if the
-  # categorical should be ordered, 
-  # see https://github.com/grimbough/rhdf5/issues/125
-  ordered <- FALSE
+  ordered <- element[["ordered"]]
+  if (is.na(ordered)) {
+    # This version of {rhdf5} doesn't yet support ENUM type attributes so we
+    # can't tell if the categorical should be ordered, 
+    # see https://github.com/grimbough/rhdf5/issues/125
+    warning(
+      "Unable to determine if categorical '", name,
+      "' is ordered, assuming it isn't"
+    )
+    ordered <- FALSE
+  }
   
   factor(levels[codes], levels=levels, ordered=ordered)
 }
