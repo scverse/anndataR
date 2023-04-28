@@ -243,3 +243,42 @@ test_that("write to var", {
   ad$var[,3] <- FALSE
   expect_equal(ad$var[,3], rep(FALSE, 20L))
 })
+
+
+test_that("write to obs_names", {
+  ad <- InMemoryAnnData$new(
+    X = X,
+    obs = obs,
+    var = var,
+    obs_names = obs_names,
+    var_names = var_names
+  )
+  
+  obs_names2 <- letters[1:10]
+  ad$obs_names <- obs_names2
+  
+  expect_equal(ad$obs_names, obs_names2)
+  
+  # change value in obs_names
+  ad$obs_names[2:3] <- c("foo", "bar")
+  expect_equal(ad$obs_names[1:4], c("a", "foo", "bar", "d"))
+})
+
+test_that("write to var_names", {
+  ad <- InMemoryAnnData$new(
+    X = X,
+    obs = obs,
+    var = var,
+    obs_names = obs_names,
+    var_names = var_names
+  )
+  
+  var_names2 <- LETTERS[1:20]
+  ad$var_names <- var_names2
+  
+  expect_equal(ad$var_names, var_names2)
+  
+  # change value in var_names
+  ad$var_names[2:3] <- c("foo", "bar")
+  expect_equal(ad$var_names[1:4], c("A", "foo", "bar", "D"))
+})
