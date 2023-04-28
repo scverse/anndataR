@@ -15,7 +15,7 @@
 to_Seurat <- function(obj) {
   requireNamespace("Seurat")
 
-  stopifnot(is(obj, "AbstractAnnData"))
+  stopifnot(inherits(obj, "AbstractAnnData"))
 
   # translate var
   var_ <- obj$var
