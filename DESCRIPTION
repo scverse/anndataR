@@ -1,17 +1,17 @@
-Package: anndatar
-Title: Bioconductor I/O for scverse data standards
+Package: anndataR
+Title: AnnData interoperability in R
 Version: 0.0.0.9000
 Authors@R: c(
-    person(given = "Danila",
-        family = "Bredikhin",
-        role = c("aut", "cre"),
-        email = "danila.bredikhin@embl.de",
-        comment = c(ORCID = "0000-0001-8089-6983")),
     person(given = "Robrecht",
         family = "Cannoodt",
-        role = c("aut"),
+        role = c("aut", "cre"),
         email = "rcannood@gmail.com",
         comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
+    person(given = "Danila",
+        family = "Bredikhin",
+        role = c("aut"),
+        email = "danila.bredikhin@embl.de",
+        comment = c(ORCID = "0000-0001-8089-6983")),
     person(given = "Martin",
         family = "Morgan",
         role = "aut",
