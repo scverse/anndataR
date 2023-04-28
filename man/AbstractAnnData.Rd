@@ -11,6 +11,8 @@ Abstract class representing an anndata object. Defines the interface.
 \describe{
 \item{\code{X}}{The X slot}
 
+\item{\code{layers}}{The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with \code{obs} and \code{var}.}
+
 \item{\code{obs}}{The obs slot}
 
 \item{\code{var}}{The var slot}

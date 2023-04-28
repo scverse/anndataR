@@ -13,6 +13,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     X = function(value) {
       .abstract_function()
     },
+    #' @field layers The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with `obs` and `var`.
+    layers = function(value) {
+      .abstract_function()
+    },
     #' @field obs The obs slot
     obs = function(value) {
       .abstract_function()
@@ -43,6 +47,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
         "class: ", class(self)[[1]], "\n",
         "dim: ", self$n_obs(), "obs x ", self$n_vars(), " vars\n",
         "X: ", X_info, "\n",
+        pretty_print("layers", names(self$layers)), "\n",
         pretty_print("obs", self$obs_keys()), "\n",
         pretty_print("var", self$var_keys()), "\n",
         sep = ""

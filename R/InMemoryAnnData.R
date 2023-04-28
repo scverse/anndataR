@@ -20,6 +20,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   inherit = AbstractAnnData,
   private = list(
     .X = NULL,
+    .layers = NULL,
     .obs = NULL,
     .var = NULL,
     .obs_names = NULL,
@@ -48,7 +49,27 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
 
       mat
     },
+    #' @description validate layers
+    .validate_layers = function(layers) {
+      if (is.null(layers)) return(layers)
 
+      ## layers and names
+      layer_names <- names(layers)
+      if (!is.list(layers) || is.null(layer_names)) {
+        stop("'layers' must must be a named list")
+      }
+      if (any(!nzchar(layer_names))) {
+        stop("all 'layers' elements must have non-trivial names")
+      }
+
+      ## layer elements
+      for (layer in layer_names) {
+        layer_name <- paste0("layers[[", layer, "]]")
+        private$.validate_matrix(layers[[layer]], layer_name)
+      }
+
+      layers
+    },
     #' @description validate an obs or a var data frame
     #' @param df A data frame to validate. Should be an obs or a var.
     #' @param label Must be `"obs"` or `"var"`
@@ -78,6 +99,14 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         private$.X
       } else {
         private$.X <- self$.validate_matrix(value, "X")
+      }
+    },
+    #' @field layers The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with `obs` and `var`.
+    layers = function(value) {
+      if (missing(value)) {
+        private$.layers
+      } else {
+        private$.layers <- self$.validate_layers(value)
       }
     },
     #' @field obs The obs slot
@@ -118,11 +147,12 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' Inherits from AbstractAnnData
     #' 
     #' @param X The X slot
+    #' @param layers The layers slot. Either NULL  or a named list, where all elements have dimensions consistent with `obs` and `var`.
     #' @param obs The obs slot
     #' @param var The var slot
     #' @param obs_names The obs_names slot
     #' @param var_names The var_names slot
-    initialize = function(X = NULL, obs, var, obs_names = NULL, var_names = NULL) {
+    initialize = function(X = NULL, obs, var, obs_names = NULL, var_names = NULL, layers = NULL) {
       # check obs and var first, because these objects are used by other validators
       private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
       private$.var <- private$.validate_obsvar_dataframe(var, "var")
@@ -131,6 +161,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs")
       private$.var_names <- private$.validate_obsvar_names(var_names, "var")
       private$.X <- private$.validate_matrix(X, "X")
+      private$.layers <- private$.validate_layers(layers)
     },
     #' @description `obs_keys()` returns the keys ('column names') of `obs`.
     obs_keys = function() {
