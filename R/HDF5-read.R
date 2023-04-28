@@ -6,13 +6,12 @@
 #' @param name Name of the element within the H5AD file
 #'
 #' @return A named list with the encoding and version
-read_hdf5_encoding <- function(file, path) {
-  tryCatch(
-    error = function(cnd){
-      print(paste0("An error occurred when reading ", name, " in file ", file, "."))
-      conditionMessage(cnd)
-    },
-    h5readAttributes(test_file, "X")
+read_h5ad_encoding <- function(file, path) {
+  attrs <- rhdf5::h5readAttributes(file, path)
+  
+  list(
+    encoding = attrs[["encoding-type"]],
+    version = attrs[["encoding-version"]]
   )
 }
 
@@ -25,8 +24,19 @@ read_hdf5_encoding <- function(file, path) {
 #' @param encoding The encoding of the element to read
 #' @param version The encoding version of the element to read
 #'
+#' @details
+#' If `encoding` is `NULL` the encoding and version are read from the element
+#' using `read_h5ad_encoding()`
+#' 
 #' @return Value depending on the encoding
-read_h5ad_element <- function(file, name, encoding, version) {
+read_h5ad_element <- function(file, name, encoding = NULL, version = NULL) {
+  
+  if (is.null(encoding)) {
+    encoding_list <- read_h5ad_encoding(file, name)
+    encoding <- encoding_list$encoding
+    encoding$version <- encoding_list$version
+  }
+  
   switch (encoding,
     "array" = read_h5ad_dense_array(file, name, version = version),
     "csr_matrix" = read_h5ad_sparse_array(file, name, version = version,
