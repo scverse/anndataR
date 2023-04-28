@@ -275,7 +275,7 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   column_order <- rhdf5::h5readAttributes(file, name)$`column-order`
   
   # We already read the index of the dataframe
-  contents <- subset(h5ls(file&"obs", recursive = F), subset = name != "_index")
+  contents <- subset(h5ls(file&name, recursive = F), subset = name != "_index")
   # To keep the names
   to_iterate <- seq_len(nrow(contents))
   names(to_iterate) <- contents$name 
