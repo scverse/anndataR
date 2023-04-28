@@ -6,7 +6,6 @@
 #' @param name Name of the element within the H5AD file
 #'
 #' @return A named list with the encoding and version
-<<<<<<< HEAD
 read_h5ad_encoding <- function(file, name) {
   attrs <- rhdf5::h5readAttributes(file, name)
   
@@ -21,11 +20,6 @@ read_h5ad_encoding <- function(file, name) {
     encoding = attrs[["encoding-type"]],
     version = attrs[["encoding-version"]]
   )
-=======
-#' @importFrom rhdf5 h5readAttributes
-read_h5ad_encoding <- function(file, path) {
-  rhdf5::h5readAttributes(test_file, path)
->>>>>>> origin/hdf5-content
 }
 
 #' Read H5AD element
@@ -78,8 +72,7 @@ read_h5ad_element <- function(file, name, encoding = NULL, version = NULL) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
-#' @return a Matrix/sparse matrix/DelayedArray???, or a vector if 1D
-#' @importFrom rhdf5 h5read
+#' @return a matrix or a vector if 1D
 read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
     version <- match.arg(version)
     # TODO: ideally, native = TRUE should take care of the row order and column order, 
@@ -277,7 +270,7 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
   # To keep the names
   to_iterate <- seq_len(nrow(contents))
   names(to_iterate) <- contents$name 
-  lapply(to_iterate), function(i){
+  lapply(to_iterate, function(i){
     r <- contents[i,]
     new_name <- paste0(name, r$group, r$name)
     encoding <- rhdf5::h5readAttributes(file, new_name)
