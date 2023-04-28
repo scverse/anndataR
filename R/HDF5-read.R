@@ -6,14 +6,9 @@
 #' @param name Name of the element within the H5AD file
 #'
 #' @return A named list with the encoding and version
-read_hdf5_encoding <- function(file, path) {
-  tryCatch(
-    error = function(cnd){
-      print(paste0("An error occurred when reading ", name, " in file ", file, "."))
-      conditionMessage(cnd)
-    },
-    h5readAttributes(test_file, "X")
-  )
+#' @importFrom rhdf5 h5readAttributes
+read_h5ad_encoding <- function(file, path) {
+  rhdf5::h5readAttributes(test_file, path)
 }
 
 #' Read H5AD element
@@ -56,6 +51,7 @@ read_h5ad_element <- function(file, name, encoding, version) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a Matrix/sparse matrix/DelayedArray???, or a vector if 1D
+#' @importFrom rhdf5 h5read
 read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
     version <- match.arg(version)
     # TODO: ideally, native = TRUE should take care of the row order and column order, 
@@ -78,6 +74,7 @@ read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
 #' @param type Type of the sparse matrix, either "csr" or "csc"
 #'
 #' @return a sparse matrix/DelayedArray???, or a vector if 1D
+#' @importFrom rhdf5 h5read h5readAttributes
 read_h5ad_sparse_array <- function(file, name, version = c("0.1.0"),
                                    type = c("csr", "csc")) {
   
@@ -183,8 +180,10 @@ read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a character vector of length 1
+#' @importFrom rhdf5 h5read
 read_h5ad_string_scalar <- function(file, name, version = c("0.2.0")) {
-  NULL
+  version <- match.arg(version)
+  rhdf5::h5read(test_file, name)
 }
 
 #' Read H5AD numeric scalar
@@ -197,7 +196,8 @@ read_h5ad_string_scalar <- function(file, name, version = c("0.2.0")) {
 #'
 #' @return a numeric vector of length 1
 read_h5ad_numeric_scalar <- function(file, name, version = c("0.2.0")) {
-  NULL
+  version <- match.arg(version)
+  rhdf5::h5read(test_file, name)
 }
 
 #' Read H5AD mapping
@@ -216,8 +216,8 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
   lapply(seq_len(nrow(contents)), function(i){
     r <- contents[i,]
     new_name <- paste0(name, r$group, r$name)
-    encoding <- h5readAttributes(file, new_name)
-    read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
+    encoding <- rhdf5::h5readAttributes(file, new_name)
+    rhdf5::read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
   })
   
 }

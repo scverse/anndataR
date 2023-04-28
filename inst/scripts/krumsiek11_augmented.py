@@ -58,4 +58,7 @@ adata.uns["dummy_bool2"] = pd.array([True, False, None])
 adata.uns["dummy_int"] = [1,2,3]
 adata.uns["dummy_int2"] = pd.array([1,2,None])
 
-adata.write("inst/extdata/krumsiek11_augmented_sparse1_v0-8.h5ad")
+adata.uns["dummy_int_scalar"] = 1
+adata.uns["dummy_string_scalar"] = "foo"
+
+adata.write("inst/extdata/krumsiek11_augmented_sparse_v0-8.h5ad")
