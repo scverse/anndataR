@@ -5,7 +5,30 @@
 HDF5AnnData <- R6::R6Class("HDF5AnnData",
   inherit = AbstractAnnData,
   private = list(
-    .h5obj = NULL
+    .h5obj = NULL,
+    
+    #' @description validate a value matches the observations dimension
+    .validate_n_obs = function(value) {
+      if (nrow(value) != self$n_obs) {
+        stop("Dimensions of value does not match the number of observations")
+      }
+    },
+    
+    #' @description validate a value matches the variables dimension
+    .validate_n_vars = function(value) {
+      if (nrow(value) != self$n_vars) {
+        stop("Dimensions of value does not match the number of variables")
+      }
+    },
+    
+    #' @description validate a value matches the AnnData shape
+    .validate_shape = function(value) {
+      message(dim(value))
+      message(self$shape)
+      if (!identical(dim(value), self$shape)) {
+        stop("Dimensions of value does not match the object shape")
+      }
+    }
   ),
   active = list(
     #' @field X The X slot
@@ -13,7 +36,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
       if (missing(value)) {
         read_h5ad_element(private$.h5obj, "/X")
       } else {
-        .abstract_function()
+        private$.validate_shape(value)
+        message("HERE")
+        write_h5ad_element(value, private$.h5obj, "/X")
       }
     },
     #' @field obs The obs slot

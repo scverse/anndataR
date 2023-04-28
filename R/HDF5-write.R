@@ -25,32 +25,27 @@ set_h5ad_encoding <- function(x, encoding, version) {
 #' @param value The value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
-#' @param encoding The encoding of the element to read
-#' @param version The encoding version of the element to read
-write_h5ad_element <- function(value, file, name, encoding, version) {
+write_h5ad_element <- function(value, file, name) {
+  
+  encoding <- switch (class(value)[1],
+    "matrix" = "array",
+    stop("Unknown encoding for class '", class(value)[1], "'")
+  )
+  
   switch (encoding,
-    "array" = write_h5ad_dense_array(file, name, value = value,
-                                     version = version),
+    "array" = write_h5ad_dense_array(file, name, value = value),
     "csr_matrix" = write_h5ad_sparse_array(file, name, value = value,
-                                           version = version, type = "csr"),
+                                           type = "csr"),
     "csc_matrix" = write_h5ad_sparse_array(file, name, value = value,
-                                           version = version, type = "csc"),
-    "dataframe" = write_h5ad_data_frame(file, name, value = value, 
-                                        version = version),
-    "dict" = write_h5ad_mapping(file, name, value = value, 
-                                version = version),
-    "string" = write_h5ad_string_scalar(file, name, value = value, 
-                                        version = version),
-    "numeric-scalar" = write_h5ad_numeric_scalar(file, name, value = value,
-                                                 version = version),
-    "categorical" = write_h5ad_categorical(file, name, value = value,
-                                           version = version),
-    "string-array" = write_h5ad_string_array(file, name, value = value,
-                                             version = version),
-    "nullable-integer" = write_h5ad_nullable_integer(file, name, value = value,
-                                                     version = version),
-    "nullable-integer" = write_h5ad_nullable_boolean(file, name, value = value,
-                                                     version = version),
+                                           type = "csc"),
+    "dataframe" = write_h5ad_data_frame(file, name, value = value),
+    "dict" = write_h5ad_mapping(file, name, value = value),
+    "string" = write_h5ad_string_scalar(file, name, value = value),
+    "numeric-scalar" = write_h5ad_numeric_scalar(file, name, value = value),
+    "categorical" = write_h5ad_categorical(file, name, value = value),
+    "string-array" = write_h5ad_string_array(file, name, value = value),
+    "nullable-integer" = write_h5ad_nullable_integer(file, name, value = value),
+    "nullable-integer" = write_h5ad_nullable_boolean(file, name, value = value),
     stop("No function for writing H5AD encoding: ", encoding)
   )
 }
