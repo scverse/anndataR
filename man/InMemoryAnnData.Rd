@@ -39,6 +39,8 @@ ad
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-InMemoryAnnData-new}{\code{InMemoryAnnData$new()}}
+\item \href{#method-InMemoryAnnData-obs_keys}{\code{InMemoryAnnData$obs_keys()}}
+\item \href{#method-InMemoryAnnData-var_keys}{\code{InMemoryAnnData$var_keys()}}
 \item \href{#method-InMemoryAnnData-clone}{\code{InMemoryAnnData$clone()}}
 }
 }
@@ -99,6 +101,26 @@ Inherits from AbstractAnnData
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-InMemoryAnnData-obs_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-InMemoryAnnData-obs_keys}{}}}
+\subsection{Method \code{obs_keys()}}{
+\code{obs_keys()} returns the keys ('column names') of \code{obs}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$obs_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-InMemoryAnnData-var_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-InMemoryAnnData-var_keys}{}}}
+\subsection{Method \code{var_keys()}}{
+\code{var_keys()} returns the keys ('column names') of \code{var}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$var_keys()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InMemoryAnnData-clone"></a>}}
