@@ -48,7 +48,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' @description validate an obs data frame
     .validate_obs = function(obs) {
       if (is.null(obs)) stop("obs should be a data frame")
-      if (.row_names_info(obs) >= 0) {
+      if (.row_names_info(obs) > 0) {
         warning("obs should not have any dimnames, removing them from the matrix")
         rownames(obs) <- NULL
       }
@@ -58,7 +58,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #' @description validate a var data frame
     .validate_var = function(var) {
       if (is.null(var)) stop("var should be a data frame")
-      if (.row_names_info(var) >= 0) {
+      if (.row_names_info(var) > 0) {
         warning("var should not have any rownames, removing them from the matrix")
         rownames(var) <- NULL
       }
