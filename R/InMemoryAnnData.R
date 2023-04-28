@@ -4,7 +4,15 @@
 #' Implementation of an in memory AnnData object.
 #' 
 #' @importFrom Matrix as.matrix
-#' 
+#'
+#' @examples
+#' ad <- InMemoryAnnData$new(
+#'     X = matrix(1:5, 3L, 5L),
+#'     obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
+#'     var = data.frame(gene = 1:5, row.names = letters[1:5])
+#' )
+#' ad
+#'
 #' @export
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   inherit = AbstractAnnData,
@@ -143,4 +151,3 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     }
   )
 )
-
