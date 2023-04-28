@@ -160,16 +160,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       # then check other values
       private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs")
       private$.var_names <- private$.validate_obsvar_names(var_names, "var")
-      X <- private$.validate_matrix(X, "X")
-      layers <- private$.validate_layers(layers)
-      obs_names <- private$.validate_obs_names(obs_names)
-      var_names <- private$.validate_var_names(var_names)
-
-      # store results
-      private$.X <- X
-      private$.layers <- layers
-      private$.obs_names <- obs_names
-      private$.var_names <- var_names
+      private$.X <- private$.validate_matrix(X, "X")
+      private$.layers <- private$.validate_layers(layers)
     }
   )
 )

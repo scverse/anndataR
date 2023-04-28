@@ -62,6 +62,9 @@ ad
 validate a matrix (.X or .layers\link{...})
 
 
+validate layers
+
+
 validate an obs or a var data frame
 
 
