@@ -4,6 +4,8 @@
 #' Implementation of an in memory AnnData object.
 #' 
 #' @importFrom Matrix as.matrix
+#' 
+#' @export
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   inherit = AbstractAnnData,
   private = list(
