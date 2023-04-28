@@ -157,7 +157,9 @@ read_h5ad_nullable_integer <- function(file, name, version = c("0.1.0")) {
 #'
 #' @return a character vector/matrix???
 read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
-  NULL
+  version <- match.arg(version)
+  
+  rhdf5::h5read(file, name)
 }
 
 #' Read H5AD categorical
