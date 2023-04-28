@@ -119,3 +119,39 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   })
 
 })
+
+test_that("'layers' works", {
+  ## layers test helper function
+  layers_test <- function(obs, var, layers) {
+    expect_no_condition({
+      ad <- InMemoryAnnData$new(obs = obs, var = var, layers = layers)
+    })
+    expect_identical(ad$layers, layers)
+  }
+
+  obs <- var <- data.frame()
+  layers_test(obs, var, NULL)
+  layers_test(obs, var, setNames(list(), character()))
+  layers_test(obs, var, list(A = matrix(0, 0, 0)))
+  ## must be a named list
+  expect_error(InMemoryAnnData$new(obs = obs, var = var, list()))
+
+  obs <- data.frame(x = 1:3)
+  var <- data.frame(y = 1:5)
+  layers_test(obs, var, NULL)
+  layers_test(obs, var, list(A = matrix(0, 3, 5)))
+  layers_test(obs, var, list(A = matrix(0, 3, 5), B = matrix(0, 3, 5)))
+
+  ## must be a named list
+  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = list()))
+  layers <- list(matrix(0, 3, 5))
+  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  ## non-trivial names
+  layers <- list(A = matrix(0, 3, 5), matrix(0, 3, 5))
+  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  ## matching dimensions
+  layers <- list(A = matrix(0, 0, 0))
+  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  layers <- list(A = matrix(0, 3, 5), B = matrix(0, 5, 3))
+  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+})

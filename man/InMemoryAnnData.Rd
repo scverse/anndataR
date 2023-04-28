@@ -23,6 +23,8 @@ ad
 \describe{
 \item{\code{X}}{The X slot}
 
+\item{\code{layers}}{The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with \code{obs} and \code{var}.}
+
 \item{\code{obs}}{The obs slot}
 
 \item{\code{var}}{The var slot}
@@ -58,6 +60,9 @@ ad
 validate a matrix (.X or .layers\link{...})
 
 
+validate layers
+
+
 validate an obs data frame
 
 
@@ -73,7 +78,14 @@ validate a var_names vector
 Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(X = NULL, obs, var, obs_names = NULL, var_names = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
+  X = NULL,
+  obs,
+  var,
+  obs_names = NULL,
+  var_names = NULL,
+  layers = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -88,6 +100,8 @@ Inherits from AbstractAnnData
 \item{\code{obs_names}}{The obs_names slot}
 
 \item{\code{var_names}}{The var_names slot}
+
+\item{\code{layers}}{The layers slot. Either NULL  or a named list, where all elements have dimensions consistent with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}
 }
