@@ -10,12 +10,12 @@ to_SingleCellExperiment(object)
 \item{object}{an AnnData object, e.g., InMemoryAnnData}
 }
 \value{
-\code{AnnData_to_SingleCellExperiment()} returns a
-SingleCellExperiment representing the content of \code{object}.
+\code{to_SingleCellExperiment()} returns a SingleCellExperiment
+representing the content of \code{object}.
 }
 \description{
-\code{AnnData_to_SingleCellExperiment()} converts an
-AnnData object to a SingleCellExperiment.
+\code{to_SingleCellExperiment()} converts an AnnData object
+to a SingleCellExperiment.
 }
 \examples{
 ad <- InMemoryAnnData$new(
