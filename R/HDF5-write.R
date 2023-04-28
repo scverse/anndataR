@@ -1,13 +1,21 @@
-#' Write H5AD encoding
+#' Set H5AD encoding
 #'
-#' Write the encoding and version of an element to a H5AD file
+#' Add the H5AD encoding to the attributes of an object
 #'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
-#' @param encoding The encoding to write
-#' @param version The encoding version to write
-write_h5ad_encoding <- function(file, name, encoding, version) {
-  NULL
+#' @param x Object to set encoding on
+#' @param encoding The encoding type to set
+#' @param version The encoding version to set
+#' 
+#' @return The object with additional encoding attributes
+set_h5ad_encoding <- function(x, encoding, version) {
+  
+  attributes(x) <- list(
+    dim = attr(x, "dim"),
+    "encoding-type" = encoding,
+    "encoding-version" = version
+  )
+  
+  return(x)
 }
 
 #' Write H5AD element
@@ -56,7 +64,13 @@ write_h5ad_element <- function(value, file, name, encoding, version) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_dense_array <- function(value, file, name, version = c("0.2.0")) {
+  version <- match.arg(version)
   
+  value <- set_h5ad_encoding(value, encoding = "array", version = version)
+  
+  # Transpose the value because writing with native=TRUE doesn't seem to work
+  # as expected
+  rhdf5::h5write(t(value), file, name, write.attributes = TRUE)
 }
 
 #' Write H5AD sparse array
@@ -68,8 +82,8 @@ write_h5ad_dense_array <- function(value, file, name, version = c("0.2.0")) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_sparse_array <- function(value, file, name, version = c("0.1.0"),
-                                   type = c("csr", "csc")) {
-  NULL
+                                    type = c("csr", "csc")) {
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD nullable boolean
@@ -82,7 +96,7 @@ write_h5ad_sparse_array <- function(value, file, name, version = c("0.1.0"),
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_boolean <- function(value, file, name,
                                         version = c("0.1.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD nullable integer
@@ -95,7 +109,7 @@ write_h5ad_nullable_boolean <- function(value, file, name,
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_integer <- function(value, file, name,
                                         version = c("0.1.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD string array
@@ -107,7 +121,7 @@ write_h5ad_nullable_integer <- function(value, file, name,
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_string_array <- function(value, file, name, version = c("0.2.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD categorical
@@ -119,7 +133,7 @@ write_h5ad_string_array <- function(value, file, name, version = c("0.2.0")) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, version = c("0.2.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD string scalar
@@ -131,7 +145,7 @@ write_h5ad_categorical <- function(value, file, name, version = c("0.2.0")) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_string_scalar <- function(value, file, name, version = c("0.2.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD numeric scalar
@@ -143,7 +157,7 @@ write_h5ad_string_scalar <- function(value, file, name, version = c("0.2.0")) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(value, file, name, version = c("0.2.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD mapping
@@ -155,7 +169,7 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = c("0.2.0")) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_mapping <- function(value, file, name, version = c("0.1.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
 
 #' Write H5AD data frame
@@ -167,5 +181,5 @@ write_h5ad_mapping <- function(value, file, name, version = c("0.1.0")) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_data_frame <- function(value, file, name, version = c("0.2.0")) {
-  NULL
+  stop("Writing H5AD element not yet implemented")
 }
