@@ -58,7 +58,7 @@ read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
     # but it doesn't
     darr <- t(rhdf5::h5read(file, name))
     # If the dense array is a 1D matrix, convert to vector
-    if(dim(darr)[2] == 1){
+    if(any(dim(res$dummy_num) == 1)){
       darr <- as.vector(darr)
     }
     darr
@@ -154,7 +154,7 @@ read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
   # Get codes and convert to 1-based indexing
   codes <- element[["codes"]] + 1
   
-  if (!is.vector(codes)) {
+  if (!length(dim(codes)) == 1) {
     stop("There is currently no support for multidimensional categorical arrays")
   }
   
@@ -213,11 +213,14 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
   version <- match.arg(version)
   
   contents <- h5ls(file&name, recursive = F)
-  lapply(seq_len(nrow(contents)), function(i){
+  # To keep the names
+  to_iterate <- seq_len(nrow(contents))
+  names(to_iterate) <- contents$name 
+  lapply(to_iterate), function(i){
     r <- contents[i,]
     new_name <- paste0(name, r$group, r$name)
     encoding <- rhdf5::h5readAttributes(file, new_name)
-    rhdf5::read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
+    read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
   })
   
 }
@@ -231,7 +234,29 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a data.frame
+#' @importFrom dplyr %>% filter
 read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
-  NULL
+  version <- match.arg(version)
+  
+  index <- rhdf5::h5read(file, paste0(name, "/_index"))
+  column_order <- rhdf5::h5readAttributes(file, name)$`column-order`
+  
+  # We already read the index of the dataframe
+  contents <- h5ls(file&name, recursive = F) %>% filter(name != "_index")
+  # To keep the names
+  to_iterate <- seq_len(nrow(contents))
+  names(to_iterate) <- contents$name 
+  lapply(to_iterate, function(i){
+    r <- contents[i,]
+    new_name <- paste0(name, r$group, r$name)
+    encoding <- rhdf5::h5readAttributes(file, new_name)
+    read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
+  })
+  
+  # Gather into a dataframe and set the right column order
+  dfres <- data.frame(res, row.names = index)
+  dfres <- dfres[, column_order]
+  dfres
+  
 }
 
