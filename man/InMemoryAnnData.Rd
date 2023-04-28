@@ -6,6 +6,15 @@
 \description{
 Implementation of an in memory AnnData object.
 }
+\examples{
+ad <- InMemoryAnnData$new(
+    X = matrix(1:5, 3L, 5L),
+    obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
+    var = data.frame(gene = 1:5, row.names = letters[1:5])
+)
+ad
+
+}
 \section{Super class}{
 \code{\link[anndatar:AbstractAnnData]{anndatar::AbstractAnnData}} -> \code{InMemoryAnnData}
 }
