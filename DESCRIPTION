@@ -27,7 +27,7 @@ Description: I/O functions to work with H5AD and H5MU files and
     intermediate representation.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
+Roxygen: list(markdown = TRUE, r6 = TRUE)
 RoxygenNote: 7.2.3
 Imports:
     Matrix,
