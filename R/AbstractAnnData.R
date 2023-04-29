@@ -48,8 +48,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
         "dim: ", self$n_obs(), "obs x ", self$n_vars(), " vars\n",
         "X: ", X_info, "\n",
         pretty_print("layers", names(self$layers)), "\n",
-        pretty_print("obs", self$obs_names), "\n",
-        pretty_print("var", self$var_names), "\n",
+        pretty_print("obs", self$obs_keys()), "\n",
+        pretty_print("var", self$var_keys()), "\n",
         sep = ""
       )
     },
@@ -67,6 +67,14 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @description Number of variables in the AnnData object
     n_vars = function() {
       nrow(self$var)
+    },
+    #' @description Keys ('column names') of `obs`.
+    obs_keys = function() {
+      names(self$obs)
+    },
+    #' @description Keys ('column names') of `var`.
+    var_keys = function() {
+      names(self$var)
     },
     #' @description Return a new AnnData object with all objects loaded into memory.
     to_inmemory = function() {
