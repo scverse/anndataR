@@ -41,19 +41,19 @@ ad
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-InMemoryAnnData-new}{\code{InMemoryAnnData$new()}}
-\item \href{#method-InMemoryAnnData-obs_keys}{\code{InMemoryAnnData$obs_keys()}}
-\item \href{#method-InMemoryAnnData-var_keys}{\code{InMemoryAnnData$var_keys()}}
 \item \href{#method-InMemoryAnnData-clone}{\code{InMemoryAnnData$clone()}}
 }
 }
 \if{html}{\out{
-<details open><summary>Inherited methods</summary>
+<details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndatar::AbstractAnnData$n_obs()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndatar::AbstractAnnData$n_vars()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndatar::AbstractAnnData$obs_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndatar::AbstractAnnData$shape()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndatar::AbstractAnnData$to_inmemory()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndatar::AbstractAnnData$var_keys()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -115,26 +115,6 @@ Inherits from AbstractAnnData
 }
 \if{html}{\out{</div>}}
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-InMemoryAnnData-obs_keys"></a>}}
-\if{latex}{\out{\hypertarget{method-InMemoryAnnData-obs_keys}{}}}
-\subsection{Method \code{obs_keys()}}{
-\code{obs_keys()} returns the keys ('column names') of \code{obs}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$obs_keys()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-InMemoryAnnData-var_keys"></a>}}
-\if{latex}{\out{\hypertarget{method-InMemoryAnnData-var_keys}{}}}
-\subsection{Method \code{var_keys()}}{
-\code{var_keys()} returns the keys ('column names') of \code{var}.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$var_keys()}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-InMemoryAnnData-clone"></a>}}
