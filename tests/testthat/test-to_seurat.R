@@ -36,7 +36,7 @@ test_that("to_Seurat with inmemoryanndata", {
   expect_equal(ncol(seu), 10)
   expect_equal(rownames(seu), var_names)
   expect_equal(colnames(seu), obs_names)
-  
+
   # todo: check whether X can be retrieved
 })
 

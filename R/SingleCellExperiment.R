@@ -37,10 +37,14 @@ to_SingleCellExperiment <- function(object) {
 
     sce <- SingleCellExperiment::SingleCellExperiment(
         assays = assay,
-        colData = S4Vectors::DataFrame(object$obs, row.names = object$obs_names),
-        rowData = S4Vectors::DataFrame(object$var, row.names = object$var_names),
+        colData = S4Vectors::DataFrame(
+            object$obs, row.names = object$obs_names
+        ),
+        rowData = S4Vectors::DataFrame(
+            object$var, row.names = object$var_names
+        ),
         metadata = list(),
-        ## FIXME: metadata = object$uns
+        ## FIXME: assign object$uns to metadata
         checkDimnames = TRUE
     )
 

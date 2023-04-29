@@ -181,19 +181,19 @@ test_that("write to X", {
     obs_names = obs_names,
     var_names = var_names
   )
-  
+
   X2 <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
   ad$X <- X2
-  
+
   expect_equal(ad$X, X2)
-  
+
   # change row in X
-  ad$X[2,] <- 10
-  expect_equal(ad$X[2,], rep(10, 20L))
-  
+  ad$X[2, ] <- 10
+  expect_equal(ad$X[2, ], rep(10, 20L))
+
   # change column in X
-  ad$X[,3] <- 5
-  expect_equal(ad$X[,3], rep(5, 10L))
+  ad$X[, 3] <- 5
+  expect_equal(ad$X[, 3], rep(5, 10L))
 })
 
 
@@ -205,26 +205,26 @@ test_that("write to obs", {
     obs_names = obs_names,
     var_names = var_names
   )
-  
+
   obs2 <- data.frame(
     foo = sample(letters, 10, replace = TRUE),
     bar = sample.int(4, 10, replace = TRUE),
     zing = sample(c(TRUE, FALSE), 10, replace = TRUE)
   )
   ad$obs <- obs2
-  
+
   expect_equal(ncol(ad$obs), 3)
   expect_equal(nrow(ad$obs), 10)
   expect_equal(ad$obs, obs2)
-  
+
   # change row in obs
   obs2row <- data.frame(foo = "a", bar = 3, zing = FALSE)
-  ad$obs[2,] <- obs2row
-  expect_equal(ad$obs[2,], obs2row, ignore_attr = TRUE)
-  
+  ad$obs[2, ] <- obs2row
+  expect_equal(ad$obs[2, ], obs2row, ignore_attr = TRUE)
+
   # change column in obs
-  ad$obs[,3] <- FALSE
-  expect_equal(ad$obs[,3], rep(FALSE, 10L))
+  ad$obs[, 3] <- FALSE
+  expect_equal(ad$obs[, 3], rep(FALSE, 10L))
 })
 
 test_that("write to var", {
@@ -235,26 +235,26 @@ test_that("write to var", {
     obs_names = obs_names,
     var_names = var_names
   )
-  
+
   var2 <- data.frame(
     foo = sample(letters, 20L, replace = TRUE),
     bar = sample.int(4, 20L, replace = TRUE),
     zing = sample(c(TRUE, FALSE), 20L, replace = TRUE)
   )
   ad$var <- var2
-  
+
   expect_equal(ncol(ad$var), 3)
   expect_equal(nrow(ad$var), 20)
   expect_equal(ad$var, var2)
-  
+
   # change row in var
   var2row <- data.frame(foo = "a", bar = 3, zing = FALSE)
-  ad$var[2,] <- var2row
-  expect_equal(ad$var[2,], var2row, ignore_attr = TRUE)
-  
+  ad$var[2, ] <- var2row
+  expect_equal(ad$var[2, ], var2row, ignore_attr = TRUE)
+
   # change column in var
-  ad$var[,3] <- FALSE
-  expect_equal(ad$var[,3], rep(FALSE, 20L))
+  ad$var[, 3] <- FALSE
+  expect_equal(ad$var[, 3], rep(FALSE, 20L))
 })
 
 
@@ -266,12 +266,12 @@ test_that("write to obs_names", {
     obs_names = obs_names,
     var_names = var_names
   )
-  
+
   obs_names2 <- letters[1:10]
   ad$obs_names <- obs_names2
-  
+
   expect_equal(ad$obs_names, obs_names2)
-  
+
   # change value in obs_names
   ad$obs_names[2:3] <- c("foo", "bar")
   expect_equal(ad$obs_names[1:4], c("a", "foo", "bar", "d"))
@@ -285,12 +285,12 @@ test_that("write to var_names", {
     obs_names = obs_names,
     var_names = var_names
   )
-  
+
   var_names2 <- LETTERS[1:20]
   ad$var_names <- var_names2
-  
+
   expect_equal(ad$var_names, var_names2)
-  
+
   # change value in var_names
   ad$var_names[2:3] <- c("foo", "bar")
   expect_equal(ad$var_names[1:4], c("A", "foo", "bar", "D"))

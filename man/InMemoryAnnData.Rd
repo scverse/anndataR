@@ -42,17 +42,31 @@ ad
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{NULL or an observation x variable matrix (without dimnames) consistent with the number of rows of \code{obs} and \code{var}.}
+\item{\code{X}}{NULL or an observation x variable matrix (without
+dimnames) consistent with the number of rows of \code{obs} and}
 
-\item{\code{layers}}{NULL or a named list with all elements having the dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{layers}}{NULL or a named list with all elements having the
+dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{A \code{data.frame} with columns containing information about observations. The number of rows of \code{obs} defines the observation dimension of the AnnData object.}
+\item{\code{obs}}{A \code{data.frame} with columns containing information
+about observations. The number of rows of \code{obs} defines the
+observation dimension of the AnnData object.}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information about variables. The number of rows of \code{var} defines the variable dimension of the AnnData object.}
+\item{\code{var}}{A \code{data.frame} with columns containing information
+about variables. The number of rows of \code{var} defines the variable
+dimension of the AnnData object.}
 
-\item{\code{obs_names}}{Either NULL or a vector of unique identifiers used to identify each row of \code{obs} and to act as an index into the observation dimension of the AnnData object. For compatibility with \emph{R} representations, \code{obs_names} should be a character vector.}
+\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. For
+compatibility with \emph{R} representations, \code{obs_names} should be a
+character vector.}
 
-\item{\code{var_names}}{Either NULL or a vector of unique identifiers used to identify each row of \code{var} and to act as an index into the variable dimension of the AnnData object.. For compatibility with \emph{R} representations, \code{var_names} should be a character vector.}
+\item{\code{var_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object.. For compatibility
+with \emph{R} representations, \code{var_names} should be a character
+vector.}
 }
 \if{html}{\out{</div>}}
 }
@@ -96,17 +110,32 @@ Inherits from AbstractAnnData.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{Either NULL or a observation x variable matrix with dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{X}}{Either NULL or a observation x variable matrix with
+dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{A \code{data.frame} with columns containing information about observations. The number of rows of \code{obs} defines the observation dimension of the AnnData object.}
+\item{\code{obs}}{A \code{data.frame} with columns containing information
+about observations. The number of rows of \code{obs} defines the
+observation dimension of the AnnData object.}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information about variables. The number of rows of \code{var} defines the variable dimension of the AnnData object.}
+\item{\code{var}}{A \code{data.frame} with columns containing information
+about variables. The number of rows of \code{var} defines the variable
+dimension of the AnnData object.}
 
-\item{\code{obs_names}}{Either NULL or a vector of unique identifiers used to identify each row of \code{obs} and to act as an index into the observation dimension of the AnnData object. For compatibility with \emph{R} representations, \code{obs_names} should be a character vector.}
+\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. For
+compatibility with \emph{R} representations, \code{obs_names} should be a
+character vector.}
 
-\item{\code{var_names}}{Either NULL or a vector of unique identifers used to identify each row of \code{var} and to act as an index into the variable dimension of the AnnData object.. For compatibility with \emph{R} representations, \code{var_names} should be a character vector.}
+\item{\code{var_names}}{Either NULL or a vector of unique identifers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object.. For compatibility
+with \emph{R} representations, \code{var_names} should be a character
+vector.}
 
-\item{\code{layers}}{Either NULL or a named list, where each element is an observation x variable matrix with dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{layers}}{Either NULL or a named list, where each element
+is an observation x variable matrix with dimensions consistent
+with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}
 }

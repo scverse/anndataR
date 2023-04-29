@@ -1,9 +1,9 @@
 #' Convert an AnnData object to Seurat
-#' 
+#'
 #' @param obj An AnnData object
-#' 
+#'
 #' @importFrom Matrix t
-#' 
+#'
 #' @export
 #' @examples
 #' ad <- InMemoryAnnData$new(
@@ -41,14 +41,18 @@ to_Seurat <- function(obj) {
 
   # create seurat object
   seurat_obj <- SeuratObject::CreateSeuratObject(X_assay, meta.data = obs_)
-  
+
   seurat_obj
 }
 
 .toseurat_check_obsvar_names <- function(names, label) {
   if (any(grepl("_", names))) {
     # mimic seurat behaviour
-    warning(label, " cannot have underscores ('_') when converting to Seurat, replacing with dashes ('-')")
+    warning(wrap_message(
+      "'", label, "' ",
+      "cannot have underscores ('_') when converting to Seurat, ",
+      "replacing with dashes ('-')"
+    ))
     names <- gsub("_", "-", names)
   }
 
