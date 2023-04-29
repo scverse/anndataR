@@ -162,14 +162,6 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       private$.var_names <- private$.validate_obsvar_names(var_names, "var")
       private$.X <- private$.validate_matrix(X, "X")
       private$.layers <- private$.validate_layers(layers)
-    },
-    #' @description `obs_keys()` returns the keys ('column names') of `obs`.
-    obs_keys = function() {
-      names(private$.obs)
-    },
-    #' @description `var_keys()` returns the keys ('column names') of `var`.
-    var_keys = function() {
-      names(private$.var)
     }
   )
 )

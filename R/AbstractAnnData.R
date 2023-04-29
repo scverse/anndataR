@@ -70,11 +70,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     },
     #' @description Keys ('column names') of `obs`.
     obs_keys = function() {
-      .abstract_function()
+      names(self$obs)
     },
     #' @description Keys ('column names') of `var`.
     var_keys = function() {
-      .abstract_function()
+      names(self$var)
     },
     #' @description Return a new AnnData object with all objects loaded into memory.
     to_inmemory = function() {
