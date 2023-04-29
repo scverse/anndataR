@@ -61,18 +61,6 @@ ad
 \if{html}{\out{<a id="method-InMemoryAnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-InMemoryAnnData-new}{}}}
 \subsection{Method \code{new()}}{
-validate a matrix (.X or .layers\link{...})
-
-
-validate layers
-
-
-validate an obs or a var data frame
-
-
-validate an obs_names or a var_names vector
-
-
 Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData
 \subsection{Usage}{
@@ -100,18 +88,6 @@ Inherits from AbstractAnnData
 \item{\code{var_names}}{The var_names slot}
 
 \item{\code{layers}}{The layers slot. Either NULL  or a named list, where all elements have dimensions consistent with \code{obs} and \code{var}.}
-
-\item{\code{mat}}{A matrix to validate}
-
-\item{\code{label}}{Must be \code{"X"} or \code{"layer[[...]]"} where \code{...} is the name of a layer.}
-
-\item{\code{df}}{A data frame to validate. Should be an obs or a var.}
-
-\item{\code{label}}{Must be \code{"obs"} or \code{"var"}}
-
-\item{\code{names}}{A vector to validate}
-
-\item{\code{label}}{Must be \code{"obs"} or \code{"var"}}
 }
 \if{html}{\out{</div>}}
 }
