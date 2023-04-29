@@ -25,7 +25,8 @@ ad
 \describe{
 \item{\code{X}}{The X slot}
 
-\item{\code{layers}}{The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{layers}}{The layers slot. Must be NULL or a named list with with
+all elements having the dimensions consistent with \code{obs} and \code{var}.}
 
 \item{\code{obs}}{The obs slot}
 
@@ -87,7 +88,8 @@ Inherits from AbstractAnnData
 
 \item{\code{var_names}}{The var_names slot}
 
-\item{\code{layers}}{The layers slot. Either NULL  or a named list, where all elements have dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{layers}}{The layers slot. Either NULL  or a named list, where all
+elements have dimensions consistent with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}
 }
