@@ -26,9 +26,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     .obs_names = NULL,
     .var_names = NULL,
 
-    #' @description validate a matrix (.X or .layers[...])
-    #' @param mat A matrix to validate
-    #' @param label Must be `"X"` or `"layer[[...]]"` where `...` is the name of a layer.
+    # @description validate a matrix (.X or .layers[...])
+    # @param mat A matrix to validate
+    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is the name of a layer.
     .validate_matrix = function(mat, label) {
       if (!is.null(mat)) {
         if (nrow(mat) != nrow(self$obs))
@@ -49,7 +49,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
 
       mat
     },
-    #' @description validate layers
+    # @description validate layers
     .validate_layers = function(layers) {
       if (is.null(layers)) return(layers)
 
@@ -70,9 +70,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
 
       layers
     },
-    #' @description validate an obs or a var data frame
-    #' @param df A data frame to validate. Should be an obs or a var.
-    #' @param label Must be `"obs"` or `"var"`
+    # @description validate an obs or a var data frame
+    # @param df A data frame to validate. Should be an obs or a var.
+    # @param label Must be `"obs"` or `"var"`
     .validate_obsvar_dataframe = function(df, label) {
       if (is.null(df)) stop(label, " should be a data frame")
       if (.row_names_info(df) > 0) {
@@ -82,9 +82,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       df
     },
 
-    #' @description validate an obs_names or a var_names vector
-    #' @param names A vector to validate
-    #' @param label Must be `"obs"` or `"var"`
+    # @description validate an obs_names or a var_names vector
+    # @param names A vector to validate
+    # @param label Must be `"obs"` or `"var"`
     .validate_obsvar_names = function(names, label) {
       if (!is.null(names)) {
         if (length(names) != nrow(self[[label]])) stop("length(", label, "_names) should be the same as nrow(", label, ")")

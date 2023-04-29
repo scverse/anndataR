@@ -49,11 +49,13 @@ ad
 <ul>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndatar::AbstractAnnData$n_obs()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndatar::AbstractAnnData$n_vars()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndatar::AbstractAnnData$obs_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndatar::AbstractAnnData$shape()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_InMemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_InMemory'><code>anndatar::AbstractAnnData$to_InMemory()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndatar::AbstractAnnData$to_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndatar::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndatar::AbstractAnnData$var_keys()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -61,18 +63,6 @@ ad
 \if{html}{\out{<a id="method-InMemoryAnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-InMemoryAnnData-new}{}}}
 \subsection{Method \code{new()}}{
-validate a matrix (.X or .layers\link{...})
-
-
-validate layers
-
-
-validate an obs or a var data frame
-
-
-validate an obs_names or a var_names vector
-
-
 Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData
 \subsection{Usage}{
@@ -100,18 +90,6 @@ Inherits from AbstractAnnData
 \item{\code{var_names}}{The var_names slot}
 
 \item{\code{layers}}{The layers slot. Either NULL  or a named list, where all elements have dimensions consistent with \code{obs} and \code{var}.}
-
-\item{\code{mat}}{A matrix to validate}
-
-\item{\code{label}}{Must be \code{"X"} or \code{"layer[[...]]"} where \code{...} is the name of a layer.}
-
-\item{\code{df}}{A data frame to validate. Should be an obs or a var.}
-
-\item{\code{label}}{Must be \code{"obs"} or \code{"var"}}
-
-\item{\code{names}}{A vector to validate}
-
-\item{\code{label}}{Must be \code{"obs"} or \code{"var"}}
 }
 \if{html}{\out{</div>}}
 }

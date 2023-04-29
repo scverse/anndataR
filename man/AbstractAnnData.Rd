@@ -30,6 +30,8 @@ Abstract class representing an anndata object. Defines the interface.
 \item \href{#method-AbstractAnnData-shape}{\code{AbstractAnnData$shape()}}
 \item \href{#method-AbstractAnnData-n_obs}{\code{AbstractAnnData$n_obs()}}
 \item \href{#method-AbstractAnnData-n_vars}{\code{AbstractAnnData$n_vars()}}
+\item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
+\item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
 \item \href{#method-AbstractAnnData-to_InMemory}{\code{AbstractAnnData$to_InMemory()}}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
@@ -80,6 +82,26 @@ Number of observations in the AnnData object
 Number of variables in the AnnData object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_vars()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obs_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obs_keys}{}}}
+\subsection{Method \code{obs_keys()}}{
+Keys ('column names') of \code{obs}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obs_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-var_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-var_keys}{}}}
+\subsection{Method \code{var_keys()}}{
+Keys ('column names') of \code{var}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$var_keys()}\if{html}{\out{</div>}}
 }
 
 }

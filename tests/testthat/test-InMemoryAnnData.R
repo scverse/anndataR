@@ -157,6 +157,19 @@ test_that("'layers' works", {
   expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
 })
 
+test_that("*_keys() works", {
+  obs <- var <- data.frame()
+  ad <- InMemoryAnnData$new(obs = obs, var = var)
+  expect_identical(ad$obs_keys(), character())
+  expect_identical(ad$var_keys(), character())
+
+  obs <- data.frame(x = 1:3)
+  var <- data.frame(y = 1:5)
+  ad <- InMemoryAnnData$new(obs = obs, var = var)
+  expect_identical(ad$obs_keys(), "x")
+  expect_identical(ad$var_keys(), "y")
+})
+
 # WRITING -----------------------------------------------------------------
 
 
