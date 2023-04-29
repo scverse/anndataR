@@ -52,14 +52,11 @@ library(anndataR)
 download.file("https://github.com/chanzuckerberg/cellxgene/raw/main/example-dataset/pbmc3k.h5ad", "pbmc3k.h5ad")
 
 # Read an h5ad file
-adata <- read_h5ad("path/to/your/data.h5ad")
+adata <- read_h5ad("pbmc3k.h5ad")
 
 # Access the obs DataFrame
 adata_obs <- adata$obs
 
 # Convert the AnnData object to a SingleCellExperiment object
 sce <- adata$to_sce()
-
-# Convert the AnnData object to a Seurat object
-seurat <- adata$to_seurat()
 ```
