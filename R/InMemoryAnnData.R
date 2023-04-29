@@ -32,10 +32,12 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #   of a layer.
     .validate_matrix = function(mat, label) {
       if (!is.null(mat)) {
-        if (nrow(mat) != nrow(self$obs))
+        if (nrow(mat) != nrow(self$obs)) {
           stop("nrow(", label, ") should be the same as nrow(obs)")
-        if (ncol(mat) != nrow(self$var))
+        }
+        if (ncol(mat) != nrow(self$var)) {
           stop("ncol(", label, ") should be the same as nrow(var)")
+        }
 
         if (!is.null(rownames(mat))) {
           warning(
@@ -58,7 +60,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     },
     # @description validate layers
     .validate_layers = function(layers) {
-      if (is.null(layers)) return(layers)
+      if (is.null(layers)) {
+        return(layers)
+      }
 
       ## layers and names
       layer_names <- names(layers)
@@ -170,14 +174,12 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param var The var slot
     #' @param obs_names The obs_names slot
     #' @param var_names The var_names slot
-    initialize = function(
-      X = NULL, # nolint
-      obs,
-      var,
-      obs_names = NULL,
-      var_names = NULL,
-      layers = NULL
-    ) {
+    initialize = function(X = NULL, # nolint
+                          obs,
+                          var,
+                          obs_names = NULL,
+                          var_names = NULL,
+                          layers = NULL) {
       # check obs and var first, because these objects are used by
       # other validators
       private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
