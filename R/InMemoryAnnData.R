@@ -98,7 +98,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.X
       } else {
-        private$.X <- self$.validate_matrix(value, "X")
+        private$.X <- private$.validate_matrix(value, "X")
+        self
       }
     },
     #' @field layers The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with `obs` and `var`.
@@ -106,7 +107,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.layers
       } else {
-        private$.layers <- self$.validate_layers(value)
+        private$.layers <- private$.validate_layers(value)
+        self
       }
     },
     #' @field obs The obs slot
@@ -114,7 +116,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.obs
       } else {
-        private$.obs <- self$.validate_obsvar_dataframe(value, "obs")
+        private$.obs <- private$.validate_obsvar_dataframe(value, "obs")
+        self
       }
     },
     #' @field var The var slot
@@ -122,7 +125,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.var
       } else {
-        private$.var <- self$.validate_obsvar_dataframe(value, "var")
+        private$.var <- private$.validate_obsvar_dataframe(value, "var")
+        self
       }
     },
     #' @field obs_names The obs_names slot
@@ -130,7 +134,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.obs_names
       } else {
-        private$.obs_names <- self$.validate_obsvar_names(value, "obs")
+        private$.obs_names <- private$.validate_obsvar_names(value, "obs")
+        self
       }
     },
     #' @field var_names The var_names slot
@@ -138,7 +143,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
       if (missing(value)) {
         private$.var_names
       } else {
-        private$.var_names <- self$.validate_obsvar_names(value, "var")
+        private$.var_names <- private$.validate_obsvar_names(value, "var")
+        self
       }
     }
   ),
