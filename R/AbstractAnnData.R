@@ -69,13 +69,16 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
       nrow(self$var)
     },
     #' @description Return a new AnnData object with all objects loaded into memory.
-    to_inmemory = function() {
-      # should probably be stored in a separate file
-      InMemoryAnnData$new(
-        X = self$X,
-        obs = self$obs,
-        var = self$var
-      )
+    to_InMemory = function() {
+      to_InMemory(self)
+    },
+    #' @description Convert to SingleCellExperiment
+    to_SingleCellExperiment = function() {
+      to_SingleCellExperiment(self)
+    },
+    #' @description Convert to Seurat
+    to_Seurat = function() {
+      to_Seurat(self)
     }
   )
 )

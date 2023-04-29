@@ -30,7 +30,9 @@ Abstract class representing an anndata object. Defines the interface.
 \item \href{#method-AbstractAnnData-shape}{\code{AbstractAnnData$shape()}}
 \item \href{#method-AbstractAnnData-n_obs}{\code{AbstractAnnData$n_obs()}}
 \item \href{#method-AbstractAnnData-n_vars}{\code{AbstractAnnData$n_vars()}}
-\item \href{#method-AbstractAnnData-to_inmemory}{\code{AbstractAnnData$to_inmemory()}}
+\item \href{#method-AbstractAnnData-to_InMemory}{\code{AbstractAnnData$to_InMemory()}}
+\item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
+\item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -82,12 +84,32 @@ Number of variables in the AnnData object
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_inmemory"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_inmemory}{}}}
-\subsection{Method \code{to_inmemory()}}{
+\if{html}{\out{<a id="method-AbstractAnnData-to_InMemory"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemory}{}}}
+\subsection{Method \code{to_InMemory()}}{
 Return a new AnnData object with all objects loaded into memory.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_inmemory()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemory()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
+\subsection{Method \code{to_SingleCellExperiment()}}{
+Convert to SingleCellExperiment
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
+\subsection{Method \code{to_Seurat()}}{
+Convert to Seurat
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat()}\if{html}{\out{</div>}}
 }
 
 }

@@ -45,13 +45,15 @@ ad
 }
 }
 \if{html}{\out{
-<details open><summary>Inherited methods</summary>
+<details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndatar::AbstractAnnData$n_obs()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndatar::AbstractAnnData$n_vars()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndatar::AbstractAnnData$shape()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndatar::AbstractAnnData$to_inmemory()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_InMemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_InMemory'><code>anndatar::AbstractAnnData$to_InMemory()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndatar::AbstractAnnData$to_Seurat()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndatar::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
 </ul>
 </details>
 }}
