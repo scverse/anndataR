@@ -2,26 +2,26 @@
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
-# anndatar
+# anndataR
 
 <!-- badges: start -->
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/anndatar.png)](https://CRAN.R-project.org/package=anndatar)
+status](https://www.r-pkg.org/badges/version/anndataR.png)](https://CRAN.R-project.org/package=anndataR)
 <!-- badges: end -->
 
-`{anndatar}` is an R package that brings the power and flexibility of
+`{anndataR}` is an R package that brings the power and flexibility of
 AnnData to the R ecosystem, allowing you to effortlessly manipulate and
-analyze your single-cell data. `{anndatar}` lets you work with backed
+analyze your single-cell data. `{anndataR}` lets you work with backed
 h5ad and zarr files, directly access various slots (e.g. X, obs, var,
 obsm, obsp), or convert the data into SingleCellExperiment and Seurat
 objects.
 
 ## Features
 
-- Seamless Integration: `{anndatar}` bridges the gap between Python’s
+- Seamless Integration: `{anndataR}` bridges the gap between Python’s
   AnnData and popular R single-cell analysis tools like
   SingleCellExperiment and Seurat.
 - Efficient Data Handling: The package supports backed h5ad and zarr
@@ -36,18 +36,18 @@ objects.
 
 ## Installation
 
-You can install the development version of `{anndatar}` like so:
+You can install the development version of `{anndataR}` like so:
 
 ``` r
-devtools::install_github("scverse/anndatar")
+devtools::install_github("scverse/anndataR")
 ```
 
 ## Example
 
-Here’s a quick example of how to use `{anndatar}`:
+Here’s a quick example of how to use `{anndataR}`:
 
 ``` r
-library(anndatar)
+library(anndataR)
 
 download.file("https://github.com/chanzuckerberg/cellxgene/raw/main/example-dataset/pbmc3k.h5ad", "pbmc3k.h5ad")
 

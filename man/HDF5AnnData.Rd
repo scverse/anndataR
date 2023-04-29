@@ -7,7 +7,7 @@
 Implementation of an in memory AnnData object.
 }
 \section{Super class}{
-\code{\link[anndatar:AbstractAnnData]{anndatar::AbstractAnnData}} -> \code{HDF5AnnData}
+\code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{HDF5AnnData}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -30,11 +30,11 @@ Implementation of an in memory AnnData object.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndatar::AbstractAnnData$n_obs()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndatar::AbstractAnnData$n_vars()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndatar::AbstractAnnData$shape()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndatar::AbstractAnnData$to_inmemory()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndataR::AbstractAnnData$to_inmemory()</code></a></span></li>
 </ul>
 </details>
 }}

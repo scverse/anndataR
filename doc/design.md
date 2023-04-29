@@ -3,7 +3,7 @@
 ## Proposed interface
 
 ``` r
-library(magicann)/library(anndatar)
+library(magicann)/library(anndataR)
 
 # read from h5ad/h5mu file
 adata <- read_h5ad("dataset.h5ad")
@@ -91,11 +91,11 @@ classDiagram
     init(pyobj): ReticulateAnnData
   }
 
-  class anndatar {
+  class anndataR {
     read_h5ad(path, backend): AbstractAnnData
     read_h5mu(path, backend): AbstractMuData
   }
-  anndatar --> AbstractAnnData
+  anndataR --> AbstractAnnData
 ```
 
 Notation:
