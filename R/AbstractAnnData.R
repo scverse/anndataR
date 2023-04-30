@@ -56,7 +56,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
-      X_info <- if (!is.null(self$X)) {
+      x_info <- if (!is.null(self$X)) {
         class(self$X)[[1]]
       } else {
         NULL
@@ -64,7 +64,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
       cat(
         "class: ", class(self)[[1]], "\n",
         "dim: ", self$n_obs(), " obs x ", self$n_vars(), " var\n",
-        "X: ", X_info, "\n",
+        "X: ", x_info, "\n",
         pretty_print("layers", names(self$layers)), "\n",
         pretty_print("obs", self$obs_keys()), "\n",
         pretty_print("var", self$var_keys()), "\n",
