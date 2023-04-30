@@ -21,7 +21,8 @@
 #' to_SingleCellExperiment(ad)
 #'
 #' @export
-to_SingleCellExperiment <- function(object) {
+# TODO: fix snake_case + CamelCase
+to_SingleCellExperiment <- function(object) { # nolint
   stopifnot(
     inherits(object, "AbstractAnnData")
   )

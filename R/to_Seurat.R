@@ -14,7 +14,8 @@
 #'   var_names = letters[1:5]
 #' )
 #' to_Seurat(ad)
-to_Seurat <- function(obj) {
+# TODO: fix snake_case + CamelCase
+to_Seurat <- function(obj) { # nolint
   requireNamespace("SeuratObject")
 
   stopifnot(inherits(obj, "AbstractAnnData"))
