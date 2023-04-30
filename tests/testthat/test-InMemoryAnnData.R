@@ -1,7 +1,7 @@
 library(Matrix)
 
 # construct dummy X
-X <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
+x <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
 
 # construct dummy obs
 obs <- data.frame(
@@ -24,14 +24,14 @@ var_names <- paste0("gene", seq_len(20))
 # CREATION ----------------------------------------------------------------
 test_that("create inmemory anndata", {
   ad <- InMemoryAnnData$new(
-    X = X,
+    X = x,
     obs = obs,
     var = var,
     obs_names = obs_names,
     var_names = var_names
   )
 
-  expect_equal(ad$X, X)
+  expect_equal(ad$X, x)
   expect_equal(ad$obs, obs)
   expect_equal(ad$var, var)
   expect_identical(ad$shape(), c(10L, 20L))
@@ -65,12 +65,12 @@ test_that("InMemoryAnnData$new() fails gracefully", {
 
 test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   # check X with rownames
-  X_with_rownames <- X
-  rownames(X_with_rownames) <- obs_names
+  x_with_rownames <- x
+  rownames(x_with_rownames) <- obs_names
 
   expect_warning({
     InMemoryAnnData$new(
-      X = X_with_rownames,
+      X = x_with_rownames,
       obs = obs,
       var = var,
       obs_names = obs_names,
@@ -79,12 +79,12 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   })
 
   # check X with obsnames
-  X_with_colnames <- X
-  colnames(X_with_colnames) <- var_names
+  x_with_colnames <- x
+  colnames(x_with_colnames) <- var_names
 
   expect_warning({
     InMemoryAnnData$new(
-      X = X_with_colnames,
+      X = x_with_colnames,
       obs = obs,
       var = var,
       obs_names = obs_names,
@@ -98,7 +98,7 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
 
   expect_warning({
     InMemoryAnnData$new(
-      X = X,
+      X = x,
       obs = obs_with_rownames,
       var = var,
       obs_names = obs_names,
@@ -112,7 +112,7 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
 
   expect_warning({
     InMemoryAnnData$new(
-      X = X,
+      X = x,
       obs = obs,
       var = var_with_rownames,
       obs_names = obs_names,
@@ -175,7 +175,7 @@ test_that("*_keys() works", {
 
 test_that("write to X", {
   ad <- InMemoryAnnData$new(
-    X = X,
+    X = x,
     obs = obs,
     var = var,
     obs_names = obs_names,
@@ -199,7 +199,7 @@ test_that("write to X", {
 
 test_that("write to obs", {
   ad <- InMemoryAnnData$new(
-    X = X,
+    X = x,
     obs = obs,
     var = var,
     obs_names = obs_names,
@@ -229,7 +229,7 @@ test_that("write to obs", {
 
 test_that("write to var", {
   ad <- InMemoryAnnData$new(
-    X = X,
+    X = x,
     obs = obs,
     var = var,
     obs_names = obs_names,
@@ -260,7 +260,7 @@ test_that("write to var", {
 
 test_that("write to obs_names", {
   ad <- InMemoryAnnData$new(
-    X = X,
+    X = x,
     obs = obs,
     var = var,
     obs_names = obs_names,
@@ -279,7 +279,7 @@ test_that("write to obs_names", {
 
 test_that("write to var_names", {
   ad <- InMemoryAnnData$new(
-    X = X,
+    X = x,
     obs = obs,
     var = var,
     obs_names = obs_names,

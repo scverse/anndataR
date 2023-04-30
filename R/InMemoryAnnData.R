@@ -36,7 +36,7 @@
 #' ad
 
 #' @export
-InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
+InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
     .X = NULL,
@@ -54,10 +54,12 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     #   the name of a layer.
     .validate_matrix = function(mat, label) {
       if (!is.null(mat)) {
-        if (nrow(mat) != nrow(self$obs))
+        if (nrow(mat) != nrow(self$obs)) {
           stop("nrow(", label, ") should be the same as nrow(obs)")
-        if (ncol(mat) != nrow(self$var))
+        }
+        if (ncol(mat) != nrow(self$var)) {
           stop("ncol(", label, ") should be the same as nrow(var)")
+        }
 
         if (!is.null(rownames(mat))) {
           warning(wrap_message(
@@ -84,7 +86,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     # @param layers A named list of 0 or more matrix elements with
     #   dimensions consistent with `obs` and `var`.
     .validate_layers = function(layers) {
-      if (is.null(layers)) return(layers)
+      if (is.null(layers)) {
+        return(layers)
+      }
 
       ## layers and names
       layer_names <- names(layers)
