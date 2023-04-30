@@ -4,22 +4,38 @@
 \alias{AbstractAnnData}
 \title{AbstractAnnData}
 \description{
-Abstract class representing an anndata object. Defines the interface.
+Abstract \link[R6:R6Class]{R6} class representing an AnnData
+object. Defines the interface.
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{The X slot}
+\item{\code{X}}{NULL or an observation x variable matrix (without
+dimnames) consistent with the number of rows of \code{obs} and \code{var}.}
 
-\item{\code{layers}}{The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{layers}}{The layers slot. Must be NULL or a named list
+with with all elements having the dimensions consistent with
+\code{obs} and \code{var}.}
 
-\item{\code{obs}}{The obs slot}
+\item{\code{obs}}{A \code{data.frame} with columns containing information
+about observations. The number of rows of \code{obs} defines the
+observation dimension of the AnnData object.}
 
-\item{\code{var}}{The var slot}
+\item{\code{var}}{A \code{data.frame} with columns containing information
+about variables. The number of rows of \code{var} defines the variable
+dimension of the AnnData object.}
 
-\item{\code{obs_names}}{The obs_names slot}
+\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. For
+compatibility with \emph{R} representations, \code{obs_names} should be a
+character vector.}
 
-\item{\code{var_names}}{The var_names slot}
+\item{\code{var_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object.. For compatibility
+with \emph{R} representations, \code{var_names} should be a character
+vector.}
 }
 \if{html}{\out{</div>}}
 }
@@ -40,7 +56,9 @@ Abstract class representing an anndata object. Defines the interface.
 \if{html}{\out{<a id="method-AbstractAnnData-print"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-print}{}}}
 \subsection{Method \code{print()}}{
-Print AnnData object
+Print a summary of the AnnData object. \code{print()}
+methods should be implemented so that they are not
+computationally expensive.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$print(...)}\if{html}{\out{</div>}}
 }
@@ -48,7 +66,7 @@ Print AnnData object
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{optional arguments to print method.}
+\item{\code{...}}{Optional arguments to print method.}
 }
 \if{html}{\out{</div>}}
 }
@@ -57,7 +75,7 @@ Print AnnData object
 \if{html}{\out{<a id="method-AbstractAnnData-shape"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-shape}{}}}
 \subsection{Method \code{shape()}}{
-Dimensions of the AnnData object
+Dimensions (observations x variables) of the AnnData object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$shape()}\if{html}{\out{</div>}}
 }
@@ -67,7 +85,7 @@ Dimensions of the AnnData object
 \if{html}{\out{<a id="method-AbstractAnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-n_obs}{}}}
 \subsection{Method \code{n_obs()}}{
-Number of observations in the AnnData object
+Number of observations in the AnnData object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_obs()}\if{html}{\out{</div>}}
 }
@@ -77,7 +95,7 @@ Number of observations in the AnnData object
 \if{html}{\out{<a id="method-AbstractAnnData-n_vars"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-n_vars}{}}}
 \subsection{Method \code{n_vars()}}{
-Number of variables in the AnnData object
+Number of variables in the AnnData object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_vars()}\if{html}{\out{</div>}}
 }
@@ -107,7 +125,8 @@ Keys ('column names') of \code{var}.
 \if{html}{\out{<a id="method-AbstractAnnData-to_inmemory"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_inmemory}{}}}
 \subsection{Method \code{to_inmemory()}}{
-Return a new AnnData object with all objects loaded into memory.
+Create an AnnData object with all fields loaded
+into memory.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_inmemory()}\if{html}{\out{</div>}}
 }
