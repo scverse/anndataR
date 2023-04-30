@@ -249,3 +249,40 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     }
   )
 )
+
+#' Convert an AnnData object to an InMemoryAnnData object
+#'
+#' This function takes an AnnData object and converts it to an InMemoryAnnData
+#' object, loading all fields into memory.
+#'
+#' @param adata An AnnData object to be converted to InMemoryAnnData.
+#'
+#' @return An InMemoryAnnData object with the same data as the input AnnData
+#'   object.
+#'
+#' @export
+#'
+#' @examples
+#' ad <- InMemoryAnnData$new(
+#'   X = matrix(1:5, 3L, 5L),
+#'   layers = list(
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
+#'   ),
+#'   obs = data.frame(cell = 1:3),
+#'   var = data.frame(gene = 1:5),
+#'   obs_names = LETTERS[1:3],
+#'   var_names = letters[1:5]
+#' )
+#' to_InMemory(ad)
+# TODO: fix snake_case + CamelCase
+to_InMemory <- function(adata) { # nolint
+  InMemoryAnnData$new(
+    X = adata$X,
+    obs = adata$obs,
+    var = adata$var,
+    obs_names = adata$obs_names,
+    var_names = adata$var_names,
+    layers = adata$layers
+  )
+}
