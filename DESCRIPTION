@@ -1,30 +1,33 @@
-Package: anndatar
-Title: Bioconductor I/O for scverse data standards
+Package: anndataR
+Title: AnnData interoperability in R
 Version: 0.0.0.9000
 Authors@R: c(
-    person(given = "Danila",
-        family = "Bredikhin",
-        role = c("aut", "cre"),
-        email = "danila.bredikhin@embl.de",
-        comment = c(ORCID = "0000-0001-8089-6983")),
     person(given = "Robrecht",
         family = "Cannoodt",
-        role = c("aut"),
+        role = c("aut", "cre"),
         email = "rcannood@gmail.com",
         comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
+    person(given = "Luke",
+        family = "Zappia",
+        role = c("aut"),
+        email = "luke@lazappi.id.au",
+        comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")),
     person(given = "Martin",
         family = "Morgan",
         role = "aut",
         email = "mtmorgan.bioc@gmail.com",
-        comment = c(ORCID = "0000-0002-5874-8148")),
+        comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")),
     person(given = "Louise",
         family = "Deconinck",
         role = c("aut"),
         email = "louise.deconinck@gmail.com",
-        comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")))
-Description: I/O functions to work with H5AD and H5MU files and
-    SingleCellExperiment and MultiAssayExperiment objects through an
-    intermediate representation.
+        comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")),
+    person(given = "Danila",
+        family = "Bredikhin",
+        role = c("aut"),
+        email = "danila.bredikhin@embl.de",
+        comment = c(ORCID = "0000-0001-8089-6983")))
+Description: Convert AnnData objects to/from H5AD, ZarrAD, SCE and Seurat.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
