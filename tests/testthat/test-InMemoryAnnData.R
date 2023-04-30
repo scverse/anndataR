@@ -182,10 +182,10 @@ test_that("write to X", {
     var_names = var_names
   )
 
-  x2 <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
-  ad$X <- x2
+  X2 <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
+  ad$X <- X2
 
-  expect_equal(ad$X, x2)
+  expect_equal(ad$X, X2)
 
   # change row in X
   ad$X[2, ] <- 10

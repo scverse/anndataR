@@ -36,20 +36,18 @@ to_SingleCellExperiment <- function(object) {
   ## FIXME: better transposition -- if sparse, then always dgCMatrix
   assay <- lapply(assay, t)
 
-  sce <- SingleCellExperiment::SingleCellExperiment(
-    assays = assay,
-    colData = S4Vectors::DataFrame(
-      object$obs,
-      row.names = object$obs_names
-    ),
-    rowData = S4Vectors::DataFrame(
-      object$var,
-      row.names = object$var_names
-    ),
-    metadata = list(),
-    ## FIXME: metadata = object$uns # nolint
-    checkDimnames = TRUE
-  )
+    sce <- SingleCellExperiment::SingleCellExperiment(
+        assays = assay,
+        colData = S4Vectors::DataFrame(
+            object$obs, row.names = object$obs_names
+        ),
+        rowData = S4Vectors::DataFrame(
+            object$var, row.names = object$var_names
+        ),
+        metadata = list(),
+        ## FIXME: assign object$uns to metadata
+        checkDimnames = TRUE
+    )
 
   ## reducedDims
 

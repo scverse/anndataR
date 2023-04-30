@@ -48,10 +48,11 @@ to_Seurat <- function(obj) {
 .toseurat_check_obsvar_names <- function(names, label) {
   if (any(grepl("_", names))) {
     # mimic seurat behaviour
-    warning(
-      label, " cannot have underscores ('_') when converting to Seurat, ",
+    warning(wrap_message(
+      "'", label, "' ",
+      "cannot have underscores ('_') when converting to Seurat, ",
       "replacing with dashes ('-')"
-    )
+    ))
     names <- gsub("_", "-", names)
   }
 
