@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(anndatar)
+library(anndataR)
 
-test_check("anndatar")
+test_check("anndataR")
