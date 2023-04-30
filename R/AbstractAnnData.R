@@ -95,16 +95,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @description Keys ('column names') of `var`.
     var_keys = function() {
       names(self$var)
-    },
-    #' @description Create an AnnData object with all fields loaded
-    #'   into memory.
-    to_inmemory = function() {
-      # should probably be stored in a separate file
-      InMemoryAnnData$new(
-        X = self$X,
-        obs = self$obs,
-        var = self$var
-      )
     }
   )
 )

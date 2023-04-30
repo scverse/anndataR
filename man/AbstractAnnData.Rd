@@ -48,7 +48,6 @@ vector.}
 \item \href{#method-AbstractAnnData-n_vars}{\code{AbstractAnnData$n_vars()}}
 \item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
 \item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
-\item \href{#method-AbstractAnnData-to_inmemory}{\code{AbstractAnnData$to_inmemory()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -118,17 +117,6 @@ Keys ('column names') of \code{obs}.
 Keys ('column names') of \code{var}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$var_keys()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_inmemory"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_inmemory}{}}}
-\subsection{Method \code{to_inmemory()}}{
-Create an AnnData object with all fields loaded
-into memory.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_inmemory()}\if{html}{\out{</div>}}
 }
 
 }
