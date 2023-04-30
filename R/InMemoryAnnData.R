@@ -2,12 +2,17 @@
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
-#' 
+#'
 #' @importFrom Matrix as.matrix
 #'
 #' @examples
+#' ## complete example
 #' ad <- InMemoryAnnData$new(
 #'   X = matrix(1:5, 3L, 5L),
+#'   layers = list(
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
+#'   ),
 #'   obs = data.frame(cell = 1:3),
 #'   var = data.frame(gene = 1:5),
 #'   obs_names = LETTERS[1:3],
@@ -15,8 +20,23 @@
 #' )
 #' ad
 #'
+#' ## minimal example -- no observations or variables
+#' ad <- InMemoryAnnData$new(
+#'   obs = data.frame(),
+#'   var = data.frame()
+#' )
+#' ad
+#'
+#' ## number of  observations or variables determined by `obs` and `var`; no
+#' ## `X` or `layers`; `obs_names` and `var_names` determined automatically
+#' ad <- InMemoryAnnData$new(
+#'   obs = data.frame(cell = 1:3),
+#'   var = data.frame(gene = 1:5)
+#' )
+#' ad
+
 #' @export
-InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
+InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
     .X = NULL,
@@ -26,32 +46,49 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
     .obs_names = NULL,
     .var_names = NULL,
 
-    #' @description validate a matrix (.X or .layers[...])
-    #' @param mat A matrix to validate
-    #' @param label Must be `"X"` or `"layer[[...]]"` where `...` is the name of a layer.
+    # @description `.validate_matrix()` checks that dimensions are
+    #   consistent with `obs` and `var`, and removes dimnames if
+    #   present.
+    # @param mat A matrix to validate
+    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
+    #   the name of a layer.
     .validate_matrix = function(mat, label) {
       if (!is.null(mat)) {
-        if (nrow(mat) != nrow(self$obs))
+        if (nrow(mat) != nrow(self$obs)) {
           stop("nrow(", label, ") should be the same as nrow(obs)")
-        if (ncol(mat) != nrow(self$var))
+        }
+        if (ncol(mat) != nrow(self$var)) {
           stop("ncol(", label, ") should be the same as nrow(var)")
-      
+        }
+
         if (!is.null(rownames(mat))) {
-          warning("rownames(", label, ") should be NULL, removing them from the matrix")
+          warning(wrap_message(
+            "rownames(", label, ") should be NULL, removing them from the ",
+            "matrix"
+          ))
           rownames(mat) <- NULL
         }
-      
+
         if (!is.null(colnames(mat))) {
-          warning("colnames(", label, ") should be NULL, removing them from the matrix")
+          warning(wrap_message(
+            "colnames(", label, ") should be NULL, removing them from the ",
+            "matrix"
+          ))
           colnames(mat) <- NULL
         }
       }
 
       mat
     },
-    #' @description validate layers
+
+    # @description `.validate_layers()` checks for named lists and
+    #   correct dimensions on elements.
+    # @param layers A named list of 0 or more matrix elements with
+    #   dimensions consistent with `obs` and `var`.
     .validate_layers = function(layers) {
-      if (is.null(layers)) return(layers)
+      if (is.null(layers)) {
+        return(layers)
+      }
 
       ## layers and names
       layer_names <- names(layers)
@@ -70,30 +107,41 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
 
       layers
     },
-    #' @description validate an obs or a var data frame
-    #' @param df A data frame to validate. Should be an obs or a var.
-    #' @param label Must be `"obs"` or `"var"`
+
+    # @description `.validate_obsvar_dataframe()` checks that the
+    #   object is a data.frame and removes explicit dimnames.
+    # @param df A data frame to validate. Should be an obs or a var.
+    # @param label Must be `"obs"` or `"var"`
     .validate_obsvar_dataframe = function(df, label) {
       if (is.null(df)) stop(label, " should be a data frame")
       if (.row_names_info(df) > 0) {
-        warning(label, " should not have any dimnames, removing them from the matrix")
+        warning(wrap_message(
+          "'", label, "' should not have any dimnames, removing them from ",
+          "the matrix"
+        ))
         rownames(df) <- NULL
       }
       df
     },
 
-    #' @description validate an obs_names or a var_names vector
-    #' @param names A vector to validate
-    #' @param label Must be `"obs"` or `"var"`
+    # @description `.validate_obsvar_names()` checks that `*_names()`
+    #   are NULL or consistent with the dimensions of `obs` or `var`.
+    # @param names A vector to validate
+    # @param label Must be `"obs"` or `"var"`
     .validate_obsvar_names = function(names, label) {
-      if (!is.null(names)) {
-        if (length(names) != nrow(self[[label]])) stop("length(", label, "_names) should be the same as nrow(", label, ")")
+      if (!is.null(names) && length(names) != nrow(self[[label]])) {
+        stop(wrap_message(
+          "length(", label, "_names) should be the same as ",
+          "nrow(", label, ")"
+        ))
       }
       names
     }
   ),
   active = list(
-    #' @field X The X slot
+    #' @field X NULL or an observation x variable matrix (without
+    #'   dimnames) consistent with the number of rows of `obs` and
+    #"   `var`.
     X = function(value) {
       if (missing(value)) {
         private$.X
@@ -102,7 +150,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         self
       }
     },
-    #' @field layers The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with `obs` and `var`.
+    #' @field layers NULL or a named list with all elements having the
+    #'   dimensions consistent with `obs` and `var`.
     layers = function(value) {
       if (missing(value)) {
         private$.layers
@@ -111,7 +160,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         self
       }
     },
-    #' @field obs The obs slot
+    #' @field obs A `data.frame` with columns containing information
+    #'   about observations. The number of rows of `obs` defines the
+    #'   observation dimension of the AnnData object.
     obs = function(value) {
       if (missing(value)) {
         private$.obs
@@ -120,7 +171,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         self
       }
     },
-    #' @field var The var slot
+    #' @field var A `data.frame` with columns containing information
+    #'   about variables. The number of rows of `var` defines the variable
+    #'   dimension of the AnnData object.
     var = function(value) {
       if (missing(value)) {
         private$.var
@@ -129,7 +182,11 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         self
       }
     },
-    #' @field obs_names The obs_names slot
+    #' @field obs_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `obs` and to act as an index into
+    #'   the observation dimension of the AnnData object. For
+    #'   compatibility with *R* representations, `obs_names` should be a
+    #'   character vector.
     obs_names = function(value) {
       if (missing(value)) {
         private$.obs_names
@@ -138,7 +195,11 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
         self
       }
     },
-    #' @field var_names The var_names slot
+    #' @field var_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `var` and to act as an index into
+    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   with *R* representations, `var_names` should be a character
+    #'   vector.
     var_names = function(value) {
       if (missing(value)) {
         private$.var_names
@@ -150,16 +211,33 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData",
   ),
   public = list(
     #' @description Creates a new instance of an in memory AnnData object.
-    #' Inherits from AbstractAnnData
-    #' 
-    #' @param X The X slot
-    #' @param layers The layers slot. Either NULL  or a named list, where all elements have dimensions consistent with `obs` and `var`.
-    #' @param obs The obs slot
-    #' @param var The var slot
-    #' @param obs_names The obs_names slot
-    #' @param var_names The var_names slot
-    initialize = function(X = NULL, obs, var, obs_names = NULL, var_names = NULL, layers = NULL) {
-      # check obs and var first, because these objects are used by other validators
+    #'   Inherits from AbstractAnnData.
+    #' @param X Either NULL or a observation x variable matrix with
+    #'   dimensions consistent with `obs` and `var`.
+    #' @param layers Either NULL or a named list, where each element
+    #'   is an observation x variable matrix with dimensions consistent
+    #'   with `obs` and `var`.
+    #' @param obs A `data.frame` with columns containing information
+    #'   about observations. The number of rows of `obs` defines the
+    #'   observation dimension of the AnnData object.
+    #' @param var A `data.frame` with columns containing information
+    #'   about variables. The number of rows of `var` defines the variable
+    #'   dimension of the AnnData object.
+    #' @param obs_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `obs` and to act as an index into
+    #'   the observation dimension of the AnnData object. For
+    #'   compatibility with *R* representations, `obs_names` should be a
+    #'   character vector.
+    #' @param var_names Either NULL or a vector of unique identifers
+    #'   used to identify each row of `var` and to act as an index into
+    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   with *R* representations, `var_names` should be a character
+    #'   vector.
+    initialize = function(
+      X = NULL, obs, var, obs_names = NULL, var_names = NULL, layers = NULL
+    ) {
+      # check obs and var first, because these objects are used by
+      # other validators
       private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
       private$.var <- private$.validate_obsvar_dataframe(var, "var")
 

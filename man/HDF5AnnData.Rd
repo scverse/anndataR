@@ -28,13 +28,15 @@ Implementation of an in memory AnnData object.
 }
 }
 \if{html}{\out{
-<details open><summary>Inherited methods</summary>
+<details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndataR::AbstractAnnData$to_inmemory()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
 </ul>
 </details>
 }}

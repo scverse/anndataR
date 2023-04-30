@@ -1,7 +1,7 @@
 library(Matrix)
 
 # construct dummy X
-X <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
+x <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
 
 # construct dummy obs
 obs <- data.frame(
@@ -23,7 +23,7 @@ var_names <- paste0("gene", seq_len(20))
 
 test_that("to_Seurat with inmemoryanndata", {
   ad <- InMemoryAnnData$new(
-    X = X,
+    X = x,
     obs = obs,
     var = var,
     obs_names = obs_names,
@@ -36,7 +36,7 @@ test_that("to_Seurat with inmemoryanndata", {
   expect_equal(ncol(seu), 10)
   expect_equal(rownames(seu), var_names)
   expect_equal(colnames(seu), obs_names)
-  
+
   # todo: check whether X can be retrieved
 })
 

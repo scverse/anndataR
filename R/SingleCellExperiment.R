@@ -21,42 +21,38 @@
 #' to_SingleCellExperiment(ad)
 #'
 #' @export
-to_SingleCellExperiment <- function(object) {
-    stopifnot(
-        inherits(object, "AbstractAnnData")
-    )
+# TODO: fix snake_case + CamelCase
+to_SingleCellExperiment <- function(object) { # nolint
+  stopifnot(
+    inherits(object, "AbstractAnnData")
+  )
 
-    ## mostly following zellkonverter:::.native_reader
-    assay <- object$layer
-    X <- object$X
-    if (!is.null(X))
-        ## FIXME: name of 'X' from metadata[["X_name"]]
-        assay <- c(list(X = X), assay)
-    ## FIXME: better transposition -- if sparse, then always dgCMatrix
-    assay <- lapply(assay, t)
+  ## mostly following zellkonverter:::.native_reader
+  assay <- object$layer
+  x <- object$X
+  if (!is.null(x)) {
+    ## FIXME: name of 'X' from metadata[["X_name"]]
+    assay <- c(list(X = x), assay)
+  }
+  ## FIXME: better transposition -- if sparse, then always dgCMatrix
+  assay <- lapply(assay, t)
 
     sce <- SingleCellExperiment::SingleCellExperiment(
         assays = assay,
+        colData = S4Vectors::DataFrame(
+            object$obs, row.names = object$obs_names
+        ),
+        rowData = S4Vectors::DataFrame(
+            object$var, row.names = object$var_names
+        ),
         metadata = list(),
-        ## FIXME: metadata = object$uns
+        ## FIXME: assign object$uns to metadata
         checkDimnames = TRUE
     )
 
-    rowData <- object$var
-    if (!is.null(rowData)) {
-        SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(rowData)
-        rownames(sce) <- rownames(rowData)
-    }
+  ## reducedDims
 
-    colData <- object$obs
-    if (!is.null(colData)) {
-        SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(colData)
-        colnames(sce) <- rownames(colData)
-    }
+  ## rowPairs
 
-    ## reducedDims
-
-    ## rowPairs
-
-    sce
+  sce
 }
