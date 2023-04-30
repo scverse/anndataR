@@ -35,7 +35,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
   ),
   public = list(
     #' @description HDF5AnnData constructor
-    #' 
+    #'
     #' @param h5obj The rhdf5 object
     initialize = function(h5obj) {
       private$.h5obj <- h5obj

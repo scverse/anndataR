@@ -5,37 +5,55 @@
 #' @title AbstractAnnData
 #'
 #' @description
-#' Abstract [R6][R6::R6Class] class representing an AnnData object. Defines the interface.
+#'   Abstract [R6][R6::R6Class] class representing an AnnData
+#'   object. Defines the interface.
 #' @importFrom R6 R6Class
 AbstractAnnData <- R6::R6Class("AbstractAnnData",
   active = list(
-    #' @field X NULL or an observation x variable matrix (without dimnames) consistent with the number of rows of `obs` and `var`.
+    #' @field X NULL or an observation x variable matrix (without
+    #'   dimnames) consistent with the number of rows of `obs` and `var`.
     X = function(value) {
       .abstract_function()
     },
-    #' @field layers The layers slot. Must be NULL or a named list with with all elements having the dimensions consistent with `obs` and `var`.
+    #' @field layers The layers slot. Must be NULL or a named list
+    #'   with with all elements having the dimensions consistent with
+    #'   `obs` and `var`.
     layers = function(value) {
       .abstract_function()
     },
-    #' @field obs A `data.frame` with columns containing information about observations. The number of rows of `obs` defines the observation dimension of the AnnData object.
+    #' @field obs A `data.frame` with columns containing information
+    #'   about observations. The number of rows of `obs` defines the
+    #'   observation dimension of the AnnData object.
     obs = function(value) {
       .abstract_function()
     },
-    #' @field var A `data.frame` with columns containing information about variables. The number of rows of `var` defines the variable dimension of the AnnData object.
+    #' @field var A `data.frame` with columns containing information
+    #'   about variables. The number of rows of `var` defines the variable
+    #'   dimension of the AnnData object.
     var = function(value) {
       .abstract_function()
     },
-    #' @field obs_names Either NULL or a vector of unique identifiers used to identify each row of `obs` and to act as an index into the observation dimension of the AnnData object. For compatibility with *R* representations, `obs_names` should be a character vector.
+    #' @field obs_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `obs` and to act as an index into
+    #'   the observation dimension of the AnnData object. For
+    #'   compatibility with *R* representations, `obs_names` should be a
+    #'   character vector.
     obs_names = function(value) {
       .abstract_function()
     },
-    #' @field var_names Either NULL or a vector of unique identifiers used to identify each row of `var` and to act as an index into the variable dimension of the AnnData object.. For compatibility with *R* representations, `var_names` should be a character vector.
+    #' @field var_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `var` and to act as an index into
+    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   with *R* representations, `var_names` should be a character
+    #'   vector.
     var_names = function(value) {
       .abstract_function()
     }
   ),
   public = list(
-    #' @description Print a summary of the AnnData object. `print()` methods should be implemented so that they are not computationally expensive.
+    #' @description Print a summary of the AnnData object. `print()`
+    #'   methods should be implemented so that they are not
+    #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
       X_info <- if (!is.null(self$X)) {
@@ -53,7 +71,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
         sep = ""
       )
     },
+
     #' @description Dimensions (observations x variables) of the AnnData object.
+
     shape = function() {
       c(
         nrow(self$obs),
@@ -76,7 +96,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     var_keys = function() {
       names(self$var)
     },
-    #' @description Create an AnnData object with all fields loaded into memory.
+    #' @description Create an AnnData object with all fields loaded
+    #'   into memory.
     to_inmemory = function() {
       # should probably be stored in a separate file
       InMemoryAnnData$new(
