@@ -1,0 +1,70 @@
+---
+title: Features
+format: gfm
+---
+
+:::{.content-hidden}
+Rendered using:
+```
+quarto render doc/features.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' doc/features.md
+```
+:::
+
+```{r include=FALSE}
+library(tibble)
+library(knitr)
+```
+
+## InMemoryAnnData
+```{r include=FALSE}
+df <- tribble(
+  ~"Slot", ~"Getters", ~"Unit test getters", ~"Setters", ~"Unit test setters",
+  "X", "✓", "✓", "✓", "✓",
+  "obs", "✓", "✓", "✓", "✓",
+  "var", "✓", "✓", "✓", "✓",
+  "obs_names", "✓", "✓", "✓", "✓",
+  "var_names", "✓", "✓", "✓", "✓",
+  "layers", "✓", "✓", "✓", "✓"
+)
+```
+
+```{r echo=FALSE}
+knitr::kable(df)
+```
+
+## HDF5AnnData
+
+```{r include=FALSE}
+df <- tribble(
+  ~"Slot", ~"Getters", ~"Unit test getters", ~"Setters", ~"Unit test setters",
+  "X", "✓", "", "✓", "",
+  "obs", "✓", "", "", "",
+  "var", "✓", "", "", "",
+  "obs_names", "✓", "", "", "",
+  "var_names", "✓", "", "", "",
+  "layers", "", "", "", ""
+)
+```
+
+```{r echo=FALSE}
+knitr::kable(df)
+```
+
+
+## Converters
+
+```{r include=FALSE}
+df <- tribble(
+  ~"Slot", ~"to SCE", ~"Unit test", ~"to Seurat", ~"Unit test",
+  "X", "✓", "✓", "✓", "✓",
+  "obs", "✓", "✓", "✓", "✓",
+  "var", "✓", "✓", "✓", "✓",
+  "obs_names", "✓", "✓", "✓", "✓",
+  "var_names", "✓", "✓", "✓", "✓",
+  "layers", "", "", "", ""
+)
+```
+
+```{r echo=FALSE}
+knitr::kable(df)
+```

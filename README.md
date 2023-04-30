@@ -33,6 +33,7 @@ objects.
 
 - [Design document](doc/design.md): interface, OO-framework, approach
 - [Challenges in reading h5ad files in R](doc/challenges.md)
+- [Implemented features](doc/features.md)
 
 ## Installation
 
