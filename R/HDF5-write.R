@@ -61,6 +61,8 @@ write_h5ad_element <- function(value, file, name) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_dense_array <- function(value, file, name, version = c("0.2.0")) {
+  requireNamespace("rhdf5")
+  
   version <- match.arg(version)
 
   value <- set_h5ad_encoding(value, encoding = "array", version = version)

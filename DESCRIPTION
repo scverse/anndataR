@@ -40,6 +40,7 @@ Suggests:
     SummarizedExperiment,
     SingleCellExperiment,
     knitr,
+    rhdf5,
     rmarkdown,
     SeuratObject,
     testthat (>= 3.0.0)
