@@ -34,7 +34,6 @@
 #'   var = data.frame(gene = 1:5)
 #' )
 #' ad
-
 #' @export
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
