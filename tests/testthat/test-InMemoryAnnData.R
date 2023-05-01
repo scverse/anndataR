@@ -20,7 +20,7 @@ var <- data.frame(
 # construct dummy var names
 var_names <- paste0("gene", seq_len(20))
 
-layers = list(
+layers <- list(
   X2 = X * 2,
   X3 = X * 3
 )

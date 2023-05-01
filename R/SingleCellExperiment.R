@@ -25,22 +25,21 @@
 #' to_SingleCellExperiment(ad)
 #'
 #' @export
-# TODO: fix snake_case + CamelCase
 to_SingleCellExperiment <- function(object) { # nolint
   stopifnot(
     inherits(object, "AbstractAnnData")
   )
 
   ## FIXME: name of 'X' from metadata[["X_name"]]
-  X_name <- "X"
+  x_name <- "X"
   assay_names <- as.character(c(
-    if (!is.null(object$X)) X_name,
+    if (!is.null(object$X)) x_name,
     object$layers_keys()
   ))
   assays <- vector("list", length(assay_names))
   names(assays) <- assay_names
   for (assay in assay_names) {
-    value <- if (identical(assay, X_name)) {
+    value <- if (identical(assay, x_name)) {
       object$X
     } else {
       object$layers[[assay]]
