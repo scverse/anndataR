@@ -13,7 +13,7 @@ quarto render doc/design.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' doc/design.md
 ## Proposed interface
 
 ```r
-library(magicann)/library(anndataR)
+library(anndataR)
 
 # read from h5ad/h5mu file
 adata <- read_h5ad("dataset.h5ad")
