@@ -4,15 +4,7 @@
 ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
   inherit = AbstractAnnData,
   private = list(
-    .obj = NULL,
-
-    py_to_r_index = function(x) {
-      requireNamespace("reticulate")
-      python_builtins <- reticulate::import_builtins()
-      out <- python_builtins$list(x)
-      attr(out, "name") <- py_to_r_ifneedbe(x$name)
-      out
-    }
+    .obj = NULL
   ),
   active = list(
     #' @field X A matrix representing the X slot.
@@ -27,7 +19,9 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
     #' @field obs A data.frame representing the obs slot.
     obs = function(value) {
       if (missing(value)) {
-        py_to_r_ifneedbe(private$.obj$obs)
+        obs_ <- py_to_r_ifneedbe(private$.obj$obs)
+        rownames(obs_) <- NULL
+        obs_
       } else {
         private$.obj$obs <- value
         self
@@ -36,7 +30,9 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
     #' @field var A data.frame representing the var slot.
     var = function(value) {
       if (missing(value)) {
-        py_to_r_ifneedbe(private$.obj$var)
+        var_ <- py_to_r_ifneedbe(private$.obj$var)
+        rownames(var_) <- NULL
+        var_
       } else {
         private$.obj$var <- value
         self
@@ -45,7 +41,7 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
     #' @field obs_names A vector representing the obs_names slot.
     obs_names = function(value) {
       if (missing(value)) {
-        private$py_to_r_index(private$.obj$obs_names)
+        py_to_r_ifneedbe(private$.obj$obs_names)
       } else {
         private$.obj$obs_names <- value
         self
@@ -54,7 +50,7 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
     #' @field var_names A vector representing the var_names slot.
     var_names = function(value) {
       if (missing(value)) {
-        private$py_to_r_index(private$.obj$var_names)
+        py_to_r_ifneedbe(private$.obj$var_names)
       } else {
         private$.obj$var_names <- value
         self
@@ -102,15 +98,6 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
     }
   )
 )
-
-py_to_r_ifneedbe <- function(x) {
-  requireNamespace("reticulate")
-  if (inherits(x, "python.builtin.object")) {
-    reticulate::py_to_r(x)
-  } else {
-    x
-  }
-}
 
 # copied from https://github.com/dynverse/anndata/blob/main/R/class_anndata.R#L127
 to_reticulate <- function(adata) {
