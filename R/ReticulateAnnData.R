@@ -21,6 +21,7 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
       if (missing(value)) {
         obs_ <- py_to_r_ifneedbe(private$.obj$obs)
         rownames(obs_) <- NULL
+        attr(obs_, "pandas.index") <- NULL # nolint
         obs_
       } else {
         private$.obj$obs <- value
@@ -32,6 +33,7 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData",
       if (missing(value)) {
         var_ <- py_to_r_ifneedbe(private$.obj$var)
         rownames(var_) <- NULL
+        attr(var_, "pandas.index") <- NULL # nolint
         var_
       } else {
         private$.obj$var <- value
