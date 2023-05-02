@@ -19,10 +19,55 @@ h5ad and zarr files, directly access various slots (e.g. X, obs, var,
 obsm, obsp), or convert the data into SingleCellExperiment and Seurat
 objects.
 
-## Design docs
+## Design
 
 This package was initially created at the [scverse 2023-04
 hackathon](https://scverse.org/events/2023_04_hackathon/) in Heidelberg.
+
+When fully implemented, it will be a complete replacement for
+[theislab/zellkonverter](https://github.com/theislab/zellkonverter),
+[mtmorgan/h5ad](github.com/mtmorgan/h5ad/) and
+[dynverse/anndata](https://github.com/dynverse/anndata).
+
+``` mermaid
+classDiagram
+
+  class AbstractAnnData {
+    *X: Matrix
+    *layers: List[Matrix]
+    *obs: DataFrame
+    *var: DataFrame
+    ...
+
+    to_single_cell_experiment(): SingleCellExperiment
+    to_seurat(): Seurat
+
+    to_hdf5(): HDF5AnnData
+    to_zarr(): ZarrAnnData
+    to_in_memory(): InMemoryAnnData
+  }
+
+  AbstractAnnData &lt;|-- HDF5AnnData
+  class HDF5AnnData {
+    init(file): HDF5AnnData
+  }
+
+  AbstractAnnData &lt;|-- ZarrAnnData
+  class ZarrAnnData {
+    init(file): ZarrAnnData
+  }
+
+  AbstractAnnData &lt;|-- InMemoryAnnData
+  class InMemoryAnnData {
+    init(X, obs, var, ...): InMemoryAnnData
+  }
+
+  AbstractAnnData --&gt; SingleCellExperiment
+  AbstractAnnData --&gt; Seurat
+
+```
+
+## More information
 
 - [Design document](doc/design.md): interface, OO-framework, approach
 - [Challenges in reading h5ad files in R](doc/challenges.md)
