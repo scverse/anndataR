@@ -63,4 +63,7 @@ adata.uns["dummy_string_scalar"] = "foo"
 
 adata.uns["dummy_string_array"] = [[f"row{i}{j}" for i in range(adata.shape[1])] for j in range(adata.shape[0])]
 
-adata.write("inst/extdata/krumsiek11_augmented_sparse1_v0-8.h5ad")
+# for testing obs with no content
+adata.obs = pd.DataFrame(index = adata.obs.index) # empty pd.DataFrame
+
+adata.write("inst/extdata/krumsiek11_augmented_sparse_empty_v0-8.h5ad")
