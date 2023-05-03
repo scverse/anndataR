@@ -1,4 +1,4 @@
-# Design document
+# anndataR
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
