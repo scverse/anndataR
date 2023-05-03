@@ -54,23 +54,22 @@ to_SingleCellExperiment <- function(object) { # nolint
   # construct colData
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
-  colData <- S4Vectors::DataFrame(
+  col_data <- S4Vectors::DataFrame(
     object$obs, row.names = object$obs_names
   )
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
-  rowData <- S4Vectors::DataFrame(
+  row_data <- S4Vectors::DataFrame(
     object$var, row.names = object$var_names
   )
 
   # construct output object
   sce <- SingleCellExperiment::SingleCellExperiment(
     assays = assays,
-    
-    colData = colData,
-    rowData = rowData,
+    colData = col_data,
+    rowData = row_data,
     metadata = list(),
     ## FIXME: assign object$uns to metadata
     checkDimnames = TRUE
