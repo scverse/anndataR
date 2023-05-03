@@ -237,7 +237,7 @@ read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
 #' @importFrom rhdf5 h5read
 read_h5ad_string_scalar <- function(file, name, version = c("0.2.0")) {
   version <- match.arg(version)
-  rhdf5::h5read(test_file, name)
+  rhdf5::h5read(file, name)
 }
 
 #' Read H5AD numeric scalar
@@ -251,7 +251,7 @@ read_h5ad_string_scalar <- function(file, name, version = c("0.2.0")) {
 #' @return a numeric vector of length 1
 read_h5ad_numeric_scalar <- function(file, name, version = c("0.2.0")) {
   version <- match.arg(version)
-  rhdf5::h5read(test_file, name)
+  rhdf5::h5read(file, name)
 }
 
 #' Read H5AD mapping
@@ -265,19 +265,13 @@ read_h5ad_numeric_scalar <- function(file, name, version = c("0.2.0")) {
 #' @return a named list 
 read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
   version <- match.arg(version)
+  groupname <- paste0("/", name)
+  columns <- subset(h5ls(file, recursive = T), group == groupname)$name
   
-  contents <- rhdf5::h5ls(file&name, recursive = F)
-  # To keep the names
-  to_iterate <- seq_len(nrow(contents))
-  names(to_iterate) <- contents$name 
-  lapply(to_iterate, function(i){
-    r <- contents[i,]
-    new_name <- paste0(name, r$group, r$name)
-    encoding <- rhdf5::h5readAttributes(file, new_name)
-    read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
-  })
-  
+  read_h5ad_collection(file, name, columns)
 }
+
+# TODO: read index, return dataframe with columns
 
 #' Read H5AD data frame
 #'
@@ -294,16 +288,37 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   attributes <- rhdf5::h5readAttributes(file, name)
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
+  column_order <- append(column_order, index_name)
   
+  columns <- read_h5ad_collection(file, name, column_order)
+  
+  index <- columns[[index_name]]
+  columns[[index_name]] <- NULL
+  
+  if(length(columns) == 0){
+    data.frame(#TODO)
+  } else {
+    data.frame(columns, row.names = index)
+    
+  }
+  
+  
+}
+
+#' Read multiple H5AD datatypes
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#'
+#' @return a named list
+read_h5ad_collection <- function(file, name, column_order){
+
   columns <- list()
   for(col_name in column_order){
     new_name <- file.path(name, col_name)
     encoding <- rhdf5::h5readAttributes(file, new_name)
     columns[[col_name]] <- read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
-  }
-  
-  index <- columns[[index_name]]
-  data.frame(columns, row.names = index)
-  
+  } 
+  columns
 }
 
