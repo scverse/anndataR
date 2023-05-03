@@ -11,6 +11,10 @@
 #'     representing the content of `object`.
 #'
 #' @examples
+#' if (interactive()) {
+#'   ## useful when interacting with the SingleCellExperiment !
+#'   library(SingleCellExperiment)
+#' }
 #' ad <- InMemoryAnnData$new(
 #'   X = matrix(1:5, 3L, 5L),
 #'   obs = data.frame(cell = 1:3),
@@ -21,42 +25,45 @@
 #' to_SingleCellExperiment(ad)
 #'
 #' @export
-to_SingleCellExperiment <- function(object) {
-    stopifnot(
-        inherits(object, "AbstractAnnData")
-    )
+to_SingleCellExperiment <- function(object) { # nolint
+  stopifnot(
+    inherits(object, "AbstractAnnData")
+  )
 
-    ## mostly following zellkonverter:::.native_reader
-    assay <- object$layer
-    X <- object$X
-    if (!is.null(X))
-        ## FIXME: name of 'X' from metadata[["X_name"]]
-        assay <- c(list(X = X), assay)
-    ## FIXME: better transposition -- if sparse, then always dgCMatrix
-    assay <- lapply(assay, t)
-
-    sce <- SingleCellExperiment::SingleCellExperiment(
-        assays = assay,
-        metadata = list(),
-        ## FIXME: metadata = object$uns
-        checkDimnames = TRUE
-    )
-
-    rowData <- object$var
-    if (!is.null(rowData)) {
-        SummarizedExperiment::rowData(sce) <- S4Vectors::DataFrame(rowData)
-        rownames(sce) <- rownames(rowData)
+  ## FIXME: name of 'X' from metadata[["X_name"]]
+  x_name <- "X"
+  assay_names <- as.character(c(
+    if (!is.null(object$X)) x_name,
+    object$layers_keys()
+  ))
+  assays <- vector("list", length(assay_names))
+  names(assays) <- assay_names
+  for (assay in assay_names) {
+    value <- if (identical(assay, x_name)) {
+      object$X
+    } else {
+      object$layers[[assay]]
     }
+    ## FIXME: is transposition robust & efficient here?
+    assays[[assay]] <- Matrix::t(value)
+  }
 
-    colData <- object$obs
-    if (!is.null(colData)) {
-        SummarizedExperiment::colData(sce) <- S4Vectors::DataFrame(colData)
-        colnames(sce) <- rownames(colData)
-    }
+  sce <- SingleCellExperiment::SingleCellExperiment(
+    assays = assays,
+    colData = S4Vectors::DataFrame(
+      object$obs, row.names = object$obs_names
+    ),
+    rowData = S4Vectors::DataFrame(
+      object$var, row.names = object$var_names
+    ),
+    metadata = list(),
+    ## FIXME: assign object$uns to metadata
+    checkDimnames = TRUE
+  )
 
-    ## reducedDims
+  ## reducedDims
 
-    ## rowPairs
+  ## rowPairs
 
-    sce
+  sce
 }

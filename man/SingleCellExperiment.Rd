@@ -18,6 +18,10 @@ representing the content of \code{object}.
 to a SingleCellExperiment.
 }
 \examples{
+if (interactive()) {
+  ## useful when interacting with the SingleCellExperiment !
+  library(SingleCellExperiment)
+}
 ad <- InMemoryAnnData$new(
   X = matrix(1:5, 3L, 5L),
   obs = data.frame(cell = 1:3),
