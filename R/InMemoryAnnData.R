@@ -274,7 +274,6 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #'   var_names = letters[1:5]
 #' )
 #' to_InMemory(ad)
-# TODO: fix snake_case + CamelCase
 to_InMemory <- function(adata) { # nolint
   InMemoryAnnData$new(
     X = adata$X,
