@@ -35,9 +35,16 @@ test_that("create inmemory anndata", {
     var_names = var_names
   )
 
+  # trackstatus: class=InMemoryAnnData, feature=test_get_X, status=done
+  # trackstatus: class=InMemoryAnnData, feature=test_get_obs, status=done
+  # trackstatus: class=InMemoryAnnData, feature=test_get_var, status=done
+  # trackstatus: class=InMemoryAnnData, feature=test_get_obs_names, status=done
+  # trackstatus: class=InMemoryAnnData, feature=test_get_var_names, status=done
   expect_equal(ad$X, X)
   expect_equal(ad$obs, obs)
   expect_equal(ad$var, var)
+  expect_equal(ad$obs_names, obs_names)
+  expect_equal(ad$var_names, var_names)
   expect_identical(ad$shape(), c(10L, 20L))
 })
 
@@ -125,6 +132,8 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   })
 })
 
+
+# trackstatus: class=InMemoryAnnData, feature=test_get_layers, status=done
 test_that("'layers' works", {
   ## layers test helper function
   layers_test <- function(obs, var, layers) {
@@ -183,7 +192,7 @@ test_that("*_keys() works", {
 
 # SETTERS -----------------------------------------------------------------
 
-
+# trackstatus: class=InMemoryAnnData, feature=test_set_X, status=done
 test_that("write to X", {
   ad <- InMemoryAnnData$new(
     X = X,
@@ -207,7 +216,7 @@ test_that("write to X", {
   expect_equal(ad$X[, 3], rep(5, 10L))
 })
 
-
+# trackstatus: class=InMemoryAnnData, feature=test_set_obs, status=done
 test_that("write to obs", {
   ad <- InMemoryAnnData$new(
     X = X,
@@ -238,6 +247,7 @@ test_that("write to obs", {
   expect_equal(ad$obs[, 3], rep(FALSE, 10L))
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_set_var, status=done
 test_that("write to var", {
   ad <- InMemoryAnnData$new(
     X = X,
@@ -268,7 +278,7 @@ test_that("write to var", {
   expect_equal(ad$var[, 3], rep(FALSE, 20L))
 })
 
-
+# trackstatus: class=InMemoryAnnData, feature=test_set_obs_names, status=done
 test_that("write to obs_names", {
   ad <- InMemoryAnnData$new(
     X = X,
@@ -288,6 +298,7 @@ test_that("write to obs_names", {
   expect_equal(ad$obs_names[1:4], c("a", "foo", "bar", "d"))
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_set_var_names, status=done
 test_that("write to var_names", {
   ad <- InMemoryAnnData$new(
     X = X,
@@ -307,6 +318,7 @@ test_that("write to var_names", {
   expect_equal(ad$var_names[1:4], c("A", "foo", "bar", "D"))
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_set_layers, status=done
 test_that("write to layers", {
   ad <- InMemoryAnnData$new(
     X = X,
