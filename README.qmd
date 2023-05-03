@@ -1,12 +1,12 @@
 ---
-title: Design document
+title: anndataR
 format: gfm
 ---
 
 :::{.content-hidden}
 Rendered using:
 ```
-quarto render README.qmd
+quarto render README.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' README.md
 ```
 :::
 

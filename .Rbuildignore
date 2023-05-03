@@ -7,3 +7,6 @@
 ^\.metals$
 ^\.vscode$
 ^\.lintr$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
