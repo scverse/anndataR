@@ -128,6 +128,18 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @description Keys (element names) of `layers`.
     layers_keys = function() {
       names(self$layers)
+    },
+    #' @description Keys ('item names') of `obsm`.
+    obsm_keys = function() {
+      names(self$obsm)
+    },
+    #' @description Keys ('item names') of `uns`.
+    uns_keys = function() {
+      names(self$uns)
+    },
+    #' @description Keys ('item names') of `varm`.
+    varm_keys = function() {
+      names(self$varm)
     }
   )
 )
