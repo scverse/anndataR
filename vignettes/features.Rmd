@@ -11,7 +11,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = ""
 )
 ```
 
@@ -90,7 +90,7 @@ status_formatted <-
   spread(prefix_formatted, status_formatted)
 ```
 
-```{r echo=FALSE, output="asis"}
+```{r echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as a markdown
 for (class in unique(status_formatted$class)) {
   cat("# ", class, "\n\n\n", sep = "")
