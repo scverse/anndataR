@@ -85,38 +85,16 @@ status_formatted <-
   spread(prefix_formatted, status_formatted)
 ```
 
-## InMemoryAnnData
+```{r echo=FALSE, output="asis"}
+# loop over each of the classes and print the table as a markdown
+for (class in unique(status_formatted$class)) {
+  cat("# ", class, "\n\n\n", sep = "")
 
-```{r echo=FALSE}
-status_formatted %>%
-  filter(class == "InMemoryAnnData") %>%
-  select(-class) %>%
-  knitr::kable(escape = FALSE)
-```
-
-## HDF5AnnData
-
-```{r echo=FALSE}
-status_formatted %>%
-  filter(class == "HDF5AnnData") %>%
-  select(-class) %>%
-  knitr::kable(escape = FALSE)
-```
-
-## SeuratConverter
-
-```{r echo=FALSE}
-status_formatted %>%
-  filter(class == "SeuratConverter") %>%
-  select(-class) %>%
-  knitr::kable(escape = FALSE)
-```
-
-## SingleCellExperimentConverter
-
-```{r echo=FALSE}
-status_formatted %>%
-  filter(class == "SingleCellExperimentConverter") %>%
-  select(-class) %>%
-  knitr::kable(escape = FALSE)
+  df <- status_formatted %>%
+    filter(class == !!class) %>%
+    select(-class) %>%
+    knitr::kable(escape = FALSE)
+  cat(paste(as.character(df), collapse = "\n"))
+  cat("\n\n")
+}
 ```

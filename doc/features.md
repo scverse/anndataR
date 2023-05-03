@@ -1,6 +1,22 @@
 # Features
 
-## InMemoryAnnData
+# HDF5AnnData
+
+| Slot      | Getter | Getter test | Setter | Setter test |
+|:----------|:-------|:------------|:-------|:------------|
+| layers    |        |             |        |             |
+| obs       |        |             |        |             |
+| obs_names |        |             |        |             |
+| obsm      |        |             |        |             |
+| obsp      |        |             |        |             |
+| uns       |        |             |        |             |
+| var       |        |             |        |             |
+| var_names |        |             |        |             |
+| varm      |        |             |        |             |
+| varp      |        |             |        |             |
+| X         |        |             |        |             |
+
+# InMemoryAnnData
 
 | Slot      | Getter                                                                      | Getter test | Setter                                                                      | Setter test |
 |:----------|:----------------------------------------------------------------------------|:------------|:----------------------------------------------------------------------------|:------------|
@@ -16,7 +32,7 @@
 | varp      |                                                                             |             |                                                                             |             |
 | X         | [✓](https://github.com/scverse/anndataR/blob/main/R/InMemoryAnnData.R#L146) |             | [✓](https://github.com/scverse/anndataR/blob/main/R/InMemoryAnnData.R#L149) |             |
 
-## HDF5AnnData
+# SeuratConverter
 
 | Slot      | Getter | Getter test | Setter | Setter test |
 |:----------|:-------|:------------|:-------|:------------|
@@ -32,23 +48,7 @@
 | varp      |        |             |        |             |
 | X         |        |             |        |             |
 
-## SeuratConverter
-
-| Slot      | Getter | Getter test | Setter | Setter test |
-|:----------|:-------|:------------|:-------|:------------|
-| layers    |        |             |        |             |
-| obs       |        |             |        |             |
-| obs_names |        |             |        |             |
-| obsm      |        |             |        |             |
-| obsp      |        |             |        |             |
-| uns       |        |             |        |             |
-| var       |        |             |        |             |
-| var_names |        |             |        |             |
-| varm      |        |             |        |             |
-| varp      |        |             |        |             |
-| X         |        |             |        |             |
-
-## SingleCellExperimentConverter
+# SingleCellExperimentConverter
 
 | Slot      | Getter | Getter test | Setter | Setter test |
 |:----------|:-------|:------------|:-------|:------------|
