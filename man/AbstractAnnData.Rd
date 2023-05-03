@@ -21,21 +21,40 @@ with with all elements having the dimensions consistent with
 about observations. The number of rows of \code{obs} defines the
 observation dimension of the AnnData object.}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information
-about variables. The number of rows of \code{var} defines the variable
-dimension of the AnnData object.}
-
 \item{\code{obs_names}}{Either NULL or a vector of unique identifiers
 used to identify each row of \code{obs} and to act as an index into
 the observation dimension of the AnnData object. For
 compatibility with \emph{R} representations, \code{obs_names} should be a
 character vector.}
 
+\item{\code{obsm}}{The obsm slot. Must be NULL or a named list
+of two (or more) dimensional arrays with number of rows
+(first dimension) consistent with \code{obs}.}
+
+\item{\code{obsp}}{The obsp slot. Must be NULL or a named list
+of two (or more) dimensional arrays with number of rows and columns
+(first two dimensions) consistent with \code{obs}.}
+
+\item{\code{uns}}{The uns slot. Must be NULL or a named list or arbitrary
+objects.}
+
+\item{\code{var}}{A \code{data.frame} with columns containing information
+about variables. The number of rows of \code{var} defines the variable
+dimension of the AnnData object.}
+
 \item{\code{var_names}}{Either NULL or a vector of unique identifiers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
+the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
+
+\item{\code{varm}}{The varm slot. Must be NULL or a named list
+of two (or more) dimensional arrays with number of rows
+(first dimension) consistent with \code{var}.}
+
+\item{\code{varp}}{The varp slot. Must be NULL or a named list
+of two (or more) dimensional arrays with number of rows and columns
+(first two dimensions) consistent with \code{var}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -46,9 +65,12 @@ vector.}
 \item \href{#method-AbstractAnnData-shape}{\code{AbstractAnnData$shape()}}
 \item \href{#method-AbstractAnnData-n_obs}{\code{AbstractAnnData$n_obs()}}
 \item \href{#method-AbstractAnnData-n_vars}{\code{AbstractAnnData$n_vars()}}
-\item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
-\item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
 \item \href{#method-AbstractAnnData-layers_keys}{\code{AbstractAnnData$layers_keys()}}
+\item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
+\item \href{#method-AbstractAnnData-obsm_keys}{\code{AbstractAnnData$obsm_keys()}}
+\item \href{#method-AbstractAnnData-uns_keys}{\code{AbstractAnnData$uns_keys()}}
+\item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
+\item \href{#method-AbstractAnnData-varm_keys}{\code{AbstractAnnData$varm_keys()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -102,12 +124,42 @@ Number of variables in the AnnData object.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-layers_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-layers_keys}{}}}
+\subsection{Method \code{layers_keys()}}{
+Keys (element names) of \code{layers}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$layers_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-obs_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-obs_keys}{}}}
 \subsection{Method \code{obs_keys()}}{
 Keys ('column names') of \code{obs}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obs_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obsm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obsm_keys}{}}}
+\subsection{Method \code{obsm_keys()}}{
+Keys ('item names') of \code{obsm}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-uns_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-uns_keys}{}}}
+\subsection{Method \code{uns_keys()}}{
+Keys ('item names') of \code{uns}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$uns_keys()}\if{html}{\out{</div>}}
 }
 
 }
@@ -122,12 +174,12 @@ Keys ('column names') of \code{var}.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-layers_keys"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-layers_keys}{}}}
-\subsection{Method \code{layers_keys()}}{
-Keys (element names) of \code{layers}.
+\if{html}{\out{<a id="method-AbstractAnnData-varm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-varm_keys}{}}}
+\subsection{Method \code{varm_keys()}}{
+Keys ('item names') of \code{varm}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$layers_keys()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varm_keys()}\if{html}{\out{</div>}}
 }
 
 }
