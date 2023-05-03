@@ -13,58 +13,110 @@ quarto render doc/features.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' doc/features.md
 ```{r include=FALSE}
 library(tibble)
 library(knitr)
+library(rprojroot)
+library(stringr)
+library(purrr)
+library(dplyr)
+library(tidyr)
+
+proj_root <- find_root(has_file("DESCRIPTION"))
+source <- list.files(proj_root, pattern = "*.R$", recursive = TRUE)
+
+# look for trackstatus comments
+status_lines <- map_df(source, function(path) {
+  lines <- readr::read_lines(paste0(proj_root, "/", path))
+  line_numbers <- grep("# trackstatus:", lines)
+
+  map_df(line_numbers, function(line_number) {
+    line_stripped <- gsub(" *# trackstatus: *", "", lines[[line_number]])
+    line_split <- str_split_1(line_stripped, ", *")
+    vals_split <- str_split(line_split, " *= *")
+    names <- sapply(vals_split, function(x) x[[1]])
+    values <- lapply(vals_split, function(x) x[[2]])
+    df <- data.frame(setNames(values, names), check.names = FALSE)
+    df$source_file <- path
+    df$line_number <- line_number
+    df
+  })
+})
+
+# split feature id into prefix and slot columns
+strip_prefix <- c(
+  "get_" = "Getter",
+  "test_get_" = "Getter test",
+  "set_" = "Setter",
+  "test_set_" = "Setter test"
+)
+status_lines_proc <- status_lines %>%
+  mutate(
+    prefix = str_extract(feature, "^(test_)?[gs]et_"),
+    slot = str_replace(feature, "^(test_)?[gs]et_", "")
+  ) %>%
+  select(-feature)
+
+# combine with missing fields
+status_lines_required <- crossing(
+  class = c("InMemoryAnnData", "HDF5AnnData", "SeuratConverter", "SingleCellExperimentConverter"),
+  prefix = c("get_", "test_get_", "set_", "test_set_"),
+  slot = c("X", "layers", "obs", "var", "obs_names", "var_names", "obsm", "varm", "obsp", "varp", "uns"),
+  status = "missing"
+)
+status <- bind_rows(
+  status_lines_proc,
+  status_lines_required %>% anti_join(status_lines_proc, by = c("class", "prefix", "slot"))
+)
+
+# create formatted data frame for printing
+status_formatted <- 
+  status %>%
+  mutate(
+    prefix_formatted = strip_prefix[prefix],
+    status_formatted = ifelse(
+      status == "missing",
+      "",
+      paste0(
+        "[", c("done" = "✓", "wip" = "~", "missing" = "")[status], 
+        "](https://github.com/scverse/anndataR/blob/main/", source_file, 
+        "#L", line_number, ")"
+      )
+    )
+  ) %>%
+  select(class, Slot = slot, prefix_formatted, status_formatted) %>%
+  spread(prefix_formatted, status_formatted)
 ```
 
 ## InMemoryAnnData
-```{r include=FALSE}
-df <- tribble(
-  ~"Slot", ~"Getters", ~"Unit test getters", ~"Setters", ~"Unit test setters",
-  "X", "✓", "✓", "✓", "✓",
-  "obs", "✓", "✓", "✓", "✓",
-  "var", "✓", "✓", "✓", "✓",
-  "obs_names", "✓", "✓", "✓", "✓",
-  "var_names", "✓", "✓", "✓", "✓",
-  "layers", "✓", "✓", "✓", "✓"
-)
-```
 
 ```{r echo=FALSE}
-knitr::kable(df)
+status_formatted %>%
+  filter(class == "InMemoryAnnData") %>%
+  select(-class) %>%
+  knitr::kable(escape = FALSE)
 ```
 
 ## HDF5AnnData
 
-```{r include=FALSE}
-df <- tribble(
-  ~"Slot", ~"Getters", ~"Unit test getters", ~"Setters", ~"Unit test setters",
-  "X", "✓", "", "✓", "",
-  "obs", "✓", "", "", "",
-  "var", "✓", "", "", "",
-  "obs_names", "✓", "", "", "",
-  "var_names", "✓", "", "", "",
-  "layers", "", "", "", ""
-)
+```{r echo=FALSE}
+status_formatted %>%
+  filter(class == "HDF5AnnData") %>%
+  select(-class) %>%
+  knitr::kable(escape = FALSE)
 ```
+
+## SeuratConverter
 
 ```{r echo=FALSE}
-knitr::kable(df)
+status_formatted %>%
+  filter(class == "SeuratConverter") %>%
+  select(-class) %>%
+  knitr::kable(escape = FALSE)
 ```
 
-
-## Converters
-
-```{r include=FALSE}
-df <- tribble(
-  ~"Slot", ~"to SCE", ~"Unit test", ~"to Seurat", ~"Unit test",
-  "X", "✓", "✓", "✓", "✓",
-  "obs", "✓", "✓", "✓", "✓",
-  "var", "✓", "✓", "✓", "✓",
-  "obs_names", "✓", "✓", "✓", "✓",
-  "var_names", "✓", "✓", "✓", "✓",
-  "layers", "", "", "", ""
-)
-```
+## SingleCellExperimentConverter
 
 ```{r echo=FALSE}
-knitr::kable(df)
+status_formatted %>%
+  filter(class == "SingleCellExperimentConverter") %>%
+  select(-class) %>%
+  knitr::kable(escape = FALSE)
 ```
