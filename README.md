@@ -47,23 +47,23 @@ classDiagram
     to_in_memory(): InMemoryAnnData
   }
 
-  AbstractAnnData &lt;|-- HDF5AnnData
+  AbstractAnnData <|-- HDF5AnnData
   class HDF5AnnData {
     init(file): HDF5AnnData
   }
 
-  AbstractAnnData &lt;|-- ZarrAnnData
+  AbstractAnnData <|-- ZarrAnnData
   class ZarrAnnData {
     init(file): ZarrAnnData
   }
 
-  AbstractAnnData &lt;|-- InMemoryAnnData
+  AbstractAnnData <|-- InMemoryAnnData
   class InMemoryAnnData {
     init(X, obs, var, ...): InMemoryAnnData
   }
 
-  AbstractAnnData --&gt; SingleCellExperiment
-  AbstractAnnData --&gt; Seurat
+  AbstractAnnData --> SingleCellExperiment
+  AbstractAnnData --> Seurat
 
 ```
 
