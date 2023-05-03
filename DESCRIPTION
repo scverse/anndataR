@@ -45,4 +45,4 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: https://scverse.org/anndataR/
+URL: https://github.com/scverse/anndataR, https://scverse.org/anndataR/
