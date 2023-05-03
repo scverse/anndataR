@@ -296,13 +296,10 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   columns[[index_name]] <- NULL
   
   if(length(columns) == 0){
-    data.frame(#TODO)
+    data.frame(row.names = index)
   } else {
     data.frame(columns, row.names = index)
-    
   }
-  
-  
 }
 
 #' Read multiple H5AD datatypes

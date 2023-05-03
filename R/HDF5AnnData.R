@@ -25,8 +25,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     
     #' @description validate a value matches the AnnData shape
     .validate_shape = function(value) {
-      message(dim(value))
-      message(self$shape)
       if (!identical(dim(value), self$shape())) {
         stop("Dimensions of value does not match the object shape")
       }
