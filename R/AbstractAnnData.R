@@ -65,7 +65,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
         "class: ", class(self)[[1]], "\n",
         "dim: ", self$n_obs(), " obs x ", self$n_vars(), " var\n",
         "X: ", x_info, "\n",
-        pretty_print("layers", names(self$layers)), "\n",
+        pretty_print("layers", self$layers_keys()), "\n",
         pretty_print("obs", self$obs_keys()), "\n",
         pretty_print("var", self$var_keys()), "\n",
         sep = ""
@@ -95,6 +95,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @description Keys ('column names') of `var`.
     var_keys = function() {
       names(self$var)
+    },
+    #' @description Keys (element names) of `layers`.
+    layers_keys = function() {
+      names(self$layers)
     }
   )
 )
