@@ -27,12 +27,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     obs = function(value) {
       .abstract_function()
     },
-    #' @field var A `data.frame` with columns containing information
-    #'   about variables. The number of rows of `var` defines the variable
-    #'   dimension of the AnnData object.
-    var = function(value) {
-      .abstract_function()
-    },
     #' @field obs_names Either NULL or a vector of unique identifiers
     #'   used to identify each row of `obs` and to act as an index into
     #'   the observation dimension of the AnnData object. For
@@ -41,12 +35,47 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     obs_names = function(value) {
       .abstract_function()
     },
+    #' @field obsm The obsm slot. Must be NULL or a named list
+    #'   of two (or more) dimensional arrays with number of rows
+    #'   (first dimension) consistent with `obs`.
+    obsm = function(value) {
+      .abstract_function()
+    },
+    #' @field obsp The obsp slot. Must be NULL or a named list
+    #'   of two (or more) dimensional arrays with number of rows and columns
+    #'   (first two dimensions) consistent with `obs`.
+    obsp = function(value) {
+      .abstract_function()
+    },
+    #' @field uns The uns slot. Must be NULL or a named list or arbitrary
+    #' objects.
+    uns = function(value) {
+      .abstract_function()
+    },
+    #' @field var A `data.frame` with columns containing information
+    #'   about variables. The number of rows of `var` defines the variable
+    #'   dimension of the AnnData object.
+    var = function(value) {
+      .abstract_function()
+    },
     #' @field var_names Either NULL or a vector of unique identifiers
     #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   the variable dimension of the AnnData object. For compatibility
     #'   with *R* representations, `var_names` should be a character
     #'   vector.
     var_names = function(value) {
+      .abstract_function()
+    },
+    #' @field varm The varm slot. Must be NULL or a named list
+    #'   of two (or more) dimensional arrays with number of rows
+    #'   (first dimension) consistent with `var`.
+    varm = function(value) {
+      .abstract_function()
+    },
+    #' @field varp The varp slot. Must be NULL or a named list
+    #'   of two (or more) dimensional arrays with number of rows and columns
+    #'   (first two dimensions) consistent with `var`.
+    varp = function(value) {
       .abstract_function()
     }
   ),
@@ -71,9 +100,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
         sep = ""
       )
     },
-
     #' @description Dimensions (observations x variables) of the AnnData object.
-
     shape = function() {
       c(
         nrow(self$obs),
@@ -88,17 +115,29 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     n_vars = function() {
       nrow(self$var)
     },
+    #' @description Keys (element names) of `layers`.
+    layers_keys = function() {
+      names(self$layers)
+    },
     #' @description Keys ('column names') of `obs`.
     obs_keys = function() {
       names(self$obs)
+    },
+    #' @description Keys ('item names') of `obsm`.
+    obsm_keys = function() {
+      names(self$obsm)
+    },
+    #' @description Keys ('item names') of `uns`.
+    uns_keys = function() {
+      names(self$uns)
     },
     #' @description Keys ('column names') of `var`.
     var_keys = function() {
       names(self$var)
     },
-    #' @description Keys (element names) of `layers`.
-    layers_keys = function() {
-      names(self$layers)
+    #' @description Keys ('item names') of `varm`.
+    varm_keys = function() {
+      names(self$varm)
     }
   )
 )
