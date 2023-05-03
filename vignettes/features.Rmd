@@ -1,14 +1,19 @@
 ---
-title: Features
-format: gfm
+title: "Features"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Features}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-:::{.content-hidden}
-Rendered using:
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
-quarto render doc/features.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' doc/features.md
-```
-:::
 
 ```{r include=FALSE}
 library(tibble)
@@ -56,7 +61,7 @@ status_lines_proc <- status_lines %>%
 
 # combine with missing fields
 status_lines_required <- crossing(
-  class = c("InMemoryAnnData", "HDF5AnnData", "SeuratConverter", "SingleCellExperimentConverter"),
+  class = c("InMemoryAnnData", "HDF5AnnData", "Seurat", "SingleCellExperiment"),
   prefix = c("get_", "test_get_", "set_", "test_set_"),
   slot = c("X", "layers", "obs", "var", "obs_names", "var_names", "obsm", "varm", "obsp", "varp", "uns"),
   status = "missing"
