@@ -8,21 +8,21 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     .h5obj = NULL,
     .n_obs = NULL,
     .n_vars = NULL,
-    
+
     #' @description validate a value matches the observations dimension
     .validate_n_obs = function(value) {
       if (nrow(value) != self$n_obs()) {
         stop("Dimensions of value does not match the number of observations")
       }
     },
-    
+
     #' @description validate a value matches the variables dimension
     .validate_n_vars = function(value) {
       if (nrow(value) != self$n_vars()) {
         stop("Dimensions of value does not match the number of variables")
       }
     },
-    
+
     #' @description validate a value matches the AnnData shape
     .validate_shape = function(value) {
       if (!identical(dim(value), self$shape())) {
@@ -63,18 +63,18 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     #' @param h5obj The rhdf5 object
     initialize = function(h5obj) {
       attrs <- rhdf5::h5readAttributes(h5obj, "/")
-      
+
       if (!("encoding-type") %in% names(attrs) ||
-          !("encoding-version" %in% names(attrs))) {
+        !("encoding-version" %in% names(attrs))) {
         stop(
           "H5AD files without encodings are not supported ",
           "(this file may have been created with Python anndata prior to v0.8.0)"
         )
       }
-      
+
       private$.h5obj <- h5obj
     },
-    
+
     #' @description Number of observations in the AnnData object
     n_obs = function() {
       if (is.null(private$.n_obs)) {
@@ -82,7 +82,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
       }
       private$.n_obs
     },
-    
+
     #' @description Number of variables in the AnnData object
     n_vars = function() {
       if (is.null(private$.n_vars)) {

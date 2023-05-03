@@ -140,7 +140,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
     #'   dimnames) consistent with the number of rows of `obs` and
-    #"   `var`.
+    #'   `var`.
     X = function(value) {
       if (missing(value)) {
         private$.X
@@ -232,9 +232,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   the variable dimension of the AnnData object.. For compatibility
     #'   with *R* representations, `var_names` should be a character
     #'   vector.
-    initialize = function(
-      X = NULL, obs, var, obs_names = NULL, var_names = NULL, layers = NULL
-    ) {
+    initialize = function(X = NULL, obs, var, obs_names = NULL, var_names = NULL, layers = NULL) {
       # check obs and var first, because these objects are used by
       # other validators
       private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
