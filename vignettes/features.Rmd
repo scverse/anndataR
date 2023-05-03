@@ -72,7 +72,7 @@ status <- bind_rows(
 )
 
 # create formatted data frame for printing
-status_formatted <- 
+status_formatted <-
   status %>%
   mutate(
     prefix_formatted = strip_prefix[prefix],
@@ -80,8 +80,8 @@ status_formatted <-
       status == "missing",
       "",
       paste0(
-        "[", c("done" = "✓", "wip" = "~", "missing" = "")[status], 
-        "](https://github.com/scverse/anndataR/blob/main/", source_file, 
+        "[", c("done" = "✓", "wip" = "~", "missing" = "")[status],
+        "](https://github.com/scverse/anndataR/blob/main/", source_file,
         "#L", line_number, ")"
       )
     )
