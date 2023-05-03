@@ -20,18 +20,25 @@ to_Seurat <- function(obj) { # nolint
   stopifnot(inherits(obj, "AbstractAnnData"))
 
   # translate var_names
+  # trackstatus: class=Seurat, feature=get_var_names, status=done
   var_names_ <- .toseurat_check_obsvar_names(obj$var_names, "var_names")
+
+  # translate obs_names
+  # trackstatus: class=Seurat, feature=get_obs_names, status=done
   obs_names_ <- .toseurat_check_obsvar_names(obj$obs_names, "obs_names")
 
   # translate var
+  # trackstatus: class=Seurat, feature=get_var, status=done
   var_ <- obj$var
   rownames(var_) <- var_names_
 
   # translate obs
+  # trackstatus: class=Seurat, feature=get_obs, status=done
   obs_ <- obj$obs
   rownames(obs_) <- obs_names_
 
   # translate X
+  # trackstatus: class=Seurat, feature=get_X, status=done
   x_ <- Matrix::t(obj$X)
   dimnames(x_) <- list(var_names_, obs_names_)
 

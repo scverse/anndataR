@@ -29,50 +29,6 @@ When fully implemented, it will be a complete replacement for
 [mtmorgan/h5ad](github.com/mtmorgan/h5ad/) and
 [dynverse/anndata](https://github.com/dynverse/anndata).
 
-``` mermaid
-classDiagram
-
-  class AbstractAnnData {
-    *X: Matrix
-    *layers: List[Matrix]
-    *obs: DataFrame
-    *var: DataFrame
-    ...
-
-    to_single_cell_experiment(): SingleCellExperiment
-    to_seurat(): Seurat
-
-    to_hdf5(): HDF5AnnData
-    to_zarr(): ZarrAnnData
-    to_in_memory(): InMemoryAnnData
-  }
-
-  AbstractAnnData <|-- HDF5AnnData
-  class HDF5AnnData {
-    init(file): HDF5AnnData
-  }
-
-  AbstractAnnData <|-- ZarrAnnData
-  class ZarrAnnData {
-    init(file): ZarrAnnData
-  }
-
-  AbstractAnnData <|-- InMemoryAnnData
-  class InMemoryAnnData {
-    init(X, obs, var, ...): InMemoryAnnData
-  }
-
-  AbstractAnnData --> SingleCellExperiment
-  AbstractAnnData --> Seurat
-
-```
-
-## More information
-
-- [Design document](doc/design.md): interface, OO-framework, approach
-- [Challenges in reading h5ad files in R](doc/challenges.md)
-- [Implemented features](doc/features.md)
-
 ## Installation
 
 You can install the development version of `{anndataR}` like so:

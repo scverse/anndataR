@@ -143,8 +143,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #"   `var`.
     X = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_X, status=done
         private$.X
       } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_X, status=done
         private$.X <- private$.validate_matrix(value, "X")
         self
       }
@@ -153,8 +155,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   dimensions consistent with `obs` and `var`.
     layers = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_layers, status=done
         private$.layers
       } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_layers, status=done
         private$.layers <- private$.validate_layers(value)
         self
       }
@@ -164,8 +168,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   observation dimension of the AnnData object.
     obs = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_obs, status=done
         private$.obs
       } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_obs, status=done
         private$.obs <- private$.validate_obsvar_dataframe(value, "obs")
         self
       }
@@ -175,8 +181,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   dimension of the AnnData object.
     var = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_var, status=done
         private$.var
       } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_var, status=done
         private$.var <- private$.validate_obsvar_dataframe(value, "var")
         self
       }
@@ -188,8 +196,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   character vector.
     obs_names = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_obs_names, status=done
         private$.obs_names
       } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_obs_names, status=done
         private$.obs_names <- private$.validate_obsvar_names(value, "obs")
         self
       }
@@ -201,8 +211,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   vector.
     var_names = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_var_names, status=done
         private$.var_names
       } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_var_names, status=done
         private$.var_names <- private$.validate_obsvar_names(value, "var")
         self
       }
