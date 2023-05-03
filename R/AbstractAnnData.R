@@ -38,7 +38,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @field obsm The obsm slot. Must be NULL or a named list
     #'   of two (or more) dimensional arrays with number of rows
     #'   (first dimension) consistent with `obs`.
-    obsm = fun = function(value) {
+    obsm = function(value) {
       .abstract_function()
     },
     #' @field obsp The obsp slot. Must be NULL or a named list
@@ -69,7 +69,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @field varm The varm slot. Must be NULL or a named list
     #'   of two (or more) dimensional arrays with number of rows
     #'   (first dimension) consistent with `var`.
-    varm = fun = function(value) {
+    varm = function(value) {
       .abstract_function()
     },
     #' @field varp The varp slot. Must be NULL or a named list
