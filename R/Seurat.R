@@ -55,7 +55,7 @@ to_Seurat <- function(obj) { # nolint
   for (key in obj$layers_keys()) {
     layer_ <- t(obj$layers[[key]])
     dimnames(layer_) <- list(var_names_, obs_names_)
-    seurat_obj[[key]] <- Seurat::CreateAssayObject(counts = layer_)
+    seurat_obj[[key]] <- SeuratObject::CreateAssayObject(counts = layer_)
   }
 
   seurat_obj
