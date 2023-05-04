@@ -296,3 +296,22 @@ to_InMemory <- function(adata) { # nolint
     layers = adata$layers
   )
 }
+
+.create_empty_InMemoryAnnData <- function(n_obs, n_vars) { # nolint
+  obs_names <- as.character(seq_len(n_obs))
+  var_names <- as.character(seq_len(n_vars))
+
+  obs <- data.frame(i = seq_len(n_obs))[, -1, drop = FALSE]
+  var <- data.frame(i = seq_len(n_vars))[, -1, drop = FALSE]
+
+  # todo: add obsm, obsp, uns, varm, varp
+
+  InMemoryAnnData$new(
+    obs = obs,
+    var = var,
+    obs_names = obs_names,
+    var_names = var_names
+  )
+}
+
+InMemoryAnnData$create_empty <- .create_empty_InMemoryAnnData
