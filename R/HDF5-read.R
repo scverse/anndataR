@@ -159,8 +159,12 @@ read_h5ad_nullable_integer <- function(file, name, version = c("0.1.0")) {
 #' @return a character vector/matrix???
 read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
   version <- match.arg(version)
-  
-  rhdf5::h5read(file, name)
+  # reads in transposed
+  string_array <- rhdf5::h5read(file, name)
+  if(is.matrix(string_array)){
+    string_array <- t(string_array)
+  }
+  string_array
 }
 
 #' Read H5AD categorical
@@ -276,12 +280,13 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   index <- columns[[index_name]]
   columns[[index_name]] <- NULL
   
-  if(length(columns) == 0){
-    data.frame(#TODO)
-  } else {
-    data.frame(columns, row.names = index)
-    
-  }
+  # if length is 0, return dataframe with right row number
+  # if(length(columns) == 0){
+  #   # data.frame(#TODO)
+  # } else {
+  #   data.frame(columns, row.names = index)
+  #   
+  # }
   
   
 }
