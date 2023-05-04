@@ -1,12 +1,12 @@
 ---
-title: Design document
+title: anndataR
 format: gfm
 ---
 
 :::{.content-hidden}
 Rendered using:
 ```
-quarto render README.qmd
+quarto render README.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' README.md
 ```
 :::
 
@@ -21,8 +21,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# anndataR
-
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/anndataR)](https://CRAN.R-project.org/package=anndataR)
@@ -31,7 +29,7 @@ knitr::opts_chunk$set(
 
 `{anndataR}` is an R package that brings the power and flexibility of AnnData to the 
 R ecosystem, allowing you to effortlessly manipulate and analyze your single-cell data.
-`{anndataR}` lets you work with backed h5ad and zarr files, directly access various slots 
+This package lets you work with backed h5ad and zarr files, directly access various slots 
 (e.g. X, obs, var, obsm, obsp), or convert the data into SingleCellExperiment and Seurat 
 objects.
 
@@ -41,51 +39,6 @@ This package was initially created at the [scverse 2023-04 hackathon](https://sc
 
 When fully implemented, it will be a complete replacement for [theislab/zellkonverter](https://github.com/theislab/zellkonverter), [mtmorgan/h5ad](github.com/mtmorgan/h5ad/) and [dynverse/anndata](https://github.com/dynverse/anndata).
 
-
-```{mermaid}
-classDiagram
-
-  class AbstractAnnData {
-    *X: Matrix
-    *layers: List[Matrix]
-    *obs: DataFrame
-    *var: DataFrame
-    ...
-
-    to_single_cell_experiment(): SingleCellExperiment
-    to_seurat(): Seurat
-
-    to_hdf5(): HDF5AnnData
-    to_zarr(): ZarrAnnData
-    to_in_memory(): InMemoryAnnData
-  }
-
-  AbstractAnnData <|-- HDF5AnnData
-  class HDF5AnnData {
-    init(file): HDF5AnnData
-  }
-
-  AbstractAnnData <|-- ZarrAnnData
-  class ZarrAnnData {
-    init(file): ZarrAnnData
-  }
-
-  AbstractAnnData <|-- InMemoryAnnData
-  class InMemoryAnnData {
-    init(X, obs, var, ...): InMemoryAnnData
-  }
-
-  AbstractAnnData --> SingleCellExperiment
-  AbstractAnnData --> Seurat
-
-```
-
-
-## More information
-
-* [Design document](doc/design.md): interface, OO-framework, approach
-* [Challenges in reading h5ad files in R](doc/challenges.md)
-* [Implemented features](doc/features.md)
 
 ## Installation
 
@@ -107,9 +60,14 @@ download.file("https://github.com/chanzuckerberg/cellxgene/raw/main/example-data
 # Read an h5ad file
 adata <- read_h5ad("pbmc3k.h5ad")
 
-# Access the obs DataFrame
-adata_obs <- adata$obs
+# Access AnnData slots
+adata$X
+adata$obs
+adata$var
 
 # Convert the AnnData object to a SingleCellExperiment object
-sce <- adata$to_single_cell_experiment()
+sce <- adata$to_SingleCellExperiment()
+
+# Convert the AnnData object to a Seurat object
+sce <- adata$to_Seurat()
 ```
