@@ -1,9 +1,6 @@
 # anndataR
 
 <!-- README.md is generated from README.qmd. Please edit that file -->
-
-# anndataR
-
 <!-- badges: start -->
 
 [![Lifecycle:
@@ -14,7 +11,7 @@ status](https://www.r-pkg.org/badges/version/anndataR.png)](https://CRAN.R-proje
 
 `{anndataR}` is an R package that brings the power and flexibility of
 AnnData to the R ecosystem, allowing you to effortlessly manipulate and
-analyze your single-cell data. `{anndataR}` lets you work with backed
+analyze your single-cell data. This package lets you work with backed
 h5ad and zarr files, directly access various slots (e.g. X, obs, var,
 obsm, obsp), or convert the data into SingleCellExperiment and Seurat
 objects.
@@ -49,9 +46,14 @@ download.file("https://github.com/chanzuckerberg/cellxgene/raw/main/example-data
 # Read an h5ad file
 adata <- read_h5ad("pbmc3k.h5ad")
 
-# Access the obs DataFrame
-adata_obs <- adata$obs
+# Access AnnData slots
+adata$X
+adata$obs
+adata$var
 
 # Convert the AnnData object to a SingleCellExperiment object
-sce <- adata$to_single_cell_experiment()
+sce <- adata$to_SingleCellExperiment()
+
+# Convert the AnnData object to a Seurat object
+sce <- adata$to_Seurat()
 ```
