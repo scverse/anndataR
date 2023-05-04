@@ -311,7 +311,6 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   attributes <- rhdf5::h5readAttributes(file, name)
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
-<<<<<<< HEAD
   column_order <- append(column_order, index_name)
   
   columns <- read_h5ad_collection(file, name, column_order)
