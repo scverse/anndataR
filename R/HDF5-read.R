@@ -103,7 +103,6 @@ read_h5ad_dense_array <- function(file, name, version = c("0.2.0")) {
 #' @param type Type of the sparse matrix, either "csr" or "csc"
 #'
 #' @return a sparse matrix/DelayedArray???, or a vector if 1D
-#' @importFrom rhdf5 h5read h5readAttributes
 #' @importFrom Matrix sparseMatrix
 read_h5ad_sparse_array <- function(file, name, version = c("0.1.0"),
                                    type = c("csr", "csc")) {
@@ -249,7 +248,6 @@ read_h5ad_categorical <- function(file, name, version = c("0.2.0")) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a character vector of length 1
-#' @importFrom rhdf5 h5read
 read_h5ad_string_scalar <- function(file, name, version = c("0.2.0")) {
   requireNamespace("rhdf5")
 
