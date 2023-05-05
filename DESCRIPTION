@@ -47,7 +47,8 @@ Suggests:
     knitr,
     rmarkdown,
     SeuratObject,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    anndata
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr, purrr, dplyr, tidyr
