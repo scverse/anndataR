@@ -289,10 +289,9 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 
   version <- match.arg(version)
   groupname <- paste0("/", name)
-  columns <- subset(
-    rhdf5::h5ls(file, recursive = TRUE),
-    group == groupname
-  )$name
+  
+  file_structure <- rhdf5::h5ls(file, recursive = TRUE)
+  columns <- file_structure[file_structure$group == groupname, "name"]
   
   read_h5ad_collection(file, name, columns)
 }
