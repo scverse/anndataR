@@ -2,20 +2,38 @@
 % Please edit documentation in R/SingleCellExperiment.R
 \name{to_SingleCellExperiment}
 \alias{to_SingleCellExperiment}
-\title{Convert AnnData to SingleCellExperiment}
+\alias{from_SingleCellExperiment}
+\title{Convert Between AnnData and SingleCellExperiment}
 \usage{
 to_SingleCellExperiment(object)
+
+from_SingleCellExperiment(sce, output_class = "InMemory", ...)
 }
 \arguments{
 \item{object}{an AnnData object, e.g., InMemoryAnnData}
+
+\item{sce}{An object inheriting from SingleCellExperiment.}
+
+\item{output_class}{character(1) abbreviated name for the AnnData
+class (e.g., \code{"InMemory"} for an \code{InMemoryAnnData} object) to
+create from \code{sce}.}
+
+\item{...}{additional arguments passed to the generator function
+(e.g., \code{InMemoryAnnData$new()}) of \code{output_class}.}
 }
 \value{
 \code{to_SingleCellExperiment()} returns a SingleCellExperiment
 representing the content of \code{object}.
+
+\code{from_SingleCellExperiment()} returns an AnnData object
+(e.g., InMemoryAnnData) representing the content of \code{sce}.
 }
 \description{
 \code{to_SingleCellExperiment()} converts an AnnData object
 to a SingleCellExperiment.
+
+\code{from_SingleCellExperiment()} converts a
+SingleCellExperiment to an AnnData object.
 }
 \examples{
 if (interactive()) {
@@ -23,12 +41,22 @@ if (interactive()) {
   library(SingleCellExperiment)
 }
 ad <- InMemoryAnnData$new(
-  X = matrix(1:5, 3L, 5L),
+  X = matrix(1:15, 3L, 5L),
+  layers = list(
+    A = matrix(15:1, 3L, 5L),
+    B = matrix(letters[1:15], 3L, 5L)
+  ),
   obs = data.frame(cell = 1:3),
   var = data.frame(gene = 1:5),
   obs_names = LETTERS[1:3],
   var_names = letters[1:5]
 )
-to_SingleCellExperiment(ad)
+
+## construct a SingleCellExperiment from an AnnData object
+sce <- to_SingleCellExperiment(ad)
+sce
+
+## construct an AnnData object from a SingleCellExperiment
+from_SingleCellExperiment(sce, "InMemory")
 
 }
