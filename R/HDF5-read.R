@@ -193,8 +193,12 @@ read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
   requireNamespace("rhdf5")
 
   version <- match.arg(version)
-
-  rhdf5::h5read(file, name)
+  # reads in transposed
+  string_array <- rhdf5::h5read(file, name)
+  if(is.matrix(string_array)){
+    string_array <- t(string_array)
+  }
+  string_array
 }
 
 #' Read H5AD categorical
