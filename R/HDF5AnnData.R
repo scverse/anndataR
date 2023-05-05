@@ -108,6 +108,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     initialize = function(h5obj) {
       attrs <- rhdf5::h5readAttributes(h5obj, "/")
 
+      if (is.character(h5obj)) {
+        h5obj <- path.expand(h5obj)
+        if (!file.exists(h5obj)) {
+          stop("Path to H5AD not found: ", h5obj)
+        }
+      }
+      
       if (!("encoding-type") %in% names(attrs) ||
         !("encoding-version" %in% names(attrs))) {
         stop(
