@@ -4,18 +4,14 @@
 \alias{write_h5ad_element}
 \title{Write H5AD element}
 \usage{
-write_h5ad_element(file, name, encoding, version, value)
+write_h5ad_element(value, file, name)
 }
 \arguments{
+\item{value}{The value to write}
+
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
-
-\item{encoding}{The encoding of the element to read}
-
-\item{version}{The encoding version of the element to read}
-
-\item{value}{The value to write}
 }
 \description{
 Write an element to a H5AD file

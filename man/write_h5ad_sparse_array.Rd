@@ -5,21 +5,23 @@
 \title{Write H5AD sparse array}
 \usage{
 write_h5ad_sparse_array(
+  value,
   file,
   name,
-  value,
   version = c("0.1.0"),
   type = c("csr", "csc")
 )
 }
 \arguments{
+\item{value}{Value to write}
+
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
 
-\item{value}{Value to write}
-
 \item{version}{Encoding version of the element to write}
+
+\item{type}{Type of the sparse matrix to write, either "csr" or "csc"}
 }
 \description{
 Write a sparse array from an H5AD file
