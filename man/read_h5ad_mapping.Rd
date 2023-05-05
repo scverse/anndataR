@@ -14,7 +14,7 @@ read_h5ad_mapping(file, name, version = c("0.1.0"))
 \item{version}{Encoding version of the element to read}
 }
 \value{
-a numeric vector of length 1
+a named list
 }
 \description{
 Read a mapping from an H5AD file

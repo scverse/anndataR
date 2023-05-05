@@ -5,80 +5,111 @@
 #' @title AbstractAnnData
 #'
 #' @description
-#' Abstract class representing an anndata object. Defines the interface.
+#'   Abstract [R6][R6::R6Class] class representing an AnnData
+#'   object. Defines the interface.
 #' @importFrom R6 R6Class
 AbstractAnnData <- R6::R6Class("AbstractAnnData",
   active = list(
-    #' @field X The X slot
+    #' @field X NULL or an observation x variable matrix (without
+    #'   dimnames) consistent with the number of rows of `obs` and `var`.
     X = function(value) {
       .abstract_function()
     },
-    #' @field obs The obs slot
+    #' @field layers The layers slot. Must be NULL or a named list
+    #'   with with all elements having the dimensions consistent with
+    #'   `obs` and `var`.
+    layers = function(value) {
+      .abstract_function()
+    },
+    #' @field obs A `data.frame` with columns containing information
+    #'   about observations. The number of rows of `obs` defines the
+    #'   observation dimension of the AnnData object.
     obs = function(value) {
       .abstract_function()
     },
-    #' @field var The var slot
+    #' @field var A `data.frame` with columns containing information
+    #'   about variables. The number of rows of `var` defines the variable
+    #'   dimension of the AnnData object.
     var = function(value) {
       .abstract_function()
     },
-    #' @field obs_names The obs_names slot
+    #' @field obs_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `obs` and to act as an index into
+    #'   the observation dimension of the AnnData object. For
+    #'   compatibility with *R* representations, `obs_names` should be a
+    #'   character vector.
     obs_names = function(value) {
-      if (missing(value)) {
-        names <- names(self$obs)
-        if (is.null(names)) {
-          names <- character()
-        }
-        names
-      } else {
-        .abstract_function()
-      }
+      .abstract_function()
     },
-    #' @field var_names The var_names slot
+    #' @field var_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `var` and to act as an index into
+    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   with *R* representations, `var_names` should be a character
+    #'   vector.
     var_names = function(value) {
-      if (missing(value)) {
-        names <- names(self$var)
-        if (is.null(names)) {
-          names <- character()
-        }
-        names
-      } else {
-        .abstract_function()
-      }
+      .abstract_function()
     }
   ),
   public = list(
-    #' @description Print AnnData object
-    #' @param ... optional arguments to print method.
+    #' @description Print a summary of the AnnData object. `print()`
+    #'   methods should be implemented so that they are not
+    #'   computationally expensive.
+    #' @param ... Optional arguments to print method.
     print = function(...) {
-      X_info <- if (!is.null(self$X)) {
+      x_info <- if (!is.null(self$X)) {
         class(self$X)[[1]]
       } else {
         NULL
       }
       cat(
         "class: ", class(self)[[1]], "\n",
-        "dim: ", self$dim()[1], " x ", self$dim()[2], "\n",
-        "X: ", X_info, "\n",
-        pretty_print("obs", self$obs_names), "\n",
-        pretty_print("var", self$var_names), "\n",
+        "dim: ", self$n_obs(), " obs x ", self$n_vars(), " var\n",
+        "X: ", x_info, "\n",
+        pretty_print("layers", self$layers_keys()), "\n",
+        pretty_print("obs", self$obs_keys()), "\n",
+        pretty_print("var", self$var_keys()), "\n",
         sep = ""
       )
     },
-    #' @description Dimensions of the AnnData object
-    dim = function() {
+
+    #' @description Dimensions (observations x variables) of the AnnData object.
+    shape = function() {
       c(
-        nrow(self$obs),
-        nrow(self$var)
+        self$n_obs(),
+        self$n_vars()
       )
     },
-    #' @description Return a new AnnData object with all objects loaded into memory.
-    to_inmemory = function() {
-      # should probably be stored in a separate file
-      InMemoryAnnData$new(
-        X = self$X,
-        obs = self$obs,
-        var = self$var
-      )
+    #' @description Number of observations in the AnnData object.
+    n_obs = function() {
+      nrow(self$obs)
+    },
+    #' @description Number of variables in the AnnData object.
+    n_vars = function() {
+      nrow(self$var)
+    },
+    #' @description Keys ('column names') of `obs`.
+    obs_keys = function() {
+      names(self$obs)
+    },
+    #' @description Keys ('column names') of `var`.
+    var_keys = function() {
+      names(self$var)
+    },
+    #' @description Keys (element names) of `layers`.
+    layers_keys = function() {
+      names(self$layers)
+    },
+    #' @description Convert to SingleCellExperiment
+    to_SingleCellExperiment = function() {
+      to_SingleCellExperiment(self)
+    },
+    #' @description Convert to Seurat
+    to_Seurat = function() {
+      to_Seurat(self)
+    },
+    #' @description Convert to an InMemory AnnData
+    to_InMemoryAnnData = function() {
+      to_InMemoryAnnData(self)
     }
   )
 )

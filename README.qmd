@@ -1,12 +1,12 @@
 ---
-title: Design document
+title: anndataR
 format: gfm
 ---
 
 :::{.content-hidden}
 Rendered using:
 ```
-quarto render README.qmd
+quarto render README.qmd; sed -i 's#&lt;#<#g;s#&gt;#>#g' README.md
 ```
 :::
 
@@ -21,54 +21,53 @@ knitr::opts_chunk$set(
 )
 ```
 
-# anndatar
-
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/anndatar)](https://CRAN.R-project.org/package=anndatar)
+[![CRAN status](https://www.r-pkg.org/badges/version/anndataR)](https://CRAN.R-project.org/package=anndataR)
 <!-- badges: end -->
 
 
-`{anndatar}` is an R package that brings the power and flexibility of AnnData to the 
+`{anndataR}` is an R package that brings the power and flexibility of AnnData to the 
 R ecosystem, allowing you to effortlessly manipulate and analyze your single-cell data.
-`{anndatar}` lets you work with backed h5ad and zarr files, directly access various slots 
+This package lets you work with backed h5ad and zarr files, directly access various slots 
 (e.g. X, obs, var, obsm, obsp), or convert the data into SingleCellExperiment and Seurat 
 objects.
 
-## Features
+## Design
 
-* Seamless Integration: `{anndatar}` bridges the gap between Python's AnnData and popular R single-cell analysis tools like SingleCellExperiment and Seurat.
-* Efficient Data Handling: The package supports backed h5ad and zarr file formats, allowing you to work with large datasets efficiently.
-* Flexible Data Access: Access obs, var, obsp, and other slots directly, giving you the freedom to manipulate your data as needed.
+This package was initially created at the [scverse 2023-04 hackathon](https://scverse.org/events/2023_04_hackathon/) in Heidelberg.
 
-## Design docs
+When fully implemented, it will be a complete replacement for [theislab/zellkonverter](https://github.com/theislab/zellkonverter), [mtmorgan/h5ad](github.com/mtmorgan/h5ad/) and [dynverse/anndata](https://github.com/dynverse/anndata).
 
-* [Design document](doc/design.md): interface, OO-framework, approach
-* [Challenges in reading h5ad files in R](doc/challenges.md)
 
 ## Installation
 
-You can install the development version of `{anndatar}` like so:
+You can install the development version of `{anndataR}` like so:
 
 ``` r
-devtools::install_github("scverse/anndatar")
+devtools::install_github("scverse/anndataR")
 ```
 
 ## Example
 
-Here's a quick example of how to use `{anndatar}`:
+Here's a quick example of how to use `{anndataR}`:
 
 ```r
-library(anndatar)
+library(anndataR)
 
 download.file("https://github.com/chanzuckerberg/cellxgene/raw/main/example-dataset/pbmc3k.h5ad", "pbmc3k.h5ad")
 
 # Read an h5ad file
 adata <- read_h5ad("pbmc3k.h5ad")
 
-# Access the obs DataFrame
-adata_obs <- adata$obs
+# Access AnnData slots
+adata$X
+adata$obs
+adata$var
 
 # Convert the AnnData object to a SingleCellExperiment object
-sce <- adata$to_sce()
+sce <- adata$to_SingleCellExperiment()
+
+# Convert the AnnData object to a Seurat object
+sce <- adata$to_Seurat()
 ```

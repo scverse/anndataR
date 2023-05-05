@@ -6,17 +6,67 @@
 \description{
 Implementation of an in memory AnnData object.
 }
+\examples{
+## complete example
+ad <- InMemoryAnnData$new(
+  X = matrix(1:5, 3L, 5L),
+  layers = list(
+    A = matrix(5:1, 3L, 5L),
+    B = matrix(letters[1:5], 3L, 5L)
+  ),
+  obs = data.frame(cell = 1:3),
+  var = data.frame(gene = 1:5),
+  obs_names = LETTERS[1:3],
+  var_names = letters[1:5]
+)
+ad
+
+## minimal example -- no observations or variables
+ad <- InMemoryAnnData$new(
+  obs = data.frame(),
+  var = data.frame()
+)
+ad
+
+## number of  observations or variables determined by `obs` and `var`; no
+## `X` or `layers`; `obs_names` and `var_names` determined automatically
+ad <- InMemoryAnnData$new(
+  obs = data.frame(cell = 1:3),
+  var = data.frame(gene = 1:5)
+)
+ad
+}
 \section{Super class}{
-\code{\link[anndatar:AbstractAnnData]{anndatar::AbstractAnnData}} -> \code{InMemoryAnnData}
+\code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{InMemoryAnnData}
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{The X slot}
+\item{\code{X}}{NULL or an observation x variable matrix (without
+dimnames) consistent with the number of rows of \code{obs} and}
 
-\item{\code{obs}}{The obs slot}
+\item{\code{layers}}{NULL or a named list with all elements having the
+dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{var}}{The var slot}
+\item{\code{obs}}{A \code{data.frame} with columns containing information
+about observations. The number of rows of \code{obs} defines the
+observation dimension of the AnnData object.}
+
+\item{\code{var}}{A \code{data.frame} with columns containing information
+about variables. The number of rows of \code{var} defines the variable
+dimension of the AnnData object.}
+
+\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. For
+compatibility with \emph{R} representations, \code{obs_names} should be a
+character vector.}
+
+\item{\code{var_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object.. For compatibility
+with \emph{R} representations, \code{var_names} should be a character
+vector.}
 }
 \if{html}{\out{</div>}}
 }
@@ -28,11 +78,18 @@ Implementation of an in memory AnnData object.
 }
 }
 \if{html}{\out{
-<details open><summary>Inherited methods</summary>
+<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="dim"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-dim'><code>anndatar::AbstractAnnData$dim()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="print"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndatar::AbstractAnnData$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndatar" data-topic="AbstractAnnData" data-id="to_inmemory"><a href='../../anndatar/html/AbstractAnnData.html#method-AbstractAnnData-to_inmemory'><code>anndatar::AbstractAnnData$to_inmemory()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_InMemoryAnnData'><code>anndataR::AbstractAnnData$to_InMemoryAnnData()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndataR::AbstractAnnData$to_Seurat()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndataR::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -41,21 +98,47 @@ Implementation of an in memory AnnData object.
 \if{latex}{\out{\hypertarget{method-InMemoryAnnData-new}{}}}
 \subsection{Method \code{new()}}{
 Creates a new instance of an in memory AnnData object.
-Inherits from AbstractAnnData
+Inherits from AbstractAnnData.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(X = NULL, obs = NULL, var = NULL, shape = NULL)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
+  X = NULL,
+  obs,
+  var,
+  obs_names = NULL,
+  var_names = NULL,
+  layers = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{A #observations × #variables data matrix. A view of the data is used if the data type matches, otherwise, a copy is made.}
+\item{\code{X}}{Either NULL or a observation x variable matrix with
+dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{Key-indexed one-dimensional observations annotation of length #observations.}
+\item{\code{obs}}{A \code{data.frame} with columns containing information
+about observations. The number of rows of \code{obs} defines the
+observation dimension of the AnnData object.}
 
-\item{\code{var}}{Key-indexed one-dimensional variables annotation of length #variables.}
+\item{\code{var}}{A \code{data.frame} with columns containing information
+about variables. The number of rows of \code{var} defines the variable
+dimension of the AnnData object.}
 
-\item{\code{shape}}{Shape list (#observations, #variables). Can only be provided if \code{X} is \code{NULL}.}
+\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. For
+compatibility with \emph{R} representations, \code{obs_names} should be a
+character vector.}
+
+\item{\code{var_names}}{Either NULL or a vector of unique identifers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object.. For compatibility
+with \emph{R} representations, \code{var_names} should be a character
+vector.}
+
+\item{\code{layers}}{Either NULL or a named list, where each element
+is an observation x variable matrix with dimensions consistent
+with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}
 }

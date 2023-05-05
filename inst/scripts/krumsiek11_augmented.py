@@ -61,6 +61,8 @@ adata.uns["dummy_int2"] = pd.array([1,2,None])
 adata.uns["dummy_int_scalar"] = 1
 adata.uns["dummy_string_scalar"] = "foo"
 
+adata.uns["dummy_string_array_1"] = [f"row{i}" for i in range(adata.shape[1])]
+
 adata.uns["dummy_string_array"] = [[f"row{i}{j}" for i in range(adata.shape[1])] for j in range(adata.shape[0])]
 
 # for testing obs with no content

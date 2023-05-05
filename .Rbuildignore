@@ -6,3 +6,8 @@
 ^README\.qmd$
 ^\.metals$
 ^\.vscode$
+^\.lintr$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^vignettes/features.Rmd$
