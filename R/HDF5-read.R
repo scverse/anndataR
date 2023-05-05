@@ -334,6 +334,7 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
 #'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param column_order Vector of item names (in order)
 #'
 #' @return a named list
 read_h5ad_collection <- function(file, name, column_order){

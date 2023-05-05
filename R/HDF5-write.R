@@ -87,6 +87,7 @@ path_exists <- function(file, target_path) {
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
+#' @param type Type of the sparse matrix to write, either "csr" or "csc"
 write_h5ad_sparse_array <- function(value, file, name, version = c("0.1.0"),
                                     type = c("csr", "csc")) {
   requireNamespace("rhdf5")
