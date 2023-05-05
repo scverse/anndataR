@@ -73,7 +73,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     },
 
     #' @description Dimensions (observations x variables) of the AnnData object.
-
     shape = function() {
       c(
         self$n_obs(),
@@ -99,6 +98,18 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @description Keys (element names) of `layers`.
     layers_keys = function() {
       names(self$layers)
+    },
+    #' @description Convert to SingleCellExperiment
+    to_SingleCellExperiment = function() {
+      to_SingleCellExperiment(self)
+    },
+    #' @description Convert to Seurat
+    to_Seurat = function() {
+      to_Seurat(self)
+    },
+    #' @description Convert to an InMemory AnnData
+    to_InMemoryAnnData = function() {
+      to_InMemoryAnnData(self)
     }
   )
 )
