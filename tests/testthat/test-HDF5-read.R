@@ -47,10 +47,13 @@ test_that("reading string array", {
   expect_equal(sarray[43, 6], "row542")
 })
 
-test_that("reading mapping"){
-  
-}
+test_that("reading mapping", {
+  mapping <- read_h5ad_mapping(file, "uns")
+  expect_type(mapping, "list")
+  expect_type(names(mapping), "character")
+})
 
-test_that("reading dataframe"){
-  
-}
+test_that("reading dataframe", {
+  df <- read_h5ad_data_frame(file, "obs")
+  expect_true(is.data.frame(df))
+})

@@ -288,7 +288,7 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   #   
   # }
   
-  
+  data.frame(columns, row.names = index)
 }
 
 #' Read multiple H5AD datatypes
