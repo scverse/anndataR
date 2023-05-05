@@ -8,6 +8,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
     .h5obj = NULL,
     .n_obs = NULL,
     .n_vars = NULL,
+    .obs_names = NULL,
+    .var_names = NULL,
 
     #' @description validate a value matches the observations dimension
     .validate_n_obs = function(value) {
@@ -54,6 +56,38 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
         read_h5ad_element(private$.h5obj, "/var")
       } else {
         write_h5ad_element(value, private$.h5obj, "/var")
+      }
+    },
+    #' @field obs_names Names of observations
+    obs_names = function(value) {
+      if (missing(value)) {
+        # obs names are cached to avoid reading all of obs whenever they are
+        # accessed
+        if (is.null(private$.obs_names)) {
+          private$.obs_names <- rownames(self$obs)
+        }
+        private$.obs_names
+      } else {
+        obs <- self$obs
+        rownames(obs) <- value
+        self$obs <- obs
+        private$.obs_names <- value
+      }
+    },
+    #' @field var_names Names of variables
+    var_names = function(value) {
+      if (missing(value)) {
+        # var names are cached to avoid reading all of var whenever they are
+        # accessed
+        if (is.null(private$.var_names)) {
+          private$.var_names <- rownames(self$var)
+        }
+        private$.var_names
+      } else {
+        var <- self$var
+        rownames(var) <- value
+        self$var <- var
+        private$.var_names <- value
       }
     }
   ),
