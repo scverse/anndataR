@@ -42,6 +42,16 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
         write_h5ad_element(value, private$.h5obj, "/X")
       }
     },
+    #' @field layers The layers slot. Must be NULL or a named list
+    #'   with with all elements having the dimensions consistent with
+    #'   `obs` and `var`.
+    layers = function(value) {
+      if (missing(value)) {
+        read_h5ad_element(private$.h5obj, "layers")
+      } else {
+        write_h5ad_element(value, private$.h5obj, "layers")
+      }
+    },
     #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
