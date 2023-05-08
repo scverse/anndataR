@@ -36,8 +36,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field X The X slot
     X = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_X, status=wip
         read_h5ad_element(private$.h5obj, "/X")
       } else {
+        # trackstatus: class=HDF5AnnData, feature=set_X, status=wip
         private$.validate_shape(value)
         write_h5ad_element(value, private$.h5obj, "/X")
       }
@@ -47,30 +49,37 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   `obs` and `var`.
     layers = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_layers, status=wip
         read_h5ad_element(private$.h5obj, "layers")
       } else {
+        # trackstatus: class=HDF5AnnData, feature=set_layers, status=wip
         write_h5ad_element(value, private$.h5obj, "layers")
       }
     },
     #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_obs, status=wip
         read_h5ad_element(private$.h5obj, "/obs")
       } else {
+        # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
         write_h5ad_element(value, private$.h5obj, "/obs")
       }
     },
     #' @field var The var slot
     var = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_var, status=wip
         read_h5ad_element(private$.h5obj, "/var")
       } else {
+        # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
         write_h5ad_element(value, private$.h5obj, "/var")
       }
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=wip
         # obs names are cached to avoid reading all of obs whenever they are
         # accessed
         if (is.null(private$.obs_names)) {
@@ -78,6 +87,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         }
         private$.obs_names
       } else {
+        # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=wip
         obs <- self$obs
         rownames(obs) <- value
         self$obs <- obs
@@ -87,6 +97,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field var_names Names of variables
     var_names = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_var_names, status=wip
         # var names are cached to avoid reading all of var whenever they are
         # accessed
         if (is.null(private$.var_names)) {
@@ -94,6 +105,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         }
         private$.var_names
       } else {
+        # trackstatus: class=HDF5AnnData, feature=set_var_names, status=wip
         var <- self$var
         rownames(var) <- value
         self$var <- var
