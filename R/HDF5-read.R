@@ -194,7 +194,7 @@ read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
   version <- match.arg(version)
   # reads in transposed
   string_array <- rhdf5::h5read(file, name)
-  if(is.matrix(string_array)){
+  if (is.matrix(string_array)) {
     string_array <- t(string_array)
   }
   string_array
@@ -289,10 +289,10 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 
   version <- match.arg(version)
   groupname <- paste0("/", name)
-  
+
   file_structure <- rhdf5::h5ls(file, recursive = TRUE)
   columns <- file_structure[file_structure$group == groupname, "name"]
-  
+
   read_h5ad_collection(file, name, columns)
 }
 
@@ -309,20 +309,20 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 #' @return a data.frame
 read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
   requireNamespace("rhdf5")
-  
+
   version <- match.arg(version)
 
   attributes <- rhdf5::h5readAttributes(file, name)
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
   column_order <- append(column_order, index_name)
-  
+
   columns <- read_h5ad_collection(file, name, column_order)
-  
+
   index <- columns[[index_name]]
   columns[[index_name]] <- NULL
-  
-  if(length(columns) == 0){
+
+  if (length(columns) == 0) {
     data.frame(row.names = index)
   } else {
     data.frame(columns, row.names = index)
@@ -336,12 +336,12 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
 #' @param column_order Vector of item names (in order)
 #'
 #' @return a named list
-read_h5ad_collection <- function(file, name, column_order){
+read_h5ad_collection <- function(file, name, column_order) {
   columns <- list()
   for (col_name in column_order) {
     new_name <- file.path(name, col_name)
     encoding <- rhdf5::h5readAttributes(file, new_name)
     columns[[col_name]] <- read_h5ad_element(file, new_name, encoding$`encoding-type`, encoding$`encoding-version`)
-  } 
+  }
   columns
 }

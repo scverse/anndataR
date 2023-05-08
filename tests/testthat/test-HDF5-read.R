@@ -12,7 +12,7 @@ test_that("reading dense matrix", {
   # TODO: test dimensions, test a random coordinate to ensure the dimensions didn't flip
   expect_equal(dim(matrix2d), c(640, 10))
   expect_equal(matrix2d[43, 6], 47)
-  
+
   matrix1d <- read_h5ad_dense_array(file, "obs/dummy_num")
   expect_equal(matrix1d, rep(42.42, 640))
 })
@@ -22,13 +22,13 @@ test_that("reading sparse matrix", {
   matrix2d_csc <- read_h5ad_sparse_array(file, "obsm/sparse_csc", type = "csc")
   expect_equal(dim(matrix2d_csr), c(640, 10))
   expect_equal(dim(matrix2d_csc), c(640, 10))
-  
+
   expect_equal(matrix2d_csr[43, 6], 47)
   expect_equal(matrix2d_csc[43, 6], 47)
 
   matrix1d_csr <- read_h5ad_sparse_array(file, "obsm/sparse_csr_1", type = "csr")
   matrix1d_csc <- read_h5ad_sparse_array(file, "obsm/sparse_csc_1", type = "csc")
-  
+
   expect_equal(matrix1d_csr[15], 14)
   expect_equal(matrix1d_csc[15], 14)
 })

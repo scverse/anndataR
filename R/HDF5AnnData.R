@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
-HDF5AnnData <- R6::R6Class("HDF5AnnData",
+HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
     .h5obj = NULL,
@@ -114,7 +114,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData",
           stop("Path to H5AD not found: ", h5obj)
         }
       }
-      
+
       if (!("encoding-type") %in% names(attrs) ||
         !("encoding-version" %in% names(attrs))) {
         stop(
