@@ -28,14 +28,17 @@ Imports:
     methods,
     R6
 Suggests:
+    anndata,
     knitr,
+    reticulate,
     rhdf5,
     rmarkdown,
     S4Vectors,
     SeuratObject,
     SingleCellExperiment,
     SummarizedExperiment,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 VignetteBuilder: 
     knitr
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
