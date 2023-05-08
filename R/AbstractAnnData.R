@@ -1,5 +1,6 @@
-.abstract_function <- function() {
-  stop("This function is not implemented yet.")
+.abstract_function <- function(fun_name = NA_character_) {
+  fun_name <- if (is.na(fun_name)) "This function" else fun_name
+  stop(fun_name, " is an abstract function.")
 }
 
 #' @title AbstractAnnData
@@ -13,25 +14,25 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #' @field X NULL or an observation x variable matrix (without
     #'   dimnames) consistent with the number of rows of `obs` and `var`.
     X = function(value) {
-      .abstract_function()
+      .abstract_function("ad$X")
     },
     #' @field layers The layers slot. Must be NULL or a named list
     #'   with with all elements having the dimensions consistent with
     #'   `obs` and `var`.
     layers = function(value) {
-      .abstract_function()
+      .abstract_function("ad$layers")
     },
     #' @field obs A `data.frame` with columns containing information
     #'   about observations. The number of rows of `obs` defines the
     #'   observation dimension of the AnnData object.
     obs = function(value) {
-      .abstract_function()
+      .abstract_function("ad$obs")
     },
     #' @field var A `data.frame` with columns containing information
     #'   about variables. The number of rows of `var` defines the variable
     #'   dimension of the AnnData object.
     var = function(value) {
-      .abstract_function()
+      .abstract_function("ad$var")
     },
     #' @field obs_names Either NULL or a vector of unique identifiers
     #'   used to identify each row of `obs` and to act as an index into
@@ -39,7 +40,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #'   compatibility with *R* representations, `obs_names` should be a
     #'   character vector.
     obs_names = function(value) {
-      .abstract_function()
+      .abstract_function("ad$obs_names")
     },
     #' @field var_names Either NULL or a vector of unique identifiers
     #'   used to identify each row of `var` and to act as an index into
@@ -47,7 +48,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     #'   with *R* representations, `var_names` should be a character
     #'   vector.
     var_names = function(value) {
-      .abstract_function()
+      .abstract_function("ad$var_names")
     }
   ),
   public = list(
