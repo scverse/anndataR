@@ -1,4 +1,13 @@
-library(Matrix)
+# helper function to skip tests if we don't have the 'foo' module
+skip_if_no_anndata <- function() {
+  requireNamespace("reticulate")
+  have_anndata <- reticulate::py_module_available("anndata")
+  if (!have_anndata) {
+    skip("anndata not available for testing")
+  }
+}
+
+skip_if_no_anndata()
 
 # construct dummy objects
 X <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
