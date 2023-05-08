@@ -1,10 +1,10 @@
 # helper function to skip tests if we don't have the 'foo' module
 skip_if_no_anndata <- function() {
   requireNamespace("reticulate")
-  have_anndata <- reticulate::py_module_available("anndata")
-  if (!have_anndata) {
-    skip("anndata not available for testing")
-  }
+  testthat::skip_if_not(
+    reticulate::py_module_available("anndata"),
+    message = "anndata not available for testing"
+  )
 }
 
 skip_if_no_anndata()
