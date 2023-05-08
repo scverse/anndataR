@@ -11,8 +11,9 @@
 write_encoding_attributes <- function(file, name, encoding, version) {
   requireNamespace("rhdf5")
 
-  rhdf5::h5writeAttribute(obj = encoding, file, name, "encoding-type") # nolint
-  rhdf5::h5writeAttribute(obj = version, file, name, "encoding-version") # nolint
+  dataset <- rhdf5::H5Dopen(file, name)
+  rhdf5::h5writeAttribute(encoding, dataset, "encoding-type") # nolint
+  rhdf5::h5writeAttribute(version, dataset, "encoding-version") # nolint
 }
 
 #' Write H5AD element
