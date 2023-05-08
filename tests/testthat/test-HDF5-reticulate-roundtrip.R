@@ -42,7 +42,7 @@ test_that("test reticulate+Python -> h5ad -> R+HDF5AnnData", {
 })
 
 # It's not possible to do this roundtrip yet
-
+# nolint start
 # test_that("test R+HDF5AnnData -> h5ad -> reticulate+Python", {
 #   # create anndata in R
 #   ad <- InMemoryAnnData$new(
@@ -63,3 +63,4 @@ test_that("test reticulate+Python -> h5ad -> R+HDF5AnnData", {
 #   expect_equal(ad_new$n_obs(), nrow(obs))
 #   expect_equal(ad_new$n_vars(), nrow(var))
 # })
+# nolint end
