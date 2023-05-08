@@ -33,7 +33,6 @@ Suggests:
     rmarkdown,
     S4Vectors,
     SeuratObject,
-    testthat (>= 3.0.0)
     SingleCellExperiment,
     SummarizedExperiment,
     testthat (>= 3.0.0),
