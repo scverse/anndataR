@@ -31,10 +31,10 @@ write_h5ad_element <- function(value, file, name) { # nolint
       write_h5ad_sparse_array
     } else if (is.factor(value)) {
       write_h5ad_categorical
-    } else if (is.list(value)) {
-      write_h5ad_mapping
     } else if (is.data.frame(value)) {
       write_h5ad_data_frame
+    } else if (is.list(value)) {
+      write_h5ad_mapping
     } else if (is.character(value) && length(value) == 1) {
       write_h5ad_string_scalar
     } else if (is.numeric(value) && length(value) == 1) {
