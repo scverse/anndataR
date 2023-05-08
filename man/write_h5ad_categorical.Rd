@@ -4,7 +4,7 @@
 \alias{write_h5ad_categorical}
 \title{Write H5AD categorical}
 \usage{
-write_h5ad_categorical(value, file, name, version = c("0.2.0"))
+write_h5ad_categorical(value, file, name, version = "0.2.0")
 }
 \arguments{
 \item{value}{Value to write}

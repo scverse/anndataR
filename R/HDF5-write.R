@@ -2,25 +2,8 @@
 #'
 #' Add the H5AD encoding to the attributes of an object
 #'
-#' @param x Object to set encoding on
-#' @param encoding The encoding type to set
-#' @param version The encoding version to set
-#'
-#' @return The object with additional encoding attributes
-set_h5ad_encoding <- function(x, encoding, version) {
-  # nolint start
-  attr(x, "encoding-type") <- encoding
-  attr(x, "encoding-version") <- version
-  # nolint end
-
-  return(x)
-}
-
-#' Set H5AD encoding
-#'
-#' Add the H5AD encoding to the attributes of an object
-#'
-#' @param x Object to set encoding on
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
 #'
@@ -41,28 +24,28 @@ write_encoding_attributes <- function(file, name, encoding, version) {
 #' @param name Name of the element within the H5AD file
 write_h5ad_element <- function(value, file, name) { # nolint
   write_fun <-
-    if (is.matrix(data) || is.vector(data)) {
+    if (is.matrix(value) || is.vector(value)) {
       write_h5ad_dense_array
-    } else if (inherits(data, "sparseMatrix")) { # nolint
+    } else if (inherits(value, "sparseMatrix")) { # nolint
       write_h5ad_sparse_array
-    } else if (is.factor(data)) {
+    } else if (is.factor(value)) {
       write_h5ad_categorical
-    } else if (is.list(data)) {
+    } else if (is.list(value)) {
       write_h5ad_mapping
-    } else if (is.data.frame(data)) {
+    } else if (is.data.frame(value)) {
       write_h5ad_data_frame
-    } else if (is.character(data) && length(data) == 1) {
+    } else if (is.character(value) && length(value) == 1) {
       write_h5ad_string_scalar
-    } else if (is.numeric(data) && length(data) == 1) {
+    } else if (is.numeric(value) && length(value) == 1) {
       write_h5ad_numeric_scalar
-    } else if (is.logical(data) && any(is.na(data))) {
+    } else if (is.logical(value) && any(is.na(value))) {
       write_h5ad_nullable_boolean
-    } else if (is.integer(data) && any(is.na(data))) {
+    } else if (is.integer(value) && any(is.na(value))) {
       write_h5ad_nullable_integer
     } else {
-      stop("Unsupported data type: ", class(data)) # nolint
+      stop("Unsupported data type: ", class(value)) # nolint
     }
-  write_fun(file, name, data)
+  write_fun(file, name, value)
 }
 
 #' Write H5AD dense array
@@ -73,13 +56,6 @@ write_h5ad_element <- function(value, file, name) { # nolint
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
-#'
-#' @examples
-#' value <- matrix(10, nrow = 10, ncol = 12)
-#' file_path <- system.file("extdata", "krumsiek11_augmented_sparse_v0-8.h5ad", package = "anndataR")
-#' file <- rhdf5::H5Fopen(file_path)
-#' name <- "/X"
-#' write_h5ad_dense_array(value, file, name)
 write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
 
@@ -87,7 +63,7 @@ write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
 
   # Transpose the value because writing with native=TRUE does not
   # seem to work as expected
-  rhdf5::h5write(t(data), file, name)
+  rhdf5::h5write(t(value), file, name)
 
   # Write attributes
   write_encoding_attributes(file, name, "array", version)
@@ -108,13 +84,6 @@ path_exists <- function(file, target_path) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 #' @param type Type of the sparse matrix to write, either "csr" or "csc"
-#'
-#' @examples
-#' value <- Matrix::rsparsematrix(10, 12, .1)
-#' file_path <- system.file("extdata", "krumsiek11_augmented_sparse_v0-8.h5ad", package = "anndataR")
-#' file <- rhdf5::H5Fopen(file_path)
-#' name <- "/X"
-#' write_h5ad_sparse_array(value, file, name)
 write_h5ad_sparse_array <- function(
   value, file, name, version = "0.1.0",
   type = c("csr", "csc")
@@ -140,9 +109,9 @@ write_h5ad_sparse_array <- function(
 
   # Write sparse matrix
   rhdf5::h5createGroup(file, name)
-  rhdf5::h5write(attr(data, indices_attr), file, paste0(name, "/indices"))
-  rhdf5::h5write(data@p, file, paste0(name, "/indptr"))
-  rhdf5::h5write(data@x, file, paste0(name, "/data"))
+  rhdf5::h5write(attr(value, indices_attr), file, paste0(name, "/indices"))
+  rhdf5::h5write(value@p, file, paste0(name, "/indptr"))
+  rhdf5::h5write(value@x, file, paste0(name, "/data"))
 
   # add encoding
   write_encoding_attributes(file, name, "array", version)
@@ -215,7 +184,7 @@ write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
 
   # Write scalar
-  rhdf5::h5write(data, file, name)
+  rhdf5::h5write(value, file, name)
 
   # Write attributes
   write_encoding_attributes(file, name, "string-array", version)
@@ -259,7 +228,7 @@ write_h5ad_string_scalar <- function(value, file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
 
   # Write scalar
-  rhdf5::h5write(data, file, name)
+  rhdf5::h5write(value, file, name)
 
   # Write attributes
   write_encoding_attributes(file, name, "string", version)
@@ -277,7 +246,7 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
 
   # Write scalar
-  rhdf5::h5write(data, file, name)
+  rhdf5::h5write(value, file, name)
 
   # Write attributes
   write_encoding_attributes(file, name, "numeric", version)
@@ -297,8 +266,8 @@ write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
   # delete name if it already exists?
 
   # Write mapping elements
-  for (key in names(data)) {
-    write_h5ad_element(data[[key]], file, paste0(name, "/", key))
+  for (key in names(value)) {
+    write_h5ad_element(value[[key]], file, paste0(name, "/", key))
   }
 
   write_encoding_attributes(file, name, "dict", version)

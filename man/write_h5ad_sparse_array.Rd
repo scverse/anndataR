@@ -8,7 +8,7 @@ write_h5ad_sparse_array(
   value,
   file,
   name,
-  version = c("0.1.0"),
+  version = "0.1.0",
   type = c("csr", "csc")
 )
 }

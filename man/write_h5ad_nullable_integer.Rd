@@ -4,7 +4,7 @@
 \alias{write_h5ad_nullable_integer}
 \title{Write H5AD nullable integer}
 \usage{
-write_h5ad_nullable_integer(value, file, name, version = c("0.1.0"))
+write_h5ad_nullable_integer(value, file, name, version = "0.1.0")
 }
 \arguments{
 \item{value}{Value to write}

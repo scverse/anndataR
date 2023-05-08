@@ -4,7 +4,7 @@
 \alias{write_h5ad_dense_array}
 \title{Write H5AD dense array}
 \usage{
-write_h5ad_dense_array(value, file, name, version = c("0.2.0"))
+write_h5ad_dense_array(value, file, name, version = "0.2.0")
 }
 \arguments{
 \item{value}{Value to write}
