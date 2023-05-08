@@ -14,9 +14,17 @@ Implementation of an in memory AnnData object.
 \describe{
 \item{\code{X}}{The X slot}
 
+\item{\code{layers}}{The layers slot. Must be NULL or a named list
+with with all elements having the dimensions consistent with
+\code{obs} and \code{var}.}
+
 \item{\code{obs}}{The obs slot}
 
 \item{\code{var}}{The var slot}
+
+\item{\code{obs_names}}{Names of observations}
+
+\item{\code{var_names}}{Names of variables}
 }
 \if{html}{\out{</div>}}
 }
@@ -24,6 +32,8 @@ Implementation of an in memory AnnData object.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-HDF5AnnData-new}{\code{HDF5AnnData$new()}}
+\item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
+\item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
 \item \href{#method-HDF5AnnData-clone}{\code{HDF5AnnData$clone()}}
 }
 }
@@ -31,8 +41,6 @@ Implementation of an in memory AnnData object.
 <details><summary>Inherited methods</summary>
 <ul>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
@@ -47,6 +55,15 @@ Implementation of an in memory AnnData object.
 \if{html}{\out{<a id="method-HDF5AnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-new}{}}}
 \subsection{Method \code{new()}}{
+validate a value matches the observations dimension
+
+
+validate a value matches the variables dimension
+
+
+validate a value matches the AnnData shape
+
+
 HDF5AnnData constructor
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(h5obj)}\if{html}{\out{</div>}}
@@ -59,6 +76,26 @@ HDF5AnnData constructor
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-n_obs"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-n_obs}{}}}
+\subsection{Method \code{n_obs()}}{
+Number of observations in the AnnData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_obs()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-n_vars"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-n_vars}{}}}
+\subsection{Method \code{n_vars()}}{
+Number of variables in the AnnData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_vars()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-clone"></a>}}

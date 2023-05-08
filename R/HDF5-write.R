@@ -39,7 +39,7 @@ write_encoding_attributes <- function(file, name, encoding, version) {
 #' @param value The value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
-write_h5ad_element <- function(value, file, name) {
+write_h5ad_element <- function(value, file, name) { # nolint
   write_fun <-
     if (is.matrix(data) || is.vector(data)) {
       write_h5ad_dense_array
@@ -107,6 +107,7 @@ path_exists <- function(file, target_path) {
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
+#' @param type Type of the sparse matrix to write, either "csr" or "csc"
 #'
 #' @examples
 #' value <- Matrix::rsparsematrix(10, 12, .1)
@@ -136,7 +137,7 @@ write_h5ad_sparse_array <- function(
   if (path_exists(file, name)) {
     rhdf5::h5delete(file, name)
   }
-  
+
   # Write sparse matrix
   rhdf5::h5createGroup(file, name)
   rhdf5::h5write(attr(data, indices_attr), file, paste0(name, "/indices"))

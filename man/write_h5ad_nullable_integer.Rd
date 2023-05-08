@@ -4,14 +4,14 @@
 \alias{write_h5ad_nullable_integer}
 \title{Write H5AD nullable integer}
 \usage{
-write_h5ad_nullable_integer(file, name, value, version = c("0.1.0"))
+write_h5ad_nullable_integer(value, file, name, version = c("0.1.0"))
 }
 \arguments{
+\item{value}{Value to write}
+
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
-
-\item{value}{Value to write}
 
 \item{version}{Encoding version of the element to write}
 }

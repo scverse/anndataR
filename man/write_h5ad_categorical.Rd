@@ -4,14 +4,14 @@
 \alias{write_h5ad_categorical}
 \title{Write H5AD categorical}
 \usage{
-write_h5ad_categorical(file, name, value, version = c("0.2.0"))
+write_h5ad_categorical(value, file, name, version = c("0.2.0"))
 }
 \arguments{
+\item{value}{Value to write}
+
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
-
-\item{value}{Value to write}
 
 \item{version}{Encoding version of the element to write}
 }

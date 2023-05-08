@@ -10,6 +10,7 @@ file_path <- system.file("extdata", "krumsiek11_augmented_sparse_v0-8.h5ad", pac
 
 
 # GETTERS ----------------------------------------------------------------
+# trackstatus: class=HDF5AnnData, feature=test_get_X, status=wip
 test_that("read X", {
   h5_file <- H5Fopen(file_path)
 
@@ -26,6 +27,7 @@ test_that("read X", {
   })
 })
 
+# trackstatus: class=HDF5AnnData, feature=test_get_obs, status=wip
 test_that("read obs", {
   h5_file <- H5Fopen(file_path)
 
@@ -41,6 +43,7 @@ test_that("read obs", {
   })
 })
 
+# trackstatus: class=HDF5AnnData, feature=test_get_var, status=wip
 test_that("read var", {
   h5_file <- H5Fopen(file_path)
 
@@ -56,4 +59,4 @@ test_that("read var", {
   })
 })
 
-# GETTERS ----------------------------------------------------------------
+# SETTERS ----------------------------------------------------------------

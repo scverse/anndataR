@@ -192,8 +192,12 @@ read_h5ad_string_array <- function(file, name, version = c("0.2.0")) {
   requireNamespace("rhdf5")
 
   version <- match.arg(version)
-
-  rhdf5::h5read(file, name)
+  # reads in transposed
+  string_array <- rhdf5::h5read(file, name)
+  if (is.matrix(string_array)) {
+    string_array <- t(string_array)
+  }
+  string_array
 }
 
 #' Read H5AD categorical
@@ -285,8 +289,10 @@ read_h5ad_mapping <- function(file, name, version = c("0.1.0")) {
 
   version <- match.arg(version)
   groupname <- paste0("/", name)
-  columns <- subset(rhdf5::h5ls(file, recursive = TRUE), group == groupname)$name
-  
+
+  file_structure <- rhdf5::h5ls(file, recursive = TRUE)
+  columns <- file_structure[file_structure$group == groupname, "name"]
+
   read_h5ad_collection(file, name, columns)
 }
 
@@ -318,7 +324,6 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
 
   # NOTE: anndata will soon support non-character indices.
   # therefore we shouldn't set the index as row names of the data frame?
-
   if (length(columns) == 0) {
     data.frame(row.names = index)
   } else {
@@ -330,6 +335,7 @@ read_h5ad_data_frame <- function(file, name, version = c("0.2.0")) {
 #'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param column_order Vector of item names (in order)
 #'
 #' @return a named list
 read_h5ad_collection <- function(file, name, column_order) {

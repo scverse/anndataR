@@ -14,7 +14,7 @@ read_h5ad_dense_array(file, name, version = c("0.2.0"))
 \item{version}{Encoding version of the element to read}
 }
 \value{
-a Matrix/sparse matrix/DelayedArray???, or a vector if 1D
+a matrix or a vector if 1D
 }
 \description{
 Read a dense array from an H5AD file

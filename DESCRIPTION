@@ -2,36 +2,22 @@ Package: anndataR
 Title: AnnData interoperability in R
 Version: 0.0.0.9000
 Authors@R: c(
-    person(given = "Robrecht",
-        family = "Cannoodt",
-        role = c("aut", "cre"),
-        email = "rcannood@gmail.com",
-        comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
-    person(given = "Luke",
-        family = "Zappia",
-        role = c("aut"),
-        email = "luke@lazappi.id.au",
-        comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")),
-    person(given = "Martin",
-        family = "Morgan",
-        role = "aut",
-        email = "mtmorgan.bioc@gmail.com",
-        comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")),
-    person(given = "Louise",
-        family = "Deconinck",
-        role = c("aut"),
-        email = "louise.deconinck@gmail.com",
-        comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")),
-    person(given = "Danila",
-        family = "Bredikhin",
-        role = c("aut"),
-        email = "danila.bredikhin@embl.de",
-        comment = c(ORCID = "0000-0001-8089-6983", github = "gtca")))
-Description: Bring the power and flexibility of AnnData to the 
-    R ecosystem, allowing you to effortlessly manipulate and analyze your
+    person("Robrecht", "Cannoodt", , "rcannood@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
+    person("Luke", "Zappia", , "luke@lazappi.id.au", role = "aut",
+           comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")),
+    person("Martin", "Morgan", , "mtmorgan.bioc@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")),
+    person("Louise", "Deconinck", , "louise.deconinck@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")),
+    person("Danila", "Bredikhin", , "danila.bredikhin@embl.de", role = "aut",
+           comment = c(ORCID = "0000-0001-8089-6983", github = "gtca"))
+  )
+Description: Bring the power and flexibility of AnnData to the R
+    ecosystem, allowing you to effortlessly manipulate and analyze your
     single-cell data. This package lets you work with backed h5ad and zarr
-    files, directly access various slots (e.g. X, obs, var), or
-    convert the data into SingleCellExperiment and Seurat objects.
+    files, directly access various slots (e.g. X, obs, var), or convert
+    the data into SingleCellExperiment and Seurat objects.
 License: MIT + file LICENSE
 URL: https://scverse.org/anndataR, https://github.com/scverse/anndataR
 BugReports: https://github.com/scverse/anndataR/issues
@@ -39,19 +25,25 @@ Depends:
     R (>= 3.2.0)
 Imports:
     Matrix,
+    methods,
     R6
 Suggests:
-    S4Vectors,
-    SummarizedExperiment,
-    SingleCellExperiment,
+    anndata,
     knitr,
+    reticulate,
     rhdf5,
     rmarkdown,
+    S4Vectors,
     SeuratObject,
-    testthat (>= 3.0.0)
-VignetteBuilder: knitr
+    SingleCellExperiment,
+    SummarizedExperiment,
+    testthat (>= 3.0.0),
+    withr
+VignetteBuilder: 
+    knitr
+Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
+    purrr, dplyr, tidyr
 Config/testthat/edition: 3
-Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr, purrr, dplyr, tidyr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 RoxygenNote: 7.2.3
