@@ -4,7 +4,7 @@
 \alias{read_h5ad_nullable_boolean}
 \title{Read H5AD nullable boolean}
 \usage{
-read_h5ad_nullable_boolean(file, name, version = c("0.1.0"))
+read_h5ad_nullable_boolean(file, name, version = "0.1.0")
 }
 \arguments{
 \item{file}{Path to a H5AD file or an open H5AD handle}

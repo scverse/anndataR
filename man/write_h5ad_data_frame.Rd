@@ -4,7 +4,7 @@
 \alias{write_h5ad_data_frame}
 \title{Write H5AD data frame}
 \usage{
-write_h5ad_data_frame(value, file, name, version = c("0.2.0"))
+write_h5ad_data_frame(value, file, name, version = "0.2.0")
 }
 \arguments{
 \item{value}{Value to write}

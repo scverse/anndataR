@@ -4,14 +4,14 @@
 \alias{read_h5ad_element}
 \title{Read H5AD element}
 \usage{
-read_h5ad_element(file, name, encoding = NULL, version = NULL)
+read_h5ad_element(file, name, type = NULL, version = NULL)
 }
 \arguments{
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
 
-\item{encoding}{The encoding of the element to read}
+\item{type}{The encoding type of the element to read}
 
 \item{version}{The encoding version of the element to read}
 }

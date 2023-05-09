@@ -7,8 +7,8 @@
 read_h5ad_sparse_array(
   file,
   name,
-  version = c("0.1.0"),
-  type = c("csr", "csc")
+  version = "0.1.0",
+  type = c("csr_matrix", "csc_matrix")
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ read_h5ad_sparse_array(
 
 \item{version}{Encoding version of the element to read}
 
-\item{type}{Type of the sparse matrix, either "csr" or "csc"}
+\item{type}{Type of the sparse matrix, either "csr_matrix" or "csc_matrix"}
 }
 \value{
 a sparse matrix/DelayedArray???, or a vector if 1D

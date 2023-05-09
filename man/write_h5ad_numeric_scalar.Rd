@@ -4,7 +4,7 @@
 \alias{write_h5ad_numeric_scalar}
 \title{Write H5AD numeric scalar}
 \usage{
-write_h5ad_numeric_scalar(value, file, name, version = c("0.2.0"))
+write_h5ad_numeric_scalar(value, file, name, version = "0.2.0")
 }
 \arguments{
 \item{value}{Value to write}

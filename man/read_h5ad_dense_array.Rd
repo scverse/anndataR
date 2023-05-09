@@ -4,7 +4,7 @@
 \alias{read_h5ad_dense_array}
 \title{Read H5AD dense array}
 \usage{
-read_h5ad_dense_array(file, name, version = c("0.2.0"))
+read_h5ad_dense_array(file, name, version = "0.2.0")
 }
 \arguments{
 \item{file}{Path to a H5AD file or an open H5AD handle}
