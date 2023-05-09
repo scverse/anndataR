@@ -11,7 +11,7 @@
 write_encoding_attributes <- function(file, name, encoding, version) {
   requireNamespace("rhdf5")
 
-  dataset <- rhdf5::H5Dopen(file, name)
+  dataset <- file & name
   rhdf5::h5writeAttribute(encoding, dataset, "encoding-type") # nolint
   rhdf5::h5writeAttribute(version, dataset, "encoding-version") # nolint
 }
@@ -46,7 +46,7 @@ write_h5ad_element <- function(value, file, name) { # nolint
     } else {
       stop("Unsupported data type: ", class(value)) # nolint
     }
-  write_fun(file, name, value)
+  write_fun(value = value, file = file, name = name)
 }
 
 #' Write H5AD dense array
@@ -72,8 +72,10 @@ write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
 
 path_exists <- function(file, target_path) {
   requireNamespace("rhdf5")
+
   content <- rhdf5::h5ls(file)
-  return(any(content$path == target_path))
+
+  any(paste0(content$group, content$name) == target_path)
 }
 
 #' Write H5AD sparse array
@@ -84,24 +86,22 @@ path_exists <- function(file, target_path) {
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
-#' @param type Type of the sparse matrix to write, either "csr" or "csc"
-write_h5ad_sparse_array <- function(
-  value, file, name, version = "0.1.0",
-  type = c("csr", "csc")
-) {
+write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
   requireNamespace("rhdf5")
 
   version <- match.arg(version)
-  type <- match.arg(type)
 
+  # check types
   stopifnot(inherits(value, "sparseMatrix"))
 
-  if (type == "csr") {
-    value <- as(value, "RsparseMatrix")
+  if (inherits(value, "RsparseMatrix")) {
+    type <- "csr_matrix"
     indices_attr <- "j"
-  } else if (type == "csc") {
-    value <- as(value, "CsparseMatrix")
+  } else if (inherits(value, "RsparseMatrix")) {
+    type <- "csc_matrix"
     indices_attr <- "i"
+  } else {
+    stop("Unsupported matrix format in ", name, ". Supported formats are RsparseMatrix and CsparseMatrix.")
   }
 
   if (path_exists(file, name)) {
@@ -115,7 +115,7 @@ write_h5ad_sparse_array <- function(
   rhdf5::h5write(value@x, file, paste0(name, "/data"))
 
   # add encoding
-  write_encoding_attributes(file, name, "array", version)
+  write_encoding_attributes(file, name, type, version)
 }
 
 #' Write H5AD nullable boolean
