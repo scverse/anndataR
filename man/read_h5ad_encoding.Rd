@@ -12,7 +12,7 @@ read_h5ad_encoding(file, name)
 \item{name}{Name of the element within the H5AD file}
 }
 \value{
-A named list with the encoding and version
+A named list with names type and version
 }
 \description{
 Read the encoding and version of an element in a H5AD file

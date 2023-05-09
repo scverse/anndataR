@@ -4,7 +4,7 @@
 \alias{read_h5ad_categorical}
 \title{Read H5AD categorical}
 \usage{
-read_h5ad_categorical(file, name, version = c("0.2.0"))
+read_h5ad_categorical(file, name, version = "0.2.0")
 }
 \arguments{
 \item{file}{Path to a H5AD file or an open H5AD handle}
