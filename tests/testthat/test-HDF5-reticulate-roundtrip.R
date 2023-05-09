@@ -3,30 +3,33 @@ skip_if_no_anndata()
 # construct dummy objects
 dummy <- dummy_data(10L, 20L)
 
-test_that("test reticulate+Python -> h5ad -> R+HDF5AnnData", {
-  filename <- withr::local_file("file.h5ad")
+# create anndata in python
+obs_ <- dummy$obs
+rownames(obs_) <- dummy$obs_names
+var_ <- dummy$var
+rownames(var_) <- dummy$var_names
+ad <- anndata::AnnData(
+  X = dummy$X,
+  obs = obs_,
+  var = var_
+)
 
-  # create anndata in python
-  obs_ <- dummy$obs
-  rownames(obs_) <- dummy$obs_names
-  var_ <- dummy$var
-  rownames(var_) <- dummy$var_names
-  ad <- anndata::AnnData(
-    X = dummy$X,
-    obs = obs_,
-    var = var_
-  )
+for (slot in c("X", "obs", "var", "obs_names", "var_names", "layers")) {
+  test_label <- paste0("test Python->R read ", slot)
 
-  # write to file
-  ad$write_h5ad(filename)
+  test_that(test_label, {
+    # write to file
+    filename <- withr::local_file(paste0("read_", slot, ".h5ad"))
+    ad$write_h5ad(filename)
 
-  # read from file
-  ad_new <- HDF5AnnData$new(filename)
+    # read from file
+    ad_new <- HDF5AnnData$new(filename)
 
-  # check whether ad_new$obs == obs and so on
-  expect_equal(ad_new$n_obs(), nrow(obs_))
-  expect_equal(ad_new$n_vars(), nrow(var_))
-})
+    expect_equal(ad_new[[slot]], dummy[[slot]], tolerance = 1e-10)
+  })
+}
+
+
 
 # It's not possible to do this roundtrip yet
 # nolint start
