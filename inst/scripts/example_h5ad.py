@@ -13,12 +13,17 @@ import scipy.sparse  # scipy v1.10.1
 # to test new issues as they are discovered.
 #
 # NOTE: When updating this script for the {anndataR} example H5AD file please
-# update the package versions used above, update the script version and date
-# below and format the file using Python Black
+# update the package versions used above, update the script version, date and
+# changelog below and format the file using Python Black
 # (https://black.readthedocs.io/en/stable/).
 #
-# Version: 0.1.0
-# Date: 2023-05-08
+# Version: 0.1.1
+# Date: 2023-05-09
+#
+# CHANGELOG
+#
+# v0.1.0 (2023-05-09) - Reduce the size of `adata.uns["String2D"]` to save space
+# v0.1.0 (2023-05-08) - Initial version
 
 numpy.random.seed(0)
 
@@ -56,9 +61,7 @@ adata.uns["IntNA"] = pandas.array([1, 2, None])
 adata.uns["IntScalar"] = 1
 adata.uns["StringScalar"] = "A string"
 adata.uns["String"] = [f"String {i}" for i in range(10)]
-adata.uns["String2D"] = [
-    [f"row{i}{j}" for i in range(adata.n_vars)] for j in range(adata.n_obs)
-]
+adata.uns["String2D"] = [[f"row{i}{j}" for i in range(20)] for j in range(10)]
 adata.uns["DataFrameEmpty"] = pandas.DataFrame(index=adata.obs.index)
 
 # Run the standard scanpy workflow
