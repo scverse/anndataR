@@ -22,13 +22,16 @@ import scipy.sparse  # scipy v1.10.1
 #
 # CHANGELOG
 #
-# v0.1.0 (2023-05-09) - Reduce the size of `adata.uns["String2D"]` to save space
-# v0.1.0 (2023-05-08) - Initial version
+# v0.1.1 (2023-05-09)
+# - Reduce the size of `adata.uns["String2D"]` to save space
+# - Reduce dimension to 50 x 100 to save space
+# v0.1.0 (2023-05-08)
+# - Initial version
 
 numpy.random.seed(0)
 
 # Randomly generate a counts matrix
-counts = numpy.random.poisson(2, size=(100, 200))
+counts = numpy.random.poisson(2, size=(50, 100))
 
 # Create an AnnData
 adata = anndata.AnnData(scipy.sparse.csr_matrix(counts.copy(), dtype=numpy.float32))
