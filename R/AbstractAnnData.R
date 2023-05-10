@@ -9,7 +9,7 @@
 #'   Abstract [R6][R6::R6Class] class representing an AnnData
 #'   object. Defines the interface.
 #' @importFrom R6 R6Class
-AbstractAnnData <- R6::R6Class("AbstractAnnData",
+AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
     #'   dimnames) consistent with the number of rows of `obs` and `var`.
