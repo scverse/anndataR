@@ -43,7 +43,8 @@ ad
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{X}}{NULL or an observation x variable matrix (without
-dimnames) consistent with the number of rows of \code{obs} and}
+dimnames) consistent with the number of rows of \code{obs} and
+\code{var}.}
 
 \item{\code{layers}}{NULL or a named list with all elements having the
 dimensions consistent with \code{obs} and \code{var}.}
