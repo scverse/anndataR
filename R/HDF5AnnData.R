@@ -138,7 +138,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   character vector.
     #' @param var_names Either NULL or a vector of unique identifers
     #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   the variable dimension of the AnnData object. For compatibility
     #'   with *R* representations, `var_names` should be a character
     #'   vector.
     initialize = function(file, X, obs, var, obs_names, var_names, layers) {

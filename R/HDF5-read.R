@@ -10,10 +10,11 @@ read_h5ad_encoding <- function(file, name) {
   requireNamespace("rhdf5")
   attrs <- rhdf5::h5readAttributes(file, name)
 
-  if (!"encoding-type" %in% names(attrs) ||
-    !"encoding-version" %in% names(attrs)) {
+  if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
+    path <- if (is.character(file)) file else rhdf5::H5Fget_name(file)
     stop(
-      "Encoding not found for element '", name, "' in '", file, "'"
+      "Encoding attributes not found for element '", name, "' ",
+      "in '", path, "'"
     )
   }
 

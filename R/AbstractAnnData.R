@@ -9,7 +9,7 @@
 #'   Abstract [R6][R6::R6Class] class representing an AnnData
 #'   object. Defines the interface.
 #' @importFrom R6 R6Class
-AbstractAnnData <- R6::R6Class("AbstractAnnData",
+AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
     #'   dimnames) consistent with the number of rows of `obs` and `var`.
@@ -44,7 +44,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     },
     #' @field var_names Either NULL or a vector of unique identifiers
     #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   the variable dimension of the AnnData object. For compatibility
     #'   with *R* representations, `var_names` should be a character
     #'   vector.
     var_names = function(value) {
