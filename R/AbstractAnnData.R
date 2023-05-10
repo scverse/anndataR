@@ -181,25 +181,26 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param df A data frame to validate. Should be an obs or a var.
     # @param label Must be `"obs"` or `"var"`
     # @param check_nrow Whether to check the number of rows.
-    .validate_obsvar_dataframe = function(df, label = c("obs", "var"), 
+    .validate_obsvar_dataframe = function(df, label = c("obs", "var"),
                                           check_nrow = FALSE) {
       label <- match.arg(label)
-      
+
       if (!is.data.frame(df)) {
         stop(label, " should be a data frame")
       }
-      
+
       if (check_nrow) {
-        nrow <- switch (label,
+        nrow <- switch(
+          label,
           obs = self$n_obs(),
           var = self$n_vars()
         )
-        
+
         if (nrow(df) != nrow) {
           stop("nrow(df) should match the number of ", label)
         }
       }
-      
+
       if (.row_names_info(df) > 0) {
         warning(wrap_message(
           "'", label, "' should not have any dimnames, removing them from ",
@@ -216,12 +217,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param label Must be `"obs"` or `"var"`
     .validate_obsvar_names = function(names, label = c("obs", "var")) {
       label <- match.arg(label)
-      
-      len <- switch (label,
+
+      len <- switch (
+        label,
         obs = self$n_obs(),
         var = self$n_vars()
       )
-      
+
       if (!is.null(names) && length(names) != len) {
         stop(wrap_message(
           "length(", label, "_names) should be the same as ",
