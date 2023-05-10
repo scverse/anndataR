@@ -111,5 +111,98 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData",
     to_InMemoryAnnData = function() {
       to_InMemoryAnnData(self)
     }
+  ),
+  private = list(
+    # @description `.validate_matrix()` checks that dimensions are
+    #   consistent with `obs` and `var`, and removes dimnames if
+    #   present.
+    # @param mat A matrix to validate
+    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
+    #   the name of a layer.
+    .validate_matrix = function(mat, label) {
+      if (!is.null(mat)) {
+        if (nrow(mat) != nrow(self$obs)) {
+          stop("nrow(", label, ") should be the same as nrow(obs)")
+        }
+        if (ncol(mat) != nrow(self$var)) {
+          stop("ncol(", label, ") should be the same as nrow(var)")
+        }
+
+        if (!is.null(rownames(mat))) {
+          warning(wrap_message(
+            "rownames(", label, ") should be NULL, removing them from the ",
+            "matrix"
+          ))
+          rownames(mat) <- NULL
+        }
+
+        if (!is.null(colnames(mat))) {
+          warning(wrap_message(
+            "colnames(", label, ") should be NULL, removing them from the ",
+            "matrix"
+          ))
+          colnames(mat) <- NULL
+        }
+      }
+
+      mat
+    },
+
+    # @description `.validate_layers()` checks for named lists and
+    #   correct dimensions on elements.
+    # @param layers A named list of 0 or more matrix elements with
+    #   dimensions consistent with `obs` and `var`.
+    .validate_layers = function(layers) {
+      if (is.null(layers)) {
+        return(layers)
+      }
+
+      ## layers and names
+      layer_names <- names(layers)
+      if (!is.list(layers) || is.null(layer_names)) {
+        stop("'layers' must must be a named list")
+      }
+      if (any(!nzchar(layer_names))) {
+        stop("all 'layers' elements must have non-trivial names")
+      }
+
+      ## layer elements
+      for (layer in layer_names) {
+        layer_name <- paste0("layers[[", layer, "]]")
+        private$.validate_matrix(layers[[layer]], layer_name)
+      }
+
+      layers
+    },
+
+    # @description `.validate_obsvar_dataframe()` checks that the
+    #   object is a data.frame and removes explicit dimnames.
+    # @param df A data frame to validate. Should be an obs or a var.
+    # @param label Must be `"obs"` or `"var"`
+    .validate_obsvar_dataframe = function(df, label) {
+      if (is.null(df)) stop(label, " should be a data frame")
+      if (.row_names_info(df) > 0) {
+        warning(wrap_message(
+          "'", label, "' should not have any dimnames, removing them from ",
+          "the matrix"
+        ))
+        rownames(df) <- NULL
+      }
+      df
+    },
+
+    # @description `.validate_obsvar_names()` checks that `*_names()`
+    #   are NULL or consistent with the dimensions of `obs` or `var`.
+    # @param names A vector to validate
+    # @param label Must be `"obs"` or `"var"`
+    .validate_obsvar_names = function(names, label) {
+      if (!is.null(names) && length(names) != nrow(self[[label]])) {
+        stop(wrap_message(
+          "length(", label, "_names) should be the same as ",
+          "nrow(", label, ")"
+        ))
+      }
+      names
+    }
   )
 )
