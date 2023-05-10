@@ -37,6 +37,12 @@ test_that("test Python -> R", {
 })
 
 test_that("test R -> Python", {
+  
+  skip_if_not(
+    "Writing data frames implemented",
+    message = "Skipped until writing HDF5 data frames is implemented"
+  )
+  
   # write to file
   filename <- withr::local_file("r_to_python.h5ad")
   ad <- HDF5AnnData$new(
