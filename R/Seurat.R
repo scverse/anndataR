@@ -1,4 +1,8 @@
-#' Convert an AnnData object to Seurat
+#' @rdname Seurat
+#'
+#' @title Convert Between AnnData and Seurat
+#'
+#' @description `to_Seurat()` converts an AnnData object to a Seurat object.
 #'
 #' @param obj An AnnData object
 #'
@@ -75,12 +79,27 @@ to_Seurat <- function(obj) { # nolint
   names
 }
 
+#' @rdname Seurat
+#'
+#' @description `from_Seurat()` converts a Seurat object to an AnnData object.
+#'
+#' @param seurat_obj An object inheriting from Seurat.
+#'
+#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
+#' or `"InMemoryAnnData"`.
+#'
+#' @param ... Additional arguments passed to the generator function.
+#' See the "Details" section for more information on which parameters
+#'
+#' @export
 # todo: add option to determine default X assay name
 # todo: add option to decide on var key resolution
 # todo: add option to decide on whether to use counts or data for the different layers
 # todo: add tests with Seurat objects not created by anndataR
 # todo: add option to decide on which backend to use ( https://github.com/scverse/anndataR/issues/51 )
-from_Seurat <- function(seurat_obj) { # nolint
+from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), ...) { # nolint
+  stopifnot(inherits(seurat_obj, "Seurat"))
+
   # get obs_names
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   obs_names <- colnames(seurat_obj)
@@ -95,6 +114,7 @@ from_Seurat <- function(seurat_obj) { # nolint
   var_names <- unique(unlist(lapply(seurat_obj@assays, rownames)))
 
   # detect conflicting var keys
+  # TODO: if conflicting var keys are detected, the user should use mudata instead
   var_keys_checker <- do.call(rbind, lapply(names(seurat_obj@assays), function(assay_name) {
     var_keys <- colnames(seurat_obj@assays[[assay_name]]@meta.features)
     if (length(var_keys) > 0) {
@@ -130,21 +150,23 @@ from_Seurat <- function(seurat_obj) { # nolint
   }
   rownames(var) <- NULL
 
+  # use generator to create new AnnData object
+  generator <- get_generator(output_class)
+  ad <- generator$new(
+    obs = obs,
+    var = var,
+    obs_names = obs_names,
+    var_names = var_names,
+    ...
+  )
+
   # construct X
   # TODO: Maybe we shouldn't use counts but instead data
   # TODO: check whether X has all of the obs_names and var_names
   # trackstatus: class=Seurat, feature=set_X, status=wip
   X <- Matrix::t(SeuratObject::GetAssayData(seurat_obj, "counts", assay = "RNA"))
   dimnames(X) <- list(NULL, NULL)
-
-  # create AnnData
-  ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names
-  )
+  ad$X <- X
 
   for (assay_name in names(seurat_obj@assays)) {
     # TODO: Maybe we shouldn't use counts but instead data
