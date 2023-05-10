@@ -26,7 +26,7 @@ test_that("test Python -> R", {
   # Python writer coerces strings to categoricals (in most cases)
   obs_$cell_type <- factor(obs_$cell_type)
   var_$geneinfo <- factor(var_$geneinfo)
-  
+
   # expect slots are unchanged
   expect_equal(ad_new$X, dummy$X, tolerance = 1e-7)
   expect_equal(ad_new$obs, obs_, tolerance = 1e-10)
@@ -37,12 +37,11 @@ test_that("test Python -> R", {
 })
 
 test_that("test R -> Python", {
-  
   skip_if_not(
     "Writing data frames implemented",
     message = "Skipped until writing HDF5 data frames is implemented"
   )
-  
+
   # write to file
   filename <- withr::local_file("r_to_python.h5ad")
   ad <- HDF5AnnData$new(
