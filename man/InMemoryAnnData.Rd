@@ -65,7 +65,7 @@ character vector.}
 
 \item{\code{var_names}}{Either NULL or a vector of unique identifiers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
+the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
 }
@@ -133,7 +133,7 @@ character vector.}
 
 \item{\code{var_names}}{Either NULL or a vector of unique identifers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
+the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
 
