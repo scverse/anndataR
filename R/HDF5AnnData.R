@@ -11,21 +11,21 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     .obs_names = NULL,
     .var_names = NULL,
 
-    #' @description validate a value matches the observations dimension
+    # @description validate a value matches the observations dimension
     .validate_n_obs = function(value) {
       if (nrow(value) != self$n_obs()) {
         stop("Dimensions of value does not match the number of observations")
       }
     },
 
-    #' @description validate a value matches the variables dimension
+    # @description validate a value matches the variables dimension
     .validate_n_vars = function(value) {
       if (nrow(value) != self$n_vars()) {
         stop("Dimensions of value does not match the number of variables")
       }
     },
 
-    #' @description validate a value matches the AnnData shape
+    # @description validate a value matches the AnnData shape
     .validate_shape = function(value) {
       if (!identical(dim(value), self$shape())) {
         stop("Dimensions of value does not match the object shape")
@@ -116,26 +116,97 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
   public = list(
     #' @description HDF5AnnData constructor
     #'
-    #' @param h5obj The rhdf5 object
-    initialize = function(h5obj) {
-
-      if (is.character(h5obj)) {
-        h5obj <- path.expand(h5obj)
-        if (!file.exists(h5obj)) {
-          stop("Path to H5AD not found: ", h5obj)
-        }
-      }
-
-      attrs <- rhdf5::h5readAttributes(h5obj, "/")
-      if (!("encoding-type") %in% names(attrs) ||
-        !("encoding-version" %in% names(attrs))) {
+    #' @param file The filename (character) of the `.h5ad` file. Alternatively,
+    #' you can also provide an object created by `[rhdf5::H5Fopen()]`. If this
+    #' file does not exist yet, you must provide values for `X`, `obs`, `var` to
+    #' create a new AnnData with.
+    #' @param X Either NULL or a observation x variable matrix with
+    #'   dimensions consistent with `obs` and `var`.
+    #' @param layers Either NULL or a named list, where each element
+    #'   is an observation x variable matrix with dimensions consistent
+    #'   with `obs` and `var`.
+    #' @param obs A `data.frame` with columns containing information
+    #'   about observations. The number of rows of `obs` defines the
+    #'   observation dimension of the AnnData object.
+    #' @param var A `data.frame` with columns containing information
+    #'   about variables. The number of rows of `var` defines the variable
+    #'   dimension of the AnnData object.
+    #' @param obs_names Either NULL or a vector of unique identifiers
+    #'   used to identify each row of `obs` and to act as an index into
+    #'   the observation dimension of the AnnData object. For
+    #'   compatibility with *R* representations, `obs_names` should be a
+    #'   character vector.
+    #' @param var_names Either NULL or a vector of unique identifers
+    #'   used to identify each row of `var` and to act as an index into
+    #'   the variable dimension of the AnnData object.. For compatibility
+    #'   with *R* representations, `var_names` should be a character
+    #'   vector.
+    initialize = function(file, X, obs, var, obs_names, var_names, layers) {
+      if (!inherits(file, "H5IdComponent") && !is.character(file)) {
         stop(
-          "H5AD files without encodings are not supported ",
-          "(this file may have been created with Python anndata prior to v0.8.0)"
+          "Argument 'file' should be a character path or an ",
+          "H5IdComponent created by `rhdf5::H5Fopen()`."
         )
       }
+      # check if file already exists
+      create_new <- is.character(file) && !file.exists(file)
 
-      private$.h5obj <- h5obj
+      if (create_new) {
+        # create a new h5ad from scratch
+        if (missing(X)) X <- NULL
+        if (missing(obs)) stop("When creating a new .h5ad file, `obs` must be defined.")
+        if (missing(var)) stop("When creating a new .h5ad file, `var` must be defined.")
+        if (missing(obs_names)) obs_names <- NULL
+        if (missing(var_names)) var_names <- NULL
+        if (missing(layers)) layers <- NULL
+
+        # create new H5AD from scratch
+        private$.h5obj <- rhdf5::H5Fcreate(file)
+
+        # create encoding attributes
+        write_h5ad_encoding(private$.h5obj, "/", "anndata", "0.1.0")
+
+        # write obs and var first, because these are used by other validators
+        self$obs <- obs
+        self$var <- var
+
+        # write other slots later
+        self$obs_names <- obs_names
+        self$var_names <- var_names
+        self$X <- X
+        self$layers <- layers
+
+      } else {
+        # check if other arguments are defined
+        slots_missing <- missing(X) && missing(obs) && missing(var) &&
+          missing(obs_names) && missing(var_names) && missing(layers)
+        if (!slots_missing) {
+          stop(
+            "Failed to create HDF5AnnData object. ",
+            "Reason: If the file provided already exists, ",
+            "then the other arguments (X, obs, var, ...) ",
+            "should not be passed any value."
+          )
+        }
+
+        # open h5 file if this isn't the already
+        if (is.character(file)) {
+          file <- rhdf5::H5Fopen(file)
+        }
+
+        # check for attributes
+        attrs <- rhdf5::h5readAttributes(file, "/")
+
+        if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
+          stop(
+            "H5AD encoding information is missing. ",
+            "This file may have been created with Python anndata<0.8.0."
+          )
+        }
+
+        # store file
+        private$.h5obj <- file
+      }
     },
 
     #' @description Number of observations in the AnnData object
