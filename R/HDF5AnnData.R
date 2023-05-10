@@ -43,7 +43,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "/obs")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
-        value <- private$.validate_obsvar_dataframe(value, "obs")
+        value <- private$.validate_obsvar_dataframe(value, "obs",
+                                                    check_nrow = TRUE)
         write_h5ad_element(value, private$.h5obj, "/obs")
       }
     },
@@ -54,7 +55,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "/var")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
-        value <- private$.validate_obsvar_dataframe(value, "var")
+        value <- private$.validate_obsvar_dataframe(value, "var", 
+                                                    check_nrow = TRUE)
         write_h5ad_element(value, private$.h5obj, "/var")
       }
     },
