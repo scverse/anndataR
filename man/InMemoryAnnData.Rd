@@ -43,7 +43,8 @@ ad
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{X}}{NULL or an observation x variable matrix (without
-dimnames) consistent with the number of rows of \code{obs} and}
+dimnames) consistent with the number of rows of \code{obs} and
+\code{var}.}
 
 \item{\code{layers}}{NULL or a named list with all elements having the
 dimensions consistent with \code{obs} and \code{var}.}
@@ -64,7 +65,7 @@ character vector.}
 
 \item{\code{var_names}}{Either NULL or a vector of unique identifiers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
+the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
 }
@@ -132,7 +133,7 @@ character vector.}
 
 \item{\code{var_names}}{Either NULL or a vector of unique identifers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
+the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
 

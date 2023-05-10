@@ -40,6 +40,12 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Install Python dependencies for reticulate
+        run: |
+          reticulate::install_miniconda()
+          reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
