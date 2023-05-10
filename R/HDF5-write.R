@@ -8,7 +8,7 @@
 #' @param version The encoding version to set
 #'
 #' @return The object with additional encoding attributes
-write_encoding_attributes <- function(file, name, encoding, version) {
+write_h5ad_encoding <- function(file, name, encoding, version) {
   requireNamespace("rhdf5")
 
   dataset <- file & name
@@ -67,7 +67,7 @@ write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
   rhdf5::h5write(t(value), file, name)
 
   # Write attributes
-  write_encoding_attributes(file, name, "array", version)
+  write_h5ad_encoding(file, name, "array", version)
 }
 
 path_exists <- function(file, target_path) {
@@ -115,7 +115,7 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
   rhdf5::h5write(value@x, file, paste0(name, "/data"))
 
   # add encoding
-  write_encoding_attributes(file, name, type, version)
+  write_h5ad_encoding(file, name, type, version)
 }
 
 #' Write H5AD nullable boolean
@@ -142,7 +142,7 @@ write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
   rhdf5::h5write(is.na(value), file, paste0(name, "/mask"))
 
   # Write attributes
-  write_encoding_attributes(file, name, "nullable-boolean", version)
+  write_h5ad_encoding(file, name, "nullable-boolean", version)
 
 }
 
@@ -170,7 +170,7 @@ write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
   rhdf5::h5write(is.na(value), file, paste0(name, "/mask"))
 
   # Write attributes
-  write_encoding_attributes(file, name, "nullable-integer", version)
+  write_h5ad_encoding(file, name, "nullable-integer", version)
 }
 
 #' Write H5AD string array
@@ -188,7 +188,7 @@ write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
   rhdf5::h5write(value, file, name)
 
   # Write attributes
-  write_encoding_attributes(file, name, "string-array", version)
+  write_h5ad_encoding(file, name, "string-array", version)
 }
 
 #' Write H5AD categorical
@@ -214,7 +214,7 @@ write_h5ad_categorical <- function(value, file, name, version = "0.2.0") {
   rhdf5::h5write(inherits(value, "ordered"), file, paste0(name, "/ordered"))
 
   # add encoding
-  write_encoding_attributes(file, name, "categorical", version)
+  write_h5ad_encoding(file, name, "categorical", version)
 }
 
 #' Write H5AD string scalar
@@ -232,7 +232,7 @@ write_h5ad_string_scalar <- function(value, file, name, version = "0.2.0") {
   rhdf5::h5write(value, file, name)
 
   # Write attributes
-  write_encoding_attributes(file, name, "string", version)
+  write_h5ad_encoding(file, name, "string", version)
 }
 
 #' Write H5AD numeric scalar
@@ -250,7 +250,7 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
   rhdf5::h5write(value, file, name)
 
   # Write attributes
-  write_encoding_attributes(file, name, "numeric", version)
+  write_h5ad_encoding(file, name, "numeric", version)
 }
 
 #' Write H5AD mapping
@@ -271,7 +271,7 @@ write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
     write_h5ad_element(value[[key]], file, paste0(name, "/", key))
   }
 
-  write_encoding_attributes(file, name, "dict", version)
+  write_h5ad_encoding(file, name, "dict", version)
 }
 
 #' Write H5AD data frame
