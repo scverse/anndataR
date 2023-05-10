@@ -3,18 +3,18 @@ skip_if_no_anndata()
 # construct dummy objects
 dummy <- dummy_data(10L, 20L)
 
-# create anndata in python
-obs_ <- dummy$obs
-rownames(obs_) <- dummy$obs_names
-var_ <- dummy$var
-rownames(var_) <- dummy$var_names
-ad <- anndata::AnnData(
-  X = dummy$X,
-  obs = obs_,
-  var = var_
-)
-
 test_that("test Python -> R", {
+  # create anndata in python
+  obs_ <- dummy$obs
+  rownames(obs_) <- dummy$obs_names
+  var_ <- dummy$var
+  rownames(var_) <- dummy$var_names
+  ad <- anndata::AnnData(
+    X = dummy$X,
+    obs = obs_,
+    var = var_
+  )
+
   # write to file
   filename <- withr::local_file("python_to_r.h5ad")
   ad$write_h5ad(filename)
@@ -35,7 +35,7 @@ test_that("test R -> Python", {
   # write to file
   filename <- withr::local_file("r_to_python.h5ad")
   ad <- HDF5AnnData$new(
-    path = filename,
+    file = filename,
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
