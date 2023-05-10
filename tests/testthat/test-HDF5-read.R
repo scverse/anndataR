@@ -1,10 +1,10 @@
 file <- system.file("extdata", "krumsiek11_augmented_sparse_v0-8.h5ad",
                     package = "anndataR")
 
-# Should contain only `encoding-type` and `encoding-version`
+# Should contain only `type` and `version`
 test_that("reading encoding", {
   encoding <- read_h5ad_encoding(file, "obs")
-  expect_equal(names(encoding), c("encoding", "version"))
+  expect_equal(names(encoding), c("type", "version"))
 })
 
 test_that("reading dense matrix", {
