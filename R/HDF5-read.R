@@ -247,12 +247,12 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   if (is.matrix(string_array)) {
     string_array <- t(string_array)
   }
-  string_array
   
   # If the array is 1D, convert to vector
-  if (length(dim(string_array) == 1)) {
+  if (length(dim(string_array)) == 1) {
     string_array <- as.vector(string_array)
   }
+  
   string_array
 }
 
