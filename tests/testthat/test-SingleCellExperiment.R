@@ -67,7 +67,7 @@ test_that("from_SingleCellExperiment() works", {
   })
 
   # trackstatus: class=SingleCellExperiment, feature=test_set_X, status=done
-  expect_identical(ad0$X, matrix(0, 0L, 0L))
+  expect_identical(ad0$X, NULL)
   expect_identical(ad$X, x)
   # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
   expect_identical(ad0$obs, data.frame())

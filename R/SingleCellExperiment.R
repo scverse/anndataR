@@ -98,12 +98,11 @@ to_SingleCellExperiment <- function(object) { # nolint
 #'
 #' @param sce An object inheriting from SingleCellExperiment.
 #'
-#' @param output_class character(1) abbreviated name for the AnnData
-#'   class (e.g., `"InMemory"` for an `InMemoryAnnData` object) to
-#'   create from `sce`.
+#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
+#' or `"InMemoryAnnData"`.
 #'
-#' @param ... additional arguments passed to the generator function
-#'   (e.g., `InMemoryAnnData$new()`) of `output_class`.
+#' @param ... Additional arguments passed to the generator function.
+#' See the "Details" section for more information on which parameters
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
 #'   (e.g., InMemoryAnnData) representing the content of `sce`.
@@ -113,20 +112,13 @@ to_SingleCellExperiment <- function(object) { # nolint
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
 #' @export
-from_SingleCellExperiment <- function(sce, output_class = "InMemory", ...) { # nolint
+from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData"), ...) { # nolint
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )
-  output_class <- match.arg(output_class)
 
-  generator <- switch(
-    output_class,
-    "InMemory" = InMemoryAnnData
-  )
-  from_SingleCellExperiment_impl(sce, generator, ...)
-}
-
-from_SingleCellExperiment_impl <- function(sce, generator, ...) { # nolint
+  # fetch generator
+  generator <- get_generator(output_class)
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
   obs <- as.data.frame(
@@ -151,7 +143,7 @@ from_SingleCellExperiment_impl <- function(sce, generator, ...) { # nolint
     t
   )
   if (length(x_and_layers) == 0L) {
-    x <- matrix(0, 0L, 0L)
+    x <- NULL
     layers <- list()
     names(layers) <- character()
   } else {

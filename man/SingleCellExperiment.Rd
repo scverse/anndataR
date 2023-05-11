@@ -7,19 +7,22 @@
 \usage{
 to_SingleCellExperiment(object)
 
-from_SingleCellExperiment(sce, output_class = "InMemory", ...)
+from_SingleCellExperiment(
+  sce,
+  output_class = c("InMemory", "HDF5AnnData"),
+  ...
+)
 }
 \arguments{
 \item{object}{an AnnData object, e.g., InMemoryAnnData}
 
 \item{sce}{An object inheriting from SingleCellExperiment.}
 
-\item{output_class}{character(1) abbreviated name for the AnnData
-class (e.g., \code{"InMemory"} for an \code{InMemoryAnnData} object) to
-create from \code{sce}.}
+\item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"}
+or \code{"InMemoryAnnData"}.}
 
-\item{...}{additional arguments passed to the generator function
-(e.g., \code{InMemoryAnnData$new()}) of \code{output_class}.}
+\item{...}{Additional arguments passed to the generator function.
+See the "Details" section for more information on which parameters}
 }
 \value{
 \code{to_SingleCellExperiment()} returns a SingleCellExperiment
