@@ -122,10 +122,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   the name of a layer.
     .validate_matrix = function(mat, label) {
       if (!is.null(mat)) {
-        if (nrow(mat) != nrow(self$obs)) {
+        if (nrow(mat) != self$n_obs()) {
           stop("nrow(", label, ") should be the same as nrow(obs)")
         }
-        if (ncol(mat) != nrow(self$var)) {
+        if (ncol(mat) != self$n_vars()) {
           stop("ncol(", label, ") should be the same as nrow(var)")
         }
 
@@ -180,8 +180,26 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   object is a data.frame and removes explicit dimnames.
     # @param df A data frame to validate. Should be an obs or a var.
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_dataframe = function(df, label) {
-      if (is.null(df)) stop(label, " should be a data frame")
+    # @param check_nrow Whether to check the number of rows.
+    .validate_obsvar_dataframe = function(df, label = c("obs", "var"),
+                                          check_nrow = FALSE) {
+      label <- match.arg(label)
+
+      if (!is.data.frame(df)) {
+        stop(label, " should be a data frame")
+      }
+
+      if (check_nrow) {
+        nrow <- switch(label,
+          obs = self$n_obs(),
+          var = self$n_vars()
+        )
+
+        if (nrow(df) != nrow) {
+          stop("nrow(df) should match the number of ", label)
+        }
+      }
+
       if (.row_names_info(df) > 0) {
         warning(wrap_message(
           "'", label, "' should not have any dimnames, removing them from ",
@@ -196,8 +214,15 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_names = function(names, label) {
-      if (!is.null(names) && length(names) != nrow(self[[label]])) {
+    .validate_obsvar_names = function(names, label = c("obs", "var")) {
+      label <- match.arg(label)
+
+      len <- switch(label,
+        obs = self$n_obs(),
+        var = self$n_vars()
+      )
+
+      if (!is.null(names) && length(names) != len) {
         stop(wrap_message(
           "length(", label, "_names) should be the same as ",
           "nrow(", label, ")"
