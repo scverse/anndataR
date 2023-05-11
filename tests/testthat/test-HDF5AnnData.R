@@ -1,6 +1,6 @@
 library(rhdf5)
 
-file_path <- system.file("extdata", "krumsiek11_augmented_sparse_v0-8.h5ad", package = "anndataR")
+file_path <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 # >>> ad.read_h5ad("inst/extdata/krumsiek11_augmented_v0-8.h5ad")
 # AnnData object with n_obs × n_vars = 640 × 11

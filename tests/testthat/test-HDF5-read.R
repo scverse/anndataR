@@ -1,5 +1,4 @@
-file <- system.file("extdata", "krumsiek11_augmented_sparse_v0-8.h5ad",
-                    package = "anndataR")
+file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 # Should contain only `type` and `version`
 test_that("reading encoding", {
