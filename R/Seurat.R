@@ -98,7 +98,11 @@ to_Seurat <- function(obj) { # nolint
 # todo: add tests with Seurat objects not created by anndataR
 # todo: add option to decide on which backend to use ( https://github.com/scverse/anndataR/issues/51 )
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), ...) { # nolint
+  x_assay_name <- "RNA"
+
   stopifnot(inherits(seurat_obj, "Seurat"))
+  pbmc <- Seurat::Read10X(data.dir = "~/Downloads/pbmc3k_filtered_gene_bc_matrices/filtered_gene_bc_matrices/hg19")
+  seurat_obj <- Seurat::CreateSeuratObject(counts = pbmc, project = "pbmc3k", min.cells = 3, min.features = 200)
 
   # get obs_names
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
@@ -111,43 +115,12 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
   # construct var_names
   # trackstatus: class=Seurat, feature=set_var_names, status=done
-  var_names <- unique(unlist(lapply(seurat_obj@assays, rownames)))
-
-  # detect conflicting var keys
-  # TODO: if conflicting var keys are detected, the user should use mudata instead
-  var_keys_checker <- do.call(rbind, lapply(names(seurat_obj@assays), function(assay_name) {
-    var_keys <- colnames(seurat_obj@assays[[assay_name]]@meta.features)
-    if (length(var_keys) > 0) {
-      data.frame(
-        assay = assay_name,
-        var_key = var_keys
-      )
-    } else {
-      NULL
-    }
-  }))
-  duplicated_var_keys <- unique(var_keys_checker$var_key[duplicated(var_keys_checker$var_key)])
-  var_keys_checker$conflict <- var_keys_checker$var_key %in% duplicated_var_keys
-  var_keys_checker$renamed_var_key <- ifelse(
-    var_keys_checker$conflict,
-    paste0(var_keys_checker$assay, "_", var_keys_checker$var_key),
-    var_keys_checker$var_key
-  )
+  var_names <- rownames(seurat_obj)
 
   # construct var
   # NOTE: This will create duplicate data if the meta features are the same.
   # trackstatus: class=Seurat, feature=set_var, status=done
-  var <- data.frame(
-    row.names = var_names
-  )
-  for (assay_name in names(seurat_obj@assays)) {
-    meta_feat <- seurat_obj@assays[[assay_name]]@meta.features
-    var_keys_assay <- var_keys_checker[var_keys_checker$assay == assay_name, , drop = FALSE]
-
-    if (nrow(var_keys_assay) > 0) {
-      var[rownames(meta_feat), var_keys_assay$renamed_var_key] <- meta_feat[, var_keys_assay$var_key, drop = FALSE]
-    }
-  }
+  var <- seurat_obj@assays[[seurat_obj@active.assay]]@meta.features
   rownames(var) <- NULL
 
   # use generator to create new AnnData object
@@ -160,21 +133,34 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     ...
   )
 
-  # construct X
-  # TODO: Maybe we shouldn't use counts but instead data
-  # TODO: check whether X has all of the obs_names and var_names
   # trackstatus: class=Seurat, feature=set_X, status=wip
-  X <- Matrix::t(SeuratObject::GetAssayData(seurat_obj, "counts", assay = "RNA"))
-  dimnames(X) <- list(NULL, NULL)
-  ad$X <- X
-
+  # trackstatus: class=Seurat, feature=set_layers, status=wip
   for (assay_name in names(seurat_obj@assays)) {
     # TODO: Maybe we shouldn't use counts but instead data
-    # TODO: check whether X has all of the obs_names and var_names
-    # trackstatus: class=Seurat, feature=set_layers, status=wip
-    layer <- Matrix::t(SeuratObject::GetAssayData(seurat_obj, "counts", assay = "RNA"))
-    dimnames(layer) <- list(NULL, NULL)
-    ad$layers[[assay_name]] <- layer
+    assay_data <- SeuratObject::GetAssayData(seurat_obj, "counts", assay = assay_name)
+
+    if (nrow(assay_data) != length(var_names) || !identical(rownames(assay_data), var_names)) {
+      warning(
+        "Skipping assay '", assay_name, "' because it has different feature names ",
+        "than the active assay ('", seurat_obj@active.assay, "')."
+      )
+      next
+    }
+    if (ncol(assay_data) != length(obs_names) || !identical(colnames(assay_data), obs_names)) {
+      warning(
+        "Skipping assay '", assay_name, "' because it has different cell names ",
+        "than the active assay ('", seurat_obj@active.assay, "')."
+      )
+      next
+    }
+
+    # remove names
+    dimnames(assay_data) <- list(NULL, NULL)
+    if (assay_name == x_assay_name) {
+      ad$X <- Matrix::t(assay_data)
+    } else {
+      ad$layers[[assay_name]] <- Matrix::t(assay_data)
+    }
   }
 
   return(ad)
