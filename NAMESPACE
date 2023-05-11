@@ -2,6 +2,7 @@
 
 export(InMemoryAnnData)
 export(from_Seurat)
+export(from_SingleCellExperiment)
 export(to_InMemory)
 export(to_Seurat)
 export(to_SingleCellExperiment)

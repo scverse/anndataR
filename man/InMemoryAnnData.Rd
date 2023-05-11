@@ -9,7 +9,7 @@ Implementation of an in memory AnnData object.
 \examples{
 ## complete example
 ad <- InMemoryAnnData$new(
-  X = matrix(1:5, 3L, 5L),
+  X = matrix(1:15, 3L, 5L),
   layers = list(
     A = matrix(5:1, 3L, 5L),
     B = matrix(letters[1:5], 3L, 5L)
