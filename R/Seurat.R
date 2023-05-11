@@ -38,24 +38,44 @@ to_Seurat <- function(obj) { # nolint
 
   # translate obs
   # trackstatus: class=Seurat, feature=get_obs, status=done
-  obs_ <- obj$obs
-  rownames(obs_) <- obs_names_
+  obs_ <-
+    if (ncol(obj$obs) > 0) {
+      ob <- obj$obs
+      rownames(ob) <- obs_names_
+      ob
+    } else {
+      NULL
+    }
 
   # translate X
-  # trackstatus: class=Seurat, feature=get_X, status=wip
-  # TODO: what if there is no X?
+  # trackstatus: class=Seurat, feature=get_X, status=done
   # TODO: should x_ be passed to counts or to data?
-  x_ <- Matrix::t(obj$X)
+  x_ <-
+    if (!is.null(obj$X)) {
+      Matrix::t(obj$X)
+    } else {
+      mat <- Matrix::sparseMatrix(
+        i = integer(0),
+        p = c(0L),
+        x = integer(0),
+        dims = c(obj$n_vars(), obj$n_obs())
+      )
+      attr(mat, "is_X_null") <- TRUE # nolint
+      mat
+    }
   dimnames(x_) <- list(var_names_, obs_names_)
   x_assay <- SeuratObject::CreateAssayObject(counts = x_)
 
   # create seurat object
-  x_assay <- SeuratObject::AddMetaData(x_assay, metadata = var_)
+  if (ncol(var_) > 0) {
+    # don't add var metadata if the data frame does not contain any columns
+    x_assay <- SeuratObject::AddMetaData(x_assay, metadata = var_)
+  }
   seurat_obj <- SeuratObject::CreateSeuratObject(x_assay, meta.data = obs_)
 
   # add layers
-  # trackstatus: class=Seurat, feature=get_layers, status=wip
-  # TODO: should x_ be passed to counts or to data?
+  # trackstatus: class=Seurat, feature=get_layers, status=done
+  # TODO: should values be passed to counts or to data?
   for (key in obj$layers_keys()) {
     layer_ <- t(obj$layers[[key]])
     dimnames(layer_) <- list(var_names_, obs_names_)
@@ -96,7 +116,6 @@ to_Seurat <- function(obj) { # nolint
 # todo: add option to decide on whether to use counts or data for the different layers
 # todo: add tests with Seurat objects not created by anndataR
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), ...) { # nolint
-  x_assay_name <- "RNA"
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
@@ -151,7 +170,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
     # remove names
     dimnames(assay_data) <- list(NULL, NULL)
-    if (assay_name == x_assay_name) {
+    if (assay_name == seurat_obj@active.assay) {
       ad$X <- Matrix::t(assay_data)
     } else {
       ad$layers[[assay_name]] <- Matrix::t(assay_data)

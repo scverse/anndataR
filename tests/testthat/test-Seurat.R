@@ -1,5 +1,3 @@
-library(Matrix)
-
 dummy <- dummy_data(10L, 20L)
 
 test_that("to_Seurat with inmemoryanndata", {
@@ -10,15 +8,44 @@ test_that("to_Seurat with inmemoryanndata", {
     obs_names = dummy$obs_names,
     var_names = dummy$var_names
   )
+  ad0 <- InMemoryAnnData$new(
+    obs_names = letters[1:5],
+    var_names = LETTERS[1:10]
+  )
 
-  seu <- to_Seurat(ad)
+  seu <- ad$to_Seurat()
+  seu0 <- ad0$to_Seurat()
 
   expect_equal(nrow(seu), 20)
   expect_equal(ncol(seu), 10)
-  expect_equal(rownames(seu), dummy$var_names)
-  expect_equal(colnames(seu), dummy$obs_names)
 
-  # todo: check whether X can be retrieved
+  # trackstatus: class=Seurat, feature=test_get_var_names, status=done
+  expect_equal(rownames(seu), dummy$var_names)
+  expect_equal(rownames(seu0), LETTERS[1:10])
+
+  # trackstatus: class=Seurat, feature=test_get_obs_names, status=done
+  expect_equal(colnames(seu), dummy$obs_names)
+  expect_equal(colnames(seu0), letters[1:5])
+
+  # check whether all obs keys are found in the seu metadata
+  # seurat will have extra metadata columns
+  # trackstatus: class=Seurat, feature=test_get_obs, status=done
+  for (obs_key in colnames(dummy$obs)) {
+    expect_true(obs_key %in% colnames(seu@meta.data))
+    expect_equal(seu@meta.data[[obs_key]], dummy$obs[[obs_key]])
+  }
+  seu0@meta.data
+
+  # check whether all var keys are found in the seu assay metadata
+  # trackstatus: class=Seurat, feature=test_get_var, status=done
+  active_assay <- seu@assays[[seu@active.assay]]
+  for (var_key in colnames(dummy$var)) {
+    expect_true(var_key %in% colnames(active_assay@meta.features))
+    expect_equal(active_assay@meta.features[[var_key]], dummy$var[[var_key]])
+  }
+
+  # trackstatus: class=Seurat, feature=test_get_X, status=done
+
 })
 
 # todo: check substitution from _ to -
