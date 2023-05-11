@@ -1,9 +1,8 @@
+skip_if_not_installed("rhdf5")
+
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
-# Should contain only `type` and `version`
 test_that("reading encoding works", {
-  skip_if_not_installed("rhdf5")
-  
   encoding <- read_h5ad_encoding(file, "obs")
   expect_equal(names(encoding), c("type", "version"))
 })
@@ -76,6 +75,7 @@ test_that("reading 1D nullable arrays works", {
 })
 
 test_that("reading string scalars works", {
+  
   scalar <- read_h5ad_string_scalar(file, "uns/StringScalar")
   expect_equal(scalar, "A string")
 })

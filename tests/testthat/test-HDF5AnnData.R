@@ -1,4 +1,4 @@
-library(rhdf5)
+skip_if_not_installed("rhdf5")
 
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
