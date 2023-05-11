@@ -141,7 +141,7 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
     t
   )
   if (length(x_and_layers) == 0L) {
-    x <- matrix(0, 0L, 0L)
+    x <- NULL
     layers <- list()
     names(layers) <- character()
   } else {
