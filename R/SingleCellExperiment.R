@@ -115,11 +115,8 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
     inherits(sce, "SingleCellExperiment")
   )
 
+  # fetch generator
   generator <- get_generator(output_class)
-  from_SingleCellExperiment_impl(sce, generator, ...)
-}
-
-from_SingleCellExperiment_impl <- function(sce, generator, ...) { # nolint
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
   obs <- as.data.frame(
