@@ -209,7 +209,7 @@ read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
-#' @return a character vector/matrix???
+#' @return a character vector/matrix
 read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
 
@@ -218,6 +218,12 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   string_array <- rhdf5::h5read(file, name)
   if (is.matrix(string_array)) {
     string_array <- t(string_array)
+  }
+  string_array
+  
+  # If the array is 1D, convert to vector
+  if (length(dim(string_array) == 1)) {
+    string_array <- as.vector(string_array)
   }
   string_array
 }
