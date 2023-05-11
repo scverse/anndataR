@@ -224,17 +224,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         stop(wrap_message(label, "_names should be defined."))
       }
 
-      expected_len <- switch(label,
-        obs = self$n_obs(),
-        var = self$n_vars()
-      )
-
-      if (length(names) != expected_len) {
-        stop(wrap_message(
-          "length(", label, "_names) should be the same as nrow(", label, ")."
-        ))
-      }
-      
       names
     }
   )
