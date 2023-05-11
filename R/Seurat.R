@@ -93,16 +93,12 @@ to_Seurat <- function(obj) { # nolint
 #'
 #' @export
 # todo: add option to determine default X assay name
-# todo: add option to decide on var key resolution
 # todo: add option to decide on whether to use counts or data for the different layers
 # todo: add tests with Seurat objects not created by anndataR
-# todo: add option to decide on which backend to use ( https://github.com/scverse/anndataR/issues/51 )
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), ...) { # nolint
   x_assay_name <- "RNA"
 
   stopifnot(inherits(seurat_obj, "Seurat"))
-  pbmc <- Seurat::Read10X(data.dir = "~/Downloads/pbmc3k_filtered_gene_bc_matrices/filtered_gene_bc_matrices/hg19")
-  seurat_obj <- Seurat::CreateSeuratObject(counts = pbmc, project = "pbmc3k", min.cells = 3, min.features = 200)
 
   # get obs_names
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
@@ -118,7 +114,6 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
   var_names <- rownames(seurat_obj)
 
   # construct var
-  # NOTE: This will create duplicate data if the meta features are the same.
   # trackstatus: class=Seurat, feature=set_var, status=done
   var <- seurat_obj@assays[[seurat_obj@active.assay]]@meta.features
   rownames(var) <- NULL
