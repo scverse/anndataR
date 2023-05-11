@@ -138,10 +138,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (create_new) {
         # create a new h5ad from scratch
         if (missing(X)) X <- NULL
-        if (missing(obs)) stop("When creating a new .h5ad file, `obs` must be defined.")
-        if (missing(var)) stop("When creating a new .h5ad file, `var` must be defined.")
-        if (missing(obs_names)) obs_names <- NULL
-        if (missing(var_names)) var_names <- NULL
+        if (missing(obs)) obs <- NULL
+        if (missing(var)) var <- NULL
+        if (missing(obs_names)) obs_names <- stop("When creating a new .h5ad file, `obs_names` must be defined.")
+        if (missing(var_names)) var_names <- stop("When creating a new .h5ad file, `var_names` must be defined.")
         if (missing(layers)) layers <- NULL
 
         # create new H5AD from scratch
@@ -195,7 +195,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @description Number of observations in the AnnData object
     n_obs = function() {
       if (is.null(private$.n_obs)) {
-        private$.n_obs <- nrow(self$obs)
+        private$.n_obs <- length(self$obs_names)
       }
       private$.n_obs
     },
@@ -203,7 +203,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @description Number of variables in the AnnData object
     n_vars = function() {
       if (is.null(private$.n_vars)) {
-        private$.n_vars <- nrow(self$var)
+        private$.n_vars <- length(self$var_names)
       }
       private$.n_vars
     }

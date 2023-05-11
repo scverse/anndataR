@@ -82,11 +82,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     },
     #' @description Number of observations in the AnnData object.
     n_obs = function() {
-      nrow(self$obs)
+      length(self$obs_names)
     },
     #' @description Number of variables in the AnnData object.
     n_vars = function() {
-      nrow(self$var)
+      length(self$var_names)
     },
     #' @description Keys ('column names') of `obs`.
     obs_keys = function() {
@@ -131,16 +131,14 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
         if (!is.null(rownames(mat))) {
           warning(wrap_message(
-            "rownames(", label, ") should be NULL, removing them from the ",
-            "matrix"
+            "rownames(", label, ") should be NULL, removing them from the matrix"
           ))
           rownames(mat) <- NULL
         }
 
         if (!is.null(colnames(mat))) {
           warning(wrap_message(
-            "colnames(", label, ") should be NULL, removing them from the ",
-            "matrix"
+            "colnames(", label, ") should be NULL, removing them from the matrix"
           ))
           colnames(mat) <- NULL
         }
@@ -185,28 +183,33 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
                                           check_nrow = FALSE) {
       label <- match.arg(label)
 
+      expected_nrow <- switch(label,
+        obs = self$n_obs(),
+        var = self$n_vars()
+      )
+
+      if (is.null(df)) {
+        # create empty data frame
+        df <- data.frame(i = seq_len(expected_nrow))[, -1, drop = FALSE]
+      }
+
       if (!is.data.frame(df)) {
         stop(label, " should be a data frame")
       }
 
       if (check_nrow) {
-        nrow <- switch(label,
-          obs = self$n_obs(),
-          var = self$n_vars()
-        )
-
-        if (nrow(df) != nrow) {
+        if (nrow(df) != expected_nrow) {
           stop("nrow(df) should match the number of ", label)
         }
       }
 
       if (.row_names_info(df) > 0) {
         warning(wrap_message(
-          "'", label, "' should not have any dimnames, removing them from ",
-          "the matrix"
+          "'", label, "' should not have any rownames, removing them from the data frame."
         ))
         rownames(df) <- NULL
       }
+
       df
     },
 
@@ -217,17 +220,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     .validate_obsvar_names = function(names, label = c("obs", "var")) {
       label <- match.arg(label)
 
-      len <- switch(label,
-        obs = self$n_obs(),
-        var = self$n_vars()
-      )
-
-      if (!is.null(names) && length(names) != len) {
-        stop(wrap_message(
-          "length(", label, "_names) should be the same as ",
-          "nrow(", label, ")"
-        ))
+      if (is.null(names)) {
+        stop(wrap_message(label, "_names should be defined."))
       }
+
       names
     }
   )

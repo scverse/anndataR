@@ -133,8 +133,18 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
   rownames(var) <- NULL
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
+  obs_names <- colnames(sce)
+  if (is.null(obs_names)) {
+    warning(wrap_message("colnames(sce) should not be NULL"))
+    obs_names <- as.character(seq_len(nrow(obs)))
+  }
+
   # trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
-  dimnames <- dimnames(sce)
+  var_names <- rownames(sce)
+  if (is.null(var_names)) {
+    warning(wrap_message("rownames(sce) should not be NULL"))
+    var_names <- as.character(seq_len(nrow(var)))
+  }
 
   # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
@@ -155,8 +165,8 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
     X = x,
     obs = obs,
     var = var,
-    obs_names = dimnames[[2]],
-    var_names = dimnames[[1]],
+    obs_names = obs_names,
+    var_names = var_names,
     layers = layers,
     ...
   )

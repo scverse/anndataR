@@ -13,7 +13,7 @@ test_that("to_Seurat with inmemoryanndata", {
     var_names = LETTERS[1:10]
   )
 
-  seu <- ad$to_Seurat()
+  seu <- suppressWarnings(ad$to_Seurat())
   seu0 <- ad0$to_Seurat()
 
   expect_equal(nrow(seu), 20)
