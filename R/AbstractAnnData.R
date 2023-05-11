@@ -190,8 +190,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       }
 
       if (check_nrow) {
-        nrow <- switch(
-          label,
+        nrow <- switch(label,
           obs = self$n_obs(),
           var = self$n_vars()
         )
@@ -218,8 +217,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     .validate_obsvar_names = function(names, label = c("obs", "var")) {
       label <- match.arg(label)
 
-      len <- switch (
-        label,
+      len <- switch(label,
         obs = self$n_obs(),
         var = self$n_vars()
       )

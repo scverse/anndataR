@@ -43,8 +43,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "/obs")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
-        value <- private$.validate_obsvar_dataframe(value, "obs",
-                                                    check_nrow = TRUE)
+        value <- private$.validate_obsvar_dataframe(value, "obs", check_nrow = TRUE)
         write_h5ad_element(value, private$.h5obj, "/obs")
       }
     },
@@ -55,8 +54,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "/var")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
-        value <- private$.validate_obsvar_dataframe(value, "var", 
-                                                    check_nrow = TRUE)
+        value <- private$.validate_obsvar_dataframe(value, "var", check_nrow = TRUE)
         write_h5ad_element(value, private$.h5obj, "/var")
       }
     },
@@ -161,7 +159,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         self$var_names <- var_names
         self$X <- X
         self$layers <- layers
-
       } else {
         # check if other arguments are defined
         slots_missing <- missing(X) && missing(obs) && missing(var) &&
