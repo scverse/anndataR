@@ -28,6 +28,19 @@ test_that("reading sparse matrices works", {
   expect_equal(dim(mat), c(50, 100))
 })
 
+test_that("reading recarrays works", {
+  array_list <- read_h5ad_rec_array(
+    file, "uns/rank_genes_groups/logfoldchanges"
+  )
+  expect_true(is.list(array_list))
+  expect_equal(names(array_list), c("0", "1", "2", "3", "4", "5"))
+  for (array in array_list) {
+    expect_true(is.array(array))
+    expect_type(array, "double")
+    expect_equal(dim(array), 100)
+  }
+})
+
 test_that("reading 1D numeric arrays works", {
   array1D <- read_h5ad_dense_array(file, "obs/Int")
   expect_vector(array1D, ptype = integer(), size = 50)

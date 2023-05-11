@@ -45,21 +45,25 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
     version <- encoding_list$version
   }
 
-  read_fun <-
-    switch(type,
-      "array" = read_h5ad_dense_array,
-      "csr_matrix" = read_h5ad_csr_matrix,
-      "csc_matrix" = read_h5ad_csc_matrix,
-      "dataframe" = read_h5ad_data_frame,
-      "dict" = read_h5ad_mapping,
-      "string" = read_h5ad_string_scalar,
-      "numeric-scalar" = read_h5ad_numeric_scalar,
-      "categorical" = read_h5ad_categorical,
-      "string-array" = read_h5ad_string_array,
-      "nullable-integer" = read_h5ad_nullable_integer,
-      "nullable-boolean" = read_h5ad_nullable_boolean,
-      stop("No function for reading H5AD encoding: ", type)
+  read_fun <- switch(
+    type,
+    "array" = read_h5ad_dense_array,
+    "rec-array" = read_h5ad_rec_array,
+    "csr_matrix" = read_h5ad_csr_matrix,
+    "csc_matrix" = read_h5ad_csc_matrix,
+    "dataframe" = read_h5ad_data_frame,
+    "dict" = read_h5ad_mapping,
+    "string" = read_h5ad_string_scalar,
+    "numeric-scalar" = read_h5ad_numeric_scalar,
+    "categorical" = read_h5ad_categorical,
+    "string-array" = read_h5ad_string_array,
+    "nullable-integer" = read_h5ad_nullable_integer,
+    "nullable-boolean" = read_h5ad_nullable_boolean,
+    stop(
+      "No function for reading H5AD encoding '", type,
+      "' for element '", name, "'"
     )
+  )
   read_fun(file = file, name = name, version = version)
 }
 
@@ -94,6 +98,7 @@ read_h5ad_csr_matrix <- function(file, name, version) {
     type = "csr_matrix"
   )
 }
+
 read_h5ad_csc_matrix <- function(file, name, version) {
   read_h5ad_sparse_array(
     file = file,
@@ -147,6 +152,29 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
   }
 
   mtx
+}
+
+#' Read H5AD recarray
+#'
+#' Read a recarray from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @details
+#' A "record array" (recarray) is a Python NumPy array type that countains 
+#' "fields" that can be indexed using attributes (similar to columns in a
+#' spreadsheet). See https://numpy.org/doc/stable/reference/generated/numpy.recarray.html
+#' for details.
+#' 
+#' They are used by **scanpy** to score marker gene testing results.
+#' 
+#' @return a named list of 1D arrays
+read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
+  version <- match.arg(version)
+
+  rhdf5::h5read(file, name, compoundAsDataFrame = FALSE)
 }
 
 #' Read H5AD nullable boolean
