@@ -62,14 +62,16 @@ to_SingleCellExperiment <- function(object) { # nolint
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
   col_data <- S4Vectors::DataFrame(
-    object$obs, row.names = object$obs_names
+    object$obs,
+    row.names = object$obs_names
   )
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
   row_data <- S4Vectors::DataFrame(
-    object$var, row.names = object$var_names
+    object$var,
+    row.names = object$var_names
   )
 
   # construct output object
