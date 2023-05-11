@@ -22,7 +22,7 @@ test_that("reading layers works", {
   layers <- adata$layers
   expect_true(is.list(layers), "list")
   expect_equal(
-    names(layers), 
+    names(layers),
     c("counts", "csc_counts", "dense_X", "dense_counts")
   )
 })
@@ -33,8 +33,10 @@ test_that("reading obs works", {
   expect_s3_class(obs, "data.frame")
   expect_equal(
     colnames(obs),
-    c("Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA", "n_genes_by_counts",
-      "log1p_n_genes_by_counts", "total_counts", "log1p_total_counts", "leiden")
+    c(
+      "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA", "n_genes_by_counts",
+      "log1p_n_genes_by_counts", "total_counts", "log1p_total_counts", "leiden"
+    )
   )
 })
 
@@ -44,9 +46,11 @@ test_that("reading var works", {
   expect_s3_class(var, "data.frame")
   expect_equal(
     colnames(var),
-    c("String", "n_cells_by_counts", "mean_counts", "log1p_mean_counts",
+    c(
+      "String", "n_cells_by_counts", "mean_counts", "log1p_mean_counts",
       "pct_dropout_by_counts", "total_counts", "log1p_total_counts",
-      "highly_variable", "means", "dispersions", "dispersions_norm")
+      "highly_variable", "means", "dispersions", "dispersions_norm"
+    )
   )
 })
 

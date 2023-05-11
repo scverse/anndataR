@@ -44,8 +44,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
     version <- encoding_list$version
   }
 
-  read_fun <- switch(
-    type,
+  read_fun <- switch(type,
     "array" = read_h5ad_dense_array,
     "rec-array" = read_h5ad_rec_array,
     "csr_matrix" = read_h5ad_csr_matrix,
@@ -158,13 +157,13 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
 #' @param version Encoding version of the element to read
 #'
 #' @details
-#' A "record array" (recarray) is a Python NumPy array type that countains 
+#' A "record array" (recarray) is a Python NumPy array type that countains
 #' "fields" that can be indexed using attributes (similar to columns in a
 #' spreadsheet). See https://numpy.org/doc/stable/reference/generated/numpy.recarray.html
 #' for details.
-#' 
+#'
 #' They are used by **scanpy** to score marker gene testing results.
-#' 
+#'
 #' @return a named list of 1D arrays
 read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
@@ -236,12 +235,12 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   if (is.matrix(string_array)) {
     string_array <- t(string_array)
   }
-  
+
   # If the array is 1D, convert to vector
   if (length(dim(string_array)) == 1) {
     string_array <- as.vector(string_array)
   }
-  
+
   string_array
 }
 

@@ -133,7 +133,6 @@ write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
 
   # Write attributes
   write_h5ad_encoding(file, name, "nullable-boolean", version)
-
 }
 
 #' Write H5AD nullable integer

@@ -145,7 +145,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
-      
+
       if (!inherits(file, "H5IdComponent") && !is.character(file)) {
         stop(
           "Argument 'file' should be a character path or an ",
@@ -179,7 +179,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         self$var_names <- var_names
         self$X <- X
         self$layers <- layers
-
       } else {
         # check if other arguments are defined
         slots_missing <- missing(X) && missing(obs) && missing(var) &&
