@@ -17,11 +17,14 @@ import scipy.sparse  # scipy v1.10.1
 # changelog below and format the file using Python Black
 # (https://black.readthedocs.io/en/stable/).
 #
-# Version: 0.1.1
-# Date: 2023-05-09
+# Version: 0.2.0
+# Date: 2023-05-11
 #
 # CHANGELOG
 #
+# v0.2.0 (2023-05-11)
+# - Add 1D sparse matrix to `adata.uns["Sparse1D"]
+# - Reduce the size of `adata.uns["String2D"]` and add columns to values
 # v0.1.1 (2023-05-09)
 # - Reduce the size of `adata.uns["String2D"]` to save space
 # - Reduce dimension to 50 x 100 to save space
@@ -62,9 +65,10 @@ adata.uns["BoolNA"] = pandas.array([True, False, None])
 adata.uns["Int"] = [1, 2, 3]
 adata.uns["IntNA"] = pandas.array([1, 2, None])
 adata.uns["IntScalar"] = 1
+adata.uns["Sparse1D"] = scipy.sparse.csc_matrix([1, 2, 0, 0, 0, 3])
 adata.uns["StringScalar"] = "A string"
 adata.uns["String"] = [f"String {i}" for i in range(10)]
-adata.uns["String2D"] = [[f"row{i}{j}" for i in range(20)] for j in range(10)]
+adata.uns["String2D"] = [[f"row{i}col{j}" for i in range(10)] for j in range(5)]
 adata.uns["DataFrameEmpty"] = pandas.DataFrame(index=adata.obs.index)
 
 # Run the standard scanpy workflow

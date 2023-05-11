@@ -2,6 +2,8 @@ file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 # Should contain only `type` and `version`
 test_that("reading encoding works", {
+  skip_if_not_installed("rhdf5")
+  
   encoding <- read_h5ad_encoding(file, "obs")
   expect_equal(names(encoding), c("type", "version"))
 })
@@ -49,10 +51,11 @@ test_that("reading 1D numeric arrays works", {
   expect_vector(array1D, ptype = double(), size = 50)
 })
 
-# test_that("reading 1D sparse numeric arrays works", {
-#   array1D <- read_h5ad_dense_array(file, "obs/dummy_num")
-#   expect_equal(matrix1d, rep(42.42, 640))
-# })
+test_that("reading 1D sparse numeric arrays works", {
+  array1D <- read_h5ad_sparse_array(file, "uns/Sparse1D", type = "csc")
+  expect_s4_class(array1D, "dgCMatrix")
+  expect_equal(dim(array1D), c(1, 6))
+})
 
 test_that("reading 1D nullable arrays works", {
   array1D <- read_h5ad_nullable_integer(file, "obs/IntNA")
@@ -90,7 +93,7 @@ test_that("reading string arrays works", {
   array <- read_h5ad_string_array(file, "uns/String2D")
   expect_true(is.matrix(array))
   expect_type(array, "character")
-  expect_equal(dim(array), c(10, 20))
+  expect_equal(dim(array), c(5, 10))
 })
 
 test_that("reading mappings works", {
