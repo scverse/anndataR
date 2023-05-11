@@ -9,8 +9,6 @@
 #'
 #' @return The object with additional encoding attributes
 write_h5ad_encoding <- function(file, name, encoding, version) {
-  requireNamespace("rhdf5")
-
   dataset <- file & name
   rhdf5::h5writeAttribute(encoding, dataset, "encoding-type") # nolint
   rhdf5::h5writeAttribute(version, dataset, "encoding-version") # nolint
@@ -58,8 +56,6 @@ write_h5ad_element <- function(value, file, name) { # nolint
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
 
   # Transpose the value because writing with native=TRUE does not
@@ -71,8 +67,6 @@ write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
 }
 
 path_exists <- function(file, target_path) {
-  requireNamespace("rhdf5")
-
   content <- rhdf5::h5ls(file)
 
   any(paste0(content$group, content$name) == target_path)
@@ -87,8 +81,6 @@ path_exists <- function(file, target_path) {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
 
   # check types
@@ -127,8 +119,6 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   # remove first if it already exists
   if (path_exists(file, name)) {
     rhdf5::h5delete(file, name)
@@ -155,8 +145,6 @@ write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   # remove first if it already exists
   if (path_exists(file, name)) {
     rhdf5::h5delete(file, name)
@@ -182,8 +170,6 @@ write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   # Write scalar
   rhdf5::h5write(value, file, name)
 
@@ -200,8 +186,6 @@ write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   # remove first if it already exists
   if (path_exists(file, name)) {
     rhdf5::h5delete(file, name)
@@ -226,8 +210,6 @@ write_h5ad_categorical <- function(value, file, name, version = "0.2.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_string_scalar <- function(value, file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   # Write scalar
   rhdf5::h5write(value, file, name)
 
@@ -244,8 +226,6 @@ write_h5ad_string_scalar <- function(value, file, name, version = "0.2.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   # Write scalar
   rhdf5::h5write(value, file, name)
 
@@ -262,10 +242,6 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
-  # delete name if it already exists?
-
   # Write mapping elements
   for (key in names(value)) {
     write_h5ad_element(value[[key]], file, paste0(name, "/", key))

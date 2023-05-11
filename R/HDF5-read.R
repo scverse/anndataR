@@ -7,7 +7,6 @@
 #'
 #' @return A named list with names type and version
 read_h5ad_encoding <- function(file, name) {
-  requireNamespace("rhdf5")
   attrs <- rhdf5::h5readAttributes(file, name)
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
@@ -77,8 +76,6 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
 #'
 #' @return a matrix or a vector if 1D
 read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   # TODO: ideally, native = TRUE should take care of the row order and column order,
   # but it doesn't
@@ -121,8 +118,6 @@ read_h5ad_csc_matrix <- function(file, name, version) {
 #' @importFrom Matrix sparseMatrix
 read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
                                    type = c("csr_matrix", "csc_matrix")) {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   type <- match.arg(type)
 
@@ -187,8 +182,6 @@ read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
 #'
 #' @return a boolean vector
 read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
 
   element <- rhdf5::h5read(file, name)
@@ -213,8 +206,6 @@ read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
 #'
 #' @return an integer vector
 read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
 
   element <- rhdf5::h5read(file, name)
@@ -239,8 +230,6 @@ read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
 #'
 #' @return a character vector/matrix
 read_h5ad_string_array <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   # reads in transposed
   string_array <- rhdf5::h5read(file, name)
@@ -266,8 +255,6 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
 #'
 #' @return a factor
 read_h5ad_categorical <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
 
   element <- rhdf5::h5read(file, name)
@@ -309,8 +296,6 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 #'
 #' @return a character vector of length 1
 read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   rhdf5::h5read(file, name)
 }
@@ -325,8 +310,6 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 #'
 #' @return a numeric vector of length 1
 read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   rhdf5::h5read(file, name)
 }
@@ -341,8 +324,6 @@ read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
 #'
 #' @return a named list
 read_h5ad_mapping <- function(file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   groupname <- paste0("/", name)
 
@@ -364,8 +345,6 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #'
 #' @return a data.frame
 read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
 
   attributes <- rhdf5::h5readAttributes(file, name)
