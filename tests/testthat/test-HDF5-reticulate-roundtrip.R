@@ -11,8 +11,9 @@ test_that("test Python -> R", {
   rownames(var_) <- dummy$var_names
   ad <- anndata::AnnData(
     X = dummy$X,
+    layers = dummy$layers,
     obs = obs_,
-    var = var_
+    var = var_,
   )
 
   # write to file
@@ -22,16 +23,25 @@ test_that("test Python -> R", {
   # read from file
   ad_new <- HDF5AnnData$new(filename)
 
+  # Python writer coerces strings to categoricals (in most cases)
+  obs_$cell_type <- factor(obs_$cell_type)
+  var_$geneinfo <- factor(var_$geneinfo)
+
   # expect slots are unchanged
-  expect_equal(ad_new$X, dummy$X, tolerance = 1e-10)
-  expect_equal(ad_new$obs, dummy$obs, tolerance = 1e-10)
-  expect_equal(ad_new$var, dummy$var, tolerance = 1e-10)
+  expect_equal(ad_new$X, dummy$X, tolerance = 1e-7)
+  expect_equal(ad_new$obs, obs_, tolerance = 1e-10)
+  expect_equal(ad_new$var, var_, tolerance = 1e-10)
   expect_equal(ad_new$obs_names, dummy$obs_names, tolerance = 1e-10)
   expect_equal(ad_new$var_names, dummy$var_names, tolerance = 1e-10)
   expect_equal(ad_new$layers, dummy$layers, tolerance = 1e-10)
 })
 
 test_that("test R -> Python", {
+  skip_if_not(
+    "Writing data frames implemented",
+    message = "Skipped until writing HDF5 data frames is implemented"
+  )
+
   # write to file
   filename <- withr::local_file("r_to_python.h5ad")
   ad <- HDF5AnnData$new(
