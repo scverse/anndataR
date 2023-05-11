@@ -21,18 +21,10 @@ ad <- InMemoryAnnData$new(
 )
 ad
 
-## minimal example -- no observations or variables
+## minimum example
 ad <- InMemoryAnnData$new(
-  obs = data.frame(),
-  var = data.frame()
-)
-ad
-
-## number of  observations or variables determined by `obs` and `var`; no
-## `X` or `layers`; `obs_names` and `var_names` determined automatically
-ad <- InMemoryAnnData$new(
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5)
+  obs_names = letters[1:10],
+  var_names = LETTERS[1:5]
 )
 ad
 }
@@ -103,10 +95,10 @@ Inherits from AbstractAnnData.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
   X = NULL,
-  obs,
-  var,
-  obs_names = NULL,
-  var_names = NULL,
+  obs = NULL,
+  var = NULL,
+  obs_names,
+  var_names,
   layers = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -114,31 +106,31 @@ Inherits from AbstractAnnData.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{Either NULL or a observation x variable matrix with
+\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
 dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{A \code{data.frame} with columns containing information
-about observations. The number of rows of \code{obs} defines the
-observation dimension of the AnnData object.}
+\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
+be generated.}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information
-about variables. The number of rows of \code{var} defines the variable
-dimension of the AnnData object.}
+\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
+be generated.}
 
-\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+\item{\code{obs_names}}{A vector of unique identifiers
 used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. For
-compatibility with \emph{R} representations, \code{obs_names} should be a
-character vector.}
+the observation dimension of the AnnData object. The length of
+the \code{obs_names} defines the observation dimension of the AnnData
+object.}
 
-\item{\code{var_names}}{Either NULL or a vector of unique identifers
+\item{\code{var_names}}{A vector of unique identifers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. For compatibility
-with \emph{R} representations, \code{var_names} should be a character
-vector.}
+the variable dimension of the AnnData object. The length of
+the \code{var_names} defines the variable dimension of the AnnData
+object.}
 
-\item{\code{layers}}{Either NULL or a named list, where each element
-is an observation x variable matrix with dimensions consistent
+\item{\code{layers}}{Either \code{NULL} or a named list, where each element
+is an observation × variable matrix with dimensions consistent
 with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}
