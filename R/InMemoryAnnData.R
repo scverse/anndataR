@@ -147,8 +147,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     initialize = function(X = NULL, obs = NULL, var = NULL, obs_names, var_names, layers = NULL) {
       # check obs_names and var_names first, because these objects are used by
       # other validators
-      private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs")
-      private$.var_names <- private$.validate_obsvar_names(var_names, "var")
+      private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs", check_length = FALSE)
+      private$.var_names <- private$.validate_obsvar_names(var_names, "var", check_length = FALSE)
 
       # then check other values
       private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
