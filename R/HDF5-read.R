@@ -56,8 +56,8 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
       "numeric-scalar" = read_h5ad_numeric_scalar,
       "categorical" = read_h5ad_categorical,
       "string-array" = read_h5ad_string_array,
-      "nullable-integer" = read_h5ad_nullable_integer,
-      "nullable-boolean" = read_h5ad_nullable_boolean,
+      "nullable-integer" = , # nullable vectors dispatch to same function
+      "nullable-boolean" = read_h5ad_nullable,
       stop("No function for reading H5AD encoding: ", type)
     )
   read_fun(file = file, name = name, version = version)
@@ -149,54 +149,31 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
   mtx
 }
 
-#' Read H5AD nullable boolean
+#' Read H5AD nullable vectors
 #'
-#' Read a nullable boolean from an H5AD file
+#' Read a nullable vectors (boolean or integer) from an H5AD file
 #'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
 #' @return a boolean vector
-read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
+read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   requireNamespace("rhdf5")
 
   version <- match.arg(version)
 
   element <- rhdf5::h5read(file, name)
 
-  # Get mask and convert to Boolean
-  mask <- as.logical(element[["mask"]])
-
-  # Get values and set missing
-  element <- as.logical(element[["values"]])
-  element[mask] <- NA
-
-  return(element)
-}
-
-#' Read H5AD nullable integer
-#'
-#' Read a nullable integer from an H5AD file
-#'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#'
-#' @return an integer vector
-read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
-  version <- match.arg(version)
-
-  element <- rhdf5::h5read(file, name)
-
-  # Get mask and convert to Boolean
-  mask <- as.logical(element[["mask"]])
-
-  # Get values and set missing
-  element <- as.integer(element[["values"]])
-  element[mask] <- NA_integer_
+  # Some versions of rhdf5 automatically apply mask, in which case
+  # there is no 'mask' element
+  if (!is.null(names(element))) {
+    # Get mask and convert to Boolean
+    mask <- as.logical(element[["mask"]])
+    # Get values and set missing
+    element <- as.vector(element[["values"]])
+    element[mask] <- NA
+  }
 
   return(element)
 }
@@ -236,6 +213,7 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   version <- match.arg(version)
 
+  attrs <- rhdf5::h5readAttributes(file, name)
   element <- rhdf5::h5read(file, name)
 
   # Get codes and convert to 1-based indexing
@@ -250,8 +228,9 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   levels <- element[["categories"]]
 
-  ordered <- element[["ordered"]]
-  if (is.null(ordered)) {
+  if ("ordered" %in% names(attrs)) {
+    ordered <- attrs[["ordered"]]
+  } else {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
     # can't tell if the categorical should be ordered,
     # see https://github.com/grimbough/rhdf5/issues/125
