@@ -50,12 +50,16 @@ test_that("reading string array", {
 })
 
 test_that("reading mapping", {
-  mapping <- read_h5ad_mapping(file, "uns")
+  mapping <- suppressWarnings({
+    read_h5ad_mapping(file, "uns")
+  }, classes = "anndataR-category-unknown")
   expect_type(mapping, "list")
   expect_type(names(mapping), "character")
 })
 
 test_that("reading dataframe", {
-  df <- read_h5ad_data_frame(file, "obs")
+  df <- suppressWarnings({
+    read_h5ad_data_frame(file, "obs")
+  }, classes = "anndataR-category-unknown")
   expect_true(is.data.frame(df))
 })

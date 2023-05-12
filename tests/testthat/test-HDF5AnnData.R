@@ -34,7 +34,7 @@ test_that("read obs", {
   tryCatch({
     adata <- HDF5AnnData$new(h5_file)
 
-    obs <- adata$obs
+    obs <- suppressWarnings(adata$obs, classes = "anndataR-category-unknown")
     expect_equal(nrow(obs), 640L)
 
     # todo: check content of obs

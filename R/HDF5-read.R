@@ -256,10 +256,13 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
     # can't tell if the categorical should be ordered,
     # see https://github.com/grimbough/rhdf5/issues/125
-    warning(
-      "Unable to determine if categorical '", name,
-      "' is ordered, assuming it isn't"
-    )
+    condition <- simpleWarning(wrap_message(
+      "Unable to determine if categorical '", name, "' ",
+      "is ordered, assuming it is not"
+    ), call = NULL) # 'call' is usually not informative here
+    class(condition) <- c("anndataR-category-unknown", class(condition))
+    warning(condition)
+
     ordered <- FALSE
   }
 
