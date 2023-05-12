@@ -178,14 +178,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         }
 
         # check for attributes
-        attrs <- rhdf5::h5readAttributes(file, "/")
-
-        if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-          stop(
-            "H5AD encoding information is missing. ",
-            "This file may have been created with Python anndata<0.8.0."
-          )
-        }
+        attrs <- read_h5ad_encoding(file, "/")
 
         # store file
         private$.h5obj <- file
