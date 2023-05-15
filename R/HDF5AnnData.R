@@ -128,6 +128,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
     initialize = function(file, obs_names, var_names, X, obs, var, layers) {
+      if (!requireNamespace("rhdf5", quietly = TRUE)) {
+        stop("The HDF5 interface requires the 'rhdf5' package to be installed")
+      }
       if (!inherits(file, "H5IdComponent") && !is.character(file)) {
         stop(
           "Argument 'file' should be a character path or an ",
