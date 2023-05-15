@@ -17,31 +17,47 @@ write_h5ad_element <- function(value, file, name) { # nolint
     rhdf5::h5delete(file, name)
   }
   
-  write_fun <-
-    if (inherits(value, "sparseMatrix")) { # nolint
-      write_h5ad_sparse_array
-    } else if (is.factor(value)) {
-      write_h5ad_categorical
-    } else if (is.data.frame(value)) {
-      write_h5ad_data_frame
-    } else if (is.list(value)) {
-      write_h5ad_mapping
-    } else if (is.character(value) && length(value) == 1) {
-      write_h5ad_string_scalar
-    } else if (is.character(value)) {
-      write_h5ad_string_array
-    } else if (is.numeric(value) && length(value) == 1) {
-      write_h5ad_numeric_scalar
-    } else if (is.logical(value) && any(is.na(value))) {
-      write_h5ad_nullable_boolean
-    } else if (is.integer(value) && any(is.na(value))) {
-      write_h5ad_nullable_integer
-    } else if (is.numeric(value) && (is.matrix(value) || is.vector(value))) {
-      write_h5ad_dense_array
+  # Sparse matrices
+  if (inherits(value, "sparseMatrix")) {
+    write_fun <- write_h5ad_sparse_array
+  # Categoricals
+  } else if (is.factor(value)) {
+    write_fun <- write_h5ad_categorical
+  # Lists and data frames
+  } else if (is.list(value)) {
+    if (is.data.frame(value)) {
+      write_fun <- write_h5ad_data_frame
     } else {
-      stop("Unsupported data type: ", class(value)) # nolint
+      write_fun <- write_h5ad_mapping
     }
-
+  # Character values
+  } else if (is.character(value)) {
+    if (length(value) == 1) {
+      write_fun <- write_h5ad_string_scalar
+    } else {
+      write_fun <- write_h5ad_string_array
+    }
+  # Numeric values
+  } else if (is.numeric(value)) {
+    if (length(value) == 1) {
+      write_fun <- write_h5ad_numeric_scalar
+    } else if (is.integer(value) && any(is.na(value))) {
+      write_fun <- write_h5ad_nullable_integer
+    } else {
+      write_fun <- write_h5ad_dense_array
+    }
+  # Logical values
+  } else if (is.logical(value)) {
+    if (any(is.na(value))) {
+      write_fun <- write_h5ad_nullable_boolean
+    } else {
+      write_fun <- write_h5ad_dense_array
+    }
+  # Fail if unknown
+  } else {
+    stop("Write '", class(value), "' objects to H5AD files is not supported")
+  }
+  
   write_fun(value = value, file = file, name = name)
 }
 
