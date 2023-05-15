@@ -126,6 +126,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   with *R* representations, `var_names` should be a character
     #'   vector.
     initialize = function(file, X, obs, var, obs_names, var_names, layers) {
+      if (!requireNamespace("rhdf5", quietly = TRUE)) {
+        stop("The HDF5 interface requires the 'rhdf5' package to be installed")
+      }
+
       if (!inherits(file, "H5IdComponent") && !is.character(file)) {
         stop(
           "Argument 'file' should be a character path or an ",
