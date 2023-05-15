@@ -56,7 +56,7 @@ write_h5ad_element <- function(value, file, name, ...) { # nolint
     }
   # Fail if unknown
   } else {
-    stop("Write '", class(value), "' objects to H5AD files is not supported")
+    stop("Writing '", class(value), "' objects to H5AD files is not supported")
   }
   
   write_fun(value = value, file = file, name = name, ...)
