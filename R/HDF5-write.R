@@ -9,11 +9,23 @@
 #'
 #' @return The object with additional encoding attributes
 write_h5ad_encoding <- function(file, name, encoding, version) {
-  requireNamespace("rhdf5")
-
-  dataset <- file & name
-  rhdf5::h5writeAttribute(encoding, dataset, "encoding-type") # nolint
-  rhdf5::h5writeAttribute(version, dataset, "encoding-version") # nolint
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+  
+  oid <- rhdf5::H5Oopen(h5file, name)
+  type <- rhdf5::H5Iget_type(oid)
+  rhdf5::H5Oclose(oid)
+  
+  if (type == "H5I_GROUP") {
+    h5obj <- rhdf5::H5Gopen(h5file, name)
+    on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
+  } else {
+    h5obj <- rhdf5::H5Dopen(h5file, name)
+    on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
+  }
+  
+  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type") # nolint
+  rhdf5::h5writeAttribute(version, h5obj, "encoding-version") # nolint
 }
 
 #' Write H5AD element
@@ -283,4 +295,34 @@ write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
 #' @param version Encoding version of the element to write
 write_h5ad_data_frame <- function(value, file, name, version = "0.2.0") {
   stop("Writing H5AD element not yet implemented")
+}
+
+
+write_h5ad_test <- function(value, file, name) {
+  
+  if (path_exists(file, name)) {
+    rhdf5::h5delete(file, name)
+  }
+  
+  rhdf5::h5write(value, file, name)
+}
+
+write_h5ad_test_encoding <- function(file, name) {
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+  
+  oid <- rhdf5::H5Oopen(h5file, name)
+  type <- rhdf5::H5Iget_type(oid)
+  rhdf5::H5Oclose(oid)
+  
+  if (type == "H5I_GROUP") {
+    h5obj <- rhdf5::H5Gopen(h5file, name)
+    on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
+  } else {
+    h5obj <- rhdf5::H5Dopen(h5file, name)
+    on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
+  }
+  
+  rhdf5::h5writeAttribute("test-encoding", h5obj, "encoding-type") # nolint
+  rhdf5::h5writeAttribute("test-version", h5obj, "encoding-version") # nolint
 }
