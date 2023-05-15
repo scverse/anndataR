@@ -123,6 +123,16 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   public = list(
     #' @description Creates a new instance of an in memory AnnData object.
     #'   Inherits from AbstractAnnData.
+    #' @param obs_names A vector of unique identifiers
+    #'   used to identify each row of `obs` and to act as an index into
+    #'   the observation dimension of the AnnData object. The length of
+    #'   the `obs_names` defines the observation dimension of the AnnData
+    #'   object.
+    #' @param var_names A vector of unique identifers
+    #'   used to identify each row of `var` and to act as an index into
+    #'   the variable dimension of the AnnData object. The length of
+    #'   the `var_names` defines the variable dimension of the AnnData
+    #'   object.
     #' @param X Either `NULL` or a observation × variable matrix with
     #'   dimensions consistent with `obs` and `var`.
     #' @param layers Either `NULL` or a named list, where each element
@@ -134,17 +144,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing information
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
-    #' @param obs_names A vector of unique identifiers
-    #'   used to identify each row of `obs` and to act as an index into
-    #'   the observation dimension of the AnnData object. The length of
-    #'   the `obs_names` defines the observation dimension of the AnnData
-    #'   object.
-    #' @param var_names A vector of unique identifers
-    #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object. The length of
-    #'   the `var_names` defines the variable dimension of the AnnData
-    #'   object.
-    initialize = function(X = NULL, obs = NULL, var = NULL, obs_names, var_names, layers = NULL) {
+    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL) {
       # check obs_names and var_names first, because these objects are used by
       # other validators
       private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs")
