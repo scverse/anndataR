@@ -157,7 +157,7 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
 #' @param version Encoding version of the element to read
 #'
 #' @details
-#' A "record array" (recarray) is a Python NumPy array type that countains
+#' A "record array" (recarray) is a Python NumPy array type that contains
 #' "fields" that can be indexed using attributes (similar to columns in a
 #' spreadsheet). See https://numpy.org/doc/stable/reference/generated/numpy.recarray.html
 #' for details.
