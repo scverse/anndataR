@@ -18,9 +18,7 @@ write_h5ad_element <- function(value, file, name) { # nolint
   }
   
   write_fun <-
-    if (is.matrix(value) || is.vector(value)) {
-      write_h5ad_dense_array
-    } else if (inherits(value, "sparseMatrix")) { # nolint
+    if (inherits(value, "sparseMatrix")) { # nolint
       write_h5ad_sparse_array
     } else if (is.factor(value)) {
       write_h5ad_categorical
@@ -30,12 +28,16 @@ write_h5ad_element <- function(value, file, name) { # nolint
       write_h5ad_mapping
     } else if (is.character(value) && length(value) == 1) {
       write_h5ad_string_scalar
+    } else if (is.character(value)) {
+      write_h5ad_string_array
     } else if (is.numeric(value) && length(value) == 1) {
       write_h5ad_numeric_scalar
     } else if (is.logical(value) && any(is.na(value))) {
       write_h5ad_nullable_boolean
     } else if (is.integer(value) && any(is.na(value))) {
       write_h5ad_nullable_integer
+    } else if (is.numeric(value) && (is.matrix(value) || is.vector(value))) {
+      write_h5ad_dense_array
     } else {
       stop("Unsupported data type: ", class(value)) # nolint
     }
@@ -111,7 +113,7 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
   if (inherits(value, "RsparseMatrix")) {
     type <- "csr_matrix"
     indices_attr <- "j"
-  } else if (inherits(value, "RsparseMatrix")) {
+  } else if (inherits(value, "CsparseMatrix")) {
     type <- "csc_matrix"
     indices_attr <- "i"
   } else {
@@ -183,10 +185,14 @@ write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
 write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
 
-  # Write scalar
-  rhdf5::h5write(value, file, name)
+  rhdf5::h5write(
+    value,
+    file,
+    name,
+    variableLengthString = TRUE,
+    encoding = "UTF-8"
+  )
 
-  # Write attributes
   write_h5ad_encoding(file, name, "string-array", version)
 }
 
@@ -199,15 +205,11 @@ write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
-  # Write sparse matrix
   rhdf5::h5createGroup(file, name)
   rhdf5::h5write(levels(value), file, paste0(name, "/categories"))
   rhdf5::h5write(as.integer(value) - 1, file, paste0(name, "/codes"))
-  rhdf5::h5write(inherits(value, "ordered"), file, paste0(name, "/ordered"))
+  rhdf5::h5write(is.ordered(value), file, paste0(name, "/ordered"))
 
-  # add encoding
   write_h5ad_encoding(file, name, "categorical", version)
 }
 
@@ -256,10 +258,8 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
-  # delete name if it already exists?
-
+  rhdf5::h5createGroup(file, name)
+  
   # Write mapping elements
   for (key in names(value)) {
     write_h5ad_element(value[[key]], file, paste0(name, "/", key))
@@ -275,9 +275,49 @@ write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param index The index to write. Can either be a vector of length equal to
+#' the number of rows in `values` or a single character string giving the name
+#' of a column in `values`. If `NULL` then `rownames(value)` is used.
 #' @param version Encoding version of the element to write
-write_h5ad_data_frame <- function(value, file, name, version = "0.2.0") {
-  stop("Writing H5AD element not yet implemented")
+write_h5ad_data_frame <- function(value, file, name, index = NULL,
+                                  version = "0.2.0") {
+  
+  rhdf5::h5createGroup(file, name)
+  
+  if (is.null(index)) {
+    index_name <- "_index"
+    value["_index"] <- rownames(value)
+  } else if (length(index) == nrow(value)) {
+    index_name <- "_index"
+    value["_index"] <- index
+  } else if (length(index) == 1 && index %in% colnames(value)) {
+    index_name <- index
+  } else {
+    stop(
+      "index must be a vector with length `nrow(value)` or a single character",
+      "string giving the name of a column in `value`"
+    )
+  }
+  
+  # Write data frame columns
+  for (col in colnames(value)) {
+    write_h5ad_element(value[[col]], file, paste0(name, "/", col))
+  }
+  
+  # Write encoding
+  write_h5ad_encoding(file, name, "dataframe", version)
+  
+  # Write additional data frame attributes
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+  
+  h5obj <- rhdf5::H5Gopen(h5file, name)
+  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
+  
+  rhdf5::h5writeAttribute(index_name, h5obj, "_index")
+  col_order <- colnames(value)
+  col_order <- col_order[col_order != index_name]
+  rhdf5::h5writeAttribute(col_order, h5obj, "column-order") #nolint
 }
 
 #' HDF5 path exists
@@ -289,5 +329,8 @@ write_h5ad_data_frame <- function(value, file, name, version = "0.2.0") {
 hdf5_path_exists <- function(file, target_path) {
   content <- rhdf5::h5ls(file)
   
-  any(paste0(content$group, content$name) == target_path)
+  paths <- file.path(content$group, content$name)
+  paths <- gsub("//", "/", paths) # Remove double slash for root paths
+  
+  target_path %in% paths
 }
