@@ -4,7 +4,7 @@
 \alias{write_h5ad_element}
 \title{Write H5AD element}
 \usage{
-write_h5ad_element(value, file, name)
+write_h5ad_element(value, file, name, ...)
 }
 \arguments{
 \item{value}{The value to write}
@@ -12,7 +12,14 @@ write_h5ad_element(value, file, name)
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
+
+\item{...}{Additional arguments passed to writing functions}
 }
 \description{
 Write an element to a H5AD file
+}
+\details{
+\code{write_h5ad_element()} should always be used instead of any of the specific
+writing functions as it contains additional boilerplate to make sure
+elements are written correctly.
 }
