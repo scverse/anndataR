@@ -5,12 +5,13 @@
 #' @param value The value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param ... Additional arguments passed to writing functions
 #' 
 #' @details
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-write_h5ad_element <- function(value, file, name) { # nolint
+write_h5ad_element <- function(value, file, name, ...) { # nolint
   
   # Delete the path if it already exists
   if (hdf5_path_exists(file, name)) {
@@ -58,7 +59,7 @@ write_h5ad_element <- function(value, file, name) { # nolint
     stop("Write '", class(value), "' objects to H5AD files is not supported")
   }
   
-  write_fun(value = value, file = file, name = name)
+  write_fun(value = value, file = file, name = name, ...)
 }
 
 #' Write H5AD encoding
