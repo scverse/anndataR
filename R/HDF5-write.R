@@ -1,33 +1,3 @@
-#' Set H5AD encoding
-#'
-#' Add the H5AD encoding to the attributes of an object
-#'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
-#' @param encoding The encoding type to set
-#' @param version The encoding version to set
-#'
-#' @return The object with additional encoding attributes
-write_h5ad_encoding <- function(file, name, encoding, version) {
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-  
-  oid <- rhdf5::H5Oopen(h5file, name)
-  type <- rhdf5::H5Iget_type(oid)
-  rhdf5::H5Oclose(oid)
-  
-  if (type == "H5I_GROUP") {
-    h5obj <- rhdf5::H5Gopen(h5file, name)
-    on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-  } else {
-    h5obj <- rhdf5::H5Dopen(h5file, name)
-    on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
-  }
-  
-  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type") # nolint
-  rhdf5::h5writeAttribute(version, h5obj, "encoding-version") # nolint
-}
-
 #' Write H5AD element
 #'
 #' Write an element to a H5AD file
@@ -35,7 +5,18 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @param value The value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' 
+#' @details
+#' `write_h5ad_element()` should always be used instead of any of the specific
+#' writing functions as it contains additional boilerplate to make sure
+#' elements are written correctly.
 write_h5ad_element <- function(value, file, name) { # nolint
+  
+  # Delete the path if it already exists
+  if (hdf5_path_exists(file, name)) {
+    rhdf5::h5delete(file, name)
+  }
+  
   write_fun <-
     if (is.matrix(value) || is.vector(value)) {
       write_h5ad_dense_array
@@ -58,7 +39,36 @@ write_h5ad_element <- function(value, file, name) { # nolint
     } else {
       stop("Unsupported data type: ", class(value)) # nolint
     }
+
   write_fun(value = value, file = file, name = name)
+}
+
+#' Write H5AD encoding
+#'
+#' Write H5AD encoding attributes to an element in an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param encoding The encoding type to set
+#' @param version The encoding version to set
+write_h5ad_encoding <- function(file, name, encoding, version) {
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+  
+  oid <- rhdf5::H5Oopen(h5file, name)
+  type <- rhdf5::H5Iget_type(oid)
+  rhdf5::H5Oclose(oid)
+  
+  if (type == "H5I_GROUP") {
+    h5obj <- rhdf5::H5Gopen(h5file, name)
+    on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
+  } else {
+    h5obj <- rhdf5::H5Dopen(h5file, name)
+    on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
+  }
+  
+  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type") # nolint
+  rhdf5::h5writeAttribute(version, h5obj, "encoding-version") # nolint
 }
 
 #' Write H5AD dense array
@@ -108,10 +118,6 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
     stop("Unsupported matrix format in ", name, ". Supported formats are RsparseMatrix and CsparseMatrix.")
   }
 
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
-  }
-
   # Write sparse matrix
   rhdf5::h5createGroup(file, name)
   rhdf5::h5write(attr(value, indices_attr), file, paste0(name, "/indices"))
@@ -132,12 +138,7 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
   requireNamespace("rhdf5")
-
-  # remove first if it already exists
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
-  }
-
+  
   # write mask and values
   rhdf5::h5createGroup(file, name)
   value_no_na <- value
@@ -159,11 +160,6 @@ write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
   requireNamespace("rhdf5")
-
-  # remove first if it already exists
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
-  }
 
   # write mask and values
   rhdf5::h5createGroup(file, name)
@@ -204,11 +200,6 @@ write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
-
-  # remove first if it already exists
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
-  }
 
   # Write sparse matrix
   rhdf5::h5createGroup(file, name)
