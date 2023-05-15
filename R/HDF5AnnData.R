@@ -153,10 +153,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         write_h5ad_encoding(private$.h5obj, "/", "anndata", "0.1.0")
 
         # write obs and var first, because these are used by other validators
-        # TODO: write directly to h5 file
-        # write_h5ad_element(private$.validate_obsvar_names(obs_names, "obs", check_size = FALSE), private$.h5obj, "/obs/_index") # nolint
-        # write_h5ad_element(private$.validate_obsvar_names(var_names, "var", check_size = FALSE), private$.h5obj, "/var/_index") # nolint
-
         self$obs_names <- obs_names
         self$var_names <- var_names
 

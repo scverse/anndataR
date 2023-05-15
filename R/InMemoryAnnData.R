@@ -145,17 +145,15 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
     initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL) {
-      # check obs_names and var_names first, because these objects are used by other validators
-      # don't check the size, because the size is stored in the length of the obs_names and var_names,
-      # and they haven't been set yet
-      private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs", check_size = FALSE)
-      private$.var_names <- private$.validate_obsvar_names(var_names, "var", check_size = FALSE)
+        # write obs and var first, because these are used by other validators
+        self$obs_names <- obs_names
+        self$var_names <- var_names
 
-      # then check other values
-      private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
-      private$.var <- private$.validate_obsvar_dataframe(var, "var")
-      private$.X <- private$.validate_matrix(X, "X")
-      private$.layers <- private$.validate_layers(layers)
+        # write other slots later
+        self$obs <- obs
+        self$var <- var
+        self$X <- X
+        self$layers <- layers
     }
   )
 )

@@ -178,8 +178,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   object is a data.frame and removes explicit dimnames.
     # @param df A data frame to validate. Should be an obs or a var.
     # @param label Must be `"obs"` or `"var"`
-    # @param check_size Whether to check the number of rows before assignment.
-    .validate_obsvar_dataframe = function(df, label = c("obs", "var"), check_size = TRUE) {
+    .validate_obsvar_dataframe = function(df, label = c("obs", "var")) {
       label <- match.arg(label)
 
       expected_nrow <- switch(label,
@@ -196,14 +195,12 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         stop(label, " should be a data frame")
       }
 
-      if (check_size) {
-        if (nrow(df) != expected_nrow) {
-          stop(wrap_message(
-            "nrow(df) should match the number of ", label, ". ",
-            "Expected nrow: ", expected_nrow, ". ",
-            "Observed nrow: ", nrow(df), "."
-          ))
-        }
+      if (nrow(df) != expected_nrow) {
+        stop(wrap_message(
+          "nrow(df) should match the number of ", label, ". ",
+          "Expected nrow: ", expected_nrow, ". ",
+          "Observed nrow: ", nrow(df), "."
+        ))
       }
 
       if (.row_names_info(df) > 0) {
@@ -220,25 +217,25 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    # @param check_size Whether to check the length before assignment.
-    .validate_obsvar_names = function(names, label = c("obs", "var"), check_size = FALSE) {
+    .validate_obsvar_names = function(names, label = c("obs", "var")) {
       label <- match.arg(label)
 
       if (is.null(names)) {
         stop(wrap_message(label, "_names should be defined."))
       }
 
-      expected_len <- switch(label,
-        obs = self$n_obs(),
-        var = self$n_vars()
-      )
+      # only check whether sizes match if the obsvar names has already been defined
+      prev_names <- attr(self, paste0(label, "_names"))
+      if (!is.null(prev_names)) {
+        expected_len <- length(prev_names)
 
-      if (check_size && length(names) != expected_len) {
-        size_check_label <- if (label == "obs") "n_obs" else "n_vars"
-        stop(wrap_message(
-          "length(", label, "_names) should be the same as ",
-          "ad$", size_check_label, "()"
-        ))
+        if (length(names) != expected_len) {
+          size_check_label <- if (label == "obs") "n_obs" else "n_vars"
+          stop(wrap_message(
+            "length(", label, "_names) should be the same as ",
+            "ad$", size_check_label, "()"
+          ))
+        }
       }
 
       names
