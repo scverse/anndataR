@@ -117,7 +117,10 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
     type <- "csc_matrix"
     indices_attr <- "i"
   } else {
-    stop("Unsupported matrix format in ", name, ". Supported formats are RsparseMatrix and CsparseMatrix.")
+    stop(
+      "Unsupported matrix format in ", name, ".", 
+      "Supported formats are RsparseMatrix and CsparseMatrix",
+      "(and objects that inherit from those).")
   }
 
   # Write sparse matrix
@@ -126,7 +129,7 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
   rhdf5::h5write(value@p, file, paste0(name, "/indptr"))
   rhdf5::h5write(value@x, file, paste0(name, "/data"))
 
-  # add encoding
+  # Add encoding
   write_h5ad_encoding(file, name, type, version)
 }
 
@@ -225,7 +228,13 @@ write_h5ad_string_scalar <- function(value, file, name, version = "0.2.0") {
   requireNamespace("rhdf5")
 
   # Write scalar
-  rhdf5::h5write(value, file, name)
+  rhdf5::h5write(
+    value,
+    file,
+    name,
+    variableLengthString = TRUE,
+    encoding = "UTF-8"
+  )
 
   # Write attributes
   write_h5ad_encoding(file, name, "string", version)
