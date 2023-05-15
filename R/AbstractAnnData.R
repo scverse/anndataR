@@ -178,9 +178,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   object is a data.frame and removes explicit dimnames.
     # @param df A data frame to validate. Should be an obs or a var.
     # @param label Must be `"obs"` or `"var"`
-    # @param check_nrow Whether to check the number of rows.
-    .validate_obsvar_dataframe = function(df, label = c("obs", "var"),
-                                          check_nrow = FALSE) {
+    # @param check_size Whether to check the number of rows before assignment.
+    .validate_obsvar_dataframe = function(df, label = c("obs", "var"), check_size = TRUE) {
       label <- match.arg(label)
 
       expected_nrow <- switch(label,
@@ -197,9 +196,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         stop(label, " should be a data frame")
       }
 
-      if (check_nrow) {
+      if (check_size) {
         if (nrow(df) != expected_nrow) {
-          stop("nrow(df) should match the number of ", label)
+          stop(wrap_message(
+            "nrow(df) should match the number of ", label, ". ",
+            "Expected nrow: ", expected_nrow, ". ",
+            "Observed nrow: ", nrow(df), "."
+          ))
         }
       }
 
@@ -217,11 +220,25 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_names = function(names, label = c("obs", "var")) {
+    # @param check_size Whether to check the length before assignment.
+    .validate_obsvar_names = function(names, label = c("obs", "var"), check_size = FALSE) {
       label <- match.arg(label)
 
       if (is.null(names)) {
         stop(wrap_message(label, "_names should be defined."))
+      }
+
+      expected_len <- switch(label,
+        obs = self$n_obs(),
+        var = self$n_vars()
+      )
+
+      if (check_size && length(names) != expected_len) {
+        size_check_label <- if (label == "obs") "n_obs" else "n_vars"
+        stop(wrap_message(
+          "length(", label, "_names) should be the same as ",
+          "ad$", size_check_label, "()"
+        ))
       }
 
       names

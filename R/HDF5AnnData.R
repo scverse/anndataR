@@ -43,7 +43,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "/obs")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
-        value <- private$.validate_obsvar_dataframe(value, "obs", check_nrow = TRUE)
+        value <- private$.validate_obsvar_dataframe(value, "obs")
         write_h5ad_element(value, private$.h5obj, "/obs")
       }
     },
@@ -54,12 +54,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "/var")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
-        value <- private$.validate_obsvar_dataframe(value, "var", check_nrow = TRUE)
+        value <- private$.validate_obsvar_dataframe(value, "var")
         write_h5ad_element(value, private$.h5obj, "/var")
       }
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
+      # TODO: directly write to and read from /obs/_index
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=wip
         # obs names are cached to avoid reading all of obs whenever they are
@@ -79,6 +80,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
     #' @field var_names Names of variables
     var_names = function(value) {
+      # TODO: directly write to and read from /var/_index
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=wip
         # var names are cached to avoid reading all of var whenever they are
@@ -151,12 +153,16 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         write_h5ad_encoding(private$.h5obj, "/", "anndata", "0.1.0")
 
         # write obs and var first, because these are used by other validators
-        self$obs <- obs
-        self$var <- var
+        # TODO: write directly to h5 file
+        # write_h5ad_element(private$.validate_obsvar_names(obs_names, "obs", check_size = FALSE), private$.h5obj, "/obs/_index") # nolint
+        # write_h5ad_element(private$.validate_obsvar_names(var_names, "var", check_size = FALSE), private$.h5obj, "/var/_index") # nolint
 
-        # write other slots later
         self$obs_names <- obs_names
         self$var_names <- var_names
+
+        # write other slots later
+        self$obs <- obs
+        self$var <- var
         self$X <- X
         self$layers <- layers
       } else {
