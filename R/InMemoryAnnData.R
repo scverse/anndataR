@@ -20,18 +20,10 @@
 #' )
 #' ad
 #'
-#' ## minimal example -- no observations or variables
+#' ## minimum example
 #' ad <- InMemoryAnnData$new(
-#'   obs = data.frame(),
-#'   var = data.frame()
-#' )
-#' ad
-#'
-#' ## number of  observations or variables determined by `obs` and `var`; no
-#' ## `X` or `layers`; `obs_names` and `var_names` determined automatically
-#' ad <- InMemoryAnnData$new(
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5)
+#'   obs_names = letters[1:10],
+#'   var_names = LETTERS[1:5]
 #' )
 #' ad
 #' @export
@@ -131,38 +123,37 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   public = list(
     #' @description Creates a new instance of an in memory AnnData object.
     #'   Inherits from AbstractAnnData.
-    #' @param X Either NULL or a observation x variable matrix with
-    #'   dimensions consistent with `obs` and `var`.
-    #' @param layers Either NULL or a named list, where each element
-    #'   is an observation x variable matrix with dimensions consistent
-    #'   with `obs` and `var`.
-    #' @param obs A `data.frame` with columns containing information
-    #'   about observations. The number of rows of `obs` defines the
-    #'   observation dimension of the AnnData object.
-    #' @param var A `data.frame` with columns containing information
-    #'   about variables. The number of rows of `var` defines the variable
-    #'   dimension of the AnnData object.
-    #' @param obs_names Either NULL or a vector of unique identifiers
+    #' @param obs_names A vector of unique identifiers
     #'   used to identify each row of `obs` and to act as an index into
-    #'   the observation dimension of the AnnData object. For
-    #'   compatibility with *R* representations, `obs_names` should be a
-    #'   character vector.
-    #' @param var_names Either NULL or a vector of unique identifers
+    #'   the observation dimension of the AnnData object. The length of
+    #'   the `obs_names` defines the observation dimension of the AnnData
+    #'   object.
+    #' @param var_names A vector of unique identifers
     #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object. For compatibility
-    #'   with *R* representations, `var_names` should be a character
-    #'   vector.
-    initialize = function(X = NULL, obs, var, obs_names = NULL, var_names = NULL, layers = NULL) {
-      # check obs and var first, because these objects are used by
-      # other validators
-      private$.obs <- private$.validate_obsvar_dataframe(obs, "obs")
-      private$.var <- private$.validate_obsvar_dataframe(var, "var")
+    #'   the variable dimension of the AnnData object. The length of
+    #'   the `var_names` defines the variable dimension of the AnnData
+    #'   object.
+    #' @param X Either `NULL` or a observation × variable matrix with
+    #'   dimensions consistent with `obs` and `var`.
+    #' @param layers Either `NULL` or a named list, where each element
+    #'   is an observation × variable matrix with dimensions consistent
+    #'   with `obs` and `var`.
+    #' @param obs Either `NULL` or a `data.frame` with columns containing information
+    #'   about observations. If `NULL`, an `n_obs`×0 data frame will automatically
+    #'   be generated.
+    #' @param var Either `NULL` or a `data.frame` with columns containing information
+    #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
+    #'   be generated.
+    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL) {
+        # write obs and var first, because these are used by other validators
+        self$obs_names <- obs_names
+        self$var_names <- var_names
 
-      # then check other values
-      private$.obs_names <- private$.validate_obsvar_names(obs_names, "obs")
-      private$.var_names <- private$.validate_obsvar_names(var_names, "var")
-      private$.X <- private$.validate_matrix(X, "X")
-      private$.layers <- private$.validate_layers(layers)
+        # write other slots later
+        self$obs <- obs
+        self$var <- var
+        self$X <- X
+        self$layers <- layers
     }
   )
 )

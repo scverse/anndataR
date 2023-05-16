@@ -11,7 +11,7 @@ test_that("to_Seurat with inmemoryanndata", {
     var_names = dummy$var_names
   )
 
-  seu <- to_Seurat(ad)
+  seu <- suppressWarnings(to_Seurat(ad))
 
   expect_equal(nrow(seu), 20)
   expect_equal(ncol(seu), 10)
