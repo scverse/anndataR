@@ -18,6 +18,7 @@
 #'   var_names = letters[1:5]
 #' )
 #' to_Seurat(ad)
+# TODO: Add parameters to choose which how X and layers are translated into counts, data and scaled.data
 to_Seurat <- function(obj) { # nolint
   requireNamespace("SeuratObject")
 
@@ -48,8 +49,10 @@ to_Seurat <- function(obj) { # nolint
     }
 
   # translate X
-  # trackstatus: class=Seurat, feature=get_X, status=done
+  # trackstatus: class=Seurat, feature=get_X, status=wip
   # TODO: should x_ be passed to counts or to data?
+  # TODO: creating a seurat object when th AnnData doesn't contain X or layers
+  # probably doesn't make any sense
   x_ <-
     if (!is.null(obj$X)) {
       Matrix::t(obj$X)
@@ -74,7 +77,7 @@ to_Seurat <- function(obj) { # nolint
   seurat_obj <- SeuratObject::CreateSeuratObject(x_assay, meta.data = obs_)
 
   # add layers
-  # trackstatus: class=Seurat, feature=get_layers, status=done
+  # trackstatus: class=Seurat, feature=get_layers, status=wip
   # TODO: should values be passed to counts or to data?
   for (key in obj$layers_keys()) {
     layer_ <- t(obj$layers[[key]])
@@ -112,9 +115,8 @@ to_Seurat <- function(obj) { # nolint
 #' See the "Details" section for more information on which parameters
 #'
 #' @export
-# todo: add option to determine default X assay name
-# todo: add option to decide on whether to use counts or data for the different layers
-# todo: add tests with Seurat objects not created by anndataR
+# TODO: Add parameter to choose which how counts, data and scaled.data are translated into X and layers
+# TODO: add tests with Seurat objects not created by anndataR
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), ...) { # nolint
 
   stopifnot(inherits(seurat_obj, "Seurat"))

@@ -8,6 +8,7 @@ test_that("to_Seurat with inmemoryanndata", {
     obs_names = dummy$obs_names,
     var_names = dummy$var_names
   )
+  # running to_seurat when ad0$X is null probably doesn't make any sense
   ad0 <- InMemoryAnnData$new(
     obs_names = letters[1:5],
     var_names = LETTERS[1:10]
@@ -44,13 +45,11 @@ test_that("to_Seurat with inmemoryanndata", {
     expect_equal(active_assay@meta.features[[var_key]], dummy$var[[var_key]])
   }
 
-  # trackstatus: class=Seurat, feature=test_get_X, status=done
-
 })
-
-# todo: check substitution from _ to -
 
 test_that("to_Seurat() fails gracefully", {
   expect_error(to_Seurat(), regexp = "obj.*is missing")
   expect_error(to_Seurat("foo"), regexp = "AbstractAnnData.*not TRUE")
 })
+
+# TODO: test from_Seurat

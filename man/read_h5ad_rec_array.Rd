@@ -20,7 +20,7 @@ a named list of 1D arrays
 Read a recarray from an H5AD file
 }
 \details{
-A "record array" (recarray) is a Python NumPy array type that countains
+A "record array" (recarray) is a Python NumPy array type that contains
 "fields" that can be indexed using attributes (similar to columns in a
 spreadsheet). See https://numpy.org/doc/stable/reference/generated/numpy.recarray.html
 for details.
