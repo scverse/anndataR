@@ -94,11 +94,11 @@ Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
+  obs_names,
+  var_names,
   X = NULL,
   obs = NULL,
   var = NULL,
-  obs_names,
-  var_names,
   layers = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -106,17 +106,6 @@ Inherits from AbstractAnnData.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
-dimensions consistent with \code{obs} and \code{var}.}
-
-\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
-about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
-be generated.}
-
-\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
-about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
-be generated.}
-
 \item{\code{obs_names}}{A vector of unique identifiers
 used to identify each row of \code{obs} and to act as an index into
 the observation dimension of the AnnData object. The length of
@@ -128,6 +117,17 @@ used to identify each row of \code{var} and to act as an index into
 the variable dimension of the AnnData object. The length of
 the \code{var_names} defines the variable dimension of the AnnData
 object.}
+
+\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
+dimensions consistent with \code{obs} and \code{var}.}
+
+\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
+be generated.}
+
+\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
+be generated.}
 
 \item{\code{layers}}{Either \code{NULL} or a named list, where each element
 is an observation × variable matrix with dimensions consistent
