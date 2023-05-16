@@ -217,7 +217,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_names = function(names, label = c("obs", "var")) {
+    .validate_obsvar_names = function(names, label = c("obs", "var"), check_length = TRUE) {
       label <- match.arg(label)
 
       if (is.null(names)) {
@@ -232,8 +232,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         if (length(names) != expected_len) {
           size_check_label <- if (label == "obs") "n_obs" else "n_vars"
           stop(wrap_message(
-            "length(", label, "_names) should be the same as ",
-            "ad$", size_check_label, "()"
+            "length(", label, "_names) should be the same as ad$", size_check_label, "()"
           ))
         }
       }
