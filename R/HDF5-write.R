@@ -145,6 +145,15 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
 
   # Add encoding
   write_h5ad_encoding(file, name, type, version)
+  
+  # Write shape attribute
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+  
+  h5obj <- rhdf5::H5Gopen(h5file, name)
+  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
+  
+  rhdf5::h5writeAttribute(dim(value), h5obj, "shape")
 }
 
 #' Write H5AD nullable boolean
