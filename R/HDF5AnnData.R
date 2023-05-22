@@ -33,7 +33,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=wip
         value <- private$.validate_layers(value)
-        write_h5ad_element(value, private$.h5obj, "layers")
+        write_h5ad_element(value, private$.h5obj, "/layers")
       }
     },
     #' @field obs The obs slot
