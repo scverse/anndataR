@@ -100,11 +100,15 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @param version Encoding version of the element to write
 write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
   version <- match.arg(version)
+  
+  if (!is.vector(value)) {
+    # Transpose the value because writing with native=TRUE does not
+    # seem to work as expected
+    value <- t(value)
+  }
 
-  # Transpose the value because writing with native=TRUE does not
-  # seem to work as expected
-  rhdf5::h5write(t(value), file, name)
-
+  rhdf5::h5write(value, file, name)
+  
   # Write attributes
   write_h5ad_encoding(file, name, "array", version)
 }
