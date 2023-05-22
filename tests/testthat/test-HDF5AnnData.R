@@ -76,7 +76,7 @@ test_that("creating empty H5AD works", {
 test_that("writing X works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
-  
+
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(h5ad$X <- X)
 })
@@ -85,7 +85,7 @@ test_that("writing X works", {
 test_that("writing layers works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
-  
+
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(h5ad$layers <- list(layer1 = X, layer2 = X))
 })
@@ -94,7 +94,7 @@ test_that("writing layers works", {
 test_that("writing obs works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
-  
+
   obs <- data.frame(
     Letters = LETTERS[1:10],
     Numbers = 1:10,
@@ -108,7 +108,7 @@ test_that("writing obs works", {
 test_that("writing var works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
-  
+
   var <- data.frame(
     Letters = LETTERS[1:20],
     Numbers = 1:20,
@@ -122,7 +122,7 @@ test_that("writing var works", {
 test_that("writing obs names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
-  
+
   # TODO: Update when #87 is fixed
   expect_warning(h5ad$obs_names <- LETTERS[1:10], "should not have any rownames")
 })
@@ -131,8 +131,7 @@ test_that("writing obs names works", {
 test_that("writing var names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
-  
+
   # TODO: Update when #87 is fixed
   expect_warning(h5ad$var_names <- LETTERS[1:20], "should not have any rownames")
 })
-

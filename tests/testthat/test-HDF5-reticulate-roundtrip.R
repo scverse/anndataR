@@ -38,7 +38,6 @@ test_that("test Python -> R", {
 })
 
 test_that("test R -> Python", {
-
   # write to file
   filename <- withr::local_file("r_to_python.h5ad")
   ad <- HDF5AnnData$new(
@@ -68,10 +67,10 @@ test_that("test R -> Python", {
   expect_equal(var_, dummy$var, ignore_attr = TRUE, tolerance = 1e-10)
 
   # TODO: This fails until #87 us fixed
-  # expect_equal(ad_new$obs_names, dummy$obs_names, tolerance = 1e-10)
-  
+  # expect_equal(ad_new$obs_names, dummy$obs_names, tolerance = 1e-10) #nolint
+
   # TODO: This fails until #87 is fixed
-  # expect_equal(ad_new$var_names, dummy$var_names, tolerance = 1e-10)
+  # expect_equal(ad_new$var_names, dummy$var_names, tolerance = 1e-10) #nolint
 
   expect_equal(names(ad_new$layers), names(dummy$layers))
   for (layer_name in names(dummy$layers)) {

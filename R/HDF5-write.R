@@ -100,7 +100,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @param version Encoding version of the element to write
 write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
   version <- match.arg(version)
-  
+
   if (!is.vector(value)) {
     # Transpose the value because writing with native=TRUE does not
     # seem to work as expected
@@ -108,7 +108,7 @@ write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
   }
 
   rhdf5::h5write(value, file, name)
-  
+
   # Write attributes
   write_h5ad_encoding(file, name, "array", version)
 }
@@ -149,14 +149,14 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
 
   # Add encoding
   write_h5ad_encoding(file, name, type, version)
-  
+
   # Write shape attribute
   h5file <- rhdf5::H5Fopen(file)
   on.exit(rhdf5::H5Fclose(h5file))
-  
+
   h5obj <- rhdf5::H5Gopen(h5file, name)
   on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-  
+
   rhdf5::h5writeAttribute(dim(value), h5obj, "shape")
 }
 
@@ -169,7 +169,6 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
-
   # write mask and values
   rhdf5::h5createGroup(file, name)
   value_no_na <- value
@@ -190,7 +189,6 @@ write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
-  
   # write mask and values
   rhdf5::h5createGroup(file, name)
   value_no_na <- value
@@ -211,7 +209,6 @@ write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
 write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
-
   rhdf5::h5write(
     value,
     file,
@@ -364,9 +361,9 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
 write_empty_h5ad <- function(file, obs_names, var_names, version = "0.1.0") {
   h5file <- rhdf5::H5Fcreate(file)
   rhdf5::H5Fclose(h5file)
-  
+
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
-  
+
   write_h5ad_element(data.frame(row.names = obs_names), file, "/obs")
   write_h5ad_element(data.frame(row.names = var_names), file, "/var")
 

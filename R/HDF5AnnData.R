@@ -123,7 +123,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing
     #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
     #'   automatically be generated.
-    #'   
+    #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
     #' either be used to either connect to an existing `.h5ad` file or to
@@ -133,7 +133,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' file already exists.
     initialize = function(file, obs_names = NULL, var_names = NULL, X = NULL,
                           obs = NULL, var = NULL, layers = NULL) {
-      
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
@@ -146,10 +145,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         if (is.null(var_names)) {
           stop("When creating a new .h5ad file, `var_names` must be defined.")
         }
-        
+
         # Create an empty H5AD using the provided obs/var names
         write_empty_h5ad(file, obs_names, var_names)
-    
+
         # Set private object slots
         private$.h5obj <- file
         private$.n_obs <- length(obs_names)
@@ -169,30 +168,30 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 
         # Set the file path
         private$.h5obj <- file
-        
+
         # If obs or var names have been provided update those
         if (!is.null(obs_names)) {
           self$obs_names <- obs_names
         }
-        
+
         if (!is.null(var_names)) {
           self$var_names <- var_names
         }
       }
-      
+
       # Update remaining slots
       if (!is.null(X)) {
         self$X <- X
       }
-      
+
       if (!is.null(obs)) {
         self$obs <- obs
       }
-      
+
       if (!is.null(var)) {
         self$var <- var
       }
-      
+
       if (!is.null(layers)) {
         self$layers <- layers
       }
