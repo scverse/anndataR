@@ -86,8 +86,8 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
     on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
   }
 
-  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type") # nolint
-  rhdf5::h5writeAttribute(version, h5obj, "encoding-version") # nolint
+  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type", asScalar = TRUE) # nolint
+  rhdf5::h5writeAttribute(version, h5obj, "encoding-version", asScalar = TRUE) # nolint
 }
 
 #' Write H5AD dense array
@@ -329,10 +329,51 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
   h5obj <- rhdf5::H5Gopen(h5file, name)
   on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
 
-  rhdf5::h5writeAttribute(index_name, h5obj, "_index")
+  rhdf5::h5writeAttribute(index_name, h5obj, "_index", asScalar = TRUE)
   col_order <- colnames(value)
   col_order <- col_order[col_order != index_name]
+  # If there are no columns other than the index we set column order to an
+  # empty numeric vector
+  if (length(col_order) == 0) {
+    col_order <- numeric()
+  }
   rhdf5::h5writeAttribute(col_order, h5obj, "column-order") # nolint
+}
+
+#' Write empty H5AD
+#'
+#' Write a new empty H5AD file
+#'
+#' @param file Path to the H5AD file to write
+#' @param obs_names Vector containing observation names
+#' @param var_names Vector containing variable names
+#' @param version The H5AD version to write
+write_empty_h5ad <- function(file, obs_names, var_names, version = "0.1.0") {
+  h5file <- rhdf5::H5Fcreate(file)
+  rhdf5::H5Fclose(h5file)
+  
+  write_h5ad_encoding(file, "/", "anndata", "0.1.0")
+  
+  write_h5ad_element(data.frame(row.names = obs_names), file, "/obs")
+  write_h5ad_element(data.frame(row.names = var_names), file, "/var")
+
+  rhdf5::h5createGroup(file, "layers")
+  write_h5ad_encoding(file, "/layers", "dict", "0.1.0")
+
+  rhdf5::h5createGroup(file, "obsm")
+  write_h5ad_encoding(file, "/obsm", "dict", "0.1.0")
+
+  rhdf5::h5createGroup(file, "obsp")
+  write_h5ad_encoding(file, "/obsp", "dict", "0.1.0")
+
+  rhdf5::h5createGroup(file, "uns")
+  write_h5ad_encoding(file, "/uns", "dict", "0.1.0")
+
+  rhdf5::h5createGroup(file, "varm")
+  write_h5ad_encoding(file, "/varm", "dict", "0.1.0")
+
+  rhdf5::h5createGroup(file, "varp")
+  write_h5ad_encoding(file, "/varp", "dict", "0.1.0")
 }
 
 #' HDF5 path exists
