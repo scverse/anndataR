@@ -1,4 +1,5 @@
 skip_if_no_anndata()
+skip_if_not_installed("rhdf5")
 
 # construct dummy objects
 dummy <- dummy_data(10L, 20L)

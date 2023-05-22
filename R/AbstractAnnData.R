@@ -82,11 +82,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     },
     #' @description Number of observations in the AnnData object.
     n_obs = function() {
-      nrow(self$obs)
+      length(self$obs_names)
     },
     #' @description Number of variables in the AnnData object.
     n_vars = function() {
-      nrow(self$var)
+      length(self$var_names)
     },
     #' @description Keys ('column names') of `obs`.
     obs_keys = function() {
@@ -131,16 +131,14 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
         if (!is.null(rownames(mat))) {
           warning(wrap_message(
-            "rownames(", label, ") should be NULL, removing them from the ",
-            "matrix"
+            "rownames(", label, ") should be NULL, removing them from the matrix"
           ))
           rownames(mat) <- NULL
         }
 
         if (!is.null(colnames(mat))) {
           warning(wrap_message(
-            "colnames(", label, ") should be NULL, removing them from the ",
-            "matrix"
+            "colnames(", label, ") should be NULL, removing them from the matrix"
           ))
           colnames(mat) <- NULL
         }
@@ -180,33 +178,38 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   object is a data.frame and removes explicit dimnames.
     # @param df A data frame to validate. Should be an obs or a var.
     # @param label Must be `"obs"` or `"var"`
-    # @param check_nrow Whether to check the number of rows.
-    .validate_obsvar_dataframe = function(df, label = c("obs", "var"),
-                                          check_nrow = FALSE) {
+    .validate_obsvar_dataframe = function(df, label = c("obs", "var")) {
       label <- match.arg(label)
+
+      expected_nrow <- switch(label,
+        obs = self$n_obs(),
+        var = self$n_vars()
+      )
+
+      if (is.null(df)) {
+        # create empty data frame
+        df <- data.frame(i = seq_len(expected_nrow))[, -1, drop = FALSE]
+      }
 
       if (!is.data.frame(df)) {
         stop(label, " should be a data frame")
       }
 
-      if (check_nrow) {
-        nrow <- switch(label,
-          obs = self$n_obs(),
-          var = self$n_vars()
-        )
-
-        if (nrow(df) != nrow) {
-          stop("nrow(df) should match the number of ", label)
-        }
+      if (nrow(df) != expected_nrow) {
+        stop(wrap_message(
+          "nrow(df) should match the number of ", label, ". ",
+          "Expected nrow: ", expected_nrow, ". ",
+          "Observed nrow: ", nrow(df), "."
+        ))
       }
 
       if (.row_names_info(df) > 0) {
         warning(wrap_message(
-          "'", label, "' should not have any dimnames, removing them from ",
-          "the matrix"
+          "'", label, "' should not have any rownames, removing them from the data frame."
         ))
         rownames(df) <- NULL
       }
+
       df
     },
 
@@ -214,20 +217,26 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_names = function(names, label = c("obs", "var")) {
+    .validate_obsvar_names = function(names, label = c("obs", "var"), check_length = TRUE) {
       label <- match.arg(label)
 
-      len <- switch(label,
-        obs = self$n_obs(),
-        var = self$n_vars()
-      )
-
-      if (!is.null(names) && length(names) != len) {
-        stop(wrap_message(
-          "length(", label, "_names) should be the same as ",
-          "nrow(", label, ")"
-        ))
+      if (is.null(names)) {
+        stop(wrap_message(label, "_names should be defined."))
       }
+
+      # only check whether sizes match if the obsvar names has already been defined
+      prev_names <- attr(self, paste0(label, "_names"))
+      if (!is.null(prev_names)) {
+        expected_len <- length(prev_names)
+
+        if (length(names) != expected_len) {
+          size_check_label <- if (label == "obs") "n_obs" else "n_vars"
+          stop(wrap_message(
+            "length(", label, "_names) should be the same as ad$", size_check_label, "()"
+          ))
+        }
+      }
+
       names
     }
   )

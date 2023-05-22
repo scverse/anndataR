@@ -1,5 +1,3 @@
-library(Matrix)
-
 dummy <- dummy_data(10L, 20L)
 
 # GETTERS ----------------------------------------------------------------
@@ -29,7 +27,7 @@ test_that("with empty obs", {
   ad <- InMemoryAnnData$new(
     obs = data.frame(),
     var = dummy$var,
-    obs_names = c(),
+    obs_names = character(0),
     var_names = dummy$var_names
   )
   expect_identical(ad$shape(), c(0L, 20L))
@@ -40,7 +38,7 @@ test_that("with empty var", {
     obs = dummy$obs,
     var = data.frame(),
     obs_names = dummy$obs_names,
-    var_names = c()
+    var_names = character(0)
   )
   expect_identical(ad$shape(), c(10L, 0L))
 })
@@ -113,55 +111,57 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
 # trackstatus: class=InMemoryAnnData, feature=test_get_layers, status=done
 test_that("'layers' works", {
   ## layers test helper function
-  layers_test <- function(obs, var, layers) {
+  layers_test <- function(obs_names, var_names, layers) {
     expect_no_condition({
-      ad <- InMemoryAnnData$new(obs = obs, var = var, layers = layers)
+      ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers)
     })
     expect_identical(ad$layers, layers)
   }
 
-  obs <- var <- data.frame()
-  layers_test(obs, var, NULL)
-  layers_test(obs, var, setNames(list(), character()))
-  layers_test(obs, var, list(A = matrix(0, 0, 0)))
+  obs_names <- var_names <- character(0)
+  layers_test(obs_names, var_names, NULL)
+  layers_test(obs_names, var_names, setNames(list(), character()))
+  layers_test(obs_names, var_names, list(A = matrix(0, 0, 0)))
   ## must be a named list
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, list()))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, list()))
 
-  obs <- data.frame(x = 1:3)
-  var <- data.frame(y = 1:5)
-  layers_test(obs, var, NULL)
-  layers_test(obs, var, list(A = matrix(0, 3, 5)))
-  layers_test(obs, var, list(A = matrix(0, 3, 5), B = matrix(1, 3, 5)))
+  obs_names <- letters[1:3]
+  var_names <- LETTERS[1:5]
+  layers_test(obs_names, var_names, NULL)
+  layers_test(obs_names, var_names, list(A = matrix(0, 3, 5)))
+  layers_test(obs_names, var_names, list(A = matrix(0, 3, 5), B = matrix(1, 3, 5)))
 
   ## must be a named list
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = list()))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = list()))
   layers <- list(matrix(0, 3, 5))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
   ## non-trivial names
   layers <- list(A = matrix(0, 3, 5), matrix(1, 3, 5))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
   ## matching dimensions
   layers <- list(A = matrix(0, 0, 0))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
   layers <- list(A = matrix(0, 3, 5), B = matrix(1, 5, 3))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
 })
 
 test_that("*_keys() works", {
-  obs <- var <- data.frame()
-  ad <- InMemoryAnnData$new(obs = obs, var = var)
+  obs_names <- var_names <- character(0)
+  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names)
   expect_identical(ad$layers_keys(), NULL)
   expect_identical(ad$obs_keys(), character())
   expect_identical(ad$var_keys(), character())
 
   layers <- setNames(list(), character())
-  ad <- InMemoryAnnData$new(obs = obs, var = var, layers = layers)
+  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers)
   expect_identical(ad$layers_keys(), character())
 
+  obs_names <- letters[1:3]
+  var_names <- letters[1:5]
   layers <- list(A = matrix(0, 3, 5), B = matrix(1, 3, 5))
   obs <- data.frame(x = 1:3)
   var <- data.frame(y = 1:5)
-  ad <- InMemoryAnnData$new(obs = obs, var = var, layers = layers)
+  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, obs = obs, var = var, layers = layers)
   expect_identical(ad$layers_keys(), c("A", "B"))
   expect_identical(ad$obs_keys(), "x")
   expect_identical(ad$var_keys(), "y")

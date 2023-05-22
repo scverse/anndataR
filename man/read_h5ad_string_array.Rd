@@ -14,7 +14,7 @@ read_h5ad_string_array(file, name, version = "0.2.0")
 \item{version}{Encoding version of the element to read}
 }
 \value{
-a character vector/matrix???
+a character vector/matrix
 }
 \description{
 Read a string array from an H5AD file

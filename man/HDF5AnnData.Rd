@@ -57,7 +57,7 @@ with with all elements having the dimensions consistent with
 \subsection{Method \code{new()}}{
 HDF5AnnData constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(file, X, obs, var, obs_names, var_names, layers)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(file, obs_names, var_names, X, obs, var, layers)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -68,31 +68,31 @@ you can also provide an object created by \verb{[rhdf5::H5Fopen()]}. If this
 file does not exist yet, you must provide values for \code{X}, \code{obs}, \code{var} to
 create a new AnnData with.}
 
-\item{\code{X}}{Either NULL or a observation x variable matrix with
+\item{\code{obs_names}}{A vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. The length of
+the \code{obs_names} defines the observation dimension of the AnnData
+object.}
+
+\item{\code{var_names}}{A vector of unique identifers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object. The length of
+the \code{var_names} defines the variable dimension of the AnnData
+object.}
+
+\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
 dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{A \code{data.frame} with columns containing information
-about observations. The number of rows of \code{obs} defines the
-observation dimension of the AnnData object.}
+\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
+be generated.}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information
-about variables. The number of rows of \code{var} defines the variable
-dimension of the AnnData object.}
+\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
+be generated.}
 
-\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. For
-compatibility with \emph{R} representations, \code{obs_names} should be a
-character vector.}
-
-\item{\code{var_names}}{Either NULL or a vector of unique identifers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. For compatibility
-with \emph{R} representations, \code{var_names} should be a character
-vector.}
-
-\item{\code{layers}}{Either NULL or a named list, where each element
-is an observation x variable matrix with dimensions consistent
+\item{\code{layers}}{Either \code{NULL} or a named list, where each element
+is an observation × variable matrix with dimensions consistent
 with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}
