@@ -17,7 +17,6 @@ test_that("to_SingleCellExperiment() works", {
   expect_true(validObject(sce))
   expect_true(validObject(sce0))
 
-  # trackstatus: class=SingleCellExperiment, feature=test_get_shape, status=done
   expect_identical(dim(sce), rev(ad$shape()))
   expect_identical(dim(sce0), rev(ad0$shape()))
 
