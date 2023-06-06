@@ -31,13 +31,15 @@ read_h5ad_encoding <- function(file, name) {
 #' @param name Name of the element within the H5AD file
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
-#'
+#' @param ... Extra arguments passed to individual reading functions
+#' 
 #' @details
-#' If `encoding` is `NULL` the encoding and version are read from the element
-#' using `read_h5ad_encoding()`
+#' Encoding is automatically determined from the element using
+#'`read_h5ad_encoding` and used to select the appropriate reading function.
+#' 
 #'
 #' @return Value depending on the encoding
-read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
+read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
   if (is.null(type)) {
     encoding_list <- read_h5ad_encoding(file, name)
     type <- encoding_list$type
@@ -62,7 +64,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
       "' for element '", name, "'"
     )
   )
-  read_fun(file = file, name = name, version = version)
+  read_fun(file = file, name = name, version = version, ...)
 }
 
 #' Read H5AD dense array

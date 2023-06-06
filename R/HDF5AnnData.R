@@ -40,7 +40,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=wip
-        read_h5ad_element(private$.h5obj, "/obs")
+        read_h5ad_element(private$.h5obj, "/obs", include_index = FALSE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
         value <- private$.validate_obsvar_dataframe(value, "obs")
@@ -51,7 +51,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=wip
-        read_h5ad_element(private$.h5obj, "/var")
+        read_h5ad_element(private$.h5obj, "/var", include_index = FALSE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
         value <- private$.validate_obsvar_dataframe(value, "var")
@@ -66,7 +66,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         # obs names are cached to avoid reading all of obs whenever they are
         # accessed
         if (is.null(private$.obs_names)) {
-          private$.obs_names <- rownames(self$obs)
+          private$.obs_names <- read_h5ad_data_frame_index(private$.h5obj, "obs")
         }
         private$.obs_names
       } else {
@@ -86,7 +86,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         # var names are cached to avoid reading all of var whenever they are
         # accessed
         if (is.null(private$.var_names)) {
-          private$.var_names <- rownames(self$var)
+          private$.var_names <- read_h5ad_data_frame_index(private$.h5obj, "var")
         }
         private$.var_names
       } else {
