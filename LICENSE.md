@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2023 <packagename> authors
+Copyright (c) 2023 Robrecht Cannoodt, Luke Zappia, Martin Morgan, Louise Deconinck
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

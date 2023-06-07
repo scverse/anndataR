@@ -1,58 +1,44 @@
-library(Matrix)
-
-# construct dummy X
-X <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
-
-# construct dummy obs
-obs <- data.frame(
-  cell_type = sample(c("tcell", "bcell"), 10, replace = TRUE),
-  cluster = sample.int(3, 10, replace = TRUE)
-)
-
-# construct dummy obs names
-obs_names <- paste0("cell_", seq_len(10))
-
-# construct dummy var
-var <- data.frame(
-  geneinfo = sample(c("a", "b", "c"), 20, replace = TRUE)
-)
-
-# construct dummy var names
-var_names <- paste0("gene", seq_len(20))
-
+dummy <- dummy_data(10L, 20L)
 
 # GETTERS ----------------------------------------------------------------
 test_that("create inmemory anndata", {
   ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
   )
 
-  expect_equal(ad$X, X)
-  expect_equal(ad$obs, obs)
-  expect_equal(ad$var, var)
+  # trackstatus: class=InMemoryAnnData, feature=test_get_X, status=done
+  expect_equal(ad$X, dummy$X)
+  # trackstatus: class=InMemoryAnnData, feature=test_get_obs, status=done
+  expect_equal(ad$obs, dummy$obs)
+  # trackstatus: class=InMemoryAnnData, feature=test_get_var, status=done
+  expect_equal(ad$var, dummy$var)
+  # trackstatus: class=InMemoryAnnData, feature=test_get_obs_names, status=done
+  expect_equal(ad$obs_names, dummy$obs_names)
+  # trackstatus: class=InMemoryAnnData, feature=test_get_var_names, status=done
+  expect_equal(ad$var_names, dummy$var_names)
   expect_identical(ad$shape(), c(10L, 20L))
 })
 
 test_that("with empty obs", {
   ad <- InMemoryAnnData$new(
     obs = data.frame(),
-    var = var,
-    obs_names = c(),
-    var_names = var_names
+    var = dummy$var,
+    obs_names = character(0),
+    var_names = dummy$var_names
   )
   expect_identical(ad$shape(), c(0L, 20L))
 })
 
 test_that("with empty var", {
   ad <- InMemoryAnnData$new(
-    obs = obs,
+    obs = dummy$obs,
     var = data.frame(),
-    obs_names = obs_names,
-    var_names = c()
+    obs_names = dummy$obs_names,
+    var_names = character(0)
   )
   expect_identical(ad$shape(), c(10L, 0L))
 })
@@ -65,121 +51,132 @@ test_that("InMemoryAnnData$new() fails gracefully", {
 
 test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   # check X with rownames
-  x_with_rownames <- X
-  rownames(x_with_rownames) <- obs_names
+  x_with_rownames <- dummy$X
+  rownames(x_with_rownames) <- dummy$obs_names
 
   expect_warning({
     InMemoryAnnData$new(
       X = x_with_rownames,
-      obs = obs,
-      var = var,
-      obs_names = obs_names,
-      var_names = var_names
+      obs = dummy$obs,
+      var = dummy$var,
+      obs_names = dummy$obs_names,
+      var_names = dummy$var_names
     )
   })
 
   # check X with obsnames
-  x_with_colnames <- X
-  colnames(x_with_colnames) <- var_names
+  x_with_colnames <- dummy$X
+  colnames(x_with_colnames) <- dummy$var_names
 
   expect_warning({
     InMemoryAnnData$new(
       X = x_with_colnames,
-      obs = obs,
-      var = var,
-      obs_names = obs_names,
-      var_names = var_names
+      obs = dummy$obs,
+      var = dummy$var,
+      obs_names = dummy$obs_names,
+      var_names = dummy$var_names
     )
   })
 
   # check obs with rownames
-  obs_with_rownames <- obs
-  rownames(obs_with_rownames) <- obs_names
+  obs_with_rownames <- dummy$obs
+  rownames(obs_with_rownames) <- dummy$obs_names
 
   expect_warning({
     InMemoryAnnData$new(
-      X = X,
+      X = dummy$X,
       obs = obs_with_rownames,
-      var = var,
-      obs_names = obs_names,
-      var_names = var_names
+      var = dummy$var,
+      obs_names = dummy$obs_names,
+      var_names = dummy$var_names
     )
   })
 
   # check var with rownames
-  var_with_rownames <- var
-  rownames(var_with_rownames) <- var_names
+  var_with_rownames <- dummy$var
+  rownames(var_with_rownames) <- dummy$var_names
 
   expect_warning({
     InMemoryAnnData$new(
-      X = X,
-      obs = obs,
+      X = dummy$X,
+      obs = dummy$obs,
       var = var_with_rownames,
-      obs_names = obs_names,
-      var_names = var_names
+      obs_names = dummy$obs_names,
+      var_names = dummy$var_names
     )
   })
 })
 
+
+# trackstatus: class=InMemoryAnnData, feature=test_get_layers, status=done
 test_that("'layers' works", {
   ## layers test helper function
-  layers_test <- function(obs, var, layers) {
+  layers_test <- function(obs_names, var_names, layers) {
     expect_no_condition({
-      ad <- InMemoryAnnData$new(obs = obs, var = var, layers = layers)
+      ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers)
     })
     expect_identical(ad$layers, layers)
   }
 
-  obs <- var <- data.frame()
-  layers_test(obs, var, NULL)
-  layers_test(obs, var, setNames(list(), character()))
-  layers_test(obs, var, list(A = matrix(0, 0, 0)))
+  obs_names <- var_names <- character(0)
+  layers_test(obs_names, var_names, NULL)
+  layers_test(obs_names, var_names, setNames(list(), character()))
+  layers_test(obs_names, var_names, list(A = matrix(0, 0, 0)))
   ## must be a named list
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, list()))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, list()))
 
-  obs <- data.frame(x = 1:3)
-  var <- data.frame(y = 1:5)
-  layers_test(obs, var, NULL)
-  layers_test(obs, var, list(A = matrix(0, 3, 5)))
-  layers_test(obs, var, list(A = matrix(0, 3, 5), B = matrix(0, 3, 5)))
+  obs_names <- letters[1:3]
+  var_names <- LETTERS[1:5]
+  layers_test(obs_names, var_names, NULL)
+  layers_test(obs_names, var_names, list(A = matrix(0, 3, 5)))
+  layers_test(obs_names, var_names, list(A = matrix(0, 3, 5), B = matrix(1, 3, 5)))
 
   ## must be a named list
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = list()))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = list()))
   layers <- list(matrix(0, 3, 5))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
   ## non-trivial names
-  layers <- list(A = matrix(0, 3, 5), matrix(0, 3, 5))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  layers <- list(A = matrix(0, 3, 5), matrix(1, 3, 5))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
   ## matching dimensions
   layers <- list(A = matrix(0, 0, 0))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
-  layers <- list(A = matrix(0, 3, 5), B = matrix(0, 5, 3))
-  expect_error(InMemoryAnnData$new(obs = obs, var = var, layers = layers))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
+  layers <- list(A = matrix(0, 3, 5), B = matrix(1, 5, 3))
+  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
 })
 
 test_that("*_keys() works", {
-  obs <- var <- data.frame()
-  ad <- InMemoryAnnData$new(obs = obs, var = var)
+  obs_names <- var_names <- character(0)
+  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names)
+  expect_identical(ad$layers_keys(), NULL)
   expect_identical(ad$obs_keys(), character())
   expect_identical(ad$var_keys(), character())
 
+  layers <- setNames(list(), character())
+  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers)
+  expect_identical(ad$layers_keys(), character())
+
+  obs_names <- letters[1:3]
+  var_names <- letters[1:5]
+  layers <- list(A = matrix(0, 3, 5), B = matrix(1, 3, 5))
   obs <- data.frame(x = 1:3)
   var <- data.frame(y = 1:5)
-  ad <- InMemoryAnnData$new(obs = obs, var = var)
+  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, obs = obs, var = var, layers = layers)
+  expect_identical(ad$layers_keys(), c("A", "B"))
   expect_identical(ad$obs_keys(), "x")
   expect_identical(ad$var_keys(), "y")
 })
 
 # SETTERS -----------------------------------------------------------------
 
-
+# trackstatus: class=InMemoryAnnData, feature=test_set_X, status=done
 test_that("write to X", {
   ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
   )
 
   X2 <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
@@ -196,14 +193,14 @@ test_that("write to X", {
   expect_equal(ad$X[, 3], rep(5, 10L))
 })
 
-
+# trackstatus: class=InMemoryAnnData, feature=test_set_obs, status=done
 test_that("write to obs", {
   ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
   )
 
   obs2 <- data.frame(
@@ -227,13 +224,14 @@ test_that("write to obs", {
   expect_equal(ad$obs[, 3], rep(FALSE, 10L))
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_set_var, status=done
 test_that("write to var", {
   ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
   )
 
   var2 <- data.frame(
@@ -257,14 +255,14 @@ test_that("write to var", {
   expect_equal(ad$var[, 3], rep(FALSE, 20L))
 })
 
-
+# trackstatus: class=InMemoryAnnData, feature=test_set_obs_names, status=done
 test_that("write to obs_names", {
   ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
   )
 
   obs_names2 <- letters[1:10]
@@ -277,13 +275,14 @@ test_that("write to obs_names", {
   expect_equal(ad$obs_names[1:4], c("a", "foo", "bar", "d"))
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_set_var_names, status=done
 test_that("write to var_names", {
   ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
   )
 
   var_names2 <- LETTERS[1:20]
@@ -296,22 +295,32 @@ test_that("write to var_names", {
   expect_equal(ad$var_names[1:4], c("A", "foo", "bar", "D"))
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_set_layers, status=done
 test_that("write to layers", {
   ad <- InMemoryAnnData$new(
-    X = X,
-    obs = obs,
-    var = var,
-    obs_names = obs_names,
-    var_names = var_names,
-    layers = list(
-      X2 = X * 2,
-      X3 = X * 3
-    )
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names,
+    layers = dummy$layers
   )
 
-  ad$layers[["X2"]] <- X + 2
-  expect_equal(ad$layers[["X2"]], X + 2)
+  ## element assignment
+  ad$layers[["X2"]] <- dummy$X + 2
+  expect_equal(ad$layers[["X2"]], dummy$X + 2)
 
-  ad$layers[["X4"]] <- X + 4
-  expect_equal(ad$layers[["X4"]], X + 4)
+  ad$layers[["X4"]] <- dummy$X + 4
+  expect_equal(ad$layers[["X4"]], dummy$X + 4)
+
+  ## list assignment
+  ad$layers <- rev(dummy$layers)
+  expect_equal(ad$layers, rev(dummy$layers))
+
+  ## remove
+  ad$layers <- NULL
+  expect_true(is.null(ad$layers))
+  ## add to NULL
+  ad$layers <- dummy$layers
+  expect_identical(ad$layers, dummy$layers)
 })

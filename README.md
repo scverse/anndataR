@@ -1,9 +1,6 @@
-# Design document
-
-<!-- README.md is generated from README.qmd. Please edit that file -->
-
 # anndataR
 
+<!-- README.md is generated from README.qmd. Please edit that file -->
 <!-- badges: start -->
 
 [![Lifecycle:
@@ -14,26 +11,20 @@ status](https://www.r-pkg.org/badges/version/anndataR.png)](https://CRAN.R-proje
 
 `{anndataR}` is an R package that brings the power and flexibility of
 AnnData to the R ecosystem, allowing you to effortlessly manipulate and
-analyze your single-cell data. `{anndataR}` lets you work with backed
+analyze your single-cell data. This package lets you work with backed
 h5ad and zarr files, directly access various slots (e.g. X, obs, var,
 obsm, obsp), or convert the data into SingleCellExperiment and Seurat
 objects.
 
-## Features
+## Design
 
-- Seamless Integration: `{anndataR}` bridges the gap between Python’s
-  AnnData and popular R single-cell analysis tools like
-  SingleCellExperiment and Seurat.
-- Efficient Data Handling: The package supports backed h5ad and zarr
-  file formats, allowing you to work with large datasets efficiently.
-- Flexible Data Access: Access obs, var, obsp, and other slots directly,
-  giving you the freedom to manipulate your data as needed.
+This package was initially created at the [scverse 2023-04
+hackathon](https://scverse.org/events/2023_04_hackathon/) in Heidelberg.
 
-## Design docs
-
-- [Design document](doc/design.md): interface, OO-framework, approach
-- [Challenges in reading h5ad files in R](doc/challenges.md)
-- [Implemented features](doc/features.md)
+When fully implemented, it will be a complete replacement for
+[theislab/zellkonverter](https://github.com/theislab/zellkonverter),
+[mtmorgan/h5ad](github.com/mtmorgan/h5ad/) and
+[dynverse/anndata](https://github.com/dynverse/anndata).
 
 ## Installation
 
@@ -55,9 +46,14 @@ download.file("https://github.com/chanzuckerberg/cellxgene/raw/main/example-data
 # Read an h5ad file
 adata <- read_h5ad("pbmc3k.h5ad")
 
-# Access the obs DataFrame
-adata_obs <- adata$obs
+# Access AnnData slots
+adata$X
+adata$obs
+adata$var
 
 # Convert the AnnData object to a SingleCellExperiment object
-sce <- adata$to_sce()
+sce <- adata$to_SingleCellExperiment()
+
+# Convert the AnnData object to a Seurat object
+sce <- adata$to_Seurat()
 ```

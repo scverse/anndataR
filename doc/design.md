@@ -3,7 +3,7 @@
 ## Proposed interface
 
 ``` r
-library(magicann)/library(anndataR)
+library(anndataR)
 
 # read from h5ad/h5mu file
 adata <- read_h5ad("dataset.h5ad")
@@ -141,3 +141,8 @@ Optional:
 - Implement `ZarrAnnData`
 - Implement `ReticulateAnnData`
 - Implement Bioconductor S3 generics
+
+## Conclusion
+
+- Scope and therefore the name
+- What we do after this

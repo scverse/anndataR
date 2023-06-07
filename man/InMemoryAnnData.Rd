@@ -9,7 +9,7 @@ Implementation of an in memory AnnData object.
 \examples{
 ## complete example
 ad <- InMemoryAnnData$new(
-  X = matrix(1:5, 3L, 5L),
+  X = matrix(1:15, 3L, 5L),
   layers = list(
     A = matrix(5:1, 3L, 5L),
     B = matrix(letters[1:5], 3L, 5L)
@@ -21,18 +21,10 @@ ad <- InMemoryAnnData$new(
 )
 ad
 
-## minimal example -- no observations or variables
+## minimum example
 ad <- InMemoryAnnData$new(
-  obs = data.frame(),
-  var = data.frame()
-)
-ad
-
-## number of  observations or variables determined by `obs` and `var`; no
-## `X` or `layers`; `obs_names` and `var_names` determined automatically
-ad <- InMemoryAnnData$new(
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5)
+  obs_names = letters[1:10],
+  var_names = LETTERS[1:5]
 )
 ad
 }
@@ -43,7 +35,8 @@ ad
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
 \item{\code{X}}{NULL or an observation x variable matrix (without
-dimnames) consistent with the number of rows of \code{obs} and}
+dimnames) consistent with the number of rows of \code{obs} and
+\code{var}.}
 
 \item{\code{layers}}{NULL or a named list with all elements having the
 dimensions consistent with \code{obs} and \code{var}.}
@@ -64,7 +57,7 @@ character vector.}
 
 \item{\code{var_names}}{Either NULL or a vector of unique identifiers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
+the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
 }
@@ -80,11 +73,15 @@ vector.}
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_InMemoryAnnData'><code>anndataR::AbstractAnnData$to_InMemoryAnnData()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndataR::AbstractAnnData$to_Seurat()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndataR::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
 </ul>
 </details>
@@ -97,11 +94,11 @@ Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
+  obs_names,
+  var_names,
   X = NULL,
-  obs,
-  var,
-  obs_names = NULL,
-  var_names = NULL,
+  obs = NULL,
+  var = NULL,
   layers = NULL
 )}\if{html}{\out{</div>}}
 }
@@ -109,31 +106,31 @@ Inherits from AbstractAnnData.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{Either NULL or a observation x variable matrix with
+\item{\code{obs_names}}{A vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. The length of
+the \code{obs_names} defines the observation dimension of the AnnData
+object.}
+
+\item{\code{var_names}}{A vector of unique identifers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object. The length of
+the \code{var_names} defines the variable dimension of the AnnData
+object.}
+
+\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
 dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{A \code{data.frame} with columns containing information
-about observations. The number of rows of \code{obs} defines the
-observation dimension of the AnnData object.}
+\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
+be generated.}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information
-about variables. The number of rows of \code{var} defines the variable
-dimension of the AnnData object.}
+\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
+be generated.}
 
-\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. For
-compatibility with \emph{R} representations, \code{obs_names} should be a
-character vector.}
-
-\item{\code{var_names}}{Either NULL or a vector of unique identifers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
-with \emph{R} representations, \code{var_names} should be a character
-vector.}
-
-\item{\code{layers}}{Either NULL or a named list, where each element
-is an observation x variable matrix with dimensions consistent
+\item{\code{layers}}{Either \code{NULL} or a named list, where each element
+is an observation × variable matrix with dimensions consistent
 with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}

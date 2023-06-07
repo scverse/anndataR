@@ -33,7 +33,7 @@ character vector.}
 
 \item{\code{var_names}}{Either NULL or a vector of unique identifiers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object.. For compatibility
+the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
 }
@@ -48,6 +48,10 @@ vector.}
 \item \href{#method-AbstractAnnData-n_vars}{\code{AbstractAnnData$n_vars()}}
 \item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
 \item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
+\item \href{#method-AbstractAnnData-layers_keys}{\code{AbstractAnnData$layers_keys()}}
+\item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
+\item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
+\item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -117,6 +121,46 @@ Keys ('column names') of \code{obs}.
 Keys ('column names') of \code{var}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$var_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-layers_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-layers_keys}{}}}
+\subsection{Method \code{layers_keys()}}{
+Keys (element names) of \code{layers}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$layers_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
+\subsection{Method \code{to_SingleCellExperiment()}}{
+Convert to SingleCellExperiment
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
+\subsection{Method \code{to_Seurat()}}{
+Convert to Seurat
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemoryAnnData}{}}}
+\subsection{Method \code{to_InMemoryAnnData()}}{
+Convert to an InMemory AnnData
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
 }
 
 }
