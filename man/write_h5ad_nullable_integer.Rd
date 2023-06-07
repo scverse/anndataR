@@ -16,5 +16,5 @@ write_h5ad_nullable_integer(value, file, name, version = "0.1.0")
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a nullable integer from an H5AD file
+Write a nullable integer to an H5AD file
 }

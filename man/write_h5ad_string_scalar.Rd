@@ -16,5 +16,5 @@ write_h5ad_string_scalar(value, file, name, version = "0.2.0")
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a string scalar from an H5AD file
+Write a string scalar to an H5AD file
 }

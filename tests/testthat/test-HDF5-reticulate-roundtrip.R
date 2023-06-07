@@ -7,15 +7,15 @@ dummy <- dummy_data(10L, 20L)
 test_that("test Python -> R", {
   # create anndata in python
   obs_ <- dummy$obs
-  rownames(obs_) <- dummy$obs_names
   var_ <- dummy$var
-  rownames(var_) <- dummy$var_names
   ad <- anndata::AnnData(
     X = dummy$X,
     layers = dummy$layers,
     obs = obs_,
     var = var_,
   )
+  ad$obs_names <- dummy$obs_names
+  ad$var_names <- dummy$var_names
 
   # write to file
   filename <- withr::local_file("python_to_r.h5ad")
@@ -38,11 +38,6 @@ test_that("test Python -> R", {
 })
 
 test_that("test R -> Python", {
-  skip_if_not(
-    "Writing data frames implemented",
-    message = "Skipped until writing HDF5 data frames is implemented"
-  )
-
   # write to file
   filename <- withr::local_file("r_to_python.h5ad")
   ad <- HDF5AnnData$new(
@@ -63,23 +58,26 @@ test_that("test R -> Python", {
   dimnames(X2) <- list(NULL, NULL)
   expect_equal(X2, dummy$X, tolerance = 1e-10)
 
-  obs_ <- obs
+  obs_ <- ad_new$obs
   rownames(obs_) <- NULL
-  expect_equal(obs_, dummy$obs, tolerance = 1e-10)
+  expect_equal(obs_, dummy$obs, ignore_attr = TRUE, tolerance = 1e-10)
 
-  var_ <- var
+  var_ <- ad_new$var
   rownames(var_) <- NULL
-  expect_equal(var_, dummy$var_, tolerance = 1e-10)
+  expect_equal(var_, dummy$var, ignore_attr = TRUE, tolerance = 1e-10)
 
-  expect_equal(ad_new$obs_names, dummy$obs_names, tolerance = 1e-10)
-  expect_equal(ad_new$var_names, dummy$var_names, tolerance = 1e-10)
+  expect_equal(ad_new$obs_names, dummy$obs_names, tolerance = 1e-10) # nolint
+
+  expect_equal(ad_new$var_names, dummy$var_names, tolerance = 1e-10) # nolint
 
   expect_equal(names(ad_new$layers), names(dummy$layers))
   for (layer_name in names(dummy$layers)) {
+    layer_ <- ad_new$layers[[layer_name]]
+    dimnames(layer_) <- list(NULL, NULL)
     expect_equal(
-      ad_new$layers[[layer_name]],
+      layer_,
       dummy$layers[[layer_name]],
-      ignore_attributes = TRUE,
+      ignore_attr = TRUE,
       tolerance = 1e-10
     )
   }

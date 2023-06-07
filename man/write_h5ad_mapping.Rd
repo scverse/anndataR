@@ -16,5 +16,5 @@ write_h5ad_mapping(value, file, name, version = "0.1.0")
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a mapping from an H5AD file
+Write a mapping to an H5AD file
 }

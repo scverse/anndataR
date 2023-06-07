@@ -4,12 +4,14 @@
 \alias{read_h5ad_data_frame}
 \title{Read H5AD data frame}
 \usage{
-read_h5ad_data_frame(file, name, version = "0.2.0")
+read_h5ad_data_frame(file, name, include_index = TRUE, version = "0.2.0")
 }
 \arguments{
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
+
+\item{include_index}{Whether or not to include the index as a column}
 
 \item{version}{Encoding version of the element to read}
 }
@@ -18,4 +20,10 @@ a data.frame
 }
 \description{
 Read a data frame from an H5AD file
+}
+\details{
+If \code{include_index == TRUE} the index stored in the HDF5 file is added as a
+column to output \code{data.frame} using the defined index name as the column
+name and this is set as an attribute. If \code{include_index == FALSE} the index
+is not provided in the output. In either case row names are not set.
 }
