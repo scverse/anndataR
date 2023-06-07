@@ -108,9 +108,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     to_Seurat = function() {
       to_Seurat(self)
     },
-    #' @description Convert to an InMemory AnnData
+    #' @description Convert to an InMemoryAnnData
     to_InMemoryAnnData = function() {
       to_InMemoryAnnData(self)
+    },
+    #' @description Convert to a ReticulateAnnData
+    to_ReticulateAnnData = function() {
+      to_ReticulateAnnData(self)
     }
   ),
   private = list(
@@ -121,6 +125,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
     #   the name of a layer.
     .validate_matrix = function(mat, label) {
+      # cast types
+      if (inherits(mat, "denseMatrix")) {
+        mat <- as.matrix(mat)
+      }
+      if (inherits(mat, "sparseMatrix") && !inherits(mat, "CsparseMatrix") && !inherits(mat, "RsparseMatrix")) {
+        mat <- as(mat, "CsparseMatrix")
+      }
       if (!is.null(mat)) {
         if (nrow(mat) != self$n_obs()) {
           stop("nrow(", label, ") should be the same as nrow(obs)")
@@ -168,7 +179,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       ## layer elements
       for (layer in layer_names) {
         layer_name <- paste0("layers[[", layer, "]]")
-        private$.validate_matrix(layers[[layer]], layer_name)
+        layers[[layer]] <- private$.validate_matrix(layers[[layer]], layer_name)
       }
 
       layers

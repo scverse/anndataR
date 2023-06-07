@@ -52,6 +52,7 @@ vector.}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
+\item \href{#method-AbstractAnnData-to_ReticulateAnnData}{\code{AbstractAnnData$to_ReticulateAnnData()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -158,9 +159,19 @@ Convert to Seurat
 \if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemoryAnnData}{}}}
 \subsection{Method \code{to_InMemoryAnnData()}}{
-Convert to an InMemory AnnData
+Convert to an InMemoryAnnData
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_ReticulateAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_ReticulateAnnData}{}}}
+\subsection{Method \code{to_ReticulateAnnData()}}{
+Convert to a ReticulateAnnData
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_ReticulateAnnData()}\if{html}{\out{</div>}}
 }
 
 }

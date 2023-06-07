@@ -9,7 +9,8 @@ ReticulateAnnData class
 ReticulateAnnData class
 }
 \details{
-An R6 class that provides an interface to interact with AnnData objects in Python using the reticulate package.
+An R6 class that provides an interface to interact with AnnData objects in Python
+using the reticulate package.
 }
 \section{Super class}{
 \code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{ReticulateAnnData}
@@ -17,17 +18,32 @@ An R6 class that provides an interface to interact with AnnData objects in Pytho
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{A matrix representing the X slot.}
+\item{\code{X}}{NULL or an observation x variable matrix (without
+dimnames) consistent with the number of rows of \code{obs} and
+\code{var}.}
 
-\item{\code{obs}}{A data.frame representing the obs slot.}
+\item{\code{layers}}{NULL or a named list with all elements having the
+dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{var}}{A data.frame representing the var slot.}
+\item{\code{obs}}{A \code{data.frame} with columns containing information
+about observations. The number of rows of \code{obs} defines the
+observation dimension of the AnnData object.}
 
-\item{\code{obs_names}}{A vector representing the obs_names slot.}
+\item{\code{var}}{A \code{data.frame} with columns containing information
+about variables. The number of rows of \code{var} defines the variable
+dimension of the AnnData object.}
 
-\item{\code{var_names}}{A vector representing the var_names slot.}
+\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. For
+compatibility with \emph{R} representations, \code{obs_names} should be a
+character vector.}
 
-\item{\code{layers}}{A list representing the layers slot.}
+\item{\code{var_names}}{Either NULL or a vector of unique identifiers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object. For compatibility
+with \emph{R} representations, \code{var_names} should be a character
+vector.}
 }
 \if{html}{\out{</div>}}
 }
@@ -42,11 +58,16 @@ An R6 class that provides an interface to interact with AnnData objects in Pytho
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_InMemoryAnnData'><code>anndataR::AbstractAnnData$to_InMemoryAnnData()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_ReticulateAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_ReticulateAnnData'><code>anndataR::AbstractAnnData$to_ReticulateAnnData()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndataR::AbstractAnnData$to_Seurat()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndataR::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
 </ul>
 </details>
@@ -55,15 +76,55 @@ An R6 class that provides an interface to interact with AnnData objects in Pytho
 \if{html}{\out{<a id="method-ReticulateAnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-ReticulateAnnData-new}{}}}
 \subsection{Method \code{new()}}{
-ReticulateAnnData constructor
+Creates a new instance of an in memory AnnData object.
+Inherits from ReticulateAnnData.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ReticulateAnnData$new(obj)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ReticulateAnnData$new(
+  obs_names,
+  var_names,
+  file = NULL,
+  X = NULL,
+  obs = NULL,
+  var = NULL,
+  layers = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{obj}}{The reticulate AnnData object}
+\item{\code{obs_names}}{A vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. The length of
+the \code{obs_names} defines the observation dimension of the AnnData
+object.}
+
+\item{\code{var_names}}{A vector of unique identifers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object. The length of
+the \code{var_names} defines the variable dimension of the AnnData
+object.}
+
+\item{\code{file}}{The filename (character) of the \code{.h5ad} file. Alternatively,
+you can also provide an object created by
+\verb{anndata <- reticulate::import("anndata"); anndata$read_h5ad(...)}. If this
+file does not exist yet, you must provide values for \code{X}, \code{obs}, \code{var} to
+create a new AnnData with.}
+
+\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
+dimensions consistent with \code{obs} and \code{var}.}
+
+\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
+be generated.}
+
+\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
+about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
+be generated.}
+
+\item{\code{layers}}{Either \code{NULL} or a named list, where each element
+is an observation × variable matrix with dimensions consistent
+with \code{obs} and \code{var}.}
 }
 \if{html}{\out{</div>}}
 }
