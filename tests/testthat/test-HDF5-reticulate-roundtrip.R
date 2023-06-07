@@ -7,15 +7,15 @@ dummy <- dummy_data(10L, 20L)
 test_that("test Python -> R", {
   # create anndata in python
   obs_ <- dummy$obs
-  rownames(obs_) <- dummy$obs_names
   var_ <- dummy$var
-  rownames(var_) <- dummy$var_names
   ad <- anndata::AnnData(
     X = dummy$X,
     layers = dummy$layers,
     obs = obs_,
     var = var_,
   )
+  ad$obs_names <- dummy$obs_names
+  ad$var_names <- dummy$var_names
 
   # write to file
   filename <- withr::local_file("python_to_r.h5ad")
@@ -66,11 +66,9 @@ test_that("test R -> Python", {
   rownames(var_) <- NULL
   expect_equal(var_, dummy$var, ignore_attr = TRUE, tolerance = 1e-10)
 
-  # TODO: This fails until #87 us fixed
-  # expect_equal(ad_new$obs_names, dummy$obs_names, tolerance = 1e-10) #nolint
+  expect_equal(ad_new$obs_names, dummy$obs_names, tolerance = 1e-10) #nolint
 
-  # TODO: This fails until #87 is fixed
-  # expect_equal(ad_new$var_names, dummy$var_names, tolerance = 1e-10) #nolint
+  expect_equal(ad_new$var_names, dummy$var_names, tolerance = 1e-10) #nolint
 
   expect_equal(names(ad_new$layers), names(dummy$layers))
   for (layer_name in names(dummy$layers)) {

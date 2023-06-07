@@ -123,8 +123,8 @@ test_that("writing obs names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
 
-  # TODO: Update when #87 is fixed
-  expect_warning(h5ad$obs_names <- LETTERS[1:10], "should not have any rownames")
+  h5ad$obs_names <- LETTERS[1:10]
+  expect_identical(h5ad$obs_names, LETTERS[1:10])
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_var_names, status=wip
@@ -132,6 +132,6 @@ test_that("writing var names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
 
-  # TODO: Update when #87 is fixed
-  expect_warning(h5ad$var_names <- LETTERS[1:20], "should not have any rownames")
+  h5ad$var_names <- LETTERS[1:20]
+  expect_identical(h5ad$var_names, LETTERS[1:20])
 })
