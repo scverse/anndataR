@@ -16,5 +16,5 @@ write_h5ad_string_array(value, file, name, version = "0.2.0")
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a string array from an H5AD file
+Write a string array to an H5AD file
 }

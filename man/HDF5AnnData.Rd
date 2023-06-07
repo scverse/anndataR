@@ -57,46 +57,59 @@ with with all elements having the dimensions consistent with
 \subsection{Method \code{new()}}{
 HDF5AnnData constructor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(file, obs_names, var_names, X, obs, var, layers)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(
+  file,
+  obs_names = NULL,
+  var_names = NULL,
+  X = NULL,
+  obs = NULL,
+  var = NULL,
+  layers = NULL
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{The filename (character) of the \code{.h5ad} file. Alternatively,
-you can also provide an object created by \verb{[rhdf5::H5Fopen()]}. If this
-file does not exist yet, you must provide values for \code{X}, \code{obs}, \code{var} to
-create a new AnnData with.}
+\item{\code{file}}{The filename (character) of the \code{.h5ad} file. If this
+file does not exist yet, \code{obs_names} and \code{var_names} must be provided.}
 
 \item{\code{obs_names}}{A vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. The length of
-the \code{obs_names} defines the observation dimension of the AnnData
-object.}
+used to identify each row of \code{obs} and to act as an index into the
+observation dimension of the AnnData object. The length of \code{obs_names}
+defines the observation dimension of the AnnData object.}
 
-\item{\code{var_names}}{A vector of unique identifers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. The length of
-the \code{var_names} defines the variable dimension of the AnnData
-object.}
+\item{\code{var_names}}{A vector of unique identifiers used to identify each row
+of \code{var} and to act as an index into the variable dimension of the
+AnnData object. The length of \code{var_names} defines the variable
+dimension of the AnnData object.}
 
 \item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
 dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
-about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
-be generated.}
+\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing
+information about observations. If \code{NULL}, an \code{n_obs}×0 data frame will
+automatically be generated.}
 
-\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
-about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
-be generated.}
+\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing
+information about variables. If \code{NULL}, an \code{n_vars}×0 data frame will
+automatically be generated.}
 
-\item{\code{layers}}{Either \code{NULL} or a named list, where each element
-is an observation × variable matrix with dimensions consistent
-with \code{obs} and \code{var}.}
+\item{\code{layers}}{Either \code{NULL} or a named list, where each element is an
+observation × variable matrix with dimensions consistent with \code{obs} and
+\code{var}.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+The constructor creates a new HDF5 AnnData interface object. This can
+either be used to either connect to an existing \code{.h5ad} file or to
+create a new one. To create a new file both \code{obs_names} and \code{var_names}
+must be specified. In both cases, any additional slots provided will be
+set on the created object. This will cause data to be overwritten if the
+file already exists.
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-n_obs"></a>}}

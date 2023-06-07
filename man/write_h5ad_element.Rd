@@ -16,7 +16,7 @@ write_h5ad_element(value, file, name, ...)
 \item{...}{Additional arguments passed to writing functions}
 }
 \description{
-Write an element to a H5AD file
+Write an element to an H5AD file
 }
 \details{
 \code{write_h5ad_element()} should always be used instead of any of the specific

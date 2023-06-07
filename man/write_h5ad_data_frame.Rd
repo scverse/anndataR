@@ -20,5 +20,5 @@ of a column in \code{values}. If \code{NULL} then \code{rownames(value)} is used
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a data frame from an H5AD file
+Write a data frame to an H5AD file
 }
