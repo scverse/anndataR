@@ -329,7 +329,7 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
 
   # Write index
   write_h5ad_data_frame_index(index_value, file, name, index_name)
-  
+
   # Write data frame columns
   for (col in colnames(value)) {
     write_h5ad_element(value[[col]], file, paste0(name, "/", col))
@@ -363,26 +363,25 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
 #' frame
 #' @param index_name Name of the data frame column storing the index
 write_h5ad_data_frame_index <- function(value, file, name, index_name) {
-  
   if (!hdf5_path_exists(file, name)) {
     stop("The data frame '", name, "' does not exist in '", file, "'")
   }
-  
+
   encoding <- read_h5ad_encoding(file, name)
   if (encoding$type != "dataframe") {
     stop("'", name, "' in '", file, "' is not a data frame")
   }
-  
+
   # Write index columns
   write_h5ad_element(value, file, paste0(name, "/", index_name))
-  
+
   # Write data frame index attribute
   h5file <- rhdf5::H5Fopen(file)
   on.exit(rhdf5::H5Fclose(h5file))
-  
+
   h5obj <- rhdf5::H5Gopen(h5file, name)
   on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-  
+
   rhdf5::h5writeAttribute(index_name, h5obj, "_index", asScalar = TRUE)
 }
 
@@ -429,11 +428,10 @@ write_empty_h5ad <- function(file, obs_names, var_names, version = "0.1.0") {
 #' @param file Path to a HDF5 file
 #' @param target_path The path within the file to test for
 hdf5_path_exists <- function(file, target_path) {
-  
   if (substr(target_path, 1, 1) != "/") {
     target_path <- paste0("/", target_path)
   }
-  
+
   content <- rhdf5::h5ls(file)
 
   paths <- file.path(content$group, content$name)

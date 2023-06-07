@@ -32,11 +32,11 @@ read_h5ad_encoding <- function(file, name) {
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
 #' @param ... Extra arguments passed to individual reading functions
-#' 
+#'
 #' @details
 #' Encoding is automatically determined from the element using
-#'`read_h5ad_encoding` and used to select the appropriate reading function.
-#' 
+#' `read_h5ad_encoding` and used to select the appropriate reading function.
+#'
 #'
 #' @return Value depending on the encoding
 read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
@@ -348,7 +348,7 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' column to output `data.frame` using the defined index name as the column
 #' name and this is set as an attribute. If `include_index == FALSE` the index
 #' is not provided in the output. In either case row names are not set.
-#' 
+#'
 #' @return a data.frame
 read_h5ad_data_frame <- function(file, name, include_index = TRUE,
                                  version = "0.2.0") {
@@ -366,20 +366,20 @@ read_h5ad_data_frame <- function(file, name, include_index = TRUE,
   } else {
     df <- data.frame(columns)
   }
-  
+
   if (isTRUE(include_index)) {
     index <- read_h5ad_data_frame_index(file, name)
     df <- cbind(index, df)
-    
+
     # The default index name is not allowed as a column name so adjust it
     if (index_name == "_index") {
       index_name <- ".index"
       colnames(df)[1] <- index_name
     }
-    
-    attr(df, "_index") <- index_name 
+
+    attr(df, "_index") <- index_name # nolint
   }
-  
+
   df
 }
 
@@ -394,7 +394,7 @@ read_h5ad_data_frame <- function(file, name, include_index = TRUE,
 #' @return an object containing the index
 read_h5ad_data_frame_index <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  
+
   attributes <- rhdf5::h5readAttributes(file, name)
   index_name <- attributes$`_index`
 
