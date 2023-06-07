@@ -44,7 +44,6 @@ test_that("to_Seurat with inmemoryanndata", {
     expect_true(var_key %in% colnames(active_assay@meta.features))
     expect_equal(active_assay@meta.features[[var_key]], dummy$var[[var_key]])
   }
-
 })
 
 test_that("to_Seurat() fails gracefully", {

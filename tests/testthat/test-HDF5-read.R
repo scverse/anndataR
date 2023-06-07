@@ -107,8 +107,9 @@ test_that("reading dataframes works", {
   expect_equal(
     colnames(df),
     c(
-      "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA", "n_genes_by_counts",
-      "log1p_n_genes_by_counts", "total_counts", "log1p_total_counts", "leiden"
+      ".index", "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA",
+      "n_genes_by_counts", "log1p_n_genes_by_counts", "total_counts",
+      "log1p_total_counts", "leiden"
     )
   )
 })

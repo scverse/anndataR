@@ -16,5 +16,5 @@ write_h5ad_nullable_boolean(value, file, name, version = "0.1.0")
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a nullable boolean from an H5AD file
+Write a nullable boolean to an H5AD file
 }

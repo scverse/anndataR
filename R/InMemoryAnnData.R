@@ -145,15 +145,15 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
     initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL) {
-        # write obs and var first, because these are used by other validators
-        self$obs_names <- obs_names
-        self$var_names <- var_names
+      # write obs and var first, because these are used by other validators
+      self$obs_names <- obs_names
+      self$var_names <- var_names
 
-        # write other slots later
-        self$obs <- obs
-        self$var <- var
-        self$X <- X
-        self$layers <- layers
+      # write other slots later
+      self$obs <- obs
+      self$var <- var
+      self$X <- X
+      self$layers <- layers
     }
   )
 )

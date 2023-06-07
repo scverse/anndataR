@@ -31,13 +31,15 @@ read_h5ad_encoding <- function(file, name) {
 #' @param name Name of the element within the H5AD file
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
+#' @param ... Extra arguments passed to individual reading functions
 #'
 #' @details
-#' If `encoding` is `NULL` the encoding and version are read from the element
-#' using `read_h5ad_encoding()`
+#' Encoding is automatically determined from the element using
+#' `read_h5ad_encoding` and used to select the appropriate reading function.
+#'
 #'
 #' @return Value depending on the encoding
-read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
+read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
   if (is.null(type)) {
     encoding_list <- read_h5ad_encoding(file, name)
     type <- encoding_list$type
@@ -62,7 +64,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
       "' for element '", name, "'"
     )
   )
-  read_fun(file = file, name = name, version = version)
+  read_fun(file = file, name = name, version = version, ...)
 }
 
 #' Read H5AD dense array
@@ -332,8 +334,6 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
   read_h5ad_collection(file, name, columns)
 }
 
-# TODO: read index, return dataframe with columns
-
 #' Read H5AD data frame
 #'
 #' Read a data frame from an H5AD file
@@ -341,28 +341,64 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param include_index Whether or not to include the index as a column
+#'
+#' @details
+#' If `include_index == TRUE` the index stored in the HDF5 file is added as a
+#' column to output `data.frame` using the defined index name as the column
+#' name and this is set as an attribute. If `include_index == FALSE` the index
+#' is not provided in the output. In either case row names are not set.
 #'
 #' @return a data.frame
-read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
+read_h5ad_data_frame <- function(file, name, include_index = TRUE,
+                                 version = "0.2.0") {
   version <- match.arg(version)
 
   attributes <- rhdf5::h5readAttributes(file, name)
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
-  column_order <- append(column_order, index_name)
 
   columns <- read_h5ad_collection(file, name, column_order)
 
-  index <- columns[[index_name]]
-  columns[[index_name]] <- NULL
-
-  # NOTE: anndata will soon support non-character indices.
-  # therefore we shouldn't set the index as row names of the data frame?
   if (length(columns) == 0) {
-    data.frame(row.names = index)
+    index <- read_h5ad_data_frame_index(file, name)
+    df <- data.frame(row.names = seq_along(index))
   } else {
-    data.frame(columns, row.names = index)
+    df <- data.frame(columns)
   }
+
+  if (isTRUE(include_index)) {
+    index <- read_h5ad_data_frame_index(file, name)
+    df <- cbind(index, df)
+
+    # The default index name is not allowed as a column name so adjust it
+    if (index_name == "_index") {
+      index_name <- ".index"
+      colnames(df)[1] <- index_name
+    }
+
+    attr(df, "_index") <- index_name # nolint
+  }
+
+  df
+}
+
+#' Read H5AD data frame index
+#'
+#' Read the index of a data frame from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return an object containing the index
+read_h5ad_data_frame_index <- function(file, name, version = "0.2.0") {
+  version <- match.arg(version)
+
+  attributes <- rhdf5::h5readAttributes(file, name)
+  index_name <- attributes$`_index`
+
+  read_h5ad_element(file, file.path(name, index_name))
 }
 
 #' Read multiple H5AD datatypes

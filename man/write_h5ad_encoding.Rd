@@ -2,7 +2,7 @@
 % Please edit documentation in R/HDF5-write.R
 \name{write_h5ad_encoding}
 \alias{write_h5ad_encoding}
-\title{Set H5AD encoding}
+\title{Write H5AD encoding}
 \usage{
 write_h5ad_encoding(file, name, encoding, version)
 }
@@ -15,9 +15,6 @@ write_h5ad_encoding(file, name, encoding, version)
 
 \item{version}{The encoding version to set}
 }
-\value{
-The object with additional encoding attributes
-}
 \description{
-Add the H5AD encoding to the attributes of an object
+Write H5AD encoding attributes to an element in an H5AD file
 }

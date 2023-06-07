@@ -4,7 +4,7 @@
 \alias{read_h5ad_element}
 \title{Read H5AD element}
 \usage{
-read_h5ad_element(file, name, type = NULL, version = NULL)
+read_h5ad_element(file, name, type = NULL, version = NULL, ...)
 }
 \arguments{
 \item{file}{Path to a H5AD file or an open H5AD handle}
@@ -14,6 +14,8 @@ read_h5ad_element(file, name, type = NULL, version = NULL)
 \item{type}{The encoding type of the element to read}
 
 \item{version}{The encoding version of the element to read}
+
+\item{...}{Extra arguments passed to individual reading functions}
 }
 \value{
 Value depending on the encoding
@@ -22,6 +24,6 @@ Value depending on the encoding
 Read an element from a H5AD file
 }
 \details{
-If \code{encoding} is \code{NULL} the encoding and version are read from the element
-using \code{read_h5ad_encoding()}
+Encoding is automatically determined from the element using
+\code{read_h5ad_encoding} and used to select the appropriate reading function.
 }
