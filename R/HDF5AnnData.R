@@ -44,7 +44,12 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
         value <- private$.validate_obsvar_dataframe(value, "obs")
-        write_h5ad_element(value, private$.h5obj, "/obs")
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "/obs",
+          index = self$obs_names
+        )
       }
     },
     #' @field var The var slot
@@ -55,7 +60,12 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
         value <- private$.validate_obsvar_dataframe(value, "var")
-        write_h5ad_element(value, private$.h5obj, "/var")
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "/var",
+          index = self$var_names
+        )
       }
     },
     #' @field obs_names Names of observations
@@ -72,9 +82,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=wip
         value <- private$.validate_obsvar_names(value, "obs")
-        obs <- self$obs
-        rownames(obs) <- value
-        self$obs <- obs
+        write_h5ad_data_frame_index(value, private$.h5obj, "obs", "_index")
         private$.obs_names <- value
       }
     },
@@ -92,9 +100,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=wip
         value <- private$.validate_obsvar_names(value, "var")
-        var <- self$var
-        rownames(var) <- value
-        self$var <- var
+        write_h5ad_data_frame_index(value, private$.h5obj, "var", "_index")
         private$.var_names <- value
       }
     }

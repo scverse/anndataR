@@ -361,7 +361,8 @@ read_h5ad_data_frame <- function(file, name, include_index = TRUE,
   columns <- read_h5ad_collection(file, name, column_order)
 
   if (length(columns) == 0) {
-    df <- data.frame(row.names = seq_along(columns[[1]]))
+    index <- read_h5ad_data_frame_index(file, name)
+    df <- data.frame(row.names = seq_along(index))
   } else {
     df <- data.frame(columns)
   }
@@ -370,7 +371,7 @@ read_h5ad_data_frame <- function(file, name, include_index = TRUE,
     index <- read_h5ad_data_frame_index(file, name)
     df <- cbind(index, df)
     
-    # The default index name is not allows as a column name so adjust it
+    # The default index name is not allowed as a column name so adjust it
     if (index_name == "_index") {
       index_name <- ".index"
       colnames(df)[1] <- index_name

@@ -1,6 +1,6 @@
 #' Write H5AD element
 #'
-#' Write an element to a H5AD file
+#' Write an element to an H5AD file
 #'
 #' @param value The value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -92,7 +92,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 
 #' Write H5AD dense array
 #'
-#' Write a dense array from an H5AD file
+#' Write a dense array to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -115,7 +115,7 @@ write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
 
 #' Write H5AD sparse array
 #'
-#' Write a sparse array from an H5AD file
+#' Write a sparse array to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -162,7 +162,7 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
 
 #' Write H5AD nullable boolean
 #'
-#' Write a nullable boolean from an H5AD file
+#' Write a nullable boolean to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -182,7 +182,7 @@ write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
 
 #' Write H5AD nullable integer
 #'
-#' Write a nullable integer from an H5AD file
+#' Write a nullable integer to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -202,7 +202,7 @@ write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
 
 #' Write H5AD string array
 #'
-#' Write a string array from an H5AD file
+#' Write a string array to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -222,7 +222,7 @@ write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
 
 #' Write H5AD categorical
 #'
-#' Write a categorical from an H5AD file
+#' Write a categorical to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -239,7 +239,7 @@ write_h5ad_categorical <- function(value, file, name, version = "0.2.0") {
 
 #' Write H5AD string scalar
 #'
-#' Write a string scalar from an H5AD file
+#' Write a string scalar to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -261,7 +261,7 @@ write_h5ad_string_scalar <- function(value, file, name, version = "0.2.0") {
 
 #' Write H5AD numeric scalar
 #'
-#' Write a numeric scalar from an H5AD file
+#' Write a numeric scalar to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -277,7 +277,7 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
 
 #' Write H5AD mapping
 #'
-#' Write a mapping from an H5AD file
+#' Write a mapping to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -296,7 +296,7 @@ write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
 
 #' Write H5AD data frame
 #'
-#' Write a data frame from an H5AD file
+#' Write a data frame to an H5AD file
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -308,15 +308,18 @@ write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
 write_h5ad_data_frame <- function(value, file, name, index = NULL,
                                   version = "0.2.0") {
   rhdf5::h5createGroup(file, name)
+  write_h5ad_encoding(file, name, "dataframe", version)
 
   if (is.null(index)) {
     index_name <- "_index"
-    value["_index"] <- rownames(value)
+    index_value <- rownames(value)
   } else if (length(index) == nrow(value)) {
     index_name <- "_index"
-    value["_index"] <- index
+    index_value <- index
   } else if (length(index) == 1 && index %in% colnames(value)) {
     index_name <- index
+    index_value <- value[[index_name]]
+    value[[index_name]] <- NULL
   } else {
     stop(
       "index must be a vector with length `nrow(value)` or a single character",
@@ -324,13 +327,13 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
     )
   }
 
+  # Write index
+  write_h5ad_data_frame_index(index_value, file, name, index_name)
+  
   # Write data frame columns
   for (col in colnames(value)) {
     write_h5ad_element(value[[col]], file, paste0(name, "/", col))
   }
-
-  # Write encoding
-  write_h5ad_encoding(file, name, "dataframe", version)
 
   # Write additional data frame attributes
   h5file <- rhdf5::H5Fopen(file)
@@ -339,7 +342,6 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
   h5obj <- rhdf5::H5Gopen(h5file, name)
   on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
 
-  rhdf5::h5writeAttribute(index_name, h5obj, "_index", asScalar = TRUE)
   col_order <- colnames(value)
   col_order <- col_order[col_order != index_name]
   # If there are no columns other than the index we set column order to an
@@ -348,6 +350,40 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
     col_order <- numeric()
   }
   rhdf5::h5writeAttribute(col_order, h5obj, "column-order") # nolint
+}
+
+#' Write H5AD data frame index
+#'
+#' Write an for a data frame to an H5AD file
+#'
+#' @param value Value to write. Must be a vector to the same length as the data
+#' frame.
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file containing the data
+#' frame
+#' @param index_name Name of the data frame column storing the index
+write_h5ad_data_frame_index <- function(value, file, name, index_name) {
+  
+  if (!hdf5_path_exists(file, name)) {
+    stop("The data frame '", name, "' does not exist in '", file, "'")
+  }
+  
+  encoding <- read_h5ad_encoding(file, name)
+  if (encoding$type != "dataframe") {
+    stop("'", name, "' in '", file, "' is not a data frame")
+  }
+  
+  # Write index columns
+  write_h5ad_element(value, file, paste0(name, "/", index_name))
+  
+  # Write data frame index attribute
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+  
+  h5obj <- rhdf5::H5Gopen(h5file, name)
+  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
+  
+  rhdf5::h5writeAttribute(index_name, h5obj, "_index", asScalar = TRUE)
 }
 
 #' Write empty H5AD
@@ -393,6 +429,11 @@ write_empty_h5ad <- function(file, obs_names, var_names, version = "0.1.0") {
 #' @param file Path to a HDF5 file
 #' @param target_path The path within the file to test for
 hdf5_path_exists <- function(file, target_path) {
+  
+  if (substr(target_path, 1, 1) != "/") {
+    target_path <- paste0("/", target_path)
+  }
+  
   content <- rhdf5::h5ls(file)
 
   paths <- file.path(content$group, content$name)
