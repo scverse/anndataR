@@ -4,14 +4,12 @@
 \alias{read_h5ad_encoding}
 \title{Read H5AD encoding}
 \usage{
-read_h5ad_encoding(file, name, quietly = TRUE)
+read_h5ad_encoding(file, name)
 }
 \arguments{
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
-
-\item{quietly}{When TRUE, suppress warnings when reading attributes}
 }
 \value{
 A named list with names type and version
