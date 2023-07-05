@@ -4,14 +4,10 @@
 #'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
-#' @param quietly When TRUE, suppress warnings when reading attributes
 #'
 #' @return A named list with names type and version
-read_h5ad_encoding <- function(file, name, quietly = TRUE) {
-  # 'quietly = TRUE' makes sense as a default, because meaningful
-  # warnings (e.g., no attributes at all) will cause this function to
-  # fail when `encoding-type` or `encoding-version` are not found
-  attrs <- read_h5ad_attributes(file, name, quietly)
+read_h5ad_encoding <- function(file, name) {
+  attrs <- rhdf5::h5readAttributes(file, name)
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
     path <- if (is.character(file)) file else rhdf5::H5Fget_name(file)
@@ -27,26 +23,6 @@ read_h5ad_encoding <- function(file, name, quietly = TRUE) {
   )
 }
 
-#' Read H5AD attributes
-#'
-#' Read the attributes of an element in a H5AD file
-#'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
-#' @param quietly When TRUE, suppress warnings when reading attributes
-#'
-#' @return A named list of attributes and their values
-read_h5ad_attributes <- function(file, name, quietly = FALSE) {
-  requireNamespace("rhdf5")
-  if (quietly) {
-    suppressWarnings({
-      rhdf5::h5readAttributes(file, name)
-    })
-  } else {
-    rhdf5::h5readAttributes(file, name)
-  }
-}
-
 #' Read H5AD element
 #'
 #' Read an element from a H5AD file
@@ -55,35 +31,41 @@ read_h5ad_attributes <- function(file, name, quietly = FALSE) {
 #' @param name Name of the element within the H5AD file
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
+#' @param ... Extra arguments passed to individual reading functions
 #'
 #' @details
-#' If `encoding` is `NULL` the encoding and version are read from the element
-#' using `read_h5ad_encoding()`
+#' Encoding is automatically determined from the element using
+#' `read_h5ad_encoding` and used to select the appropriate reading function.
+#'
 #'
 #' @return Value depending on the encoding
-read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
+read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
   if (is.null(type)) {
     encoding_list <- read_h5ad_encoding(file, name)
     type <- encoding_list$type
     version <- encoding_list$version
   }
-
-  read_fun <-
-    switch(type,
-      "array" = read_h5ad_dense_array,
-      "csr_matrix" = read_h5ad_csr_matrix,
-      "csc_matrix" = read_h5ad_csc_matrix,
-      "dataframe" = read_h5ad_data_frame,
-      "dict" = read_h5ad_mapping,
-      "string" = read_h5ad_string_scalar,
-      "numeric-scalar" = read_h5ad_numeric_scalar,
-      "categorical" = read_h5ad_categorical,
-      "string-array" = read_h5ad_string_array,
-      "nullable-integer" = , # nullable vectors dispatch to same function
-      "nullable-boolean" = read_h5ad_nullable,
-      stop("No function for reading H5AD encoding: ", type)
+  
+  read_fun <- switch(type,
+    "array" = read_h5ad_dense_array,
+    "rec-array" = read_h5ad_rec_array,
+    "csr_matrix" = read_h5ad_csr_matrix,
+    "csc_matrix" = read_h5ad_csc_matrix,
+    "dataframe" = read_h5ad_data_frame,
+    "dict" = read_h5ad_mapping,
+    "string" = read_h5ad_string_scalar,
+    "numeric-scalar" = read_h5ad_numeric_scalar,
+    "categorical" = read_h5ad_categorical,
+    "string-array" = read_h5ad_string_array,
+    "nullable-integer" = read_h5ad_nullable_integer,
+    "nullable-boolean" = read_h5ad_nullable_boolean,
+    stop(
+      "No function for reading H5AD encoding '", type,
+      "' for element '", name, "'"
     )
-  read_fun(file = file, name = name, version = version)
+  )
+  
+  read_fun(file = file, name = name, version = version, ...)
 }
 
 #' Read H5AD dense array
@@ -96,8 +78,6 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL) {
 #'
 #' @return a matrix or a vector if 1D
 read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   # TODO: ideally, native = TRUE should take care of the row order and column order,
   # but it doesn't
@@ -117,6 +97,7 @@ read_h5ad_csr_matrix <- function(file, name, version) {
     type = "csr_matrix"
   )
 }
+
 read_h5ad_csc_matrix <- function(file, name, version) {
   read_h5ad_sparse_array(
     file = file,
@@ -139,8 +120,6 @@ read_h5ad_csc_matrix <- function(file, name, version) {
 #' @importFrom Matrix sparseMatrix
 read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
                                    type = c("csr_matrix", "csc_matrix")) {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   type <- match.arg(type)
 
@@ -172,22 +151,69 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
   mtx
 }
 
-#' Read H5AD nullable vectors
+#' Read H5AD recarray
 #'
-#' Read a nullable vectors (boolean or integer) from an H5AD file
+#' Read a recarray from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @details
+#' A "record array" (recarray) is a Python NumPy array type that contains
+#' "fields" that can be indexed using attributes (similar to columns in a
+#' spreadsheet). See https://numpy.org/doc/stable/reference/generated/numpy.recarray.html
+#' for details.
+#'
+#' They are used by **scanpy** to score marker gene testing results.
+#'
+#' @return a named list of 1D arrays
+read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
+  version <- match.arg(version)
+  
+  rhdf5::h5read(file, name, compoundAsDataFrame = FALSE)
+}
+
+#' Read H5AD nullable boolean
+#'
+#' Read a nullable boolean from an H5AD file
 #'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
 #' @return a boolean vector
+read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
+  as.logical(read_h5ad_nullable(file, name, version))
+}
+
+#' Read H5AD nullable integer
+#'
+#' Read a nullable integer from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return an integer vector
+read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
+  as.integer(read_h5ad_nullable(file, name, version))
+}
+
+#' Read H5AD nullable
+#'
+#' Read a nullable vector (boolean or integer) from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a nullable vector
 read_h5ad_nullable <- function(file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
-
+  
   element <- rhdf5::h5read(file, name)
-
+  
   # Some versions of rhdf5 automatically apply mask, in which case
   # there is no 'mask' element
   if (!is.null(names(element))) {
@@ -197,7 +223,7 @@ read_h5ad_nullable <- function(file, name, version = "0.1.0") {
     element <- as.vector(element[["values"]])
     element[mask] <- NA
   }
-
+  
   return(element)
 }
 
@@ -209,16 +235,20 @@ read_h5ad_nullable <- function(file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
-#' @return a character vector/matrix???
+#' @return a character vector/matrix
 read_h5ad_string_array <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   # reads in transposed
   string_array <- rhdf5::h5read(file, name)
   if (is.matrix(string_array)) {
     string_array <- t(string_array)
   }
+
+  # If the array is 1D, convert to vector
+  if (length(dim(string_array)) == 1) {
+    string_array <- as.vector(string_array)
+  }
+
   string_array
 }
 
@@ -232,8 +262,6 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
 #'
 #' @return a factor
 read_h5ad_categorical <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
 
   element <- rhdf5::h5read(file, name)
@@ -279,8 +307,6 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 #'
 #' @return a character vector of length 1
 read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   rhdf5::h5read(file, name)
 }
@@ -295,8 +321,6 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 #'
 #' @return a numeric vector of length 1
 read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   rhdf5::h5read(file, name)
 }
@@ -311,8 +335,6 @@ read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
 #'
 #' @return a named list
 read_h5ad_mapping <- function(file, name, version = "0.1.0") {
-  requireNamespace("rhdf5")
-
   version <- match.arg(version)
   groupname <- paste0("/", name)
 
@@ -322,8 +344,6 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
   read_h5ad_collection(file, name, columns)
 }
 
-# TODO: read index, return dataframe with columns
-
 #' Read H5AD data frame
 #'
 #' Read a data frame from an H5AD file
@@ -331,30 +351,64 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param include_index Whether or not to include the index as a column
+#'
+#' @details
+#' If `include_index == TRUE` the index stored in the HDF5 file is added as a
+#' column to output `data.frame` using the defined index name as the column
+#' name and this is set as an attribute. If `include_index == FALSE` the index
+#' is not provided in the output. In either case row names are not set.
 #'
 #' @return a data.frame
-read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
-  requireNamespace("rhdf5")
-
+read_h5ad_data_frame <- function(file, name, include_index = TRUE,
+                                 version = "0.2.0") {
   version <- match.arg(version)
 
   attributes <- read_h5ad_attributes(file, name)
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
-  column_order <- append(column_order, index_name)
 
   columns <- read_h5ad_collection(file, name, column_order)
 
-  index <- columns[[index_name]]
-  columns[[index_name]] <- NULL
-
-  # NOTE: anndata will soon support non-character indices.
-  # therefore we shouldn't set the index as row names of the data frame?
   if (length(columns) == 0) {
-    data.frame(row.names = index)
+    index <- read_h5ad_data_frame_index(file, name)
+    df <- data.frame(row.names = seq_along(index))
   } else {
-    data.frame(columns, row.names = index)
+    df <- data.frame(columns)
   }
+
+  if (isTRUE(include_index)) {
+    index <- read_h5ad_data_frame_index(file, name)
+    df <- cbind(index, df)
+
+    # The default index name is not allowed as a column name so adjust it
+    if (index_name == "_index") {
+      index_name <- ".index"
+      colnames(df)[1] <- index_name
+    }
+
+    attr(df, "_index") <- index_name # nolint
+  }
+
+  df
+}
+
+#' Read H5AD data frame index
+#'
+#' Read the index of a data frame from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return an object containing the index
+read_h5ad_data_frame_index <- function(file, name, version = "0.2.0") {
+  version <- match.arg(version)
+
+  attributes <- rhdf5::h5readAttributes(file, name)
+  index_name <- attributes$`_index`
+
+  read_h5ad_element(file, file.path(name, index_name))
 }
 
 #' Read multiple H5AD datatypes

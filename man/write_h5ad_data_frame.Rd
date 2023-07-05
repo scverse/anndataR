@@ -4,7 +4,7 @@
 \alias{write_h5ad_data_frame}
 \title{Write H5AD data frame}
 \usage{
-write_h5ad_data_frame(value, file, name, version = "0.2.0")
+write_h5ad_data_frame(value, file, name, index = NULL, version = "0.2.0")
 }
 \arguments{
 \item{value}{Value to write}
@@ -13,8 +13,12 @@ write_h5ad_data_frame(value, file, name, version = "0.2.0")
 
 \item{name}{Name of the element within the H5AD file}
 
+\item{index}{The index to write. Can either be a vector of length equal to
+the number of rows in \code{values} or a single character string giving the name
+of a column in \code{values}. If \code{NULL} then \code{rownames(value)} is used.}
+
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a data frame from an H5AD file
+Write a data frame to an H5AD file
 }

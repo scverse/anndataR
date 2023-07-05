@@ -16,5 +16,5 @@ write_h5ad_categorical(value, file, name, version = "0.2.0")
 \item{version}{Encoding version of the element to write}
 }
 \description{
-Write a categorical from an H5AD file
+Write a categorical to an H5AD file
 }
