@@ -420,7 +420,7 @@ read_h5ad_collection <- function(file, name, column_order) {
   columns <- list()
   for (col_name in column_order) {
     new_name <- paste0(name, "/", col_name)
-    encoding <- rhdf5::read_h5ad_encoding(file, new_name)
+    encoding <- read_h5ad_encoding(file, new_name)
     columns[[col_name]] <- read_h5ad_element(
       file = file,
       name = new_name,
