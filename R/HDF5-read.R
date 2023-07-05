@@ -11,10 +11,10 @@ read_h5ad_encoding <- function(file, name) {
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
     path <- if (is.character(file)) file else rhdf5::H5Fget_name(file)
-    stop(wrap_message(
+    stop(
       "Encoding attributes not found for element '", name, "' ",
       "in '", path, "'"
-    ))
+    )
   }
 
   list(
@@ -45,7 +45,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
     type <- encoding_list$type
     version <- encoding_list$version
   }
-  
+
   read_fun <- switch(type,
     "array" = read_h5ad_dense_array,
     "rec-array" = read_h5ad_rec_array,
@@ -64,7 +64,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
       "' for element '", name, "'"
     )
   )
-  
+
   read_fun(file = file, name = name, version = version, ...)
 }
 
@@ -126,7 +126,7 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
   data <- as.vector(rhdf5::h5read(file, paste0(name, "/data")))
   indices <- as.vector(rhdf5::h5read(file, paste0(name, "/indices")))
   indptr <- as.vector(rhdf5::h5read(file, paste0(name, "/indptr")))
-  shape <- as.vector(read_h5ad_attributes(file, name)$shape)
+  shape <- as.vector(rhdf5::read_h5ad_attributes(file, name)$shape)
 
   if (type == "csc_matrix") {
     mtx <- Matrix::sparseMatrix(
@@ -170,7 +170,7 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
 #' @return a named list of 1D arrays
 read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  
+
   rhdf5::h5read(file, name, compoundAsDataFrame = FALSE)
 }
 
@@ -211,9 +211,9 @@ read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
 #' @return a nullable vector
 read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
-  
+
   element <- rhdf5::h5read(file, name)
-  
+
   # Some versions of rhdf5 automatically apply mask, in which case
   # there is no 'mask' element
   if (!is.null(names(element))) {
@@ -223,7 +223,7 @@ read_h5ad_nullable <- function(file, name, version = "0.1.0") {
     element <- as.vector(element[["values"]])
     element[mask] <- NA
   }
-  
+
   return(element)
 }
 
@@ -278,18 +278,16 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   levels <- element[["categories"]]
 
-  attributes <- read_h5ad_attributes(file, name, quietly = TRUE)
+  attributes <- rhdf5::read_h5ad_attributes(file, name)
   ordered <- attributes[["ordered"]]
   if (is.na(ordered)) {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
     # can't tell if the categorical should be ordered,
     # see https://github.com/grimbough/rhdf5/issues/125
-    condition <- simpleWarning(wrap_message(
+    condition <- warning(
       "Unable to determine if categorical '", name, "' ",
       "is ordered, assuming it is not"
-    ), call = NULL) # 'call' is usually not informative here
-    class(condition) <- c("anndataR-category-unknown", class(condition))
-    warning(condition)
+    )
 
     ordered <- FALSE
   }
@@ -364,7 +362,7 @@ read_h5ad_data_frame <- function(file, name, include_index = TRUE,
                                  version = "0.2.0") {
   version <- match.arg(version)
 
-  attributes <- read_h5ad_attributes(file, name)
+  attributes <- rhdf5::read_h5ad_attributes(file, name)
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
 
@@ -422,7 +420,7 @@ read_h5ad_collection <- function(file, name, column_order) {
   columns <- list()
   for (col_name in column_order) {
     new_name <- paste0(name, "/", col_name)
-    encoding <- read_h5ad_encoding(file, new_name)
+    encoding <- rhdf5::read_h5ad_encoding(file, new_name)
     columns[[col_name]] <- read_h5ad_element(
       file = file,
       name = new_name,
