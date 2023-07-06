@@ -427,6 +427,8 @@ write_empty_h5ad <- function(file, obs_names, var_names, version = "0.1.0") {
 #'
 #' @param file Path to a HDF5 file
 #' @param target_path The path within the file to test for
+#' 
+#' @return Whether the `path` exists in `file`
 hdf5_path_exists <- function(file, target_path) {
   if (substr(target_path, 1, 1) != "/") {
     target_path <- paste0("/", target_path)
@@ -438,4 +440,37 @@ hdf5_path_exists <- function(file, target_path) {
   paths <- gsub("//", "/", paths) # Remove double slash for root paths
 
   target_path %in% paths
+}
+
+#' Write H5AD
+#'
+#' Write an H5AD file
+#'
+#' @param object The object to write, either a "SingleCellExperiment" or a
+#'"Seurat" object
+#' @param path Path of the file to write to
+#'
+#' @return `path` invisibly
+#' @export
+#'
+#' @examples
+write_h5ad <- function(object, path) {
+  
+  if (is(object, "SingleCellExperiment")) {
+    adata <- from_SingleCellExperiment(
+      object,
+      output_class = "HDF5AnnData",
+      file = path
+    )
+  } else if (is(object, "Seurat")) {
+    adata <- from_Seurat(
+      object,
+      output_class = "HDF5AnnData",
+      file = path
+    )
+  } else (
+    stop("Unable to write object of class: ", class(object))
+  )
+  
+  invisible(path)
 }
