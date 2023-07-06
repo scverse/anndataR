@@ -1,7 +1,7 @@
 #' Dummy data
-#' 
+#'
 #' Generate a dummy dataset
-#' 
+#'
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
 #' @param output Object type to output, one of "list", "SingleCellExperiment",
@@ -9,15 +9,17 @@
 #'
 #' @return Object containing the generated dataset as defined by `output`
 #' @export
-#' 
+#'
 #' @examples
 #' dummy <- dummy_data()
 dummy_data <- function(n_obs = 10L, n_vars = 20L,
-                            output = c("list", "SingleCellExperiment",
-                                       "Seurat")) {
+                       output = c(
+                         "list", "SingleCellExperiment",
+                         "Seurat"
+                       )) {
   output <- match.arg(output)
-  
-  switch (output,
+
+  switch(output,
     "list" = dummy_list(n_obs = n_obs, n_vars = n_vars),
     "SingleCellExperiment" = dummy_SingleCellExperiment(
       n_obs = n_obs, n_vars = n_vars
@@ -27,9 +29,9 @@ dummy_data <- function(n_obs = 10L, n_vars = 20L,
 }
 
 #' Dummy data list
-#' 
+#'
 #' Generate a dummy dataset as a list
-#' 
+#'
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
 #'
@@ -72,29 +74,28 @@ dummy_list <- function(n_obs = 10L, n_vars = 20L) {
 }
 
 #' Dummy SingleCellExperiment
-#' 
+#'
 #' Generate a dummy dataset as a SingleCellExperiment object
 #'
 #' @param ... Parameters passed to `dummy_list`
 #'
 #' @return SingleCellExperiment containing the generated data
-dummy_SingleCellExperiment <- function(...) {
-  
+dummy_SingleCellExperiment <- function(...) { #nolint
   if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
     stop(
       "Creating a SingleCellExperiment requires the 'SingleCellExperiment'",
       "package to be installed"
     )
   }
-  
+
   dummy <- dummy_data(...)
-  
-  assays_list = c(
+
+  assays_list <- c(
     list(X = dummy$X),
     dummy$layers
   )
   assays_list <- lapply(assays_list, t)
-  
+
   sce <- SingleCellExperiment::SingleCellExperiment(
     assays = assays_list,
     rowData = dummy$var,
@@ -102,44 +103,43 @@ dummy_SingleCellExperiment <- function(...) {
   )
   colnames(sce) <- dummy$obs_names
   rownames(sce) <- dummy$var_names
-  
+
   return(sce)
 }
 
 #' Dummy Seurat
-#' 
+#'
 #' Generate a dummy dataset as a Seurat object
 #'
 #' @param ... Parameters passed to `dummy_list`
 #'
 #' @return Seurat containing the generated data
-dummy_Seurat <- function(...) {
-  
+dummy_Seurat <- function(...) { #nolint
   if (!requireNamespace("SeuratObject", quietly = TRUE)) {
     stop(
       "Creating a Seurat requires the 'SeuratObject' package to be installed"
     )
   }
-  
+
   dummy <- dummy_data(...)
 
   X <- t(dummy$X)
   colnames(X) <- dummy$obs_names
   rownames(X) <- dummy$var_names
-  
+
   seurat <- SeuratObject::CreateSeuratObject(X)
-  
+
   X2 <- t(dummy$layers$X2)
   colnames(X2) <- dummy$obs_names
   rownames(X2) <- dummy$var_names
   seurat <- SeuratObject::SetAssayData(seurat, "data", X2)
-  
+
   X3 <- as.matrix(t(dummy$layers$X3))
   colnames(X3) <- dummy$obs_names
   rownames(X3) <- dummy$var_names
   seurat <- SeuratObject::SetAssayData(seurat, "scale.data", X3)
-  
+
   seurat <- SeuratObject::AddMetaData(seurat, dummy$obs)
-  
+
   return(seurat)
 }

@@ -445,12 +445,11 @@ read_h5ad_collection <- function(file, name, column_order) {
 #'   seurat <- read_h5ad(h5ad_file, to = "Seurat")
 #' }
 read_h5ad <- function(path, to = c("SingleCellExperiment", "Seurat")) {
-  
   to <- match.arg(to)
-  
+
   adata <- HDF5AnnData$new(path)
-  
-  switch (to,
+
+  switch(to,
     "SingleCellExperiment" = to_SingleCellExperiment(adata),
     "Seurat" = to_Seurat(adata)
   )
