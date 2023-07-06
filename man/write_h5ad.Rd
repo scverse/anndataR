@@ -18,3 +18,18 @@ write_h5ad(object, path)
 \description{
 Write an H5AD file
 }
+\examples{
+# Write a SingleCellExperiment as a H5AD
+h5ad_file <- tempfile(fileext = ".h5ad")
+if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
+  sce <- dummy_data(output = "SingleCellExperiment")
+  write_h5ad(sce, h5ad_file)
+}
+
+# Write a Seurat as a H5AD
+h5ad_file <- tempfile(fileext = ".h5ad")
+if (requireNamespace("SeuratObject", quietly = TRUE)) {
+  seurat <- dummy_data(output = "Seurat")
+  write_h5ad(seurat, h5ad_file)
+}
+}

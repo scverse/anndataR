@@ -156,3 +156,23 @@ test_that("Writing H5AD data frames works", {
   expect_true(attrs[["_index"]] == "_index")
   expect_identical(as.vector(attrs[["column-order"]]), c("Letters", "Numbers"))
 })
+
+test_that("writing H5AD from SingleCellExperiment works", {
+  skip_if_not_installed("SingleCellExperiment")
+  
+  file <- withr::local_file("SingleCellExperiment.h5ad")
+  
+  sce <- dummy_data(output = "SingleCellExperiment")
+  write_h5ad(sce, file)
+  expect_true(file.exists(file))
+})
+
+test_that("writing H5AD from Seurat works", {
+  skip_if_not_installed("SeuratObject")
+  
+  file <- withr::local_file("Seurat.h5ad")
+  
+  seurat <- dummy_data(output = "Seurat")
+  write_h5ad(seurat, file)
+  expect_true(file.exists(file))
+})

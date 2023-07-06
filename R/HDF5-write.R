@@ -454,6 +454,19 @@ hdf5_path_exists <- function(file, target_path) {
 #' @export
 #'
 #' @examples
+#' # Write a SingleCellExperiment as a H5AD
+#' h5ad_file <- tempfile(fileext = ".h5ad")
+#' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
+#'   sce <- dummy_data(output = "SingleCellExperiment")
+#'   write_h5ad(sce, h5ad_file)
+#' }
+#' 
+#' # Write a Seurat as a H5AD
+#' h5ad_file <- tempfile(fileext = ".h5ad")
+#' if (requireNamespace("SeuratObject", quietly = TRUE)) {
+#'   seurat <- dummy_data(output = "Seurat")
+#'   write_h5ad(seurat, h5ad_file)
+#' }
 write_h5ad <- function(object, path) {
   
   if (is(object, "SingleCellExperiment")) {

@@ -9,11 +9,11 @@ test_that("generating dummy data works", {
 })
 
 test_that("generating dummy SingleCellExperiment works", {
-  dummy <- dummy_SingleCellExperiment()
+  dummy <- dummy_data(output = "SingleCellExperiment")
   expect_s4_class(dummy, "SingleCellExperiment")
 })
 
 test_that("generating dummy Seurat works", {
-  dummy <- dummy_Seurat()
+  dummy <- dummy_data(output = "Seurat")
   expect_s4_class(dummy, "Seurat")
 })

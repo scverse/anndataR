@@ -437,9 +437,13 @@ read_h5ad_collection <- function(file, name, column_order) {
 #' @examples
 #' h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 #' # Read the H5AD as a SingleCellExperiment object
-#' sce <- read_h5ad(h5ad_file, to = "SingleCellExperiment")
+#' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
+#'   sce <- read_h5ad(h5ad_file, to = "SingleCellExperiment")
+#' }
 #' # Read the H5AD as a Seurat object
-#' seurat <- read_h5ad(h5ad_file, to = "Seurat")
+#' if (requireNamespace("SeuratObject", quietly = TRUE)) {
+#'   seurat <- read_h5ad(h5ad_file, to = "Seurat")
+#' }
 read_h5ad <- function(path, to = c("SingleCellExperiment", "Seurat")) {
   
   to <- match.arg(to)
