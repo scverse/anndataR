@@ -4,9 +4,37 @@
 #' 
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
+#' @param output Object type to output, one of "list", "SingleCellExperiment",
+#' or "Seurat"
+#'
+#' @return Object containing the generated dataset as defined by `output`
+#' @export
+#' 
+#' @examples
+#' dummy <- dummy_data()
+dummy_data <- function(n_obs = 10L, n_vars = 20L,
+                            output = c("list", "SingleCellExperiment",
+                                       "Seurat")) {
+  output <- match.arg(output)
+  
+  switch (output,
+    "list" = dummy_list(n_obs = n_obs, n_vars = n_vars),
+    "SingleCellExperiment" = dummy_SingleCellExperiment(
+      n_obs = n_obs, n_vars = n_vars
+    ),
+    "Seurat" = dummy_Seurat(n_obs = n_obs, n_vars = n_vars)
+  )
+}
+
+#' Dummy data list
+#' 
+#' Generate a dummy dataset as a list
+#' 
+#' @param n_obs Number of observations to generate
+#' @param n_vars Number of variables to generate
 #'
 #' @return A list with the generated dataset
-dummy_data <- function(n_obs = 10L, n_vars = 20L) {
+dummy_list <- function(n_obs = 10L, n_vars = 20L) {
   # generate X
   X <- Matrix::rsparsematrix(nrow = n_obs, ncol = n_vars, density = .1)
 
@@ -47,7 +75,7 @@ dummy_data <- function(n_obs = 10L, n_vars = 20L) {
 #' 
 #' Generate a dummy dataset as a SingleCellExperiment object
 #'
-#' @param ... Parameters passed to `dummy_data`
+#' @param ... Parameters passed to `dummy_list`
 #'
 #' @return SingleCellExperiment containing the generated data
 dummy_SingleCellExperiment <- function(...) {
@@ -82,7 +110,7 @@ dummy_SingleCellExperiment <- function(...) {
 #' 
 #' Generate a dummy dataset as a Seurat object
 #'
-#' @param ... Parameters passed to `dummy_data`
+#' @param ... Parameters passed to `dummy_list`
 #'
 #' @return Seurat containing the generated data
 dummy_Seurat <- function(...) {

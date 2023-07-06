@@ -4,16 +4,26 @@
 \alias{dummy_data}
 \title{Dummy data}
 \usage{
-dummy_data(n_obs = 10L, n_vars = 20L)
+dummy_data(
+  n_obs = 10L,
+  n_vars = 20L,
+  output = c("list", "SingleCellExperiment", "Seurat")
+)
 }
 \arguments{
 \item{n_obs}{Number of observations to generate}
 
 \item{n_vars}{Number of variables to generate}
+
+\item{output}{Object type to output, one of "list", "SingleCellExperiment",
+or "Seurat"}
 }
 \value{
-A list with the generated dataset
+Object containing the generated dataset as defined by \code{output}
 }
 \description{
 Generate a dummy dataset
+}
+\examples{
+dummy <- dummy_data()
 }

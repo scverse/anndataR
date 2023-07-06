@@ -7,7 +7,7 @@
 dummy_SingleCellExperiment(...)
 }
 \arguments{
-\item{...}{Parameters passed to \code{dummy_data}}
+\item{...}{Parameters passed to \code{dummy_list}}
 }
 \value{
 SingleCellExperiment containing the generated data

@@ -7,7 +7,7 @@
 dummy_Seurat(...)
 }
 \arguments{
-\item{...}{Parameters passed to \code{dummy_data}}
+\item{...}{Parameters passed to \code{dummy_list}}
 }
 \value{
 Seurat containing the generated data
