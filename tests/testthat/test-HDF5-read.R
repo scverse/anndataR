@@ -113,3 +113,13 @@ test_that("reading dataframes works", {
     )
   )
 })
+
+test_that("reading H5AD as SingleCellExperiment works", {
+  sce <- read_h5ad(file, to = "SingleCellExperiment")
+  expect_s4_class(sce, "SingleCellExperiment")
+})
+
+test_that("reading H5AD as Seurat works", {
+  seurat <- read_h5ad(file, to = "Seurat")
+  expect_s4_class(seurat, "Seurat")
+})
