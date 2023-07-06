@@ -11,6 +11,9 @@ hdf5_path_exists(file, target_path)
 
 \item{target_path}{The path within the file to test for}
 }
+\value{
+Whether the \code{path} exists in \code{file}
+}
 \description{
 Check that a path in HDF5 exists
 }

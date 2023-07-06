@@ -1,5 +1,5 @@
 #' @keywords internal
-#' @importFrom methods as
+#' @importFrom methods as is
 "_PACKAGE"
 
 ## usethis namespace: start
