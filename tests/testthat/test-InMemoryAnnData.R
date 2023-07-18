@@ -308,10 +308,10 @@ test_that("write to layers", {
 
   ## element assignment
   ad$layers[["X2"]] <- dummy$X + 2
-  expect_equal(ad$layers[["X2"]], dummy$X + 2)
+  expect_equal(ad$layers[["X2"]], as.matrix(dummy$X + 2))
 
   ad$layers[["X4"]] <- dummy$X + 4
-  expect_equal(ad$layers[["X4"]], dummy$X + 4)
+  expect_equal(ad$layers[["X4"]], as.matrix(dummy$X + 4))
 
   ## list assignment
   ad$layers <- rev(dummy$layers)
