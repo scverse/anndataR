@@ -121,13 +121,13 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
   generator <- get_generator(output_class)
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
-  obs <- SummarizedExperiment::as.data.frame(
+  obs <- as.data.frame(
     SummarizedExperiment::colData(sce)
   )
   rownames(obs) <- NULL
 
   # trackstatus: class=SingleCellExperiment, feature=set_var, status=done
-  var <- SummarizedExperiment::as.data.frame(
+  var <- as.data.frame(
     SummarizedExperiment::rowData(sce)
   )
   rownames(var) <- NULL
