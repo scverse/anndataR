@@ -4,13 +4,16 @@
 \alias{read_h5ad}
 \title{Read H5AD}
 \usage{
-read_h5ad(path, to = c("SingleCellExperiment", "Seurat"))
+read_h5ad(
+  path,
+  to = c("SingleCellExperiment", "Seurat", "HDF5AnnData", "InMemoryAnnData")
+)
 }
 \arguments{
 \item{path}{Path to the H5AD file to read}
 
-\item{to}{The type of object to return, either "SingleCellExperiment" or
-"Seurat"}
+\item{to}{The type of object to return. Must be one of: "SingleCellExperiment",
+"Seurat", "HDF5AnnData", "InMemoryAnnData"}
 }
 \value{
 The object specified by \code{to}

@@ -468,13 +468,13 @@ hdf5_path_exists <- function(file, target_path) {
 #'   write_h5ad(seurat, h5ad_file)
 #' }
 write_h5ad <- function(object, path) {
-  if (is(object, "SingleCellExperiment")) {
+  if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,
       output_class = "HDF5AnnData",
       file = path
     )
-  } else if (is(object, "Seurat")) {
+  } else if (inherits(object, "Seurat")) {
     from_Seurat(
       object,
       output_class = "HDF5AnnData",

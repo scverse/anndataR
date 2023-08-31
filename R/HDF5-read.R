@@ -428,8 +428,8 @@ read_h5ad_collection <- function(file, name, column_order) {
 #' Read data from a H5AD file
 #'
 #' @param path Path to the H5AD file to read
-#' @param to The type of object to return, either "SingleCellExperiment" or
-#' "Seurat"
+#' @param to The type of object to return. Must be one of: "SingleCellExperiment",
+#'   "Seurat", "HDF5AnnData", "InMemoryAnnData"
 #'
 #' @return The object specified by `to`
 #' @export
@@ -444,13 +444,15 @@ read_h5ad_collection <- function(file, name, column_order) {
 #' if (requireNamespace("SeuratObject", quietly = TRUE)) {
 #'   seurat <- read_h5ad(h5ad_file, to = "Seurat")
 #' }
-read_h5ad <- function(path, to = c("SingleCellExperiment", "Seurat")) {
+read_h5ad <- function(path, to = c("SingleCellExperiment", "Seurat", "HDF5AnnData", "InMemoryAnnData")) {
   to <- match.arg(to)
 
   adata <- HDF5AnnData$new(path)
 
   switch(to,
     "SingleCellExperiment" = to_SingleCellExperiment(adata),
-    "Seurat" = to_Seurat(adata)
+    "Seurat" = to_Seurat(adata),
+    "HDF5AnnData" = adata,
+    "InMemoryAnnData" = adata$to_InMemoryAnnData()
   )
 }

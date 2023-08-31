@@ -220,3 +220,46 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     }
   )
 )
+
+#' Convert an AnnData object to an HDF5AnnData object
+#'
+#' This function takes an AnnData object and converts it to an HDF5AnnData
+#' object, loading all fields into memory.
+#'
+#' @param adata An AnnData object to be converted to HDF5AnnData.
+#' @param file The filename (character) of the `.h5ad` file.
+#'
+#' @return An HDF5AnnData object with the same data as the input AnnData
+#'   object.
+#'
+#' @export
+#'
+#' @examples
+#' ad <- InMemoryAnnData$new(
+#'   X = matrix(1:5, 3L, 5L),
+#'   layers = list(
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
+#'   ),
+#'   obs = data.frame(cell = 1:3),
+#'   var = data.frame(gene = 1:5),
+#'   obs_names = LETTERS[1:3],
+#'   var_names = letters[1:5]
+#' )
+#' to_HDF5AnnData(ad, "test.h5ad")
+#' # remove file
+#' file.remove("test.h5ad")
+to_HDF5AnnData <- function(adata, file) { # nolint
+  stopifnot(
+    inherits(adata, "AbstractAnnData")
+  )
+  HDF5AnnData$new(
+    file = file,
+    X = adata$X,
+    obs = adata$obs,
+    var = adata$var,
+    obs_names = adata$obs_names,
+    var_names = adata$var_names,
+    layers = adata$layers
+  )
+}

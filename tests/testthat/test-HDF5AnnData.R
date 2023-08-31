@@ -4,7 +4,7 @@ file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 test_that("opening H5AD works", {
   adata <- HDF5AnnData$new(file)
-  expect_true(is(adata, "HDF5AnnData"))
+  expect_true(inherits(adata, "HDF5AnnData"))
 })
 
 adata <- HDF5AnnData$new(file)
