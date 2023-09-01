@@ -64,6 +64,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
       "' for element '", name, "'"
     )
   )
+
   read_fun(file = file, name = name, version = version, ...)
 }
 
@@ -183,18 +184,7 @@ read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
 #'
 #' @return a boolean vector
 read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
-  version <- match.arg(version)
-
-  element <- rhdf5::h5read(file, name)
-
-  # Get mask and convert to Boolean
-  mask <- as.logical(element[["mask"]])
-
-  # Get values and set missing
-  element <- as.logical(element[["values"]])
-  element[mask] <- NA
-
-  return(element)
+  as.logical(read_h5ad_nullable(file, name, version))
 }
 
 #' Read H5AD nullable integer
@@ -207,16 +197,32 @@ read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
 #'
 #' @return an integer vector
 read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
+  as.integer(read_h5ad_nullable(file, name, version))
+}
+
+#' Read H5AD nullable
+#'
+#' Read a nullable vector (boolean or integer) from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a nullable vector
+read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
   element <- rhdf5::h5read(file, name)
 
-  # Get mask and convert to Boolean
-  mask <- as.logical(element[["mask"]])
-
-  # Get values and set missing
-  element <- as.integer(element[["values"]])
-  element[mask] <- NA_integer_
+  # Some versions of rhdf5 automatically apply mask, in which case
+  # there is no 'mask' element
+  if (!is.null(names(element))) {
+    # Get mask and convert to Boolean
+    mask <- as.logical(element[["mask"]])
+    # Get values and set missing
+    element <- as.vector(element[["values"]])
+    element[mask] <- NA
+  }
 
   return(element)
 }
@@ -272,8 +278,9 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   levels <- element[["categories"]]
 
-  ordered <- element[["ordered"]]
-  if (is.null(ordered)) {
+  attributes <- rhdf5::h5readAttributes(file, name)
+  ordered <- attributes[["ordered"]]
+  if (is.na(ordered)) {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
     # can't tell if the categorical should be ordered,
     # see https://github.com/grimbough/rhdf5/issues/125
@@ -281,6 +288,7 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
       "Unable to determine if categorical '", name,
       "' is ordered, assuming it isn't"
     )
+
     ordered <- FALSE
   }
 
@@ -412,12 +420,12 @@ read_h5ad_collection <- function(file, name, column_order) {
   columns <- list()
   for (col_name in column_order) {
     new_name <- paste0(name, "/", col_name)
-    encoding <- rhdf5::h5readAttributes(file, new_name)
+    encoding <- read_h5ad_encoding(file, new_name)
     columns[[col_name]] <- read_h5ad_element(
       file = file,
       name = new_name,
-      type = encoding$`encoding-type`,
-      version = encoding$`encoding-version`
+      type = encoding$type,
+      version = encoding$version
     )
   }
   columns
