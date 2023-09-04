@@ -71,12 +71,8 @@ test_that("from_SingleCellExperiment() works", {
   rownames(obs) <- NULL
   rownames(var) <- NULL
 
-  expect_no_condition({
-    ad0 <- from_SingleCellExperiment(sce0, "InMemory")
-  })
-  expect_no_condition({
-    ad <- from_SingleCellExperiment(sce, "InMemory")
-  })
+  ad0 <- from_SingleCellExperiment(sce0, "InMemory")
+  ad <- from_SingleCellExperiment(sce, "InMemory")
 
   # trackstatus: class=SingleCellExperiment, feature=test_set_X, status=done
   expect_identical(ad0$X, NULL)

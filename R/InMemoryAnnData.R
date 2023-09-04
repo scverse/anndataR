@@ -184,6 +184,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #' )
 #' to_InMemory(ad)
 to_InMemory <- function(adata) { # nolint
+  stopifnot(
+    inherits(adata, "AbstractAnnData")
+  )
   InMemoryAnnData$new(
     X = adata$X,
     obs = adata$obs,
