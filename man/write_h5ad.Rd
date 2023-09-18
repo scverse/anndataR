@@ -38,7 +38,7 @@ if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
   h5ad_file <- tempfile(fileext = ".h5ad")
   ncells <- 100
   counts <- matrix(rpois(20000, 5), ncol = ncells)
-  logcounts <- log2(u + 1)
+  logcounts <- log2(counts + 1)
   pca <- matrix(runif(ncells * 5), ncells)
   tsne <- matrix(rnorm(ncells * 2), ncells)
 
