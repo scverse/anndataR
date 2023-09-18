@@ -46,13 +46,12 @@
 #'
 #' adata
 AnnData <- function(
-  obs_names = NULL,
-  var_names = NULL,
-  X = NULL,
-  obs = NULL,
-  var = NULL,
-  layers = NULL
-) {
+    obs_names = NULL,
+    var_names = NULL,
+    X = NULL,
+    obs = NULL,
+    var = NULL,
+    layers = NULL) {
   InMemoryAnnData$new(
     obs_names = obs_names,
     var_names = var_names,
