@@ -1,0 +1,55 @@
+---
+title: "Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This package allows users to work with h5ad files, access various slots in the h5ad datasets and convert .h5ad anndata files to SingleCellExperiment objects and SeuratObjects, and vice versa.
+
+The API of anndataR with regards to accessing different slots in the files is very similar to its Python counterpart.
+Check out `?anndataR` for a full list of the functions provided by this package.
+
+This package provides an abstract interface for AnnData objects. This abstract interface models its Python counterpart closely, and stores a data matrix `X` and annotations corresponding to observations (`obs`, `obsm`, `obsp`) and variables (`var`, `varm`, `varp`) and unstructured metadata `uns`.
+
+
+This abstract interface is implemented by different backends. Currently, the following backends are implemented:
+1. InMemoryAnnData
+2. HDF5AnnData
+
+The InMemoryAnnData backend allows you to construct an AnnData object in memory.
+The HDF5AnnData backend allows you to read in an AnnData object from an `.h5ad` file.
+
+Here is an example of how to read in an `.h5ad` file and access its contents.
+
+```{r setup}
+library(anndataR)
+file <- system.file("extdata", "example.h5ad", package = "anndataR")
+adata <- read_h5ad(file, to = "InMemoryAnnData")
+X <- adata$X
+layers <- adata$layers
+obs <- adata$obs
+obsm <- adata$obsm
+obsp <- adata$obsp
+var <- adata$var
+varm <- adata$varm
+varp <- adata$varp
+uns <- adata$uns
+```
+
+You can convert the AnnData object to a SingleCellExperiment object or to a SeuratObject in the following way:
+
+```{r convert}
+sce <- to_SingleCellExperiment(adata)
+seurat <- to_Seurat(adata)
+```
+
