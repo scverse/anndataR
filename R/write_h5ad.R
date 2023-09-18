@@ -27,16 +27,17 @@
 #' # Write a SingleCellExperiment as an H5AD
 #' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
 #'   h5ad_file <- tempfile(fileext = ".h5ad")
+#'   ncells <- 100
+#'   counts <- matrix(rpois(20000, 5), ncol = ncells)
+#'   logcounts <- log2(u + 1)
+#
+#'   pca <- matrix(runif(ncells * 5), ncells)
+#'   tsne <- matrix(rnorm(ncells * 2), ncells)
+#'
 #'   sce <- SingleCellExperiment::SingleCellExperiment(
-#'     assays = list(
-#'       counts = matrix(1:15, 3L, 5L),
-#'       A = matrix(15:1, 3L, 5L),
-#'       B = matrix(letters[1:15], 3L, 5L)
-#'     ),
-#'     rowData = data.frame(gene = 1:5),
-#'     colData = data.frame(cell = 1:3),
+#'     assays = list(counts = counts, logcounts = logcounts),
+#'     reducedDims = list(PCA = pca, tSNE = tsne)
 #'   )
-#'   write_h5ad(sce, h5ad_file)
 #' }
 #'
 #' # Write a Seurat as a H5AD
