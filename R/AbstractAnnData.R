@@ -49,6 +49,14 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   vector.
     var_names = function(value) {
       .abstract_function("ad$var_names")
+    },
+    #' @field obsm
+    obsm = function(value) {
+      .abstract_function("ad$obsm")
+    },
+    #' @field varm
+    varm = function(value) {
+      .abstract_function("ad$varm")
     }
   ),
   public = list(

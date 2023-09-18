@@ -35,7 +35,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     .obs = NULL,
     .var = NULL,
     .obs_names = NULL,
-    .var_names = NULL
+    .var_names = NULL,
+    .obsm = NULL,
+    .varm = NULL
   ),
   active = list(
     #' @field X NULL or an observation x variable matrix (without
@@ -118,6 +120,25 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.var_names <- private$.validate_obsvar_names(value, "var")
         self
       }
+    },
+    #' @field obsm
+    obsm = function(value) {
+      if (missing(value)) {
+        private$.obsm
+      } else {
+        # TODO: validate obsm
+        private$.obsm <- value
+        self
+      }
+    },
+    varm = function(value) {
+      if (missing(value)) {
+        private$.varm
+      } else {
+        # TODO validate varm
+        private$.varm <- value
+        self
+      }
     }
   ),
   public = list(
@@ -144,7 +165,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing information
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
-    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL) {
+    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm=NULL) {
       # write obs and var first, because these are used by other validators
       self$obs_names <- obs_names
       self$var_names <- var_names
@@ -154,6 +175,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
       self$var <- var
       self$X <- X
       self$layers <- layers
+      self$obsm <- obsm
+      self$varm <- varm
     }
   )
 )
