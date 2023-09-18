@@ -2,7 +2,6 @@
 
 export(AnnData)
 export(InMemoryAnnData)
-export(dummy_data)
 export(from_Seurat)
 export(from_SingleCellExperiment)
 export(read_h5ad)
