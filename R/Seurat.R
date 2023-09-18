@@ -3,40 +3,33 @@
 #' @title Convert Between AnnData and Seurat
 #'
 #' @description `to_Seurat()` converts an AnnData object to a Seurat object.
-#'
-#' @param obj An AnnData object
+#' NOTE: Only 1 assay per object is currently. 
+#' @param obj An AnnData object.
 #'
 #' @importFrom Matrix t
 #'
 #' @export
 #' @examples
-#' ad <- InMemoryAnnData$new(
-#'   X = matrix(1:5, 3L, 5L),
-#'   obs = data.frame(cell = 1:3),
-#'   obs_names = letters[1:3],
-#'   var = data.frame(gene = 1:5),
-#'   var_names = letters[1:5]
-#' )
-#' to_Seurat(ad)
-# TODO: Add parameters to choose which how X and layers are translated into counts, data and scaled.data
+#' ad <- example_anndata()
+#' to_Seurat(ad) 
 to_Seurat <- function(obj) { # nolint
   requireNamespace("SeuratObject")
-
+  
   stopifnot(inherits(obj, "AbstractAnnData"))
-
+  
   # translate var_names
   # trackstatus: class=Seurat, feature=get_var_names, status=done
   var_names_ <- .toseurat_check_obsvar_names(obj$var_names, "var_names")
-
+  
   # translate obs_names
   # trackstatus: class=Seurat, feature=get_obs_names, status=done
   obs_names_ <- .toseurat_check_obsvar_names(obj$obs_names, "obs_names")
-
+  
   # translate var
   # trackstatus: class=Seurat, feature=get_var, status=done
   var_ <- obj$var
   rownames(var_) <- var_names_
-
+  
   # translate obs
   # trackstatus: class=Seurat, feature=get_obs, status=done
   obs_ <-
@@ -47,7 +40,7 @@ to_Seurat <- function(obj) { # nolint
     } else {
       NULL
     }
-
+  
   # translate X
   # trackstatus: class=Seurat, feature=get_X, status=wip
   # TODO: should x_ be passed to counts or to data?
@@ -68,14 +61,14 @@ to_Seurat <- function(obj) { # nolint
     }
   dimnames(x_) <- list(var_names_, obs_names_)
   x_assay <- SeuratObject::CreateAssayObject(counts = x_)
-
+  
   # create seurat object
   if (ncol(var_) > 0) {
     # don't add var metadata if the data frame does not contain any columns
     x_assay <- SeuratObject::AddMetaData(x_assay, metadata = var_)
   }
   seurat_obj <- SeuratObject::CreateSeuratObject(x_assay, meta.data = obs_)
-
+  
   # add layers
   # trackstatus: class=Seurat, feature=get_layers, status=wip
   # TODO: should values be passed to counts or to data?
@@ -84,7 +77,7 @@ to_Seurat <- function(obj) { # nolint
     dimnames(layer_) <- list(var_names_, obs_names_)
     seurat_obj[[key]] <- SeuratObject::CreateAssayObject(counts = layer_)
   }
-
+  
   seurat_obj
 }
 
@@ -98,7 +91,7 @@ to_Seurat <- function(obj) { # nolint
     ))
     names <- gsub("_", "-", names)
   }
-
+  
   names
 }
 
@@ -108,37 +101,38 @@ to_Seurat <- function(obj) { # nolint
 #'
 #' @param seurat_obj An object inheriting from Seurat.
 #'
-#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
-#' or `"InMemoryAnnData"`.
-#'
-#' @param ... Additional arguments passed to the generator function.
-#' See the "Details" section for more information on which parameters
+#' @inheritParams example_data
+#' 
+#' @returns \link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
 #'
 #' @export
 # TODO: Add parameter to choose which how counts, data and scaled.data are translated into X and layers
 # TODO: add tests with Seurat objects not created by anndataR
-from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), ...) { # nolint
-
+from_Seurat <- function(seurat_obj, 
+                        output_class = c("InMemoryAnnData",
+                                         "HDF5AnnData"), 
+                        ...) { # nolint
+  
   stopifnot(inherits(seurat_obj, "Seurat"))
-
+  
   # get obs_names
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   obs_names <- colnames(seurat_obj)
-
+  
   # get obs
   # trackstatus: class=Seurat, feature=set_obs, status=done
   obs <- seurat_obj@meta.data
   rownames(obs) <- NULL
-
+  
   # construct var_names
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   var_names <- rownames(seurat_obj)
-
+  
   # construct var
   # trackstatus: class=Seurat, feature=set_var, status=done
   var <- seurat_obj@assays[[seurat_obj@active.assay]]@meta.features
   rownames(var) <- NULL
-
+  
   # use generator to create new AnnData object
   generator <- get_generator(output_class)
   ad <- generator$new(
@@ -148,13 +142,13 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     var_names = var_names,
     ...
   )
-
+  
   # trackstatus: class=Seurat, feature=set_X, status=wip
   # trackstatus: class=Seurat, feature=set_layers, status=wip
   for (assay_name in names(seurat_obj@assays)) {
     # TODO: Maybe we shouldn't use counts but instead data
     assay_data <- SeuratObject::GetAssayData(seurat_obj, "counts", assay = assay_name)
-
+    
     if (nrow(assay_data) != length(var_names) || !identical(rownames(assay_data), var_names)) {
       warning(
         "Skipping assay '", assay_name, "' because it has different feature names ",
@@ -169,7 +163,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
       )
       next
     }
-
+    
     # remove names
     dimnames(assay_data) <- list(NULL, NULL)
     if (assay_name == seurat_obj@active.assay) {
@@ -178,6 +172,6 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
       ad$layers[[assay_name]] <- Matrix::t(assay_data)
     }
   }
-
+  
   return(ad)
 }

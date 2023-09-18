@@ -14,28 +14,32 @@ from_Seurat(
 )
 }
 \arguments{
-\item{obj}{An AnnData object}
+\item{obj}{An AnnData object.}
 
 \item{seurat_obj}{An object inheriting from Seurat.}
 
-\item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"}
-or \code{"InMemoryAnnData"}.}
+\item{output_class}{Name of the AnnData class.
+Must be one of:
+\itemize{
+\item{"InMemoryAnnData": }{Produces \link[anndataR]{InMemoryAnnData}
+(default).}
+\item{"HDF5AnnData": }{Produces \link[anndataR]{HDF5AnnData}.}
+\item{"Seurat": }{Produces \link[SeuratObject]{Seurat}.}
+}}
 
 \item{...}{Additional arguments passed to the generator function.
-See the "Details" section for more information on which parameters}
+See the "Details" section for more information on which parameters.}
+}
+\value{
+\link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
 }
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
+NOTE: Only 1 assay per object is currently.
 
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
 }
 \examples{
-ad <- InMemoryAnnData$new(
-  X = matrix(1:5, 3L, 5L),
-  obs = data.frame(cell = 1:3),
-  obs_names = letters[1:3],
-  var = data.frame(gene = 1:5),
-  var_names = letters[1:5]
-)
-to_Seurat(ad)
+ad <- example_anndata()
+to_Seurat(ad) 
 }

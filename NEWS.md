@@ -2,7 +2,13 @@
 
 ## New features
 
+* Add `example_data` function. 
 
+## Bug fixes
+
+* *DESCRIPTION*:
+  - Add "email" tag to `Authors`.
+  - Add `BiocViews`
 
 # anndataR 0.1.0
 

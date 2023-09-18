@@ -2,15 +2,15 @@ Package: anndataR
 Title: AnnData interoperability in R
 Version: 0.99.0
 Authors@R: c(
-    person("Robrecht", "Cannoodt", , "rcannood@gmail.com", role = c("aut", "cre"),
+    person("Robrecht", "Cannoodt", email="rcannood@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
-    person("Luke", "Zappia", , "luke@lazappi.id.au", role = "aut",
+    person("Luke", "Zappia", email="luke@lazappi.id.au", role = "aut",
            comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")),
-    person("Martin", "Morgan", , "mtmorgan.bioc@gmail.com", role = "aut",
+    person("Martin", "Morgan", email="mtmorgan.bioc@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")),
-    person("Louise", "Deconinck", , "louise.deconinck@gmail.com", role = "aut",
+    person("Louise", "Deconinck", email="louise.deconinck@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")),
-    person("Danila", "Bredikhin", , "danila.bredikhin@embl.de", role = "aut",
+    person("Danila", "Bredikhin", email="danila.bredikhin@embl.de", role = "aut",
            comment = c(ORCID = "0000-0001-8089-6983", github = "gtca"))
   )
 Description: Bring the power and flexibility of AnnData to the R
@@ -21,6 +21,8 @@ Description: Bring the power and flexibility of AnnData to the R
 License: MIT + file LICENSE
 URL: https://scverse.org/anndataR, https://github.com/scverse/anndataR
 BugReports: https://github.com/scverse/anndataR/issues
+BioViews:
+  Software
 Depends: 
     R (>= 3.2.0)
 Imports:
@@ -46,4 +48,4 @@ Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.2.3.9000
