@@ -160,6 +160,64 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       mat
     },
 
+
+    # @description `.validate_array_generic()` checks that dimensions are
+    #   consistent with the anndata object.
+    # @param mat A matrix to validate
+    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
+    #   the name of a layer.
+    # @param shape Expected dimensions of matrix
+    # @param expected_rownames
+    # @param excepted_colnames
+    .validate_array_generic = function(mat, label, shape, expected_rownames=NULL, expected_colnames=NULL) {
+      mat_dims = dim(mat)
+      for (i in seq_along(shape)) {
+        expected_dim = shape[i]
+        found_dim = mat_dims[i]
+        if (found_dim != expected_dim) {
+          stop("dim(", label, ")[", i, "] should be the same as shape")
+        }
+      }
+      if (!is.null(expected_rownames)) {
+        if (!is.null(rownames(mat))) {
+          if (!identical(rownames(mat), expected_rownames)) {
+            stop("rownames(", label, ") should be the same as expected_rownames")
+          }
+        } else {
+          rownames(mat) <- expected
+        }
+      }
+      if (!is.null(expected_colnames)) {
+        if (!is.null(colnames(mat))) {
+          if (!identical(colnames(mat), expected_colnames)) {
+            stop("colnames(", label, ") should be the same as expected_colnames")
+          }
+        } else {
+          colnames(mat) <- expected
+        }
+      }
+
+      mat
+    },
+
+    .validate_array_collection_generic = function(collection, label, shape, expected_rownames=NULL, expected_colnames=NULL) {
+      if (is.null(collection)) {
+        return(collection)
+      }
+
+      collection_names <- names(collection)
+      if (!is.list(collection) || is.null(collection_names)) {
+        stop("collection must must be a named list")
+      }
+
+      for (mtx_name in collection_names) {
+        collection_name <- paste0(label, "[[", mtx_name, "]]")
+        private$.validate_array_generic(collection[[mtx_name]], collection_name, shape=shape, expected_rownames=expected_rownames, expected_colnames=expected_colnames)
+      }
+      
+      collection
+    },
+
     # @description `.validate_layers()` checks for named lists and
     #   correct dimensions on elements.
     # @param layers A named list of 0 or more matrix elements with

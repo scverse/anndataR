@@ -38,6 +38,24 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         write_h5ad_element(value, private$.h5obj, "/layers")
       }
     },
+    #' @field obsm
+    obsm = function(value) {
+      if (missing(value)) {
+        read_h5ad_element(private$.h5obj, "obsm")
+      } else {
+        # TODO: validate obsm
+        write_h5ad_element(value, private$.h5obj, "/obsm")
+      }
+    },
+    #' @field varm
+    varm = function(value) {
+      if (missing(value)) {
+        read_h5ad_element(private$.h5obj, "varm")
+      } else {
+        # TODO: validate varm
+        write_h5ad_element(value, private$.h5obj, "/varm")
+      }
+    },
     #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
@@ -104,30 +122,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         value <- private$.validate_obsvar_names(value, "var")
         write_h5ad_data_frame_index(value, private$.h5obj, "var", "_index")
         private$.var_names <- value
-      }
-    },
-    #' @field obsm
-    obsm = function(value) {
-      if (missing(value)) {
-        if (is.null(private$.obsm)) {
-          private$.obsm <- read_h5ad_element(private$.h5obj, "obsm")
-        }
-        private$.obsm
-      } else {
-        # TODO: validate obsm
-        write_h5ad_element(value, private$.h5obj, "/obsm")
-      }
-    },
-    #' @field varm
-    varm = function(value) {
-      if (missing(value)) {
-        if (is.null(private$.varm)) {
-          private$.varm <- read_h5ad_element(private$.h5obj, "varm")
-        }
-        private$.varm
-      } else {
-        # TODO: validate varm
-        write_h5ad_element(value, private$.h5obj, "/varm")
       }
     }
   ),

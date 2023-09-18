@@ -127,7 +127,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.obsm
       } else {
         # TODO: validate obsm
-        private$.obsm <- value
+        private$.obsm <- private$.validate_array_collection_generic(value, "obsm", c(self$n_obs()), expected_rownames=rownames(self))
         self
       }
     },
@@ -136,7 +136,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.varm
       } else {
         # TODO validate varm
-        private$.varm <- value
+        private$.varm <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames=colnames(self))
         self
       }
     }
