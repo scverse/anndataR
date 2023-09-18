@@ -27,7 +27,7 @@ jobs:
         - os: ubuntu-latest
           bioc: release
           r: auto
-          cont: bioconductor/bioconductor_docker:release 
+          cont: bioconductor/bioconductor_docker:latest 
           http-user-agent: 'release'
         - os: macOS-latest
           bioc: release
