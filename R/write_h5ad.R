@@ -28,13 +28,13 @@
 #' h5ad_file <- tempfile(fileext = ".h5ad")
 #' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
 #'   sce <- SingleCellExperiment(
-#'    assays = list(
-#'      counts = matrix(1:15, 3L, 5L),
-#'      A = matrix(15:1, 3L, 5L),
-#'      B = matrix(letters[1:15], 3L, 5L)
-#'    ),
-#'    rowData = data.frame(gene = 1:5),
-#'    colData = data.frame(cell = 1:3),
+#'     assays = list(
+#'       counts = matrix(1:15, 3L, 5L),
+#'       A = matrix(15:1, 3L, 5L),
+#'       B = matrix(letters[1:15], 3L, 5L)
+#'     ),
+#'     rowData = data.frame(gene = 1:5),
+#'     colData = data.frame(cell = 1:3),
 #'   )
 #'   write_h5ad(sce, h5ad_file)
 #' }
