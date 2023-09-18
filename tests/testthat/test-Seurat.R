@@ -1,7 +1,7 @@
 dummy <- dummy_data(10L, 20L)
 
 test_that("to_Seurat with inmemoryanndata", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
@@ -9,7 +9,7 @@ test_that("to_Seurat with inmemoryanndata", {
     var_names = dummy$var_names
   )
   # running to_seurat when ad0$X is null probably doesn't make any sense
-  ad0 <- InMemoryAnnData$new(
+  ad0 <- AnnData(
     obs_names = letters[1:5],
     var_names = LETTERS[1:10]
   )
