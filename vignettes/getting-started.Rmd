@@ -30,27 +30,28 @@ This abstract interface is implemented by different backends. Currently, the fol
 The InMemoryAnnData backend allows you to construct an AnnData object in memory.
 The HDF5AnnData backend allows you to read in an AnnData object from an `.h5ad` file.
 
-Here is an example of how to read in an `.h5ad` file and access its contents.
+Here is an example of how to read in an `.h5ad` file.
 
-```{r setup, eval=FALSE}
+```{r setup}
 library(anndataR)
+```
+
+```{r show_anndata_hdf5, eval = FALSE}
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 adata <- read_h5ad(file, to = "InMemoryAnnData")
+```
+
+The contents can be accessed as well.
+```{r access_hdf5, eval = FALSE}
 X <- adata$X
 layers <- adata$layers
 obs <- adata$obs
-# obsm <- adata$obsm
-# obsp <- adata$obsp
 var <- adata$var
-# varm <- adata$varm
-# varp <- adata$varp
-# uns <- adata$uns
 ```
 
-The following example details how to make an InMemoryAnnData and access its contents.
+The following example details how to construct an InMemoryAnnData and access its contents.
 
-```{r inmemory}
-library(anndataR)
+```{r inmemory_construct}
 
 adata <- AnnData(
   X = matrix(1:15, 3L, 5L),
@@ -63,16 +64,15 @@ adata <- AnnData(
   obs_names = LETTERS[1:3],
   var_names = letters[1:5]
 )
+adata
+```
 
+The contents can be accessed as well.
+```{r access_construct}
 X <- adata$X
 layers <- adata$layers
 obs <- adata$obs
-# obsm <- adata$obsm
-# obsp <- adata$obsp
 var <- adata$var
-# varm <- adata$varm
-# varp <- adata$varp
-# uns <- adata$uns
 ```
 
 You can convert the AnnData object to a SingleCellExperiment object or to a SeuratObject in the following way:
