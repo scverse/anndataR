@@ -14,9 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package allows users to work with h5ad files, access various slots in the h5ad datasets and convert .h5ad anndata files to SingleCellExperiment objects and SeuratObjects, and vice versa.
+This package allows users to work with `.h5ad` files, access various slots in the datasets and convert these files to `SingleCellExperiment` objects and `SeuratObject`s, and vice versa.
 
-The API of anndataR with regards to accessing different slots in the files is very similar to its Python counterpart.
 Check out `?anndataR` for a full list of the functions provided by this package.
 
 This package provides an abstract interface for AnnData objects. This abstract interface models its Python counterpart closely, and stores a data matrix `X` and annotations corresponding to observations (`obs`, `obsm`, `obsp`) and variables (`var`, `varm`, `varp`) and unstructured metadata `uns`.
