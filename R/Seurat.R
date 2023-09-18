@@ -101,7 +101,7 @@ to_Seurat <- function(obj) { # nolint
 #'
 #' @param seurat_obj An object inheriting from Seurat.
 #'
-#' @inheritParams example_data
+#' @inheritParams dummy_anndata
 #' 
 #' @returns \link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
 #'

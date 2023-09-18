@@ -2,15 +2,15 @@ Package: anndataR
 Title: AnnData interoperability in R
 Version: 0.99.0
 Authors@R: c(
-    person("Robrecht", "Cannoodt", email="rcannood@gmail.com", role = c("aut", "cre"),
+    person(given="Robrecht", family="Cannoodt", email="rcannood@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
-    person("Luke", "Zappia", email="luke@lazappi.id.au", role = "aut",
+    person(given="Luke", family="Zappia", email="luke@lazappi.id.au", role = "aut",
            comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")),
-    person("Martin", "Morgan", email="mtmorgan.bioc@gmail.com", role = "aut",
+    person(given="Martin", family="Morgan", email="mtmorgan.bioc@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")),
-    person("Louise", "Deconinck", email="louise.deconinck@gmail.com", role = "aut",
+    person(given="Louise", family="Deconinck", email="louise.deconinck@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")),
-    person("Danila", "Bredikhin", email="danila.bredikhin@embl.de", role = "aut",
+    person(given="Danila", family="Bredikhin", email="danila.bredikhin@embl.de", role = "aut",
            comment = c(ORCID = "0000-0001-8089-6983", github = "gtca"))
   )
 Description: Bring the power and flexibility of AnnData to the R

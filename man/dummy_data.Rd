@@ -7,7 +7,7 @@
 dummy_data(
   n_obs = 10L,
   n_vars = 20L,
-  output = c("list", "SingleCellExperiment", "Seurat")
+  output = c("list", "SingleCellExperiment", "Seurat", "InMemoryAnnData", "HDF5AnnData")
 )
 }
 \arguments{

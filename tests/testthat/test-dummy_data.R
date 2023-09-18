@@ -17,3 +17,13 @@ test_that("generating dummy Seurat works", {
   dummy <- dummy_data(output = "Seurat")
   expect_s4_class(dummy, "Seurat")
 })
+
+test_that("generating dummy InMemoryAnnData works", {
+  dummy <- dummy_data(output = "InMemoryAnnData")
+  expect_true(methods::is(dummy,"InMemoryAnnData"))
+})
+
+test_that("generating dummy HDF5AnnData works", {
+  dummy <- dummy_data(output = "HDF5AnnData")
+  expect_true(methods::is(dummy,"HDF5AnnData"))
+})

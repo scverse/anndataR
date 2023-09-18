@@ -24,11 +24,9 @@ Must be one of:
 \item{"InMemoryAnnData": }{Produces \link[anndataR]{InMemoryAnnData}
 (default).}
 \item{"HDF5AnnData": }{Produces \link[anndataR]{HDF5AnnData}.}
-\item{"Seurat": }{Produces \link[SeuratObject]{Seurat}.}
 }}
 
-\item{...}{Additional arguments passed to the generator function.
-See the "Details" section for more information on which parameters.}
+\item{...}{Parameters passed to \code{dummy_list}}
 }
 \value{
 \link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}

@@ -7,15 +7,18 @@
 #' @param output Object type to output, one of "list", "SingleCellExperiment",
 #' or "Seurat"
 #'
-#' @return Object containing the generated dataset as defined by `output`
+#' @returns Object containing the generated dataset as defined by `output`
 #' @export
 #'
 #' @examples
 #' dummy <- dummy_data()
 dummy_data <- function(n_obs = 10L, n_vars = 20L,
                        output = c(
-                         "list", "SingleCellExperiment",
-                         "Seurat"
+                         "list", 
+                         "SingleCellExperiment",
+                         "Seurat",
+                         "InMemoryAnnData",
+                         "HDF5AnnData"
                        )) {
   output <- match.arg(output)
 
@@ -24,7 +27,11 @@ dummy_data <- function(n_obs = 10L, n_vars = 20L,
     "SingleCellExperiment" = dummy_SingleCellExperiment(
       n_obs = n_obs, n_vars = n_vars
     ),
-    "Seurat" = dummy_Seurat(n_obs = n_obs, n_vars = n_vars)
+    "Seurat" = dummy_Seurat(n_obs = n_obs, n_vars = n_vars),
+    "InMemoryAnnData" = dummy_anndata(n_obs = n_obs, n_vars = n_vars,
+                                      output_class = "InMemoryAnnData"),
+    "HDF5AnnData" = dummy_anndata(n_obs = n_obs, n_vars = n_vars, 
+                                  output_class = "HDF5AnnData")
   )
 }
 
@@ -113,7 +120,7 @@ dummy_SingleCellExperiment <- function(...) { #nolint
 #'
 #' @param ... Parameters passed to `dummy_list`
 #'
-#' @return Seurat containing the generated data
+#' @returns Seurat containing the generated data
 dummy_Seurat <- function(...) { #nolint
   if (!requireNamespace("SeuratObject", quietly = TRUE)) {
     stop(
@@ -143,3 +150,52 @@ dummy_Seurat <- function(...) { #nolint
 
   return(seurat)
 }
+
+
+
+#' Dummy anndata
+#'
+#' Generate a dummy dataset as a \link[anndataR]{InMemoryAnnData} or 
+#' \link[anndataR]{HDF5AnnData} object
+#' 
+#' @param output_class Name of the AnnData class. 
+#' Must be one of:
+#' \itemize{
+#' \item{"InMemoryAnnData": }{Produces \link[anndataR]{InMemoryAnnData}
+#'  (default).}
+#' \item{"HDF5AnnData": }{Produces \link[anndataR]{HDF5AnnData}.}
+#' }
+#' 
+#' @param ... Parameters passed to `dummy_list`
+#'
+#' @returns \link[anndataR]{InMemoryAnnData} or 
+#' \link[anndataR]{HDF5AnnData} containing the generated data. 
+dummy_anndata <- function(output_class=c("InMemoryAnnData",
+                                         "HDF5AnnData"),
+                          file=tempfile(),
+                          ...) { #nolint 
+  
+  dummy <- dummy_data(...)
+  output_class <- output_class[1]
+  generator <- get_generator(output_class)
+  if(output_class=="HDF5AnnData"){
+    ad <- generator$new(
+      X = dummy$X,
+      obs = dummy$obs,
+      obs_names = dummy$obs_names,
+      var = dummy$var,
+      var_names = dummy$var_names,
+      file=file
+    )
+  } else {
+    ad <- generator$new(
+      X = dummy$X,
+      obs = dummy$obs,
+      obs_names = dummy$obs_names,
+      var = dummy$var,
+      var_names = dummy$var_names
+    )
+  } 
+  return(ad)
+}
+
