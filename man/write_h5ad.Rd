@@ -19,17 +19,54 @@ write_h5ad(object, path)
 Write an H5AD file
 }
 \examples{
+adata <- AnnData(
+  X = matrix(1:15, 3L, 5L),
+  layers = list(
+    A = matrix(15:1, 3L, 5L),
+    B = matrix(letters[1:15], 3L, 5L)
+  ),
+  obs = data.frame(cell = 1:3),
+  var = data.frame(gene = 1:5),
+  obs_names = LETTERS[1:3],
+  var_names = letters[1:5]
+)
+h5ad_file <- tempfile(fileext = ".h5ad")
+write_h5ad(adata, h5ad_file)
+
 # Write a SingleCellExperiment as a H5AD
 h5ad_file <- tempfile(fileext = ".h5ad")
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-  sce <- dummy_data(output = "SingleCellExperiment")
+  sce <- SingleCellExperiment(
+   assays = list(
+     counts = matrix(1:15, 3L, 5L),
+     A = matrix(15:1, 3L, 5L),
+     B = matrix(letters[1:15], 3L, 5L)
+   ),
+   rowData = data.frame(gene = 1:5),
+   colData = data.frame(cell = 1:3),
+  )
   write_h5ad(sce, h5ad_file)
 }
 
 # Write a Seurat as a H5AD
 h5ad_file <- tempfile(fileext = ".h5ad")
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
-  seurat <- dummy_data(output = "Seurat")
-  write_h5ad(seurat, h5ad_file)
+  counts <- matrix(1:15, 3L, 5L)
+  dimnames(counts) <- list(
+    letters[1:3],
+    LETTERS[1:5]
+  )
+  gene.metadata <- data.frame(
+    row.names = LETTERS[1:5],
+    gene = 1:5
+  )
+  obj <- SeuratObject::CreateSeuratObject(counts, meta.data = gene.metadata)
+  cell.metadata <- data.frame(
+    row.names = letters[1:3],
+    cell = 1:3
+  )
+  obj <- SeuratObject::AddMetaData(obj, cell.metadata)
+
+  write_h5ad(obj, h5ad_file)
 }
 }

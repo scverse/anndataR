@@ -8,7 +8,6 @@
 #' or "Seurat"
 #'
 #' @return Object containing the generated dataset as defined by `output`
-#' @export
 #'
 #' @examples
 #' dummy <- dummy_data()
