@@ -18,17 +18,17 @@ This package allows users to work with `.h5ad` files, access various slots in th
 
 Check out `?anndataR` for a full list of the functions provided by this package.
 
-This package provides an abstract interface for AnnData objects. This abstract interface models its Python counterpart closely, and stores a data matrix `X` and annotations corresponding to observations (`obs`, `obsm`, `obsp`) and variables (`var`, `varm`, `varp`) and unstructured metadata `uns`.
+This package provides an abstract interface for `AnnData` objects. This abstract interface models its Python counterpart closely, and stores a data matrix `X` and annotations corresponding to observations (`obs`, `obsm`, `obsp`) and variables (`var`, `varm`, `varp`) and unstructured metadata `uns`.
 
 
 This abstract interface is implemented by different backends. Currently, the following backends are implemented:
 
-1. InMemoryAnnData
+1. `InMemoryAnnData`
 
-2. HDF5AnnData
+2. `HDF5AnnData`
 
-The InMemoryAnnData backend allows you to construct an AnnData object in memory.
-The HDF5AnnData backend allows you to read in an AnnData object from an `.h5ad` file.
+The `InMemoryAnnData` backend allows you to construct an `AnnData` object in memory.
+The `HDF5AnnData` backend allows you to read in an `AnnData` object from an `.h5ad` file.
 
 Here is an example of how to read in an `.h5ad` file.
 
@@ -36,13 +36,13 @@ Here is an example of how to read in an `.h5ad` file.
 library(anndataR)
 ```
 
-```{r show_anndata_hdf5, eval = FALSE}
+```{r show_anndata_hdf5}
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 adata <- read_h5ad(file, to = "InMemoryAnnData")
 ```
 
-The contents can be accessed as well.
-```{r access_hdf5, eval = FALSE}
+The contents can be accessed as well:
+```{r access_hdf5}
 X <- adata$X
 layers <- adata$layers
 obs <- adata$obs
@@ -67,7 +67,7 @@ adata <- AnnData(
 adata
 ```
 
-The contents can be accessed as well.
+The contents can be accessed as well:
 ```{r access_construct}
 X <- adata$X
 layers <- adata$layers
