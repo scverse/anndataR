@@ -112,6 +112,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         if (is.null(private$.obsm)) {
           private$.obsm <- read_h5ad_element(private$.h5obj, "obsm")
         }
+        private$.obsm
       } else {
         # TODO: validate obsm
         write_h5ad_element(value, private$.h5obj, "/obsm")
@@ -123,6 +124,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         if (is.null(private$.varm)) {
           private$.varm <- read_h5ad_element(private$.h5obj, "varm")
         }
+        private$.varm
       } else {
         # TODO: validate varm
         write_h5ad_element(value, private$.h5obj, "/varm")

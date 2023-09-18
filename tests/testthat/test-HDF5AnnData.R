@@ -27,6 +27,24 @@ test_that("reading layers works", {
   )
 })
 
+test_that("reading obsm works", {
+  obsm <- adata$obsm
+  expect_true(is.list(obsm), "list")
+  expect_equal(
+    names(obsm),
+    c("X_pca", "X_umap")
+  )
+})
+
+test_that("reading varm works", {
+  varm <- adata$varm
+  expect_true(is.list(varm), "list")
+  expect_equal(
+    names(varm),
+    c("PCs")
+  )
+})
+
 # trackstatus: class=HDF5AnnData, feature=test_get_obs, status=wip
 test_that("reading obs works", {
   obs <- adata$obs

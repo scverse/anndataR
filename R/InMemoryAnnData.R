@@ -216,6 +216,8 @@ to_InMemoryAnnData <- function(adata) { # nolint
     var = adata$var,
     obs_names = adata$obs_names,
     var_names = adata$var_names,
-    layers = adata$layers
+    layers = adata$layers,
+    obsm = adata$obsm,
+    varm = adata$varm
   )
 }
