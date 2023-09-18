@@ -30,7 +30,7 @@ See the "Details" section for more information on which parameters}
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
 }
 \examples{
-ad <- InMemoryAnnData$new(
+ad <- AnnData(
   X = matrix(1:5, 3L, 5L),
   obs = data.frame(cell = 1:3),
   obs_names = letters[1:3],

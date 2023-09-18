@@ -259,7 +259,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' @export
 #'
 #' @examples
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(5:1, 3L, 5L),
