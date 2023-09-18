@@ -57,20 +57,24 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
-      x_info <- if (!is.null(self$X)) {
-        class(self$X)[[1]]
-      } else {
-        NULL
+      
+      cat("AnnData object with n_obs × n_vars = ", self$n_obs(), " × ", self$n_vars(), "\n", sep="")
+      
+      for (attribute in c(
+        "obs",
+        "var",
+        "uns",
+        "obsm",
+        "varm",
+        "layers",
+        "obsp",
+        "varp"
+      )){
+        attr_key <- paste0(attribute, "_keys")
+        if (!is.null(self[[attr_key]])){
+          cat(pretty_print(attribute, self[[attr_key]]()), "\n", sep = "")
+        }
       }
-      cat(
-        "class: ", class(self)[[1]], "\n",
-        "dim: ", self$n_obs(), " obs x ", self$n_vars(), " var\n",
-        "X: ", x_info, "\n",
-        pretty_print("layers", self$layers_keys()), "\n",
-        pretty_print("obs", self$obs_keys()), "\n",
-        pretty_print("var", self$var_keys()), "\n",
-        sep = ""
-      )
     },
 
     #' @description Dimensions (observations x variables) of the AnnData object.
