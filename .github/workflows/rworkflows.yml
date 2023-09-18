@@ -3,9 +3,11 @@ name: rworkflows
   push:
     branches: 
     - main 
+    - rworkflows
   pull_request:
     branches:
     - main
+    - rworkflows
 jobs:
   rworkflows:
     permissions:
