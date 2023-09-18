@@ -43,7 +43,7 @@ if (interactive()) {
   ## useful when interacting with the SingleCellExperiment !
   library(SingleCellExperiment)
 }
-ad <- InMemoryAnnData$new(
+ad <- AnnData(
   X = matrix(1:15, 3L, 5L),
   layers = list(
     A = matrix(15:1, 3L, 5L),

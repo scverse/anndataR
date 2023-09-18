@@ -7,6 +7,8 @@
 #' @param name Name of the element within the H5AD file
 #' @param ... Additional arguments passed to writing functions
 #'
+#' @noRd
+#'
 #' @details
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
@@ -66,6 +68,8 @@ write_h5ad_element <- function(value, file, name, ...) { # nolint
 #'
 #' Write H5AD encoding attributes to an element in an H5AD file
 #'
+#' @noRd
+#'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param encoding The encoding type to set
@@ -117,6 +121,8 @@ write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
 #'
 #' Write a sparse array to an H5AD file
 #'
+#' @noRd
+#'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
@@ -164,6 +170,8 @@ write_h5ad_sparse_array <- function(value, file, name, version = "0.1.0") {
 #'
 #' Write a nullable boolean to an H5AD file
 #'
+#' @noRd
+#'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
@@ -183,6 +191,8 @@ write_h5ad_nullable_boolean <- function(value, file, name, version = "0.1.0") {
 #' Write H5AD nullable integer
 #'
 #' Write a nullable integer to an H5AD file
+#'
+#' @noRd
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -204,6 +214,8 @@ write_h5ad_nullable_integer <- function(value, file, name, version = "0.1.0") {
 #'
 #' Write a string array to an H5AD file
 #'
+#' @noRd
+#'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
@@ -224,6 +236,8 @@ write_h5ad_string_array <- function(value, file, name, version = "0.2.0") {
 #'
 #' Write a categorical to an H5AD file
 #'
+#' @noRd
+#'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
@@ -240,6 +254,8 @@ write_h5ad_categorical <- function(value, file, name, version = "0.2.0") {
 #' Write H5AD string scalar
 #'
 #' Write a string scalar to an H5AD file
+#'
+#' @noRd
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -263,6 +279,8 @@ write_h5ad_string_scalar <- function(value, file, name, version = "0.2.0") {
 #'
 #' Write a numeric scalar to an H5AD file
 #'
+#' @noRd
+#'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
@@ -278,6 +296,8 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
 #' Write H5AD mapping
 #'
 #' Write a mapping to an H5AD file
+#'
+#' @noRd
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -297,6 +317,8 @@ write_h5ad_mapping <- function(value, file, name, version = "0.1.0") {
 #' Write H5AD data frame
 #'
 #' Write a data frame to an H5AD file
+#'
+#' @noRd
 #'
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -356,6 +378,8 @@ write_h5ad_data_frame <- function(value, file, name, index = NULL,
 #'
 #' Write an for a data frame to an H5AD file
 #'
+#' @noRd
+#'
 #' @param value Value to write. Must be a vector to the same length as the data
 #' frame.
 #' @param file Path to a H5AD file or an open H5AD handle
@@ -388,6 +412,8 @@ write_h5ad_data_frame_index <- function(value, file, name, index_name) {
 #' Write empty H5AD
 #'
 #' Write a new empty H5AD file
+#'
+#' @noRd
 #'
 #' @param file Path to the H5AD file to write
 #' @param obs_names Vector containing observation names
@@ -424,6 +450,8 @@ write_empty_h5ad <- function(file, obs_names, var_names, version = "0.1.0") {
 #' HDF5 path exists
 #'
 #' Check that a path in HDF5 exists
+#'
+#' @noRd
 #'
 #' @param file Path to a HDF5 file
 #' @param target_path The path within the file to test for

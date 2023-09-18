@@ -461,6 +461,6 @@ read_h5ad <- function(path, to = c("SingleCellExperiment", "Seurat", "HDF5AnnDat
     "SingleCellExperiment" = to_SingleCellExperiment(adata),
     "Seurat" = to_Seurat(adata),
     "HDF5AnnData" = adata,
-    "InMemoryAnnData" = adata$to_InMemoryAnnData()
+    "InMemoryAnnData" = to_InMemoryAnnData(adata)
   )
 }

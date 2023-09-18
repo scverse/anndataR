@@ -7,7 +7,7 @@
 #'
 #' @examples
 #' ## complete example
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   X = matrix(1:15, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(5:1, 3L, 5L),
@@ -21,7 +21,7 @@
 #' ad
 #'
 #' ## minimum example
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   obs_names = letters[1:10],
 #'   var_names = LETTERS[1:5]
 #' )
@@ -171,7 +171,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #' @export
 #'
 #' @examples
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(5:1, 3L, 5L),
@@ -182,8 +182,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #'   obs_names = LETTERS[1:3],
 #'   var_names = letters[1:5]
 #' )
-#' to_InMemory(ad)
-to_InMemory <- function(adata) { # nolint
+#' to_InMemoryAnnData(ad)
+to_InMemoryAnnData <- function(adata) { # nolint
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
