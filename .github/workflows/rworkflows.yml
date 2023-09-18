@@ -1,0 +1,58 @@
+name: rworkflows
+'on':
+  push:
+    branches: 
+    - main 
+  pull_request:
+    branches:
+    - main
+jobs:
+  rworkflows:
+    permissions:
+      contents: write
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    container: ${{ matrix.config.cont }}
+    strategy:
+      fail-fast: ${{ false }}
+      matrix:
+        config:
+        - os: ubuntu-latest
+          bioc: devel
+          r: auto
+          cont: bioconductor/bioconductor_docker:devel
+          rspm: https://packagemanager.rstudio.com/cran/__linux__/latest/release
+        - os: ubuntu-latest
+          bioc: release
+          r: auto
+          cont: bioconductor/bioconductor_docker:release 
+          http-user-agent: 'release'
+        - os: macOS-latest
+          bioc: release
+          r: auto
+          cont: ~
+          rspm: ~
+        - os: windows-latest
+          bioc: release
+          r: auto
+          cont: ~
+          rspm: ~
+    steps:
+    - uses: neurogenomics/rworkflows@master
+      with:
+        run_bioccheck: ${{ true }}
+        run_rcmdcheck: ${{ true }}
+        as_cran: ${{ false }}
+        run_vignettes: ${{ true }}
+        has_testthat: ${{ true }}
+        run_covr: ${{ true }}
+        run_pkgdown: ${{ true }}
+        has_runit: ${{ false }}
+        has_latex: ${{ false }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run_docker: ${{ false }}
+        docker_user: username
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        runner_os: ${{ runner.os }}
+        cache_version: cache-v1
+        enable_act: ${{ false }}

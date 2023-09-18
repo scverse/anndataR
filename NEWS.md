@@ -1,4 +1,14 @@
+# anndataR 0.99.0
+
+## New features
+
+- New function `setup_conda` automatically installs miniconda 
+  and sets up conda env: #97
+- Change version to Bioc-recommended devel version: 0.99.0
+
 # anndataR 0.1.0
+
+## New features
 
 Initial release of anndataR, providing support for working with AnnData objects in R.
 
