@@ -1,12 +1,12 @@
 test_that("to_SingleCellExperiment() works", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = matrix(1:5, 3L, 5L),
     obs = data.frame(cell = 1:3),
     var = data.frame(gene = 1:5),
     obs_names = LETTERS[1:3],
     var_names = letters[1:5]
   )
-  ad0 <- InMemoryAnnData$new(
+  ad0 <- AnnData(
     obs_names = LETTERS[1:6],
     var_names = letters[1:8]
   )
