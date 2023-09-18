@@ -33,10 +33,10 @@ adata <- AnnData(
 h5ad_file <- tempfile(fileext = ".h5ad")
 write_h5ad(adata, h5ad_file)
 
-# Write a SingleCellExperiment as a H5AD
-h5ad_file <- tempfile(fileext = ".h5ad")
+# Write a SingleCellExperiment as an H5AD
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-  sce <- SingleCellExperiment(
+  h5ad_file <- tempfile(fileext = ".h5ad")
+  sce <- SingleCellExperiment::SingleCellExperiment(
     assays = list(
       counts = matrix(1:15, 3L, 5L),
       A = matrix(15:1, 3L, 5L),
@@ -49,8 +49,8 @@ if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
 }
 
 # Write a Seurat as a H5AD
-h5ad_file <- tempfile(fileext = ".h5ad")
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
+  h5ad_file <- tempfile(fileext = ".h5ad")
   counts <- matrix(1:15, 3L, 5L)
   dimnames(counts) <- list(
     letters[1:3],
