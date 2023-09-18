@@ -84,6 +84,11 @@ sce <- adata$to_SingleCellExperiment()
 sce
 ```
 
+```{r include=FALSE}
+# load SeuratObject first to avoid warnings related to seurat itsef
+library(SeuratObject)
+```
+
 Convert the AnnData object to a Seurat object:
 ```{r}
 obj <- adata$to_Seurat()

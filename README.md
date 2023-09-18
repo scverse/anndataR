@@ -118,15 +118,6 @@ Convert the AnnData object to a Seurat object:
 
 ``` r
 obj <- adata$to_Seurat()
-#> Loading required namespace: SeuratObject
-#> The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
-#> which was just loaded, will retire in October 2023.
-#> Please refer to R-spatial evolution reports for details, especially
-#> https://r-spatial.org/r/2023/05/15/evolution4.html.
-#> It may be desirable to make the sf package available;
-#> package maintainers should consider adding sf to Suggests:.
-#> The sp package is now running under evolution status 2
-#>      (status 2 uses the sf package in place of rgdal)
 #> Warning: Keys should be one or more alphanumeric characters followed by an
 #> underscore, setting key from rna to rna_
 #> Warning: Keys should be one or more alphanumeric characters followed by an
