@@ -2,6 +2,8 @@
 
 ## New features
 
+- Add `rworkflows` CI.
+- Update *lint.yaml* to use `actions/checkout@v4` (which has less issues).
 - New function `setup_conda` automatically installs miniconda 
   and sets up conda env: #97
 - Change version to Bioc-recommended devel version: 0.99.0
