@@ -50,24 +50,42 @@ devtools::install_github("scverse/anndataR")
 
 ## Example
 
-Here's a quick example of how to use `{anndataR}`:
+Here's a quick example of how to use `{anndataR}`. First, we download an h5ad file.
 
-```r
+```{r warning=FALSE}
 library(anndataR)
 
-download.file("https://github.com/chanzuckerberg/cellxgene/raw/main/example-dataset/pbmc3k.h5ad", "pbmc3k.h5ad")
+h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
+```
 
-# Read an h5ad file
-adata <- read_h5ad("pbmc3k.h5ad")
+Read an h5ad file:
 
-# Access AnnData slots
-adata$X
-adata$obs
-adata$var
+```{r warning=FALSE}
+adata <- read_h5ad(h5ad_path, to = "InMemoryAnnData")
+```
 
-# Convert the AnnData object to a SingleCellExperiment object
+View structure:
+```{r}
+adata
+```
+
+Access AnnData slots:
+```{r}
+dim(adata$X)
+adata$obs[1:5, 1:6]
+adata$var[1:5, 1:6]
+```
+
+## Interoperability
+
+Convert the AnnData object to a SingleCellExperiment object:
+```{r}
 sce <- adata$to_SingleCellExperiment()
+sce
+```
 
-# Convert the AnnData object to a Seurat object
-sce <- adata$to_Seurat()
+Convert the AnnData object to a Seurat object:
+```{r}
+obj <- adata$to_Seurat()
+obj
 ```
