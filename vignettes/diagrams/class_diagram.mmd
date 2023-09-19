@@ -1,0 +1,51 @@
+
+classDiagram
+  class AbstractAnnData {
+    *X: Matrix
+    *layers: List[Matrix]
+    *obs: DataFrame
+    *var: DataFrame
+    *obsp: List[Matrix]
+    *varp: List[Matrix]
+    *obsm: List[Matrix]
+    *varm: List[Matrix]
+    *uns: List
+    *n_obs: int
+    *n_vars: int
+    *obs_names: Array[String]
+    *var_names: Array[String]
+    *subset(...): AbstractAnnData
+    *write_h5ad(): Unit
+
+    to_SingleCellExperiment(): SingleCellExperiment
+    to_Seurat(): Seurat
+
+    to_HDF5AnnData(): HDF5AnnData
+    to_ZarrAnnData(): ZarrAnnData
+    to_InMemoryAnnData(): InMemoryAnnData
+  }
+
+  AbstractAnnData <|-- HDF5AnnData
+  class HDF5AnnData {
+    init(h5file): HDF5AnnData
+  }
+
+  AbstractAnnData <|-- ZarrAnnData
+  class ZarrAnnData {
+    init(zarrFile): ZarrAnnData
+  }
+
+  AbstractAnnData <|-- InMemoryAnnData
+  class InMemoryAnnData {
+    init(X, obs, var, shape, ...): InMemoryAnnData
+  }
+
+  AbstractAnnData <|-- ReticulateAnnData
+  class ReticulateAnnData {
+    init(pyobj): ReticulateAnnData
+  }
+
+  class anndataR {
+    read_h5ad(path, backend): Either[AbstractAnnData, SingleCellExperiment, Seurat]
+  }
+  anndataR --> AbstractAnnData

@@ -9,22 +9,18 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/anndataR.png)](https://CRAN.R-project.org/package=anndataR)
 <!-- badges: end -->
 
-`{anndataR}` is an R package that brings the power and flexibility of
-AnnData to the R ecosystem, allowing you to effortlessly manipulate and
-analyze your single-cell data. This package lets you work with backed
-h5ad and zarr files, directly access various slots (e.g. X, obs, var,
-obsm, obsp), or convert the data into SingleCellExperiment and Seurat
-objects.
+`{anndataR}` aims to make the AnnData format a first-class citizen in
+the R ecosystem, and to make it easy to work with AnnData files in R,
+either directly or by converting it to a SingleCellExperiment or Seurat
+object.
 
-## Design
+Feature list:
 
-This package was initially created at the [scverse 2023-04
-hackathon](https://scverse.org/events/2023_04_hackathon/) in Heidelberg.
-
-When fully implemented, it will be a complete replacement for
-[theislab/zellkonverter](https://github.com/theislab/zellkonverter),
-[mtmorgan/h5ad](github.com/mtmorgan/h5ad/) and
-[dynverse/anndata](https://github.com/dynverse/anndata).
+- Provide an `R6` class to work with AnnData objects in R (either
+  in-memory or on-disk).
+- Read/write `*.h5ad` files natively
+- Convert to/from `SingleCellExperiment` objects
+- Convert to/from `Seurat` objects
 
 ## Installation
 
@@ -32,6 +28,26 @@ You can install the development version of `{anndataR}` like so:
 
 ``` r
 devtools::install_github("scverse/anndataR")
+```
+
+You might need to install suggested dependencies manually, depending on
+the task you want to perform.
+
+- To read/write \*.h5ad files, you need to install
+  [rhdf5](https://bioconductor.org/packages/release/bioc/html/rhdf5.html):  
+  `BiocManager::install("rhdf5")`
+- To convert to/from `SingleCellExperiment` objects, you need to install
+  [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
+  `BiocManager::install("SingleCellExperiment")`
+- To convert to/from `Seurat` objects, you need to install
+  [SeuratObject](https://cran.r-project.org/package=SeuratObject):  
+  `install.packages("SeuratObject")`
+
+You can also install all suggested dependencies at once (though note
+that this might take a while to run):
+
+``` r
+devtools::install_github("scverse/anndataR", dependencies = TRUE)
 ```
 
 ## Example

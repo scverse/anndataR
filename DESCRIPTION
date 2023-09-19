@@ -54,6 +54,7 @@ Imports:
     R6
 Suggests:
     anndata,
+    BiocStyle,
     knitr,
     reticulate,
     rhdf5,
@@ -72,3 +73,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 RoxygenNote: 7.2.3
+biocViews: SingleCell, DataImport, DataRepresentation

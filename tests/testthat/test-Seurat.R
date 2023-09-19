@@ -14,8 +14,9 @@ test_that("to_Seurat with inmemoryanndata", {
     var_names = LETTERS[1:10]
   )
 
+  # TODO: remove suppressWarnings when to_Seurat gets updated
   seu <- suppressWarnings(ad$to_Seurat())
-  seu0 <- ad0$to_Seurat()
+  seu0 <- suppressWarnings(ad0$to_Seurat())
 
   expect_equal(nrow(seu), 20)
   expect_equal(ncol(seu), 10)

@@ -1,8 +1,8 @@
 ---
-title: "Features"
+title: "Design"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Features}
+  %\VignetteIndexEntry{Design}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,6 +14,40 @@ knitr::opts_chunk$set(
   comment = ""
 )
 ```
+
+
+`{anndataR}` is designed to offer the combined functionality of the following packages:
+
+* [theislab/zellkonverter](https://github.com/theislab/zellkonverter): Convert AnnData files to/from `SingleCellExperiment` objects.
+* [mtmorgan/h5ad](https://github.com/mtmorgan/h5ad/): Read/write `*.h5ad` files natively using `rhdf5`.
+* [dynverse/anndata](https://github.com/dynverse/anndata): An R implementation of the AnnData data structures, uses `reticulate` to read/write `*.h5ad` files.
+
+Ideally, this package will be a complete replacement for all of these packages, and will be the go-to package for working with AnnData files in R.
+
+## Desired feature list
+
+* Provide an `R6` class to work with AnnData objects in R (either in-memory or on-disk).
+* Read/write `*.h5ad` files natively
+* Convert to/from `SingleCellExperiment` objects
+* Convert to/from `Seurat` objects
+
+## Class diagram
+
+Here is a diagram of the main R6 classes provided by the package:
+
+![](diagrams/class_diagram.svg)
+
+Notation:
+
+  - `X: Matrix` - variable `X` is of type `Matrix`
+  - `*X: Matrix` - variable `X` is abstract
+  - `to_SingleCellExperiment(): SingleCellExperiment` - function `to_SingleCellExperiment` returns object of type `SingleCellExperiment`
+  - `*to_SingleCellExperiment()` - function `to_SingleCellExperiment` is abstract
+
+
+## Feature tracking
+
+The following tables show the status of the implementation of each feature in the package:
 
 ```{r include=FALSE}
 library(tibble)
@@ -70,6 +104,16 @@ status <- bind_rows(
   status_lines_proc,
   status_lines_required %>% anti_join(status_lines_proc, by = c("class", "prefix", "slot"))
 )
+
+# check duplicated status
+status_dup <- status %>%
+  group_by(class, prefix, slot) %>%
+  filter(n() > 1) %>%
+  ungroup() %>%
+  mutate(str = paste0(source_file, "#", line_number, " -- ", class, " ", prefix, slot))
+if (nrow(status_dup) > 0) {
+  stop("Duplicated status lines found:\n", paste(status_dup$str, collapse = "\n"))
+}
 
 # create formatted data frame for printing
 status_formatted <-

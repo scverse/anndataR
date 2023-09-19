@@ -10,16 +10,20 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     .n_vars = NULL,
     .obs_names = NULL,
     .var_names = NULL,
+    .obsm = NULL,
+    .varm = NULL,
+    .obsp = NULL,
+    .varp = NULL,
     .compression = NULL
   ),
   active = list(
     #' @field X The X slot
     X = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_X, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_X, status=done
         read_h5ad_element(private$.h5obj, "/X")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_X, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_X, status=done
         value <- private$.validate_matrix(value, "X")
         write_h5ad_element(value, private$.h5obj, "/X", private$.compression)
       }
@@ -29,21 +33,98 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   `obs` and `var`.
     layers = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_layers, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
         read_h5ad_element(private$.h5obj, "layers")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_layers, status=wip
-        value <- private$.validate_layers(value)
+        # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
+        value <- private$.validate_aligned_mapping(
+          value,
+          "layers",
+          c(self$n_obs(), self$n_vars()),
+          expected_rownames = rownames(self),
+          expected_colnames = colnames(self)
+        )
         write_h5ad_element(value, private$.h5obj, "/layers", private$.compression)
       }
     },
+    #' @field obsm The obsm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `obs`.
+    obsm = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
+        read_h5ad_element(private$.h5obj, "obsm")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
+        value <- private$.validate_aligned_mapping(
+          value,
+          "obsm",
+          c(self$n_obs()),
+          expected_rownames = rownames(self)
+        )
+        write_h5ad_element(value, private$.h5obj, "/obsm")
+      }
+    },
+    #' @field varm The varm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `var`.
+    varm = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
+        read_h5ad_element(private$.h5obj, "varm")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
+        value <- private$.validate_aligned_mapping(
+          value,
+          "varm",
+          c(self$n_vars()),
+          expected_rownames = colnames(self)
+        )
+        write_h5ad_element(value, private$.h5obj, "/varm")
+      }
+    },
+    #' @field obsp The obsp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `obs`.
+    obsp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
+        read_h5ad_element(private$.h5obj, "obsp")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
+        value <- private$.validate_aligned_mapping(
+          value,
+          "obsp",
+          c(self$n_obs(), self$n_obs()),
+          expected_rownames = rownames(self),
+          expected_colnames = rownames(self)
+        )
+        write_h5ad_element(value, private$.h5obj, "/obsp")
+      }
+    },
+    #' @field varp The varp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `var`.
+    varp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
+        read_h5ad_element(private$.h5obj, "varp")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
+        value <- private$.validate_aligned_mapping(
+          value,
+          "varp",
+          c(self$n_vars(), self$n_vars()),
+          expected_rownames = colnames(self),
+          expected_colnames = colnames(self)
+        )
+        write_h5ad_element(value, private$.h5obj, "/varp")
+      }
+    },
+
     #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_obs, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
         read_h5ad_element(private$.h5obj, "/obs", include_index = FALSE)
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
         write_h5ad_element(
           value,
@@ -57,10 +138,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field var The var slot
     var = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_var, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_var, status=done
         read_h5ad_element(private$.h5obj, "/var", include_index = FALSE)
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
         write_h5ad_element(
           value,
@@ -72,9 +153,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
-      # TODO: directly write to and read from /obs/_index
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
         # obs names are cached to avoid reading all of obs whenever they are
         # accessed
         if (is.null(private$.obs_names)) {
@@ -82,7 +162,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         }
         private$.obs_names
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
         value <- private$.validate_obsvar_names(value, "obs")
         write_h5ad_data_frame_index(value, private$.h5obj, "obs", private$.compression, "_index")
         private$.obs_names <- value
@@ -92,7 +172,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     var_names = function(value) {
       # TODO: directly write to and read from /var/_index
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_var_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
         # var names are cached to avoid reading all of var whenever they are
         # accessed
         if (is.null(private$.var_names)) {
@@ -100,7 +180,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         }
         private$.var_names
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_var_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
         value <- private$.validate_obsvar_names(value, "var")
         write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression, "_index")
         private$.var_names <- value
@@ -131,6 +211,18 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing
     #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
     #'   automatically be generated.
+    #' @param obsm The obsm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_obs` rows and an arbitrary number of columns.
+    #' @param varm The varm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_vars` rows and an arbitrary number of columns.
+    #' @param obsp The obsp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_obs`.
+    #' @param varp The varp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_vars`.
     #' @param compression The compression algorithm to use when writing the
     #'  HDF5 file. Can be one of `"GZIP"`, `"LZF"` or `"NONE"`. Defaults to
     #' `"NONE"`.
@@ -142,8 +234,18 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' must be specified. In both cases, any additional slots provided will be
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
-    initialize = function(file, obs_names = NULL, var_names = NULL, X = NULL,
-                          obs = NULL, var = NULL, layers = NULL, compression = NULL) {
+    initialize = function(file,
+                          obs_names = NULL,
+                          var_names = NULL,
+                          X = NULL,
+                          obs = NULL,
+                          var = NULL,
+                          layers = NULL,
+                          obsm = NULL,
+                          varm = NULL,
+                          obsp = NULL,
+                          varp = NULL,
+                          compression = NULL) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
@@ -213,6 +315,22 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (!is.null(layers)) {
         self$layers <- layers
       }
+
+      if (!is.null(obsm)) {
+        self$obsm <- obsm
+      }
+
+      if (!is.null(varm)) {
+        self$varm <- varm
+      }
+
+      if (!is.null(obsp)) {
+        self$obsp <- obsp
+      }
+
+      if (!is.null(varp)) {
+        self$varp <- varp
+      }
     },
 
     #' @description Number of observations in the AnnData object
@@ -240,6 +358,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #'
 #' @param adata An AnnData object to be converted to HDF5AnnData.
 #' @param file The filename (character) of the `.h5ad` file.
+#' @param ... Arguments passed onto the initialization of HDF5AnnData.
 #'
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
@@ -270,9 +389,13 @@ to_HDF5AnnData <- function(adata, file, ...) { # nolint
     X = adata$X,
     obs = adata$obs,
     var = adata$var,
+    obsm = adata$obsm,
+    varm = adata$varm,
     obs_names = adata$obs_names,
     var_names = adata$var_names,
     layers = adata$layers,
+    obsp = adata$obsp,
+    varp = adata$varp,
     ...
   )
 }

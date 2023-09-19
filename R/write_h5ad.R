@@ -30,7 +30,7 @@
 #'   ncells <- 100
 #'   counts <- matrix(rpois(20000, 5), ncol = ncells)
 #'   logcounts <- log2(counts + 1)
-#'   #
+#'
 #'   pca <- matrix(runif(ncells * 5), ncells)
 #'   tsne <- matrix(rnorm(ncells * 2), ncells)
 #'
