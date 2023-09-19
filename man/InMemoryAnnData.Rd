@@ -60,6 +60,18 @@ used to identify each row of \code{var} and to act as an index into
 the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
+
+\item{\code{obsm}}{The obsm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{obs}.}
+
+\item{\code{varm}}{The varm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{var}.}
+
+\item{\code{obsp}}{The obsp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{obs}.}
+
+\item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{var}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -137,6 +149,22 @@ be generated.}
 \item{\code{layers}}{Either \code{NULL} or a named list, where each element
 is an observation × variable matrix with dimensions consistent
 with \code{obs} and \code{var}.}
+
+\item{\code{obsm}}{The obsm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_obs} rows and an arbitrary number of columns.}
+
+\item{\code{varm}}{The varm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_vars} rows and an arbitrary number of columns.}
+
+\item{\code{obsp}}{The obsp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_obs}.}
+
+\item{\code{varp}}{The varp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_vars}.}
 }
 \if{html}{\out{</div>}}
 }

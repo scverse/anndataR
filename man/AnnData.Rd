@@ -42,6 +42,22 @@ automatically be generated.}
 \item{layers}{Either \code{NULL} or a named list, where each element is an
 observation × variable matrix with dimensions consistent with \code{obs} and
 \code{var}.}
+
+\item{obsm}{The obsm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_obs} rows and an arbitrary number of columns.}
+
+\item{varm}{The varm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_vars} rows and an arbitrary number of columns.}
+
+\item{obsp}{The obsp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_obs}.}
+
+\item{varp}{The varp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_vars}.}
 }
 \description{
 This class is used to represent an AnnData object in memory.

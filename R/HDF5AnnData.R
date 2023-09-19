@@ -40,46 +40,50 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         write_h5ad_element(value, private$.h5obj, "/layers")
       }
     },
-    #' @field obsm
+    #' @field obsm The obsm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `obs`.
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
         read_h5ad_element(private$.h5obj, "obsm")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obsm, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
         value <- private$.validate_aligned_mapping(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
         write_h5ad_element(value, private$.h5obj, "/obsm")
       }
     },
-    #' @field varm
+    #' @field varm The varm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `var`.
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
         read_h5ad_element(private$.h5obj, "varm")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_varm, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
         value <- private$.validate_aligned_mapping(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
         write_h5ad_element(value, private$.h5obj, "/varm")
       }
     },
-    #' @field obsp
+    #' @field obsp The obsp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `obs`.
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
         read_h5ad_element(private$.h5obj, "obsp")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obsp, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
         value <- private$.validate_aligned_mapping(value, "obsp", c(self$n_obs(), self$n_obs()), expected_rownames = rownames(self), expected_colnames = rownames(self))
         write_h5ad_element(value, private$.h5obj, "/obsp")
       }
     },
-    #' @field varp
+    #' @field varp The varp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `var`.
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
         read_h5ad_element(private$.h5obj, "varp")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_varp, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
         value <- private$.validate_aligned_mapping(value, "varp", c(self$n_vars(), self$n_vars()), expected_rownames = colnames(self), expected_colnames = colnames(self))
         write_h5ad_element(value, private$.h5obj, "/varp")
       }
@@ -177,6 +181,18 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing
     #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
     #'   automatically be generated.
+    #' @param obsm The obsm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_obs` rows and an arbitrary number of columns.
+    #' @param varm The varm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_vars` rows and an arbitrary number of columns.
+    #' @param obsp The obsp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_obs`.
+    #' @param varp The varp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_vars`.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
