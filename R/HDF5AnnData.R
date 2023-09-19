@@ -9,11 +9,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     .n_obs = NULL,
     .n_vars = NULL,
     .obs_names = NULL,
-    .var_names = NULL,
-    .obsm = NULL,
-    .varm = NULL,
-    .obsp = NULL,
-    .varp = NULL
+    .var_names = NULL
   ),
   active = list(
     #' @field X The X slot
@@ -183,6 +179,17 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         write_h5ad_data_frame_index(value, private$.h5obj, "var", "_index")
         private$.var_names <- value
       }
+    },
+    #' @field uns The uns slot. Must be `NULL` or a named list.
+    uns = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
+        read_h5ad_element(private$.h5obj, "uns")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
+        value <- private$.validate_named_list(value, "uns")
+        write_h5ad_element(value, private$.h5obj, "/uns")
+      }
     }
   ),
   public = list(
@@ -221,6 +228,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param varp The varp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_vars`.
+    #' @param uns The uns slot is used to store unstructured annotation. It must
+    #'   be either `NULL` or a named list.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
@@ -239,7 +248,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
                           obsm = NULL,
                           varm = NULL,
                           obsp = NULL,
-                          varp = NULL) {
+                          varp = NULL,
+                          uns = NULL) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
@@ -318,6 +328,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (!is.null(varp)) {
         self$varp <- varp
       }
+
+      if (!is.null(uns)) {
+        self$uns <- uns
+      }
     },
 
     #' @description Number of observations in the AnnData object
@@ -381,6 +395,7 @@ to_HDF5AnnData <- function(adata, file) { # nolint
     var_names = adata$var_names,
     layers = adata$layers,
     obsp = adata$obsp,
-    varp = adata$varp
+    varp = adata$varp,
+    uns = adata$uns
   )
 }
