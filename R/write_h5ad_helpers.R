@@ -13,7 +13,7 @@
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-write_h5ad_element <- function(value, file, name, compression = "NONE",...) { # nolint
+write_h5ad_element <- function(value, file, name, compression = "NONE", ...) { # nolint
 
   # Delete the path if it already exists
   if (hdf5_path_exists(file, name)) {
@@ -109,7 +109,7 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
     # Transpose the value because writing with native=TRUE does not
     # seem to work as expected
     value <- t(value)
-  } 
+  }
 
   hdf5_write_compressed(file, name, value, compression)
 
@@ -181,7 +181,7 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   rhdf5::h5createGroup(file, name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
-  
+
   hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
   hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
 
@@ -204,7 +204,7 @@ write_h5ad_nullable_integer <- function(value, file, name, compression, version 
   rhdf5::h5createGroup(file, name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- -1L
-  
+
   hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
   hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
 
@@ -228,7 +228,8 @@ write_h5ad_string_array <- function(value, file, name, compression, version = "0
     file,
     name,
     variableLengthString = TRUE,
-    encoding = "UTF-8")
+    encoding = "UTF-8"
+  )
 
   write_h5ad_encoding(file, name, "string-array", version)
 }
@@ -270,7 +271,7 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
     name,
     variableLengthString = TRUE,
     encoding = "UTF-8"
-    )
+  )
 
   # Write attributes
   write_h5ad_encoding(file, name, "string", version)
@@ -288,11 +289,11 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # Write scalar
-  
+
   # TODO: figure out whether or not a scalar can be compressed? Are there errors?
   # rhdf5::h5write(value, file, name)
   hdf5_write_compressed(file, name, value, compression)
-  
+
 
   # Write attributes
   write_h5ad_encoding(file, name, "numeric", version)
@@ -403,7 +404,7 @@ write_h5ad_data_frame_index <- function(value, file, name, compression, index_na
 
   # Write index columns
   write_h5ad_element(value, file, paste0(name, "/", index_name))
-  
+
   # Write data frame index attribute
   h5file <- rhdf5::H5Fopen(file)
   on.exit(rhdf5::H5Fclose(h5file))
@@ -475,13 +476,12 @@ hdf5_path_exists <- function(file, target_path) {
   target_path %in% paths
 }
 
-hdf5_write_compressed <- function(file, name, value, compression){
+hdf5_write_compressed <- function(file, name, value, compression) {
   if (!is.null(dim(value))) {
     dims <- dim(value)
   } else {
     dims <- length(value)
   }
-  rhdf5::h5createDataset(file, name, dims, filter=compression)
+  rhdf5::h5createDataset(file, name, dims, filter = compression)
   rhdf5::h5write(value, file, name)
 }
-

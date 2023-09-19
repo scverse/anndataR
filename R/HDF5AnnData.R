@@ -153,8 +153,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         if (is.null(var_names)) {
           stop("When creating a new .h5ad file, `var_names` must be defined.")
         }
-        
-        if (!is.null(compression)){
+
+        if (!is.null(compression)) {
           compression <- match.arg(compression, choices = c("GZIP", "LZF"))
         } else {
           compression <- "NONE"
