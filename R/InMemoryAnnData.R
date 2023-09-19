@@ -124,18 +124,20 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @field obsm
     obsm = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
         private$.obsm
       } else {
-        # TODO: validate obsm
+        # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=wip
         private$.obsm <- private$.validate_array_collection_generic(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
         self
       }
     },
     varm = function(value) {
       if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_varm, status=done
         private$.varm
       } else {
-        # TODO validate varm
+        # trackstatus: class=InMemoryAnnData, feature=set_varm, status=wip
         private$.varm <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
         self
       }

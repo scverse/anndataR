@@ -41,9 +41,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field obsm
     obsm = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
         read_h5ad_element(private$.h5obj, "obsm")
       } else {
-        # TODO: validate obsm
+        # trackstatus: class=HDF5AnnData, feature=set_obsm, status=wip
         value <- private$.validate_array_collection_generic(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
         write_h5ad_element(value, private$.h5obj, "/obsm")
       }
@@ -53,7 +54,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (missing(value)) {
         read_h5ad_element(private$.h5obj, "varm")
       } else {
-        # TODO: validate varm
         value <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
         write_h5ad_element(value, private$.h5obj, "/varm")
       }
