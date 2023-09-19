@@ -100,7 +100,11 @@ Inherits from AbstractAnnData.
   X = NULL,
   obs = NULL,
   var = NULL,
-  layers = NULL
+  layers = NULL,
+  obsm = NULL,
+  varm = NULL,
+  obsp = NULL,
+  varp = NULL
 )}\if{html}{\out{</div>}}
 }
 

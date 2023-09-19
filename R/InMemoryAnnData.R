@@ -184,7 +184,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         # trackstatus: class=InMemoryAnnData, feature=get_varp, status=done
         private$.varp
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_varp, status=wip
+        # trackstatus: class=InMemoryAnnData, feature=set_varp, status=wip
         private$.varp <- private$.validate_aligned_mapping(
           value,
           "varp",
