@@ -46,18 +46,23 @@ test_that("reading varm works", {
 })
 
 test_that("obsm/ varm validation", {
+  N_OBS = 5
+  N_VAR = 3
   mtx <- matrix(
     0,
-    5,
-    5,
-    dimnames = c(as.character(1:5), as.character(1:5)),
-  )
-  adata <- AnnData(
-    X = mtx
+    N_OBS,
+    N_VAR,
+    dimnames = list(as.character(1:N_OBS), as.character(1:N_VAR)),
   )
 
-  adata$obsm <- list(PCA = matrix(0, 5, 4))
-  adata$varm <- list(PCs = matrix(0, 3, 4))
+  adata <- AnnData(
+    X = mtx,
+    obs_names = as.character(1:N_OBS),
+    var_names = as.character(1:N_VAR)
+  )
+
+  adata$obsm <- list(PCA = matrix(0, N_OBS, 4))
+  adata$varm <- list(PCs = matrix(0, N_VAR, 4))
 
   expect_error(adata$obsm <- list(PCA = matrix(0, 4, 4)))
   expect_error(adata$varm <- list(PCs = matrix(0, 4, 4)))

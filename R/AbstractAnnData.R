@@ -178,7 +178,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         expected_dim <- shape[i]
         found_dim <- mat_dims[i]
         if (found_dim != expected_dim) {
-          stop("dim(", label, ")[", i, "] should be the same as shape")
+          stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
         }
       }
       if (!is.null(expected_rownames)) {
@@ -208,12 +208,12 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       }
 
       collection_names <- names(collection)
-      if (!is.list(collection) || is.null(collection_names)) {
-        stop("collection must must be a named list")
+      if (!is.list(collection)) {
+        stop(paste0(label, " must be a named list, was ", class(collection)))
       }
 
       for (mtx_name in collection_names) {
-        collection_name <- paste0(label, "[[", mtx_name, "]]")
+        collection_name <- paste0(label, "[['", mtx_name, "']]")
         private$.validate_array_generic(collection[[mtx_name]], collection_name, shape = shape, expected_rownames = expected_rownames, expected_colnames = expected_colnames)
       }
 

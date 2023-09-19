@@ -160,7 +160,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
     initialize = function(file, obs_names = NULL, var_names = NULL, X = NULL,
-                          obs = NULL, var = NULL, layers = NULL) {
+                          obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
@@ -223,6 +223,14 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (!is.null(layers)) {
         self$layers <- layers
       }
+
+      if (!is.null(obsm)) {
+        self$obsm <- obsm
+      }
+
+      if (!is.null(varm)) {
+        self$varm <- varm
+      }
     },
 
     #' @description Number of observations in the AnnData object
@@ -280,6 +288,8 @@ to_HDF5AnnData <- function(adata, file) { # nolint
     X = adata$X,
     obs = adata$obs,
     var = adata$var,
+    obsm = adata$obsm,
+    varm = adata$varm,
     obs_names = adata$obs_names,
     var_names = adata$var_names,
     layers = adata$layers
