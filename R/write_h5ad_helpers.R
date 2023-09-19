@@ -309,9 +309,7 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
 write_h5ad_numeric_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # Write scalar
 
-  # rhdf5::h5write(value, file, name)
   hdf5_write_compressed(file, name, value, compression)
-
 
   # Write attributes
   write_h5ad_encoding(file, name, "numeric", version)
