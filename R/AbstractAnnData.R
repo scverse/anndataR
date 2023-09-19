@@ -238,7 +238,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
       for (mtx_name in collection_names) {
         collection_name <- paste0(label, "[['", mtx_name, "']]")
-        private$.validate_aligned_array(collection[[mtx_name]], collection_name, shape = shape, expected_rownames = expected_rownames, expected_colnames = expected_colnames)
+        private$.validate_aligned_array(
+          collection[[mtx_name]],
+          collection_name,
+          shape = shape,
+          expected_rownames = expected_rownames,
+          expected_colnames = expected_colnames
+        )
       }
 
       collection
