@@ -6,10 +6,8 @@
 library(anndataR)
 
 # read from h5ad/h5mu file
-adata <- read_h5ad("dataset.h5ad")
-adata <- read_h5ad("dataset.h5ad", backed = TRUE)
-mdata <- read_h5mu("dataset.h5mu")
-mdata <- read_h5mu("dataset.h5mu", backed = TRUE)
+adata <- read_h5ad("dataset.h5ad", backend = "HDF5AnnData")
+adata <- read_h5ad("dataset.h5ad", backend = "InMemoryAnnData")
 
 # anndata-like interface (the Python package)
 adata$X
@@ -30,15 +28,15 @@ colData(adata)
 reducedDimNames(adata)
 
 # converters from/to sce
-sce <- adata$to_sce()
+sce <- adata$to_SingleCellExperiment()
 from_sce(sce)
 
 # optional feature 3: converters from/to Seurat
-seu <- adata$to_seurat()
+seu <- adata$to_Seurat()
 from_seurat(seu)
 
 # optional feature 4: converters from/to SOMA
-som <- adata$to_soma()
+som <- adata$to_SOMA()
 from_soma(som)
 ```
 
@@ -63,17 +61,17 @@ classDiagram
     *subset(...): AbstractAnnData
     *write_h5ad(): Unit
 
-    to_sce(): SingleCellExperiment
-    to_seurat(): Seurat
+    to_SingleCellExperiment(): SingleCellExperiment
+    to_Seurat(): Seurat
 
-    to_h5anndata(): H5AnnData
-    to_zarranndata(): ZarrAnnData
-    to_inmemory(): InMemoryAnnData
+    to_HDF5AnnData(): HDF5AnnData
+    to_ZarrAnnData(): ZarrAnnData
+    to_InMemoryAnnData(): InMemoryAnnData
   }
 
-  AbstractAnnData <|-- H5AnnData
-  class H5AnnData {
-    init(h5file): H5AnnData
+  AbstractAnnData <|-- HDF5AnnData
+  class HDF5AnnData {
+    init(h5file): HDF5AnnData
   }
 
   AbstractAnnData <|-- ZarrAnnData
@@ -92,8 +90,7 @@ classDiagram
   }
 
   class anndataR {
-    read_h5ad(path, backend): AbstractAnnData
-    read_h5mu(path, backend): AbstractMuData
+    read_h5ad(path, backend): Either[AbstractAnnData, SingleCellExperiment, Seurat]
   }
   anndataR --> AbstractAnnData
 ```
@@ -102,9 +99,11 @@ Notation:
 
 - `X: Matrix` - variable `X` is of type `Matrix`
 - `*X: Matrix` - variable `X` is abstract
-- `to_sce(): SingleCellExperiment` - function `to_sce` returns object of
-  type `SingleCellExperiment`
-- `*to_sce()` - function `to_sce` is abstract
+- `to_SingleCellExperiment(): SingleCellExperiment` - function
+  `to_SingleCellExperiment` returns object of type
+  `SingleCellExperiment`
+- `*to_SingleCellExperiment()` - function `to_SingleCellExperiment` is
+  abstract
 
 ## OO-framework
 
@@ -125,24 +124,19 @@ ease of use.
 
 ## Approach
 
-- Implement inheritance objects for `AbstractAnnData`, `H5AnnData`,
+- Implement inheritance objects for `AbstractAnnData`, `HDF5AnnData`,
   `InMemoryAnnData`
-- Only containing `X`, `obs`, `var` for now
+- Only containing `X`, `layers`, `obs`, `var` for now
 - Implement base R S3 generics
 - Implement `read_h5ad()`, `$write_h5ad()`
-- Implement `$to_sce()`
+- Implement `$to_SingleCellExperiment()`
 - Add simple unit tests
 
 Optional:
 
 - Add more fields (obsp, obsm, varp, varm, …) –\> see class diagram
 - Start implementing MuData
-- Implement `$to_seurat()`
+- Implement `$to_Seurat()`
 - Implement `ZarrAnnData`
 - Implement `ReticulateAnnData`
 - Implement Bioconductor S3 generics
-
-## Conclusion
-
-- Scope and therefore the name
-- What we do after this
