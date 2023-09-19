@@ -9,22 +9,18 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/anndataR.png)](https://CRAN.R-project.org/package=anndataR)
 <!-- badges: end -->
 
-`{anndataR}` is an R package that brings the power and flexibility of
-AnnData to the R ecosystem, allowing you to effortlessly manipulate and
-analyze your single-cell data. This package lets you work with backed
-h5ad and zarr files, directly access various slots (e.g. X, obs, var,
-obsm, obsp), or convert the data into SingleCellExperiment and Seurat
-objects.
+`{anndataR}` aims to make the AnnData format a first-class citizen in
+the R ecosystem, and to make it easy to work with AnnData files in R,
+either directly or by converting it to a SingleCellExperiment or Seurat
+object.
 
-## Design
+Feature list:
 
-This package was initially created at the [scverse 2023-04
-hackathon](https://scverse.org/events/2023_04_hackathon/) in Heidelberg.
-
-When fully implemented, it will be a complete replacement for
-[theislab/zellkonverter](https://github.com/theislab/zellkonverter),
-[mtmorgan/h5ad](github.com/mtmorgan/h5ad/) and
-[dynverse/anndata](https://github.com/dynverse/anndata).
+- Provide an `R6` class to work with AnnData objects in R (either
+  in-memory or on-disk).
+- Read/write `*.h5ad` files natively
+- Convert to/from `SingleCellExperiment` objects
+- Convert to/from `Seurat` objects
 
 ## Installation
 
@@ -32,6 +28,24 @@ You can install the development version of `{anndataR}` like so:
 
 ``` r
 devtools::install_github("scverse/anndataR")
+```
+
+You might need to install suggested dependencies manually, depending on
+the task you want to perform.
+
+- To read/write `*.h5ad` files, you need to install `{rhdf5}`:
+  `BiocManager::install("rhdf5")`
+- To convert to/from `SingleCellExperiment` objects, you need to install
+  `{SingleCellExperiment}`:
+  `BiocManager::install("SingleCellExperiment")`
+- To convert to/from `Seurat` objects, you need to install
+  `{SeuratObject}`: `install.packages("SeuratObject")`
+
+You can also install all suggested dependencies at once (though note
+that this might take a while to run):
+
+``` r
+devtools::install_github("scverse/anndataR", dependencies = TRUE)
 ```
 
 ## Example
@@ -55,15 +69,10 @@ View structure:
 
 ``` r
 adata
-#> class: InMemoryAnnData
-#> dim: 50 obs x 100 var
-#> X: dgRMatrix
-#> layers: counts csc_counts dense_X dense_counts
-#> obs: Float FloatNA Int IntNA Bool BoolNA n_genes_by_counts
-#>   log1p_n_genes_by_counts total_counts log1p_total_counts leiden
-#> var: String n_cells_by_counts mean_counts log1p_mean_counts
-#>   pct_dropout_by_counts total_counts log1p_total_counts highly_variable
-#>   means dispersions dispersions_norm
+#> AnnData object with n_obs × n_vars = 50 × 100
+#>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
+#>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
+#>     layers: 'counts', 'csc_counts', 'dense_X', 'dense_counts'
 ```
 
 Access AnnData slots:
