@@ -123,9 +123,9 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
       stop("X must be NULL or one of: 'counts', 'data', 'scale.data'")
     }
   }
-
+  
+  # If a specific assay is selected, use it
   if (!is.null(assay)) {
-    # If a specific assay is selected, use it
     if (!assay %in% names(seurat_obj@assays)) {
       stop("'assay' must be NULL or one of: ", paste0("'", names(seurat_obj@assays), "'", collapse = ", "))
     }
