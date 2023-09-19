@@ -11,3 +11,4 @@
 ^pkgdown$
 ^vignettes/diagrams/*\.mmd$
 ^vignettes/diagrams/*\.svg$
+^vignettes/design\.Rmd$
