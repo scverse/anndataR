@@ -33,13 +33,15 @@ devtools::install_github("scverse/anndataR")
 You might need to install suggested dependencies manually, depending on
 the task you want to perform.
 
-- To read/write `*.h5ad` files, you need to install `{rhdf5}`:
+- To read/write \*.h5ad files, you need to install
+  [rhdf5](https://bioconductor.org/packages/release/bioc/html/rhdf5.html):  
   `BiocManager::install("rhdf5")`
 - To convert to/from `SingleCellExperiment` objects, you need to install
-  `{SingleCellExperiment}`:
+  [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
   `BiocManager::install("SingleCellExperiment")`
 - To convert to/from `Seurat` objects, you need to install
-  `{SeuratObject}`: `install.packages("SeuratObject")`
+  [SeuratObject](https://cran.r-project.org/package=SeuratObject):  
+  `install.packages("SeuratObject")`
 
 You can also install all suggested dependencies at once (though note
 that this might take a while to run):
@@ -69,10 +71,15 @@ View structure:
 
 ``` r
 adata
-#> AnnData object with n_obs × n_vars = 50 × 100
-#>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
-#>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     layers: 'counts', 'csc_counts', 'dense_X', 'dense_counts'
+#> class: InMemoryAnnData
+#> dim: 50 obs x 100 var
+#> X: dgRMatrix
+#> layers: counts csc_counts dense_X dense_counts
+#> obs: Float FloatNA Int IntNA Bool BoolNA n_genes_by_counts
+#>   log1p_n_genes_by_counts total_counts log1p_total_counts leiden
+#> var: String n_cells_by_counts mean_counts log1p_mean_counts
+#>   pct_dropout_by_counts total_counts log1p_total_counts highly_variable
+#>   means dispersions dispersions_norm
 ```
 
 Access AnnData slots:
