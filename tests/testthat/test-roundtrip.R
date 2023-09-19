@@ -1,3 +1,5 @@
+library(testthat)
+
 h5ad_file <- tempfile(pattern = "hdf5_write_", fileext = ".h5ad")
 
 base_file <- system.file("extdata", "example.h5ad", package = "anndataR")
