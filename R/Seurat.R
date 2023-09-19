@@ -104,23 +104,45 @@ to_Seurat <- function(obj) { # nolint
 
 #' @rdname Seurat
 #'
-#' @description `from_Seurat()` converts a Seurat object to an AnnData object.
+#' @description `from_Seurat()` converts a Seurat object to an AnnData object. Only one assay can be converted at a time.
 #'
 #' @param seurat_obj An object inheriting from Seurat.
-#'
-#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
-#' or `"InMemoryAnnData"`.
-#'
+#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
+#' @param assay Assay to be converted. If NULL, `DefaultAssay()` is used.
+#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is not empty', followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different layers.
 #' @param ... Additional arguments passed to the generator function.
 #' See the "Details" section for more information on which parameters
 #'
 #' @export
-# TODO: Add parameter to choose which how counts, data and scaled.data are translated into X and layers
 # TODO: add tests with Seurat objects not created by anndataR
-from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), ...) { # nolint
+from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X="counts", ...) { # nolint
 
   stopifnot(inherits(seurat_obj, "Seurat"))
-
+  
+  if (!is.null(assay)){
+    if (!assay %in% names(seurat_obj@assays)){
+      stop("'assay' must be one of: ", paste0("'", names(seurat_obj@assays), "'", collapse=", "))
+    }
+  }
+  
+  if (!is.null(X)){
+    if (!X %in% c("counts", "data", "scale.data")){
+      stop("X must be NULL or one of: 'counts', 'data', 'scale.data'")
+    }
+  }
+  
+  # If there is more than one assay, select only one
+  if (length(names(seurat_obj@assays)) > 1) {
+    # Use DefaultAssay if argument not provided by user
+    assay_name <- ifelse(is.null(assay), SeuratObject::DefaultAssay(seurat_obj), assay)
+    
+    message("There are ", length(names(seurat_obj@assays)), " assays in the Seurat object; using the ",
+            ifelse(is.null(assay), paste0("default ('", assay_name, "')"), paste0("'", assay_name, "'")),
+            " assay.", ifelse(is.null(assay), " You can use the `assay` parameter to select a specific assay.", ""))
+  } else {
+    assay_name <- SeuratObject::DefaultAssay(seurat_obj)
+  }
+  
   # get obs_names
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   obs_names <- colnames(seurat_obj)
@@ -132,11 +154,11 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
   # construct var_names
   # trackstatus: class=Seurat, feature=set_var_names, status=done
-  var_names <- rownames(seurat_obj)
+  var_names <- rownames(seurat_obj@assays[[assay_name]])
 
   # construct var
   # trackstatus: class=Seurat, feature=set_var, status=done
-  var <- seurat_obj@assays[[seurat_obj@active.assay]]@meta.features
+  var <- seurat_obj@assays[[assay_name]]@meta.features
   rownames(var) <- NULL
 
   # use generator to create new AnnData object
@@ -151,33 +173,50 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
   # trackstatus: class=Seurat, feature=set_X, status=wip
   # trackstatus: class=Seurat, feature=set_layers, status=wip
-  for (assay_name in names(seurat_obj@assays)) {
-    # TODO: Maybe we shouldn't use counts but instead data
-    assay_data <- SeuratObject::GetAssayData(seurat_obj, "counts", assay = assay_name)
-
-    if (nrow(assay_data) != length(var_names) || !identical(rownames(assay_data), var_names)) {
-      warning(
-        "Skipping assay '", assay_name, "' because it has different feature names ",
-        "than the active assay ('", seurat_obj@active.assay, "')."
-      )
-      next
+  
+  if (!is.null(X)){
+    slots_priority <- c("counts", "data", "scale.data")
+    
+    # If one or more assays are empty, go through slots_priority
+    while (all(dim(GetAssayData(seurat_obj, slot = X)) == 0)){
+      # Pop out X from slots_priority
+      slots_priority <- slots_priority[slots_priority != X]
+      X_old <- X
+      X <- slots_priority[1]
+      
+      # All three matrices are empty (probably not going to happen) 
+      if (length(slots_priority) == 0){
+        stop("All slots are empty.")
+      }
+      
+      warning("The '", X_old, "' slot is empty; using '", X,"' slot instead")
     }
-    if (ncol(assay_data) != length(obs_names) || !identical(colnames(assay_data), obs_names)) {
-      warning(
-        "Skipping assay '", assay_name, "' because it has different cell names ",
-        "than the active assay ('", seurat_obj@active.assay, "')."
-      )
-      next
-    }
-
-    # remove names
+    
+    assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)
+    
+    # Remove names
     dimnames(assay_data) <- list(NULL, NULL)
-    if (assay_name == seurat_obj@active.assay) {
-      ad$X <- Matrix::t(assay_data)
-    } else {
-      ad$layers[[assay_name]] <- Matrix::t(assay_data)
+    ad$X <- Matrix::t(assay_data)
+    
+  } else {
+    # For the if statement afterwards - cannot compare with NULL
+    X <- "none"
+  }
+  
+  # Add the remaining non-empty slots as layers
+  slots <- c("counts", "data", "scale.data")
+  slots <- slots[slots != X]
+
+  for (slot in slots){
+    if (!all(dim(GetAssayData(seurat_obj, slot = slot)) == 0)){
+      assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = slot, assay = assay_name)
+      dimnames(assay_data) <- list(NULL, NULL)
+      ad$layers[[slot]] <- Matrix::t(assay_data)
     }
   }
-
+    
   return(ad)
 }
+
+
+

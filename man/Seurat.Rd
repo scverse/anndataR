@@ -10,6 +10,8 @@ to_Seurat(obj)
 from_Seurat(
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
+  assay = NULL,
+  X = "counts",
   ...
 )
 }
@@ -18,8 +20,11 @@ from_Seurat(
 
 \item{seurat_obj}{An object inheriting from Seurat.}
 
-\item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"}
-or \code{"InMemoryAnnData"}.}
+\item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
+
+\item{assay}{Assay to be converted. If NULL, \code{DefaultAssay()} is used.}
+
+\item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is not empty', followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different layers.}
 
 \item{...}{Additional arguments passed to the generator function.
 See the "Details" section for more information on which parameters}
@@ -27,7 +32,7 @@ See the "Details" section for more information on which parameters}
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
 
-\code{from_Seurat()} converts a Seurat object to an AnnData object.
+\code{from_Seurat()} converts a Seurat object to an AnnData object. Only one assay can be converted at a time.
 }
 \examples{
 ad <- AnnData(
