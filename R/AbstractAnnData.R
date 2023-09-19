@@ -71,8 +71,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       )) {
         attr_key <- paste0(attribute, "_keys")
         if (!is.null(self[[attr_key]])) {
-          if (length(self[[attr_key]]()) > 0) {
-            cat("    ", pretty_print(attribute, self[[attr_key]]()), "\n", sep = "")
+          slot_keys <- self[[attr_key]]()
+          if (length(slot_keys) > 0) {
+            cat("    ", pretty_print(attribute, slot_keys, "\n", sep = "")
           }
         }
       }
