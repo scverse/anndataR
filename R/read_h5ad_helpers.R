@@ -297,7 +297,7 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   attributes <- rhdf5::h5readAttributes(file, name)
   ordered <- attributes[["ordered"]]
-  if (is.na(ordered)) {
+  if (is.null(ordered) || is.na(ordered)) {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
     # can't tell if the categorical should be ordered,
     # see https://github.com/grimbough/rhdf5/issues/125
