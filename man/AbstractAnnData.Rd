@@ -36,6 +36,18 @@ used to identify each row of \code{var} and to act as an index into
 the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
+
+\item{\code{obsm}}{The obsm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{obs}.}
+
+\item{\code{varm}}{The varm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{var}.}
+
+\item{\code{obsp}}{The obsp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{obs}.}
+
+\item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{var}.}
 }
 \if{html}{\out{</div>}}
 }
