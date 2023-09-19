@@ -47,7 +47,7 @@ Authors@R: c(
         "Chananchida", "Sang-aram",
         role = "ctb",
         comment = c(ORCID = "0000-0002-0922-0822", github = "csangara")
-    ),
+    )
   )
 Description: Bring the power and flexibility of AnnData to the R
     ecosystem, allowing you to effortlessly manipulate and analyze your
