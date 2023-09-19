@@ -109,9 +109,8 @@ to_Seurat <- function(obj) { # nolint
 #' @param seurat_obj An object inheriting from Seurat.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
 #' @param assay Assay to be converted. If NULL, `DefaultAssay()` is used.
-#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is not empty', followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different layers.
+#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different layers.
 #' @param ... Additional arguments passed to the generator function.
-#' See the "Details" section for more information on which parameters
 #'
 #' @export
 # TODO: add tests with Seurat objects not created by anndataR
@@ -172,9 +171,6 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     var_names = var_names,
     ...
   )
-
-  # trackstatus: class=Seurat, feature=set_X, status=wip
-  # trackstatus: class=Seurat, feature=set_layers, status=wip
 
   if (!is.null(X)) {
     slots_priority <- c("counts", "data", "scale.data")
