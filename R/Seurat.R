@@ -123,7 +123,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
       stop("X must be NULL or one of: 'counts', 'data', 'scale.data'")
     }
   }
-  
+
   # If a specific assay is selected, use it
   if (!is.null(assay)) {
     if (!assay %in% names(seurat_obj@assays)) {
@@ -171,21 +171,9 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
   )
 
   if (!is.null(X)) {
-    slots_priority <- c("counts", "data", "scale.data")
-
-    # If one or more assays are empty, go through slots_priority
-    while (all(dim(GetAssayData(seurat_obj, slot = X)) == 0)) {
-      # Pop out X from slots_priority
-      slots_priority <- slots_priority[slots_priority != X]
-      X_old <- X
-      X <- slots_priority[1]
-
-      # All three matrices are empty (probably not going to happen)
-      if (length(slots_priority) == 0) {
-        stop("All slots are empty.")
-      }
-
-      warning("The '", X_old, "' slot is empty; using '", X, "' slot instead")
+    # Check if the slot is not empty
+    if (all(dim(SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)) == 0)) {
+      stop("The '", X, "' slot is empty.")
     }
 
     assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)
@@ -194,7 +182,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     dimnames(assay_data) <- list(NULL, NULL)
     ad$X <- Matrix::t(assay_data)
   } else {
-    # For the if statement afterwards - cannot compare with NULL
+    # Cannot compare other values with NULL
     X <- "none"
   }
 
