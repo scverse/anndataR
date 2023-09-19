@@ -191,7 +191,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
   slots <- slots[slots != X]
 
   for (slot in slots) {
-    if (!all(dim(GetAssayData(seurat_obj, slot = slot)) == 0)) {
+    if (!all(dim(SeuratObject::GetAssayData(seurat_obj, slot = slot)) == 0)) {
       assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = slot, assay = assay_name)
       dimnames(assay_data) <- list(NULL, NULL)
       ad$layers[[slot]] <- Matrix::t(assay_data)
