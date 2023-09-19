@@ -5,18 +5,21 @@
 #' @description `to_Seurat()` converts an AnnData object to a Seurat object.
 #' NOTE: Only 1 assay per object is currently. 
 #' @param obj An AnnData object.
+#' @inheritDotParams SeuratObject::CreateSeuratObject
 #'
 #' @importFrom Matrix t
 #'
 #' @export
 #' @examples
-#' ad <- example_anndata()
-#' to_Seurat(ad) 
-to_Seurat <- function(obj) { # nolint
+#' obj <- dummy_data(output="InMemoryAnnData")
+#' to_Seurat(obj) 
+to_Seurat <- function(obj, 
+                      use_layer=NULL,
+                      ...) { # nolint
   requireNamespace("SeuratObject")
   
   stopifnot(inherits(obj, "AbstractAnnData"))
-  
+  use_layer <- use_layer[1]
   # translate var_names
   # trackstatus: class=Seurat, feature=get_var_names, status=done
   var_names_ <- .toseurat_check_obsvar_names(obj$var_names, "var_names")
@@ -43,41 +46,69 @@ to_Seurat <- function(obj) { # nolint
   
   # translate X
   # trackstatus: class=Seurat, feature=get_X, status=wip
-  # TODO: should x_ be passed to counts or to data?
-  # TODO: creating a seurat object when th AnnData doesn't contain X or layers
-  # probably doesn't make any sense
+  seurat_slots <- c("counts","data","scale.data")
   x_ <-
-    if (!is.null(obj$X)) {
+    if(!is.null(use_layer) && 
+       use_layer %in% obj$layers_keys()){
+      seurat_slots <- seurat_slots[seurat_slots!=use_layer]
+      Matrix::t(obj$layers[[use_layer]])
+    } else if (is.null(obj$X) &&
+               !is.null(obj$layers_keys())){
+      layer1 <- obj$layers_keys()[1]
+      seurat_slots <- seurat_slots[seurat_slots!=layer1]
+      message("No X detected. Using first layer as counts: ",layer1)
+      Matrix::t(obj$layers[[layer1]])
+    } else if (!is.null(obj$X)) {
       Matrix::t(obj$X)
     } else {
-      mat <- Matrix::sparseMatrix(
-        i = integer(0),
-        p = c(0L),
-        x = integer(0),
-        dims = c(obj$n_vars(), obj$n_obs())
-      )
-      attr(mat, "is_X_null") <- TRUE # nolint
-      mat
+      stop("obj must contain at least one matrix in either `X` or `layers`.")
     }
-  dimnames(x_) <- list(var_names_, obs_names_)
-  x_assay <- SeuratObject::CreateAssayObject(counts = x_)
+  dimnames(x_) <- list(var_names_, obs_names_) 
+    x_assay <- SeuratObject::CreateAssayObject(counts = x_)
+  # seurat <- SeuratObject::SetAssayData(seurat, "scale.data", X3)
   
   # create seurat object
   if (ncol(var_) > 0) {
     # don't add var metadata if the data frame does not contain any columns
     x_assay <- SeuratObject::AddMetaData(x_assay, metadata = var_)
   }
-  seurat_obj <- SeuratObject::CreateSeuratObject(x_assay, meta.data = obs_)
+  seurat_obj <- SeuratObject::CreateSeuratObject(x_assay, 
+                                                 meta.data = obs_, 
+                                                 ...)
   
   # add layers
   # trackstatus: class=Seurat, feature=get_layers, status=wip
-  # TODO: should values be passed to counts or to data?
-  for (key in obj$layers_keys()) {
-    layer_ <- t(obj$layers[[key]])
-    dimnames(layer_) <- list(var_names_, obs_names_)
-    seurat_obj[[key]] <- SeuratObject::CreateAssayObject(counts = layer_)
-  }
-  
+  #### Store as assay data matrices ####
+  if(all(seurat_slots %in% obj$layers_keys())){
+    message("Setting layers as AssayData matrices.")
+    for(key in seurat_slots){
+      seurat_obj <- SeuratObject::SetAssayData(object = seurat_obj, 
+                                               slot = key,
+                                               new.data = t(obj$layers[[key]])) 
+    }
+  #### Store as multiple assays ####
+  } else {
+    message("Setting layers as new assays.")
+    for (key in obj$layers_keys()) {
+      layer_ <- t(obj$layers[[key]])
+      dimnames(layer_) <- list(var_names_, obs_names_)
+      seurat_obj[[key]] <- SeuratObject::CreateAssayObject(counts = layer_)
+    }
+  } 
+  #### Add DimReducObjects ####
+  if(all(c("obsm_keys","varm_keys") %in% names(obj)) &&
+     !is.null(obj$obsm_keys()) &&
+     !is.null(obj$varm_keys()) ){  
+    for(key in obj$obsm_keys()){
+      assay <- SeuratObject::Assays(seurat_obj)[1]
+      seurat_obj@reductions[[key]] <- to_DimReduc(obsm=obj$obsm[[key]],
+                                                  varm=obj$varm[[key]],
+                                                  stdev=obj$stdev[[key]],
+                                                  assay=assay,
+                                                  key=key)
+    } 
+  }  
+  #### Return ####
   seurat_obj
 }
 

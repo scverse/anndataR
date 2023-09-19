@@ -5,7 +5,7 @@
 \alias{from_Seurat}
 \title{Convert Between AnnData and Seurat}
 \usage{
-to_Seurat(obj)
+to_Seurat(obj, use_layer = NULL, ...)
 
 from_Seurat(
   seurat_obj,
@@ -16,6 +16,28 @@ from_Seurat(
 \arguments{
 \item{obj}{An AnnData object.}
 
+\item{...}{
+  Arguments passed on to \code{\link[SeuratObject:CreateSeuratObject]{SeuratObject::CreateSeuratObject}}
+  \describe{
+    \item{\code{counts}}{Either a \code{\link[base]{matrix}}-like object with
+unnormalized data with cells as columns and features as rows or an
+\code{\link[SeuratObject]{Assay}}-derived object}
+    \item{\code{project}}{\link[SeuratObject]{Project} name for the \code{Seurat} object}
+    \item{\code{assay}}{Name of the initial assay}
+    \item{\code{names.field}}{For the initial identity class for each cell, choose this
+field from the cell's name. E.g. If your cells are named as
+BARCODE_CLUSTER_CELLTYPE in the input matrix, set \code{names.field} to 3 to
+set the initial identities to CELLTYPE.}
+    \item{\code{names.delim}}{For the initial identity class for each cell, choose this
+delimiter from the cell's column name. E.g. If your cells are named as
+BARCODE-CLUSTER-CELLTYPE, set this to \dQuote{-} to separate the cell name
+into its component parts for picking the relevant field.}
+    \item{\code{meta.data}}{Additional cell-level metadata to add to the Seurat object.
+Should be a \code{\link[base]{data.frame}} where the rows are cell names and
+the columns are additional metadata fields. Row names in the metadata need
+to match the column names of the counts matrix.}
+  }}
+
 \item{seurat_obj}{An object inheriting from Seurat.}
 
 \item{output_class}{Name of the AnnData class.
@@ -25,8 +47,6 @@ Must be one of:
 (default).}
 \item{"HDF5AnnData": }{Produces \link[anndataR]{HDF5AnnData}.}
 }}
-
-\item{...}{Parameters passed to \code{dummy_list}}
 }
 \value{
 \link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
@@ -38,6 +58,6 @@ NOTE: Only 1 assay per object is currently.
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
 }
 \examples{
-ad <- example_anndata()
-to_Seurat(ad) 
+obj <- dummy_data(output="InMemoryAnnData")
+to_Seurat(obj) 
 }
