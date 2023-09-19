@@ -52,7 +52,7 @@ test_that("obsm/ varm validation", {
     0,
     N_OBS,
     N_VAR,
-    dimnames = list(as.character(1:N_OBS), as.character(1:N_VAR)),
+    # dimnames = list(as.character(1:N_OBS), as.character(1:N_VAR)),
   )
 
   adata <- AnnData(
