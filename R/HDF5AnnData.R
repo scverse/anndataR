@@ -9,7 +9,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     .n_obs = NULL,
     .n_vars = NULL,
     .obs_names = NULL,
-    .var_names = NULL
+    .var_names = NULL,
+    .compression = NULL
   ),
   active = list(
     #' @field X The X slot
@@ -20,7 +21,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_X, status=wip
         value <- private$.validate_matrix(value, "X")
-        write_h5ad_element(value, private$.h5obj, "/X")
+        write_h5ad_element(value, private$.h5obj, "/X", private$.compression)
       }
     },
     #' @field layers The layers slot. Must be NULL or a named list
@@ -33,7 +34,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=wip
         value <- private$.validate_layers(value)
-        write_h5ad_element(value, private$.h5obj, "/layers")
+        write_h5ad_element(value, private$.h5obj, "/layers", private$.compression)
       }
     },
     #' @field obs The obs slot
@@ -48,6 +49,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           value,
           private$.h5obj,
           "/obs",
+          private$.compression,
           index = self$obs_names
         )
       }
@@ -82,7 +84,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=wip
         value <- private$.validate_obsvar_names(value, "obs")
-        write_h5ad_data_frame_index(value, private$.h5obj, "obs", "_index")
+        write_h5ad_data_frame_index(value, private$.h5obj, "obs", private$.compression, "_index")
         private$.obs_names <- value
       }
     },
@@ -100,7 +102,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=wip
         value <- private$.validate_obsvar_names(value, "var")
-        write_h5ad_data_frame_index(value, private$.h5obj, "var", "_index")
+        write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression, "_index")
         private$.var_names <- value
       }
     }
@@ -138,7 +140,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
     initialize = function(file, obs_names = NULL, var_names = NULL, X = NULL,
-                          obs = NULL, var = NULL, layers = NULL) {
+                          obs = NULL, var = NULL, layers = NULL, compression = NULL) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
@@ -151,9 +153,16 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         if (is.null(var_names)) {
           stop("When creating a new .h5ad file, `var_names` must be defined.")
         }
+        
+        if (!is.null(compression)){
+          compression <- match.arg(compression, choices = c("GZIP", "LZF"))
+        } else {
+          compression <- "NONE"
+        }
+        private$.compression <- compression
 
         # Create an empty H5AD using the provided obs/var names
-        write_empty_h5ad(file, obs_names, var_names)
+        write_empty_h5ad(file, obs_names, var_names, compression)
 
         # Set private object slots
         private$.h5obj <- file

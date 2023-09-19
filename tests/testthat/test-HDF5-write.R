@@ -10,7 +10,7 @@ rhdf5::h5createFile(file = h5ad_file)
 test_that("Writing H5AD dense arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
-  expect_silent(write_h5ad_element(array, h5ad_file, "dense_array"))
+  expect_silent(write_h5ad_element(array, h5ad_file, "dense_array", compression = "NONE"))
   expect_true(hdf5_path_exists(h5ad_file, "/dense_array"))
   attrs <- rhdf5::h5readAttributes(h5ad_file, "dense_array")
   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
@@ -21,7 +21,7 @@ test_that("Writing H5AD sparse arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
   csc_array <- as(array, "CsparseMatrix")
-  expect_silent(write_h5ad_element(csc_array, h5ad_file, "csc_array"))
+  expect_silent(write_h5ad_element(csc_array, h5ad_file, "csc_array", compression = "NONE"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array/data"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array/indices"))
@@ -31,7 +31,7 @@ test_that("Writing H5AD sparse arrays works", {
   expect_true(attrs[["encoding-type"]] == "csc_matrix")
 
   csr_array <- as(array, "RsparseMatrix")
-  expect_silent(write_h5ad_element(csr_array, h5ad_file, "csr_array"))
+  expect_silent(write_h5ad_element(csr_array, h5ad_file, "csr_array", compression = "NONE"))
   expect_true(hdf5_path_exists(h5ad_file, "/csr_array"))
   expect_true(hdf5_path_exists(h5ad_file, "/csr_array/data"))
   expect_true(hdf5_path_exists(h5ad_file, "/csr_array/indices"))
@@ -123,7 +123,7 @@ test_that("Writing H5AD mappings works", {
     scalar = 2
   )
 
-  expect_silent(write_h5ad_element(mapping, h5ad_file, "mapping"))
+  expect_silent(write_h5ad_element(mapping, h5ad_file, "mapping", compression = "NONE"))
   expect_true(hdf5_path_exists(h5ad_file, "/mapping"))
   expect_true(hdf5_path_exists(h5ad_file, "/mapping/array"))
   expect_true(hdf5_path_exists(h5ad_file, "/mapping/sparse"))
