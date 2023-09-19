@@ -46,8 +46,8 @@ test_that("reading varm works", {
 })
 
 test_that("obsm/ varm validation", {
-  N_OBS = 5
-  N_VAR = 3
+  N_OBS <- 5
+  N_VAR <- 3
   mtx <- matrix(
     0,
     N_OBS,

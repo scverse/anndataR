@@ -51,13 +51,21 @@ AnnData <- function(
     X = NULL,
     obs = NULL,
     var = NULL,
-    layers = NULL) {
+    layers = NULL,
+    obsm = NULL,
+    varm = NULL,
+    obsp = NULL,
+    varp = NULL) {
   InMemoryAnnData$new(
     obs_names = obs_names,
     var_names = var_names,
     X = X,
     obs = obs,
     var = var,
-    layers = layers
+    layers = layers,
+    obsm = obsm,
+    varm = varm,
+    obsp = obsp,
+    varp = varp
   )
 }

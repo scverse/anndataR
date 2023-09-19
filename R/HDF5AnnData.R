@@ -11,7 +11,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     .obs_names = NULL,
     .var_names = NULL,
     .obsm = NULL,
-    .varm = NULL
+    .varm = NULL,
+    .obsp = NULL,
+    .varp = NULL
   ),
   active = list(
     #' @field X The X slot
@@ -52,12 +54,37 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field varm
     varm = function(value) {
       if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
         read_h5ad_element(private$.h5obj, "varm")
       } else {
+        # trackstatus: class=HDF5AnnData, feature=set_varm, status=wip
         value <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
         write_h5ad_element(value, private$.h5obj, "/varm")
       }
     },
+    #' @field obsp
+    obsp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
+        read_h5ad_element(private$.h5obj, "obsp")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_obsp, status=wip
+        value <- private$.validate_array_collection_generic(value, "obsp", c(self$n_obs(), self$n_obs()), expected_rownames = rownames(self), expected_colnames = rownames(self))
+        write_h5ad_element(value, private$.h5obj, "/obsp")
+      }
+    },
+    #' @field varp
+    varp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
+        read_h5ad_element(private$.h5obj, "varp")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_varp, status=wip
+        value <- private$.validate_array_collection_generic(value, "varp", c(self$n_vars(), self$n_vars()), expected_rownames = colnames(self), expected_colnames = colnames(self))
+        write_h5ad_element(value, private$.h5obj, "/varp")
+      }
+    },
+
     #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
@@ -159,7 +186,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
     initialize = function(file, obs_names = NULL, var_names = NULL, X = NULL,
-                          obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL) {
+                          obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL, obsp = NULL, varp = NULL) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
@@ -230,6 +257,14 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (!is.null(varm)) {
         self$varm <- varm
       }
+
+      if (!is.null(obsp)) {
+        self$obsp <- obsp
+      }
+
+      if (!is.null(varp)) {
+        self$varp <- varp
+      }
     },
 
     #' @description Number of observations in the AnnData object
@@ -291,6 +326,8 @@ to_HDF5AnnData <- function(adata, file) { # nolint
     varm = adata$varm,
     obs_names = adata$obs_names,
     var_names = adata$var_names,
-    layers = adata$layers
+    layers = adata$layers,
+    obsp = adata$obsp,
+    varp = adata$varp
   )
 }

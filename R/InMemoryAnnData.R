@@ -37,7 +37,9 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     .obs_names = NULL,
     .var_names = NULL,
     .obsm = NULL,
-    .varm = NULL
+    .varm = NULL,
+    .obsp = NULL,
+    .varp = NULL
   ),
   active = list(
     #' @field X NULL or an observation x variable matrix (without
@@ -132,6 +134,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         self
       }
     },
+    #' @field varm
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_varm, status=done
@@ -139,6 +142,28 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_varm, status=wip
         private$.varm <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
+        self
+      }
+    },
+    #' @field obsp
+    obsp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_obsp, status=done
+        private$.obsp
+      } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_obsp, status=wip
+        private$.obsp <- private$.validate_array_collection_generic(value, "obsp", c(self$n_obs(), self$n_obs()), expected_rownames = rownames(self), expected_colnames = rownames(self))
+        self
+      }
+    },
+    #' @field varp
+    varp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_varp, status=done
+        private$.varp
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_varp, status=wip
+        private$.varp <- private$.validate_array_collection_generic(value, "varp", c(self$n_vars(), self$n_vars()), expected_rownames = colnames(self), expected_colnames = colnames(self))
         self
       }
     }
@@ -167,7 +192,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing information
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
-    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL) {
+    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL, obsp = NULL, varp = NULL) {
       # write obs and var first, because these are used by other validators
       self$obs_names <- obs_names
       self$var_names <- var_names
@@ -179,6 +204,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
       self$layers <- layers
       self$obsm <- obsm
       self$varm <- varm
+      self$obsp <- obsp
+      self$varp <- varp
     }
   )
 )
@@ -220,6 +247,8 @@ to_InMemoryAnnData <- function(adata) { # nolint
     var_names = adata$var_names,
     layers = adata$layers,
     obsm = adata$obsm,
-    varm = adata$varm
+    varm = adata$varm,
+    obsp = adata$obsp,
+    varp = adata$varp
   )
 }
