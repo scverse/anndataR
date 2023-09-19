@@ -135,7 +135,6 @@ test_that("'layers' works", {
   layers_test(obs_names, var_names, list(A = matrix(0, 3, 5), B = matrix(1, 3, 5)))
 
   ## must be a named list
-  expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = list()))
   layers <- list(matrix(0, 3, 5))
   expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
   ## non-trivial names

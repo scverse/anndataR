@@ -172,7 +172,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     },
 
 
-    # @description `.validate_array_generic()` checks that dimensions are
+    # @description `.validate_aligned_array()` checks that dimensions are
     #   consistent with the anndata object.
     # @param mat A matrix to validate
     # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
@@ -180,7 +180,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param shape Expected dimensions of matrix
     # @param expected_rownames
     # @param excepted_colnames
-    .validate_array_generic = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
       mat_dims <- dim(mat)
       for (i in seq_along(shape)) {
         expected_dim <- shape[i]
@@ -195,10 +195,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         }
       }
       if (!is.null(rownames(mat))) {
-          warning(wrap_message(
-            "rownames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          rownames(mat) <- NULL
+        warning(wrap_message(
+          "rownames(", label, ") should be NULL, removing them from the matrix"
+        ))
+        rownames(mat) <- NULL
       }
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
@@ -206,57 +206,38 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         }
       }
       if (!is.null(colnames(mat))) {
-          warning(wrap_message(
-            "colnames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          colnames(mat) <- NULL
+        warning(wrap_message(
+          "colnames(", label, ") should be NULL, removing them from the matrix"
+        ))
+        colnames(mat) <- NULL
       }
 
       mat
     },
-    .validate_array_collection_generic = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    # @description `.validate_aligned_mapping()` checks for named lists and
+    #   correct dimensions on elements.
+    # @param collection A named list of 0 or more matrix elements with
+    #   whose entries will be validated
+    # @param label The label of the collection, used for error messages
+    # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
+    # @param expected_rownames
+    # @param expected_colnames
+    .validate_aligned_mapping = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
       if (is.null(collection)) {
         return(collection)
       }
 
       collection_names <- names(collection)
-      if (!is.list(collection)) {
+      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
         stop(paste0(label, " must be a named list, was ", class(collection)))
       }
 
       for (mtx_name in collection_names) {
         collection_name <- paste0(label, "[['", mtx_name, "']]")
-        private$.validate_array_generic(collection[[mtx_name]], collection_name, shape = shape, expected_rownames = expected_rownames, expected_colnames = expected_colnames)
+        private$.validate_aligned_array(collection[[mtx_name]], collection_name, shape = shape, expected_rownames = expected_rownames, expected_colnames = expected_colnames)
       }
 
       collection
-    },
-
-    # @description `.validate_layers()` checks for named lists and
-    #   correct dimensions on elements.
-    # @param layers A named list of 0 or more matrix elements with
-    #   dimensions consistent with `obs` and `var`.
-    .validate_layers = function(layers) {
-      if (is.null(layers)) {
-        return(layers)
-      }
-
-      ## layers and names
-      layer_names <- names(layers)
-      if (!is.list(layers) || is.null(layer_names)) {
-        stop("'layers' must must be a named list")
-      }
-      if (any(!nzchar(layer_names))) {
-        stop("all 'layers' elements must have non-trivial names")
-      }
-
-      ## layer elements
-      for (layer in layer_names) {
-        layer_name <- paste0("layers[[", layer, "]]")
-        private$.validate_matrix(layers[[layer]], layer_name)
-      }
-
-      layers
     },
 
     # @description `.validate_obsvar_dataframe()` checks that the

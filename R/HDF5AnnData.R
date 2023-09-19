@@ -36,7 +36,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "layers")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
-        value <- private$.validate_layers(value)
+        value <- private$.validate_aligned_mapping(value, "layers", c(self$n_obs(), self$n_vars()), expected_rownames = rownames(self), expected_colnames = colnames(self))
         write_h5ad_element(value, private$.h5obj, "/layers")
       }
     },
@@ -47,7 +47,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "obsm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=wip
-        value <- private$.validate_array_collection_generic(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
+        value <- private$.validate_aligned_mapping(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
         write_h5ad_element(value, private$.h5obj, "/obsm")
       }
     },
@@ -58,7 +58,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "varm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varm, status=wip
-        value <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
+        value <- private$.validate_aligned_mapping(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
         write_h5ad_element(value, private$.h5obj, "/varm")
       }
     },
@@ -69,7 +69,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "obsp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsp, status=wip
-        value <- private$.validate_array_collection_generic(value, "obsp", c(self$n_obs(), self$n_obs()), expected_rownames = rownames(self), expected_colnames = rownames(self))
+        value <- private$.validate_aligned_mapping(value, "obsp", c(self$n_obs(), self$n_obs()), expected_rownames = rownames(self), expected_colnames = rownames(self))
         write_h5ad_element(value, private$.h5obj, "/obsp")
       }
     },
@@ -80,7 +80,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "varp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=wip
-        value <- private$.validate_array_collection_generic(value, "varp", c(self$n_vars(), self$n_vars()), expected_rownames = colnames(self), expected_colnames = colnames(self))
+        value <- private$.validate_aligned_mapping(value, "varp", c(self$n_vars(), self$n_vars()), expected_rownames = colnames(self), expected_colnames = colnames(self))
         write_h5ad_element(value, private$.h5obj, "/varp")
       }
     },
