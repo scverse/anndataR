@@ -36,6 +36,18 @@ used to identify each row of \code{var} and to act as an index into
 the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
+
+\item{\code{obsm}}{The obsm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{obs}.}
+
+\item{\code{varm}}{The varm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{var}.}
+
+\item{\code{obsp}}{The obsp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{obs}.}
+
+\item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{var}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -52,6 +64,7 @@ vector.}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
+\item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -163,6 +176,23 @@ Convert to an InMemory AnnData
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_HDF5AnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_HDF5AnnData}{}}}
+\subsection{Method \code{to_HDF5AnnData()}}{
+Convert to an HDF5 Backed AnnData
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(path)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{The path to the HDF5 file}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-clone"></a>}}

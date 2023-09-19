@@ -1,8 +1,11 @@
 dummy <- dummy_data(10L, 20L)
 
+h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+adata <- read_h5ad(h5ad_file, to = "InMemoryAnnData")
+
 # GETTERS ----------------------------------------------------------------
 test_that("create inmemory anndata", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
@@ -24,7 +27,7 @@ test_that("create inmemory anndata", {
 })
 
 test_that("with empty obs", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     obs = data.frame(),
     var = dummy$var,
     obs_names = character(0),
@@ -34,7 +37,7 @@ test_that("with empty obs", {
 })
 
 test_that("with empty var", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     obs = dummy$obs,
     var = data.frame(),
     obs_names = dummy$obs_names,
@@ -43,10 +46,10 @@ test_that("with empty var", {
   expect_identical(ad$shape(), c(10L, 0L))
 })
 
-test_that("InMemoryAnnData$new() fails gracefully", {
-  expect_error(InMemoryAnnData$new())
-  expect_error(InMemoryAnnData$new(obs = data.frame(x = 1:3)))
-  expect_error(InMemoryAnnData$new(var = data.frame(x = 1:3)))
+test_that("AnnData() fails gracefully", {
+  expect_error(AnnData())
+  expect_error(AnnData(obs = data.frame(x = 1:3)))
+  expect_error(AnnData(var = data.frame(x = 1:3)))
 })
 
 test_that("InMemoryAnnData$new produces a warning if rownames are found", {
@@ -55,7 +58,7 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   rownames(x_with_rownames) <- dummy$obs_names
 
   expect_warning({
-    InMemoryAnnData$new(
+    AnnData(
       X = x_with_rownames,
       obs = dummy$obs,
       var = dummy$var,
@@ -69,7 +72,7 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   colnames(x_with_colnames) <- dummy$var_names
 
   expect_warning({
-    InMemoryAnnData$new(
+    AnnData(
       X = x_with_colnames,
       obs = dummy$obs,
       var = dummy$var,
@@ -83,7 +86,7 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   rownames(obs_with_rownames) <- dummy$obs_names
 
   expect_warning({
-    InMemoryAnnData$new(
+    AnnData(
       X = dummy$X,
       obs = obs_with_rownames,
       var = dummy$var,
@@ -97,7 +100,7 @@ test_that("InMemoryAnnData$new produces a warning if rownames are found", {
   rownames(var_with_rownames) <- dummy$var_names
 
   expect_warning({
-    InMemoryAnnData$new(
+    AnnData(
       X = dummy$X,
       obs = dummy$obs,
       var = var_with_rownames,
@@ -113,7 +116,7 @@ test_that("'layers' works", {
   ## layers test helper function
   layers_test <- function(obs_names, var_names, layers) {
     expect_no_condition({
-      ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers)
+      ad <- AnnData(obs_names = obs_names, var_names = var_names, layers = layers)
     })
     expect_identical(ad$layers, layers)
   }
@@ -123,7 +126,7 @@ test_that("'layers' works", {
   layers_test(obs_names, var_names, setNames(list(), character()))
   layers_test(obs_names, var_names, list(A = matrix(0, 0, 0)))
   ## must be a named list
-  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, list()))
+  expect_error(AnnData(obs_names = obs_names, var_names = var_names, list()))
 
   obs_names <- letters[1:3]
   var_names <- LETTERS[1:5]
@@ -132,28 +135,45 @@ test_that("'layers' works", {
   layers_test(obs_names, var_names, list(A = matrix(0, 3, 5), B = matrix(1, 3, 5)))
 
   ## must be a named list
-  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = list()))
   layers <- list(matrix(0, 3, 5))
-  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
+  expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
   ## non-trivial names
   layers <- list(A = matrix(0, 3, 5), matrix(1, 3, 5))
-  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
+  expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
   ## matching dimensions
   layers <- list(A = matrix(0, 0, 0))
-  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
+  expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
   layers <- list(A = matrix(0, 3, 5), B = matrix(1, 5, 3))
-  expect_error(InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers))
+  expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
+})
+
+test_that("reading obsm works", {
+  obsm <- adata$obsm
+  expect_true(is.list(obsm), "list")
+  expect_equal(
+    names(obsm),
+    c("X_pca", "X_umap")
+  )
+})
+
+test_that("reading varm works", {
+  varm <- adata$varm
+  expect_true(is.list(varm), "list")
+  expect_equal(
+    names(varm),
+    c("PCs")
+  )
 })
 
 test_that("*_keys() works", {
   obs_names <- var_names <- character(0)
-  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names)
+  ad <- AnnData(obs_names = obs_names, var_names = var_names)
   expect_identical(ad$layers_keys(), NULL)
   expect_identical(ad$obs_keys(), character())
   expect_identical(ad$var_keys(), character())
 
   layers <- setNames(list(), character())
-  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, layers = layers)
+  ad <- AnnData(obs_names = obs_names, var_names = var_names, layers = layers)
   expect_identical(ad$layers_keys(), character())
 
   obs_names <- letters[1:3]
@@ -161,7 +181,7 @@ test_that("*_keys() works", {
   layers <- list(A = matrix(0, 3, 5), B = matrix(1, 3, 5))
   obs <- data.frame(x = 1:3)
   var <- data.frame(y = 1:5)
-  ad <- InMemoryAnnData$new(obs_names = obs_names, var_names = var_names, obs = obs, var = var, layers = layers)
+  ad <- AnnData(obs_names = obs_names, var_names = var_names, obs = obs, var = var, layers = layers)
   expect_identical(ad$layers_keys(), c("A", "B"))
   expect_identical(ad$obs_keys(), "x")
   expect_identical(ad$var_keys(), "y")
@@ -171,7 +191,7 @@ test_that("*_keys() works", {
 
 # trackstatus: class=InMemoryAnnData, feature=test_set_X, status=done
 test_that("write to X", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
@@ -195,7 +215,7 @@ test_that("write to X", {
 
 # trackstatus: class=InMemoryAnnData, feature=test_set_obs, status=done
 test_that("write to obs", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
@@ -226,7 +246,7 @@ test_that("write to obs", {
 
 # trackstatus: class=InMemoryAnnData, feature=test_set_var, status=done
 test_that("write to var", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
@@ -257,7 +277,7 @@ test_that("write to var", {
 
 # trackstatus: class=InMemoryAnnData, feature=test_set_obs_names, status=done
 test_that("write to obs_names", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
@@ -277,7 +297,7 @@ test_that("write to obs_names", {
 
 # trackstatus: class=InMemoryAnnData, feature=test_set_var_names, status=done
 test_that("write to var_names", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
@@ -297,7 +317,7 @@ test_that("write to var_names", {
 
 # trackstatus: class=InMemoryAnnData, feature=test_set_layers, status=done
 test_that("write to layers", {
-  ad <- InMemoryAnnData$new(
+  ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,

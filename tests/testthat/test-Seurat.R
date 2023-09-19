@@ -1,15 +1,23 @@
 dummy <- dummy_data(10L, 20L)
 
 test_that("to_Seurat with inmemoryanndata", {
-  ad <- example_data(10L, 20L)
+
+  ad <- AnnData(
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
+  ) 
   # running to_seurat when ad0$X is null probably doesn't make any sense
-  ad0 <- InMemoryAnnData$new(
+  ad0 <- AnnData(
     obs_names = letters[1:5],
     var_names = LETTERS[1:10]
   )
 
+  # TODO: remove suppressWarnings when to_Seurat gets updated
   seu <- suppressWarnings(ad$to_Seurat())
-  seu0 <- ad0$to_Seurat()
+  seu0 <- suppressWarnings(ad0$to_Seurat())
 
   expect_equal(nrow(seu), 20)
   expect_equal(ncol(seu), 10)

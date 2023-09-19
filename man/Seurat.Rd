@@ -5,25 +5,25 @@
 \alias{from_Seurat}
 \title{Convert Between AnnData and Seurat}
 \usage{
-to_Seurat(obj, use_layer = NULL, ...)
+to_Seurat(obj, counts = c("X", obj$layer), ...)
 
 from_Seurat(
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
+  assay = NULL,
+  X = "counts",
   ...
 )
 }
 \arguments{
 \item{obj}{An AnnData object.}
 
+\item{counts}{Which layer to use A \code{layer} within \code{obj} to use}
+
 \item{...}{
   Arguments passed on to \code{\link[SeuratObject:CreateSeuratObject]{SeuratObject::CreateSeuratObject}}
   \describe{
-    \item{\code{counts}}{Either a \code{\link[base]{matrix}}-like object with
-unnormalized data with cells as columns and features as rows or an
-\code{\link[SeuratObject]{Assay}}-derived object}
     \item{\code{project}}{\link[SeuratObject]{Project} name for the \code{Seurat} object}
-    \item{\code{assay}}{Name of the initial assay}
     \item{\code{names.field}}{For the initial identity class for each cell, choose this
 field from the cell's name. E.g. If your cells are named as
 BARCODE_CLUSTER_CELLTYPE in the input matrix, set \code{names.field} to 3 to
@@ -41,23 +41,24 @@ to match the column names of the counts matrix.}
 \item{seurat_obj}{An object inheriting from Seurat.}
 
 \item{output_class}{Name of the AnnData class.
-Must be one of:
-\itemize{
-\item{"InMemoryAnnData": }{Produces \link[anndataR]{InMemoryAnnData}
-(default).}
-\item{"HDF5AnnData": }{Produces \link[anndataR]{HDF5AnnData}.}
-}}
-}
-\value{
-\link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
+Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
+
+\item{assay}{Assay to be converted. If NULL, \code{DefaultAssay()} is used.}
+
+\item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X.
+By default, 'counts' will be used (if it is
+not empty), followed by 'data', then 'scale.data'.
+The remaining non-empty slots will be stored in different layers.}
 }
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
 NOTE: Only 1 assay per object is currently.
 
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
+Only one assay can be converted at a time.
 }
 \examples{
-obj <- dummy_data(output="InMemoryAnnData")
+h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+ad <- anndataR::read_h5ad(h5ad_file)
 to_Seurat(obj) 
 }

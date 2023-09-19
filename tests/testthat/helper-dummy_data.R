@@ -8,7 +8,6 @@
 #' or "Seurat"
 #'
 #' @returns Object containing the generated dataset as defined by `output`
-#' @export
 #'
 #' @examples
 #' dummy <- dummy_data()
@@ -87,7 +86,7 @@ dummy_list <- function(n_obs = 10L, n_vars = 20L) {
 #' @param ... Parameters passed to `dummy_list`
 #'
 #' @return SingleCellExperiment containing the generated data
-dummy_SingleCellExperiment <- function(...) { #nolint
+dummy_SingleCellExperiment <- function(...) { # nolint
   if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
     stop(
       "Creating a SingleCellExperiment requires the 'SingleCellExperiment'",
@@ -121,7 +120,7 @@ dummy_SingleCellExperiment <- function(...) { #nolint
 #' @param ... Parameters passed to `dummy_list`
 #'
 #' @returns Seurat containing the generated data
-dummy_Seurat <- function(...) { #nolint
+dummy_Seurat <- function(...) { #nolint 
   if (!requireNamespace("SeuratObject", quietly = TRUE)) {
     stop(
       "Creating a Seurat requires the 'SeuratObject' package to be installed"

@@ -13,6 +13,8 @@ test_that("generating dummy SingleCellExperiment works", {
   expect_s4_class(dummy, "SingleCellExperiment")
 })
 
+suppressPackageStartupMessages(library(SeuratObject))
+
 test_that("generating dummy Seurat works", {
   dummy <- dummy_data(output = "Seurat")
   expect_s4_class(dummy, "Seurat")

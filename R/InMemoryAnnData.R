@@ -7,7 +7,7 @@
 #'
 #' @examples
 #' ## complete example
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   X = matrix(1:15, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(5:1, 3L, 5L),
@@ -21,7 +21,7 @@
 #' ad
 #'
 #' ## minimum example
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   obs_names = letters[1:10],
 #'   var_names = LETTERS[1:5]
 #' )
@@ -35,7 +35,11 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     .obs = NULL,
     .var = NULL,
     .obs_names = NULL,
-    .var_names = NULL
+    .var_names = NULL,
+    .obsm = NULL,
+    .varm = NULL,
+    .obsp = NULL,
+    .varp = NULL
   ),
   active = list(
     #' @field X NULL or an observation x variable matrix (without
@@ -59,7 +63,13 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.layers
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_layers, status=done
-        private$.layers <- private$.validate_layers(value)
+        private$.layers <- private$.validate_aligned_mapping(
+          value,
+          "layers",
+          c(self$n_obs(), self$n_vars()),
+          expected_rownames = rownames(self),
+          expected_colnames = colnames(self)
+        )
         self
       }
     },
@@ -118,6 +128,76 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.var_names <- private$.validate_obsvar_names(value, "var")
         self
       }
+    },
+    #' @field obsm The obsm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `obs`.
+    obsm = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
+        private$.obsm
+      } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=done
+        private$.obsm <- private$.validate_aligned_mapping(
+          value,
+          "obsm",
+          c(self$n_obs()),
+          expected_rownames = rownames(self)
+        )
+        self
+      }
+    },
+    #' @field varm The varm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `var`.
+    varm = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_varm, status=done
+        private$.varm
+      } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_varm, status=done
+        private$.varm <- private$.validate_aligned_mapping(
+          value,
+          "varm",
+          c(self$n_vars()),
+          expected_rownames = colnames(self)
+        )
+        self
+      }
+    },
+    #' @field obsp The obsp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `obs`.
+    obsp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_obsp, status=done
+        private$.obsp
+      } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_obsp, status=done
+        private$.obsp <- private$.validate_aligned_mapping(
+          value,
+          "obsp",
+          c(self$n_obs(), self$n_obs()),
+          expected_rownames = rownames(self),
+          expected_colnames = rownames(self)
+        )
+        self
+      }
+    },
+    #' @field varp The varp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `var`.
+    varp = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_varp, status=done
+        private$.varp
+      } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_varp, status=done
+        private$.varp <- private$.validate_aligned_mapping(
+          value,
+          "varp",
+          c(self$n_vars(), self$n_vars()),
+          expected_rownames = colnames(self),
+          expected_colnames = colnames(self)
+        )
+        self
+      }
     }
   ),
   public = list(
@@ -144,7 +224,28 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing information
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
-    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL) {
+    #' @param obsm The obsm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_obs` rows and an arbitrary number of columns.
+    #' @param varm The varm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_vars` rows and an arbitrary number of columns.
+    #' @param obsp The obsp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_obs`.
+    #' @param varp The varp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_vars`.
+    initialize = function(obs_names,
+                          var_names,
+                          X = NULL,
+                          obs = NULL,
+                          var = NULL,
+                          layers = NULL,
+                          obsm = NULL,
+                          varm = NULL,
+                          obsp = NULL,
+                          varp = NULL) {
       # write obs and var first, because these are used by other validators
       self$obs_names <- obs_names
       self$var_names <- var_names
@@ -154,6 +255,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
       self$var <- var
       self$X <- X
       self$layers <- layers
+      self$obsm <- obsm
+      self$varm <- varm
+      self$obsp <- obsp
+      self$varp <- varp
     }
   )
 )
@@ -171,7 +276,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #' @export
 #'
 #' @examples
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(5:1, 3L, 5L),
@@ -182,8 +287,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #'   obs_names = LETTERS[1:3],
 #'   var_names = letters[1:5]
 #' )
-#' to_InMemory(ad)
-to_InMemory <- function(adata) { # nolint
+#' to_InMemoryAnnData(ad)
+to_InMemoryAnnData <- function(adata) { # nolint
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
@@ -193,6 +298,10 @@ to_InMemory <- function(adata) { # nolint
     var = adata$var,
     obs_names = adata$obs_names,
     var_names = adata$var_names,
-    layers = adata$layers
+    layers = adata$layers,
+    obsm = adata$obsm,
+    varm = adata$varm,
+    obsp = adata$obsp,
+    varp = adata$varp
   )
 }

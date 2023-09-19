@@ -1,8 +1,10 @@
-# anndataR 0.99.0
+# anndataR 0.99.1
 
 ## New features
 
 * Add `example_data` function. 
+* Harmonise all references to `h5ad_file` (`file`,`h5ad_path`,`ad`)
+* Use `@returns` in Roxygen notes to allow multi-line notes.
 
 ## Bug fixes
 

@@ -18,6 +18,18 @@ Implementation of an in memory AnnData object.
 with with all elements having the dimensions consistent with
 \code{obs} and \code{var}.}
 
+\item{\code{obsm}}{The obsm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{obs}.}
+
+\item{\code{varm}}{The varm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{var}.}
+
+\item{\code{obsp}}{The obsp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{obs}.}
+
+\item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{var}.}
+
 \item{\code{obs}}{The obs slot}
 
 \item{\code{var}}{The var slot}
@@ -44,6 +56,7 @@ with with all elements having the dimensions consistent with
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_HDF5AnnData'><code>anndataR::AbstractAnnData$to_HDF5AnnData()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_InMemoryAnnData'><code>anndataR::AbstractAnnData$to_InMemoryAnnData()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndataR::AbstractAnnData$to_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndataR::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
@@ -64,7 +77,11 @@ HDF5AnnData constructor
   X = NULL,
   obs = NULL,
   var = NULL,
-  layers = NULL
+  layers = NULL,
+  obsm = NULL,
+  varm = NULL,
+  obsp = NULL,
+  varp = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -98,6 +115,22 @@ automatically be generated.}
 \item{\code{layers}}{Either \code{NULL} or a named list, where each element is an
 observation × variable matrix with dimensions consistent with \code{obs} and
 \code{var}.}
+
+\item{\code{obsm}}{The obsm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_obs} rows and an arbitrary number of columns.}
+
+\item{\code{varm}}{The varm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_vars} rows and an arbitrary number of columns.}
+
+\item{\code{obsp}}{The obsp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_obs}.}
+
+\item{\code{varp}}{The varp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_vars}.}
 }
 \if{html}{\out{</div>}}
 }

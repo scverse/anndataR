@@ -49,6 +49,26 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   vector.
     var_names = function(value) {
       .abstract_function("ad$var_names")
+    },
+    #' @field obsm The obsm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `obs`.
+    obsm = function(value) {
+      .abstract_function("ad$obsm")
+    },
+    #' @field varm The varm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `var`.
+    varm = function(value) {
+      .abstract_function("ad$varm")
+    },
+    #' @field obsp The obsp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `obs`.
+    obsp = function(value) {
+      .abstract_function("ad$obsp")
+    },
+    #' @field varp The varp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `var`.
+    varp = function(value) {
+      .abstract_function("ad$varp")
     }
   ),
   public = list(
@@ -57,20 +77,26 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
-      x_info <- if (!is.null(self$X)) {
-        class(self$X)[[1]]
-      } else {
-        NULL
+      cat("AnnData object with n_obs \u00D7 n_vars = ", self$n_obs(), " \u00D7 ", self$n_vars(), "\n", sep = "")
+
+      for (attribute in c(
+        "obs",
+        "var",
+        "uns",
+        "obsm",
+        "varm",
+        "layers",
+        "obsp",
+        "varp"
+      )) {
+        attr_key <- paste0(attribute, "_keys")
+        if (!is.null(self[[attr_key]])) {
+          slot_keys <- self[[attr_key]]()
+          if (length(slot_keys) > 0) {
+            cat("    ", pretty_print(attribute, slot_keys), "\n", sep = "")
+          }
+        }
       }
-      cat(
-        "class: ", class(self)[[1]], "\n",
-        "dim: ", self$n_obs(), " obs x ", self$n_vars(), " var\n",
-        "X: ", x_info, "\n",
-        pretty_print("layers", self$layers_keys()), "\n",
-        pretty_print("obs", self$obs_keys()), "\n",
-        pretty_print("var", self$var_keys()), "\n",
-        sep = ""
-      )
     },
 
     #' @description Dimensions (observations x variables) of the AnnData object.
@@ -111,6 +137,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' @description Convert to an InMemory AnnData
     to_InMemoryAnnData = function() {
       to_InMemoryAnnData(self)
+    },
+    #' @description Convert to an HDF5 Backed AnnData
+    #' @param path The path to the HDF5 file
+    to_HDF5AnnData = function(path) {
+      to_HDF5AnnData(self, path)
     }
   ),
   private = list(
@@ -147,31 +178,79 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       mat
     },
 
-    # @description `.validate_layers()` checks for named lists and
+
+    # @description `.validate_aligned_array()` checks that dimensions are
+    #   consistent with the anndata object.
+    # @param mat A matrix to validate
+    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
+    #   the name of a layer.
+    # @param shape Expected dimensions of matrix
+    # @param expected_rownames
+    # @param excepted_colnames
+    .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+      mat_dims <- dim(mat)
+      for (i in seq_along(shape)) {
+        expected_dim <- shape[i]
+        found_dim <- mat_dims[i]
+        if (found_dim != expected_dim) {
+          stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
+        }
+      }
+      if (!is.null(expected_rownames) & !is.null(rownames(mat))) {
+        if (!identical(rownames(mat), expected_rownames)) {
+          stop("rownames(", label, ") should be the same as expected_rownames")
+        }
+      }
+      if (!is.null(rownames(mat))) {
+        warning(wrap_message(
+          "rownames(", label, ") should be NULL, removing them from the matrix"
+        ))
+        rownames(mat) <- NULL
+      }
+      if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
+        if (!identical(colnames(mat), expected_colnames)) {
+          stop("colnames(", label, ") should be the same as expected_colnames")
+        }
+      }
+      if (!is.null(colnames(mat))) {
+        warning(wrap_message(
+          "colnames(", label, ") should be NULL, removing them from the matrix"
+        ))
+        colnames(mat) <- NULL
+      }
+
+      mat
+    },
+    # @description `.validate_aligned_mapping()` checks for named lists and
     #   correct dimensions on elements.
-    # @param layers A named list of 0 or more matrix elements with
-    #   dimensions consistent with `obs` and `var`.
-    .validate_layers = function(layers) {
-      if (is.null(layers)) {
-        return(layers)
+    # @param collection A named list of 0 or more matrix elements with
+    #   whose entries will be validated
+    # @param label The label of the collection, used for error messages
+    # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
+    # @param expected_rownames
+    # @param expected_colnames
+    .validate_aligned_mapping = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+      if (is.null(collection)) {
+        return(collection)
       }
 
-      ## layers and names
-      layer_names <- names(layers)
-      if (!is.list(layers) || is.null(layer_names)) {
-        stop("'layers' must must be a named list")
-      }
-      if (any(!nzchar(layer_names))) {
-        stop("all 'layers' elements must have non-trivial names")
+      collection_names <- names(collection)
+      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
+        stop(paste0(label, " must be a named list, was ", class(collection)))
       }
 
-      ## layer elements
-      for (layer in layer_names) {
-        layer_name <- paste0("layers[[", layer, "]]")
-        private$.validate_matrix(layers[[layer]], layer_name)
+      for (mtx_name in collection_names) {
+        collection_name <- paste0(label, "[['", mtx_name, "']]")
+        private$.validate_aligned_array(
+          collection[[mtx_name]],
+          collection_name,
+          shape = shape,
+          expected_rownames = expected_rownames,
+          expected_colnames = expected_colnames
+        )
       }
 
-      layers
+      collection
     },
 
     # @description `.validate_obsvar_dataframe()` checks that the
