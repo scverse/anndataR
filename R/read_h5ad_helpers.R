@@ -6,6 +6,8 @@
 #' @param name Name of the element within the H5AD file
 #'
 #' @return A named list with names type and version
+#'
+#' @noRd
 read_h5ad_encoding <- function(file, name) {
   attrs <- rhdf5::h5readAttributes(file, name)
 
@@ -37,8 +39,9 @@ read_h5ad_encoding <- function(file, name) {
 #' Encoding is automatically determined from the element using
 #' `read_h5ad_encoding` and used to select the appropriate reading function.
 #'
-#'
 #' @return Value depending on the encoding
+#'
+#' @noRd
 read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
   if (is.null(type)) {
     encoding_list <- read_h5ad_encoding(file, name)
@@ -77,6 +80,8 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
 #' @param version Encoding version of the element to read
 #'
 #' @return a matrix or a vector if 1D
+#'
+#' @noRd
 read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
   # TODO: ideally, native = TRUE should take care of the row order and column order,
@@ -118,6 +123,8 @@ read_h5ad_csc_matrix <- function(file, name, version) {
 #'
 #' @return a sparse matrix/DelayedArray???, or a vector if 1D
 #' @importFrom Matrix sparseMatrix
+#'
+#' @noRd
 read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
                                    type = c("csr_matrix", "csc_matrix")) {
   version <- match.arg(version)
@@ -168,6 +175,8 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
 #' They are used by **scanpy** to score marker gene testing results.
 #'
 #' @return a named list of 1D arrays
+#'
+#' @noRd
 read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
@@ -196,6 +205,8 @@ read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return an integer vector
+#'
+#' @noRd
 read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
   as.integer(read_h5ad_nullable(file, name, version))
 }
@@ -209,6 +220,8 @@ read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a nullable vector
+#'
+#' @noRd
 read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
@@ -236,6 +249,8 @@ read_h5ad_nullable <- function(file, name, version = "0.1.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a character vector/matrix
+#'
+#' @noRd
 read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
   # reads in transposed
@@ -261,6 +276,8 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a factor
+#'
+#' @noRd
 read_h5ad_categorical <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
@@ -280,7 +297,7 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   attributes <- rhdf5::h5readAttributes(file, name)
   ordered <- attributes[["ordered"]]
-  if (is.na(ordered)) {
+  if (is.null(ordered) || is.na(ordered)) {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
     # can't tell if the categorical should be ordered,
     # see https://github.com/grimbough/rhdf5/issues/125
@@ -304,6 +321,8 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a character vector of length 1
+#'
+#' @noRd
 read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
   rhdf5::h5read(file, name)
@@ -318,6 +337,8 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a numeric vector of length 1
+#'
+#' @noRd
 read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
   rhdf5::h5read(file, name)
@@ -332,6 +353,8 @@ read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a named list
+#'
+#' @noRd
 read_h5ad_mapping <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
   groupname <- paste0("/", name)
@@ -358,6 +381,8 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' is not provided in the output. In either case row names are not set.
 #'
 #' @return a data.frame
+#'
+#' @noRd
 read_h5ad_data_frame <- function(file, name, include_index = TRUE,
                                  version = "0.2.0") {
   version <- match.arg(version)
@@ -400,6 +425,8 @@ read_h5ad_data_frame <- function(file, name, include_index = TRUE,
 #' @param version Encoding version of the element to read
 #'
 #' @return an object containing the index
+#'
+#' @noRd
 read_h5ad_data_frame_index <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
@@ -416,6 +443,8 @@ read_h5ad_data_frame_index <- function(file, name, version = "0.2.0") {
 #' @param column_order Vector of item names (in order)
 #'
 #' @return a named list
+#'
+#' @noRd
 read_h5ad_collection <- function(file, name, column_order) {
   columns <- list()
   for (col_name in column_order) {
