@@ -200,6 +200,72 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
       ad$layers[[slot]] <- Matrix::t(assay_data)
     }
   }
+  
+  # TODO: add checks
+  # TODO: can anything be stored in varp?
+
+  # Dimensionality reduction
+  for (reduction in names(seurat_obj@reductions)){
+    # Check if the dimreduc was calculated by the selected assay
+    if (seurat_obj@reductions[[reduction]]@assay.used != assay_name){
+      next
+    }
+    
+    # cell embeddings to obsm
+    ad$obsm[[reduction]] <- seurat_obj@reductions[[reduction]]@cell.embeddings
+    
+    # gene loadings to varm
+    feature_loadings <- seurat_obj@reductions[[reduction]]@feature.loadings
+    feature_loadings_projected <- seurat_obj@reductions[[reduction]]@feature.loadings.projected
+    
+    if (!all(dim(feature_loadings) == 0)){
+      ad$varm[[reduction]] <- seurat_obj@reductions[[reduction]]@feature.loadings
+    }
+    
+    if (!all(dim(feature_loadings_projected) == 0)){
+      ad$varm[[paste0(reduction, "_projected")]] <- seurat_obj@reductions[[reduction]]@feature.loadings.projected
+    }
+    
+    # uns
+    stdev <- seurat_obj@reductions[[reduction]]@stdev
+    misc <- seurat_obj@reductions[[reduction]]@misc
+    if (length(stdev) > 0){
+      ad$uns[[paste0(reduction, "_stdev")]] <- stdev
+    }
+    
+    if (length(misc) > 0){
+      ad$uns[[paste0(reduction, "_misc")]] <- misc
+    }
+    
+    # TODO: seurat_obj@reductions[[reduction]]@jackstraw
+  }
+  
+  # Graphs (inherits from dgCMatrix)
+  for (graph in names(seurat_obj@graphs)){
+    # Check if graphs was created from selected assay
+    if (grepl(paste0("^", assay_name), graph)){
+      # pairwise distances -> obsp
+      ad$obsp[[graph]] <- seurat_obj@graphs[[graph]]
+    }
+  }
+  
+  # Neighbors
+  for (neighbor in names(seurat_obj@neighbors)){
+    # Check if neighbors was created from selected assay
+    if (grepl(paste0("^", assay_name), neighbor)){
+      
+      # Unlike Graphs, this is not a pairwise distance
+      ad$obsm[[neighbor]] <- seurat_obj@neighbors[[neighbor]]@nn.idx
+      ad$obsm[[neighbor]] <- seurat_obj@neighbors[[neighbor]]@nn.dist
+      
+      # Other parameters
+      ad$uns[[neighbor]] <- seurat_obj@neighbors[[neighbor]]@alg.info
+      
+      # TODO: @alg.idx is not considered right now
+      # TODO: check if @cell.names can be different from all cells
+      
+    }
+  }
 
   return(ad)
 }
