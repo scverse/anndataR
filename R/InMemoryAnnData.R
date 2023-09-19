@@ -129,13 +129,14 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         self
       }
     },
-    #' @field obsm
+    #' @field obsm The obsm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `obs`.
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
         private$.obsm
       } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=wip
+        # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=done
         private$.obsm <- private$.validate_aligned_mapping(
           value,
           "obsm",
@@ -145,13 +146,14 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         self
       }
     },
-    #' @field varm
+    #' @field varm The varm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `var`.
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_varm, status=done
         private$.varm
       } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_varm, status=wip
+        # trackstatus: class=InMemoryAnnData, feature=set_varm, status=done
         private$.varm <- private$.validate_aligned_mapping(
           value,
           "varm",
@@ -161,13 +163,14 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         self
       }
     },
-    #' @field obsp
+    #' @field obsp The obsp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `obs`.
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obsp, status=done
         private$.obsp
       } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_obsp, status=wip
+        # trackstatus: class=InMemoryAnnData, feature=set_obsp, status=done
         private$.obsp <- private$.validate_aligned_mapping(
           value,
           "obsp",
@@ -178,13 +181,14 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         self
       }
     },
-    #' @field varp
+    #' @field varp The varp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `var`.
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_varp, status=done
         private$.varp
       } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_varp, status=wip
+        # trackstatus: class=InMemoryAnnData, feature=set_varp, status=done
         private$.varp <- private$.validate_aligned_mapping(
           value,
           "varp",
@@ -220,6 +224,18 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing information
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
+    #' @param obsm The obsm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_obs` rows and an arbitrary number of columns.
+    #' @param varm The varm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_vars` rows and an arbitrary number of columns.
+    #' @param obsp The obsp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_obs`.
+    #' @param varp The varp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_vars`.
     initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL, obsp = NULL, varp = NULL) {
       # write obs and var first, because these are used by other validators
       self$obs_names <- obs_names
