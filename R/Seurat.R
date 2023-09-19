@@ -118,30 +118,28 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
-  if (!is.null(assay)) {
-    if (!assay %in% names(seurat_obj@assays)) {
-      stop("'assay' must be one of: ", paste0("'", names(seurat_obj@assays), "'", collapse = ", "))
-    }
-  }
-
   if (!is.null(X)) {
     if (!X %in% c("counts", "data", "scale.data")) {
       stop("X must be NULL or one of: 'counts', 'data', 'scale.data'")
     }
   }
 
-  # If there is more than one assay, select only one
-  if (length(names(seurat_obj@assays)) > 1) {
-    # Use DefaultAssay if argument not provided by user
-    assay_name <- ifelse(is.null(assay), SeuratObject::DefaultAssay(seurat_obj), assay)
-
-    message(
-      "There are ", length(names(seurat_obj@assays)), " assays in the Seurat object; using the ",
-      ifelse(is.null(assay), paste0("default ('", assay_name, "')"), paste0("'", assay_name, "'")),
-      " assay.", ifelse(is.null(assay), " You can use the `assay` parameter to select a specific assay.", "")
-    )
+  if (!is.null(assay)) {
+    # If a specific assay is selected, use it
+    if (!assay %in% names(seurat_obj@assays)) {
+      stop("'assay' must be NULL or one of: ", paste0("'", names(seurat_obj@assays), "'", collapse = ", "))
+    }
+    assay_name <- assay
   } else {
     assay_name <- SeuratObject::DefaultAssay(seurat_obj)
+
+    # If Seurat object contains multiple assays, notify user the Default one is used
+    if (length(names(seurat_obj@assays)) > 1) {
+      message(
+        "There are ", length(names(seurat_obj@assays)), " assays in the Seurat object; using the default assay ('",
+        assay_name, "'). You can use the `assay` parameter to select a specific assay."
+      )
+    }
   }
 
   # get obs_names
