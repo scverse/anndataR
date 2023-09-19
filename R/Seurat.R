@@ -115,34 +115,36 @@ to_Seurat <- function(obj) { # nolint
 #'
 #' @export
 # TODO: add tests with Seurat objects not created by anndataR
-from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X="counts", ...) { # nolint
+from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
 
   stopifnot(inherits(seurat_obj, "Seurat"))
-  
-  if (!is.null(assay)){
-    if (!assay %in% names(seurat_obj@assays)){
-      stop("'assay' must be one of: ", paste0("'", names(seurat_obj@assays), "'", collapse=", "))
+
+  if (!is.null(assay)) {
+    if (!assay %in% names(seurat_obj@assays)) {
+      stop("'assay' must be one of: ", paste0("'", names(seurat_obj@assays), "'", collapse = ", "))
     }
   }
-  
-  if (!is.null(X)){
-    if (!X %in% c("counts", "data", "scale.data")){
+
+  if (!is.null(X)) {
+    if (!X %in% c("counts", "data", "scale.data")) {
       stop("X must be NULL or one of: 'counts', 'data', 'scale.data'")
     }
   }
-  
+
   # If there is more than one assay, select only one
   if (length(names(seurat_obj@assays)) > 1) {
     # Use DefaultAssay if argument not provided by user
     assay_name <- ifelse(is.null(assay), SeuratObject::DefaultAssay(seurat_obj), assay)
-    
-    message("There are ", length(names(seurat_obj@assays)), " assays in the Seurat object; using the ",
-            ifelse(is.null(assay), paste0("default ('", assay_name, "')"), paste0("'", assay_name, "'")),
-            " assay.", ifelse(is.null(assay), " You can use the `assay` parameter to select a specific assay.", ""))
+
+    message(
+      "There are ", length(names(seurat_obj@assays)), " assays in the Seurat object; using the ",
+      ifelse(is.null(assay), paste0("default ('", assay_name, "')"), paste0("'", assay_name, "'")),
+      " assay.", ifelse(is.null(assay), " You can use the `assay` parameter to select a specific assay.", "")
+    )
   } else {
     assay_name <- SeuratObject::DefaultAssay(seurat_obj)
   }
-  
+
   # get obs_names
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   obs_names <- colnames(seurat_obj)
@@ -173,50 +175,46 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
   # trackstatus: class=Seurat, feature=set_X, status=wip
   # trackstatus: class=Seurat, feature=set_layers, status=wip
-  
-  if (!is.null(X)){
+
+  if (!is.null(X)) {
     slots_priority <- c("counts", "data", "scale.data")
-    
+
     # If one or more assays are empty, go through slots_priority
-    while (all(dim(GetAssayData(seurat_obj, slot = X)) == 0)){
+    while (all(dim(GetAssayData(seurat_obj, slot = X)) == 0)) {
       # Pop out X from slots_priority
       slots_priority <- slots_priority[slots_priority != X]
       X_old <- X
       X <- slots_priority[1]
-      
-      # All three matrices are empty (probably not going to happen) 
-      if (length(slots_priority) == 0){
+
+      # All three matrices are empty (probably not going to happen)
+      if (length(slots_priority) == 0) {
         stop("All slots are empty.")
       }
-      
-      warning("The '", X_old, "' slot is empty; using '", X,"' slot instead")
+
+      warning("The '", X_old, "' slot is empty; using '", X, "' slot instead")
     }
-    
+
     assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)
-    
+
     # Remove names
     dimnames(assay_data) <- list(NULL, NULL)
     ad$X <- Matrix::t(assay_data)
-    
   } else {
     # For the if statement afterwards - cannot compare with NULL
     X <- "none"
   }
-  
+
   # Add the remaining non-empty slots as layers
   slots <- c("counts", "data", "scale.data")
   slots <- slots[slots != X]
 
-  for (slot in slots){
-    if (!all(dim(GetAssayData(seurat_obj, slot = slot)) == 0)){
+  for (slot in slots) {
+    if (!all(dim(GetAssayData(seurat_obj, slot = slot)) == 0)) {
       assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = slot, assay = assay_name)
       dimnames(assay_data) <- list(NULL, NULL)
       ad$layers[[slot]] <- Matrix::t(assay_data)
     }
   }
-    
+
   return(ad)
 }
-
-
-
