@@ -57,7 +57,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
-      cat("AnnData object with n_obs \u00D7 n_vars = ", self$n_obs(), " × ", self$n_vars(), "\n", sep = "")
+      cat("AnnData object with n_obs \u00D7 n_vars = ", self$n_obs(), " \u00D7 ", self$n_vars(), "\n", sep = "")
 
       for (attribute in c(
         "obs",

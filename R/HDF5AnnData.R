@@ -15,10 +15,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field X The X slot
     X = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_X, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_X, status=done
         read_h5ad_element(private$.h5obj, "/X")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_X, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_X, status=done
         value <- private$.validate_matrix(value, "X")
         write_h5ad_element(value, private$.h5obj, "/X")
       }
@@ -28,10 +28,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   `obs` and `var`.
     layers = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_layers, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
         read_h5ad_element(private$.h5obj, "layers")
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_layers, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
         value <- private$.validate_layers(value)
         write_h5ad_element(value, private$.h5obj, "/layers")
       }
@@ -39,10 +39,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field obs The obs slot
     obs = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_obs, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
         read_h5ad_element(private$.h5obj, "/obs", include_index = FALSE)
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obs, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
         write_h5ad_element(
           value,
@@ -55,10 +55,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field var The var slot
     var = function(value) {
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_var, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_var, status=done
         read_h5ad_element(private$.h5obj, "/var", include_index = FALSE)
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_var, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
         write_h5ad_element(
           value,
@@ -70,9 +70,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
-      # TODO: directly write to and read from /obs/_index
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
         # obs names are cached to avoid reading all of obs whenever they are
         # accessed
         if (is.null(private$.obs_names)) {
@@ -80,7 +79,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         }
         private$.obs_names
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
         value <- private$.validate_obsvar_names(value, "obs")
         write_h5ad_data_frame_index(value, private$.h5obj, "obs", "_index")
         private$.obs_names <- value
@@ -90,7 +89,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     var_names = function(value) {
       # TODO: directly write to and read from /var/_index
       if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_var_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
         # var names are cached to avoid reading all of var whenever they are
         # accessed
         if (is.null(private$.var_names)) {
@@ -98,7 +97,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         }
         private$.var_names
       } else {
-        # trackstatus: class=HDF5AnnData, feature=set_var_names, status=wip
+        # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
         value <- private$.validate_obsvar_names(value, "var")
         write_h5ad_data_frame_index(value, private$.h5obj, "var", "_index")
         private$.var_names <- value

@@ -1,5 +1,4 @@
 ^LICENSE\.md$
-^doc$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
@@ -10,4 +9,6 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-^vignettes/features.Rmd$
+^vignettes/diagrams/*\.mmd$
+^vignettes/diagrams/*\.svg$
+^vignettes/design\.Rmd$
