@@ -30,13 +30,12 @@ Check out `?anndataR` for a full list of the functions provided by this package.
 # Installation
 
 Install using:
- ```{r, eval = FALSE}
+```{r, eval = FALSE}
 if (!require("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
-
-BiocManager::install("BiocStyle")
- ```
+BiocManager::install("anndataR")
+```
 
 # Usage
 
