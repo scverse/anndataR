@@ -4,7 +4,7 @@
 \alias{to_HDF5AnnData}
 \title{Convert an AnnData object to an HDF5AnnData object}
 \usage{
-to_HDF5AnnData(adata, file)
+to_HDF5AnnData(adata, file, ...)
 }
 \arguments{
 \item{adata}{An AnnData object to be converted to HDF5AnnData.}

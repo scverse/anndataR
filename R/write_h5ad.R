@@ -61,21 +61,23 @@
 #'
 #'   write_h5ad(obj, h5ad_file)
 #' }
-write_h5ad <- function(object, path) {
+write_h5ad <- function(object, path, ...) {
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,
       output_class = "HDF5AnnData",
-      file = path
+      file = path,
+      ...
     )
   } else if (inherits(object, "Seurat")) {
     from_Seurat(
       object,
       output_class = "HDF5AnnData",
-      file = path
+      file = path,
+      ...
     )
   } else if (inherits(object, "AbstractAnnData")) {
-    to_HDF5AnnData(object, path)
+    to_HDF5AnnData(object, path, ...)
   } else {
     stop("Unable to write object of class: ", class(object))
   }

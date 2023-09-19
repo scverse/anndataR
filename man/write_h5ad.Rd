@@ -4,7 +4,7 @@
 \alias{write_h5ad}
 \title{Write H5AD}
 \usage{
-write_h5ad(object, path)
+write_h5ad(object, path, ...)
 }
 \arguments{
 \item{object}{The object to write, either a "SingleCellExperiment" or a

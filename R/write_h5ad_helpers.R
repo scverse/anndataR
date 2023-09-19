@@ -5,6 +5,8 @@
 #' @param value The value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be
+#' one of `"NONE"`, `"GZIP"` or `"LZF"`. Defaults to `"NONE"`.
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -14,6 +16,7 @@
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
 write_h5ad_element <- function(value, file, name, compression = "NONE", ...) { # nolint
+  compression <- match.arg(compression, choices = c("GZIP", "LZF", "NONE"))
 
   # Delete the path if it already exists
   if (hdf5_path_exists(file, name)) {
@@ -101,6 +104,8 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be
+#' one of `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_dense_array <- function(value, file, name, compression, version = "0.2.0") {
   version <- match.arg(version)
@@ -126,6 +131,8 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_sparse_array <- function(value, file, name, compression, version = "0.1.0") {
   version <- match.arg(version)
@@ -175,6 +182,8 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_boolean <- function(value, file, name, compression, version = "0.1.0") {
   # write mask and values
@@ -198,6 +207,8 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_integer <- function(value, file, name, compression, version = "0.1.0") {
   # write mask and values
@@ -221,6 +232,8 @@ write_h5ad_nullable_integer <- function(value, file, name, compression, version 
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_string_array <- function(value, file, name, compression, version = "0.2.0") {
   rhdf5::h5write(
@@ -243,6 +256,8 @@ write_h5ad_string_array <- function(value, file, name, compression, version = "0
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, compression, version = "0.2.0") {
   rhdf5::h5createGroup(file, name)
@@ -262,6 +277,8 @@ write_h5ad_categorical <- function(value, file, name, compression, version = "0.
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_string_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # Write scalar
@@ -286,11 +303,12 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # Write scalar
 
-  # TODO: figure out whether or not a scalar can be compressed? Are there errors?
   # rhdf5::h5write(value, file, name)
   hdf5_write_compressed(file, name, value, compression)
 
@@ -308,6 +326,8 @@ write_h5ad_numeric_scalar <- function(value, file, name, compression, version = 
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version Encoding version of the element to write
 write_h5ad_mapping <- function(value, file, name, compression, version = "0.1.0") {
   rhdf5::h5createGroup(file, name)
@@ -329,6 +349,8 @@ write_h5ad_mapping <- function(value, file, name, compression, version = "0.1.0"
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param index The index to write. Can either be a vector of length equal to
 #' the number of rows in `values` or a single character string giving the name
 #' of a column in `values`. If `NULL` then `rownames(value)` is used.
@@ -391,6 +413,8 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file containing the data
 #' frame
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param index_name Name of the data frame column storing the index
 write_h5ad_data_frame_index <- function(value, file, name, compression, index_name) {
   if (!hdf5_path_exists(file, name)) {
@@ -424,6 +448,8 @@ write_h5ad_data_frame_index <- function(value, file, name, compression, index_na
 #' @param file Path to the H5AD file to write
 #' @param obs_names Vector containing observation names
 #' @param var_names Vector containing variable names
+#' @param compression The compression to use when writing the element. Can be one of
+#' `"NONE"`, `"GZIP"` or `"LZF"`.
 #' @param version The H5AD version to write
 write_empty_h5ad <- function(file, obs_names, var_names, compression, version = "0.1.0") {
   h5file <- rhdf5::H5Fcreate(file)

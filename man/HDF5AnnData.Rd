@@ -65,7 +65,8 @@ HDF5AnnData constructor
   X = NULL,
   obs = NULL,
   var = NULL,
-  layers = NULL
+  layers = NULL,
+  compression = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -99,6 +100,10 @@ automatically be generated.}
 \item{\code{layers}}{Either \code{NULL} or a named list, where each element is an
 observation × variable matrix with dimensions consistent with \code{obs} and
 \code{var}.}
+
+\item{\code{compression}}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"GZIP"}, \code{"LZF"} or \code{"NONE"}. Defaults to
+\code{"NONE"}.}
 }
 \if{html}{\out{</div>}}
 }

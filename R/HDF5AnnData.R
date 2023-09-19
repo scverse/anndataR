@@ -131,6 +131,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing
     #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
     #'   automatically be generated.
+    #' @param compression The compression algorithm to use when writing the
+    #'  HDF5 file. Can be one of `"GZIP"`, `"LZF"` or `"NONE"`. Defaults to
+    #' `"NONE"`.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
@@ -145,6 +148,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
 
+      if (!is.null(compression)) {
+        compression <- match.arg(compression, choices = c("GZIP", "LZF", "NONE"))
+      } else {
+        compression <- "NONE"
+      }
+      private$.compression <- compression
+
       if (!file.exists(file)) {
         # Check obs_names and var_names have been provided
         if (is.null(obs_names)) {
@@ -153,13 +163,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         if (is.null(var_names)) {
           stop("When creating a new .h5ad file, `var_names` must be defined.")
         }
-
-        if (!is.null(compression)) {
-          compression <- match.arg(compression, choices = c("GZIP", "LZF"))
-        } else {
-          compression <- "NONE"
-        }
-        private$.compression <- compression
 
         # Create an empty H5AD using the provided obs/var names
         write_empty_h5ad(file, obs_names, var_names, compression)
@@ -258,7 +261,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' to_HDF5AnnData(ad, "test.h5ad")
 #' # remove file
 #' file.remove("test.h5ad")
-to_HDF5AnnData <- function(adata, file) { # nolint
+to_HDF5AnnData <- function(adata, file, ...) { # nolint
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
@@ -269,6 +272,7 @@ to_HDF5AnnData <- function(adata, file) { # nolint
     var = adata$var,
     obs_names = adata$obs_names,
     var_names = adata$var_names,
-    layers = adata$layers
+    layers = adata$layers,
+    ...
   )
 }
