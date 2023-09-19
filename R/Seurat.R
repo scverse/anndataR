@@ -104,12 +104,15 @@ to_Seurat <- function(obj) { # nolint
 
 #' @rdname Seurat
 #'
-#' @description `from_Seurat()` converts a Seurat object to an AnnData object. Only one assay can be converted at a time.
+#' @description `from_Seurat()` converts a Seurat object to an AnnData object.
+#' Only one assay can be converted at a time.
 #'
 #' @param seurat_obj An object inheriting from Seurat.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
 #' @param assay Assay to be converted. If NULL, `DefaultAssay()` is used.
-#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different layers.
+#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
+#'   not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
+#'   layers.
 #' @param ... Additional arguments passed to the generator function.
 #'
 #' @export
