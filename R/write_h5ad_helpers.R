@@ -500,6 +500,21 @@ hdf5_path_exists <- function(file, target_path) {
   target_path %in% paths
 }
 
+#' HDF5 write compressed
+#' 
+#' Write HDF5 dataset with chosen compression (can be none)
+#'
+#' @noRd
+#'
+#' @param file Path to a HDF5 file
+#' @param name Name of the element within the H5AD file containing the data
+#' frame
+#' @param value Value to write. Must be a vector to the same length as the data
+#' frame.
+#' @param compression The compression to use when writing the element. Can be 
+#' one of `"NONE"`, `"GZIP"` or `"LZF"`.
+#'
+#' @return Whether the `path` exists in `file`
 hdf5_write_compressed <- function(file, name, value, compression) {
   if (!is.null(dim(value))) {
     dims <- dim(value)
