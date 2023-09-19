@@ -236,7 +236,16 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param varp The varp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_vars`.
-    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL, obsp = NULL, varp = NULL) {
+    initialize = function(obs_names,
+                          var_names,
+                          X = NULL,
+                          obs = NULL,
+                          var = NULL,
+                          layers = NULL,
+                          obsm = NULL,
+                          varm = NULL,
+                          obsp = NULL,
+                          varp = NULL) {
       # write obs and var first, because these are used by other validators
       self$obs_names <- obs_names
       self$var_names <- var_names

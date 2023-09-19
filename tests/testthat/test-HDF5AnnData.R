@@ -48,11 +48,11 @@ test_that("reading varm works", {
 test_that("obsm/ varm validation", {
   N_OBS <- 5
   N_VAR <- 3
+
   mtx <- matrix(
     0,
     N_OBS,
-    N_VAR,
-    # dimnames = list(as.character(1:N_OBS), as.character(1:N_VAR)),
+    N_VAR
   )
 
   adata <- AnnData(

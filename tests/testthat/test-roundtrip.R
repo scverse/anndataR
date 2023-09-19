@@ -47,7 +47,6 @@ gen_adata <- function(type) {
 
 check_round_trip <- function(expected, type) {
   h5ad_file <- tempfile(pattern = "hdf5_write_", fileext = ".h5ad")
-  # expected <- read_h5ad(base_file, to = type)
   write_h5ad(expected, h5ad_file)
   actual <- read_h5ad(h5ad_file, to = type)
 

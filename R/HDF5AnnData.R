@@ -36,7 +36,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "layers")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
-        value <- private$.validate_aligned_mapping(value, "layers", c(self$n_obs(), self$n_vars()), expected_rownames = rownames(self), expected_colnames = colnames(self))
+        value <- private$.validate_aligned_mapping(
+          value,
+          "layers",
+          c(self$n_obs(), self$n_vars()),
+          expected_rownames = rownames(self),
+          expected_colnames = colnames(self)
+        )
         write_h5ad_element(value, private$.h5obj, "/layers")
       }
     },
@@ -48,7 +54,12 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "obsm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
-        value <- private$.validate_aligned_mapping(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
+        value <- private$.validate_aligned_mapping(
+          value,
+          "obsm",
+          c(self$n_obs()),
+          expected_rownames = rownames(self)
+        )
         write_h5ad_element(value, private$.h5obj, "/obsm")
       }
     },
@@ -60,7 +71,12 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "varm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
-        value <- private$.validate_aligned_mapping(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
+        value <- private$.validate_aligned_mapping(
+          value,
+          "varm",
+          c(self$n_vars()),
+          expected_rownames = colnames(self)
+        )
         write_h5ad_element(value, private$.h5obj, "/varm")
       }
     },
@@ -72,7 +88,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "obsp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
-        value <- private$.validate_aligned_mapping(value, "obsp", c(self$n_obs(), self$n_obs()), expected_rownames = rownames(self), expected_colnames = rownames(self))
+        value <- private$.validate_aligned_mapping(
+          value,
+          "obsp",
+          c(self$n_obs(), self$n_obs()),
+          expected_rownames = rownames(self),
+          expected_colnames = rownames(self)
+        )
         write_h5ad_element(value, private$.h5obj, "/obsp")
       }
     },
@@ -84,7 +106,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "varp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
-        value <- private$.validate_aligned_mapping(value, "varp", c(self$n_vars(), self$n_vars()), expected_rownames = colnames(self), expected_colnames = colnames(self))
+        value <- private$.validate_aligned_mapping(
+          value,
+          "varp",
+          c(self$n_vars(), self$n_vars()),
+          expected_rownames = colnames(self),
+          expected_colnames = colnames(self)
+        )
         write_h5ad_element(value, private$.h5obj, "/varp")
       }
     },
@@ -201,8 +229,17 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' must be specified. In both cases, any additional slots provided will be
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
-    initialize = function(file, obs_names = NULL, var_names = NULL, X = NULL,
-                          obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL, obsp = NULL, varp = NULL) {
+    initialize = function(file,
+                          obs_names = NULL,
+                          var_names = NULL,
+                          X = NULL,
+                          obs = NULL,
+                          var = NULL,
+                          layers = NULL,
+                          obsm = NULL,
+                          varm = NULL,
+                          obsp = NULL,
+                          varp = NULL) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
