@@ -24,10 +24,9 @@
 #'   seurat <- read_h5ad(h5ad_file, to = "Seurat")
 #' }
 read_h5ad <- function(
-  path,
-  to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
-  ...
-) {
+    path,
+    to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+    ...) {
   to <- match.arg(to)
 
   adata <- HDF5AnnData$new(path)
