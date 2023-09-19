@@ -10,14 +10,14 @@ test_that("opening H5AD works", {
 adata <- HDF5AnnData$new(file)
 
 # GETTERS ----------------------------------------------------------------
-# trackstatus: class=HDF5AnnData, feature=test_get_X, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_get_X, status=done
 test_that("reading X works", {
   X <- adata$X
   expect_s4_class(X, "dgRMatrix")
   expect_equal(dim(X), c(50, 100))
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_get_layers, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_get_layers, status=done
 test_that("reading layers works", {
   layers <- adata$layers
   expect_true(is.list(layers), "list")
@@ -68,7 +68,7 @@ test_that("obsm/ varm validation", {
   expect_error(adata$varm <- list(PCs = matrix(0, 4, 4)))
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_get_obs, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_get_obs, status=done
 test_that("reading obs works", {
   obs <- adata$obs
   expect_s3_class(obs, "data.frame")
@@ -81,7 +81,7 @@ test_that("reading obs works", {
   )
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_get_var, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_get_var, status=done
 test_that("reading var works", {
   var <- adata$var
   expect_s3_class(var, "data.frame")
@@ -95,13 +95,13 @@ test_that("reading var works", {
   )
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_get_obs_names, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_get_obs_names, status=done
 test_that("reading obs names works", {
   obs_names <- adata$obs_names
   expect_vector(obs_names, ptype = character(), size = 50)
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_get_var_names, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_get_var_names, status=done
 test_that("reading var names works", {
   var_names <- adata$var_names
   expect_vector(var_names, ptype = character(), size = 100)
@@ -113,7 +113,7 @@ test_that("creating empty H5AD works", {
   expect_silent(HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20))
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_X, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_set_X, status=done
 test_that("writing X works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
@@ -122,7 +122,7 @@ test_that("writing X works", {
   expect_silent(h5ad$X <- X)
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_layers, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_set_layers, status=done
 test_that("writing layers works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
@@ -131,7 +131,7 @@ test_that("writing layers works", {
   expect_silent(h5ad$layers <- list(layer1 = X, layer2 = X))
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_obs, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_set_obs, status=done
 test_that("writing obs works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
@@ -145,7 +145,7 @@ test_that("writing obs works", {
   expect_identical(h5ad$obs_names, 1:10)
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_var, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_set_var, status=done
 test_that("writing var works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
@@ -159,7 +159,7 @@ test_that("writing var works", {
   expect_identical(h5ad$var_names, 1:20)
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_obs_names, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_set_obs_names, status=done
 test_that("writing obs names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
@@ -168,7 +168,7 @@ test_that("writing obs names works", {
   expect_identical(h5ad$obs_names, LETTERS[1:10])
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_var_names, status=wip
+# trackstatus: class=HDF5AnnData, feature=test_set_var_names, status=done
 test_that("writing var names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
