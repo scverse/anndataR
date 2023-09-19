@@ -199,6 +199,17 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         )
         self
       }
+    },
+    #' @field uns The uns slot. Must be `NULL` or a named list.
+    uns = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_uns, status=done
+        private$.uns
+      } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_uns, status=done
+        private$.uns <- private$.validate_named_list(value, "uns")
+        self
+      }
     }
   ),
   public = list(
