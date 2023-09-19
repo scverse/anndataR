@@ -1,8 +1,15 @@
 ---
-title: "Getting Started"
-output: rmarkdown::html_vignette
+title: "Using anndataR to read and convert"
+shorttitle: "Using anndataR"
+author:
+  - name: Robrecht Cannoodt
+  - name: Luke Zappia
+  - name: Martin Morgan
+  - name: Louise Deconinck
+package: anndataR
+output: BiocStyle::html_document
 vignette: >
-  %\VignetteIndexEntry{Getting Started}
+  %\VignetteIndexEntry{Using anndataR to read and convert}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,9 +21,24 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
+
 This package allows users to work with `.h5ad` files, access various slots in the datasets and convert these files to `SingleCellExperiment` objects and `SeuratObject`s, and vice versa.
 
 Check out `?anndataR` for a full list of the functions provided by this package.
+
+# Installation
+
+Install using:
+ ```{r, eval = FALSE}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("BiocStyle")
+ 
+ ```
+
+# Usage
 
 This package provides an abstract interface for `AnnData` objects. This abstract interface models its Python counterpart closely, and stores a data matrix `X` and annotations corresponding to observations (`obs`, `obsm`, `obsp`) and variables (`var`, `varm`, `varp`) and unstructured metadata `uns`.
 
@@ -29,6 +51,8 @@ This abstract interface is implemented by different backends. Currently, the fol
 
 The `InMemoryAnnData` backend allows you to construct an `AnnData` object in memory.
 The `HDF5AnnData` backend allows you to read in an `AnnData` object from an `.h5ad` file.
+
+## `HDF5AnnData` backend
 
 Here is an example of how to read in an `.h5ad` file.
 
@@ -49,10 +73,11 @@ obs <- adata$obs
 var <- adata$var
 ```
 
+## `InMemoryAnnData` backend
+
 The following example details how to construct an InMemoryAnnData and access its contents.
 
 ```{r inmemory_construct}
-
 adata <- AnnData(
   X = matrix(1:15, 3L, 5L),
   layers = list(
@@ -80,5 +105,11 @@ You can convert the AnnData object to a SingleCellExperiment object or to a Seur
 ```{r convert}
 sce <- to_SingleCellExperiment(adata)
 seurat <- to_Seurat(adata)
+```
+
+# Session info
+
+```{r}
+sessionInfo()
 ```
 

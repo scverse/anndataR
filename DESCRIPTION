@@ -66,6 +66,8 @@ Suggests:
     withr
 VignetteBuilder: 
     knitr
+Suggests: 
+    BiocStyle, knitr, rmarkdown
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
     purrr, dplyr, tidyr
 Config/testthat/edition: 3
