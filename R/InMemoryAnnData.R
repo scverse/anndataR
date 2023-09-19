@@ -63,7 +63,13 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.layers
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_layers, status=done
-        private$.layers <- private$.validate_aligned_mapping(value, "layers", c(self$n_obs(), self$n_vars()), expected_rownames = rownames(self), expected_colnames = colnames(self))
+        private$.layers <- private$.validate_aligned_mapping(
+          value,
+          "layers",
+          c(self$n_obs(), self$n_vars()),
+          expected_rownames = rownames(self),
+          expected_colnames = colnames(self)
+        )
         self
       }
     },
@@ -130,7 +136,12 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.obsm
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=wip
-        private$.obsm <- private$.validate_aligned_mapping(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
+        private$.obsm <- private$.validate_aligned_mapping(
+          value,
+          "obsm",
+          c(self$n_obs()),
+          expected_rownames = rownames(self)
+        )
         self
       }
     },
@@ -141,7 +152,12 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.varm
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_varm, status=wip
-        private$.varm <- private$.validate_aligned_mapping(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
+        private$.varm <- private$.validate_aligned_mapping(
+          value,
+          "varm",
+          c(self$n_vars()),
+          expected_rownames = colnames(self)
+        )
         self
       }
     },
@@ -152,7 +168,13 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.obsp
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_obsp, status=wip
-        private$.obsp <- private$.validate_aligned_mapping(value, "obsp", c(self$n_obs(), self$n_obs()), expected_rownames = rownames(self), expected_colnames = rownames(self))
+        private$.obsp <- private$.validate_aligned_mapping(
+          value,
+          "obsp",
+          c(self$n_obs(), self$n_obs()),
+          expected_rownames = rownames(self),
+          expected_colnames = rownames(self)
+        )
         self
       }
     },
@@ -163,7 +185,13 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.varp
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=wip
-        private$.varp <- private$.validate_aligned_mapping(value, "varp", c(self$n_vars(), self$n_vars()), expected_rownames = colnames(self), expected_colnames = colnames(self))
+        private$.varp <- private$.validate_aligned_mapping(
+          value,
+          "varp",
+          c(self$n_vars(), self$n_vars()),
+          expected_rownames = colnames(self),
+          expected_colnames = colnames(self)
+        )
         self
       }
     }
