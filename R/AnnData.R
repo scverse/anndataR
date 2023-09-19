@@ -27,6 +27,18 @@
 #' @param var Either `NULL` or a `data.frame` with columns containing
 #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
 #'   automatically be generated.
+#' @param obsm The obsm slot is used to store multi-dimensional annotation
+#'   arrays. It must be either `NULL` or a named list, where each element is a
+#'   matrix with `n_obs` rows and an arbitrary number of columns.
+#' @param varm The varm slot is used to store multi-dimensional annotation
+#'   arrays. It must be either `NULL` or a named list, where each element is a
+#'   matrix with `n_vars` rows and an arbitrary number of columns.
+#' @param obsp The obsp slot is used to store sparse multi-dimensional
+#'   annotation arrays. It must be either `NULL` or a named list, where each
+#'   element is a sparse matrix where each dimension has length `n_obs`.
+#' @param varp The varp slot is used to store sparse multi-dimensional
+#'   annotation arrays. It must be either `NULL` or a named list, where each
+#'   element is a sparse matrix where each dimension has length `n_vars`.
 #'
 #' @export
 #'

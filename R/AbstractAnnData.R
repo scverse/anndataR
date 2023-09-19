@@ -50,19 +50,23 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     var_names = function(value) {
       .abstract_function("ad$var_names")
     },
-    #' @field obsm
+    #' @field obsm The obsm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `obs`.
     obsm = function(value) {
       .abstract_function("ad$obsm")
     },
-    #' @field varm
+    #' @field varm The varm slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows as `var`.
     varm = function(value) {
       .abstract_function("ad$varm")
     },
-    #' @field obsp
+    #' @field obsp The obsp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `obs`.
     obsp = function(value) {
       .abstract_function("ad$obsp")
     },
-    #' @field varp
+    #' @field varp The varp slot. Must be `NULL` or a named list with
+    #'   with all elements having the same number of rows and columns as `var`.
     varp = function(value) {
       .abstract_function("ad$varp")
     }
