@@ -46,21 +46,21 @@ test_that("reading varm works", {
 })
 
 test_that("obsm/ varm validation", {
-  mtx = matrix(
+  mtx <- matrix(
     0,
     5,
     5,
-    dimnames=c(as.character(1:5), as.character(1:5)),
+    dimnames = c(as.character(1:5), as.character(1:5)),
   )
-  adata = AnnData(
-    X=mtx
+  adata <- AnnData(
+    X = mtx
   )
 
-  adata$obsm = list(PCA=matrix(0, 5, 4))
-  adata$varm = list(PCs=matrix(0, 3, 4))
+  adata$obsm <- list(PCA = matrix(0, 5, 4))
+  adata$varm <- list(PCs = matrix(0, 3, 4))
 
-  expect_error(adata$obsm <- list(PCA=matrix(0, 4, 4)))
-  expect_error(adata$varm <- list(PCs=matrix(0, 4, 4)))
+  expect_error(adata$obsm <- list(PCA = matrix(0, 4, 4)))
+  expect_error(adata$varm <- list(PCs = matrix(0, 4, 4)))
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_get_obs, status=wip

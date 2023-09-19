@@ -172,11 +172,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param shape Expected dimensions of matrix
     # @param expected_rownames
     # @param excepted_colnames
-    .validate_array_generic = function(mat, label, shape, expected_rownames=NULL, expected_colnames=NULL) {
-      mat_dims = dim(mat)
+    .validate_array_generic = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+      mat_dims <- dim(mat)
       for (i in seq_along(shape)) {
-        expected_dim = shape[i]
-        found_dim = mat_dims[i]
+        expected_dim <- shape[i]
+        found_dim <- mat_dims[i]
         if (found_dim != expected_dim) {
           stop("dim(", label, ")[", i, "] should be the same as shape")
         }
@@ -202,8 +202,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
       mat
     },
-
-    .validate_array_collection_generic = function(collection, label, shape, expected_rownames=NULL, expected_colnames=NULL) {
+    .validate_array_collection_generic = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
       if (is.null(collection)) {
         return(collection)
       }
@@ -215,9 +214,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
       for (mtx_name in collection_names) {
         collection_name <- paste0(label, "[[", mtx_name, "]]")
-        private$.validate_array_generic(collection[[mtx_name]], collection_name, shape=shape, expected_rownames=expected_rownames, expected_colnames=expected_colnames)
+        private$.validate_array_generic(collection[[mtx_name]], collection_name, shape = shape, expected_rownames = expected_rownames, expected_colnames = expected_colnames)
       }
-      
+
       collection
     },
 

@@ -52,7 +52,6 @@ var <- adata$var
 The following example details how to construct an InMemoryAnnData and access its contents.
 
 ```{r inmemory_construct}
-
 adata <- AnnData(
   X = matrix(1:15, 3L, 5L),
   layers = list(

@@ -127,7 +127,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.obsm
       } else {
         # TODO: validate obsm
-        private$.obsm <- private$.validate_array_collection_generic(value, "obsm", c(self$n_obs()), expected_rownames=rownames(self))
+        private$.obsm <- private$.validate_array_collection_generic(value, "obsm", c(self$n_obs()), expected_rownames = rownames(self))
         self
       }
     },
@@ -136,7 +136,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.varm
       } else {
         # TODO validate varm
-        private$.varm <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames=colnames(self))
+        private$.varm <- private$.validate_array_collection_generic(value, "varm", c(self$n_vars()), expected_rownames = colnames(self))
         self
       }
     }
@@ -165,7 +165,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param var Either `NULL` or a `data.frame` with columns containing information
     #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
     #'   be generated.
-    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm=NULL) {
+    initialize = function(obs_names, var_names, X = NULL, obs = NULL, var = NULL, layers = NULL, obsm = NULL, varm = NULL) {
       # write obs and var first, because these are used by other validators
       self$obs_names <- obs_names
       self$var_names <- var_names
