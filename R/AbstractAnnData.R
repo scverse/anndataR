@@ -100,7 +100,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           cat(
             "    ", attribute, ":",
             paste("'", keys, "'", collapse = ", "),
-            "\n", sep = ""
+            "\n",
+            sep = ""
           )
         }
       }
