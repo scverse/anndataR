@@ -72,16 +72,16 @@ matrix_generators <- list(
 )
 
 #' Generate a matrix
-#' 
+#'
 #' Generate a matrix of a given type
-#' 
+#'
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
-#' 
+#'
 #' @return A matrix of the given type
-#' 
+#'
 #' @noRd
-#' 
+#'
 #' @examples
 #' generate_matrix(10L, 20L)
 generate_matrix <- function(n_obs, n_vars, type = names(matrix_generators)) {

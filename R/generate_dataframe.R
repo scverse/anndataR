@@ -4,9 +4,9 @@
 #'
 #' @param num_rows Number of rows to generate
 #' @param types Types of columns to generate
-#' 
+#'
 #' @return A dataframe with the generated columns
-#' 
+#'
 #' @examples
 #' generate_dataframe(10L)
 generate_dataframe <- function(num_rows, types = names(vector_generators)) {

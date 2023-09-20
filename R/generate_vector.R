@@ -38,16 +38,16 @@ vector_generators <- list(
 )
 
 #' Generate a vector
-#' 
+#'
 #' Generate a vector of a given type
-#' 
+#'
 #' @param n Number of elements to generate
 #' @param type Type of vector to generate
-#' 
+#'
 #' @return A vector of the given type
-#' 
+#'
 #' @noRd
-#' 
+#'
 #' @examples
 #' generate_vector(10L)
 generate_vector <- function(n, type = names(vector_generators)) {

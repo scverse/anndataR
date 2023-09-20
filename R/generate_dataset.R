@@ -9,17 +9,16 @@
 #' @param ... Arguments passed to generate_dataset_as_list
 #'
 #' @return Object containing the generated dataset as defined by `output`
-#' 
+#'
 #' @noRd
 #'
 #' @examples
 #' dummy <- generate_dataset()
 generate_dataset <- function(
-  n_obs = 10L,
-  n_vars = 20L,
-  format = c("list", "SingleCellExperiment", "Seurat"),
-  ...
-) {
+    n_obs = 10L,
+    n_vars = 20L,
+    format = c("list", "SingleCellExperiment", "Seurat"),
+    ...) {
   format <- match.arg(format)
 
   fun <- switch(format,
@@ -39,20 +38,19 @@ generate_dataset <- function(
 #' @param n_vars Number of variables to generate
 #'
 #' @return A list with the generated dataset
-#' 
+#'
 #' @noRd
 generate_dataset_as_list <- function(
-  n_obs = 10L,
-  n_vars = 20L,
-  x_type = names(matrix_generators)[[1]],
-  layer_types = names(matrix_generators),
-  obs_types = names(vector_generators),
-  var_types = names(vector_generators),
-  obsm_types = c(names(matrix_generators), names(vector_generators)),
-  varm_types = c(names(matrix_generators), names(vector_generators)),
-  obsp_types = names(matrix_generators),
-  varp_types = names(matrix_generators)
-) {
+    n_obs = 10L,
+    n_vars = 20L,
+    x_type = names(matrix_generators)[[1]],
+    layer_types = names(matrix_generators),
+    obs_types = names(vector_generators),
+    var_types = names(vector_generators),
+    obsm_types = c(names(matrix_generators), names(vector_generators)),
+    varm_types = c(names(matrix_generators), names(vector_generators)),
+    obsp_types = names(matrix_generators),
+    varp_types = names(matrix_generators)) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
 
@@ -147,7 +145,7 @@ generate_dataset_as_list <- function(
 #' @param ... Parameters passed to `generate_dataset_as_list`
 #'
 #' @return SingleCellExperiment containing the generated data
-#' 
+#'
 #' @noRd
 generate_dataset_as_sce <- function(...) {
   if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
