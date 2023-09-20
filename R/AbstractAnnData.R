@@ -82,19 +82,27 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       for (attribute in c(
         "obs",
         "var",
-        "uns",
+        # "uns", # TODO: remove this when uns is implemented
         "obsm",
         "varm",
         "layers",
         "obsp",
         "varp"
       )) {
-        attr_key <- paste0(attribute, "_keys")
-        if (!is.null(self[[attr_key]])) {
-          slot_keys <- self[[attr_key]]()
-          if (length(slot_keys) > 0) {
-            cat("    ", pretty_print(attribute, slot_keys), "\n", sep = "")
+        key_fun <- self[[paste0(attribute, "_keys")]]
+        keys <-
+          if (!is.null(key_fun)) {
+            key_fun()
+          } else {
+            NULL
           }
+        if (length(keys) > 0) {
+          cat(
+            "    ", attribute, ":",
+            paste("'", keys, "'", collapse = ", "),
+            "\n",
+            sep = ""
+          )
         }
       }
     },
@@ -125,6 +133,22 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' @description Keys (element names) of `layers`.
     layers_keys = function() {
       names(self$layers)
+    },
+    #' @description Keys (element names) of `obsm`.
+    obsm_keys = function() {
+      names(self$obsm)
+    },
+    #' @description Keys (element names) of `varm`.
+    varm_keys = function() {
+      names(self$varm)
+    },
+    #' @description Keys (element names) of `obsp`.
+    obsp_keys = function() {
+      names(self$obsp)
+    },
+    #' @description Keys (element names) of `varp`.
+    varp_keys = function() {
+      names(self$varp)
     },
     #' @description Convert to SingleCellExperiment
     to_SingleCellExperiment = function() {
