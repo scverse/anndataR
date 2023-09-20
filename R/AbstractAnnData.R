@@ -97,13 +97,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
             NULL
           }
         if (length(keys) > 0) {
-            cat(
-              "    ", attribute, ":",
+          cat(
+            "    ", attribute, ":",
             paste("'", keys, "'", collapse = ", "),
-              "\n", sep = ""
-            )
-          }
+            "\n", sep = ""
+          )
         }
+      }
     },
 
     #' @description Dimensions (observations x variables) of the AnnData object.
@@ -132,6 +132,22 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' @description Keys (element names) of `layers`.
     layers_keys = function() {
       names(self$layers)
+    },
+    #' @description Keys (element names) of `obsm`.
+    obsm_keys = function() {
+      names(self$obsm)
+    },
+    #' @description Keys (element names) of `varm`.
+    varm_keys = function() {
+      names(self$varm)
+    },
+    #' @description Keys (element names) of `obsp`.
+    obsp_keys = function() {
+      names(self$obsp)
+    },
+    #' @description Keys (element names) of `varp`.
+    varp_keys = function() {
+      names(self$varp)
     },
     #' @description Convert to SingleCellExperiment
     to_SingleCellExperiment = function() {
