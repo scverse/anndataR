@@ -105,6 +105,16 @@ status <- bind_rows(
   status_lines_required %>% anti_join(status_lines_proc, by = c("class", "prefix", "slot"))
 )
 
+# check duplicated status
+status_dup <- status %>%
+  group_by(class, prefix, slot) %>%
+  filter(n() > 1) %>%
+  ungroup() %>%
+  mutate(str = paste0(source_file, "#", line_number, " -- ", class, " ", prefix, slot))
+if (nrow(status_dup) > 0) {
+  stop("Duplicated status lines found:\n", paste(status_dup$str, collapse = "\n"))
+}
+
 # create formatted data frame for printing
 status_formatted <-
   status %>%

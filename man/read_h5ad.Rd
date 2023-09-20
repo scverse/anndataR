@@ -6,14 +6,18 @@
 \usage{
 read_h5ad(
   path,
-  to = c("SingleCellExperiment", "Seurat", "HDF5AnnData", "InMemoryAnnData")
+  to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+  ...
 )
 }
 \arguments{
 \item{path}{Path to the H5AD file to read}
 
-\item{to}{The type of object to return. Must be one of: "SingleCellExperiment",
-"Seurat", "HDF5AnnData", "InMemoryAnnData"}
+\item{to}{The type of object to return. Must be one of: "InMemoryAnnData",
+"HDF5AnnData", "SingleCellExperiment", "Seurat"}
+
+\item{...}{Extra arguments provided to \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} or
+\code{\link[=to_Seurat]{to_Seurat()}}}
 }
 \value{
 The object specified by \code{to}
@@ -23,10 +27,12 @@ Read data from a H5AD file
 }
 \examples{
 h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+
 # Read the H5AD as a SingleCellExperiment object
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
   sce <- read_h5ad(h5ad_file, to = "SingleCellExperiment")
 }
+
 # Read the H5AD as a Seurat object
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
   seurat <- read_h5ad(h5ad_file, to = "Seurat")

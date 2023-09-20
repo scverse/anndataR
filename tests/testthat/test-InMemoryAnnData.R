@@ -1,5 +1,8 @@
 dummy <- generate_dataset(10L, 20L)
 
+file <- system.file("extdata", "example.h5ad", package = "anndataR")
+adata <- read_h5ad(file, to = "InMemoryAnnData")
+
 # GETTERS ----------------------------------------------------------------
 test_that("create inmemory anndata", {
   ad <- AnnData(
@@ -132,7 +135,6 @@ test_that("'layers' works", {
   layers_test(obs_names, var_names, list(A = matrix(0, 3, 5), B = matrix(1, 3, 5)))
 
   ## must be a named list
-  expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = list()))
   layers <- list(matrix(0, 3, 5))
   expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
   ## non-trivial names
@@ -143,6 +145,24 @@ test_that("'layers' works", {
   expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
   layers <- list(A = matrix(0, 3, 5), B = matrix(1, 5, 3))
   expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
+})
+
+test_that("reading obsm works", {
+  obsm <- adata$obsm
+  expect_true(is.list(obsm), "list")
+  expect_equal(
+    names(obsm),
+    c("X_pca", "X_umap")
+  )
+})
+
+test_that("reading varm works", {
+  varm <- adata$varm
+  expect_true(is.list(varm), "list")
+  expect_equal(
+    names(varm),
+    c("PCs")
+  )
 })
 
 test_that("*_keys() works", {
