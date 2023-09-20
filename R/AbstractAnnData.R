@@ -82,25 +82,28 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       for (attribute in c(
         "obs",
         "var",
-        "uns",
+        # "uns", # TODO: remove this when uns is implemented
         "obsm",
         "varm",
         "layers",
         "obsp",
         "varp"
       )) {
-        attr_key <- paste0(attribute, "_keys")
-        if (!is.null(self[[attr_key]])) {
-          slot_keys <- self[[attr_key]]()
-          if (length(slot_keys) > 0) {
+        key_fun <- self[[paste0(attribute, "_keys")]]
+        keys <-
+          if (!is.null(key_fun)) {
+            key_fun()
+          } else {
+            NULL
+          }
+        if (length(keys) > 0) {
             cat(
               "    ", attribute, ":",
-              paste("'", slot_keys, "'", collapse = ", "),
+            paste("'", keys, "'", collapse = ", "),
               "\n", sep = ""
             )
           }
         }
-      }
     },
 
     #' @description Dimensions (observations x variables) of the AnnData object.
