@@ -4,7 +4,41 @@ skip_if_not_installed("rhdf5")
 data <- generate_dataset_as_list(10L, 20L)
 
 for (name in names(data$obs)) {
-  test_that(paste0("Python -> R with obs and var '", name, "'"), {
+  test_that(paste("roundtrip with obs and var '", name, "'"), {
+    # create anndata
+    ad <- AnnData(
+      X = data$X,
+      obs = data$obs[, name, drop = FALSE],
+      var = data$var[, name, drop = FALSE],
+      obs_names = data$obs_names,
+      var_names = data$var_names
+    )
+
+    # write to file
+    filename <- withr::local_file(paste0("roundtrip_obsvar_", name, ".h5ad"))
+    write_h5ad(ad, filename)
+
+    # read from file
+    ad_new <- read_h5ad(filename, to = "HDF5AnnData")
+
+    # expect slots are unchanged
+    expect_equal(
+      ad_new$obs[[name]],
+      data$obs[[name]],
+      ignore_attr = TRUE,
+      tolerance = 1e-10
+    )
+    expect_equal(
+      ad_new$var[[name]],
+      data$var[[name]],
+      ignore_attr = TRUE,
+      tolerance = 1e-10
+    )
+  })
+}
+
+for (name in names(data$obs)) {
+  test_that(paste0("reticulate->hdf5 with obs and var '", name, "'"), {
     ad <- anndata::AnnData(
       X = data$X,
       obs = data$obs[, name, drop = FALSE],
@@ -14,7 +48,7 @@ for (name in names(data$obs)) {
     ad$var_names <- data$var_names
 
     # write to file
-    filename <- withr::local_file(paste0("python_to_r_obsvar_", name, ".h5ad"))
+    filename <- withr::local_file(paste0("reticulate_to_hdf5_obsvar_", name, ".h5ad"))
     ad$write_h5ad(filename)
 
     # read from file
@@ -30,9 +64,9 @@ for (name in names(data$obs)) {
 }
 
 for (name in names(data$obs)) {
-  test_that(paste0("R -> Python with obs and var '", name, "'"), {
+  test_that(paste0("hdf5->reticulate with obs and var '", name, "'"), {
     # write to file
-    filename <- withr::local_file(paste0("r_to_python_obsvar_", name, ".h5ad"))
+    filename <- withr::local_file(paste0("hdf5_to_reticulate_obsvar_", name, ".h5ad"))
     ad <- HDF5AnnData$new(
       file = filename,
       X = data$X,
