@@ -1,3 +1,5 @@
+# nolint start
+# TODO: Add denseMatrix support
 matrix_generators <- list(
   numeric_matrix = function(n_obs, n_vars) {
     matrix(runif(n_obs * n_vars), nrow = n_obs, ncol = n_vars)
@@ -70,6 +72,7 @@ matrix_generators <- list(
     as(m, "RsparseMatrix")
   }
 )
+# nolint end
 
 #' Generate a matrix
 #'
