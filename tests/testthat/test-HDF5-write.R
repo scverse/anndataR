@@ -162,7 +162,7 @@ test_that("writing H5AD from SingleCellExperiment works", {
 
   file <- withr::local_file("SingleCellExperiment.h5ad")
 
-  sce <- dummy_data(output = "SingleCellExperiment")
+  sce <- generate_dataset(format = "SingleCellExperiment")
   write_h5ad(sce, file)
   expect_true(file.exists(file))
 })
@@ -172,7 +172,7 @@ test_that("writing H5AD from Seurat works", {
 
   file <- withr::local_file("Seurat.h5ad")
 
-  seurat <- dummy_data(output = "Seurat")
+  seurat <- generate_dataset(format = "Seurat")
   write_h5ad(seurat, file)
   expect_true(file.exists(file))
 })
