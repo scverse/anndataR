@@ -85,7 +85,7 @@ generate_dataset_as_list <- function(
     if (varm_type %in% names(vector_generators)) {
       generate_dataframe(n_vars, varm_type)
     } else {
-      generate_matrix(n_vars, n_obs = 10L, varm_type)
+      generate_matrix(n_vars, n_vars = 10L, varm_type)
     }
   })
   names(varm) <- varm_types

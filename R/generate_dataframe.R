@@ -10,7 +10,6 @@
 #' @examples
 #' generate_dataframe(10L)
 generate_dataframe <- function(num_rows, types = names(vector_generators)) {
-  types <- match.arg(types)
   data <- lapply(types, generate_vector, n = num_rows)
   names(data) <- types
   as.data.frame(data)
