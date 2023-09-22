@@ -33,6 +33,7 @@ read_h5ad_encoding <- function(file, name) {
 #' @param name Name of the element within the H5AD file
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
+#' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Extra arguments passed to individual reading functions
 #'
 #' @details
@@ -42,7 +43,7 @@ read_h5ad_encoding <- function(file, name) {
 #' @return Value depending on the encoding
 #'
 #' @noRd
-read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
+read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
   if (is.null(type)) {
     encoding_list <- read_h5ad_encoding(file, name)
     type <- encoding_list$type
@@ -68,7 +69,23 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
     )
   )
 
-  read_fun(file = file, name = name, version = version, ...)
+  tryCatch(
+    {
+      read_fun(file = file, name = name, version = version, ...)
+    },
+    error = function(e) {
+      message <- paste0(
+        "Error reading element '", name, "' of type '", type, "':\n",
+        conditionMessage(e)
+      )
+      if (stop_on_error) {
+        stop(message)
+      } else {
+        warning(message)
+        return(NULL)
+      }
+    }
+  )
 }
 
 #' Read H5AD dense array
