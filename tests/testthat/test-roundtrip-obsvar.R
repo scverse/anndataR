@@ -40,7 +40,6 @@ for (name in names(data$obs)) {
 for (name in names(data$obs)) {
   test_that(paste0("reticulate->hdf5 with obs and var '", name, "'"), {
     ad <- anndata::AnnData(
-      X = data$X,
       obs = data$obs[, name, drop = FALSE],
       var = data$var[, name, drop = FALSE]
     )
@@ -67,11 +66,18 @@ for (name in names(data$obs)) {
   test_that(paste0("hdf5->reticulate with obs and var '", name, "'"), {
     # write to file
     filename <- withr::local_file(paste0("hdf5_to_reticulate_obsvar_", name, ".h5ad"))
+
+    # strip rownames
+    obs <- data$obs[, name, drop = FALSE]
+    var <- data$var[, name, drop = FALSE]
+    rownames(obs[[name]]) <- NULL
+    rownames(var[[name]]) <- NULL
+
+    # create anndata
     ad <- HDF5AnnData$new(
       file = filename,
-      X = data$X,
-      obs = data$obs[, name, drop = FALSE],
-      var = data$var[, name, drop = FALSE],
+      obs = obs,
+      var = var,
       obs_names = data$obs_names,
       var_names = data$var_names
     )

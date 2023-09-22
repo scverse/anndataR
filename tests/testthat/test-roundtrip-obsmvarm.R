@@ -7,7 +7,6 @@ for (name in names(data$obsm)) {
   test_that(paste("roundtrip with obsm and varm '", name, "'"), {
     # create anndata
     ad <- AnnData(
-      X = data$X,
       obsm = data$obsm[name],
       varm = data$varm[name],
       obs_names = data$obs_names,
@@ -37,15 +36,27 @@ for (name in names(data$obsm)) {
   })
 }
 
-for (name in names(data$obsm)) {
+r2py_names <- names(data$obsm)
+
+# TODO: remove this when https://github.com/scverse/anndata/issues/1146 is fixed
+r2py_names <- r2py_names[r2py_names != "character_with_nas"]
+
+for (name in r2py_names) {
   test_that(paste0("reticulate->hdf5 with obsm and varm '", name, "'"), {
+    # add rownames
+    obsm <- data$obsm[name]
+    varm <- data$varm[name]
+    rownames(obsm[[name]]) <- data$obs_names
+    rownames(varm[[name]]) <- data$var_names
+
+    # create anndata
     ad <- anndata::AnnData(
-      X = data$X,
-      obsm = data$obsm[name],
-      varm = data$varm[name]
+      obsm = obsm,
+      varm = varm,
+      shape = dim(data$X),
+      obs = data.frame(row.names = data$obs_names),
+      var = data.frame(row.names = data$var_names)
     )
-    ad$obs_names <- data$obs_names
-    ad$var_names <- data$var_names
 
     # write to file
     filename <- withr::local_file(paste0("reticulate_to_hdf5_obsmvarm_", name, ".h5ad"))
@@ -68,15 +79,22 @@ for (name in names(data$obsm)) {
   })
 }
 
-for (name in names(data$obsm)) {
+for (name in r2py_names) {
   test_that(paste0("hdf5->reticulate with obsm and varm '", name, "'"), {
     # write to file
     filename <- withr::local_file(paste0("hdf5_to_reticulate_obsmvarm_", name, ".h5ad"))
+
+    # strip rownames
+    obsm <- data$obsm[name]
+    varm <- data$varm[name]
+    rownames(obsm[[name]]) <- NULL
+    rownames(varm[[name]]) <- NULL
+
+    # make anndata
     ad <- HDF5AnnData$new(
       file = filename,
-      X = data$X,
-      obsm = data$obsm[name],
-      varm = data$varm[name],
+      obsm = obsm,
+      varm = varm,
       obs_names = data$obs_names,
       var_names = data$var_names
     )

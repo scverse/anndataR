@@ -7,7 +7,6 @@ for (name in names(data$obsp)) {
   test_that(paste0("roundtrip with obsp and varp '", name, "'"), {
     # create anndata
     ad <- AnnData(
-      X = data$X,
       obsp = data$obsp[name],
       varp = data$varp[name],
       obs_names = data$obs_names,
@@ -39,13 +38,20 @@ for (name in names(data$obsp)) {
 
 for (name in names(data$obsp)) {
   test_that(paste0("reticulate->hdf5 with obsp and varp '", name, "'"), {
+    # add rownames
+    obsp <- data$obsp[name]
+    varp <- data$varp[name]
+    rownames(obsp[[name]]) <- colnames(obsp[[name]]) <- data$obs_names
+    rownames(varp[[name]]) <- colnames(varp[[name]]) <- data$var_names
+
+    #  create anndata
     ad <- anndata::AnnData(
-      X = data$X,
-      obsp = data$obsp[name],
-      varp = data$varp[name]
+      obsp = obsp,
+      varp = varp,
+      shape = dim(data$X),
+      obs = data.frame(row.names = data$obs_names),
+      var = data.frame(row.names = data$var_names)
     )
-    ad$obs_names <- data$obs_names
-    ad$var_names <- data$var_names
 
     # write to file
     filename <- withr::local_file(paste0("reticulate_to_hdf5_obspvarp_", name, ".h5ad"))
@@ -72,11 +78,18 @@ for (name in names(data$obsp)) {
   test_that(paste0("hdf5->reticulate with obsp and varp '", name, "'"), {
     # write to file
     filename <- withr::local_file(paste0("hdf5_to_reticulate_obspvarp_", name, ".h5ad"))
+
+    # strip rownames
+    obsp <- data$obsp[name]
+    varp <- data$varp[name]
+    rownames(obsp[[name]]) <- NULL
+    rownames(varp[[name]]) <- NULL
+
+    # make anndata
     ad <- HDF5AnnData$new(
       file = filename,
-      X = data$X,
-      obsp = data$obsp[name],
-      varp = data$varp[name],
+      obsp = obsp,
+      varp = varp,
       obs_names = data$obs_names,
       var_names = data$var_names
     )
