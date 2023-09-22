@@ -160,18 +160,20 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           stop("ncol(", label, ") should be the same as nrow(var)")
         }
 
-        if (!is.null(rownames(mat))) {
+        if (has_row_names(mat)) {
           warning(wrap_message(
             "rownames(", label, ") should be NULL, removing them from the matrix"
           ))
           rownames(mat) <- NULL
         }
 
-        if (!is.null(colnames(mat))) {
-          warning(wrap_message(
-            "colnames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          colnames(mat) <- NULL
+        for (i in seq(2, length(dim(mat)), by = 1)) {
+          if (!is.null(dimnames(mat)[[i]])) {
+            warning(wrap_message(
+              "dimnames(", label, ")[[", i, "]] should be NULL, removing them from the matrix"
+            ))
+            dimnames(mat)[[i]] <- NULL
+          }
         }
       }
 
@@ -196,29 +198,31 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
         }
       }
-      if (!is.null(expected_rownames) & !is.null(rownames(mat))) {
+      if (has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
           stop("rownames(", label, ") should be the same as expected_rownames")
         }
-      }
-      if (!is.null(rownames(mat))) {
+
         warning(wrap_message(
           "rownames(", label, ") should be NULL, removing them from the matrix"
         ))
         rownames(mat) <- NULL
       }
+
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
           stop("colnames(", label, ") should be the same as expected_colnames")
         }
       }
-      if (!is.null(colnames(mat))) {
-        warning(wrap_message(
-          "colnames(", label, ") should be NULL, removing them from the matrix"
-        ))
-        colnames(mat) <- NULL
-      }
 
+      for (i in seq(2, length(dim(mat)), by = 1)) {
+        if (!is.null(dimnames(mat)[[i]])) {
+          warning(wrap_message(
+            "dimnames(", label, ")[[", i, "]] should be NULL, removing them from the matrix"
+          ))
+          dimnames(mat)[[i]] <- NULL
+        }
+      }
       mat
     },
     # @description `.validate_aligned_mapping()` checks for named lists and

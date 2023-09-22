@@ -3,8 +3,12 @@ skip_if_not_installed("rhdf5")
 
 data <- generate_dataset_as_list(10L, 20L)
 
-for (name in names(data$obsm)) {
-  test_that(paste("roundtrip with obsm and varm '", name, "'"), {
+obsm_names <- names(data$obsm)
+# TODO: Add denseMatrix support to anndata and anndataR
+obsm_names <- obsm_names[!grepl("_dense", obsm_names)]
+
+for (name in obsm_names) {
+  test_that(paste0("roundtrip with obsm and varm '", name, "'"), {
     # create anndata
     ad <- AnnData(
       obsm = data$obsm[name],
