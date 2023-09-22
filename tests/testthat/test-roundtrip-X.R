@@ -11,7 +11,7 @@ for (layer_name in layer_names) {
   test_that(paste0("roundtrip with layer '", layer_name, "'"), {
     # create anndata
     ad <- AnnData(
-      layers = data$layers[layer_name],
+      X = data$layers[[layer_name]],
       obs_names = data$obs_names,
       var_names = data$var_names
     )
@@ -25,8 +25,8 @@ for (layer_name in layer_names) {
 
     # expect slots are unchanged
     expect_equal(
-      ad_new$layers[[layer_name]],
-      data$layers[[layer_name]],
+      ad_new$X,
+      data$X,
       ignore_attr = TRUE,
       tolerance = 1e-10
     )
@@ -36,14 +36,13 @@ for (layer_name in layer_names) {
 for (name in layer_names) {
   test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
     # add rownames
-    layers <- data$layers[name]
-    rownames(layers[[name]]) <- data$obs_names
-    colnames(layers[[name]]) <- data$var_names
+    X <- data$layers[[name]]
+    rownames(X) <- data$obs_names
+    colnames(X) <- data$var_names
 
     # create anndata
     ad <- anndata::AnnData(
-      layers = layers,
-      shape = dim(data$X),
+      X = X,
       obs = data.frame(row.names = data$obs_names),
       var = data.frame(row.names = data$var_names)
     )
@@ -74,14 +73,14 @@ for (layer_name in r2py_names) {
     filename <- withr::local_file(paste0("hdf5_to_reticulate_layer_", layer_name, ".h5ad"))
 
     # strip rownames
-    layers <- data$layers[layer_name]
-    rownames(layers[[layer_name]]) <- NULL
-    colnames(layers[[layer_name]]) <- NULL
+    X <- data$layers[[layer_name]]
+    rownames(X) <- NULL
+    colnames(X) <- NULL
 
     # make anndata
     ad <- HDF5AnnData$new(
       file = filename,
-      layers = layers,
+      X = X,
       obs_names = data$obs_names,
       var_names = data$var_names
     )

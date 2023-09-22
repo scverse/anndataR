@@ -34,13 +34,13 @@ write_h5ad_element <- function(value, file, name, stop_on_error = FALSE, ...) { 
         write_h5ad_mapping
       }
     } else if (is.character(value)) { # Character values
-      if (length(value) == 1) {
+      if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_string_scalar
       } else {
         write_h5ad_string_array
       }
-    } else if (is.numeric(value)) { # Numeric values
-      if (length(value) == 1) {
+    } else if (is.numeric(value) || is(value, "denseMatrix")) { # Numeric values
+      if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
       } else if (is.integer(value) && any(is.na(value))) {
         write_h5ad_nullable_integer

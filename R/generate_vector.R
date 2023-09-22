@@ -5,34 +5,34 @@ vector_generators <- list(
   factor_ordered = function(n) factor(paste0("value", seq_len(n)), ordered = TRUE),
   logical = function(n) sample(c(TRUE, FALSE), n, replace = TRUE),
   numeric = function(n) runif(n),
-  character_with_nas = function(n, pct = .5) {
+  character_with_nas = function(n) {
     x <- paste0("value", seq_len(n))
-    x[sample.int(n, pct * n)] <- NA_character_
+    x[seq(1, n, by = 2)] <- NA_character_
     x
   },
-  integer_with_nas = function(n, pct = .5) {
+  integer_with_nas = function(n) {
     x <- seq_len(n)
-    x[sample.int(n, pct * n)] <- NA_integer_
+    x[seq(1, n, by = 2)] <- NA_integer_
     x
   },
-  factor_with_nas = function(n, pct = .5) {
+  factor_with_nas = function(n) {
     x <- factor(paste0("value", seq_len(n)))
-    x[sample.int(n, pct * n)] <- NA_character_
+    x[seq(1, n, by = 2)] <- NA_character_
     x
   },
-  factor_ordered_with_nas = function(n, pct = .5) {
+  factor_ordered_with_nas = function(n) {
     x <- factor(paste0("value", seq_len(n)), ordered = TRUE)
-    x[sample.int(n, pct * n)] <- NA_character_
+    x[seq(1, n, by = 2)] <- NA_character_
     x
   },
-  logical_with_nas = function(n, pct = .5) {
+  logical_with_nas = function(n) {
     x <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    x[sample.int(n, pct * n)] <- NA
+    x[seq(1, n, by = 2)] <- NA
     x
   },
-  numeric_with_nas = function(n, pct = .5) {
+  numeric_with_nas = function(n) {
     x <- runif(n)
-    x[sample.int(n, pct * n)] <- NA_real_
+    x[seq(1, n, by = 2)] <- NA_real_
     x
   }
 )

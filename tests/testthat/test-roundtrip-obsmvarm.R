@@ -39,7 +39,7 @@ for (name in names(data$obsm)) {
 r2py_names <- names(data$obsm)
 
 # TODO: remove this when https://github.com/scverse/anndata/issues/1146 is fixed
-r2py_names <- r2py_names[r2py_names != "character_with_nas"]
+r2py_names <- r2py_names[!grepl("_with_nas", r2py_names)]
 
 for (name in r2py_names) {
   test_that(paste0("reticulate->hdf5 with obsm and varm '", name, "'"), {
