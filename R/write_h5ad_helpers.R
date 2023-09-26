@@ -39,7 +39,7 @@ write_h5ad_element <- function(value, file, name, stop_on_error = FALSE, ...) { 
       } else {
         write_h5ad_string_array
       }
-    } else if (is.numeric(value) || is(value, "denseMatrix")) { # Numeric values
+    } else if (is.numeric(value) || inherits(value, "denseMatrix")) { # Numeric values
       if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
       } else if (is.integer(value) && any(is.na(value))) {
