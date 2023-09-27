@@ -10,6 +10,8 @@ to_HDF5AnnData(adata, file, ...)
 \item{adata}{An AnnData object to be converted to HDF5AnnData.}
 
 \item{file}{The filename (character) of the \code{.h5ad} file.}
+
+\item{...}{Arguments passed onto the initialization of HDF5AnnData.}
 }
 \value{
 An HDF5AnnData object with the same data as the input AnnData

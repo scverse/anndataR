@@ -261,8 +261,9 @@ write_h5ad_string_array <- function(value, file, name, compression, version = "0
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, compression, version = "0.2.0") {
   rhdf5::h5createGroup(file, name)
+  # TODO: change this to just writing?
   hdf5_write_compressed(file, paste0(name, "/categories"), levels(value), compression)
-  hdf5_write_compressed(file, paste0(name, "/codes"), as.integer(value), compression)
+  hdf5_write_compressed(file, paste0(name, "/codes"), as.integer(value) - 1, compression)
   hdf5_write_compressed(file, paste0(name, "/ordered"), is.ordered(value), compression)
 
   write_h5ad_encoding(file, name, "categorical", version)
