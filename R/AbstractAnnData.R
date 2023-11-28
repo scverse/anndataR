@@ -187,9 +187,15 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
     #   the name of a layer.
     # @param shape Expected dimensions of matrix
-    # @param expected_rownames
-    # @param excepted_colnames
-    .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    # @param expected_rownames Expected rownames of matrix
+    # @param excepted_colnames Expected colnames of matrix
+    .validate_aligned_array = function(
+      mat,
+      label,
+      shape,
+      expected_rownames = NULL,
+      expected_colnames = NULL
+    ) {
       mat_dims <- dim(mat)
       for (i in seq_along(shape)) {
         expected_dim <- shape[i]
@@ -215,14 +221,18 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         }
       }
 
-      for (i in seq(2, length(dim(mat)), by = 1)) {
-        if (!is.null(dimnames(mat)[[i]])) {
-          warning(wrap_message(
-            "dimnames(", label, ")[[", i, "]] should be NULL, removing them from the matrix"
-          ))
-          dimnames(mat)[[i]] <- NULL
-        }
-      }
+      # TODO: Determine whether this check makes sense. I'm thinking it does not.
+      # nolint start
+      # for (i in seq(2, length(dim(mat)), by = 1)) {
+      #   if (!is.null(dimnames(mat)[[i]])) {
+      #     warning(wrap_message(
+      #       "dimnames(", label, ")[[", i, "]] should be NULL, removing them from the matrix"
+      #     ))
+      #     dimnames(mat)[[i]] <- NULL
+      #   }
+      # }
+      # nolint end
+
       mat
     },
     # @description `.validate_aligned_mapping()` checks for named lists and
