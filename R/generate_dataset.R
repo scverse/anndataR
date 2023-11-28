@@ -181,6 +181,8 @@ generate_dataset_as_sce <- function(...) {
 #' @param ... Parameters passed to `generate_dataset_as_list`
 #'
 #' @return Seurat containing the generated data
+#'
+#' @noRd
 generate_dataset_as_seurat <- function(...) {
   if (!requireNamespace("SeuratObject", quietly = TRUE)) {
     stop(

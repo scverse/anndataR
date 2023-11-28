@@ -7,6 +7,8 @@
 #'
 #' @return A dataframe with the generated columns
 #'
+#' @noRd
+#'
 #' @examples
 #' generate_dataframe(10L)
 generate_dataframe <- function(num_rows, types = names(vector_generators)) {
