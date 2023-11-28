@@ -522,6 +522,6 @@ hdf5_write_compressed <- function(file, name, value, compression) {
   } else {
     dims <- length(value)
   }
-  rhdf5::h5createDataset(file, name, dims, filter = compression)
+  rhdf5::h5createDataset(file, name, dims, storage.mode = storage.mode(value), filter = compression)
   rhdf5::h5write(value, file, name)
 }
