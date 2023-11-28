@@ -3,39 +3,50 @@ Title: AnnData interoperability in R
 Version: 0.99.1
 Authors@R: c(
     person(
-        "Robrecht",
-        "Cannoodt", 
+        "Robrecht", "Cannoodt", 
         email = "rcannood@gmail.com",
         role = c("aut", "cre"),
         comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")
     ),
     person(
-        "Luke",
-        "Zappia",
+        "Luke", "Zappia",
         email = "luke@lazappi.id.au",
         role = "aut",
         comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")
     ),
     person(
-        "Martin",
-        "Morgan",
+        "Martin", "Morgan",
         email = "mtmorgan.bioc@gmail.com",
         role = "aut",
         comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")
     ),
     person(
-        "Louise",
-        "Deconinck",
+        "Louise", "Deconinck",
         email = "louise.deconinck@gmail.com",
         role = "aut",
         comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")
     ),
     person(
-        "Danila",
-        "Bredikhin",
+        "Danila", "Bredikhin",
         email = "danila.bredikhin@embl.de",
         role = "ctb",
         comment = c(ORCID = "0000-0001-8089-6983", github = "gtca")
+    ),
+    person(
+        "Isaac", "Virshup",
+        role = "ctb",
+        comment = c(ORCID = "0000-0002-1710-8945", github = "ivirshup")
+    ),
+    person(
+        "Brian", "Schilder", 
+        role = "aut",
+        email = "brian_schilder@alumni.brown.edu", 
+        comment = c(ORCID = "0000-0001-5949-2191", github = "bschilder")
+    ),
+    person(
+        "Chananchida", "Sang-aram",
+        role = "ctb",
+        comment = c(ORCID = "0000-0002-0922-0822", github = "csangara")
     )
   )
 Description: Bring the power and flexibility of AnnData to the R
