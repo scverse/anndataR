@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # anndataR 0.99.1
 
 ## New features
