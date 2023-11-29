@@ -10,6 +10,9 @@ get_generator(class = c("HDF5AnnData", "InMemoryAnnData"))
 \item{class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"}
 or \code{"InMemoryAnnData"}.}
 }
+\value{
+A requested AnnData generator.
+}
 \description{
 Fetch an AnnData generator.
 }

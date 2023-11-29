@@ -1,0 +1,10 @@
+name: anndataR
+channels:
+  - conda-forge 
+  - nodefaults
+dependencies: 
+  - python
+  - anndata
+  - scanpy
+  - pip
+  

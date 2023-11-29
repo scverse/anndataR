@@ -1,13 +1,13 @@
 skip_if_not_installed("rhdf5")
 
-file <- system.file("extdata", "example.h5ad", package = "anndataR")
+h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 test_that("opening H5AD works", {
-  adata <- HDF5AnnData$new(file)
+  adata <- HDF5AnnData$new(h5ad_file)
   expect_true(inherits(adata, "HDF5AnnData"))
 })
 
-adata <- HDF5AnnData$new(file)
+adata <- HDF5AnnData$new(h5ad_file)
 
 # GETTERS ----------------------------------------------------------------
 # trackstatus: class=HDF5AnnData, feature=test_get_X, status=done

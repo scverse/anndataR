@@ -36,7 +36,7 @@ information about observations. If \code{NULL}, an \code{n_obs}×0 data frame wi
 automatically be generated.}
 
 \item{var}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about variables. If \code{NULL}, an \code{n_vars}×0 data frame will
+information about variables. If \code{NULL}, an \code{n_var}×0 data frame will
 automatically be generated.}
 
 \item{layers}{Either \code{NULL} or a named list, where each element is an
@@ -49,7 +49,7 @@ matrix with \code{n_obs} rows and an arbitrary number of columns.}
 
 \item{varm}{The varm slot is used to store multi-dimensional annotation
 arrays. It must be either \code{NULL} or a named list, where each element is a
-matrix with \code{n_vars} rows and an arbitrary number of columns.}
+matrix with \code{n_var} rows and an arbitrary number of columns.}
 
 \item{obsp}{The obsp slot is used to store sparse multi-dimensional
 annotation arrays. It must be either \code{NULL} or a named list, where each
@@ -57,7 +57,10 @@ element is a sparse matrix where each dimension has length \code{n_obs}.}
 
 \item{varp}{The varp slot is used to store sparse multi-dimensional
 annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_vars}.}
+element is a sparse matrix where each dimension has length \code{n_var}.}
+}
+\value{
+An \link[anndataR]{InMemoryAnnData} object.
 }
 \description{
 This class is used to represent an AnnData object in memory.

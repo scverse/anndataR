@@ -3,32 +3,68 @@
 \name{to_Seurat}
 \alias{to_Seurat}
 \alias{from_Seurat}
-\title{Convert Between AnnData and Seurat}
+\title{Convert between AnnData and Seurat}
 \usage{
-to_Seurat(obj)
+to_Seurat(
+  obj,
+  key_map = list(X_pca = "PCs", X_umap = NULL, X_mofa = "LFs"),
+  ...
+)
 
 from_Seurat(
-  seurat_obj,
+  obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
   assay = NULL,
   X = "counts",
+  update = FALSE,
   ...
 )
 }
 \arguments{
-\item{obj}{An AnnData object}
+\item{obj}{An object inheriting from \link[Seurat]{Seurat}.}
 
-\item{seurat_obj}{An object inheriting from Seurat.}
+\item{key_map}{A key:value mapping indicating pairs of obsm/varm slots in
+the \code{obj} object. For some common reductions,
+there are conventional names for the loadings slots}
 
-\item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
+\item{...}{
+  Arguments passed on to \code{\link[SeuratObject:CreateAssayObject]{SeuratObject::CreateAssayObject}}
+  \describe{
+    \item{\code{counts}}{Unnormalized data such as raw counts or TPMs}
+    \item{\code{data}}{Prenormalized data; if provided, do not pass \code{counts}}
+    \item{\code{min.cells}}{Include features detected in at least this many cells. Will
+subset the counts matrix as well. To reintroduce excluded features, create a
+new object with a lower cutoff}
+    \item{\code{min.features}}{Include cells where at least this many features are
+detected}
+    \item{\code{key}}{Optional key to initialize assay with}
+    \item{\code{check.matrix}}{Check counts matrix for NA, NaN, Inf, and
+non-integer values}
+  }}
 
-\item{assay}{Assay to be converted. If NULL, \code{DefaultAssay()} is used.}
+\item{output_class}{Name of the AnnData class.
+Must be one of:
+\itemize{
+\item{"HDF5AnnData"}{For \link[anndataR]{HDF5AnnData} output.}
+\item{"InMemoryAnnData"}{For \link[anndataR]{InMemoryAnnData} output.}
+}}
 
-\item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
-not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
+\item{assay}{Assay to be converted. If \code{NULL},
+\link[SeuratObject]{DefaultAssay} is used.}
+
+\item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X.
+By default, 'counts' will be used (if it is
+not empty), followed by 'data', then 'scale.data'.
+The remaining non-empty slots will be stored in different
 layers.}
 
-\item{...}{Additional arguments passed to the generator function.}
+\item{update}{Run \link[SeuratObject]{UpdateSeuratObject} on the
+input \code{obj} beforehand.}
+}
+\value{
+A \link[SeuratObject]{SeuratObject}.
+
+An \link[anndataR]{AnnData} object.
 }
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
@@ -37,12 +73,9 @@ layers.}
 Only one assay can be converted at a time.
 }
 \examples{
-ad <- AnnData(
-  X = matrix(1:5, 3L, 5L),
-  obs = data.frame(cell = 1:3),
-  obs_names = letters[1:3],
-  var = data.frame(gene = 1:5),
-  var_names = letters[1:5]
-)
-to_Seurat(ad)
+adata <- dummy_data("InMemoryAnnData")
+to_Seurat(adata)
+obj <- dummy_data("Seurat")
+adata <- from_Seurat(obj)
+adata
 }

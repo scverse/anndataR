@@ -20,18 +20,9 @@ This function takes an AnnData object and converts it to an HDF5AnnData
 object, loading all fields into memory.
 }
 \examples{
-ad <- AnnData(
-  X = matrix(1:5, 3L, 5L),
-  layers = list(
-    A = matrix(5:1, 3L, 5L),
-    B = matrix(letters[1:5], 3L, 5L)
-  ),
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5),
-  obs_names = LETTERS[1:3],
-  var_names = letters[1:5]
-)
-to_HDF5AnnData(ad, "test.h5ad")
+adata <- dummy_data("InMemoryAnnData")
+adata2 <- to_HDF5AnnData(adata, "test.h5ad")
+adata2
 # remove file
 file.remove("test.h5ad")
 }

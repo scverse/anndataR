@@ -65,8 +65,8 @@ library(anndataR)
 ```
 
 ```{r show_anndata_hdf5}
-file <- system.file("extdata", "example.h5ad", package = "anndataR")
-adata <- read_h5ad(file, to = "InMemoryAnnData")
+h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+adata <- read_h5ad(h5ad_file, to = "InMemoryAnnData")
 ```
 
 The contents can be accessed as well:
@@ -79,7 +79,8 @@ var <- adata$var
 
 ## `InMemoryAnnData` backend
 
-The following example details how to construct an InMemoryAnnData and access its contents.
+The following example details how to construct an `InMemoryAnnData` 
+and access its contents.
 
 ```{r inmemory_construct}
 adata <- AnnData(
@@ -114,6 +115,6 @@ seurat <- to_Seurat(adata)
 # Session info
 
 ```{r}
-sessionInfo()
+utils::sessionInfo()
 ```
 

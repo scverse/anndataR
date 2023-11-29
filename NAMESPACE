@@ -2,16 +2,25 @@
 
 export(AnnData)
 export(InMemoryAnnData)
+export(dummy_data)
+export(from_DimReduc)
 export(from_Seurat)
 export(from_SingleCellExperiment)
 export(read_h5ad)
+<<<<<<< HEAD
+export(to_DimReduc)
+=======
+export(setup_conda)
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
 export(to_HDF5AnnData)
 export(to_InMemoryAnnData)
 export(to_Seurat)
 export(to_SingleCellExperiment)
 export(write_h5ad)
 importFrom(Matrix,as.matrix)
+importFrom(Matrix,rsparsematrix)
 importFrom(Matrix,sparseMatrix)
 importFrom(Matrix,t)
 importFrom(R6,R6Class)
 importFrom(methods,as)
+importFrom(stats,runif)

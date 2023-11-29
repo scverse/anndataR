@@ -1,5 +1,7 @@
 ---
 title: anndataR
+author: "`r rworkflows::use_badges(branch='main')`" 
+date: "<h4>Most recent update: <i>`r format( Sys.Date(), '%b-%d-%Y')`</i></h4>"
 format: gfm
 ---
 
@@ -68,13 +70,13 @@ Here's a quick example of how to use `{anndataR}`. First, we download an h5ad fi
 ```{r warning=FALSE}
 library(anndataR)
 
-h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
+h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 ```
 
 Read an h5ad file:
 
 ```{r warning=FALSE}
-adata <- read_h5ad(h5ad_path, to = "InMemoryAnnData")
+adata <- read_h5ad(h5ad_file, to = "InMemoryAnnData")
 ```
 
 View structure:

@@ -15,7 +15,7 @@
 #'   ## useful when interacting with the SingleCellExperiment !
 #'   library(SingleCellExperiment)
 #' }
-#' ad <- AnnData(
+#' adata <- AnnData(
 #'   X = matrix(1:15, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(15:1, 3L, 5L),
@@ -28,9 +28,8 @@
 #' )
 #'
 #' ## construct a SingleCellExperiment from an AnnData object
-#' sce <- to_SingleCellExperiment(ad)
+#' sce <- to_SingleCellExperiment(adata)
 #' sce
-#'
 #' @export
 to_SingleCellExperiment <- function(object) { # nolint
   stopifnot(
@@ -112,7 +111,10 @@ to_SingleCellExperiment <- function(object) { # nolint
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
 #' @export
-from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData"), ...) { # nolint
+from_SingleCellExperiment <- function(sce, 
+                                      output_class = c("InMemory",
+                                                       "HDF5AnnData"), 
+                                      ...) { # nolint
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )

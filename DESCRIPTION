@@ -1,6 +1,6 @@
 Package: anndataR
 Title: AnnData interoperability in R
-Version: 0.0.0.9000
+Version: 0.99.1 
 Authors@R: c(
     person(
         "Robrecht", "Cannoodt", 
@@ -57,11 +57,14 @@ Description: Bring the power and flexibility of AnnData to the R
 License: MIT + file LICENSE
 URL: https://scverse.org/anndataR, https://github.com/scverse/anndataR
 BugReports: https://github.com/scverse/anndataR/issues
+BioViews:
+  Software
 Depends: 
-    R (>= 3.2.0)
+    R (>= 4.3.0)
 Imports:
     Matrix,
     methods,
+    stats,
     R6
 Suggests:
     anndata,
@@ -83,5 +86,9 @@ Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
+<<<<<<< HEAD
 RoxygenNote: 7.2.3
 biocViews: SingleCell, DataImport, DataRepresentation
+=======
+RoxygenNote: 7.2.3.9000
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
