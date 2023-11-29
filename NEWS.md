@@ -11,8 +11,16 @@
 * *Seurat.R*
   - Add/extract `DimRed` elements whenever available.
   - Add unit tests for `from_Seurat`.
+* New functions
+  - `graphs_to_anndata`:  When converting Seurat --> AnnData, 
+    store `obsp` and `varp` anndata slots from `graphs`. Does some inference 
+    about whether each matrix should go into the `obsp` vs. `varp` slot based 
+    on whether they have the same dimensions as the number of rows. 
+  - `anndata_to_graphs`: When converting AnnData --> Seurat, 
+    store `obsp` and `varp` anndata slots in `graphs`. 
 * *DimReduc.R*
   - New functions for converting Seurat's DimReduc objects.
+  
 
 ## Bug fixes
 

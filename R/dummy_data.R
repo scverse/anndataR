@@ -228,7 +228,8 @@ dummy_Seurat <- function(...,
   seurat <- add_DimReduc(obj = seurat, 
                          drl = drl)
   ## Add obsp/varp as graphs
-  seurat@graphs <- dummy[c("obsp","varp")]
+  seurat@graphs <- list(dummy$obsp,
+                        dummy$varp)
   return(seurat)
 }
 

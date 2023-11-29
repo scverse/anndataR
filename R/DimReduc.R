@@ -146,7 +146,7 @@ from_DimReduc <- function(obj,
   if(methods::is(obj,"DimReduc")){
     stop("Must provide DimReduc objects as a named list.")
   } else if(SeuratObject::IsNamedList(obj)){
-    if(!all(mapply(methods::is,"DimReduc"),obj)){
+    if(!all( unlist(lapply(obj,methods::is,"DimReduc")) ) ){
       stop("All elements of named list must be of class 'DimReduc'.")
     }
     drl <- obj

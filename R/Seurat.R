@@ -74,7 +74,7 @@ to_Seurat <- function(obj,
     x_assay <- SeuratObject::AddMetaData(x_assay,
                                          metadata = var_)
   }
-  obj2 <- SeuratObject::CreateSeuratObject(x_assay, 
+  seur <- SeuratObject::CreateSeuratObject(x_assay, 
                                           meta.data = obs_)
   
   ## add layers
@@ -83,14 +83,17 @@ to_Seurat <- function(obj,
   for (key in obj$layers_keys()) {
     layer_ <- Matrix::t(obj$layers[[key]])
     dimnames(layer_) <- list(var_names_, obs_names_)
-    obj2[[key]] <- SeuratObject::CreateAssayObject(counts = layer_)
+    seur[[key]] <- SeuratObject::CreateAssayObject(counts = layer_)
   } 
   ## Add DimReduc objects
   drl <- to_DimReduc(obj = obj)
-  obj2 <- add_DimReduc(obj = obj2, 
+  seur <- add_DimReduc(obj = seur, 
                        drl = drl)
+  ## Add obsp/varp as graphs 
+  seur <- anndata_to_graphs(ad = obj,
+                            seur = seur) 
   ## Return 
-  return(obj2)
+  return(seur)
 }
 
 .toseurat_check_obsvar_names <- function(names, label) {
@@ -256,7 +259,58 @@ from_Seurat <- function(obj,
   ## Add obsm and varm
   obsm_varm <- from_DimReduc(obj)
   ad$obsm <- obsm_varm$obsm
-  ad$varm <- obsm_varm$varm 
+  ad$varm <- obsm_varm$varm  
+  ## Add obsp/varp from graphs 
+  ad <- graphs_to_anndata(seur = obj, 
+                          ad = ad) 
   ## Return 
   return(ad)
+}
+
+
+#' Graphs to AnnData
+#' 
+#' Transfer Seurat graphs to relevant AnnData slots.
+#' @param ad An AnnData object.
+#' @param seur A Seurat object.
+#' @returns An AnnData object. 
+#' @keywords internal 
+graphs_to_anndata <- function(seur,
+                              ad){
+  graph_nms <- names(seur@graphs)
+  if("obsp" %in% graph_nms){
+    ad$obsp <- seur@graphs$obsp 
+  }
+  if("varp" %in% graph_nms){
+    ad$varp <- seur@graphs$varp 
+  } 
+  extra_graphs <- graph_nms[!graph_nms %in% c("obsp","varp")]
+  for(gn in extra_graphs){
+    g <- seur@graphs[[gn]] 
+    if(all(dim(g)==nrow(seur))){
+      messager("Inferring graph",shQuote(gn),"as a obs x obs matrix.",
+               "Adding to 'obsp' slot.")
+      ad$obsp[[gn]] <- g
+    } else if (all(dim(g)==ncol(seur))){
+      messager("Inferring graph",shQuote(gn),"as a var x var matrix.",
+               "Adding to 'varp' slot.")
+      ad$varp[[gn]] <- g
+    } else {
+      messager("Unable to infer where graph",shQuote(gn),"should be placed.")
+    }
+  }
+  return(ad)
+}
+
+#' Graphs to AnnData
+#' 
+#' Transfer Seurat graphs to relevant AnnData slots.
+#' @returns A \link[SeuratObject]{SeuratObject}.
+#' @inheritParams graphs_to_anndata
+#' @keywords internal 
+anndata_to_graphs <- function(ad,
+                              seur){
+  seur@graphs <- list(ad$obsp,
+                      ad$varp)
+  return(seur)
 }
