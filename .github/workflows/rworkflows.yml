@@ -54,4 +54,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run_docker: ${{ true }}
         miniforge_variant: 'Mambaforge' 
-        environment_file: https://github.com/bschilder/anndataR/raw/rworkflows/inst/conda/anndataR.yml
+        environment_file: inst/conda/anndataR.yml
