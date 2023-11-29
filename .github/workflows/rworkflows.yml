@@ -40,6 +40,11 @@ jobs:
           cont: ~
           rspm: ~
     steps:
+    - name: Install Python dependencies for reticulate
+      run: |
+        reticulate::install_miniconda()
+        reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
+      shell: Rscript {0}
     - uses: neurogenomics/rworkflows@master
       with:
         run_bioccheck: ${{ true }}
@@ -53,5 +58,3 @@ jobs:
         has_latex: ${{ false }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run_docker: ${{ true }}
-        miniforge_variant: 'Mambaforge' 
-        environment_file: inst/conda/anndataR.yml
