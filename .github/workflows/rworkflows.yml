@@ -1,0 +1,92 @@
+name: rworkflows
+'on':
+  push:
+<<<<<<< HEAD
+    branches:
+    - master
+    - main
+    - devel
+    - RELEASE_**
+  pull_request:
+    branches:
+    - master
+    - main
+    - devel
+    - RELEASE_**
+jobs:
+  rworkflows:
+    permissions: write-all
+=======
+    branches: 
+    - main 
+    - rworkflows
+  pull_request:
+    branches:
+    - main
+    - rworkflows
+jobs:
+  rworkflows:
+    permissions:
+      contents: write
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    container: ${{ matrix.config.cont }}
+    strategy:
+      fail-fast: ${{ false }}
+      matrix:
+        config:
+        - os: ubuntu-latest
+          bioc: devel
+          r: auto
+<<<<<<< HEAD
+          cont: ghcr.io/bioconductor/bioconductor_docker:devel
+          rspm: ~
+=======
+          cont: bioconductor/bioconductor_docker:devel
+          rspm: https://packagemanager.rstudio.com/cran/__linux__/latest/release
+        - os: ubuntu-latest
+          bioc: release
+          r: auto
+          cont: bioconductor/bioconductor_docker:latest 
+          http-user-agent: 'release'
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
+        - os: macOS-latest
+          bioc: release
+          r: auto
+          cont: ~
+          rspm: ~
+        - os: windows-latest
+          bioc: release
+          r: auto
+          cont: ~
+          rspm: ~
+    steps:
+    - uses: neurogenomics/rworkflows@master
+      with:
+        run_bioccheck: ${{ true }}
+        run_rcmdcheck: ${{ true }}
+<<<<<<< HEAD
+        as_cran: ${{ true }}
+=======
+        as_cran: ${{ false }}
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
+        run_vignettes: ${{ true }}
+        has_testthat: ${{ true }}
+        run_covr: ${{ true }}
+        run_pkgdown: ${{ true }}
+        has_runit: ${{ false }}
+        has_latex: ${{ false }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+<<<<<<< HEAD
+        run_docker: ${{ true }}
+        miniforge_variant: 'Mambaforge'
+        environment_file: 
+=======
+        run_docker: ${{ false }}
+        docker_user: username
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        runner_os: ${{ runner.os }}
+        cache_version: cache-v1
+        enable_act: ${{ false }}
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c

@@ -1,6 +1,10 @@
 Package: anndataR
 Title: AnnData interoperability in R
+<<<<<<< HEAD
 Version: 0.99.1
+=======
+Version: 0.99.0
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
 Authors@R: c(
     person(
         "Robrecht", "Cannoodt", 
@@ -86,5 +90,9 @@ Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
+<<<<<<< HEAD
 RoxygenNote: 7.2.3
 biocViews: SingleCell, DataImport, DataRepresentation
+=======
+RoxygenNote: 7.2.3.9000
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c

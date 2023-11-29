@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # anndataR 0.99.1
 
 ## New features
@@ -39,6 +40,17 @@
   - Added helper function `messager` to avoid notes about pasting inside messages.
     Can also easily turn off verbosity by setting the env var "ANNDATAR_VERBOSE".
 * Fix all unit tests given updates.
+=======
+# anndataR 0.99.0
+
+## New features
+
+- Add `rworkflows` CI.
+- Update *lint.yaml* to use `actions/checkout@v4` (which has less issues).
+- New function `setup_conda` automatically installs miniconda 
+  and sets up conda env: #97
+- Change version to Bioc-recommended devel version: 0.99.0
+>>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
 
 # anndataR 0.1.0
 
