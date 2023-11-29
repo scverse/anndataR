@@ -290,7 +290,7 @@ write_h5ad_numeric_scalar <- function(value, file, name, version = "0.2.0") {
   rhdf5::h5write(value, file, name)
 
   # Write attributes
-  write_h5ad_encoding(file, name, "numeric", version)
+  write_h5ad_encoding(file, name, "numeric-scalar", version)
 }
 
 #' Write H5AD mapping
