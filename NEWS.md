@@ -2,15 +2,17 @@
 
 ## New features
 
-* Add `example_data` function. 
 * Harmonise all references to `h5ad_file` (`file`,`h5ad_path`,`ad`)
 * Harmonise all references to `ad` (`adata`)
 * Use `@returns` in Roxygen notes to allow multi-line notes.
 * Export helper function `dummy_data`
   - Makes examples much less verbose and more consistent.
   - Include "obsm","varm","obsp","varp" and "layers" wherever possible.
-* *test-Seurat.R*
+* *Seurat.R*
+  - Add/extract `DimRed` elements whenever available.
   - Add unit tests for `from_Seurat`.
+* *DimReduc.R*
+  - New functions for converting Seurat's DimReduc objects.
 
 ## Bug fixes
 
@@ -28,6 +30,7 @@
   - `Consider adding runnable examples to man pages that document exported objects.`
   - Added helper function `messager` to avoid notes about pasting inside messages.
     Can also easily turn off verbosity by setting the env var "ANNDATAR_VERBOSE".
+* Fix all unit tests given updates.
 
 # anndataR 0.1.0
 
