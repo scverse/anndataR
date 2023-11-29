@@ -1,10 +1,6 @@
 Package: anndataR
 Title: AnnData interoperability in R
-<<<<<<< HEAD
-Version: 0.99.1
-=======
-Version: 0.99.0
->>>>>>> 3a22fe5dbde8f24cb3156e150427d537c904a79c
+Version: 0.99.1 
 Authors@R: c(
     person(
         "Robrecht", "Cannoodt", 
