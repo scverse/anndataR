@@ -2,12 +2,13 @@
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
+#' @returns An \link[anndataR]{HDF5AnnData} object.
 HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
     .h5obj = NULL,
     .n_obs = NULL,
-    .n_vars = NULL,
+    .n_var = NULL,
     .obs_names = NULL,
     .var_names = NULL,
     .obsm = NULL,
@@ -39,7 +40,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         value <- private$.validate_aligned_mapping(
           value,
           "layers",
-          c(self$n_obs(), self$n_vars()),
+          c(self$n_obs(), self$n_var()),
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
@@ -74,7 +75,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         value <- private$.validate_aligned_mapping(
           value,
           "varm",
-          c(self$n_vars()),
+          c(self$n_var()),
           expected_rownames = colnames(self)
         )
         write_h5ad_element(value, private$.h5obj, "/varm")
@@ -109,7 +110,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         value <- private$.validate_aligned_mapping(
           value,
           "varp",
-          c(self$n_vars(), self$n_vars()),
+          c(self$n_var(), self$n_var()),
           expected_rownames = colnames(self),
           expected_colnames = colnames(self)
         )
@@ -174,7 +175,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         # var names are cached to avoid reading all of var whenever they are
         # accessed
         if (is.null(private$.var_names)) {
-          private$.var_names <- read_h5ad_data_frame_index(private$.h5obj, "var")
+          private$.var_names <- read_h5ad_data_frame_index(private$.h5obj, 
+                                                           "var")
         }
         private$.var_names
       } else {
@@ -188,8 +190,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
   public = list(
     #' @description HDF5AnnData constructor
     #'
-    #' @param file The filename (character) of the `.h5ad` file. If this
-    #'   file does not exist yet, `obs_names` and `var_names` must be provided.
+    #' @param file The filename (character) of the `.h5ad` file.
+    #'  If this file does not exist yet, `obs_names` and `var_names` 
+    #'  must be provided.
     #' @param obs_names A vector of unique identifiers
     #'   used to identify each row of `obs` and to act as an index into the
     #'   observation dimension of the AnnData object. The length of `obs_names`
@@ -207,20 +210,20 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   information about observations. If `NULL`, an `n_obs`×0 data frame will
     #'   automatically be generated.
     #' @param var Either `NULL` or a `data.frame` with columns containing
-    #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
+    #'   information about variables. If `NULL`, an `n_var`×0 data frame will
     #'   automatically be generated.
     #' @param obsm The obsm slot is used to store multi-dimensional annotation
-    #'   arrays. It must be either `NULL` or a named list, where each element is a
-    #'   matrix with `n_obs` rows and an arbitrary number of columns.
+    #'   arrays. It must be either `NULL` or a named list, where each element 
+    #'   is a matrix with `n_obs` rows and an arbitrary number of columns.
     #' @param varm The varm slot is used to store multi-dimensional annotation
-    #'   arrays. It must be either `NULL` or a named list, where each element is a
-    #'   matrix with `n_vars` rows and an arbitrary number of columns.
+    #'   arrays. It must be either `NULL` or a named list, where each element
+    #'    is a matrix with `n_var` rows and an arbitrary number of columns.
     #' @param obsp The obsp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_obs`.
     #' @param varp The varp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
-    #'   element is a sparse matrix where each dimension has length `n_vars`.
+    #'   element is a sparse matrix where each dimension has length `n_var`.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
@@ -259,7 +262,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         # Set private object slots
         private$.h5obj <- file
         private$.n_obs <- length(obs_names)
-        private$.n_vars <- length(var_names)
+        private$.n_var <- length(var_names)
         private$.obs_names <- obs_names
         private$.var_names <- var_names
       } else {
@@ -329,11 +332,11 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
 
     #' @description Number of variables in the AnnData object
-    n_vars = function() {
-      if (is.null(private$.n_vars)) {
-        private$.n_vars <- length(self$var_names)
+    n_var = function() {
+      if (is.null(private$.n_var)) {
+        private$.n_var <- length(self$var_names)
       }
-      private$.n_vars
+      private$.n_var
     }
   )
 )
@@ -352,18 +355,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' @export
 #'
 #' @examples
-#' ad <- AnnData(
-#'   X = matrix(1:5, 3L, 5L),
-#'   layers = list(
-#'     A = matrix(5:1, 3L, 5L),
-#'     B = matrix(letters[1:5], 3L, 5L)
-#'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
-#' )
-#' to_HDF5AnnData(ad, "test.h5ad")
+#' adata <- dummy_data("InMemoryAnnData")
+#' adata2 <- to_HDF5AnnData(adata, "test.h5ad")
+#' adata2
 #' # remove file
 #' file.remove("test.h5ad")
 to_HDF5AnnData <- function(adata, file) { # nolint

@@ -125,6 +125,11 @@ test_that("reading H5AD as Seurat works", {
   skip_if_not_installed("SeuratObject")
 
   # TODO: remove this suppression when the to_seurat, from_seurat functions are updated.
-  seurat <- suppressWarnings(read_h5ad(h5ad_file, to = "Seurat"))
+  suppressWarnings(
+    {
+      seurat <- read_h5ad(path = h5ad_file,
+                          to = "Seurat")
+    }
+  )
   expect_s4_class(seurat, "Seurat")
 })

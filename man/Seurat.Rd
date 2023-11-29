@@ -3,62 +3,79 @@
 \name{to_Seurat}
 \alias{to_Seurat}
 \alias{from_Seurat}
-\title{Convert Between AnnData and Seurat}
+\title{Convert between AnnData and Seurat}
 \usage{
-to_Seurat(obj, counts = c("X", obj$layer), ...)
+to_Seurat(
+  obj,
+  key_map = list(X_pca = "PCs", X_umap = NULL, X_mofa = "LFs"),
+  ...
+)
 
 from_Seurat(
-  seurat_obj,
+  obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
   assay = NULL,
   X = "counts",
+  update = FALSE,
   ...
 )
 }
 \arguments{
-\item{obj}{An AnnData object.}
+\item{obj}{An object inheriting from \link[Seurat]{Seurat}.}
 
-\item{counts}{Which layer to use A \code{layer} within \code{obj} to use}
+\item{key_map}{A key:value mapping indicating pairs of obsm/varm slots in
+the \code{obj} object. For some common reductions,
+there are conventional names for the loadings slots}
 
 \item{...}{
-  Arguments passed on to \code{\link[SeuratObject:CreateSeuratObject]{SeuratObject::CreateSeuratObject}}
+  Arguments passed on to \code{\link[SeuratObject:CreateAssayObject]{SeuratObject::CreateAssayObject}}
   \describe{
-    \item{\code{project}}{\link[SeuratObject]{Project} name for the \code{Seurat} object}
-    \item{\code{names.field}}{For the initial identity class for each cell, choose this
-field from the cell's name. E.g. If your cells are named as
-BARCODE_CLUSTER_CELLTYPE in the input matrix, set \code{names.field} to 3 to
-set the initial identities to CELLTYPE.}
-    \item{\code{names.delim}}{For the initial identity class for each cell, choose this
-delimiter from the cell's column name. E.g. If your cells are named as
-BARCODE-CLUSTER-CELLTYPE, set this to \dQuote{-} to separate the cell name
-into its component parts for picking the relevant field.}
-    \item{\code{meta.data}}{Additional cell-level metadata to add to the Seurat object.
-Should be a \code{\link[base]{data.frame}} where the rows are cell names and
-the columns are additional metadata fields. Row names in the metadata need
-to match the column names of the counts matrix.}
+    \item{\code{counts}}{Unnormalized data such as raw counts or TPMs}
+    \item{\code{data}}{Prenormalized data; if provided, do not pass \code{counts}}
+    \item{\code{min.cells}}{Include features detected in at least this many cells. Will
+subset the counts matrix as well. To reintroduce excluded features, create a
+new object with a lower cutoff}
+    \item{\code{min.features}}{Include cells where at least this many features are
+detected}
+    \item{\code{key}}{Optional key to initialize assay with}
+    \item{\code{check.matrix}}{Check counts matrix for NA, NaN, Inf, and
+non-integer values}
   }}
 
-\item{seurat_obj}{An object inheriting from Seurat.}
-
 \item{output_class}{Name of the AnnData class.
-Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
+Must be one of:
+\itemize{
+\item{"HDF5AnnData"}{For \link[anndataR]{HDF5AnnData} output.}
+\item{"InMemoryAnnData"}{For \link[anndataR]{InMemoryAnnData} output.}
+}}
 
-\item{assay}{Assay to be converted. If NULL, \code{DefaultAssay()} is used.}
+\item{assay}{Assay to be converted. If \code{NULL},
+\link[SeuratObject]{DefaultAssay} is used.}
 
 \item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X.
 By default, 'counts' will be used (if it is
 not empty), followed by 'data', then 'scale.data'.
-The remaining non-empty slots will be stored in different layers.}
+The remaining non-empty slots will be stored in different
+layers.}
+
+\item{update}{Run \link[SeuratObject]{UpdateSeuratObject} on the
+input \code{obj} beforehand.}
+}
+\value{
+A \link[SeuratObject]{SeuratObject}.
+
+An \link[anndataR]{AnnData} object.
 }
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
-NOTE: Only 1 assay per object is currently.
 
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
 Only one assay can be converted at a time.
 }
 \examples{
-h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
-ad <- anndataR::read_h5ad(h5ad_file)
-to_Seurat(obj) 
+adata <- dummy_data("InMemoryAnnData")
+to_Seurat(adata)
+obj <- dummy_data("Seurat")
+adata <- from_Seurat(obj)
+adata
 }

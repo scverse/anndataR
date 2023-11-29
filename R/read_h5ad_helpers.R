@@ -84,8 +84,8 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
 #' @noRd
 read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  # TODO: ideally, native = TRUE should take care of the row order and column order,
-  # but it doesn't
+  # TODO: ideally, native = TRUE should take care of the row order and 
+  # column order, but it doesn't
   darr <- t(rhdf5::h5read(file, name))
   # If the dense array is a 1D matrix, convert to vector
   if (any(dim(darr) == 1)) {
@@ -169,8 +169,10 @@ read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
 #' @details
 #' A "record array" (recarray) is a Python NumPy array type that contains
 #' "fields" that can be indexed using attributes (similar to columns in a
-#' spreadsheet). See https://numpy.org/doc/stable/reference/generated/numpy.recarray.html
-#' for details.
+#' spreadsheet). 
+#' See 
+#' \href{https://numpy.org/doc/stable/reference/generated/numpy.recarray.html}{
+#' here} for details.
 #'
 #' They are used by **scanpy** to score marker gene testing results.
 #'
@@ -287,7 +289,9 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
   codes <- element[["codes"]] + 1
 
   if (!length(dim(codes)) == 1) {
-    stop("There is currently no support for multidimensional categorical arrays")
+    stop(
+      "There is currently no support for multidimensional categorical arrays"
+      )
   }
 
   # Set missing values

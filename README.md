@@ -79,7 +79,7 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 Read an h5ad file:
 
 ``` r
-adata <- read_h5ad(h5ad_path, to = "InMemoryAnnData")
+adata <- read_h5ad(h5ad_file, to = "InMemoryAnnData")
 ```
 
 View structure:

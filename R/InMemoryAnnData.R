@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
-#'
+#' @returns An \link[anndataR]{InMemoryAnnData} object.
 #' @importFrom Matrix as.matrix
 #'
 #' @examples
@@ -66,7 +66,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.layers <- private$.validate_aligned_mapping(
           value,
           "layers",
-          c(self$n_obs(), self$n_vars()),
+          c(self$n_obs(), self$n_var()),
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
@@ -157,7 +157,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.varm <- private$.validate_aligned_mapping(
           value,
           "varm",
-          c(self$n_vars()),
+          c(self$n_var()),
           expected_rownames = colnames(self)
         )
         self
@@ -192,7 +192,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.varp <- private$.validate_aligned_mapping(
           value,
           "varp",
-          c(self$n_vars(), self$n_vars()),
+          c(self$n_var(), self$n_var()),
           expected_rownames = colnames(self),
           expected_colnames = colnames(self)
         )
@@ -218,24 +218,24 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param layers Either `NULL` or a named list, where each element
     #'   is an observation × variable matrix with dimensions consistent
     #'   with `obs` and `var`.
-    #' @param obs Either `NULL` or a `data.frame` with columns containing information
-    #'   about observations. If `NULL`, an `n_obs`×0 data frame will automatically
-    #'   be generated.
-    #' @param var Either `NULL` or a `data.frame` with columns containing information
-    #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
-    #'   be generated.
+    #' @param obs Either `NULL` or a `data.frame` with columns containing 
+    #'   information about observations. If `NULL`, an `n_obs`×0 data frame will
+    #'   automatically be generated.
+    #' @param var Either `NULL` or a `data.frame` with columns containing 
+    #'   information about variables. If `NULL`, an `n_var`×0 data frame will
+    #'   automatically be generated.
     #' @param obsm The obsm slot is used to store multi-dimensional annotation
-    #'   arrays. It must be either `NULL` or a named list, where each element is a
-    #'   matrix with `n_obs` rows and an arbitrary number of columns.
+    #'   arrays. It must be either `NULL` or a named list, where each element is
+    #'   a matrix with `n_obs` rows and an arbitrary number of columns.
     #' @param varm The varm slot is used to store multi-dimensional annotation
-    #'   arrays. It must be either `NULL` or a named list, where each element is a
-    #'   matrix with `n_vars` rows and an arbitrary number of columns.
+    #'   arrays. It must be either `NULL` or a named list, where each element is
+    #'   a matrix with `n_var` rows and an arbitrary number of columns.
     #' @param obsp The obsp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_obs`.
     #' @param varp The varp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
-    #'   element is a sparse matrix where each dimension has length `n_vars`.
+    #'   element is a sparse matrix where each dimension has length `n_var`.
     initialize = function(obs_names,
                           var_names,
                           X = NULL,

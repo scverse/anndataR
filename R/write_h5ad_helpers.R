@@ -90,8 +90,13 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
     on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
   }
 
-  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type", asScalar = TRUE) # nolint
-  rhdf5::h5writeAttribute(version, h5obj, "encoding-version", asScalar = TRUE) # nolint
+  rhdf5::h5writeAttribute(encoding, h5obj, 
+                          "encoding-type", 
+                          asScalar = TRUE) # nolint
+  rhdf5::h5writeAttribute(version, 
+                          h5obj, 
+                          "encoding-version", 
+                          asScalar = TRUE) # nolint
 }
 
 #' Write H5AD dense array
@@ -102,6 +107,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to write
+#' @returns Null.
 write_h5ad_dense_array <- function(value, file, name, version = "0.2.0") {
   version <- match.arg(version)
 

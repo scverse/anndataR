@@ -12,8 +12,8 @@ test_that("to_SingleCellExperiment() works", {
   )
 
   # conversion works
-  expect_no_error(sce <- to_SingleCellExperiment(ad))
-  expect_no_error(sce0 <- to_SingleCellExperiment(ad0))
+  expect_no_error({sce <- to_SingleCellExperiment(ad)})
+  expect_no_error({sce0 <- to_SingleCellExperiment(ad0)})
   expect_true(validObject(sce))
   expect_true(validObject(sce0))
 

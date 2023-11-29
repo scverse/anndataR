@@ -6,6 +6,10 @@
 \usage{
 list_generators()
 }
+\value{
+A named list of generators currently available via
+\link[anndataR]{get_generator}.
+}
 \description{
 List the available AnnData generators.
 }

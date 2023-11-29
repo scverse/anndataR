@@ -1,4 +1,4 @@
-dummy <- dummy_data(10L, 20L)
+dummy <- dummy_data()
 
 test_that("to_Seurat with inmemoryanndata", {
 
@@ -7,7 +7,9 @@ test_that("to_Seurat with inmemoryanndata", {
     obs = dummy$obs,
     var = dummy$var,
     obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var_names = dummy$var_names,
+    obsm = dummy$obsm,
+    varm = dummy$varm
   ) 
   # running to_seurat when ad0$X is null probably doesn't make any sense
   ad0 <- AnnData(
@@ -37,7 +39,7 @@ test_that("to_Seurat with inmemoryanndata", {
     expect_true(obs_key %in% colnames(seu@meta.data))
     expect_equal(seu@meta.data[[obs_key]], dummy$obs[[obs_key]])
   }
-  seu0@meta.data
+  # seu0@meta.data
 
   # check whether all var keys are found in the seu assay metadata
   # trackstatus: class=Seurat, feature=test_get_var, status=done
@@ -46,11 +48,15 @@ test_that("to_Seurat with inmemoryanndata", {
     expect_true(var_key %in% colnames(active_assay@meta.features))
     expect_equal(active_assay@meta.features[[var_key]], dummy$var[[var_key]])
   }
+  #### Test from_Seurat ####
+  obj <- dummy_data("Seurat")
+  adata <- from_Seurat(obj)
+  expect_equal(nrow(obj),adata$n_var())
+  expect_equal(ncol(obj),adata$n_obs())
 })
 
 test_that("to_Seurat() fails gracefully", {
   expect_error(to_Seurat(), regexp = "obj.*is missing")
   expect_error(to_Seurat("foo"), regexp = "AbstractAnnData.*not TRUE")
 })
-
-# TODO: test from_Seurat
+ 

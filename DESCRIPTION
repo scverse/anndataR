@@ -60,10 +60,11 @@ BugReports: https://github.com/scverse/anndataR/issues
 BioViews:
   Software
 Depends: 
-    R (>= 3.2.0)
+    R (>= 4.3.0)
 Imports:
     Matrix,
     methods,
+    stats,
     R6
 Suggests:
     anndata,
@@ -85,5 +86,5 @@ Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-RoxygenNote: 7.2.3.9000
+RoxygenNote: 7.2.3
 biocViews: SingleCell, DataImport, DataRepresentation

@@ -43,7 +43,7 @@ if (interactive()) {
   ## useful when interacting with the SingleCellExperiment !
   library(SingleCellExperiment)
 }
-ad <- AnnData(
+adata <- AnnData(
   X = matrix(1:15, 3L, 5L),
   layers = list(
     A = matrix(15:1, 3L, 5L),
@@ -56,9 +56,8 @@ ad <- AnnData(
 )
 
 ## construct a SingleCellExperiment from an AnnData object
-sce <- to_SingleCellExperiment(ad)
+sce <- to_SingleCellExperiment(adata)
 sce
-
 ## construct an AnnData object from a SingleCellExperiment
 from_SingleCellExperiment(sce, "InMemory")
 

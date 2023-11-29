@@ -9,6 +9,7 @@
 #'   Abstract [R6][R6::R6Class] class representing an AnnData
 #'   object. Defines the interface.
 #' @importFrom R6 R6Class
+#' @returns An [R6][R6::R6Class] object of class "AbstractAnnData".
 AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
@@ -77,8 +78,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
-      cat("AnnData object with n_obs \u00D7 n_vars = ", self$n_obs(), " \u00D7 ", self$n_vars(), "\n", sep = "")
-
+      messager("AnnData object with n_obs \u00D7 n_var =",
+               self$n_obs(), "\u00D7 ",
+               self$n_var(), "\n") 
       for (attribute in c(
         "obs",
         "var",
@@ -97,7 +99,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
             NULL
           }
         if (length(keys) > 0) {
-          cat(
+          messager(
             "    ", attribute, ":",
             paste("'", keys, "'", collapse = ", "),
             "\n",
@@ -111,7 +113,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     shape = function() {
       c(
         self$n_obs(),
-        self$n_vars()
+        self$n_var()
       )
     },
     #' @description Number of observations in the AnnData object.
@@ -119,7 +121,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       length(self$obs_names)
     },
     #' @description Number of variables in the AnnData object.
-    n_vars = function() {
+    n_var = function() {
       length(self$var_names)
     },
     #' @description Keys ('column names') of `obs`.
@@ -180,20 +182,22 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         if (nrow(mat) != self$n_obs()) {
           stop("nrow(", label, ") should be the same as nrow(obs)")
         }
-        if (ncol(mat) != self$n_vars()) {
+        if (ncol(mat) != self$n_var()) {
           stop("ncol(", label, ") should be the same as nrow(var)")
         }
 
         if (!is.null(rownames(mat))) {
           warning(wrap_message(
-            "rownames(", label, ") should be NULL, removing them from the matrix"
+            "rownames(", label, 
+            ") should be NULL, removing them from the matrix"
           ))
           rownames(mat) <- NULL
         }
 
         if (!is.null(colnames(mat))) {
           warning(wrap_message(
-            "colnames(", label, ") should be NULL, removing them from the matrix"
+            "colnames(", label, 
+            ") should be NULL, removing them from the matrix"
           ))
           colnames(mat) <- NULL
         }
@@ -211,13 +215,18 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param shape Expected dimensions of matrix
     # @param expected_rownames
     # @param excepted_colnames
-    .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    .validate_aligned_array = function(mat, 
+                                       label,
+                                       shape,
+                                       expected_rownames = NULL,
+                                       expected_colnames = NULL) {
       mat_dims <- dim(mat)
       for (i in seq_along(shape)) {
         expected_dim <- shape[i]
         found_dim <- mat_dims[i]
         if (found_dim != expected_dim) {
-          stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
+          stop("dim(", label, ")[", i, "] should have shape: ",
+               expected_dim, ", found: ", found_dim, ".")
         }
       }
       if (!is.null(expected_rownames) & !is.null(rownames(mat))) {
@@ -250,17 +259,25 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param collection A named list of 0 or more matrix elements with
     #   whose entries will be validated
     # @param label The label of the collection, used for error messages
-    # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
+    # @param shape Expected dimensions of arrays. Arrays may have more
+    # dimensions than specified here
     # @param expected_rownames
     # @param expected_colnames
-    .validate_aligned_mapping = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    .validate_aligned_mapping = function(collection, 
+                                         label, 
+                                         shape, 
+                                         expected_rownames = NULL, 
+                                         expected_colnames = NULL) {
       if (is.null(collection)) {
         return(collection)
       }
 
       collection_names <- names(collection)
-      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
-        stop(paste0(label, " must be a named list, was ", class(collection)))
+      if (!is.list(collection) || 
+          ((length(collection) != 0) &&
+           is.null(collection_names))) {
+        stp <- paste0(label, " must be a named list, was ", class(collection))
+        stop(stp)
       }
 
       for (mtx_name in collection_names) {
@@ -286,7 +303,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
       expected_nrow <- switch(label,
         obs = self$n_obs(),
-        var = self$n_vars()
+        var = self$n_var()
       )
 
       if (is.null(df)) {
@@ -308,7 +325,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
       if (.row_names_info(df) > 0) {
         warning(wrap_message(
-          "'", label, "' should not have any rownames, removing them from the data frame."
+          "'", label, 
+          "' should not have any rownames, removing them from the data frame."
         ))
         rownames(df) <- NULL
       }
@@ -320,22 +338,26 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_names = function(names, label = c("obs", "var"), check_length = TRUE) {
+    .validate_obsvar_names = function(names,
+                                      label = c("obs", "var"), 
+                                      check_length = TRUE) {
       label <- match.arg(label)
 
       if (is.null(names)) {
         stop(wrap_message(label, "_names should be defined."))
       }
 
-      # only check whether sizes match if the obsvar names has already been defined
+      # only check whether sizes match if the obsvar names has
+      # already been defined.
       prev_names <- attr(self, paste0(label, "_names"))
       if (!is.null(prev_names)) {
         expected_len <- length(prev_names)
 
         if (length(names) != expected_len) {
-          size_check_label <- if (label == "obs") "n_obs" else "n_vars"
+          size_check_label <- if (label == "obs") "n_obs" else "n_var"
           stop(wrap_message(
-            "length(", label, "_names) should be the same as ad$", size_check_label, "()"
+            "length(", label, "_names) should be the same as ad$", 
+            size_check_label, "()"
           ))
         }
       }

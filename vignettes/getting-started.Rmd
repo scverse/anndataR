@@ -79,7 +79,8 @@ var <- adata$var
 
 ## `InMemoryAnnData` backend
 
-The following example details how to construct an InMemoryAnnData and access its contents.
+The following example details how to construct an `InMemoryAnnData` 
+and access its contents.
 
 ```{r inmemory_construct}
 adata <- AnnData(
@@ -114,6 +115,6 @@ seurat <- to_Seurat(adata)
 # Session info
 
 ```{r}
-sessionInfo()
+utils::sessionInfo()
 ```
 

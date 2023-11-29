@@ -3,6 +3,9 @@
 \name{HDF5AnnData}
 \alias{HDF5AnnData}
 \title{HDF5AnnData}
+\value{
+An \link[anndataR]{HDF5AnnData} object.
+}
 \description{
 Implementation of an in memory AnnData object.
 }
@@ -45,7 +48,7 @@ with all elements having the same number of rows and columns as \code{var}.}
 \itemize{
 \item \href{#method-HDF5AnnData-new}{\code{HDF5AnnData$new()}}
 \item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
-\item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
+\item \href{#method-HDF5AnnData-n_var}{\code{HDF5AnnData$n_var()}}
 \item \href{#method-HDF5AnnData-clone}{\code{HDF5AnnData$clone()}}
 }
 }
@@ -54,6 +57,8 @@ with all elements having the same number of rows and columns as \code{var}.}
 <ul>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsm_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obsm_keys'><code>anndataR::AbstractAnnData$obsm_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsp_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obsp_keys'><code>anndataR::AbstractAnnData$obsp_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_HDF5AnnData'><code>anndataR::AbstractAnnData$to_HDF5AnnData()</code></a></span></li>
@@ -61,6 +66,8 @@ with all elements having the same number of rows and columns as \code{var}.}
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndataR::AbstractAnnData$to_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndataR::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varm_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-varm_keys'><code>anndataR::AbstractAnnData$varm_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varp_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-varp_keys'><code>anndataR::AbstractAnnData$varp_keys()</code></a></span></li>
 </ul>
 </details>
 }}
@@ -88,8 +95,9 @@ HDF5AnnData constructor
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{The filename (character) of the \code{.h5ad} file. If this
-file does not exist yet, \code{obs_names} and \code{var_names} must be provided.}
+\item{\code{file}}{The filename (character) of the \code{.h5ad} file.
+If this file does not exist yet, \code{obs_names} and \code{var_names}
+must be provided.}
 
 \item{\code{obs_names}}{A vector of unique identifiers
 used to identify each row of \code{obs} and to act as an index into the
@@ -109,7 +117,7 @@ information about observations. If \code{NULL}, an \code{n_obs}×0 data frame wi
 automatically be generated.}
 
 \item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about variables. If \code{NULL}, an \code{n_vars}×0 data frame will
+information about variables. If \code{NULL}, an \code{n_var}×0 data frame will
 automatically be generated.}
 
 \item{\code{layers}}{Either \code{NULL} or a named list, where each element is an
@@ -117,12 +125,12 @@ observation × variable matrix with dimensions consistent with \code{obs} and
 \code{var}.}
 
 \item{\code{obsm}}{The obsm slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is a
-matrix with \code{n_obs} rows and an arbitrary number of columns.}
+arrays. It must be either \code{NULL} or a named list, where each element
+is a matrix with \code{n_obs} rows and an arbitrary number of columns.}
 
 \item{\code{varm}}{The varm slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is a
-matrix with \code{n_vars} rows and an arbitrary number of columns.}
+arrays. It must be either \code{NULL} or a named list, where each element
+is a matrix with \code{n_var} rows and an arbitrary number of columns.}
 
 \item{\code{obsp}}{The obsp slot is used to store sparse multi-dimensional
 annotation arrays. It must be either \code{NULL} or a named list, where each
@@ -130,7 +138,7 @@ element is a sparse matrix where each dimension has length \code{n_obs}.}
 
 \item{\code{varp}}{The varp slot is used to store sparse multi-dimensional
 annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_vars}.}
+element is a sparse matrix where each dimension has length \code{n_var}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -155,12 +163,12 @@ Number of observations in the AnnData object
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-n_vars"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-n_vars}{}}}
-\subsection{Method \code{n_vars()}}{
+\if{html}{\out{<a id="method-HDF5AnnData-n_var"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-n_var}{}}}
+\subsection{Method \code{n_var()}}{
 Number of variables in the AnnData object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_vars()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_var()}\if{html}{\out{</div>}}
 }
 
 }

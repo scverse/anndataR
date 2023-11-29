@@ -3,6 +3,9 @@
 \name{AbstractAnnData}
 \alias{AbstractAnnData}
 \title{AbstractAnnData}
+\value{
+An \link[R6:R6Class]{R6} object of class "AbstractAnnData".
+}
 \description{
 Abstract \link[R6:R6Class]{R6} class representing an AnnData
 object. Defines the interface.
@@ -57,10 +60,14 @@ with all elements having the same number of rows and columns as \code{var}.}
 \item \href{#method-AbstractAnnData-print}{\code{AbstractAnnData$print()}}
 \item \href{#method-AbstractAnnData-shape}{\code{AbstractAnnData$shape()}}
 \item \href{#method-AbstractAnnData-n_obs}{\code{AbstractAnnData$n_obs()}}
-\item \href{#method-AbstractAnnData-n_vars}{\code{AbstractAnnData$n_vars()}}
+\item \href{#method-AbstractAnnData-n_var}{\code{AbstractAnnData$n_var()}}
 \item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
 \item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
 \item \href{#method-AbstractAnnData-layers_keys}{\code{AbstractAnnData$layers_keys()}}
+\item \href{#method-AbstractAnnData-obsm_keys}{\code{AbstractAnnData$obsm_keys()}}
+\item \href{#method-AbstractAnnData-varm_keys}{\code{AbstractAnnData$varm_keys()}}
+\item \href{#method-AbstractAnnData-obsp_keys}{\code{AbstractAnnData$obsp_keys()}}
+\item \href{#method-AbstractAnnData-varp_keys}{\code{AbstractAnnData$varp_keys()}}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
@@ -108,12 +115,12 @@ Number of observations in the AnnData object.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-n_vars"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-n_vars}{}}}
-\subsection{Method \code{n_vars()}}{
+\if{html}{\out{<a id="method-AbstractAnnData-n_var"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-n_var}{}}}
+\subsection{Method \code{n_var()}}{
 Number of variables in the AnnData object.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_vars()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_var()}\if{html}{\out{</div>}}
 }
 
 }
@@ -144,6 +151,46 @@ Keys ('column names') of \code{var}.
 Keys (element names) of \code{layers}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$layers_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obsm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obsm_keys}{}}}
+\subsection{Method \code{obsm_keys()}}{
+Keys (element names) of \code{obsm}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-varm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-varm_keys}{}}}
+\subsection{Method \code{varm_keys()}}{
+Keys (element names) of \code{varm}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obsp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obsp_keys}{}}}
+\subsection{Method \code{obsp_keys()}}{
+Keys (element names) of \code{obsp}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsp_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-varp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-varp_keys}{}}}
+\subsection{Method \code{varp_keys()}}{
+Keys (element names) of \code{varp}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varp_keys()}\if{html}{\out{</div>}}
 }
 
 }

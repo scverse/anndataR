@@ -1,6 +1,6 @@
 ---
 title: "Design"
-output: rmarkdown::html_vignette
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Design}
   %\VignetteEngine{knitr::rmarkdown}
@@ -147,3 +147,10 @@ for (class in unique(status_formatted$class)) {
   cat("\n\n")
 }
 ```
+
+# Session Info
+
+```{r}
+utils::sessionInfo()
+```
+
