@@ -23,24 +23,24 @@ write_h5ad_element <- function(value, file, name, ...) { # nolint
   # Sparse matrices
   if (inherits(value, "sparseMatrix")) {
     write_fun <- write_h5ad_sparse_array
-    # Categoricals
+  # Categoricals
   } else if (is.factor(value)) {
     write_fun <- write_h5ad_categorical
-    # Lists and data frames
+  # Lists and data frames
   } else if (is.list(value)) {
     if (is.data.frame(value)) {
       write_fun <- write_h5ad_data_frame
     } else {
       write_fun <- write_h5ad_mapping
     }
-    # Character values
+  # Character values
   } else if (is.character(value)) {
     if (length(value) == 1) {
       write_fun <- write_h5ad_string_scalar
     } else {
       write_fun <- write_h5ad_string_array
     }
-    # Numeric values
+  # Numeric values
   } else if (is.numeric(value)) {
     if (length(value) == 1) {
       write_fun <- write_h5ad_numeric_scalar
@@ -49,14 +49,17 @@ write_h5ad_element <- function(value, file, name, ...) { # nolint
     } else {
       write_fun <- write_h5ad_dense_array
     }
-    # Logical values
+  # Logical values
   } else if (is.logical(value)) {
     if (any(is.na(value))) {
       write_fun <- write_h5ad_nullable_boolean
+    } else if (length(value) == 1) {
+      # Single Booleans should be written as numeric scalars
+      write_fun <- write_h5ad_numeric_scalar
     } else {
       write_fun <- write_h5ad_dense_array
     }
-    # Fail if unknown
+  # Fail if unknown
   } else {
     stop("Writing '", class(value), "' objects to H5AD files is not supported")
   }
