@@ -21,7 +21,6 @@
 * *DimReduc.R*
   - New functions for converting Seurat's DimReduc objects.
   
-
 ## Bug fixes
 
 * *DESCRIPTION*:
