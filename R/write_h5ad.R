@@ -5,6 +5,7 @@
 #' @param object The object to write, either a "SingleCellExperiment" or a
 #' "Seurat" object
 #' @param path Path of the file to write to
+#' @param ... Extra arguments will be passed to the appropriate convertor
 #'
 #' @return `path` invisibly
 #' @export
