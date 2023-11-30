@@ -169,40 +169,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     }
   ),
   private = list(
-    # @description `.validate_matrix()` checks that dimensions are
-    #   consistent with `obs` and `var`, and removes dimnames if
-    #   present.
-    # @param mat A matrix to validate
-    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
-    #   the name of a layer.
-    .validate_matrix = function(mat, label) {
-      if (!is.null(mat)) {
-        if (nrow(mat) != self$n_obs()) {
-          stop("nrow(", label, ") should be the same as nrow(obs)")
-        }
-        if (ncol(mat) != self$n_vars()) {
-          stop("ncol(", label, ") should be the same as nrow(var)")
-        }
-
-        if (!is.null(rownames(mat))) {
-          warning(wrap_message(
-            "rownames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          rownames(mat) <- NULL
-        }
-
-        if (!is.null(colnames(mat))) {
-          warning(wrap_message(
-            "colnames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          colnames(mat) <- NULL
-        }
-      }
-
-      mat
-    },
-
-
     # @description `.validate_aligned_array()` checks that dimensions are
     #   consistent with the anndata object.
     # @param mat A matrix to validate
