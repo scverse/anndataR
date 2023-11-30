@@ -178,11 +178,12 @@ test_that("writing H5AD from Seurat works", {
   expect_true(file.exists(file))
 })
 
-test_that("writing compressed files works", {
+test_that("writing gzip compressed files works", {
   dummy <- dummy_data(100, 200)
+  non_random_X <- matrix(5, 100, 200)
 
   adata <- AnnData(
-    X = dummy$X,
+    X = non_random_X,
     obs = dummy$obs,
     var = dummy$var,
     obs_names = dummy$obs_names,
@@ -191,12 +192,30 @@ test_that("writing compressed files works", {
 
   h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
   h5ad_file_gzip <- tempfile(pattern = "hdf5_write_gzip_", fileext = ".h5ad")
-  h5ad_file_lzf <- tempfile(pattern = "hdf5_write_lzf_", fileext = ".h5ad")
 
   write_h5ad(adata, h5ad_file_none, compression = "NONE")
   write_h5ad(adata, h5ad_file_gzip, compression = "GZIP")
+
+  expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_gzip)$size)
+})
+
+test_that("writing lzf compressed files works", {
+  dummy <- dummy_data(100, 200)
+  non_random_X <- matrix(5, 100, 200)
+
+  adata <- AnnData(
+    X = non_random_X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
+  )
+
+  h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
+  h5ad_file_lzf <- tempfile(pattern = "hdf5_write_lzf_", fileext = ".h5ad")
+
+  write_h5ad(adata, h5ad_file_none, compression = "NONE")
   write_h5ad(adata, h5ad_file_lzf, compression = "LZF")
 
   expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
-  expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_gzip)$size)
 })
