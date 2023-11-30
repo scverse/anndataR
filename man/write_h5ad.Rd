@@ -11,6 +11,8 @@ write_h5ad(object, path, ...)
 "Seurat" object}
 
 \item{path}{Path of the file to write to}
+
+\item{...}{Extra arguments will be passed to the appropriate convertor}
 }
 \value{
 \code{path} invisibly
