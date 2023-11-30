@@ -24,7 +24,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         read_h5ad_element(private$.h5obj, "/X")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_X, status=done
-        value <- private$.validate_matrix(value, "X")
+        value <- private$.validate_aligned_array(
+          value,
+          "X",
+          shape = c(self$n_obs(), self$n_vars()),
+          expected_rownames = rownames(self),
+          expected_colnames = colnames(self)
+        )
         write_h5ad_element(value, private$.h5obj, "/X", private$.compression)
       }
     },
