@@ -342,12 +342,12 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
   scalar <- rhdf5::h5read(file, name)
-  
+
   # If the numeric vector is Boolean it gets read as a factor by {rhdf5}
   if (is.factor(scalar)) {
     scalar <- as.logical(scalar)
   }
-  
+
   return(scalar)
 }
 
