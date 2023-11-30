@@ -84,7 +84,7 @@ test_that("Writing H5AD string arrays works", {
 test_that("Writing H5AD categoricals works", {
   categorical <- factor(LETTERS[1:5])
 
-  expect_silent(write_h5ad_element(categorical, h5ad_file, "categorical"))
+  expect_no_error(write_h5ad_element(categorical, h5ad_file, "categorical"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/categories"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/codes"))
