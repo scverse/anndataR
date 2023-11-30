@@ -82,19 +82,27 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       for (attribute in c(
         "obs",
         "var",
-        "uns",
+        # "uns", # TODO: remove this when uns is implemented
         "obsm",
         "varm",
         "layers",
         "obsp",
         "varp"
       )) {
-        attr_key <- paste0(attribute, "_keys")
-        if (!is.null(self[[attr_key]])) {
-          slot_keys <- self[[attr_key]]()
-          if (length(slot_keys) > 0) {
-            cat("    ", pretty_print(attribute, slot_keys), "\n", sep = "")
+        key_fun <- self[[paste0(attribute, "_keys")]]
+        keys <-
+          if (!is.null(key_fun)) {
+            key_fun()
+          } else {
+            NULL
           }
+        if (length(keys) > 0) {
+          cat(
+            "    ", attribute, ":",
+            paste("'", keys, "'", collapse = ", "),
+            "\n",
+            sep = ""
+          )
         }
       }
     },
@@ -126,6 +134,22 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     layers_keys = function() {
       names(self$layers)
     },
+    #' @description Keys (element names) of `obsm`.
+    obsm_keys = function() {
+      names(self$obsm)
+    },
+    #' @description Keys (element names) of `varm`.
+    varm_keys = function() {
+      names(self$varm)
+    },
+    #' @description Keys (element names) of `obsp`.
+    obsp_keys = function() {
+      names(self$obsp)
+    },
+    #' @description Keys (element names) of `varp`.
+    varp_keys = function() {
+      names(self$varp)
+    },
     #' @description Convert to SingleCellExperiment
     to_SingleCellExperiment = function() {
       to_SingleCellExperiment(self)
@@ -145,57 +169,18 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     }
   ),
   private = list(
-    # @description `.validate_matrix()` checks that dimensions are
-    #   consistent with `obs` and `var`, and removes dimnames if
-    #   present.
-    # @param mat A matrix to validate
-    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
-    #   the name of a layer.
-    .validate_matrix = function(mat, label) {
-      if (!is.null(mat)) {
-        if (nrow(mat) != self$n_obs()) {
-          stop("nrow(", label, ") should be the same as nrow(obs)")
-        }
-        if (ncol(mat) != self$n_vars()) {
-          stop("ncol(", label, ") should be the same as nrow(var)")
-        }
-
-        if (has_row_names(mat)) {
-          warning(wrap_message(
-            "rownames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          rownames(mat) <- NULL
-        }
-
-        for (i in seq(2, length(dim(mat)), by = 1)) {
-          if (!is.null(dimnames(mat)[[i]])) {
-            warning(wrap_message(
-              "dimnames(", label, ")[[", i, "]] should be NULL, removing them from the matrix"
-            ))
-            dimnames(mat)[[i]] <- NULL
-          }
-        }
-      }
-
-      mat
-    },
-
-
     # @description `.validate_aligned_array()` checks that dimensions are
     #   consistent with the anndata object.
     # @param mat A matrix to validate
     # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
     #   the name of a layer.
     # @param shape Expected dimensions of matrix
-    # @param expected_rownames Expected rownames of matrix
-    # @param excepted_colnames Expected colnames of matrix
-    .validate_aligned_array = function(
-      mat,
-      label,
-      shape,
-      expected_rownames = NULL,
-      expected_colnames = NULL
-    ) {
+    # @param expected_rownames
+    # @param excepted_colnames
+    .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+      if (is.null(mat)) {
+        return(mat)
+      }
       mat_dims <- dim(mat)
       for (i in seq_along(shape)) {
         expected_dim <- shape[i]
@@ -204,34 +189,18 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
         }
       }
-      if (has_row_names(mat)) {
+      if (!is.null(expected_rownames) & !has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
           stop("rownames(", label, ") should be the same as expected_rownames")
         }
-
-        warning(wrap_message(
-          "rownames(", label, ") should be NULL, removing them from the matrix"
-        ))
         rownames(mat) <- NULL
       }
-
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
           stop("colnames(", label, ") should be the same as expected_colnames")
         }
+        colnames(mat) <- NULL
       }
-
-      # TODO: Determine whether this check makes sense. I'm thinking it does not.
-      # nolint start
-      # for (i in seq(2, length(dim(mat)), by = 1)) {
-      #   if (!is.null(dimnames(mat)[[i]])) {
-      #     warning(wrap_message(
-      #       "dimnames(", label, ")[[", i, "]] should be NULL, removing them from the matrix"
-      #     ))
-      #     dimnames(mat)[[i]] <- NULL
-      #   }
-      # }
-      # nolint end
 
       mat
     },
@@ -241,8 +210,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   whose entries will be validated
     # @param label The label of the collection, used for error messages
     # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
-    # @param expected_rownames
-    # @param expected_colnames
+    # @param expected_rownames Expected row names
+    # @param expected_colnames Expected column names
     .validate_aligned_mapping = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
       if (is.null(collection)) {
         return(collection)
@@ -296,7 +265,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         ))
       }
 
-      if (.row_names_info(df) > 0) {
+      if (has_row_names(df)) {
         warning(wrap_message(
           "'", label, "' should not have any rownames, removing them from the data frame."
         ))

@@ -51,7 +51,13 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         private$.X
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_X, status=done
-        private$.X <- private$.validate_matrix(value, "X")
+        private$.X <- private$.validate_aligned_array(
+          value,
+          "X",
+          shape = c(self$n_obs(), self$n_vars()),
+          expected_rownames = rownames(self),
+          expected_colnames = colnames(self)
+        )
         self
       }
     },
