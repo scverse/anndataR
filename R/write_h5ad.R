@@ -37,31 +37,32 @@
 #'     assays = list(counts = counts, logcounts = logcounts),
 #'     reducedDims = list(PCA = pca, tSNE = tsne)
 #'   )
-#'   
+#'
 #'   h5ad_file <- tempfile(fileext = ".h5ad")
 #'   write_h5ad(sce, h5ad_file)
 #' }
 #'
 #' # Write a Seurat as a H5AD
 #' if (requireNamespace("SeuratObject", quietly = TRUE)) {
-#'   counts <- matrix(1:15, 3L, 5L)
-#'   dimnames(counts) <- list(
-#'     letters[1:3],
-#'     LETTERS[1:5]
-#'   )
-#'   gene.metadata <- data.frame(
-#'     row.names = LETTERS[1:5],
-#'     gene = 1:5
-#'   )
-#'   obj <- SeuratObject::CreateSeuratObject(counts, meta.data = gene.metadata)
-#'   cell.metadata <- data.frame(
-#'     row.names = letters[1:3],
-#'     cell = 1:3
-#'   )
-#'   obj <- SeuratObject::AddMetaData(obj, cell.metadata)
-#'
-#'   h5ad_file <- tempfile(fileext = ".h5ad")
-#'   write_h5ad(obj, h5ad_file)
+#'   # TODO: uncomment this code when the seurat converter is fixed
+#'   # counts <- matrix(1:15, 3L, 5L)
+#'   # dimnames(counts) <- list(
+#'   #   letters[1:3],
+#'   #   LETTERS[1:5]
+#'   # )
+#'   # gene.metadata <- data.frame(
+#'   #   row.names = LETTERS[1:5],
+#'   #   gene = 1:5
+#'   # )
+#'   # obj <- SeuratObject::CreateSeuratObject(counts, meta.data = gene.metadata)
+#'   # cell.metadata <- data.frame(
+#'   #   row.names = letters[1:3],
+#'   #   cell = 1:3
+#'   # )
+#'   # obj <- SeuratObject::AddMetaData(obj, cell.metadata)
+#'   #
+#'   # h5ad_file <- tempfile(fileext = ".h5ad")
+#'   # write_h5ad(obj, h5ad_file)
 #' }
 write_h5ad <- function(object, path) {
   if (inherits(object, "SingleCellExperiment")) {

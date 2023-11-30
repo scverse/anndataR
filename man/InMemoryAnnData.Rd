@@ -72,6 +72,8 @@ with all elements having the same number of rows and columns as \code{obs}.}
 
 \item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
 with all elements having the same number of rows and columns as \code{var}.}
+
+\item{\code{uns}}{The uns slot. Must be \code{NULL} or a named list.}
 }
 \if{html}{\out{</div>}}
 }
@@ -89,6 +91,8 @@ with all elements having the same number of rows and columns as \code{var}.}
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsm_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obsm_keys'><code>anndataR::AbstractAnnData$obsm_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsp_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obsp_keys'><code>anndataR::AbstractAnnData$obsp_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_HDF5AnnData'><code>anndataR::AbstractAnnData$to_HDF5AnnData()</code></a></span></li>
@@ -96,6 +100,8 @@ with all elements having the same number of rows and columns as \code{var}.}
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_Seurat'><code>anndataR::AbstractAnnData$to_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="to_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-to_SingleCellExperiment'><code>anndataR::AbstractAnnData$to_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varm_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-varm_keys'><code>anndataR::AbstractAnnData$varm_keys()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varp_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-varp_keys'><code>anndataR::AbstractAnnData$varp_keys()</code></a></span></li>
 </ul>
 </details>
 }}

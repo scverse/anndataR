@@ -63,6 +63,10 @@ with all elements having the same number of rows and columns as \code{var}.}
 \item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
 \item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
 \item \href{#method-AbstractAnnData-layers_keys}{\code{AbstractAnnData$layers_keys()}}
+\item \href{#method-AbstractAnnData-obsm_keys}{\code{AbstractAnnData$obsm_keys()}}
+\item \href{#method-AbstractAnnData-varm_keys}{\code{AbstractAnnData$varm_keys()}}
+\item \href{#method-AbstractAnnData-obsp_keys}{\code{AbstractAnnData$obsp_keys()}}
+\item \href{#method-AbstractAnnData-varp_keys}{\code{AbstractAnnData$varp_keys()}}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
@@ -146,6 +150,46 @@ Keys ('column names') of \code{var}.
 Keys (element names) of \code{layers}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$layers_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obsm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obsm_keys}{}}}
+\subsection{Method \code{obsm_keys()}}{
+Keys (element names) of \code{obsm}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-varm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-varm_keys}{}}}
+\subsection{Method \code{varm_keys()}}{
+Keys (element names) of \code{varm}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obsp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obsp_keys}{}}}
+\subsection{Method \code{obsp_keys()}}{
+Keys (element names) of \code{obsp}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsp_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-varp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-varp_keys}{}}}
+\subsection{Method \code{varp_keys()}}{
+Keys (element names) of \code{varp}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varp_keys()}\if{html}{\out{</div>}}
 }
 
 }
