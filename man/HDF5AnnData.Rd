@@ -85,7 +85,8 @@ HDF5AnnData constructor
   obsm = NULL,
   varm = NULL,
   obsp = NULL,
-  varp = NULL
+  varp = NULL,
+  compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
 
@@ -135,6 +136,10 @@ element is a sparse matrix where each dimension has length \code{n_obs}.}
 \item{\code{varp}}{The varp slot is used to store sparse multi-dimensional
 annotation arrays. It must be either \code{NULL} or a named list, where each
 element is a sparse matrix where each dimension has length \code{n_vars}.}
+
+\item{\code{compression}}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\code{"none"}.}
 }
 \if{html}{\out{</div>}}
 }
