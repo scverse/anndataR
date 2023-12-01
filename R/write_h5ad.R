@@ -5,9 +5,9 @@
 #' @param object The object to write, either a "SingleCellExperiment" or a
 #' "Seurat" object
 #' @param path Path of the file to write to
-  #' @param compression The compression algorithm to use when writing the
-  #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
-  #' `"none"`.
+#' @param compression The compression algorithm to use when writing the
+#'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+#' `"none"`.
 #'
 #' @return `path` invisibly
 #' @export

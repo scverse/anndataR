@@ -360,9 +360,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #'
 #' @param adata An AnnData object to be converted to HDF5AnnData.
 #' @param file The filename (character) of the `.h5ad` file.
-  #' @param compression The compression algorithm to use when writing the
-  #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
-  #' `"none"`.
+#' @param compression The compression algorithm to use when writing the
+#'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+#' `"none"`.
 #'
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
