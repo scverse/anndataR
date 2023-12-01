@@ -4,7 +4,7 @@
 \alias{write_h5ad}
 \title{Write H5AD}
 \usage{
-write_h5ad(object, path, ...)
+write_h5ad(object, path, compression = c("none", "gzip", "lzf"))
 }
 \arguments{
 \item{object}{The object to write, either a "SingleCellExperiment" or a
@@ -12,7 +12,9 @@ write_h5ad(object, path, ...)
 
 \item{path}{Path of the file to write to}
 
-\item{...}{Extra arguments will be passed to the appropriate convertor}
+\item{compression}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\code{"none"}.}
 }
 \value{
 \code{path} invisibly

@@ -4,14 +4,16 @@
 \alias{to_HDF5AnnData}
 \title{Convert an AnnData object to an HDF5AnnData object}
 \usage{
-to_HDF5AnnData(adata, file, ...)
+to_HDF5AnnData(adata, file, compression = c("none", "gzip", "lzf"))
 }
 \arguments{
 \item{adata}{An AnnData object to be converted to HDF5AnnData.}
 
 \item{file}{The filename (character) of the \code{.h5ad} file.}
 
-\item{...}{Arguments passed onto the initialization of HDF5AnnData.}
+\item{compression}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\code{"none"}.}
 }
 \value{
 An HDF5AnnData object with the same data as the input AnnData
