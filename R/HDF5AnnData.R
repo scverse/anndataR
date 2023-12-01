@@ -230,8 +230,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_vars`.
     #' @param compression The compression algorithm to use when writing the
-    #'  HDF5 file. Can be one of `"GZIP"`, `"LZF"` or `"NONE"`. Defaults to
-    #' `"NONE"`.
+    #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+    #' `"none"`.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
@@ -251,16 +251,12 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
                           varm = NULL,
                           obsp = NULL,
                           varp = NULL,
-                          compression = NULL) {
+                          compression = c("none", "gzip", "lzf")) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
       }
 
-      if (!is.null(compression)) {
-        compression <- match.arg(compression, choices = c("GZIP", "LZF", "NONE"))
-      } else {
-        compression <- "NONE"
-      }
+      compression <- match.arg(compression)
       private$.compression <- compression
 
       if (!file.exists(file)) {
@@ -364,7 +360,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #'
 #' @param adata An AnnData object to be converted to HDF5AnnData.
 #' @param file The filename (character) of the `.h5ad` file.
-#' @param ... Arguments passed onto the initialization of HDF5AnnData.
+  #' @param compression The compression algorithm to use when writing the
+  #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+  #' `"none"`.
 #'
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
@@ -386,7 +384,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' to_HDF5AnnData(ad, "test.h5ad")
 #' # remove file
 #' file.remove("test.h5ad")
-to_HDF5AnnData <- function(adata, file, ...) { # nolint
+to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) { # nolint
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
@@ -402,6 +400,6 @@ to_HDF5AnnData <- function(adata, file, ...) { # nolint
     layers = adata$layers,
     obsp = adata$obsp,
     varp = adata$varp,
-    ...
+    compression = compression
   )
 }

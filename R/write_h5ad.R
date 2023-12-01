@@ -5,7 +5,9 @@
 #' @param object The object to write, either a "SingleCellExperiment" or a
 #' "Seurat" object
 #' @param path Path of the file to write to
-#' @param ... Extra arguments will be passed to the appropriate convertor
+  #' @param compression The compression algorithm to use when writing the
+  #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+  #' `"none"`.
 #'
 #' @return `path` invisibly
 #' @export
@@ -63,23 +65,23 @@
 #'   #
 #'   # write_h5ad(obj, h5ad_file)
 #' }
-write_h5ad <- function(object, path, ...) {
+write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf")) {
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,
       output_class = "HDF5AnnData",
       file = path,
-      ...
+      compression = compression
     )
   } else if (inherits(object, "Seurat")) {
     from_Seurat(
       object,
       output_class = "HDF5AnnData",
       file = path,
-      ...
+      compression = compression
     )
   } else if (inherits(object, "AbstractAnnData")) {
-    to_HDF5AnnData(object, path, ...)
+    to_HDF5AnnData(object, path, compression = compression)
   } else {
     stop("Unable to write object of class: ", class(object))
   }
