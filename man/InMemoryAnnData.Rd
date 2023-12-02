@@ -72,6 +72,8 @@ with all elements having the same number of rows and columns as \code{obs}.}
 
 \item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
 with all elements having the same number of rows and columns as \code{var}.}
+
+\item{\code{uns}}{The uns slot. Must be \code{NULL} or a named list.}
 }
 \if{html}{\out{</div>}}
 }
@@ -120,7 +122,8 @@ Inherits from AbstractAnnData.
   obsm = NULL,
   varm = NULL,
   obsp = NULL,
-  varp = NULL
+  varp = NULL,
+  uns = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -169,6 +172,9 @@ element is a sparse matrix where each dimension has length \code{n_obs}.}
 \item{\code{varp}}{The varp slot is used to store sparse multi-dimensional
 annotation arrays. It must be either \code{NULL} or a named list, where each
 element is a sparse matrix where each dimension has length \code{n_vars}.}
+
+\item{\code{uns}}{The uns slot is used to store unstructured annotation.
+It must be either \code{NULL} or a named list.}
 }
 \if{html}{\out{</div>}}
 }

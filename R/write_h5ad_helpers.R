@@ -53,6 +53,9 @@ write_h5ad_element <- function(value, file, name, compression = c("none", "gzip"
     } else if (is.logical(value)) { # Logical values
       if (any(is.na(value))) {
         write_h5ad_nullable_boolean
+      } else if (length(value) == 1) {
+        # Single Booleans should be written as numeric scalars
+        write_h5ad_numeric_scalar
       } else {
         write_h5ad_dense_array
       }
@@ -324,7 +327,7 @@ write_h5ad_numeric_scalar <- function(value, file, name, compression, version = 
   hdf5_write_compressed(file, name, value, compression)
 
   # Write attributes
-  write_h5ad_encoding(file, name, "numeric", version)
+  write_h5ad_encoding(file, name, "numeric-scalar", version)
 }
 
 #' Write H5AD mapping

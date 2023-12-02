@@ -10,10 +10,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     .n_vars = NULL,
     .obs_names = NULL,
     .var_names = NULL,
-    .obsm = NULL,
-    .varm = NULL,
-    .obsp = NULL,
-    .varp = NULL,
     .compression = NULL
   ),
   active = list(
@@ -191,6 +187,17 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression, "_index")
         private$.var_names <- value
       }
+    },
+    #' @field uns The uns slot. Must be `NULL` or a named list.
+    uns = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
+        read_h5ad_element(private$.h5obj, "uns")
+      } else {
+        # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
+        value <- private$.validate_named_list(value, "uns")
+        write_h5ad_element(value, private$.h5obj, "/uns")
+      }
     }
   ),
   public = list(
@@ -229,6 +236,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param varp The varp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_vars`.
+    #' @param uns The uns slot is used to store unstructured annotation. It must
+    #'   be either `NULL` or a named list.
     #' @param compression The compression algorithm to use when writing the
     #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
     #' `"none"`.
@@ -251,6 +260,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
                           varm = NULL,
                           obsp = NULL,
                           varp = NULL,
+                          uns = NULL,
                           compression = c("none", "gzip", "lzf")) {
       if (!requireNamespace("rhdf5", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'rhdf5' package to be installed")
@@ -333,6 +343,10 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (!is.null(varp)) {
         self$varp <- varp
       }
+
+      if (!is.null(uns)) {
+        self$uns <- uns
+      }
     },
 
     #' @description Number of observations in the AnnData object
@@ -400,6 +414,7 @@ to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) 
     layers = adata$layers,
     obsp = adata$obsp,
     varp = adata$varp,
+    uns = adata$uns,
     compression = compression
   )
 }

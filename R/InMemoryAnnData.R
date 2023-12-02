@@ -39,7 +39,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     .obsm = NULL,
     .varm = NULL,
     .obsp = NULL,
-    .varp = NULL
+    .varp = NULL,
+    .uns = NULL
   ),
   active = list(
     #' @field X NULL or an observation x variable matrix (without
@@ -204,6 +205,17 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
         )
         self
       }
+    },
+    #' @field uns The uns slot. Must be `NULL` or a named list.
+    uns = function(value) {
+      if (missing(value)) {
+        # trackstatus: class=InMemoryAnnData, feature=get_uns, status=done
+        private$.uns
+      } else {
+        # trackstatus: class=InMemoryAnnData, feature=set_uns, status=done
+        private$.uns <- private$.validate_named_list(value, "uns")
+        self
+      }
     }
   ),
   public = list(
@@ -242,6 +254,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #' @param varp The varp slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_vars`.
+    #' @param uns The uns slot is used to store unstructured annotation.
+    #'   It must be either `NULL` or a named list.
     initialize = function(obs_names,
                           var_names,
                           X = NULL,
@@ -251,7 +265,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
                           obsm = NULL,
                           varm = NULL,
                           obsp = NULL,
-                          varp = NULL) {
+                          varp = NULL,
+                          uns = NULL) {
       # write obs and var first, because these are used by other validators
       self$obs_names <- obs_names
       self$var_names <- var_names
@@ -265,6 +280,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
       self$varm <- varm
       self$obsp <- obsp
       self$varp <- varp
+      self$uns <- uns
     }
   )
 )
@@ -308,6 +324,7 @@ to_InMemoryAnnData <- function(adata) { # nolint
     obsm = adata$obsm,
     varm = adata$varm,
     obsp = adata$obsp,
-    varp = adata$varp
+    varp = adata$varp,
+    uns = adata$uns
   )
 }

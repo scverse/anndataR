@@ -14,7 +14,8 @@ AnnData(
   obsm = NULL,
   varm = NULL,
   obsp = NULL,
-  varp = NULL
+  varp = NULL,
+  uns = NULL
 )
 }
 \arguments{
@@ -58,6 +59,9 @@ element is a sparse matrix where each dimension has length \code{n_obs}.}
 \item{varp}{The varp slot is used to store sparse multi-dimensional
 annotation arrays. It must be either \code{NULL} or a named list, where each
 element is a sparse matrix where each dimension has length \code{n_vars}.}
+
+\item{uns}{The uns slot is used to store unstructured annotation. It must
+be either \code{NULL} or a named list.}
 }
 \description{
 This class is used to represent an AnnData object in memory.
