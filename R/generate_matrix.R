@@ -50,7 +50,7 @@ matrix_generators <- list(
   integer_rsparse = function(n_obs, n_vars) {
     m <- Matrix::rsparsematrix(nrow = n_obs, ncol = n_vars, density = .1)
     as(m, "RsparseMatrix")
-  }#,
+  } # ,
   # TODO: re-enable
   # integer_matrix_with_nas = function(n_obs, n_vars) {
   #   m <- matrix(sample.int(100L, n_obs * n_vars, replace = TRUE), nrow = n_obs, ncol = n_vars)
