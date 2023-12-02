@@ -31,7 +31,7 @@ for (name in uns_names) {
   })
 }
 
-for (name in names) {
+for (name in uns_names) {
   test_that(paste0("reticulate->hdf5 with uns '", name, "'"), {
     # create anndata
     ad <- anndata::AnnData(
