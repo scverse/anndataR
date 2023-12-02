@@ -179,7 +179,7 @@ test_that("writing H5AD from Seurat works", {
 })
 
 test_that("writing gzip compressed files works", {
-  dummy <- dummy_data(100, 200)
+  dummy <- generate_dataset(100, 200)
   non_random_X <- matrix(5, 100, 200) # nolint
 
   adata <- AnnData(
@@ -200,7 +200,7 @@ test_that("writing gzip compressed files works", {
 })
 
 test_that("writing lzf compressed files works", {
-  dummy <- dummy_data(100, 200)
+  dummy <- generate_dataset(100, 200)
   non_random_X <- matrix(5, 100, 200) # nolint
 
   adata <- AnnData(
