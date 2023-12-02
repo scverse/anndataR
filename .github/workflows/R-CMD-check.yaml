@@ -21,11 +21,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest,   r: 'release'}
+          - {os: macos-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest, r: 'release'}
+          - {os: ubuntu-latest, r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -46,6 +46,12 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+
+      - name: Cache miniconda
+        uses: actions/cache@v2
+        with:
+          path: "~/.local/share/r-miniconda"
+          key: ${{ runner.os }}-r${{ matrix.config.r }}-reticulate-miniconda
 
       - name: Install Python dependencies for reticulate
         run: |
