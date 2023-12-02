@@ -1,4 +1,5 @@
 # TODO: re-enable
+# nolint start
 # skip_if_no_anndata()
 # skip_if_not_installed("rhdf5")
 
@@ -121,3 +122,4 @@
 #     )
 #   })
 # }
+# nolint end
