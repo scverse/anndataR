@@ -69,8 +69,8 @@ for (name in layer_names) {
 r2py_names <- layer_names
 # TODO: rsparse gets converted to csparse by anndata
 r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
-# TODO: fix when this is working
-r2py_names <- r2py_names[!grepl("with_nas", r2py_names)]
+# # TODO: fix when this is working
+# r2py_names <- r2py_names[!grepl("with_nas", r2py_names)]
 
 for (name in r2py_names) {
   test_that(paste0("hdf5->reticulate with layer '", name, "'"), {
