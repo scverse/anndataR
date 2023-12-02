@@ -400,7 +400,7 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' @return a data.frame
 #'
 #' @noRd
-read_h5ad_data_frame <- function(file, name, include_index = TRUE,
+read_h5ad_data_frame <- function(file, name, include_index = FALSE,
                                  version = "0.2.0") {
   version <- match.arg(version)
 
