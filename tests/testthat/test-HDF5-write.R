@@ -160,18 +160,15 @@ test_that("Writing H5AD data frames works", {
   expect_identical(as.vector(attrs[["column-order"]]), c("Letters", "Numbers"))
 })
 
-# TODO: re-enable
-# nolint start
-# test_that("writing H5AD from SingleCellExperiment works", {
-#   skip_if_not_installed("SingleCellExperiment")
+test_that("writing H5AD from SingleCellExperiment works", {
+  skip_if_not_installed("SingleCellExperiment")
 
-#   file <- withr::local_file("SingleCellExperiment.h5ad")
+  file <- withr::local_file("SingleCellExperiment.h5ad")
 
-#   sce <- generate_dataset(format = "SingleCellExperiment")
-#   write_h5ad(sce, file)
-#   expect_true(file.exists(file))
-# })
-# nolint end
+  sce <- generate_dataset(format = "SingleCellExperiment")
+  write_h5ad(sce, file)
+  expect_true(file.exists(file))
+})
 
 test_that("writing H5AD from Seurat works", {
   skip_if_not_installed("SeuratObject")
