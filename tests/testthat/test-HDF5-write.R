@@ -10,7 +10,7 @@ rhdf5::h5createFile(file = h5ad_file)
 test_that("Writing H5AD dense arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
-  expect_silent(write_h5ad_element(array, h5ad_file, "dense_array"))
+  expect_silent(write_h5ad_element(array, h5ad_file, "dense_array", compression = "none"))
   expect_true(hdf5_path_exists(h5ad_file, "/dense_array"))
   attrs <- rhdf5::h5readAttributes(h5ad_file, "dense_array")
   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
@@ -21,7 +21,7 @@ test_that("Writing H5AD sparse arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
   csc_array <- as(array, "CsparseMatrix")
-  expect_silent(write_h5ad_element(csc_array, h5ad_file, "csc_array"))
+  expect_silent(write_h5ad_element(csc_array, h5ad_file, "csc_array", compression = "none"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array/data"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array/indices"))
@@ -31,7 +31,7 @@ test_that("Writing H5AD sparse arrays works", {
   expect_true(attrs[["encoding-type"]] == "csc_matrix")
 
   csr_array <- as(array, "RsparseMatrix")
-  expect_silent(write_h5ad_element(csr_array, h5ad_file, "csr_array"))
+  expect_silent(write_h5ad_element(csr_array, h5ad_file, "csr_array", compression = "none"))
   expect_true(hdf5_path_exists(h5ad_file, "/csr_array"))
   expect_true(hdf5_path_exists(h5ad_file, "/csr_array/data"))
   expect_true(hdf5_path_exists(h5ad_file, "/csr_array/indices"))
@@ -84,7 +84,7 @@ test_that("Writing H5AD string arrays works", {
 test_that("Writing H5AD categoricals works", {
   categorical <- factor(LETTERS[1:5])
 
-  expect_silent(write_h5ad_element(categorical, h5ad_file, "categorical"))
+  expect_no_error(write_h5ad_element(categorical, h5ad_file, "categorical"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/categories"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/codes"))
@@ -123,7 +123,7 @@ test_that("Writing H5AD mappings works", {
     scalar = 2
   )
 
-  expect_silent(write_h5ad_element(mapping, h5ad_file, "mapping"))
+  expect_silent(write_h5ad_element(mapping, h5ad_file, "mapping", compression = "none"))
   expect_true(hdf5_path_exists(h5ad_file, "/mapping"))
   expect_true(hdf5_path_exists(h5ad_file, "/mapping/array"))
   expect_true(hdf5_path_exists(h5ad_file, "/mapping/sparse"))
@@ -176,4 +176,46 @@ test_that("writing H5AD from Seurat works", {
   seurat <- generate_dataset(format = "Seurat")
   write_h5ad(seurat, file)
   expect_true(file.exists(file))
+})
+
+test_that("writing gzip compressed files works", {
+  dummy <- dummy_data(100, 200)
+  non_random_X <- matrix(5, 100, 200) # nolint
+
+  adata <- AnnData(
+    X = non_random_X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
+  )
+
+  h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
+  h5ad_file_gzip <- tempfile(pattern = "hdf5_write_gzip_", fileext = ".h5ad")
+
+  write_h5ad(adata, h5ad_file_none, compression = "none")
+  write_h5ad(adata, h5ad_file_gzip, compression = "gzip")
+
+  expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_gzip)$size)
+})
+
+test_that("writing lzf compressed files works", {
+  dummy <- dummy_data(100, 200)
+  non_random_X <- matrix(5, 100, 200) # nolint
+
+  adata <- AnnData(
+    X = non_random_X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
+  )
+
+  h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
+  h5ad_file_lzf <- tempfile(pattern = "hdf5_write_lzf_", fileext = ".h5ad")
+
+  write_h5ad(adata, h5ad_file_none, compression = "none")
+  write_h5ad(adata, h5ad_file_lzf, compression = "lzf")
+
+  expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
 })

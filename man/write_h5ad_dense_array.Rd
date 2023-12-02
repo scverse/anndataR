@@ -4,7 +4,7 @@
 \alias{write_h5ad_dense_array}
 \title{Write H5AD dense array}
 \usage{
-write_h5ad_dense_array(value, file, name, version = "0.2.0")
+write_h5ad_dense_array(value, file, name, compression, version = "0.2.0")
 }
 \arguments{
 \item{value}{Value to write}
@@ -12,6 +12,9 @@ write_h5ad_dense_array(value, file, name, version = "0.2.0")
 \item{file}{Path to a H5AD file or an open H5AD handle}
 
 \item{name}{Name of the element within the H5AD file}
+
+\item{compression}{The compression to use when writing the element. Can be
+one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to \code{"none"}.}
 
 \item{version}{Encoding version of the element to write}
 }
