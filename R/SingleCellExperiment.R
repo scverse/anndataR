@@ -150,7 +150,20 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
   # trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
   x_and_layers <- lapply(
     SummarizedExperiment::assays(sce, withDimnames = FALSE),
-    t
+    function(mat) {
+      m <- t(mat)
+      # nolint start
+      # WORKAROUND: convert denseMatrix to matrix, because otherwise:
+      # - Could not write element '/layers/integer_dense' of type 'dgeMatrix':
+      #   no applicable method for 'h5writeDataset' applied to an object of class "c('dgeMatrix', 'unpackedMatrix', 'ddenseMatrix', 'generalMatrix', 'dMatrix', 'denseMatrix', 'compMa
+      # - Could not write element '/layers/integer_dense_with_nas' of type 'dgeMatrix':
+      #   no applicable method for 'h5writeDataset' applied to an object of class "c('dgeMatrix', 'unpackedMatrix', 'ddenseMatrix', 'generalMatrix', 'dMatrix', 'denseMatrix', 'compMatrix', 'Matrix', 'replValueSp')"
+      # nolint end
+      if (inherits(m, "denseMatrix")) {
+        m <- as.matrix(m)
+      }
+      m
+    }
   )
   if (length(x_and_layers) == 0L) {
     x <- NULL

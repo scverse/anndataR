@@ -7,6 +7,7 @@
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -15,7 +16,7 @@
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-write_h5ad_element <- function(value, file, name, compression = c("none", "gzip", "lzf"), ...) { # nolint
+write_h5ad_element <- function(value, file, name, compression = c("none", "gzip", "lzf"), stop_on_error = FALSE, ...) { # nolint
   compression <- match.arg(compression)
 
   # Delete the path if it already exists
@@ -24,47 +25,58 @@ write_h5ad_element <- function(value, file, name, compression = c("none", "gzip"
   }
 
   # Sparse matrices
-  if (inherits(value, "sparseMatrix")) {
-    write_fun <- write_h5ad_sparse_array
-    # Categoricals
-  } else if (is.factor(value)) {
-    write_fun <- write_h5ad_categorical
-    # Lists and data frames
-  } else if (is.list(value)) {
-    if (is.data.frame(value)) {
-      write_fun <- write_h5ad_data_frame
-    } else {
-      write_fun <- write_h5ad_mapping
+  write_fun <-
+    if (inherits(value, "sparseMatrix")) { # Sparse matrices
+      write_h5ad_sparse_array
+    } else if (is.factor(value)) { # Categoricals
+      write_h5ad_categorical
+    } else if (is.list(value)) { # Lists and data frames
+      if (is.data.frame(value)) {
+        write_h5ad_data_frame
+      } else {
+        write_h5ad_mapping
+      }
+    } else if (is.character(value)) { # Character values
+      if (length(value) == 1 && !is.matrix(value)) {
+        write_h5ad_string_scalar
+      } else {
+        write_h5ad_string_array
+      }
+    } else if (is.numeric(value) || inherits(value, "denseMatrix")) { # Numeric values
+      if (length(value) == 1 && !is.matrix(value)) {
+        write_h5ad_numeric_scalar
+      } else if (is.integer(value) && any(is.na(value))) {
+        write_h5ad_nullable_integer
+      } else {
+        write_h5ad_dense_array
+      }
+    } else if (is.logical(value)) { # Logical values
+      if (any(is.na(value))) {
+        write_h5ad_nullable_boolean
+      } else {
+        write_h5ad_dense_array
+      }
+    } else { # Fail if unknown
+      stop("Writing '", class(value), "' objects to H5AD files is not supported")
     }
-    # Character values
-  } else if (is.character(value)) {
-    if (length(value) == 1) {
-      write_fun <- write_h5ad_string_scalar
-    } else {
-      write_fun <- write_h5ad_string_array
-    }
-    # Numeric values
-  } else if (is.numeric(value)) {
-    if (length(value) == 1) {
-      write_fun <- write_h5ad_numeric_scalar
-    } else if (is.integer(value) && any(is.na(value))) {
-      write_fun <- write_h5ad_nullable_integer
-    } else {
-      write_fun <- write_h5ad_dense_array
-    }
-    # Logical values
-  } else if (is.logical(value)) {
-    if (any(is.na(value))) {
-      write_fun <- write_h5ad_nullable_boolean
-    } else {
-      write_fun <- write_h5ad_dense_array
-    }
-    # Fail if unknown
-  } else {
-    stop("Writing '", class(value), "' objects to H5AD files is not supported")
-  }
 
-  write_fun(value = value, file = file, name = name, compression = compression, ...)
+  tryCatch(
+    {
+      write_fun(value = value, file = file, name = name, compression = compression, ...)
+    },
+    error = function(e) {
+      message <- paste0(
+        "Could not write element '", name, "' of type '", class(value), "':\n",
+        conditionMessage(e)
+      )
+      if (stop_on_error) {
+        stop(message)
+      } else {
+        warning(message)
+        return(NULL)
+      }
+    }
+  )
 }
 
 #' Write H5AD encoding

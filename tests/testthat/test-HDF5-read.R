@@ -102,7 +102,7 @@ test_that("reading mappings works", {
 })
 
 test_that("reading dataframes works", {
-  df <- read_h5ad_data_frame(file, "obs")
+  df <- read_h5ad_data_frame(file, "obs", include_index = TRUE)
   expect_s3_class(df, "data.frame")
   expect_equal(
     colnames(df),
