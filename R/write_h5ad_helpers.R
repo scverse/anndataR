@@ -53,6 +53,9 @@ write_h5ad_element <- function(value, file, name, compression = c("none", "gzip"
     } else if (is.logical(value)) { # Logical values
       if (any(is.na(value))) {
         write_h5ad_nullable_boolean
+      } else if (length(value) == 1) {
+        # Single Booleans should be written as numeric scalars
+        write_h5ad_numeric_scalar
       } else {
         write_h5ad_dense_array
       }
