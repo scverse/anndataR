@@ -4,7 +4,7 @@ skip_if_not_installed("rhdf5")
 data <- generate_dataset_as_list(10L, 20L)
 
 for (name in names(data$obs)) {
-  test_that(paste("roundtrip with obs and var '", name, "'"), {
+  test_that(paste0("roundtrip with obs and var '", name, "'"), {
     # create anndata
     ad <- AnnData(
       X = data$X,
