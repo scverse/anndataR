@@ -1,4 +1,4 @@
-dummy <- dummy_data(10L, 20L)
+dummy <- generate_dataset(10L, 20L)
 
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 adata <- read_h5ad(file, to = "InMemoryAnnData")

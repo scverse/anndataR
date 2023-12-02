@@ -88,7 +88,8 @@ HDF5AnnData constructor
   varm = NULL,
   obsp = NULL,
   varp = NULL,
-  uns = NULL
+  uns = NULL,
+  compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
 
@@ -141,6 +142,10 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 
 \item{\code{uns}}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
+
+\item{\code{compression}}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\code{"none"}.}
 }
 \if{html}{\out{</div>}}
 }
