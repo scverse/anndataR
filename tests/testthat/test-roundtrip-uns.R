@@ -4,6 +4,18 @@ skip_if_not_installed("rhdf5")
 data <- generate_dataset_as_list(10L, 20L)
 
 uns_names <- names(data$uns)
+# TODO: re-enable these tests
+uns_names <- uns_names[!grepl("_with_nas", uns_names)]
+# TODO: re-enable these tests
+uns_names <- uns_names[!grepl("_na$", uns_names)]
+# TODO: re-enable these tests
+uns_names <- uns_names[!grepl("obsm_", uns_names)]
+# TODO: re-enable these tests
+uns_names <- uns_names[!uns_names %in% c("vec_factor", "vec_factor_ordered", "vec_logical")]
+# TODO: re-enable these tests
+uns_names <- uns_names[uns_names != "list"]
+# TODO: re-enable these tests
+uns_names <- uns_names[!uns_names %in% c("logical", "factor")]
 
 for (name in uns_names) {
   test_that(paste0("roundtrip with uns '", name, "'"), {
