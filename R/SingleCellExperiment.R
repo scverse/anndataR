@@ -159,7 +159,7 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
       # - Could not write element '/layers/integer_dense_with_nas' of type 'dgeMatrix':
       #   no applicable method for 'h5writeDataset' applied to an object of class "c('dgeMatrix', 'unpackedMatrix', 'ddenseMatrix', 'generalMatrix', 'dMatrix', 'denseMatrix', 'compMatrix', 'Matrix', 'replValueSp')"
       # nolint end
-      if (is(m, "denseMatrix")) {
+      if (inherits(m, "denseMatrix")) {
         m <- as.matrix(m)
       }
       m
