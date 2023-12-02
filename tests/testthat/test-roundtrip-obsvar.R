@@ -7,10 +7,10 @@ test_names <- names(data$obs)
 
 # TODO: re-enable tests
 test_names <- test_names[!grepl("_with_nas", test_names)]
-# TODO: re-enable tests
-test_names <- test_names[!test_names %in% c("factor", "factor_ordered")]
-# TODO: re-enable tests
-test_names <- test_names[test_names != "logical"]
+# # TODO: re-enable tests
+# test_names <- test_names[!test_names %in% c("factor", "factor_ordered")]
+# # TODO: re-enable tests
+# test_names <- test_names[test_names != "logical"]
 
 for (name in test_names) {
   test_that(paste0("roundtrip with obs and var '", name, "'"), {
