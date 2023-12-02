@@ -82,6 +82,7 @@ test_that("Writing H5AD string arrays works", {
 })
 
 # TODO: re-enable
+# nolint start
 # test_that("Writing H5AD categoricals works", {
 #   categorical <- factor(LETTERS[1:5])
 
@@ -94,6 +95,7 @@ test_that("Writing H5AD string arrays works", {
 #   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
 #   expect_true(attrs[["encoding-type"]] == "categorical")
 # })
+# nolint end
 
 test_that("Writing H5AD string scalars works", {
   string <- "A"
@@ -159,6 +161,7 @@ test_that("Writing H5AD data frames works", {
 })
 
 # TODO: re-enable
+# nolint start
 # test_that("writing H5AD from SingleCellExperiment works", {
 #   skip_if_not_installed("SingleCellExperiment")
 
@@ -168,6 +171,7 @@ test_that("Writing H5AD data frames works", {
 #   write_h5ad(sce, file)
 #   expect_true(file.exists(file))
 # })
+# nolint end
 
 test_that("writing H5AD from Seurat works", {
   skip_if_not_installed("SeuratObject")
@@ -181,6 +185,7 @@ test_that("writing H5AD from Seurat works", {
 })
 
 # TODO: re-enable
+# nolint start
 # test_that("writing gzip compressed files works", {
 #   dummy <- generate_dataset(100, 200)
 #   non_random_X <- matrix(5, 100, 200) # nolint
@@ -222,3 +227,4 @@ test_that("writing H5AD from Seurat works", {
 
 #   expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
 # })
+# nolint end
