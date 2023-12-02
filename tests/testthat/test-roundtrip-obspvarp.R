@@ -99,7 +99,9 @@ for (name in names(data$obsp)) {
 
     # expect slots are unchanged
     obsp_ <- ad_new$obsp[[name]]
-    dimnames(obsp_) <- list(NULL, NULL)
+    if (!is.null(obsp_)) {
+      dimnames(obsp_) <- list(NULL, NULL)
+    }
     expect_equal(
       obsp_,
       data$obsp[[name]],
@@ -107,7 +109,9 @@ for (name in names(data$obsp)) {
       tolerance = 1e-10
     )
     varp_ <- ad_new$varp[[name]]
-    dimnames(varp_) <- list(NULL, NULL)
+    if (!is.null(varp_)) {
+      dimnames(varp_) <- list(NULL, NULL)
+    }
     expect_equal(
       varp_,
       data$varp[[name]],
