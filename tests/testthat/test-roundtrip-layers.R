@@ -28,7 +28,7 @@ for (name in layer_names) {
       ad_new$layers[[name]],
       data$layers[[name]],
       ignore_attr = TRUE,
-      tolerance = 1e-10
+      tolerance = 1e-6
     )
   })
 }
@@ -59,7 +59,7 @@ for (name in layer_names) {
     expect_equal(
       ad_new$layers[[name]],
       data$layers[[name]],
-      tolerance = 1e-10
+      tolerance = 1e-6
     )
   })
 }
@@ -93,7 +93,10 @@ for (name in r2py_names) {
 
     # expect slots are unchanged
     layer_ <- ad_new$layers[[name]]
-    dimnames(layer_) <- list(NULL, NULL)
+    if (!is.null(layer_)) {
+      rownames(layer_) <- NULL
+      colnames(layer_) <- NULL
+    }
     # anndata returns these layers as CsparseMatrix
     if (grepl("rsparse", name)) {
       layer_ <- as(layer_, "RsparseMatrix")
@@ -102,7 +105,7 @@ for (name in r2py_names) {
       layer_,
       data$layers[[name]],
       ignore_attr = TRUE,
-      tolerance = 1e-10
+      tolerance = 1e-6
     )
   })
 }

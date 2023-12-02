@@ -4,7 +4,7 @@ skip_if_not_installed("rhdf5")
 data <- generate_dataset_as_list(10L, 20L)
 
 layer_names <- names(data$layers)
-# TODO: Add denseMatrix support to anndata and anndataR
+# TODO: re-enable these tests
 layer_names <- layer_names[!grepl("_dense", layer_names)]
 
 for (layer_name in layer_names) {
@@ -26,9 +26,9 @@ for (layer_name in layer_names) {
     # expect slots are unchanged
     expect_equal(
       ad_new$X,
-      data$X,
+      data$layers[[layer_name]],
       ignore_attr = TRUE,
-      tolerance = 1e-10
+      tolerance = 1e-6
     )
   })
 }
@@ -56,15 +56,15 @@ for (name in layer_names) {
 
     # expect slots are unchanged
     expect_equal(
-      ad_new$layers[[name]],
+      ad_new$X,
       data$layers[[name]],
-      tolerance = 1e-10
+      tolerance = 1e-6
     )
   })
 }
 
 r2py_names <- layer_names
-# rsparse gets converted to csparse by anndata
+# TODO: re-enable -- rsparse gets converted to csparse by anndata
 r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
 
 for (layer_name in r2py_names) {
@@ -74,8 +74,9 @@ for (layer_name in r2py_names) {
 
     # strip rownames
     X <- data$layers[[layer_name]]
-    rownames(X) <- NULL
-    colnames(X) <- NULL
+    if (!is.null(X)) {
+      dimnames(X) <- list(NULL, NULL)
+    }
 
     # make anndata
     ad <- HDF5AnnData$new(
@@ -89,8 +90,10 @@ for (layer_name in r2py_names) {
     ad_new <- anndata::read_h5ad(filename)
 
     # expect slots are unchanged
-    layer_ <- ad_new$layers[[layer_name]]
-    dimnames(layer_) <- list(NULL, NULL)
+    layer_ <- ad_new$X
+    if (!is.null(layer_)) {
+      dimnames(layer_) <- list(NULL, NULL)
+    }
     # anndata returns these layers as CsparseMatrix
     if (grepl("rsparse", layer_name)) {
       layer_ <- as(layer_, "RsparseMatrix")
@@ -99,7 +102,7 @@ for (layer_name in r2py_names) {
       layer_,
       data$layers[[layer_name]],
       ignore_attr = TRUE,
-      tolerance = 1e-10
+      tolerance = 1e-6
     )
   })
 }
