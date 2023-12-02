@@ -5,8 +5,8 @@ data <- generate_dataset_as_list(10L, 20L)
 
 test_names <- names(data$obs)
 
-# TODO: re-enable tests
-test_names <- test_names[!grepl("_with_nas", test_names)]
+# # TODO: re-enable tests
+# test_names <- test_names[!grepl("_with_nas", test_names)]
 # TODO: re-enable tests
 test_names <- test_names[!test_names %in% c("factor", "factor_ordered")]
 # TODO: re-enable tests
