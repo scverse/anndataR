@@ -4,8 +4,8 @@ skip_if_not_installed("rhdf5")
 data <- generate_dataset_as_list(10L, 20L)
 
 layer_names <- names(data$layers)
-# TODO: Add denseMatrix support to anndata and anndataR
-layer_names <- layer_names[!grepl("_dense", layer_names)]
+# # TODO: Add denseMatrix support to anndata and anndataR
+# layer_names <- layer_names[!grepl("_dense", layer_names)]
 # TODO: re-enable these tests
 layer_names <- layer_names[!grepl("_with_nas", layer_names)]
 
