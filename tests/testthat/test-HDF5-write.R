@@ -184,47 +184,44 @@ test_that("writing H5AD from Seurat works", {
   expect_true(file.exists(file))
 })
 
-# TODO: re-enable
-# nolint start
-# test_that("writing gzip compressed files works", {
-#   dummy <- generate_dataset(100, 200)
-#   non_random_X <- matrix(5, 100, 200) # nolint
+test_that("writing gzip compressed files works", {
+  dummy <- generate_dataset(100, 200)
+  non_random_X <- matrix(5, 100, 200) # nolint
 
-#   adata <- AnnData(
-#     X = non_random_X,
-#     obs = dummy$obs,
-#     var = dummy$var,
-#     obs_names = dummy$obs_names,
-#     var_names = dummy$var_names
-#   )
+  adata <- AnnData(
+    X = non_random_X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
+  )
 
-#   h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
-#   h5ad_file_gzip <- tempfile(pattern = "hdf5_write_gzip_", fileext = ".h5ad")
+  h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
+  h5ad_file_gzip <- tempfile(pattern = "hdf5_write_gzip_", fileext = ".h5ad")
 
-#   write_h5ad(adata, h5ad_file_none, compression = "none")
-#   write_h5ad(adata, h5ad_file_gzip, compression = "gzip")
+  write_h5ad(adata, h5ad_file_none, compression = "none")
+  write_h5ad(adata, h5ad_file_gzip, compression = "gzip")
 
-#   expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_gzip)$size)
-# })
+  expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_gzip)$size)
+})
 
-# test_that("writing lzf compressed files works", {
-#   dummy <- generate_dataset(100, 200)
-#   non_random_X <- matrix(5, 100, 200) # nolint
+test_that("writing lzf compressed files works", {
+  dummy <- generate_dataset(100, 200)
+  non_random_X <- matrix(5, 100, 200) # nolint
 
-#   adata <- AnnData(
-#     X = non_random_X,
-#     obs = dummy$obs,
-#     var = dummy$var,
-#     obs_names = dummy$obs_names,
-#     var_names = dummy$var_names
-#   )
+  adata <- AnnData(
+    X = non_random_X,
+    obs = dummy$obs,
+    var = dummy$var,
+    obs_names = dummy$obs_names,
+    var_names = dummy$var_names
+  )
 
-#   h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
-#   h5ad_file_lzf <- tempfile(pattern = "hdf5_write_lzf_", fileext = ".h5ad")
+  h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
+  h5ad_file_lzf <- tempfile(pattern = "hdf5_write_lzf_", fileext = ".h5ad")
 
-#   write_h5ad(adata, h5ad_file_none, compression = "none")
-#   write_h5ad(adata, h5ad_file_lzf, compression = "lzf")
+  write_h5ad(adata, h5ad_file_none, compression = "none")
+  write_h5ad(adata, h5ad_file_lzf, compression = "lzf")
 
-#   expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
-# })
-# nolint end
+  expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
+})
