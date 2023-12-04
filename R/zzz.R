@@ -14,6 +14,3 @@ formals(generate_dataset) <- list(
   varp_types = names(matrix_generators),
   format = c("list", "AnnData", "SingleCellExperiment", "Seurat")
 )
-formals(generate_dataset_as_list) <- formals(generate_dataset)[
-  intersect(formalArgs(generate_dataset), formalArgs(generate_dataset_as_list))
-]

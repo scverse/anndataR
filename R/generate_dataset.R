@@ -21,10 +21,11 @@
 #'
 #' @examples
 #' dummy <- generate_dataset()
-#' dummy <- generate_dataset(format = "AnnData")
-#' dummy <- generate_dataset(format = "SingleCellExperiment")
-#' dummy <- generate_dataset(format = "Seurat")
-
+#' \dontrun{
+#'   dummy <- generate_dataset(format = "AnnData")
+#'   dummy <- generate_dataset(format = "SingleCellExperiment")
+#'   dummy <- generate_dataset(format = "Seurat")
+#' }
 # NOTE: THE DEFAULTS OF THIS FUNCTION ARE SET IN R/zzz.R!
 generate_dataset <- function(
     n_obs,
@@ -38,16 +39,9 @@ generate_dataset <- function(
     obsp_types,
     varp_types,
     format) {
-  format <- match.arg(format)
+  format <- match.arg(format, c("list", "AnnData", "SingleCellExperiment", "Seurat"))
 
-  fun <- switch(format,
-    "list" = generate_dataset_as_list,
-    "SingleCellExperiment" = generate_dataset_as_sce,
-    "Seurat" = generate_dataset_as_seurat,
-    "AnnData" = generate_dataset_as_anndata
-  )
-
-  fun(
+  list <- .generate_dataset_as_list(
     n_obs = n_obs,
     n_vars = n_vars,
     x_type = x_type,
@@ -59,10 +53,17 @@ generate_dataset <- function(
     obsp_types = obsp_types,
     varp_types = varp_types
   )
+
+  conversion_fun <- switch(format,
+    "list" = identity,
+    "SingleCellExperiment" = .generate_dataset_as_sce,
+    "Seurat" = .generate_dataset_as_seurat,
+    "AnnData" = .generate_dataset_as_anndata
+  )
+
+  return(conversion_fun(list))
 }
 
-#' Dummy data list
-#'
 #' Generate a dummy dataset as a list
 #'
 #' @inheritParams generate_dataset
@@ -70,7 +71,7 @@ generate_dataset <- function(
 #' @return A list with the generated dataset
 #'
 #' @noRd
-generate_dataset_as_list <- function(
+.generate_dataset_as_list <- function(
     n_obs,
     n_vars,
     x_type,
@@ -169,16 +170,14 @@ generate_dataset_as_list <- function(
   )
 }
 
-#' Dummy SingleCellExperiment
+#' Convert a dummy dataset to a SingleCellExperiment object
 #'
-#' Generate a dummy dataset as a SingleCellExperiment object
-#'
-#' @param ... Parameters passed to `generate_dataset_as_list`
+#' @param list Output of `.generate_dataset_as_list()`
 #'
 #' @return SingleCellExperiment containing the generated data
 #'
 #' @noRd
-generate_dataset_as_sce <- function(...) {
+.generate_dataset_as_sce <- function(list) {
   if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
     stop(
       "Creating a SingleCellExperiment requires the 'SingleCellExperiment'",
@@ -186,96 +185,81 @@ generate_dataset_as_sce <- function(...) {
     )
   }
 
-  dummy <- generate_dataset_as_list(...)
-
   assays_list <- c(
-    list(X = dummy$X),
-    dummy$layers
+    list(X = list$X),
+    list$layers
   )
   assays_list <- lapply(assays_list, Matrix::t)
 
   sce <- SingleCellExperiment::SingleCellExperiment(
     assays = assays_list,
-    rowData = dummy$var,
-    colData = dummy$obs
+    rowData = list$var,
+    colData = list$obs
   )
-  colnames(sce) <- dummy$obs_names
-  rownames(sce) <- dummy$var_names
+  colnames(sce) <- list$obs_names
+  rownames(sce) <- list$var_names
+
+  # TODO: add obsm, varm, obsp, varp, uns?
 
   return(sce)
 }
 
-#' Dummy Seurat
+#' Convert a dummy dataset to a Seurat object
 #'
-#' Generate a dummy dataset as a Seurat object
-#'
-#' @param ... Parameters passed to `generate_dataset_as_list`
+#' @param list Output of `.generate_dataset_as_list()`
 #'
 #' @return Seurat containing the generated data
 #'
 #' @noRd
-generate_dataset_as_seurat <- function(...) {
+.generate_dataset_as_seurat <- function(list) {
   if (!requireNamespace("SeuratObject", quietly = TRUE)) {
     stop(
       "Creating a Seurat requires the 'SeuratObject' package to be installed"
     )
   }
 
-  dummy <- generate_dataset_as_list(...)
-
-  X <- t(dummy$layers[["integer_csparse"]])
-  colnames(X) <- dummy$obs_names
-  rownames(X) <- dummy$var_names
+  X <- t(list$layers[["integer_csparse"]])
+  colnames(X) <- list$obs_names
+  rownames(X) <- list$var_names
 
   seurat <- SeuratObject::CreateSeuratObject(X)
 
-  X2 <- Matrix::t(dummy$layers[["numeric_csparse"]])
-  colnames(X2) <- dummy$obs_names
-  rownames(X2) <- dummy$var_names
+  X2 <- Matrix::t(list$layers[["numeric_csparse"]])
+  colnames(X2) <- list$obs_names
+  rownames(X2) <- list$var_names
   seurat <- SeuratObject::SetAssayData(seurat, "data", X2)
 
-  X3 <- Matrix::t(dummy$layers[["numeric_matrix"]])
-  colnames(X3) <- dummy$obs_names
-  rownames(X3) <- dummy$var_names
+  X3 <- Matrix::t(list$layers[["numeric_matrix"]])
+  colnames(X3) <- list$obs_names
+  rownames(X3) <- list$var_names
   seurat <- SeuratObject::SetAssayData(seurat, "scale.data", X3)
 
-  seurat <- SeuratObject::AddMetaData(seurat, dummy$obs)
+  # TODO: Seurat v5 now supports more than just these three layers
+
+  seurat <- SeuratObject::AddMetaData(seurat, list$obs)
+
+  # TODO: add obsm, varm, obsp, varp, uns?
 
   return(seurat)
 }
 
-#' Dummy AnnData
+#' Convert a dummy dataset to an AnnData object
 #'
-#' Generate a dummy dataset as a AnnData object
-#'
-#' @param ... Parameters passed to `generate_dataset_as_list`
+#' @param list Output of `.generate_dataset_as_list()`
 #'
 #' @return SingleCellExperiment containing the generated data
 #'
 #' @noRd
-generate_dataset_as_anndata <- function(...) { # nolint
-  if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-    stop(
-      "Creating a SingleCellExperiment requires the 'SingleCellExperiment'",
-      "package to be installed"
-    )
-  }
-
-  dummy <- generate_dataset_as_list(...)
-
-  assays_list <- c(
-    list(X = dummy$X),
-    dummy$layers
+.generate_dataset_as_anndata <- function(list) { # nolint
+  AnnData(
+    X = list$X,
+    obs = list$obs,
+    obsm = list$obsm,
+    obsp = list$obsp,
+    var = list$var,
+    varm = list$varm,
+    varp = list$varp,
+    layers = list$layers,
+    uns = list$uns
   )
-  assays_list <- lapply(assays_list, Matrix::t)
-
-  sce <- SingleCellExperiment::SingleCellExperiment(
-    assays = assays_list,
-    rowData = dummy$var,
-    colData = dummy$obs
-  )
-  colnames(sce) <- dummy$obs_names
-  rownames(sce) <- dummy$var_names
-
-  return(sce)
 }
