@@ -4,53 +4,83 @@
 #'
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
-#' @param format Object type to output, one of "list", "SingleCellExperiment",
-#' or "Seurat"
-#' @param ... Arguments passed to generate_dataset_as_list
+#' @param x_type Type of matrix to generate for X
+#' @param layer_types Types of matrices to generate for layers
+#' @param obs_types Types of vectors to generate for obs
+#' @param var_types Types of vectors to generate for var
+#' @param obsm_types Types of matrices to generate for obsm
+#' @param varm_types Types of matrices to generate for varm
+#' @param obsp_types Types of matrices to generate for obsp
+#' @param varp_types Types of matrices to generate for varp
+#' @param format Object type to output, one of "list", "AnnData",
+#'   "SingleCellExperiment", or "Seurat".
 #'
 #' @return Object containing the generated dataset as defined by `output`
 #'
-#' @noRd
+#' @rdname generate_dataset
 #'
 #' @examples
 #' dummy <- generate_dataset()
+#' dummy <- generate_dataset(format = "AnnData")
+#' dummy <- generate_dataset(format = "SingleCellExperiment")
+#' dummy <- generate_dataset(format = "Seurat")
+
+# NOTE: THE DEFAULTS OF THIS FUNCTION ARE SET IN R/zzz.R!
 generate_dataset <- function(
-    n_obs = 10L,
-    n_vars = 20L,
-    format = c("list", "SingleCellExperiment", "Seurat"),
-    ...) {
+    n_obs,
+    n_vars,
+    x_type,
+    layer_types,
+    obs_types,
+    var_types,
+    obsm_types,
+    varm_types,
+    obsp_types,
+    varp_types,
+    format) {
   format <- match.arg(format)
 
   fun <- switch(format,
     "list" = generate_dataset_as_list,
     "SingleCellExperiment" = generate_dataset_as_sce,
-    "Seurat" = generate_dataset_as_seurat
+    "Seurat" = generate_dataset_as_seurat,
+    "AnnData" = generate_dataset_as_anndata
   )
 
-  fun(n_obs = n_obs, n_vars = n_vars, ...)
+  fun(
+    n_obs = n_obs,
+    n_vars = n_vars,
+    x_type = x_type,
+    layer_types = layer_types,
+    obs_types = obs_types,
+    var_types = var_types,
+    obsm_types = obsm_types,
+    varm_types = varm_types,
+    obsp_types = obsp_types,
+    varp_types = varp_types
+  )
 }
 
 #' Dummy data list
 #'
 #' Generate a dummy dataset as a list
 #'
-#' @param n_obs Number of observations to generate
-#' @param n_vars Number of variables to generate
+#' @inheritParams generate_dataset
 #'
 #' @return A list with the generated dataset
 #'
 #' @noRd
 generate_dataset_as_list <- function(
-    n_obs = 10L,
-    n_vars = 20L,
-    x_type = names(matrix_generators)[[1]],
-    layer_types = names(matrix_generators),
-    obs_types = names(vector_generators),
-    var_types = names(vector_generators),
-    obsm_types = c(names(matrix_generators), names(vector_generators)),
-    varm_types = c(names(matrix_generators), names(vector_generators)),
-    obsp_types = names(matrix_generators),
-    varp_types = names(matrix_generators)) {
+    n_obs,
+    n_vars,
+    x_type,
+    layer_types,
+    obs_types,
+    var_types,
+    obsm_types,
+    varm_types,
+    obsp_types,
+    varp_types) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
 
@@ -123,6 +153,7 @@ generate_dataset_as_list <- function(
     obsm_for_uns
   )
 
+  # return list
   list(
     X = X,
     obs = obs,
@@ -211,4 +242,40 @@ generate_dataset_as_seurat <- function(...) {
   seurat <- SeuratObject::AddMetaData(seurat, dummy$obs)
 
   return(seurat)
+}
+
+#' Dummy AnnData
+#'
+#' Generate a dummy dataset as a AnnData object
+#'
+#' @param ... Parameters passed to `generate_dataset_as_list`
+#'
+#' @return SingleCellExperiment containing the generated data
+#'
+#' @noRd
+generate_dataset_as_anndata <- function(...) { # nolint
+  if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
+    stop(
+      "Creating a SingleCellExperiment requires the 'SingleCellExperiment'",
+      "package to be installed"
+    )
+  }
+
+  dummy <- generate_dataset_as_list(...)
+
+  assays_list <- c(
+    list(X = dummy$X),
+    dummy$layers
+  )
+  assays_list <- lapply(assays_list, Matrix::t)
+
+  sce <- SingleCellExperiment::SingleCellExperiment(
+    assays = assays_list,
+    rowData = dummy$var,
+    colData = dummy$obs
+  )
+  colnames(sce) <- dummy$obs_names
+  rownames(sce) <- dummy$var_names
+
+  return(sce)
 }
