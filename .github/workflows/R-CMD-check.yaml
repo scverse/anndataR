@@ -49,7 +49,7 @@ jobs:
 
       - name: Get miniconda path
         id: miniconda-path
-        run: echo "miniconda_path=path::$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
+        run: echo "miniconda_path=$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
 
       - name: Cache miniconda
         uses: actions/cache@v2
