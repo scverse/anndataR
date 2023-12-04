@@ -22,24 +22,57 @@
 #' @examples
 #' dummy <- generate_dataset()
 #' \dontrun{
-#'   dummy <- generate_dataset(format = "AnnData")
-#'   dummy <- generate_dataset(format = "SingleCellExperiment")
-#'   dummy <- generate_dataset(format = "Seurat")
+#' dummy <- generate_dataset(format = "AnnData")
+#' dummy <- generate_dataset(format = "SingleCellExperiment")
+#' dummy <- generate_dataset(format = "Seurat")
 #' }
-# NOTE: THE DEFAULTS OF THIS FUNCTION ARE SET IN R/zzz.R!
 generate_dataset <- function(
-    n_obs,
-    n_vars,
-    x_type,
-    layer_types,
-    obs_types,
-    var_types,
-    obsm_types,
-    varm_types,
-    obsp_types,
-    varp_types,
-    format) {
-  format <- match.arg(format, c("list", "AnnData", "SingleCellExperiment", "Seurat"))
+    n_obs = 10L,
+    n_vars = 20L,
+    x_type = "numeric_matrix",
+    layer_types = c(
+      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas", #
+      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
+      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
+      "integer_csparse_with_nas", "integer_rsparse_with_nas"
+    ),
+    obs_types = c(
+      "character", "integer", "factor", "factor_ordered", "logical", "numeric", "character_with_nas",
+      "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"
+    ),
+    var_types = c(
+      "character", "integer", "factor", "factor_ordered", "logical", "numeric", "character_with_nas",
+      "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"
+    ),
+    obsm_types = c(
+      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
+      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
+      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
+      "factor", "factor_ordered", "logical", "numeric", "character_with_nas", "integer_with_nas", "factor_with_nas",
+      "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"
+    ),
+    varm_types = c(
+      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
+      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
+      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
+      "integer_csparse_with_nas", "integer_rsparse_with_nas", "character", "integer", "factor", "factor_ordered",
+      "logical", "numeric", "character_with_nas", "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas",
+      "logical_with_nas", "numeric_with_nas"
+    ),
+    obsp_types = c(
+      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
+      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
+      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
+      "integer_csparse_with_nas", "integer_rsparse_with_nas"
+    ),
+    varp_types = c(
+      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
+      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
+      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
+      "integer_csparse_with_nas", "integer_rsparse_with_nas"
+    ),
+    format = c("list", "AnnData", "SingleCellExperiment", "Seurat")) {
+  format <- match.arg(format)
 
   list <- .generate_dataset_as_list(
     n_obs = n_obs,

@@ -1,5 +1,5 @@
 #' List the available AnnData generators.
-#' 
+#'
 #' @noRd
 list_generators <- function() {
   list(

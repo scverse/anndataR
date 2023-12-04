@@ -22,12 +22,9 @@ generate_dataset(
   obsm_types = c("numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
     "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas",
     "numeric_rsparse_with_nas", "integer_matrix", "integer_dense", "integer_csparse",
-    "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
-    "integer_csparse_with_nas", "integer_rsparse_with_nas", "character", "integer",
-    "factor", "factor_ordered", "logical", "numeric", "character_with_nas",
-    "integer_with_nas", "factor_with_nas", 
- "factor_ordered_with_nas",
-    "logical_with_nas", "numeric_with_nas"),
+    "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas", "factor",
+    "factor_ordered", "logical", "numeric", "character_with_nas", "integer_with_nas",
+    "factor_with_nas", "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"),
   varm_types = c("numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
     "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas",
     "numeric_rsparse_with_nas", "integer_matrix", "integer_dense", "integer_csparse",
@@ -35,7 +32,7 @@ generate_dataset(
     "integer_csparse_with_nas", "integer_rsparse_with_nas", "character", "integer",
     "factor", "factor_ordered", "logical", "numeric", "character_with_nas",
     "integer_with_nas", "factor_with_nas", 
- "factor_ordered_with_nas",
+     "factor_ordered_with_nas",
     "logical_with_nas", "numeric_with_nas"),
   obsp_types = c("numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
     "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas",
@@ -83,8 +80,8 @@ Generate a dataset with different types of columns and layers
 \examples{
 dummy <- generate_dataset()
 \dontrun{
-  dummy <- generate_dataset(format = "AnnData")
-  dummy <- generate_dataset(format = "SingleCellExperiment")
-  dummy <- generate_dataset(format = "Seurat")
+dummy <- generate_dataset(format = "AnnData")
+dummy <- generate_dataset(format = "SingleCellExperiment")
+dummy <- generate_dataset(format = "Seurat")
 }
 }
