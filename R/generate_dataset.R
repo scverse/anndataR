@@ -48,8 +48,9 @@ generate_dataset <- function(
       "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
       "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
       "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
-      "factor", "factor_ordered", "logical", "numeric", "character_with_nas", "integer_with_nas", "factor_with_nas",
-      "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"
+      "integer_csparse_with_nas", "integer_rsparse_with_nas", "character", "integer", "factor", "factor_ordered",
+      "logical", "numeric", "character_with_nas", "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas",
+      "logical_with_nas", "numeric_with_nas"
     ),
     varm_types = c(
       "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
@@ -105,16 +106,16 @@ generate_dataset <- function(
 #'
 #' @noRd
 .generate_dataset_as_list <- function(
-    n_obs,
-    n_vars,
-    x_type,
-    layer_types,
-    obs_types,
-    var_types,
-    obsm_types,
-    varm_types,
-    obsp_types,
-    varp_types) {
+    n_obs = 10L,
+    n_vars = 20L,
+    x_type = names(matrix_generators)[[1]],
+    layer_types = names(matrix_generators),
+    obs_types = names(vector_generators),
+    var_types = names(vector_generators),
+    obsm_types = c(names(matrix_generators), names(vector_generators)),
+    varm_types = c(names(matrix_generators), names(vector_generators)),
+    obsp_types = names(matrix_generators),
+    varp_types = names(matrix_generators)) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
 
