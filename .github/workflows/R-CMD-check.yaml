@@ -52,7 +52,7 @@ jobs:
         run: echo "miniconda_path=$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
 
       - name: Cache miniconda
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.miniconda-path.outputs.miniconda_path }}}
           key: ${{ runner.os }}-r${{ matrix.config.r }}-reticulate-miniconda
