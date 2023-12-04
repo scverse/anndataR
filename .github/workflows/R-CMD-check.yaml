@@ -48,14 +48,20 @@ jobs:
           needs: check
 
       - name: Get miniconda path
-        id: miniconda-path
-        run: echo "miniconda_path=$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
+        id: miniconda_path
+        run: |
+          echo "miniconda_path=$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
 
       - name: Cache miniconda
         uses: actions/cache@v3
         with:
-          path: ${{ steps.miniconda-path.outputs.miniconda_path }}}
-          key: ${{ runner.os }}-r${{ matrix.config.r }}-reticulate-miniconda
+          path: ${{ steps.miniconda_path.outputs.miniconda_path }}}
+          key: ${{ runner.os }}-v${{ matrix.config.r }}-reticulate-miniconda
+
+      - name: Debug
+        run: |
+          echo ${{ steps.miniconda_path.outputs.miniconda_path }}
+          ls -l ${{ steps.miniconda_path.outputs.miniconda_path }}
 
       - name: Install Python dependencies for reticulate
         run: |
@@ -64,6 +70,11 @@ jobs:
           }
           reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
         shell: Rscript {0}
+        
+      - name: Debug 2
+        run: |
+          echo ${{ steps.miniconda_path.outputs.miniconda_path }}
+          ls -l ${{ steps.miniconda_path.outputs.miniconda_path }}
 
       - uses: r-lib/actions/check-r-package@v2
         with:
