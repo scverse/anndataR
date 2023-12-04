@@ -47,15 +47,13 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Set RETICULATE_MINICONDA_PATH
-        shell: bash
-        run: |
-          echo "RETICULATE_MINICONDA_PATH=${{ runner.temp }}/.reticulate-miniconda" >> $GITHUB_ENV
-
       - name: Cache miniconda
         uses: actions/cache@v3
+        if: runner.os == 'Linux'
+        # no need to cache on macOS or Windows, since it takes longer to unpack
+        # the cache than to install miniconda and dependencies
         with:
-          path: ${{ env.RETICULATE_MINICONDA_PATH }}
+          path: ~/.local/share/r-miniconda
           key: ${{ runner.os }}-v${{ matrix.config.r }}-reticulate-miniconda
 
       - name: Install Python dependencies for reticulate
