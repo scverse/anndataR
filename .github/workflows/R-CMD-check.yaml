@@ -60,6 +60,7 @@ jobs:
 
       - name: Debug
         run: |
+          Rscript -e 'cat(reticulate::miniconda_path())'
           echo ${{ steps.miniconda_path.outputs.miniconda_path }}
           [[ -d ${{ steps.miniconda_path.outputs.miniconda_path }} ]] && ls -l ${{ steps.miniconda_path.outputs.miniconda_path }} || echo "Miniconda dir not found"
 
