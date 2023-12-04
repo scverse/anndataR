@@ -50,6 +50,7 @@ jobs:
       - name: Get miniconda path
         id: miniconda_path
         run: |
+          Rscript -e 'cat(reticulate::miniconda_path())'
           echo "miniconda_path=$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
 
       - name: Cache miniconda
@@ -60,9 +61,8 @@ jobs:
 
       - name: Debug
         run: |
-          Rscript -e 'cat(reticulate::miniconda_path())'
           echo ${{ steps.miniconda_path.outputs.miniconda_path }}
-          [[ -d ${{ steps.miniconda_path.outputs.miniconda_path }} ]] && ls -l ${{ steps.miniconda_path.outputs.miniconda_path }} || echo "Miniconda dir not found"
+          [[ -d "${{ steps.miniconda_path.outputs.miniconda_path }}" ]] && ls -l "${{ steps.miniconda_path.outputs.miniconda_path }}" || echo "Miniconda dir not found"
 
       - name: Install Python dependencies for reticulate
         run: |
