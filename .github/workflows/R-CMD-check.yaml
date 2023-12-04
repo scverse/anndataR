@@ -47,10 +47,14 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Get miniconda path
+        id: miniconda-path
+        run: echo "miniconda_path=path::$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
+
       - name: Cache miniconda
         uses: actions/cache@v2
         with:
-          path: "~/.local/share/r-miniconda"
+          path: ${{ steps.miniconda-path.outputs.miniconda_path }}}
           key: ${{ runner.os }}-r${{ matrix.config.r }}-reticulate-miniconda
 
       - name: Install Python dependencies for reticulate
