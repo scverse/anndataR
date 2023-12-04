@@ -48,14 +48,19 @@ jobs:
           needs: check
 
       - name: Cache miniconda
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        if: runner.os == 'Linux'
+        # no need to cache on macOS or Windows, since it takes longer to unpack
+        # the cache than to install miniconda and dependencies
         with:
-          path: "~/.local/share/r-miniconda"
-          key: ${{ runner.os }}-r${{ matrix.config.r }}-reticulate-miniconda
+          path: ~/.local/share/r-miniconda
+          key: ${{ runner.os }}-v${{ matrix.config.r }}-reticulate-miniconda
 
       - name: Install Python dependencies for reticulate
         run: |
-          reticulate::install_miniconda()
+          if (!reticulate:::miniconda_exists()) {
+            reticulate::install_miniconda()
+          }
           reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
         shell: Rscript {0}
 
