@@ -30,7 +30,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
-      RETICULATE_MINICONDA_PATH: "$RUNNER_TEMP/reticulate-miniconda"
+      RETICULATE_MINICONDA_PATH: ~/reticulate_miniconda
 
     steps:
       - uses: actions/checkout@v3
