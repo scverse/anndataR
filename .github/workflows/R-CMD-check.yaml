@@ -61,7 +61,7 @@ jobs:
       - name: Debug
         run: |
           echo ${{ steps.miniconda_path.outputs.miniconda_path }}
-          ls -l ${{ steps.miniconda_path.outputs.miniconda_path }}
+          [[ -d ${{ steps.miniconda_path.outputs.miniconda_path }} ]] && ls -l ${{ steps.miniconda_path.outputs.miniconda_path }} || echo "Miniconda dir not found"
 
       - name: Install Python dependencies for reticulate
         run: |
@@ -70,11 +70,11 @@ jobs:
           }
           reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
         shell: Rscript {0}
-        
+
       - name: Debug 2
         run: |
           echo ${{ steps.miniconda_path.outputs.miniconda_path }}
-          ls -l ${{ steps.miniconda_path.outputs.miniconda_path }}
+          [[ -d ${{ steps.miniconda_path.outputs.miniconda_path }} ]] && ls -l ${{ steps.miniconda_path.outputs.miniconda_path }} || echo "Miniconda dir not found"
 
       - uses: r-lib/actions/check-r-package@v2
         with:
