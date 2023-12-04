@@ -30,6 +30,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      RETICULATE_MINICONDA_PATH: "$RUNNER_TEMP/reticulate-miniconda"
 
     steps:
       - uses: actions/checkout@v3
@@ -47,22 +48,11 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Get miniconda path
-        id: miniconda_path
-        run: |
-          Rscript -e 'cat(reticulate::miniconda_path())'
-          echo "miniconda_path=$(Rscript -e 'cat(reticulate::miniconda_path())')" >> $GITHUB_OUTPUT
-
       - name: Cache miniconda
         uses: actions/cache@v3
         with:
-          path: ${{ steps.miniconda_path.outputs.miniconda_path }}}
+          path: $RETICULATE_MINICONDA_PATH
           key: ${{ runner.os }}-v${{ matrix.config.r }}-reticulate-miniconda
-
-      - name: Debug
-        run: |
-          echo ${{ steps.miniconda_path.outputs.miniconda_path }}
-          [[ -d "${{ steps.miniconda_path.outputs.miniconda_path }}" ]] && ls -l "${{ steps.miniconda_path.outputs.miniconda_path }}" || echo "Miniconda dir not found"
 
       - name: Install Python dependencies for reticulate
         run: |
@@ -71,11 +61,6 @@ jobs:
           }
           reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
         shell: Rscript {0}
-
-      - name: Debug 2
-        run: |
-          echo ${{ steps.miniconda_path.outputs.miniconda_path }}
-          [[ -d ${{ steps.miniconda_path.outputs.miniconda_path }} ]] && ls -l ${{ steps.miniconda_path.outputs.miniconda_path }} || echo "Miniconda dir not found"
 
       - uses: r-lib/actions/check-r-package@v2
         with:
