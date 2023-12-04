@@ -1,4 +1,6 @@
 #' List the available AnnData generators.
+#' 
+#' @noRd
 list_generators <- function() {
   list(
     "HDF5AnnData" = HDF5AnnData,
@@ -10,6 +12,8 @@ list_generators <- function() {
 #'
 #' @param class Name of the AnnData class. Must be one of `"HDF5AnnData"`
 #' or `"InMemoryAnnData"`.
+#'
+#' @noRd
 get_generator <- function(class = c("HDF5AnnData", "InMemoryAnnData")) {
   # TODO: also support directly passing the correct class?
   class <- match.arg(class)
