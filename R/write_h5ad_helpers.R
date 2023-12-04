@@ -276,24 +276,24 @@ write_h5ad_string_array <- function(value, file, name, compression, version = "0
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, compression, version = "0.2.0") {
   rhdf5::h5createGroup(file, name)
-  
+
   categories <- levels(value)
   codes <- as.integer(value)
   codes[is.na(codes)] <- 0 # Set NA values to 0
   codes <- codes - 1 # Make 0-indexed
-  
+
   hdf5_write_compressed(file, paste0(name, "/categories"), categories, compression)
   hdf5_write_compressed(file, paste0(name, "/codes"), codes, compression)
 
   write_h5ad_encoding(file, name, "categorical", version)
-  
+
   # Write ordered attribute
   h5file <- rhdf5::H5Fopen(file)
   on.exit(rhdf5::H5Fclose(h5file))
-  
+
   h5obj <- rhdf5::H5Gopen(h5file, name)
   on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-  
+
   rhdf5::h5writeAttribute(is.ordered(value), h5obj, "ordered", asScalar = TRUE)
 }
 
