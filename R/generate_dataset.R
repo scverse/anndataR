@@ -17,7 +17,7 @@
 #'
 #' @return Object containing the generated dataset as defined by `output`
 #'
-#' @rdname generate_dataset
+#' @export
 #'
 #' @examples
 #' dummy <- generate_dataset()
