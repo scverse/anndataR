@@ -56,6 +56,8 @@ jobs:
         with:
           path: ${{ steps.miniconda-path.outputs.miniconda_path }}}
           key: ${{ runner.os }}-r${{ matrix.config.r }}-reticulate-miniconda
+          restore-keys: |
+            ${{ runner.os }}-r${{ matrix.config.r }}-reticulate-miniconda
 
       - name: Install Python dependencies for reticulate
         run: |
