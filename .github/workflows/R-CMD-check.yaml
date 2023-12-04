@@ -55,7 +55,9 @@ jobs:
 
       - name: Install Python dependencies for reticulate
         run: |
-          reticulate::install_miniconda()
+          if (!reticulate:::miniconda_exists()) {
+            reticulate::install_miniconda()
+          }
           reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
         shell: Rscript {0}
 
