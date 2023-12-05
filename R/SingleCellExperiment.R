@@ -10,7 +10,7 @@
 NULL
 
 #' @rdname SingleCellExperiment-Conversion
-#' 
+#'
 #' @param obj an AnnData object, e.g., InMemoryAnnData
 #'
 #' @return `to_SingleCellExperiment()` returns a
@@ -83,10 +83,10 @@ to_SingleCellExperiment <- function(obj) { # nolint
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
 #'   (e.g., InMemoryAnnData) representing the content of `sce`
-from_SingleCellExperiment <- function(sce,
+from_SingleCellExperiment <- function(sce, # nolint
                                       output_class = c("InMemory", "HDF5AnnData"),
                                       ...) {
-  
+
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )

@@ -77,7 +77,7 @@ AnnData <- function(
     varp = NULL,
     uns = NULL,
     ...) {
-  
+
   if (is.null(obj)) {
     InMemoryAnnData$new(
       obs_names = obs_names,

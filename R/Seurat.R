@@ -111,14 +111,14 @@ to_Seurat <- function(obj) { # nolint
 #'   'scale.data'. The remaining non-empty slots will be stored in different
 #'   layers.
 #' @param ... Additional arguments passed to the generator function.
-#' 
+#'
 #' @return `from_Seurat()` returns an AnnData object
 #'   (e.g., InMemoryAnnData) representing the content of `seurat`
-#' 
+#'
 # TODO: add tests with Seurat objects not created by anndataR
-from_Seurat <- function(seurat,
+from_Seurat <- function(seurat, # nolint
                         output_class = c("InMemoryAnnData", "HDF5AnnData"),
-                        assay = NULL, X = "counts", ...) { # nolint
+                        assay = NULL, X = "counts", ...) {
 
   stopifnot(
     inherits(seurat, "Seurat")
