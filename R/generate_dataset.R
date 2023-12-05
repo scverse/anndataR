@@ -75,7 +75,7 @@ generate_dataset <- function(
     format = c("list", "AnnData", "SingleCellExperiment", "Seurat")) {
   format <- match.arg(format)
 
-  list <- .generate_dataset_as_list(
+  dataset_list <- .generate_dataset_as_list(
     n_obs = n_obs,
     n_vars = n_vars,
     x_type = x_type,
@@ -95,7 +95,7 @@ generate_dataset <- function(
     "AnnData" = .generate_dataset_as_anndata
   )
 
-  return(conversion_fun(list))
+  return(conversion_fun(dataset_list))
 }
 
 #' Generate a dummy dataset as a list
@@ -206,12 +206,12 @@ generate_dataset <- function(
 
 #' Convert a dummy dataset to a SingleCellExperiment object
 #'
-#' @param list Output of `.generate_dataset_as_list()`
+#' @param dataset_list Output of `.generate_dataset_as_list()`
 #'
 #' @return SingleCellExperiment containing the generated data
 #'
 #' @noRd
-.generate_dataset_as_sce <- function(list) {
+.generate_dataset_as_sce <- function(dataset_list) {
   if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
     stop(
       "Creating a SingleCellExperiment requires the 'SingleCellExperiment'",
@@ -220,18 +220,18 @@ generate_dataset <- function(
   }
 
   assays_list <- c(
-    list(X = list$X),
-    list$layers
+    list(X = dataset_list$X),
+    dataset_list$layers
   )
   assays_list <- lapply(assays_list, Matrix::t)
 
   sce <- SingleCellExperiment::SingleCellExperiment(
     assays = assays_list,
-    rowData = list$var,
-    colData = list$obs
+    rowData = dataset_list$var,
+    colData = dataset_list$obs
   )
-  colnames(sce) <- list$obs_names
-  rownames(sce) <- list$var_names
+  colnames(sce) <- dataset_list$obs_names
+  rownames(sce) <- dataset_list$var_names
 
   # TODO: add obsm, varm, obsp, varp, uns?
 
@@ -240,37 +240,37 @@ generate_dataset <- function(
 
 #' Convert a dummy dataset to a Seurat object
 #'
-#' @param list Output of `.generate_dataset_as_list()`
+#' @param dataset_list Output of `.generate_dataset_as_list()`
 #'
 #' @return Seurat containing the generated data
 #'
 #' @noRd
-.generate_dataset_as_seurat <- function(list) {
+.generate_dataset_as_seurat <- function(dataset_list) {
   if (!requireNamespace("SeuratObject", quietly = TRUE)) {
     stop(
       "Creating a Seurat requires the 'SeuratObject' package to be installed"
     )
   }
 
-  X <- t(list$layers[["integer_csparse"]])
-  colnames(X) <- list$obs_names
-  rownames(X) <- list$var_names
+  X <- t(dataset_list$layers[["integer_csparse"]])
+  colnames(X) <- dataset_list$obs_names
+  rownames(X) <- dataset_list$var_names
 
   seurat <- SeuratObject::CreateSeuratObject(X)
 
-  X2 <- Matrix::t(list$layers[["numeric_csparse"]])
-  colnames(X2) <- list$obs_names
-  rownames(X2) <- list$var_names
+  X2 <- Matrix::t(dataset_list$layers[["numeric_csparse"]])
+  colnames(X2) <- dataset_list$obs_names
+  rownames(X2) <- dataset_list$var_names
   seurat <- SeuratObject::SetAssayData(seurat, "data", X2)
 
-  X3 <- Matrix::t(list$layers[["numeric_matrix"]])
-  colnames(X3) <- list$obs_names
-  rownames(X3) <- list$var_names
+  X3 <- Matrix::t(dataset_list$layers[["numeric_matrix"]])
+  colnames(X3) <- dataset_list$obs_names
+  rownames(X3) <- dataset_list$var_names
   seurat <- SeuratObject::SetAssayData(seurat, "scale.data", X3)
 
   # TODO: Seurat v5 now supports more than just these three layers
 
-  seurat <- SeuratObject::AddMetaData(seurat, list$obs)
+  seurat <- SeuratObject::AddMetaData(seurat, dataset_list$obs)
 
   # TODO: add obsm, varm, obsp, varp, uns?
 
@@ -284,16 +284,16 @@ generate_dataset <- function(
 #' @return SingleCellExperiment containing the generated data
 #'
 #' @noRd
-.generate_dataset_as_anndata <- function(list) { # nolint
+.generate_dataset_as_anndata <- function(dataset_list) { # nolint
   AnnData(
-    X = list$X,
-    obs = list$obs,
-    obsm = list$obsm,
-    obsp = list$obsp,
-    var = list$var,
-    varm = list$varm,
-    varp = list$varp,
-    layers = list$layers,
-    uns = list$uns
+    X = dataset_list$X,
+    obs = dataset_list$obs,
+    obsm = dataset_list$obsm,
+    obsp = dataset_list$obsp,
+    var = dataset_list$var,
+    varm = dataset_list$varm,
+    varp = dataset_list$varp,
+    layers = dataset_list$layers,
+    uns = dataset_list$uns
   )
 }
