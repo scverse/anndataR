@@ -68,7 +68,8 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 \item{uns}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
 
-\item{...}{Additional arguments passed to conversion functions.}
+\item{...}{Additional arguments passed to conversion functions. See
+\link{Seurat-Conversion}.}
 }
 \description{
 This class is used to represent an AnnData object in memory.

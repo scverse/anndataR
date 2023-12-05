@@ -1,24 +1,19 @@
-#' @rdname Seurat
+#' Convert to/from Seurat objects
 #'
-#' @title Convert Between AnnData and Seurat
+#' Conversion between AnnData and \linkS4class{Seurat} objects.
 #'
-#' @description `to_Seurat()` converts an AnnData object to a Seurat object.
+#' @seealso
+#' [`write_h5ad()`] and [`read_h5ad()`] for directly interacting with H5AD files.
+#'
+#' @name Seurat-Conversion
+#' @rdname Seurat-Conversion
+NULL
+
+#' @rdname Seurat-Conversion
 #'
 #' @param obj An AnnData object
 #'
 #' @importFrom Matrix t
-#'
-#' @noRd
-#' @examples
-#' ad <- AnnData(
-#'   X = matrix(1:5, 3L, 5L),
-#'   obs = data.frame(cell = 1:3),
-#'   obs_names = letters[1:3],
-#'   var = data.frame(gene = 1:5),
-#'   var_names = letters[1:5]
-#' )
-#' to_Seurat(ad)
-# TODO: Add parameters to choose which how X and layers are translated into counts, data and scaled.data
 to_Seurat <- function(obj) { # nolint
   requireNamespace("SeuratObject")
 
@@ -102,20 +97,17 @@ to_Seurat <- function(obj) { # nolint
   names
 }
 
-#' @rdname Seurat
-#'
-#' @description `from_Seurat()` converts a Seurat object to an AnnData object.
-#' Only one assay can be converted at a time.
+#' @rdname Seurat-Conversion
 #'
 #' @param seurat_obj An object inheriting from Seurat.
-#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
+#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
+#'   or `"InMemoryAnnData"`.
 #' @param assay Assay to be converted. If NULL, `DefaultAssay()` is used.
-#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
-#'   not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
+#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By
+#'   default, 'counts' will be used (if it is not empty), followed by 'data', then
+#'   'scale.data'. The remaining non-empty slots will be stored in different
 #'   layers.
 #' @param ... Additional arguments passed to the generator function.
-#'
-#' @noRd
 # TODO: add tests with Seurat objects not created by anndataR
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
 

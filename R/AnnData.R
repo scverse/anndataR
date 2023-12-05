@@ -43,7 +43,8 @@
 #'   element is a sparse matrix where each dimension has length `n_vars`.
 #' @param uns The uns slot is used to store unstructured annotation. It must
 #'   be either `NULL` or a named list.
-#' @param ... Additional arguments passed to conversion functions.
+#' @param ... Additional arguments passed to conversion functions. See
+#'   [Seurat-Conversion].
 #'
 #' @export
 #'
