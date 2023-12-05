@@ -122,7 +122,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-#' 
+#'
 #' @noRd
 write_h5ad_dense_array <- function(value, file, name, compression, version = "0.2.0") {
   version <- match.arg(version)
