@@ -11,21 +11,21 @@ NULL
 
 #' @rdname SingleCellExperiment-Conversion
 #' 
-#' @param object an AnnData object, e.g., InMemoryAnnData
+#' @param obj an AnnData object, e.g., InMemoryAnnData
 #'
-#' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
-#'   representing the content of `object`.
-to_SingleCellExperiment <- function(object) { # nolint
+#' @return `to_SingleCellExperiment()` returns a
+#'   \linkS4class{SingleCellExperiment} representing the content of `object`
+to_SingleCellExperiment <- function(obj) { # nolint
   stopifnot(
-    inherits(object, "AbstractAnnData")
+    inherits(obj, "AbstractAnnData")
   )
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   ## FIXME: name of 'X' from metadata[["X_name"]]
   x_name <- "X"
   assay_names <- as.character(c(
-    if (!is.null(object$X)) x_name,
-    object$layers_keys()
+    if (!is.null(obj$X)) x_name,
+    obj$layers_keys()
   ))
 
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
@@ -33,9 +33,9 @@ to_SingleCellExperiment <- function(object) { # nolint
   names(assays) <- assay_names
   for (assay in assay_names) {
     value <- if (identical(assay, x_name)) {
-      object$X
+      obj$X
     } else {
-      object$layers[[assay]]
+      obj$layers[[assay]]
     }
     ## FIXME: is transposition robust & efficient here?
     assays[[assay]] <- t(value)
@@ -45,16 +45,16 @@ to_SingleCellExperiment <- function(object) { # nolint
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
   col_data <- S4Vectors::DataFrame(
-    object$obs,
-    row.names = object$obs_names
+    obj$obs,
+    row.names = obj$obs_names
   )
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
   row_data <- S4Vectors::DataFrame(
-    object$var,
-    row.names = object$var_names
+    obj$var,
+    row.names = obj$var_names
   )
 
   # construct output object
@@ -63,7 +63,7 @@ to_SingleCellExperiment <- function(object) { # nolint
     colData = col_data,
     rowData = row_data,
     metadata = list(),
-    ## FIXME: assign object$uns to metadata
+    ## FIXME: assign obj$uns to metadata
     checkDimnames = TRUE
   )
 
@@ -82,8 +82,11 @@ to_SingleCellExperiment <- function(object) { # nolint
 #' @param ... Additional arguments passed to the generator function
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
-#'   (e.g., InMemoryAnnData) representing the content of `sce`.
-from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData"), ...) { # nolint
+#'   (e.g., InMemoryAnnData) representing the content of `sce`
+from_SingleCellExperiment <- function(sce,
+                                      output_class = c("InMemory", "HDF5AnnData"),
+                                      ...) {
+  
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )

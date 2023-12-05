@@ -9,7 +9,7 @@
 to_Seurat(obj)
 
 from_Seurat(
-  seurat_obj,
+  seurat,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
   assay = NULL,
   X = "counts",
@@ -19,7 +19,7 @@ from_Seurat(
 \arguments{
 \item{obj}{An AnnData object}
 
-\item{seurat_obj}{An object inheriting from Seurat.}
+\item{seurat}{An object inheriting from Seurat.}
 
 \item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"}
 or \code{"InMemoryAnnData"}.}
@@ -32,6 +32,13 @@ default, 'counts' will be used (if it is not empty), followed by 'data', then
 layers.}
 
 \item{...}{Additional arguments passed to the generator function.}
+}
+\value{
+\code{to_Seurat()} returns a \linkS4class{Seurat} object representing the
+content of \code{obj}
+
+\code{from_Seurat()} returns an AnnData object
+(e.g., InMemoryAnnData) representing the content of \code{seurat}
 }
 \description{
 Conversion between AnnData and \linkS4class{Seurat} objects.

@@ -6,7 +6,7 @@
 \alias{from_SingleCellExperiment}
 \title{Convert to/from SingleCellExperiment objects}
 \usage{
-to_SingleCellExperiment(object)
+to_SingleCellExperiment(obj)
 
 from_SingleCellExperiment(
   sce,
@@ -15,7 +15,7 @@ from_SingleCellExperiment(
 )
 }
 \arguments{
-\item{object}{an AnnData object, e.g., InMemoryAnnData}
+\item{obj}{an AnnData object, e.g., InMemoryAnnData}
 
 \item{sce}{An object inheriting from SingleCellExperiment}
 
@@ -25,11 +25,11 @@ or \code{"InMemoryAnnData"}.}
 \item{...}{Additional arguments passed to the generator function}
 }
 \value{
-\code{to_SingleCellExperiment()} returns a SingleCellExperiment
-representing the content of \code{object}.
+\code{to_SingleCellExperiment()} returns a
+\linkS4class{SingleCellExperiment} representing the content of \code{object}
 
 \code{from_SingleCellExperiment()} returns an AnnData object
-(e.g., InMemoryAnnData) representing the content of \code{sce}.
+(e.g., InMemoryAnnData) representing the content of \code{sce}
 }
 \description{
 Conversion between AnnData and \linkS4class{SingleCellExperiment} objects.
