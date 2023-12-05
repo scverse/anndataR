@@ -178,7 +178,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     if (all(dim(SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)) == 0)) {
       stop("The '", X, "' slot is empty.")
     }
-    
+
     message("Converting '", X, "' slot as X.")
     assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)
 
@@ -187,7 +187,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     ad$X <- Matrix::t(assay_data)
   } else {
     # Cannot compare other values with NULL
-    message('X is NULL, storing non-empty slots in layers.')
+    message("X is NULL, storing non-empty slots in layers.")
     X <- "none"
   }
 
@@ -203,9 +203,9 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
       ad$layers[[slot]] <- Matrix::t(assay_data)
     }
   }
-  
+
   # Throw warning if scale.data is present that it is not being converted
-  if (!all(dim(SeuratObject::GetAssayData(seurat_obj, layer = "scale.data")) == 0)){
+  if (!all(dim(SeuratObject::GetAssayData(seurat_obj, layer = "scale.data")) == 0)) {
     message("'scale.data' is present but it will not be converted.")
   }
 
@@ -228,18 +228,17 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     # feature loadings to .varm
     # check if there are feature loadings
     feature_loadings <- reduction@feature.loadings
-    if (!all(dim(feature_loadings) == 0)){
+    if (!all(dim(feature_loadings) == 0)) {
       # check dimensions - are the same genes present?
       if (nrow(feature_loadings) != nrow(assay_name)) {
-        # TODO 
+        # TODO
         # all_loadings <- matrix(
         #   ncol = ncol(feature_loadings),
         #   nrow = length(var_names_for_loadings)
         # )
       }
-      
     }
-    
+
     # in Seurat, we return the dimensions n_hvgs x n_pcs
     # in Scanpy, I think the dimensions are n_genes x n_pcs so it goes to varm (please double check)
 
