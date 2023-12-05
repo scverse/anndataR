@@ -24,9 +24,7 @@ from_Seurat(
 
 \item{assay}{Assay to be converted. If NULL, \code{DefaultAssay()} is used.}
 
-\item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
-not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
-layers.}
+\item{X}{Which of 'counts' or 'data' will be used for X. By default, 'counts' will be used. The remaining non-empty slot will be stored in different layers.}
 
 \item{...}{Additional arguments passed to the generator function.}
 }

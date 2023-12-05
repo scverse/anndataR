@@ -110,7 +110,7 @@ to_Seurat <- function(obj) { # nolint
 #' @param seurat_obj An object inheriting from Seurat.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
 #' @param assay Assay to be converted. If NULL, `DefaultAssay()` is used.
-#' @param X Which of 'counts' or 'data' will be used for X. By default, 'counts' will be used. The remaining non-empty slot will be stored in different layers.
+#' @param X Which of 'counts', 'data', or NULL will be used for X. By default, 'counts' is used, and the remaining non-empty slot is stored in a different layer. If NULL, all non-empty slots are stored in layers.
 #' @param ... Additional arguments passed to the generator function.
 #'
 #' @export
@@ -122,7 +122,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
   stopifnot(inherits(seurat_obj, "Seurat"))
 
   if (!is.null(X)) {
-    if (!X %in% c("counts", "data", "scale.data")) {
+    if (!X %in% c("counts", "data")) {
       stop("X must be NULL or one of: 'counts', 'data'")
     }
   }
@@ -178,7 +178,8 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     if (all(dim(SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)) == 0)) {
       stop("The '", X, "' slot is empty.")
     }
-
+    
+    message("Converting '", X, "' slot as X.")
     assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)
 
     # Remove names
@@ -186,6 +187,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     ad$X <- Matrix::t(assay_data)
   } else {
     # Cannot compare other values with NULL
+    message('X is NULL, storing non-empty slots in layers.')
     X <- "none"
   }
 
@@ -195,10 +197,16 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
   for (slot in slots) {
     if (!all(dim(SeuratObject::GetAssayData(seurat_obj, slot = slot)) == 0)) {
+      message("Storing '", slot, "' slot in '", slot, "' layer.")
       assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = slot, assay = assay_name)
       dimnames(assay_data) <- list(NULL, NULL)
       ad$layers[[slot]] <- Matrix::t(assay_data)
     }
+  }
+  
+  # Throw warning if scale.data is present that it is not being converted
+  if (!all(dim(SeuratObject::GetAssayData(seurat_obj, layer = "scale.data")) == 0)){
+    message("'scale.data' is present but it will not be converted.")
   }
 
   # TODO: add checks
@@ -207,27 +215,42 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
   # Dimensionality reduction
   for (reduction in names(seurat_obj@reductions)) {
     # Check if the dimreduc was calculated by the selected assay
-    if (seurat_obj@reductions[[reduction]]@assay.used != assay_name) {
+    reduction <- seurat_obj@reductions[[reduction]]
+    if (reduction@assay.used != assay_name) {
       next
     }
 
-    # cell embeddings to obsm
-    cell_embeddings <- seurat_obj@reductions[[reduction]]@cell.embeddings
+    # cell embeddings (reductions) to obsm
+    cell_embeddings <- reduction@cell.embeddings
     dimnames(cell_embeddings) <- list(NULL, NULL)
     ad$obsm[[reduction]] <- cell_embeddings
 
-    # gene loadings to uns
+    # feature loadings to .varm
+    # check if there are feature loadings
+    feature_loadings <- reduction@feature.loadings
+    if (!all(dim(feature_loadings) == 0)){
+      # check dimensions - are the same genes present?
+      if (nrow(feature_loadings) != nrow(assay_name)) {
+        # TODO 
+        # all_loadings <- matrix(
+        #   ncol = ncol(feature_loadings),
+        #   nrow = length(var_names_for_loadings)
+        # )
+      }
+      
+    }
+    
     # in Seurat, we return the dimensions n_hvgs x n_pcs
     # in Scanpy, I think the dimensions are n_genes x n_pcs so it goes to varm (please double check)
-    
+
     # Test once `uns` is complete
     # feature_loadings <- seurat_obj@reductions[[reduction]]@feature.loadings
     # feature_loadings_projected <- seurat_obj@reductions[[reduction]]@feature.loadings.projected
-    # 
+    #
     # if (!all(dim(feature_loadings) == 0)) {
     #   ad$uns[[paste0(reduction, "_loadings")]] <- seurat_obj@reductions[[reduction]]@feature.loadings
     # }
-    # 
+    #
     # if (!all(dim(feature_loadings_projected) == 0)) {
     #   ad$uns[[paste0(reduction, "_loadings_projected")]] <- seurat_obj@reductions[[reduction]]@feature.loadings.projected
     # }
@@ -238,7 +261,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     # if (length(stdev) > 0) {
     #   ad$uns[[paste0(reduction, "_stdev")]] <- stdev
     # }
-    # 
+    #
     # if (length(misc) > 0) {
     #   ad$uns[[paste0(reduction, "_misc")]] <- misc
     # }
