@@ -122,6 +122,12 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 write_h5ad_dense_array <- function(value, file, name, compression, version = "0.2.0") {
   version <- match.arg(version)
 
+  if (is.matrix(value) && any(is.na(value))) {
+    # is.na(value) <- NaN gets ignored
+    na_indices <- is.na(value)
+    value[na_indices] <- NaN
+  }
+
   if (!is.vector(value)) {
     # Transpose the value because writing with native=TRUE does not
     # seem to work as expected
