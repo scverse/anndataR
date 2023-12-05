@@ -2,7 +2,7 @@
 
 ## New features
 
-* PR #159: Add dedicated internal functions for convert to/from Seurat DimReduc object.
+* PR #162: Add dedicated internal functions for convert to/from Seurat DimReduc object.
   - Fix unit tests for Seurat converter.
   - Add missing extra final line to DESCRIPTION.
   - Make naming conventions consistent for internal functions: 
