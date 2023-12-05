@@ -42,6 +42,12 @@ for (name in layer_names) {
     rownames(X) <- data$obs_names
     colnames(X) <- data$var_names
 
+    if (is.matrix(X) && any(is.na(X))) {
+      # is.na(value) <- NaN gets ignored
+      na_indices <- is.na(X)
+      X[na_indices] <- NaN
+    }
+
     # create anndata
     ad <- anndata::AnnData(
       X = X,
