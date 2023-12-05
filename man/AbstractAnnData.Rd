@@ -48,6 +48,8 @@ with all elements having the same number of rows and columns as \code{obs}.}
 
 \item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
 with all elements having the same number of rows and columns as \code{var}.}
+
+\item{\code{uns}}{The uns slot. Must be \code{NULL} or a named list.}
 }
 \if{html}{\out{</div>}}
 }

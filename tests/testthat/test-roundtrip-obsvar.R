@@ -1,7 +1,7 @@
 skip_if_no_anndata()
 skip_if_not_installed("rhdf5")
 
-data <- generate_dataset_as_list(10L, 20L)
+data <- generate_dataset(10L, 20L)
 
 test_names <- names(data$obs)
 
