@@ -44,7 +44,7 @@
 #' @param uns The uns slot is used to store unstructured annotation. It must
 #'   be either `NULL` or a named list.
 #' @param ... Additional arguments passed to conversion functions. See
-#'   [Seurat-Conversion].
+#'   [SingleCellExperiment-Conversion] and [Seurat-Conversion].
 #'
 #' @export
 #'

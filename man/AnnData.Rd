@@ -69,7 +69,7 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 be either \code{NULL} or a named list.}
 
 \item{...}{Additional arguments passed to conversion functions. See
-\link{Seurat-Conversion}.}
+\link{SingleCellExperiment-Conversion} and \link{Seurat-Conversion}.}
 }
 \description{
 This class is used to represent an AnnData object in memory.
