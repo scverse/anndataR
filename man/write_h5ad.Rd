@@ -39,7 +39,6 @@ write_h5ad(adata, h5ad_file)
 
 # Write a SingleCellExperiment as an H5AD
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-  h5ad_file <- tempfile(fileext = ".h5ad")
   ncells <- 100
   counts <- matrix(rpois(20000, 5), ncol = ncells)
   logcounts <- log2(counts + 1)
@@ -51,12 +50,14 @@ if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
     assays = list(counts = counts, logcounts = logcounts),
     reducedDims = list(PCA = pca, tSNE = tsne)
   )
+
+  h5ad_file <- tempfile(fileext = ".h5ad")
+  write_h5ad(sce, h5ad_file)
 }
 
 # Write a Seurat as a H5AD
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
   # TODO: uncomment this code when the seurat converter is fixed
-  # h5ad_file <- tempfile(fileext = ".h5ad")
   # counts <- matrix(1:15, 3L, 5L)
   # dimnames(counts) <- list(
   #   letters[1:3],
@@ -73,6 +74,7 @@ if (requireNamespace("SeuratObject", quietly = TRUE)) {
   # )
   # obj <- SeuratObject::AddMetaData(obj, cell.metadata)
   #
+  # h5ad_file <- tempfile(fileext = ".h5ad")
   # write_h5ad(obj, h5ad_file)
 }
 }
