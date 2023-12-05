@@ -8,6 +8,8 @@
 #'
 #' To read an AnnData file from disk, use [read_h5ad()] instead.
 #'
+#' @param obj Object to create an AnnData from. If `obj = NULL` the remaining
+#'   arguments are used instead.
 #' @param obs_names A vector of unique identifiers
 #'   used to identify each row of `obs` and to act as an index into the
 #'   observation dimension of the AnnData object. The length of `obs_names`
@@ -41,6 +43,7 @@
 #'   element is a sparse matrix where each dimension has length `n_vars`.
 #' @param uns The uns slot is used to store unstructured annotation. It must
 #'   be either `NULL` or a named list.
+#' @param ... Additional arguments passed to conversion functions.
 #'
 #' @export
 #'
@@ -60,6 +63,7 @@
 #'
 #' adata
 AnnData <- function(
+    obj = NULL,
     obs_names = NULL,
     var_names = NULL,
     X = NULL,
@@ -70,18 +74,28 @@ AnnData <- function(
     varm = NULL,
     obsp = NULL,
     varp = NULL,
-    uns = NULL) {
-  InMemoryAnnData$new(
-    obs_names = obs_names,
-    var_names = var_names,
-    X = X,
-    obs = obs,
-    var = var,
-    layers = layers,
-    obsm = obsm,
-    varm = varm,
-    obsp = obsp,
-    varp = varp,
-    uns = uns
-  )
+    uns = NULL,
+    ...) {
+  
+  if (is.null(obj)) {
+    InMemoryAnnData$new(
+      obs_names = obs_names,
+      var_names = var_names,
+      X = X,
+      obs = obs,
+      var = var,
+      layers = layers,
+      obsm = obsm,
+      varm = varm,
+      obsp = obsp,
+      varp = varp,
+      uns = uns
+    )
+  } else if (inherits(obj, "SingleCellExperiment")) {
+    from_SingleCellExperiment(obj, output_class = "InMemoryAnnData", ...)
+  } else if (inherits(obj, "Seurat")) {
+    from_Seurat(obj, output_class = "InMemoryAnnData", ...)
+  } else {
+    stop("No implementation for converting object of class ", class(obj))
+  }
 }

@@ -5,6 +5,7 @@
 \title{An in-memory AnnData object}
 \usage{
 AnnData(
+  obj = NULL,
   obs_names = NULL,
   var_names = NULL,
   X = NULL,
@@ -15,10 +16,14 @@ AnnData(
   varm = NULL,
   obsp = NULL,
   varp = NULL,
-  uns = NULL
+  uns = NULL,
+  ...
 )
 }
 \arguments{
+\item{obj}{Object to create an AnnData from. If \code{obj = NULL} the remaining
+arguments are used instead.}
+
 \item{obs_names}{A vector of unique identifiers
 used to identify each row of \code{obs} and to act as an index into the
 observation dimension of the AnnData object. The length of \code{obs_names}
@@ -62,6 +67,8 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 
 \item{uns}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
+
+\item{...}{Additional arguments passed to conversion functions.}
 }
 \description{
 This class is used to represent an AnnData object in memory.
