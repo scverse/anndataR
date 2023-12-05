@@ -333,9 +333,11 @@ generate_dataset <- function(
     obs = dataset_list$obs,
     obsm = dataset_list$obsm,
     obsp = dataset_list$obsp,
+    obs_names = dataset_list$obs_names,
     var = dataset_list$var,
     varm = dataset_list$varm,
     varp = dataset_list$varp,
+    var_names = dataset_list$var_names,
     layers = dataset_list$layers,
     uns = dataset_list$uns
   )
