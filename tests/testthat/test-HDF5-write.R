@@ -81,21 +81,18 @@ test_that("Writing H5AD string arrays works", {
   expect_equal(attrs[["encoding-type"]], "string-array")
 })
 
-# TODO: re-enable
-# nolint start
-# test_that("Writing H5AD categoricals works", {
-#   categorical <- factor(LETTERS[1:5])
+test_that("Writing H5AD categoricals works", {
+  categorical <- factor(LETTERS[1:5])
 
-#   expect_no_error(write_h5ad_element(categorical, h5ad_file, "categorical"))
-#   expect_true(hdf5_path_exists(h5ad_file, "/categorical"))
-#   expect_true(hdf5_path_exists(h5ad_file, "/categorical/categories"))
-#   expect_true(hdf5_path_exists(h5ad_file, "/categorical/codes"))
-#   expect_true(hdf5_path_exists(h5ad_file, "/categorical/ordered"))
-#   attrs <- rhdf5::h5readAttributes(h5ad_file, "categorical")
-#   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
-#   expect_equal(attrs[["encoding-type"]], "categorical")
-# })
-# nolint end
+  expect_no_error(write_h5ad_element(categorical, h5ad_file, "categorical"))
+  expect_true(hdf5_path_exists(h5ad_file, "/categorical"))
+  expect_true(hdf5_path_exists(h5ad_file, "/categorical/categories"))
+  expect_true(hdf5_path_exists(h5ad_file, "/categorical/codes"))
+  expect_true(hdf5_path_exists(h5ad_file, "/categorical/ordered"))
+  attrs <- rhdf5::h5readAttributes(h5ad_file, "categorical")
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_equal(attrs[["encoding-type"]], "categorical")
+})
 
 test_that("Writing H5AD string scalars works", {
   string <- "A"
