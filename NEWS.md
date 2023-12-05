@@ -10,7 +10,7 @@
 
 * Various PRs: Initial release of anndataR, providing support for working with
   AnnData objects in R. Feature list:
-  - Slots
+  - Slots:
     - X
     - layers
     - obs
