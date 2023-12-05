@@ -4,7 +4,9 @@
 
 * PR #158: Change package version from 0.0.0.9000 --> 0.99.0 to align with Bioc devel 
     versioning standards.
-  - Modify NEWS file to reflect changes in the package versioning.
+  - Update DESCRIPTION file to reflect current release R version used by Bio: 
+    R (>= 3.2.0) --> R (>= 4.3.0).
+  - Reformat NEWS file to follow some conventions.
 
 * Various PRs: Initial release of anndataR, providing support for working with
   AnnData objects in R. Feature list:
@@ -22,5 +24,4 @@
     - SingleCellExperiment
     - Seurat
     
-  ## Bug fixes
   
