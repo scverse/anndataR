@@ -31,7 +31,7 @@
 #' sce <- to_SingleCellExperiment(ad)
 #' sce
 #'
-#' @export
+#' @noRd
 to_SingleCellExperiment <- function(object) { # nolint
   stopifnot(
     inherits(object, "AbstractAnnData")
@@ -111,7 +111,7 @@ to_SingleCellExperiment <- function(object) { # nolint
 #' ## construct an AnnData object from a SingleCellExperiment
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
-#' @export
+#' @noRd
 from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData"), ...) { # nolint
   stopifnot(
     inherits(sce, "SingleCellExperiment")

@@ -381,7 +381,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
 #'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' ad <- AnnData(

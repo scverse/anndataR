@@ -8,7 +8,7 @@
 #'
 #' @importFrom Matrix t
 #'
-#' @export
+#' @noRd
 #' @examples
 #' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
@@ -115,7 +115,7 @@ to_Seurat <- function(obj) { # nolint
 #'   layers.
 #' @param ... Additional arguments passed to the generator function.
 #'
-#' @export
+#' @noRd
 # TODO: add tests with Seurat objects not created by anndataR
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
 
