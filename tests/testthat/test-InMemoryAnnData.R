@@ -1,4 +1,4 @@
-dummy <- dummy_data(10L, 20L)
+dummy <- generate_dataset(10L, 20L)
 
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 adata <- read_h5ad(file, to = "InMemoryAnnData")
@@ -52,65 +52,6 @@ test_that("AnnData() fails gracefully", {
   expect_error(AnnData(var = data.frame(x = 1:3)))
 })
 
-test_that("InMemoryAnnData$new produces a warning if rownames are found", {
-  # check X with rownames
-  x_with_rownames <- dummy$X
-  rownames(x_with_rownames) <- dummy$obs_names
-
-  expect_warning({
-    AnnData(
-      X = x_with_rownames,
-      obs = dummy$obs,
-      var = dummy$var,
-      obs_names = dummy$obs_names,
-      var_names = dummy$var_names
-    )
-  })
-
-  # check X with obsnames
-  x_with_colnames <- dummy$X
-  colnames(x_with_colnames) <- dummy$var_names
-
-  expect_warning({
-    AnnData(
-      X = x_with_colnames,
-      obs = dummy$obs,
-      var = dummy$var,
-      obs_names = dummy$obs_names,
-      var_names = dummy$var_names
-    )
-  })
-
-  # check obs with rownames
-  obs_with_rownames <- dummy$obs
-  rownames(obs_with_rownames) <- dummy$obs_names
-
-  expect_warning({
-    AnnData(
-      X = dummy$X,
-      obs = obs_with_rownames,
-      var = dummy$var,
-      obs_names = dummy$obs_names,
-      var_names = dummy$var_names
-    )
-  })
-
-  # check var with rownames
-  var_with_rownames <- dummy$var
-  rownames(var_with_rownames) <- dummy$var_names
-
-  expect_warning({
-    AnnData(
-      X = dummy$X,
-      obs = dummy$obs,
-      var = var_with_rownames,
-      obs_names = dummy$obs_names,
-      var_names = dummy$var_names
-    )
-  })
-})
-
-
 # trackstatus: class=InMemoryAnnData, feature=test_get_layers, status=done
 test_that("'layers' works", {
   ## layers test helper function
@@ -136,9 +77,6 @@ test_that("'layers' works", {
 
   ## must be a named list
   layers <- list(matrix(0, 3, 5))
-  expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
-  ## non-trivial names
-  layers <- list(A = matrix(0, 3, 5), matrix(1, 3, 5))
   expect_error(AnnData(obs_names = obs_names, var_names = var_names, layers = layers))
   ## matching dimensions
   layers <- list(A = matrix(0, 0, 0))

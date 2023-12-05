@@ -69,6 +69,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   with all elements having the same number of rows and columns as `var`.
     varp = function(value) {
       .abstract_function("ad$varp")
+    },
+    #' @field uns The uns slot. Must be `NULL` or a named list.
+    uns = function(value) {
+      .abstract_function("ad$uns")
     }
   ),
   public = list(
@@ -82,19 +86,27 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       for (attribute in c(
         "obs",
         "var",
-        "uns",
+        # "uns", # TODO: remove this when uns is implemented
         "obsm",
         "varm",
         "layers",
         "obsp",
         "varp"
       )) {
-        attr_key <- paste0(attribute, "_keys")
-        if (!is.null(self[[attr_key]])) {
-          slot_keys <- self[[attr_key]]()
-          if (length(slot_keys) > 0) {
-            cat("    ", pretty_print(attribute, slot_keys), "\n", sep = "")
+        key_fun <- self[[paste0(attribute, "_keys")]]
+        keys <-
+          if (!is.null(key_fun)) {
+            key_fun()
+          } else {
+            NULL
           }
+        if (length(keys) > 0) {
+          cat(
+            "    ", attribute, ":",
+            paste("'", keys, "'", collapse = ", "),
+            "\n",
+            sep = ""
+          )
         }
       }
     },
@@ -126,6 +138,22 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     layers_keys = function() {
       names(self$layers)
     },
+    #' @description Keys (element names) of `obsm`.
+    obsm_keys = function() {
+      names(self$obsm)
+    },
+    #' @description Keys (element names) of `varm`.
+    varm_keys = function() {
+      names(self$varm)
+    },
+    #' @description Keys (element names) of `obsp`.
+    obsp_keys = function() {
+      names(self$obsp)
+    },
+    #' @description Keys (element names) of `varp`.
+    varp_keys = function() {
+      names(self$varp)
+    },
     #' @description Convert to SingleCellExperiment
     to_SingleCellExperiment = function() {
       to_SingleCellExperiment(self)
@@ -145,40 +173,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     }
   ),
   private = list(
-    # @description `.validate_matrix()` checks that dimensions are
-    #   consistent with `obs` and `var`, and removes dimnames if
-    #   present.
-    # @param mat A matrix to validate
-    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
-    #   the name of a layer.
-    .validate_matrix = function(mat, label) {
-      if (!is.null(mat)) {
-        if (nrow(mat) != self$n_obs()) {
-          stop("nrow(", label, ") should be the same as nrow(obs)")
-        }
-        if (ncol(mat) != self$n_vars()) {
-          stop("ncol(", label, ") should be the same as nrow(var)")
-        }
-
-        if (!is.null(rownames(mat))) {
-          warning(wrap_message(
-            "rownames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          rownames(mat) <- NULL
-        }
-
-        if (!is.null(colnames(mat))) {
-          warning(wrap_message(
-            "colnames(", label, ") should be NULL, removing them from the matrix"
-          ))
-          colnames(mat) <- NULL
-        }
-      }
-
-      mat
-    },
-
-
     # @description `.validate_aligned_array()` checks that dimensions are
     #   consistent with the anndata object.
     # @param mat A matrix to validate
@@ -188,6 +182,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param expected_rownames
     # @param excepted_colnames
     .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+      if (is.null(mat)) {
+        return(mat)
+      }
       mat_dims <- dim(mat)
       for (i in seq_along(shape)) {
         expected_dim <- shape[i]
@@ -196,26 +193,16 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
         }
       }
-      if (!is.null(expected_rownames) & !is.null(rownames(mat))) {
+      if (!is.null(expected_rownames) & !has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
           stop("rownames(", label, ") should be the same as expected_rownames")
         }
-      }
-      if (!is.null(rownames(mat))) {
-        warning(wrap_message(
-          "rownames(", label, ") should be NULL, removing them from the matrix"
-        ))
         rownames(mat) <- NULL
       }
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
           stop("colnames(", label, ") should be the same as expected_colnames")
         }
-      }
-      if (!is.null(colnames(mat))) {
-        warning(wrap_message(
-          "colnames(", label, ") should be NULL, removing them from the matrix"
-        ))
         colnames(mat) <- NULL
       }
 
@@ -227,8 +214,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   whose entries will be validated
     # @param label The label of the collection, used for error messages
     # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
-    # @param expected_rownames
-    # @param expected_colnames
+    # @param expected_rownames Expected row names
+    # @param expected_colnames Expected column names
     .validate_aligned_mapping = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
       if (is.null(collection)) {
         return(collection)
@@ -248,6 +235,21 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           expected_rownames = expected_rownames,
           expected_colnames = expected_colnames
         )
+      }
+
+      collection
+    },
+
+    # @description `.validate_named_list()` checks for whether a value
+    #   is NULL or a named list and throws an error if it is not.
+    .validate_named_list = function(collection, label) {
+      if (is.null(collection)) {
+        return(collection)
+      }
+
+      collection_names <- names(collection)
+      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
+        stop(paste0(label, " must be a named list, was ", class(collection)))
       }
 
       collection
@@ -282,7 +284,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         ))
       }
 
-      if (.row_names_info(df) > 0) {
+      if (has_row_names(df)) {
         warning(wrap_message(
           "'", label, "' should not have any rownames, removing them from the data frame."
         ))

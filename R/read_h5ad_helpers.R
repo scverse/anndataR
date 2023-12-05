@@ -33,6 +33,7 @@ read_h5ad_encoding <- function(file, name) {
 #' @param name Name of the element within the H5AD file
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
+#' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Extra arguments passed to individual reading functions
 #'
 #' @details
@@ -42,7 +43,7 @@ read_h5ad_encoding <- function(file, name) {
 #' @return Value depending on the encoding
 #'
 #' @noRd
-read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
+read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
   if (is.null(type)) {
     encoding_list <- read_h5ad_encoding(file, name)
     type <- encoding_list$type
@@ -68,7 +69,23 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, ...) {
     )
   )
 
-  read_fun(file = file, name = name, version = version, ...)
+  tryCatch(
+    {
+      read_fun(file = file, name = name, version = version, ...)
+    },
+    error = function(e) {
+      message <- paste0(
+        "Error reading element '", name, "' of type '", type, "':\n",
+        conditionMessage(e)
+      )
+      if (stop_on_error) {
+        stop(message)
+      } else {
+        warning(message)
+        return(NULL)
+      }
+    }
+  )
 }
 
 #' Read H5AD dense array
@@ -341,7 +358,14 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 #' @noRd
 read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  rhdf5::h5read(file, name)
+  scalar <- rhdf5::h5read(file, name)
+
+  # If the numeric vector is Boolean it gets read as a factor by {rhdf5}
+  if (is.factor(scalar)) {
+    scalar <- as.logical(scalar)
+  }
+
+  return(scalar)
 }
 
 #' Read H5AD mapping
@@ -383,7 +407,7 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' @return a data.frame
 #'
 #' @noRd
-read_h5ad_data_frame <- function(file, name, include_index = TRUE,
+read_h5ad_data_frame <- function(file, name, include_index = FALSE,
                                  version = "0.2.0") {
   version <- match.arg(version)
 

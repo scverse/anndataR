@@ -1,4 +1,4 @@
-dummy <- dummy_data(10L, 20L)
+dummy <- generate_dataset(10L, 20L)
 
 test_that("to_Seurat with inmemoryanndata", {
   ad <- AnnData(
