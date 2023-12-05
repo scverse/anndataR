@@ -107,8 +107,8 @@ var <- adata$var
 You can convert the AnnData object to a SingleCellExperiment object or to a SeuratObject in the following way:
 
 ```{r convert}
-sce <- to_SingleCellExperiment(adata)
-seurat <- to_Seurat(adata)
+sce <- adata$to_SingleCellExperiment()
+seurat <- adata$to_Seurat()
 ```
 
 # Session info
