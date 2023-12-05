@@ -3,22 +3,15 @@
 #' @title Convert Between AnnData and Seurat
 #'
 #' @description `to_Seurat()` converts an AnnData object to a Seurat object.
-#'
-#' @param obj An AnnData object
+#' NOTE: Only 1 assay per object is currently.
+#' @param obj An AnnData object.
 #'
 #' @importFrom Matrix t
 #'
 #' @export
 #' @examples
-#' ad <- AnnData(
-#'   X = matrix(1:5, 3L, 5L),
-#'   obs = data.frame(cell = 1:3),
-#'   obs_names = letters[1:3],
-#'   var = data.frame(gene = 1:5),
-#'   var_names = letters[1:5]
-#' )
+#' ad <- generate_dataset(format = "AnnData")
 #' to_Seurat(ad)
-# TODO: Add parameters to choose which how X and layers are translated into counts, data and scaled.data
 to_Seurat <- function(obj) { # nolint
   requireNamespace("SeuratObject")
 
@@ -115,8 +108,7 @@ to_Seurat <- function(obj) { # nolint
 #'   layers.
 #' @param ... Additional arguments passed to the generator function.
 #'
-#' @export
-# TODO: add tests with Seurat objects not created by anndataR
+#' @returns \link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
 
   stopifnot(inherits(seurat_obj, "Seurat"))

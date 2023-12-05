@@ -16,7 +16,7 @@ from_Seurat(
 )
 }
 \arguments{
-\item{obj}{An AnnData object}
+\item{obj}{An AnnData object.}
 
 \item{seurat_obj}{An object inheriting from Seurat.}
 
@@ -30,19 +30,17 @@ layers.}
 
 \item{...}{Additional arguments passed to the generator function.}
 }
+\value{
+\link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
+}
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
+NOTE: Only 1 assay per object is currently.
 
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
 Only one assay can be converted at a time.
 }
 \examples{
-ad <- AnnData(
-  X = matrix(1:5, 3L, 5L),
-  obs = data.frame(cell = 1:3),
-  obs_names = letters[1:3],
-  var = data.frame(gene = 1:5),
-  var_names = letters[1:5]
-)
+ad <- generate_dataset(format = "AnnData")
 to_Seurat(ad)
 }
