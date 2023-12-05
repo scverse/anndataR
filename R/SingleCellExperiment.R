@@ -118,7 +118,7 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
   )
 
   # fetch generator
-  generator <- get_generator(output_class)
+  generator <- get_anndata_constructor(output_class)
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
   obs <- as.data.frame(

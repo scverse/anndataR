@@ -1,21 +1,21 @@
 #' List the available AnnData generators.
 #'
 #' @noRd
-list_generators <- function() {
+anndata_constructors <- function() {
   list(
     "HDF5AnnData" = HDF5AnnData,
     "InMemoryAnnData" = InMemoryAnnData
   )
 }
 
-#' Fetch an AnnData generator.
+#' Retrieve the AnnData constructor for a given class.
 #'
 #' @param class Name of the AnnData class. Must be one of `"HDF5AnnData"`
 #' or `"InMemoryAnnData"`.
 #'
 #' @noRd
-get_generator <- function(class = c("HDF5AnnData", "InMemoryAnnData")) {
+get_anndata_constructor <- function(class = c("HDF5AnnData", "InMemoryAnnData")) {
   # TODO: also support directly passing the correct class?
   class <- match.arg(class)
-  list_generators()[[class]]
+  anndata_constructors()[[class]]
 }
