@@ -47,6 +47,27 @@ generate_dataset(
     "numeric_rsparse_with_nas", "integer_matrix", "integer_dense", "integer_csparse",
     "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
     "integer_csparse_with_nas", "integer_rsparse_with_nas"),
+  uns_types = c("scalar_character", "scalar_integer", "scalar_factor",
+    "scalar_factor_ordered", "scalar_logical", "scalar_numeric",
+    "scalar_character_with_nas", "scalar_integer_with_nas", "scalar_factor_with_nas",
+    "scalar_factor_ordered_with_nas", "scalar_logical_with_nas",
+    "scalar_numeric_with_nas", "vector_character", "vector_integer", "vector_factor",
+    "vector_factor_ordered", "vector_logical", "vector_numeric",
+    "vector_character_with_nas", "vector_integer_with_nas", "vector_factor_with_nas",
+    "vector_factor_ordered_with_nas", 
+     "vector_logical_with_nas",
+    "vector_numeric_with_nas", "dataframe_character", "dataframe_integer",
+    "dataframe_factor", "dataframe_factor_ordered", "dataframe_logical",
+    "dataframe_numeric", "dataframe_character_with_nas", "dataframe_integer_with_nas",
+    "dataframe_factor_with_nas", "dataframe_factor_ordered_with_nas",
+    "dataframe_logical_with_nas", "dataframe_numeric_with_nas", "numeric_matrix",
+    "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
+    "numeric_dense_with_nas", 
+     "numeric_csparse_with_nas",
+    "numeric_rsparse_with_nas", "integer_matrix", "integer_dense", "integer_csparse",
+    "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
+    "integer_csparse_with_nas", "integer_rsparse_with_nas"),
+  example = FALSE,
   format = c("list", "AnnData", "SingleCellExperiment", "Seurat")
 )
 }
@@ -70,6 +91,11 @@ generate_dataset(
 \item{obsp_types}{Types of matrices to generate for obsp}
 
 \item{varp_types}{Types of matrices to generate for varp}
+
+\item{uns_types}{Types of objects to generate for uns}
+
+\item{example}{If \code{TRUE}, the types will be overridden to a small set of
+types. This is useful for documentations.}
 
 \item{format}{Object type to output, one of "list", "AnnData",
 "SingleCellExperiment", or "Seurat".}

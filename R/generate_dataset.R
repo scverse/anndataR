@@ -12,6 +12,9 @@
 #' @param varm_types Types of matrices to generate for varm
 #' @param obsp_types Types of matrices to generate for obsp
 #' @param varp_types Types of matrices to generate for varp
+#' @param uns_types Types of objects to generate for uns
+#' @param example If `TRUE`, the types will be overridden to a small set of
+#'   types. This is useful for documentations.
 #' @param format Object type to output, one of "list", "AnnData",
 #'   "SingleCellExperiment", or "Seurat".
 #'
@@ -72,8 +75,36 @@ generate_dataset <- function(
       "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
       "integer_csparse_with_nas", "integer_rsparse_with_nas"
     ),
+    uns_types = c(
+      "scalar_character", "scalar_integer", "scalar_factor", "scalar_factor_ordered", "scalar_logical",
+      "scalar_numeric", "scalar_character_with_nas", "scalar_integer_with_nas", "scalar_factor_with_nas",
+      "scalar_factor_ordered_with_nas", "scalar_logical_with_nas", "scalar_numeric_with_nas", "vector_character",
+      "vector_integer", "vector_factor", "vector_factor_ordered", "vector_logical", "vector_numeric",
+      "vector_character_with_nas", "vector_integer_with_nas", "vector_factor_with_nas",
+      "vector_factor_ordered_with_nas", "vector_logical_with_nas", "vector_numeric_with_nas",
+      "dataframe_character", "dataframe_integer", "dataframe_factor", "dataframe_factor_ordered",
+      "dataframe_logical", "dataframe_numeric", "dataframe_character_with_nas", "dataframe_integer_with_nas",
+      "dataframe_factor_with_nas", "dataframe_factor_ordered_with_nas", "dataframe_logical_with_nas",
+      "dataframe_numeric_with_nas", "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
+      "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas",
+      "integer_matrix", "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas",
+      "integer_dense_with_nas", "integer_csparse_with_nas", "integer_rsparse_with_nas"
+    ),
+    example = FALSE,
     format = c("list", "AnnData", "SingleCellExperiment", "Seurat")) {
   format <- match.arg(format)
+
+  if (example) {
+    x_type <- "numeric_matrix"
+    layer_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
+    obs_types <- c("character", "integer", "factor")
+    var_types <- c("character", "integer", "factor")
+    obsm_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
+    varm_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
+    obsp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
+    varp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
+    uns_types <- c("scalar_character", "vector_character", "dataframe_character")
+  }
 
   dataset_list <- .generate_dataset_as_list(
     n_obs = n_obs,
@@ -85,7 +116,8 @@ generate_dataset <- function(
     obsm_types = obsm_types,
     varm_types = varm_types,
     obsp_types = obsp_types,
-    varp_types = varp_types
+    varp_types = varp_types,
+    uns_types = uns_types
   )
 
   conversion_fun <- switch(format,
@@ -115,7 +147,13 @@ generate_dataset <- function(
     obsm_types = c(names(matrix_generators), names(vector_generators)),
     varm_types = c(names(matrix_generators), names(vector_generators)),
     obsp_types = names(matrix_generators),
-    varp_types = names(matrix_generators)) {
+    varp_types = names(matrix_generators),
+    uns_types = c(
+      paste0("scalar_", names(vector_generators)),
+      paste0("vector_", names(vector_generators)),
+      paste0("dataframe_", names(vector_generators)),
+      names(matrix_generators)
+    )) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
 
@@ -164,29 +202,21 @@ generate_dataset <- function(
   names(varp) <- varp_types
 
   # generate uns by combining other classes
-  uns <- list(
-    integer = 1L,
-    numeric = 1,
-    character = "a",
-    factor = factor("a"),
-    logical = TRUE,
-    integer_na = NA_integer_,
-    numeric_na = NA_real_,
-    character_na = NA_character_,
-    factor_na = NA_character_,
-    logical_na = NA,
-    list = list(1L, 1, "a", factor("a"), TRUE)
-  )
-  vectors_for_uns <- lapply(names(vector_generators), generate_vector, n = 10L)
-  names(vectors_for_uns) <- paste0("vec_", names(vector_generators))
-  obsm_for_uns <- obsm
-  names(obsm_for_uns) <- paste0("obsm_", names(obsm_for_uns))
-
-  uns <- c(
-    uns,
-    vectors_for_uns,
-    obsm_for_uns
-  )
+  uns <- lapply(uns_types, function(uns_type) {
+    if (uns_type == "list") {
+      # this could be nested better
+      list(1L, 1, "a", factor("a"), TRUE)
+    } else if (grepl("scalar_", uns_type)) {
+      generate_vector(1L, gsub("scalar_", "", uns_type))
+    } else if (grepl("vector_", uns_type)) {
+      generate_vector(10L, gsub("vector_", "", uns_type))
+    } else if (grepl("dataframe_", uns_type)) {
+      generate_dataframe(10L, gsub("dataframe_", "", uns_type))
+    } else {
+      generate_matrix(10L, 10L, uns_type)
+    }
+  })
+  names(uns) <- uns_types
 
   # return list
   list(
