@@ -78,17 +78,18 @@ generate_dataset <- function(
     uns_types = c(
       "scalar_character", "scalar_integer", "scalar_factor", "scalar_factor_ordered", "scalar_logical",
       "scalar_numeric", "scalar_character_with_nas", "scalar_integer_with_nas", "scalar_factor_with_nas",
-      "scalar_factor_ordered_with_nas", "scalar_logical_with_nas", "scalar_numeric_with_nas", "vector_character",
-      "vector_integer", "vector_factor", "vector_factor_ordered", "vector_logical", "vector_numeric",
-      "vector_character_with_nas", "vector_integer_with_nas", "vector_factor_with_nas",
-      "vector_factor_ordered_with_nas", "vector_logical_with_nas", "vector_numeric_with_nas",
-      "dataframe_character", "dataframe_integer", "dataframe_factor", "dataframe_factor_ordered",
-      "dataframe_logical", "dataframe_numeric", "dataframe_character_with_nas", "dataframe_integer_with_nas",
-      "dataframe_factor_with_nas", "dataframe_factor_ordered_with_nas", "dataframe_logical_with_nas",
-      "dataframe_numeric_with_nas", "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
-      "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas",
-      "integer_matrix", "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas",
-      "integer_dense_with_nas", "integer_csparse_with_nas", "integer_rsparse_with_nas"
+      "scalar_factor_ordered_with_nas", "scalar_logical_with_nas", "scalar_numeric_with_nas", "vec_character",
+      "vec_integer", "vec_factor", "vec_factor_ordered", "vec_logical", "vec_numeric",
+      "vec_character_with_nas", "vec_integer_with_nas", "vec_factor_with_nas",
+      "vec_factor_ordered_with_nas", "vec_logical_with_nas", "vec_numeric_with_nas",
+      "df_character", "df_integer", "df_factor", "df_factor_ordered",
+      "df_logical", "df_numeric", "df_character_with_nas", "df_integer_with_nas",
+      "df_factor_with_nas", "df_factor_ordered_with_nas", "df_logical_with_nas",
+      "df_numeric_with_nas", "mat_numeric_matrix", "mat_numeric_dense", "mat_numeric_csparse", "mat_numeric_rsparse",
+      "mat_numeric_matrix_with_nas", "mat_numeric_dense_with_nas", "mat_numeric_csparse_with_nas",
+      "mat_numeric_rsparse_with_nas", "mat_integer_matrix", "mat_integer_dense", "mat_integer_csparse",
+      "mat_integer_rsparse", "mat_integer_matrix_with_nas", "mat_integer_dense_with_nas",
+      "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas"
     ),
     example = FALSE,
     format = c("list", "AnnData", "SingleCellExperiment", "Seurat")) {
@@ -103,7 +104,7 @@ generate_dataset <- function(
     varm_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
     obsp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
     varp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
-    uns_types <- c("scalar_character", "vector_character", "dataframe_character")
+    uns_types <- c("scalar_character", "vec_integer", "df_logical", "mat_numeric_matrix")
   }
 
   dataset_list <- .generate_dataset_as_list(
@@ -150,9 +151,9 @@ generate_dataset <- function(
     varp_types = names(matrix_generators),
     uns_types = c(
       paste0("scalar_", names(vector_generators)),
-      paste0("vector_", names(vector_generators)),
-      paste0("dataframe_", names(vector_generators)),
-      names(matrix_generators)
+      paste0("vec_", names(vector_generators)),
+      paste0("df_", names(vector_generators)),
+      paste0("mat_", names(matrix_generators))
     )) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
@@ -204,16 +205,28 @@ generate_dataset <- function(
   # generate uns by combining other classes
   uns <- lapply(uns_types, function(uns_type) {
     if (uns_type == "list") {
-      # this could be nested better
-      list(1L, 1, "a", factor("a"), TRUE)
+      # TODO: add multiple data types here
+      list(1L, 1, "a", factor("a"), TRUE, list(nested = list(list = c(1, 2, 3))))
+    } else if (uns_type == "scalar_character_with_nas") {
+      NA_character_
+    } else if (uns_type == "scalar_integer_with_nas") {
+      NA_integer_
+    } else if (uns_type == "scalar_factor_with_nas") {
+      factor(NA_character_)
+    } else if (uns_type == "scalar_factor_ordered_with_nas") {
+      factor(NA_character_, ordered = TRUE)
+    } else if (uns_type == "scalar_logical_with_nas") {
+      NA_real_
     } else if (grepl("scalar_", uns_type)) {
       generate_vector(1L, gsub("scalar_", "", uns_type))
-    } else if (grepl("vector_", uns_type)) {
-      generate_vector(10L, gsub("vector_", "", uns_type))
-    } else if (grepl("dataframe_", uns_type)) {
-      generate_dataframe(10L, gsub("dataframe_", "", uns_type))
+    } else if (grepl("vec_", uns_type)) {
+      generate_vector(10L, gsub("vec_", "", uns_type))
+    } else if (grepl("df_", uns_type)) {
+      generate_dataframe(10L, gsub("df_", "", uns_type))
+    } else if (grepl("mat_", uns_type)) {
+      generate_matrix(10L, 10L, gsub("mat_", "", uns_type))
     } else {
-      generate_matrix(10L, 10L, uns_type)
+      stop("Unknown uns type: '", uns_type, "'")
     }
   })
   names(uns) <- uns_types
