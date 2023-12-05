@@ -3,9 +3,13 @@
 \name{to_Seurat}
 \alias{to_Seurat}
 \alias{from_Seurat}
-\title{Convert Between AnnData and Seurat}
+\title{Convert between AnnData and Seurat}
 \usage{
-to_Seurat(obj)
+to_Seurat(
+  obj,
+  key_map = list(X_pca = "PCs", X_umap = NULL, X_mofa = "LFs"),
+  ...
+)
 
 from_Seurat(
   seurat_obj,
@@ -16,7 +20,26 @@ from_Seurat(
 )
 }
 \arguments{
-\item{obj}{An AnnData object.}
+\item{obj}{An AnnData object}
+
+\item{key_map}{A key:value mapping indicating pairs of obsm/varm slots in
+the \code{obj} object. For some common reductions,
+there are conventional names for the loadings slots}
+
+\item{...}{
+  Arguments passed on to \code{\link[SeuratObject:CreateAssayObject]{SeuratObject::CreateAssayObject}}
+  \describe{
+    \item{\code{counts}}{Unnormalized data such as raw counts or TPMs}
+    \item{\code{data}}{Prenormalized data; if provided, do not pass \code{counts}}
+    \item{\code{min.cells}}{Include features detected in at least this many cells. Will
+subset the counts matrix as well. To reintroduce excluded features, create a
+new object with a lower cutoff}
+    \item{\code{min.features}}{Include cells where at least this many features are
+detected}
+    \item{\code{key}}{Optional key to initialize assay with}
+    \item{\code{check.matrix}}{Check counts matrix for NA, NaN, Inf, and
+non-integer values}
+  }}
 
 \item{seurat_obj}{An object inheriting from Seurat.}
 
@@ -27,20 +50,19 @@ from_Seurat(
 \item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
 not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
 layers.}
-
-\item{...}{Additional arguments passed to the generator function.}
 }
 \value{
+A \link[SeuratObject]{SeuratObject}.
+
 \link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
 }
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
-NOTE: Only 1 assay per object is currently.
 
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
 Only one assay can be converted at a time.
 }
 \examples{
-ad <- generate_dataset(format = "AnnData")
-to_Seurat(ad)
+adata <- generate_dataset(format="AnnData")
+to_Seurat(adata)
 }
