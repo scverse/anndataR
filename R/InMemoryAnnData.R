@@ -7,7 +7,7 @@
 #'
 #' @examples
 #' ## complete example
-#' ad <- AnnData(
+#' ad <- InMemoryAnnData$new(
 #'   X = matrix(1:15, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(5:1, 3L, 5L),
@@ -21,6 +21,7 @@
 #' ad
 #'
 #' ## minimum example
+#' # -> using `AnnData()` is synonymous to `InMemoryAnnData$new()`
 #' ad <- AnnData(
 #'   obs_names = letters[1:10],
 #'   var_names = LETTERS[1:5]

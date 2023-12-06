@@ -170,7 +170,7 @@ from_Seurat <- function(seurat, # nolint
   rownames(var) <- NULL
 
   # use generator to create new AnnData object
-  generator <- get_generator(output_class)
+  generator <- get_anndata_constructor(output_class)
   ad <- generator$new(
     obs = obs,
     var = var,

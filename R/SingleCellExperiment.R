@@ -92,7 +92,7 @@ from_SingleCellExperiment <- function(sce, # nolint
   )
 
   # fetch generator
-  generator <- get_generator(output_class)
+  generator <- get_anndata_constructor(output_class)
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
   obs <- as.data.frame(
