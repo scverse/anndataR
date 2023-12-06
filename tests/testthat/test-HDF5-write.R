@@ -88,9 +88,10 @@ test_that("Writing H5AD categoricals works", {
   expect_true(hdf5_path_exists(h5ad_file, "/categorical"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/categories"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/codes"))
-  expect_true(hdf5_path_exists(h5ad_file, "/categorical/ordered"))
   attrs <- rhdf5::h5readAttributes(h5ad_file, "categorical")
-  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_true(
+    all(c("encoding-type", "encoding-version", "ordered") %in% names(attrs))
+  )
   expect_equal(attrs[["encoding-type"]], "categorical")
 })
 
