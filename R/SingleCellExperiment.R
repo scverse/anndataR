@@ -1,6 +1,6 @@
 #' Convert to/from SingleCellExperiment objects
 #'
-#' Conversion between AnnData and \linkS4class{SingleCellExperiment} objects.
+#' Conversion between AnnData and `SingleCellExperiment` objects.
 #'
 #' @seealso
 #' [`write_h5ad()`] and [`read_h5ad()`] for directly interacting with H5AD files.
@@ -13,8 +13,8 @@ NULL
 #'
 #' @param obj an AnnData object, e.g., InMemoryAnnData
 #'
-#' @return `to_SingleCellExperiment()` returns a
-#'   \linkS4class{SingleCellExperiment} representing the content of `object`
+#' @return `to_SingleCellExperiment()` returns a `SingleCellExperiment`
+#'   representing the content of `object`
 to_SingleCellExperiment <- function(obj) { # nolint
   stopifnot(
     inherits(obj, "AbstractAnnData")

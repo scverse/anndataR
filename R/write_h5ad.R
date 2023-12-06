@@ -8,6 +8,8 @@
 #' @param compression The compression algorithm to use when writing the
 #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
+#' @param ... Additional arguments passed to conversion functions. See
+#'   [SingleCellExperiment-Conversion] and [Seurat-Conversion].
 #'
 #' @return `path` invisibly
 #' @export
@@ -67,20 +69,22 @@
 #'   # h5ad_file <- tempfile(fileext = ".h5ad")
 #'   # write_h5ad(obj, h5ad_file)
 #' }
-write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf")) {
+write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf"), ...) {
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,
       output_class = "HDF5AnnData",
       file = path,
-      compression = compression
+      compression = compression,
+      ...
     )
   } else if (inherits(object, "Seurat")) {
     from_Seurat(
       object,
       output_class = "HDF5AnnData",
       file = path,
-      compression = compression
+      compression = compression,
+      ...
     )
   } else if (inherits(object, "AbstractAnnData")) {
     to_HDF5AnnData(object, path, compression = compression)

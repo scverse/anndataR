@@ -6,18 +6,18 @@
 \usage{
 read_h5ad(
   path,
-  to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+  to = c("SingleCellExperiment", "Seurat", "InMemoryAnnData", "HDF5AnnData"),
   ...
 )
 }
 \arguments{
 \item{path}{Path to the H5AD file to read}
 
-\item{to}{The type of object to return. Must be one of: "InMemoryAnnData",
-"HDF5AnnData", "SingleCellExperiment", "Seurat"}
+\item{to}{The type of object to return. Must be one of:
+"SingleCellExperiment", "Seurat", "InMemoryAnnData", "HDF5AnnData"}
 
-\item{...}{Extra arguments provided to \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} or
-\code{\link[=to_Seurat]{to_Seurat()}}}
+\item{...}{Additional arguments passed to conversion functions. See
+\link{SingleCellExperiment-Conversion} and \link{Seurat-Conversion}.}
 }
 \value{
 The object specified by \code{to}

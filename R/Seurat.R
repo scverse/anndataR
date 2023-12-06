@@ -1,6 +1,6 @@
 #' Convert to/from Seurat objects
 #'
-#' Conversion between AnnData and \linkS4class{Seurat} objects.
+#' Conversion between AnnData and `Seurat` objects.
 #'
 #' @seealso
 #' [`write_h5ad()`] and [`read_h5ad()`] for directly interacting with H5AD files.
@@ -13,7 +13,7 @@ NULL
 #'
 #' @param obj An AnnData object
 #'
-#'@return `to_Seurat()` returns a \linkS4class{Seurat} object representing the
+#'@return `to_Seurat()` returns a `Seurat` object representing the
 #'  content of `obj`
 #'
 #' @importFrom Matrix t

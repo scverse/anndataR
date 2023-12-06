@@ -34,14 +34,14 @@ layers.}
 \item{...}{Additional arguments passed to the generator function.}
 }
 \value{
-\code{to_Seurat()} returns a \linkS4class{Seurat} object representing the
+\code{to_Seurat()} returns a \code{Seurat} object representing the
 content of \code{obj}
 
 \code{from_Seurat()} returns an AnnData object
 (e.g., InMemoryAnnData) representing the content of \code{seurat}
 }
 \description{
-Conversion between AnnData and \linkS4class{Seurat} objects.
+Conversion between AnnData and \code{Seurat} objects.
 }
 \seealso{
 \code{\link[=write_h5ad]{write_h5ad()}} and \code{\link[=read_h5ad]{read_h5ad()}} for directly interacting with H5AD files.

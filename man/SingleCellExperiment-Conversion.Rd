@@ -25,14 +25,14 @@ or \code{"InMemoryAnnData"}.}
 \item{...}{Additional arguments passed to the generator function}
 }
 \value{
-\code{to_SingleCellExperiment()} returns a
-\linkS4class{SingleCellExperiment} representing the content of \code{object}
+\code{to_SingleCellExperiment()} returns a \code{SingleCellExperiment}
+representing the content of \code{object}
 
 \code{from_SingleCellExperiment()} returns an AnnData object
 (e.g., InMemoryAnnData) representing the content of \code{sce}
 }
 \description{
-Conversion between AnnData and \linkS4class{SingleCellExperiment} objects.
+Conversion between AnnData and \code{SingleCellExperiment} objects.
 }
 \seealso{
 \code{\link[=write_h5ad]{write_h5ad()}} and \code{\link[=read_h5ad]{read_h5ad()}} for directly interacting with H5AD files.
