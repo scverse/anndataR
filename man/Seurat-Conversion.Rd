@@ -31,7 +31,7 @@ default, 'counts' will be used (if it is not empty), followed by 'data', then
 'scale.data'. The remaining non-empty slots will be stored in different
 layers.}
 
-\item{...}{Additional arguments passed to the generator function.}
+\item{...}{Additional arguments passed to the object constructor}
 }
 \value{
 \code{to_Seurat()} returns a \code{Seurat} object representing the

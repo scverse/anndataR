@@ -110,7 +110,7 @@ to_Seurat <- function(obj) { # nolint
 #'   default, 'counts' will be used (if it is not empty), followed by 'data', then
 #'   'scale.data'. The remaining non-empty slots will be stored in different
 #'   layers.
-#' @param ... Additional arguments passed to the generator function.
+#' @param ... Additional arguments passed to the object constructor
 #'
 #' @return `from_Seurat()` returns an AnnData object
 #'   (e.g., InMemoryAnnData) representing the content of `seurat`

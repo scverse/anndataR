@@ -22,7 +22,7 @@ from_SingleCellExperiment(
 \item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"}
 or \code{"InMemoryAnnData"}.}
 
-\item{...}{Additional arguments passed to the generator function}
+\item{...}{Additional arguments passed to the object constructor}
 }
 \value{
 \code{to_SingleCellExperiment()} returns a \code{SingleCellExperiment}

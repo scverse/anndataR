@@ -79,7 +79,7 @@ to_SingleCellExperiment <- function(obj) { # nolint
 #' @param sce An object inheriting from SingleCellExperiment
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
 #'   or `"InMemoryAnnData"`.
-#' @param ... Additional arguments passed to the generator function
+#' @param ... Additional arguments passed to the object constructor
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
 #'   (e.g., InMemoryAnnData) representing the content of `sce`
