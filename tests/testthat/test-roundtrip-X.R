@@ -6,7 +6,6 @@ data <- generate_dataset(10L, 20L)
 layer_names <- names(data$layers)
 # TODO: re-enable these tests
 layer_names <- layer_names[!grepl("_dense", layer_names)]
-# layer_names <- layer_names[!grepl("_with_nas", layer_names)]
 
 for (layer_name in layer_names) {
   test_that(paste0("roundtrip with layer '", layer_name, "'"), {
