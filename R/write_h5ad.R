@@ -8,6 +8,7 @@
 #' @param compression The compression algorithm to use when writing the
 #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
+#' @param overwrite Whether or not to overwrite `path` if it already exists
 #'
 #' @return `path` invisibly
 #' @export
@@ -67,7 +68,13 @@
 #'   # h5ad_file <- tempfile(fileext = ".h5ad")
 #'   # write_h5ad(obj, h5ad_file)
 #' }
-write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf")) {
+write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf"),
+                       overwrite = FALSE) {
+
+  if (file.exists(path) && !overwrite) {
+    stop("'", path, "' already exists, set `overwrite = TRUE` to overwrite this file")
+  }
+
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,

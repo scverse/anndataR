@@ -35,7 +35,6 @@ ad <- AnnData(
   obs_names = LETTERS[1:3],
   var_names = letters[1:5]
 )
-to_HDF5AnnData(ad, "test.h5ad")
-# remove file
-file.remove("test.h5ad")
+h5ad_file <- tempfile(fileext = ".h5ad")
+to_HDF5AnnData(ad, h5ad_file)
 }
