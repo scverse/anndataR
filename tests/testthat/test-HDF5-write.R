@@ -21,7 +21,9 @@ test_that("Writing H5AD sparse arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
   csc_array <- as(array, "CsparseMatrix")
-  expect_silent(write_h5ad_element(csc_array, h5ad_file, "csc_array", compression = "none"))
+  expect_silent(
+    write_h5ad_element(csc_array, h5ad_file, "csc_array", compression = "none")
+  )
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array/data"))
   expect_true(hdf5_path_exists(h5ad_file, "/csc_array/indices"))
@@ -89,9 +91,7 @@ test_that("Writing H5AD categoricals works", {
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/categories"))
   expect_true(hdf5_path_exists(h5ad_file, "/categorical/codes"))
   attrs <- rhdf5::h5readAttributes(h5ad_file, "categorical")
-  expect_true(
-    all(c("encoding-type", "encoding-version", "ordered") %in% names(attrs))
-  )
+  expect_equal(names(attrs), c("encoding-type", "encoding-version", "ordered"))
   expect_equal(attrs[["encoding-type"]], "categorical")
 })
 
