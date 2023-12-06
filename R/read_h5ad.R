@@ -3,10 +3,10 @@
 #' Read data from a H5AD file
 #'
 #' @param path Path to the H5AD file to read
-#' @param to The type of object to return. Must be one of: "InMemoryAnnData",
-#'   "HDF5AnnData", "SingleCellExperiment", "Seurat"
-#' @param ... Extra arguments provided to [to_SingleCellExperiment()] or
-#'   [to_Seurat()]
+#' @param to The type of object to return. Must be one of:
+#' "SingleCellExperiment", "Seurat", "InMemoryAnnData", "HDF5AnnData"
+#' @param ... Additional arguments passed to conversion functions. See
+#'   [SingleCellExperiment-Conversion] and [Seurat-Conversion].
 #'
 #' @return The object specified by `to`
 #' @export
@@ -25,7 +25,7 @@
 #' }
 read_h5ad <- function(
     path,
-    to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+    to = c("SingleCellExperiment", "Seurat", "InMemoryAnnData", "HDF5AnnData"),
     ...) {
   to <- match.arg(to)
 
