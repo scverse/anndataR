@@ -109,18 +109,29 @@ write_h5ad_element <- function(
 #' to write all attributes as scalars, `FALSE` to write no attributes as
 #' scalars, or a vector of the names of `attributes` that should be written.
 write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
+  if (is.character(file) && length(file) == 1 && !is.na(file)) {
+    h5file <- rhdf5::H5Fopen(file)
+    on.exit(rhdf5::H5Fclose(h5file))
+  } else if (inherits(file, "H5IdComponent")) {
+    h5file <- file
+  } else {
+    stop("file must be a path to an H5AD file or an open H5AD handle")
+  }
 
   oid <- rhdf5::H5Oopen(h5file, name)
   type <- rhdf5::H5Iget_type(oid)
   rhdf5::H5Oclose(oid)
 
-  if (isTRUE(is_scalar)) {
-    is_scalar <- names(attributes)
-  } else if (isFALSE(is_scalar)) {
-    is_scalar <- c()
-  }
+  scalar_attr_names <-
+    if (isTRUE(is_scalar)) {
+      names(attributes)
+    } else if (isFALSE(is_scalar)) {
+      c()
+    } else if (is.character(is_scalar)) {
+      is_scalar
+    } else {
+      stop("is_scalar must be TRUE, FALSE or a character vector")
+    }
 
   if (type == "H5I_GROUP") {
     h5obj <- rhdf5::H5Gopen(h5file, name)
@@ -136,7 +147,7 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
       attr = attr_value,
       h5obj = h5obj,
       name = attr_name,
-      asScalar = attr_name %in% is_scalar
+      asScalar = attr_name %in% scalar_attr_names
     )
   }
 }
@@ -153,7 +164,12 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
 #' @param version The encoding version to set
 write_h5ad_encoding <- function(file, name, encoding, version) {
   write_h5ad_attributes(
-    file, name, list("encoding-type" = encoding, "encoding-version" = version)
+    file = file,
+    name = name,
+    attributes = list(
+      "encoding-type" = encoding,
+      "encoding-version" = version
+    )
   )
 }
 
@@ -322,15 +338,19 @@ write_h5ad_categorical <- function(value, file, name, compression, version = "0.
   rhdf5::h5createGroup(file, name)
 
   categories <- levels(value)
-  codes <- as.integer(value)
-  codes[is.na(codes)] <- 0 # Set NA values to 0
-  codes <- codes - 1 # Make 0-indexed
 
+  # Use zero-indexed values
+  codes <- as.integer(value) - 1
+
+  # Set missing values to -1
+  codes[is.na(codes)] <- -1
+
+  # write values to file
   hdf5_write_compressed(file, paste0(name, "/categories"), categories, compression)
   hdf5_write_compressed(file, paste0(name, "/codes"), codes, compression)
 
   # Write encoding
-  write_h5ad_encoding(file, name, "categorical", version)
+  write_h5ad_encoding(file = file, name = name, encoding = "categorical", version = version)
 
   # Write ordered attribute
   write_h5ad_attributes(file, name, list("ordered" = is.ordered(value)))
