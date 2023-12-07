@@ -16,9 +16,14 @@
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-write_h5ad_element <- function(value, file, name,
-                               compression = c("none", "gzip", "lzf"),
-                               stop_on_error = FALSE, ...) { # nolint
+# nolint start cyclocomp_linter
+write_h5ad_element <- function(
+    value,
+    file,
+    name,
+    compression = c("none", "gzip", "lzf"),
+    stop_on_error = FALSE,
+    ...) {
   compression <- match.arg(compression)
 
   # Delete the path if it already exists
@@ -68,7 +73,11 @@ write_h5ad_element <- function(value, file, name,
   tryCatch(
     {
       write_fun(
-        value = value, file = file, name = name, compression = compression, ...
+        value = value,
+        file = file,
+        name = name,
+        compression = compression,
+        ...
       )
     },
     error = function(e) {
@@ -85,6 +94,7 @@ write_h5ad_element <- function(value, file, name,
     }
   )
 }
+# nolint end cyclocomp_linter
 
 #' Write H5AD attributes
 #'
@@ -124,7 +134,8 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
     attr_value <- attributes[[attr_name]]
     scalar_value <- attr_name %in% is_scalar
     rhdf5::h5writeAttribute(
-      attr_value, h5obj, attr_name, asScalar = scalar_value
+      attr_value, h5obj, attr_name,
+      asScalar = scalar_value
     ) # nolint
   }
 }
@@ -215,7 +226,8 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
 
   # Write shape attribute
   write_h5ad_attributes(
-    file, name, list("shape" = dim(value)), is_scalar = FALSE
+    file, name, list("shape" = dim(value)),
+    is_scalar = FALSE
   )
 }
 
@@ -447,7 +459,8 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
   }
 
   write_h5ad_attributes(
-    file, name, list("column-order" = col_order), is_scalar = FALSE
+    file, name, list("column-order" = col_order),
+    is_scalar = FALSE
   )
 }
 
