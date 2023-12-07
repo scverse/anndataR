@@ -1,6 +1,7 @@
 skip_if_not_installed("rhdf5")
 
-file <- system.file("extdata", "example.h5ad", package = "anndataR")
+file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
+on.exit(file$close_all())
 
 test_that("reading encoding works", {
   encoding <- read_h5ad_encoding(file, "obs")
@@ -36,9 +37,9 @@ test_that("reading recarrays works", {
   expect_true(is.list(array_list))
   expect_equal(names(array_list), c("0", "1", "2", "3", "4", "5"))
   for (array in array_list) {
-    expect_true(is.array(array))
+    expect_true(is.vector(array))
     expect_type(array, "double")
-    expect_equal(dim(array), 100)
+    expect_equal(length(array), 100)
   }
 })
 
@@ -107,7 +108,7 @@ test_that("reading dataframes works", {
   expect_equal(
     colnames(df),
     c(
-      ".index", "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA",
+      "_index", "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA",
       "n_genes_by_counts", "log1p_n_genes_by_counts", "total_counts",
       "log1p_total_counts", "leiden"
     )

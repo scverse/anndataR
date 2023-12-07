@@ -5,6 +5,7 @@ file <- system.file("extdata", "example.h5ad", package = "anndataR")
 test_that("opening H5AD works", {
   adata <- HDF5AnnData$new(file)
   expect_true(inherits(adata, "HDF5AnnData"))
+  rm(adata)
 })
 
 adata <- HDF5AnnData$new(file)
@@ -84,6 +85,12 @@ test_that("obsp/ varp validation", {
   expect_error(adata$varp <- list(graph1 = matrix(0, 4, 4)))
 })
 
+
+
+
+
+
+
 # trackstatus: class=HDF5AnnData, feature=test_get_obs, status=done
 test_that("reading obs works", {
   obs <- adata$obs
@@ -96,6 +103,11 @@ test_that("reading obs works", {
     )
   )
 })
+
+
+
+
+
 
 # trackstatus: class=HDF5AnnData, feature=test_get_var, status=done
 test_that("reading var works", {
