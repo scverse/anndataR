@@ -107,7 +107,7 @@ write_h5ad_element <- function(
 #' @param attributes Named list of attributes to write
 #' @param is_scalar Whether to write attributes as scalar values. Can be `TRUE`
 #' to write all attributes as scalars, `FALSE` to write no attributes as
-#' scalars or a vector of the names of `attributes` that should be written.
+#' scalars, or a vector of the names of `attributes` that should be written.
 write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
   h5file <- rhdf5::H5Fopen(file)
   on.exit(rhdf5::H5Fclose(h5file))
@@ -132,11 +132,12 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
 
   for (attr_name in names(attributes)) {
     attr_value <- attributes[[attr_name]]
-    scalar_value <- attr_name %in% is_scalar
     rhdf5::h5writeAttribute(
-      attr_value, h5obj, attr_name,
-      asScalar = scalar_value
-    ) # nolint
+      attr = attr_value,
+      h5obj = h5obj,
+      name = attr_name,
+      asScalar = attr_name %in% is_scalar
+    )
   }
 }
 
