@@ -13,16 +13,17 @@
 #'
 #' @export
 #' @examples
-#' adata <- generate_dataset(format="AnnData")
+#' adata <- generate_dataset(format = "AnnData")
 #' to_Seurat(adata)
 # TODO: Add parameters to choose which how X and layers are translated into
 # counts, data and scaled.data
-to_Seurat <- function(obj,
-                      key_map = list("X_pca" = "PCs",
-                                     "X_umap" = NULL,
-                                     "X_mofa" = "LFs"),
-                      ...) { # nolint
-  # devoptera::args2vars(to_Seurat)
+to_Seurat <- function(obj, # nolint object_name_linter
+                      key_map = list(
+                        "X_pca" = "PCs",
+                        "X_umap" = NULL,
+                        "X_mofa" = "LFs"
+                      ),
+                      ...) {
   requireNamespace("SeuratObject")
   stopifnot(inherits(obj, "AbstractAnnData"))
 
@@ -65,17 +66,21 @@ to_Seurat <- function(obj,
       mat
     }
   dimnames(x_) <- list(var_names_, obs_names_)
-  x_assay <- SeuratObject::CreateAssayObject(counts = x_,
-                                             ...)
+  x_assay <- SeuratObject::CreateAssayObject(
+    counts = x_,
+    ...
+  )
 
   # create seurat object
   if (ncol(var_) > 0) {
     # don't add var metadata if the data frame does not contain any columns
     x_assay <- SeuratObject::AddMetaData(x_assay,
-                                         metadata = var_)
+      metadata = var_
+    )
   }
   seur <- SeuratObject::CreateSeuratObject(x_assay,
-                                           meta.data = obs_)
+    meta.data = obs_
+  )
 
   ## add layers
   # trackstatus: class=Seurat, feature=get_layers, status=wip
@@ -84,19 +89,26 @@ to_Seurat <- function(obj,
     layer_ <- Matrix::t(obj$layers[[key]])
     key <- .to_Seurat_check_layer_names(key)
     dimnames(layer_) <- list(var_names_, obs_names_)
-    seur[[key]] <- SeuratObject::CreateAssayObject(counts = layer_,
-                                                   key = key)
+    seur[[key]] <- SeuratObject::CreateAssayObject(
+      counts = layer_,
+      key = key
+    )
   }
   ## Add DimReduc objects
-  drl <- .to_Seurat_DimReduc(obj = obj,
-                             ...)
-  seur <- .add_Seurat_DimReduc(obj = seur,
-                               drl = drl)
+  drl <- .to_Seurat_DimReduc(
+    obj = obj,
+    ...
+  )
+  seur <- .add_Seurat_DimReduc(
+    obj = seur,
+    drl = drl
+  )
   ## Return
   return(seur)
 }
 
-.to_Seurat_check_obsvar_names <- function(names, label) {
+.to_Seurat_check_obsvar_names <- function(names, # nolint object_name_linter
+                                          label) {
   if (any(grepl("_", names))) {
     ## mimic seurat behaviour
     wrn <- wrap_message(
@@ -110,7 +122,8 @@ to_Seurat <- function(obj,
   names
 }
 
-.to_Seurat_check_obsvar_names <- function(names, label) {
+.to_Seurat_check_obsvar_names <- function(names, # nolint object_name_linter
+                                          label) {
   if (any(grepl("_", names))) {
     # mimic seurat behaviour
     warning(wrap_message(
@@ -124,11 +137,11 @@ to_Seurat <- function(obj,
   names
 }
 
-.to_Seurat_check_layer_names <- function(key,
-                                         pattern="_|-|[.]",
-                                         replacement="",
-                                         suffix="_"){
-  paste0(gsub(pattern,replacement,key),suffix)
+.to_Seurat_check_layer_names <- function(key, # nolint object_name_linter
+                                         pattern = "_|-|[.]",
+                                         replacement = "",
+                                         suffix = "_") {
+  paste0(gsub(pattern, replacement, key), suffix)
 }
 
 
@@ -153,124 +166,136 @@ to_Seurat <- function(obj,
 #' @returns A named list of \link[SeuratObject]{CreateDimReducObject} objects.
 #'
 #' @keywords internal
-.to_Seurat_DimReduc <- function(obj = NULL,
+.to_Seurat_DimReduc <- function(obj = NULL, # nolint object_name_linter
                                 obsm = obj$obsm,
                                 varm = obj$varm,
                                 obs_names = obj$obs_names,
                                 var_names = obj$var_names,
-                                key_map= list("X_pca" = "PCs",
-                                              "X_umap" = NULL,
-                                              "X_mofa" = "LFs"),
+                                key_map = list(
+                                  "X_pca" = "PCs",
+                                  "X_umap" = NULL,
+                                  "X_mofa" = "LFs"
+                                ),
                                 ...) {
-
   requireNamespace("SeuratObject")
 
   ## Need to at least have obsm
-  if(is.null(obsm)) {
+  if (is.null(obsm)) {
     message("obsm is NULL; returning NULL.")
     return(NULL)
   }
-  if(!is.list(obsm) || is.null(names(obsm))){
+  if (!is.list(obsm) || is.null(names(obsm))) {
     message("obsm name not provided; setting name to 'obsm'.")
-    obsm <- list(obsm=obsm)
+    obsm <- list(obsm = obsm)
   }
-  if(!is.list(varm) || is.null(names(varm))){
+  if (!is.list(varm) || is.null(names(varm))) {
     message("varm name not provided; setting name to 'varm'.")
-    varm <- list(varm=varm)
-  }
-
-  .nms_msg <- function(X,
-                       X_name,
-                       X_type="loadings",
-                       dim=2){
-    dim_nm <- if(dim==1) "rownames" else "colnames"
-    message(paste(
-      "No",dim_nm,"present in",paste0(X_type,"; setting to"),
-      shQuote(paste0(X_name,"[1:",ncol(X),"]")
-      ))
-    )
+    varm <- list(varm = varm)
   }
   # Add embeddings
-  lapply(stats::setNames(names(obsm),
-                         names(obsm)),
-         function(key){
-           message(paste("Preparing DimReduc for:",shQuote(key)))
-           ## Prepare obsm
-           obsm_nm2 <- .to_Seurat_check_layer_names(gsub('X_', '', key))
-           if(!key %in% names(key_map)){
-             key_map[[key]] <- key
-           }
-           embeddings <- obsm[[key]] |> as.matrix()
-           ### Precheck embedding is indeed numeric
-           if(!is.numeric(embeddings[,1])){
-             message(paste(
-               "obsm",shQuote(key),"is not numeric; returning NULL."
-             ))
-             return(NULL)
-           }
-           if(is.null(rownames(embeddings))){
-             if(is.null(obs_names)) stop("Must provide `obs_names`.")
-             rownames(embeddings) <- obs_names
-           }
-           if(is.null(colnames(embeddings)) ||
-              !all(grepl(paste0(obsm_nm2,"_"),colnames(embeddings)))){
-             .nms_msg(X = embeddings,
-                      X_name = obsm_nm2,
-                      X_type = "embeddings")
-             colnames(embeddings) <- paste(obsm_nm2,
-                                           seq(ncol(embeddings)),sep="")
-           }
-           embeddings <- as.matrix(embeddings)
-           ## Prepare matching varm
-           loadings <- matrix()
-           value <- key_map[[key]]
-           if (key %in% names(key_map) &&
-               !is.null(value)) {
-             if (value %in% names(varm)) {
-               loadings <- varm[[value]]
-               if(is.null(rownames(loadings))){
-                 if(is.null(var_names)) stop("Must provide `var_names`.")
-                 rownames(loadings) <- var_names
-               }
-               if(is.null(colnames(loadings))){
-                 .nms_msg(X = embeddings,
-                          X_name = obsm_nm2,
-                          X_type = "embeddings")
-                 colnames(loadings) <- paste(obsm_nm2,
-                                             seq(ncol(loadings)),sep="")
-               }
-             }
-           }
-           ## Prepare stdev
-           emb_stdev <- numeric()
-           if ("uns" %in% names(obj)) {
-             if (obsm_nm2 %in% names(obj[["uns"]])) {
-               if ("variance" %in% names(obj[["uns"]][[obsm_nm2]])) {
-                 emb_stdev <- sqrt(obj[["uns"]][[obsm_nm2]][["variance"]])
-               }
-             }
-           }
-           SeuratObject::CreateDimReducObject(
-             embeddings = as.matrix(embeddings),
-             loadings = as.matrix(loadings),
-             key = obsm_nm2,
-             stdev = emb_stdev,
-             ...
-           )
-         })
+  lapply(
+    stats::setNames(
+      names(obsm),
+      names(obsm)
+    ),
+    function(key) {
+      message(paste("Preparing DimReduc for:", shQuote(key)))
+      ## Prepare obsm
+      obsm_nm2 <- .to_Seurat_check_layer_names(gsub("X_", "", key))
+      if (!key %in% names(key_map)) {
+        key_map[[key]] <- key
+      }
+      embeddings <- obsm[[key]] |> as.matrix()
+      ### Precheck embedding is indeed numeric
+      if (!is.numeric(embeddings[, 1])) {
+        message(paste(
+          "obsm", shQuote(key), "is not numeric; returning NULL."
+        ))
+        return(NULL)
+      }
+      if (is.null(rownames(embeddings))) {
+        if (is.null(obs_names)) stop("Must provide `obs_names`.")
+        rownames(embeddings) <- obs_names
+      }
+      if (is.null(colnames(embeddings)) ||
+            !all(grepl(paste0(obsm_nm2, "_"), colnames(embeddings)))) {
+        .nms_msg(
+          X = embeddings,
+          X_name = obsm_nm2,
+          X_type = "embeddings"
+        )
+        colnames(embeddings) <- paste(obsm_nm2,
+          seq_len(ncol(embeddings)),
+          sep = ""
+        )
+      }
+      embeddings <- as.matrix(embeddings)
+      ## Prepare matching varm
+      loadings <- matrix()
+      value <- key_map[[key]]
+      if (key %in% names(key_map) &&
+            !is.null(value)) {
+        if (value %in% names(varm)) {
+          loadings <- varm[[value]]
+          if (is.null(rownames(loadings))) {
+            if (is.null(var_names)) stop("Must provide `var_names`.")
+            rownames(loadings) <- var_names
+          }
+          if (is.null(colnames(loadings))) {
+            .nms_msg(
+              X = embeddings,
+              X_name = obsm_nm2,
+              X_type = "embeddings"
+            )
+            colnames(loadings) <- paste(obsm_nm2,
+              seq_len(ncol(loadings)),
+              sep = ""
+            )
+          }
+        }
+      }
+      ## Prepare stdev
+      emb_stdev <- numeric()
+      if ("uns" %in% names(obj)) {
+        if (obsm_nm2 %in% names(obj[["uns"]])) {
+          if ("variance" %in% names(obj[["uns"]][[obsm_nm2]])) {
+            emb_stdev <- sqrt(obj[["uns"]][[obsm_nm2]][["variance"]])
+          }
+        }
+      }
+      SeuratObject::CreateDimReducObject(
+        embeddings = as.matrix(embeddings),
+        loadings = as.matrix(loadings),
+        key = obsm_nm2,
+        stdev = emb_stdev,
+        ...
+      )
+    }
+  )
 }
 
-.add_Seurat_DimReduc <- function(obj,
-                                 drl){
-  if(length(drl)>0){
-    for(nm in names(drl)){
+.add_Seurat_DimReduc <- function(obj, # nolint object_name_linter
+                                 drl) {
+  if (length(drl) > 0) {
+    for (nm in names(drl)) {
       obj[[nm]] <- drl[[nm]]
     }
   }
   return(obj)
 }
 
-
+# nolint start object_name_linter
+.nms_msg <- function(X,
+                     X_name,
+                     X_type = "loadings",
+                     dim = 2) {
+  dim_nm <- if (dim == 1) "rownames" else "colnames"
+  message(paste(
+    "No", dim_nm, "present in", paste0(X_type, "; setting to"),
+    shQuote(paste0(X_name, "[1:", ncol(X), "]"))
+  ))
+}
+# nolint end
 
 
 
@@ -392,43 +417,45 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 #' @param drop_null Drop elements that are NULL.
 #' @returns A nested named list of \code{obsm} and \code{varm} matrices.
 #' @keywords internal
-.from_Seurat_DimReduc <- function(obj,
-                                  rm_rownames=TRUE,
-                                  rm_colnames=TRUE,
-                                  drop_null=TRUE
-){
-
+.from_Seurat_DimReduc <- function(obj, # nolint object_name_linter
+                                  rm_rownames = TRUE,
+                                  rm_colnames = TRUE,
+                                  drop_null = TRUE) {
   requireNamespace("SeuratObject")
 
   ## Handle multiple object types
-  if(methods::is(obj,"DimReduc")){
+  if (methods::is(obj, "DimReduc")) {
     stop("Must provide DimReduc objects as a named list.")
-  } else if(SeuratObject::IsNamedList(obj)){
-    if(!all( unlist(lapply(obj,methods::is,"DimReduc")) ) ){
+  } else if (SeuratObject::IsNamedList(obj)) {
+    if (!all(unlist(lapply(obj, methods::is, "DimReduc")))) {
       stop("All elements of named list must be of class 'DimReduc'.")
     }
     drl <- obj
-  } else if(methods::is(obj,"Seurat")){
+  } else if (methods::is(obj, "Seurat")) {
     drl <- obj@reductions
   }
   ## Prepare obsm
-  obsm <- lapply(drl, function(dr){
+  obsm <- lapply(drl, function(dr) {
     x <- SeuratObject::Embeddings(dr)
-    if(rm_rownames) rownames(x) <- NULL
-    if(rm_colnames) colnames(x) <- NULL
-    if(all(dim(x)==c(1,1)) && all(is.na(x))) return(NULL)
+    if (rm_rownames) rownames(x) <- NULL
+    if (rm_colnames) colnames(x) <- NULL
+    if (all(dim(x) == c(1, 1)) && all(is.na(x))) {
+      return(NULL)
+    }
     x
   })
-  if(isTRUE(drop_null)) obsm <- Filter(Negate(is.null), obsm)
+  if (isTRUE(drop_null)) obsm <- Filter(Negate(is.null), obsm)
   ## Prepare varm
-  varm <- lapply(drl, function(dr){
+  varm <- lapply(drl, function(dr) {
     x <- SeuratObject::Loadings(dr)
-    if(rm_rownames) rownames(x) <- NULL
-    if(rm_colnames) colnames(x) <- NULL
-    if(all(dim(x)==c(1,1)) && all(is.na(x))) return(NULL)
+    if (rm_rownames) rownames(x) <- NULL
+    if (rm_colnames) colnames(x) <- NULL
+    if (all(dim(x) == c(1, 1)) && all(is.na(x))) {
+      return(NULL)
+    }
     x
   })
-  if(isTRUE(drop_null)) varm <- Filter(Negate(is.null), varm)
+  if (isTRUE(drop_null)) varm <- Filter(Negate(is.null), varm)
   ## Return
   return(
     list(
@@ -437,4 +464,3 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     )
   )
 }
-
