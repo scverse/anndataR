@@ -5,10 +5,6 @@
 #' @description `to_Seurat()` converts an AnnData object to a Seurat object.
 #'
 #' @param obj An AnnData object
-#' @param obsm A named list of observation (cell) embedding matrices.
-#' @param varm A named list of variable (gene) loading matrices.
-#' @param obs_names Names of all observations.
-#' @param var_names Names of all variables.
 #' @param key_map A key:value mapping indicating pairs of obsm/varm slots in
 #'  the `obj` object. For some common reductions,
 #'  there are conventional names for the loadings slots
