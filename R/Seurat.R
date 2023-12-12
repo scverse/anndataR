@@ -5,7 +5,13 @@
 #' @description `to_Seurat()` converts an AnnData object to a Seurat object.
 #'
 #' @param obj An AnnData object
-#' @inheritParams .to_Seurat_DimReduc
+#' @param obsm A named list of observation (cell) embedding matrices.
+#' @param varm A named list of variable (gene) loading matrices.
+#' @param obs_names Names of all observations.
+#' @param var_names Names of all variables.
+#' @param key_map A key:value mapping indicating pairs of obsm/varm slots in
+#'  the `obj` object. For some common reductions,
+#'  there are conventional names for the loadings slots
 #' @inheritDotParams SeuratObject::CreateAssayObject
 #' @returns A [SeuratObject][SeuratObject::SeuratObject].
 #'
@@ -164,9 +170,10 @@ to_Seurat <- function(obj, # nolint object_name_linter
 #'  the `obj` object. For some common reductions,
 #'  there are conventional names for the loadings slots
 #' @inheritDotParams SeuratObject::CreateDimReducObject
+#'
 #' @returns A named list of [CreateDimReducObject][SeuratObject::CreateDimReducObject] objects.
 #'
-#' @keywords internal
+#' @noRd
 .to_Seurat_DimReduc <- function(obj = NULL, # nolint object_name_linter
                                 obsm = obj$obsm,
                                 varm = obj$varm,
@@ -408,16 +415,19 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
 #' Convert between `AnnData` and `DimReducObject`
 #'
-#' Create  obsm and varm AnnData objects from a named list of
+#' Create obsm and varm AnnData objects from a named list of
 #' [DimReduc][SeuratObject::DimReduc] object.
+#'
 #' @param obj A named list of [DimReduc][SeuratObject::DimReduc] objects.
 #' Alternatively, can be a [SeuratObject][SeuratObject::SeuratObject] from which a
 #' named list of [DimReduc][SeuratObject::DimReduc] objects will be extracted.
 #' @param rm_rownames Remove rownames from all matrices.
 #' @param rm_colnames Remove colnames from all matrices.
 #' @param drop_null Drop elements that are NULL.
+#'
 #' @returns A nested named list of `obsm` and `varm` matrices.
-#' @keywords internal
+#'
+#' @noRd
 .from_Seurat_DimReduc <- function(obj, # nolint object_name_linter
                                   rm_rownames = TRUE,
                                   rm_colnames = TRUE,

@@ -50,6 +50,14 @@ non-integer values}
 \item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
 not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
 layers.}
+
+\item{obsm}{A named list of observation (cell) embedding matrices.}
+
+\item{varm}{A named list of variable (gene) loading matrices.}
+
+\item{obs_names}{Names of all observations.}
+
+\item{var_names}{Names of all variables.}
 }
 \value{
 A \link[SeuratObject:SeuratObject-package]{SeuratObject}.
