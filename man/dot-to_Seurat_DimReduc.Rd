@@ -5,8 +5,7 @@
 \title{Convert between \code{AnnData} and \code{DimReducObject}}
 \source{
 Some internal code adapted from
-\href{https://github.com/PMBio/MuDataSeurat/blob/main/R/ReadH5MU.R}{
-MuDataSeurat}.
+\href{https://github.com/PMBio/MuDataSeurat/blob/main/R/ReadH5MU.R}{ MuDataSeurat}.
 }
 \usage{
 .to_Seurat_DimReduc(
@@ -20,8 +19,8 @@ MuDataSeurat}.
 )
 }
 \arguments{
-\item{obj}{An object of class \link[anndataR]{InMemoryAnnData} or
-\link[anndataR]{HDF5AnnData}.}
+\item{obj}{An object of class \link[=InMemoryAnnData]{InMemoryAnnData} or
+\link[=HDF5AnnData]{HDF5AnnData}.}
 
 \item{obsm}{A named list of observation (cell) embedding matrices.}
 
@@ -52,10 +51,10 @@ with the dimensional reduction}
   }}
 }
 \value{
-A named list of \link[SeuratObject]{CreateDimReducObject} objects.
+A named list of \link[SeuratObject:CreateDimReducObject]{CreateDimReducObject} objects.
 }
 \description{
-Create a named list of \link[SeuratObject]{DimReduc} objects from an
+Create a named list of \link[SeuratObject:DimReduc-class]{DimReduc} objects from an
 \pkg{AnnData}. Alternatively, can supply arbitrary matrices or
 lists of matrices to the \code{obsm}/\code{varm} manually.
 }

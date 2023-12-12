@@ -52,9 +52,9 @@ not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots
 layers.}
 }
 \value{
-A \link[SeuratObject]{SeuratObject}.
+A \link[SeuratObject:SeuratObject-package]{SeuratObject}.
 
-\link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
+\link[=InMemoryAnnData]{InMemoryAnnData} or \link[=HDF5AnnData]{HDF5AnnData}
 }
 \description{
 \code{to_Seurat()} converts an AnnData object to a Seurat object.
@@ -63,6 +63,6 @@ A \link[SeuratObject]{SeuratObject}.
 Only one assay can be converted at a time.
 }
 \examples{
-adata <- generate_dataset(format="AnnData")
+adata <- generate_dataset(format = "AnnData")
 to_Seurat(adata)
 }

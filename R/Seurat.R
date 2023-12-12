@@ -7,7 +7,7 @@
 #' @param obj An AnnData object
 #' @inheritParams .to_Seurat_DimReduc
 #' @inheritDotParams SeuratObject::CreateAssayObject
-#' @returns A \link[SeuratObject]{SeuratObject}.
+#' @returns A [SeuratObject][SeuratObject::SeuratObject].
 #'
 #' @importFrom Matrix t
 #'
@@ -145,25 +145,26 @@ to_Seurat <- function(obj, # nolint object_name_linter
 }
 
 
-#' Convert between \code{AnnData} and \code{DimReducObject}
+#' Convert between `AnnData` and `DimReducObject`
 #'
-#' Create a named list of \link[SeuratObject]{DimReduc} objects from an
-#'  \pkg{AnnData}. Alternatively, can supply arbitrary matrices or
-#'  lists of matrices to the \code{obsm}/\code{varm} manually.
+#' Create a named list of [DimReduc][SeuratObject::DimReduc] objects from an
+#'  [AnnData][anndataR::AbstractAnnData]. Alternatively, can supply arbitrary
+#'  matrices or lists of matrices to the `obsm`/`varm` manually.
+#'
 #' @source Some internal code adapted from
-#' \href{https://github.com/PMBio/MuDataSeurat/blob/main/R/ReadH5MU.R}{
-#' MuDataSeurat}.
-#' @param obj An object of class \link[anndataR]{InMemoryAnnData} or
-#' \link[anndataR]{HDF5AnnData}.
+#' [MuDataSeurat](https://github.com/PMBio/MuDataSeurat/blob/main/R/ReadH5MU.R).
+#'
+#' @param obj An object of class [InMemoryAnnData][anndataR::InMemoryAnnData] or
+#' [HDF5AnnData][anndataR::HDF5AnnData].
 #' @param obsm A named list of observation (cell) embedding matrices.
 #' @param varm A named list of variable (gene) loading matrices.
 #' @param obs_names Names of all observations.
 #' @param var_names Names of all variables.
 #' @param key_map A key:value mapping indicating pairs of obsm/varm slots in
-#'  the \code{obj} object. For some common reductions,
+#'  the `obj` object. For some common reductions,
 #'  there are conventional names for the loadings slots
 #' @inheritDotParams SeuratObject::CreateDimReducObject
-#' @returns A named list of \link[SeuratObject]{CreateDimReducObject} objects.
+#' @returns A named list of [CreateDimReducObject][SeuratObject::CreateDimReducObject] objects.
 #'
 #' @keywords internal
 .to_Seurat_DimReduc <- function(obj = NULL, # nolint object_name_linter
@@ -312,7 +313,7 @@ to_Seurat <- function(obj, # nolint object_name_linter
 #'   layers.
 #' @param ... Additional arguments passed to the generator function.
 #'
-#' @returns \link[anndataR]{InMemoryAnnData} or \link[anndataR]{HDF5AnnData}
+#' @returns [InMemoryAnnData][anndataR::InMemoryAnnData] or [HDF5AnnData][anndataR::HDF5AnnData]
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
 
   stopifnot(inherits(seurat_obj, "Seurat"))
@@ -405,17 +406,17 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
 
 
 
-#' Convert between \code{AnnData} and \code{DimReducObject}
+#' Convert between `AnnData` and `DimReducObject`
 #'
 #' Create  obsm and varm AnnData objects from a named list of
-#' \link[SeuratObject]{DimReduc} object.
-#' @param obj A named list of \link[SeuratObject]{DimReduc} objects.
-#' Alternatively, can be a \link[SeuratObject]{SeuratObject} from which a
-#' named list of \link[SeuratObject]{DimReduc} objects will be extracted.
+#' [DimReduc][SeuratObject::DimReduc] object.
+#' @param obj A named list of [DimReduc][SeuratObject::DimReduc] objects.
+#' Alternatively, can be a [SeuratObject][SeuratObject::SeuratObject] from which a
+#' named list of [DimReduc][SeuratObject::DimReduc] objects will be extracted.
 #' @param rm_rownames Remove rownames from all matrices.
 #' @param rm_colnames Remove colnames from all matrices.
 #' @param drop_null Drop elements that are NULL.
-#' @returns A nested named list of \code{obsm} and \code{varm} matrices.
+#' @returns A nested named list of `obsm` and `varm` matrices.
 #' @keywords internal
 .from_Seurat_DimReduc <- function(obj, # nolint object_name_linter
                                   rm_rownames = TRUE,

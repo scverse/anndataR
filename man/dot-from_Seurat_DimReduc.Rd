@@ -12,9 +12,9 @@
 )
 }
 \arguments{
-\item{obj}{A named list of \link[SeuratObject]{DimReduc} objects.
-Alternatively, can be a \link[SeuratObject]{SeuratObject} from which a
-named list of \link[SeuratObject]{DimReduc} objects will be extracted.}
+\item{obj}{A named list of \link[SeuratObject:DimReduc-class]{DimReduc} objects.
+Alternatively, can be a \link[SeuratObject:SeuratObject-package]{SeuratObject} from which a
+named list of \link[SeuratObject:DimReduc-class]{DimReduc} objects will be extracted.}
 
 \item{rm_rownames}{Remove rownames from all matrices.}
 
@@ -27,6 +27,6 @@ A nested named list of \code{obsm} and \code{varm} matrices.
 }
 \description{
 Create  obsm and varm AnnData objects from a named list of
-\link[SeuratObject]{DimReduc} object.
+\link[SeuratObject:DimReduc-class]{DimReduc} object.
 }
 \keyword{internal}
