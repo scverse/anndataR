@@ -203,7 +203,6 @@ read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
   as.list(file[[name]]$read())
-  # rhdf5::h5read(file, name, compoundAsDataFrame = FALSE)
 }
 
 #' Read H5AD nullable boolean
@@ -347,14 +346,7 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 #' @noRd
 read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  scalar <- file[[name]]$read()
-
-  # # If the numeric vector is Boolean it gets read as a factor by {rhdf5}
-  # if (is.factor(scalar)) {
-  #   scalar <- as.logical(scalar)
-  # }
-
-  return(scalar)
+  file[[name]]$read()
 }
 
 #' Read H5AD mapping

@@ -1,4 +1,4 @@
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("hdf5r")
 
 file <- tempfile(pattern = "hdf5_write_", fileext = ".h5ad")
 if (file.exists(file)) {

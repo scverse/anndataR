@@ -1,7 +1,7 @@
 # TODO: re-enable
 # nolint start
 # skip_if_no_anndata()
-# skip_if_not_installed("rhdf5")
+# skip_if_not_installed("hdf5r")
 
 # data <- generate_dataset(10L, 20L)
 

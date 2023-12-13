@@ -68,7 +68,7 @@ Suggests:
     BiocStyle,
     knitr,
     reticulate,
-    rhdf5,
+    hdf5r,
     rmarkdown,
     S4Vectors,
     SeuratObject,
@@ -85,3 +85,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 RoxygenNote: 7.2.3
 biocViews: SingleCell, DataImport, DataRepresentation
+Remotes: github::rcannood/hdf5r@issue-208-solution
