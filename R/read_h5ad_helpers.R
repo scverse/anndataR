@@ -106,7 +106,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
 #' @noRd
 read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  
+
   data <- file[[name]]$read()
 
   # transpose the matrix if need be
@@ -304,17 +304,16 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
   element <- file[[name]]
 
   # Get codes and convert to 1-based indexing
-  codes <- element[["codes"]]$read() + 1
+  codes <- element[["codes"]]$read() + 1L
 
   # Set missing values
-  codes[codes == 0] <- NA
+  codes[codes == 0L] <- NA_integer_
 
   levels <- element[["categories"]]$read()
 
-  attributes <- hdf5r::h5attributes(file[[name]])
-  ordered <- attributes[["ordered"]]
+  ordered <- hdf5r::h5attr(element, "ordered")
 
-  factor(codes, labels = levels, ordered = ordered)
+  factor(codes, levels = levels, ordered = ordered)
 }
 
 #' Read H5AD string scalar
@@ -375,63 +374,25 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
-#' @param include_index Whether or not to include the index as a column
-#'
-#' @details
-#' If `include_index == TRUE` the index stored in the HDF5 file is added as a
-#' column to output `data.frame` using the defined index name as the column
-#' name and this is set as an attribute. If `include_index == FALSE` the index
-#' is not provided in the output. In either case row names are not set.
 #'
 #' @return a data.frame
 #'
 #' @noRd
-read_h5ad_data_frame <- function(file, name, include_index = FALSE,
-                                 version = "0.2.0") {
+read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
   index_name <- hdf5r::h5attr(file[[name]], "_index")
   column_order <- hdf5r::h5attr(file[[name]], "column-order")
 
-  columns <- read_h5ad_collection(file, name, column_order)
+  index <- read_h5ad_element(file, paste0(name, "/", index_name))
+  data <- read_h5ad_collection(file, name, column_order)
 
-  # convert data to dataframe
-  df <- data.frame(
-    columns,
+  as.data.frame(
+    row.names = index,
+    data,
     check.names = FALSE,
     fix.empty.names = FALSE
   )
-
-  # add index to data frame if requested
-  if (isTRUE(include_index)) {
-    df <- cbind(
-      read_h5ad_data_frame_index(file, name),
-      df
-    )
-    names(df)[[1]] <- index_name
-    attr(df, "_index") <- index_name
-  }
-
-  df
-}
-
-#' Read H5AD data frame index
-#'
-#' Read the index of a data frame from an H5AD file
-#'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#'
-#' @return an object containing the index
-#'
-#' @noRd
-read_h5ad_data_frame_index <- function(file, name, version = "0.2.0") {
-  version <- match.arg(version)
-
-  index_name <- hdf5r::h5attr(file[[name]], "_index")
-
-  read_h5ad_element(file, paste0(name, "/", index_name))
 }
 
 #' Read multiple H5AD datatypes

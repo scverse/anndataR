@@ -121,31 +121,17 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
   generator <- get_anndata_constructor(output_class)
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
+  # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
   obs <- as.data.frame(
     SummarizedExperiment::colData(sce)
   )
-  rownames(obs) <- NULL
 
   # trackstatus: class=SingleCellExperiment, feature=set_var, status=done
+  # trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
   var <- as.data.frame(
     SummarizedExperiment::rowData(sce)
   )
-  rownames(var) <- NULL
-
-  # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
-  obs_names <- colnames(sce)
-  if (is.null(obs_names)) {
-    warning(wrap_message("colnames(sce) should not be NULL"))
-    obs_names <- as.character(seq_len(nrow(obs)))
-  }
-
-  # trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
-  var_names <- rownames(sce)
-  if (is.null(var_names)) {
-    warning(wrap_message("rownames(sce) should not be NULL"))
-    var_names <- as.character(seq_len(nrow(var)))
-  }
-
+  
   # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
   x_and_layers <- lapply(
@@ -178,8 +164,6 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
     X = x,
     obs = obs,
     var = var,
-    obs_names = obs_names,
-    var_names = var_names,
     layers = layers,
     ...
   )

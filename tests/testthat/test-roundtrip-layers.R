@@ -14,8 +14,8 @@ for (name in layer_names) {
     # create anndata
     ad <- AnnData(
       layers = data$layers[name],
-      obs_names = data$obs_names,
-      var_names = data$var_names
+      obs = data$obs,
+      var = data$var
     )
 
     # write to file
@@ -86,8 +86,8 @@ for (name in r2py_names) {
     ad <- HDF5AnnData$new(
       file = filename,
       layers = layers,
-      obs_names = data$obs_names,
-      var_names = data$var_names
+      obs = data$obs,
+      var = data$var
     )
 
     # read from file

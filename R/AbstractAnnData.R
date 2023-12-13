@@ -284,13 +284,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         ))
       }
 
-      if (has_row_names(df)) {
-        warning(wrap_message(
-          "'", label, "' should not have any rownames, removing them from the data frame."
-        ))
-        rownames(df) <- NULL
-      }
-
       df
     },
 

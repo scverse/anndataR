@@ -186,9 +186,7 @@ test_that("writing gzip compressed files works", {
   adata <- AnnData(
     X = non_random_X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
@@ -207,9 +205,7 @@ test_that("writing lzf compressed files works", {
   adata <- AnnData(
     X = non_random_X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")

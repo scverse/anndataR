@@ -8,8 +8,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
   private = list(
     .h5obj = NULL,
     .close_on_finalize = FALSE,
-    .n_obs = NULL,
-    .n_vars = NULL,
     .compression = NULL
   ),
   active = list(
@@ -124,7 +122,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_h5ad_element(private$.h5obj, "obs", include_index = FALSE)
+        read_h5ad_element(private$.h5obj, "obs")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
@@ -132,8 +130,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           value,
           private$.h5obj,
           "obs",
-          private$.compression,
-          index = self$obs_names
+          private$.compression
         )
       }
     },
@@ -141,26 +138,30 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_h5ad_element(private$.h5obj, "var", include_index = FALSE)
+        read_h5ad_element(private$.h5obj, "var")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
         write_h5ad_element(
           value,
           private$.h5obj,
-          "var",
-          index = self$var_names
+          "var"
         )
       }
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
       if (missing(value)) {
-        read_h5ad_data_frame_index(private$.h5obj, "obs")
+        # TODO: fix efficiency
+        # read_h5ad_data_frame_index(private$.h5obj, "obs")
+        rownames(self$obs)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
         value <- private$.validate_obsvar_names(value, "obs")
-        write_h5ad_data_frame_index(value, private$.h5obj, "obs", private$.compression, "_index")
+
+        # TODO: fix efficiency
+        # write_h5ad_data_frame_index(value, private$.h5obj, "obs", private$.compression, "_index")
+        rownames(self$obs) <- value
       }
     },
     #' @field var_names Names of variables
@@ -168,11 +169,15 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       # TODO: directly write to and read from /var/_index
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        read_h5ad_data_frame_index(private$.h5obj, "var")
+        # TODO: fix efficiency
+        # read_h5ad_data_frame_index(private$.h5obj, "var")
+        rownames(self$var)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
         value <- private$.validate_obsvar_names(value, "var")
-        write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression, "_index")
+        # TODO: fix efficiency
+        # write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression, "_index")
+        rownames(self$var) <- value
       }
     },
     #' @field uns The uns slot. Must be `NULL` or a named list.
@@ -237,8 +242,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
     initialize = function(file,
-                          obs_names = NULL,
-                          var_names = NULL,
                           X = NULL,
                           obs = NULL,
                           var = NULL,
@@ -257,30 +260,21 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       private$.compression <- compression
 
       if (is.character(file) && !file.exists(file)) {
-        # Check obs_names and var_names have been provided
-        if (is.null(obs_names)) {
-          stop("When creating a new .h5ad file, `obs_names` must be defined.")
-        }
-        if (is.null(var_names)) {
-          stop("When creating a new .h5ad file, `var_names` must be defined.")
-        }
 
-        # Create an empty H5AD using the provided obs/var names
-        write_empty_h5ad(file, obs_names, var_names, compression)
-
-        # Set private object slots
-        private$.h5obj <- hdf5r::H5File$new(file, mode = "r+")
+        # store private values
+        private$.h5obj <- hdf5r::H5File$new(file, mode = "w")
         private$.close_on_finalize <- TRUE
-        private$.n_obs <- length(obs_names)
-        private$.n_vars <- length(var_names)
 
+        # Create a new H5AD using the provided obs/var
+        if (is.null(obs)) {
+          obs <- data.frame()
+        }
+        if (is.null(var)) {
+          var <- data.frame()
+        }
+        write_empty_h5ad(private$.h5obj, obs, var, compression)
 
-        if (!is.null(obs)) {
-          self$obs <- obs
-        }
-        if (!is.null(var)) {
-          self$var <- var
-        }
+        # set other slots
         if (!is.null(X)) {
           self$X <- X
         }
@@ -303,11 +297,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           self$uns <- uns
         }
       } else {
-        if (is.character(file)) {
+        open_hdf5_file <- is.character(file)
+        if (open_hdf5_file) {
           file <- hdf5r::H5File$new(file, mode = "r+") # allow changing the mode?
-          close_on_finalize <- TRUE
-        } else {
-          close_on_finalize <- FALSE
         }
 
         if (!inherits(file, "H5File")) {
@@ -326,14 +318,14 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 
         # Set the file path
         private$.h5obj <- file
-        private$.close_on_finalize <- close_on_finalize
+        private$.close_on_finalize <- open_hdf5_file
 
         # assert other arguments are NULL
-        if (!is.null(obs_names)) {
-          stop("obs_names must be NULL when loading an existing .h5ad file")
+        if (!is.null(obs)) {
+          stop("obs must be NULL when loading an existing .h5ad file")
         }
-        if (!is.null(var_names)) {
-          stop("var_names must be NULL when loading an existing .h5ad file")
+        if (!is.null(var)) {
+          stop("var must be NULL when loading an existing .h5ad file")
         }
         if (!is.null(X)) {
           stop("X must be NULL when loading an existing .h5ad file")
@@ -359,29 +351,16 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       }
     },
 
-    # finalize = function() {
-    #   if (private$.close_on_finalize) {
-    #     ## first triFinalizing HDF5AnnData object, closing h5obj\n")
-    #     private$.h5obj$close_all()
-    #     private$.h5obj <- NULL
-    #   }
-    #   return(invisible(self))
-    # },
-
     #' @description Number of observations in the AnnData object
     n_obs = function() {
-      if (is.null(private$.n_obs)) {
-        private$.n_obs <- length(self$obs_names)
-      }
-      private$.n_obs
+      # TODO: fix efficiency
+      length(self$obs_names)
     },
 
     #' @description Number of variables in the AnnData object
     n_vars = function() {
-      if (is.null(private$.n_vars)) {
-        private$.n_vars <- length(self$var_names)
-      }
-      private$.n_vars
+      # TODO: fix efficiency
+      length(self$var_names)
     }
   )
 )
@@ -428,8 +407,6 @@ to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) 
     var = adata$var,
     obsm = adata$obsm,
     varm = adata$varm,
-    obs_names = adata$obs_names,
-    var_names = adata$var_names,
     layers = adata$layers,
     obsp = adata$obsp,
     varp = adata$varp,
