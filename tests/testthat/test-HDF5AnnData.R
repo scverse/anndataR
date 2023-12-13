@@ -8,6 +8,8 @@ test_that("opening H5AD works", {
   rm(adata)
 })
 
+gc()
+
 adata <- HDF5AnnData$new(file)
 
 # GETTERS ----------------------------------------------------------------

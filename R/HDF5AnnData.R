@@ -233,6 +233,11 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param compression The compression algorithm to use when writing the
     #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
     #' `"none"`.
+    #' @param mode The mode to open the HDF5 file. `a` creates a new file or opens
+    #'  an existing one for read/write. `r` opens an existing file for reading,
+    #'  `r+` opens an existing file for read/write. `w` creates a file, truncating
+    #'  any existing ones and `w-`/`x` are synonyms, creating a file and failing if
+    #'  it already exists.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
@@ -251,18 +256,19 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
                           obsp = NULL,
                           varp = NULL,
                           uns = NULL,
+                          mode = c("r", "r+", "a", "w", "w-", "x"),
                           compression = c("none", "gzip", "lzf")) {
       if (!requireNamespace("hdf5r", quietly = TRUE)) {
         stop("The HDF5 interface requires the 'hdf5r' package to be installed")
       }
 
       compression <- match.arg(compression)
+      mode <- match.arg(mode)
       private$.compression <- compression
 
       if (is.character(file) && !file.exists(file)) {
-
         # store private values
-        private$.h5obj <- hdf5r::H5File$new(file, mode = "w")
+        private$.h5obj <- hdf5r::H5File$new(file, mode = "w-")
         private$.close_on_finalize <- TRUE
 
         # Create a new H5AD using the provided obs/var
@@ -299,7 +305,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       } else {
         open_hdf5_file <- is.character(file)
         if (open_hdf5_file) {
-          file <- hdf5r::H5File$new(file, mode = "r+") # allow changing the mode?
+          file <- hdf5r::H5File$new(file, mode = mode)
         }
 
         if (!inherits(file, "H5File")) {
@@ -351,6 +357,22 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       }
     },
 
+    #' @description Close the HDF5 file when the object is garbage collected
+    finalize = function() {
+      if (private$.close_on_finalize) {
+        self$close()
+      }
+      return(invisible(self))
+    },
+
+    #' @description Close the HDF5 file
+    close = function() {
+      if (!is.null(private$.h5obj)) {
+        private$.h5obj$close_all()
+        private$.h5obj <- NULL
+      }
+    },
+
     #' @description Number of observations in the AnnData object
     n_obs = function() {
       # TODO: fix efficiency
@@ -396,10 +418,15 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' to_HDF5AnnData(ad, "test.h5ad")
 #' # remove file
 #' file.remove("test.h5ad")
-to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) { # nolint
+to_HDF5AnnData <- function(
+    adata,
+    file,
+    compression = c("none", "gzip", "lzf"),
+    mode = c("w-", "r", "r+", "a", "w", "x")) { # nolint
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
+  mode <- match.arg(mode)
   HDF5AnnData$new(
     file = file,
     X = adata$X,
@@ -411,6 +438,7 @@ to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) 
     obsp = adata$obsp,
     varp = adata$varp,
     uns = adata$uns,
-    compression = compression
+    compression = compression,
+    mode = mode
   )
 }

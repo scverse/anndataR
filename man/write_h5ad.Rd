@@ -4,7 +4,12 @@
 \alias{write_h5ad}
 \title{Write H5AD}
 \usage{
-write_h5ad(object, path, compression = c("none", "gzip", "lzf"))
+write_h5ad(
+  object,
+  path,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)
 }
 \arguments{
 \item{object}{The object to write, either a "SingleCellExperiment" or a

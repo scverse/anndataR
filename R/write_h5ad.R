@@ -67,7 +67,11 @@
 #'   # h5ad_file <- tempfile(fileext = ".h5ad")
 #'   # write_h5ad(obj, h5ad_file)
 #' }
-write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf")) {
+write_h5ad <- function(
+    object,
+    path,
+    compression = c("none", "gzip", "lzf"),
+    mode = c("w-", "r", "r+", "a", "w", "x")) {
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,
@@ -83,7 +87,8 @@ write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf")) {
       compression = compression
     )
   } else if (inherits(object, "AbstractAnnData")) {
-    to_HDF5AnnData(object, path, compression = compression)
+    mode <- match.arg(mode)
+    to_HDF5AnnData(object, path, compression = compression, mode = mode)
   } else {
     stop("Unable to write object of class: ", class(object))
   }

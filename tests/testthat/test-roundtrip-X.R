@@ -39,14 +39,14 @@ for (name in layer_names) {
   test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
     # add rownames
     X <- data$layers[[name]]
-    rownames(X) <- data$obs_names
-    colnames(X) <- data$var_names
+    obs <- data.frame(row.names = rownames(data$obs))
+    var <- data.frame(row.names = rownames(data$var))
 
     # create anndata
     ad <- anndata::AnnData(
       X = X,
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names)
+      obs = obs,
+      var = var
     )
 
     # write to file

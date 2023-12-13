@@ -19,8 +19,6 @@ for (name in test_names) {
       X = data$X,
       obs = data$obs[, name, drop = FALSE],
       var = data$var[, name, drop = FALSE],
-      obs_names = data$obs_names,
-      var_names = data$var_names
     )
 
     # write to file
@@ -52,8 +50,6 @@ for (name in test_names) {
       obs = data$obs[, name, drop = FALSE],
       var = data$var[, name, drop = FALSE]
     )
-    ad$obs_names <- data$obs_names
-    ad$var_names <- data$var_names
 
     # write to file
     filename <- withr::local_file(paste0("reticulate_to_hdf5_obsvar_", name, ".h5ad"))
@@ -79,27 +75,20 @@ for (name in test_names) {
     # strip rownames
     obs <- data$obs[, name, drop = FALSE]
     var <- data$var[, name, drop = FALSE]
-    rownames(obs[[name]]) <- NULL
-    rownames(var[[name]]) <- NULL
 
     # create anndata
-    ad <- HDF5AnnData$new(
-      file = filename,
+    ad <- AnnData(
       obs = obs,
-      var = var,
-      obs_names = data$obs_names,
-      var_names = data$var_names
+      var = var
     )
+    write_h5ad(ad, filename)
+    gc()
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)
 
     # expect slots are unchanged
     obs_ <- ad_new$obs[[name]]
-    if (!is.null(obs_)) {
-      rownames(obs_) <- NULL
-      colnames(obs_) <- NULL
-    }
     expect_equal(
       obs_,
       data$obs[[name]],

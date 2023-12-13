@@ -4,7 +4,12 @@
 \alias{to_HDF5AnnData}
 \title{Convert an AnnData object to an HDF5AnnData object}
 \usage{
-to_HDF5AnnData(adata, file, compression = c("none", "gzip", "lzf"))
+to_HDF5AnnData(
+  adata,
+  file,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)
 }
 \arguments{
 \item{adata}{An AnnData object to be converted to HDF5AnnData.}

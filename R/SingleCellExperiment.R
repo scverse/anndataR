@@ -131,7 +131,7 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
   var <- as.data.frame(
     SummarizedExperiment::rowData(sce)
   )
-  
+
   # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
   x_and_layers <- lapply(

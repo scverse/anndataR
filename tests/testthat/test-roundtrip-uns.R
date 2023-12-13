@@ -49,8 +49,8 @@ for (name in uns_names) {
   test_that(paste0("reticulate->hdf5 with uns '", name, "'"), {
     # create anndata
     ad <- anndata::AnnData(
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names),
+      obs = data.frame(row.names = rownames(data$obs)),
+      var = data.frame(row.names = rownames(data$var)),
       uns = data$uns[name]
     )
 
@@ -77,12 +77,13 @@ for (name in uns_names) {
     filename <- withr::local_file(paste0("hdf5_to_reticulate_uns_", name, ".h5ad"))
 
     # make anndata
-    ad <- HDF5AnnData$new(
-      file = filename,
-      obs_names = data$obs_names,
-      var_names = data$var_names,
+    ad <- AnnData(
+      obs = data.frame(row.names = rownames(data$obs)),
+      var = data.frame(row.names = rownames(data$var)),
       uns = data$uns[name]
     )
+    write_h5ad(ad, filename)
+    gc()
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)

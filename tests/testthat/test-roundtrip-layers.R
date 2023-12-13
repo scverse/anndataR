@@ -22,6 +22,8 @@ for (name in layer_names) {
     filename <- withr::local_file(paste0("roundtrip_layer_", name, ".h5ad"))
     write_h5ad(ad, filename)
 
+    gc()
+
     # read from file
     ad_new <- read_h5ad(filename, to = "HDF5AnnData")
 
@@ -39,15 +41,15 @@ for (name in layer_names) {
   test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
     # add rownames
     layers <- data$layers[name]
-    rownames(layers[[name]]) <- data$obs_names
-    colnames(layers[[name]]) <- data$var_names
+    obs <- data.frame(row.names = rownames(data$obs))
+    var <- data.frame(row.names = rownames(data$var))
 
     # create anndata
     ad <- anndata::AnnData(
       layers = layers,
       shape = dim(data$X),
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names)
+      obs = obs,
+      var = var
     )
 
     # write to file
@@ -89,6 +91,8 @@ for (name in r2py_names) {
       obs = data$obs,
       var = data$var
     )
+    rm(ad)
+    gc()
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)
