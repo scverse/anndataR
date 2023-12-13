@@ -26,11 +26,6 @@ write_h5ad_element <- function(
     ...) {
   compression <- match.arg(compression)
 
-  # Delete the path if it already exists
-  if (hdf5_path_exists(file, name)) {
-    hdf5r::h5unlink(file, name)
-  }
-
   # Sparse matrices
   write_fun <-
     if (inherits(value, "sparseMatrix")) { # Sparse matrices
@@ -70,8 +65,13 @@ write_h5ad_element <- function(
       stop("Writing '", class(value), "' objects to H5AD files is not supported")
     }
 
-  tryCatch(
-    {
+  # Delete the path if it already exists
+  if (hdf5_path_exists(file, name)) {
+    hdf5r::h5unlink(file, name)
+  }
+
+  # tryCatch(
+  #   {
       write_fun(
         value = value,
         file = file,
@@ -79,20 +79,20 @@ write_h5ad_element <- function(
         compression = compression,
         ...
       )
-    },
-    error = function(e) {
-      message <- paste0(
-        "Could not write element '", name, "' of type '", class(value), "':\n",
-        conditionMessage(e)
-      )
-      if (stop_on_error) {
-        stop(message)
-      } else {
-        warning(message)
-        return(NULL)
-      }
-    }
-  )
+    # },
+    # error = function(e) {
+    #   message <- paste0(
+    #     "Could not write element '", name, "' of type '", class(value), "':\n",
+    #     conditionMessage(e)
+    #   )
+    #   if (stop_on_error) {
+    #     stop(message)
+    #   } else {
+    #     warning(message)
+    #     return(NULL)
+    #   }
+    # }
+  # )
 }
 # nolint end cyclocomp_linter
 
@@ -113,34 +113,9 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
     stop("file must be an open H5AD handle")
   }
 
-  # TODO: can we choose whether to store something as scalar or not?
-  scalar_attr_names <-
-    if (isTRUE(is_scalar)) {
-      names(attributes)
-    } else if (isFALSE(is_scalar)) {
-      c()
-    } else if (is.character(is_scalar)) {
-      is_scalar
-    } else {
-      stop("is_scalar must be TRUE, FALSE or a character vector")
-    }
-
   for (attr_name in names(attributes)) {
     attr_val <- attributes[[attr_name]]
-    if (length(attr_val) == 0) {
-      # this is a workaround for a bug in hdf5r
-      # see https://github.com/hhoeflin/hdf5r/issues/208
-      # even though the call throws an error,
-      # it appears to have produced the desired effect
-      tryCatch(
-        {
-          hdf5r::h5attr(file[[name]], attr_name) <- attr_val
-        },
-        error = function(e) {}
-      )
-    } else {
-      hdf5r::h5attr(file[[name]], attr_name) <- attr_val
-    }
+    hdf5r::h5attr(file[[name]], attr_name) <- attr_val
   }
 }
 

@@ -399,14 +399,7 @@ read_h5ad_data_frame <- function(file, name, include_index = FALSE,
   version <- match.arg(version)
 
   index_name <- hdf5r::h5attr(file[[name]], "_index")
-  column_order <- tryCatch(
-    {
-      hdf5r::h5attr(file[[name]], "column-order")
-    },
-    error = function(e) {
-      c()
-    }
-  )
+  column_order <- hdf5r::h5attr(file[[name]], "column-order")
 
   columns <- read_h5ad_collection(file, name, column_order)
 

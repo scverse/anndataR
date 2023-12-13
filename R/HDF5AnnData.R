@@ -273,6 +273,35 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         private$.close_on_finalize <- TRUE
         private$.n_obs <- length(obs_names)
         private$.n_vars <- length(var_names)
+
+
+        if (!is.null(obs)) {
+          self$obs <- obs
+        }
+        if (!is.null(var)) {
+          self$var <- var
+        }
+        if (!is.null(X)) {
+          self$X <- X
+        }
+        if (!is.null(layers)) {
+          self$layers <- layers
+        }
+        if (!is.null(obsm)) {
+          self$obsm <- obsm
+        }
+        if (!is.null(varm)) {
+          self$varm <- varm
+        }
+        if (!is.null(obsp)) {
+          self$obsp <- obsp
+        }
+        if (!is.null(varp)) {
+          self$varp <- varp
+        }
+        if (!is.null(uns)) {
+          self$uns <- uns
+        }
       } else {
         if (is.character(file)) {
           file <- hdf5r::H5File$new(file, mode = "r+") # allow changing the mode?
@@ -298,78 +327,46 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         # Set the file path
         private$.h5obj <- file
         private$.close_on_finalize <- close_on_finalize
-      }
-      cat("init\n")
-      print(private$.h5obj)
-      # If obs or var names have been provided update those
-      if (!is.null(obs_names)) {
-        self$obs_names <- obs_names
-      }
-      cat("after obs names\n")
-      print(private$.h5obj)
-      
-      if (!is.null(var_names)) {
-        self$var_names <- var_names
-      }
-      cat("after var names\n")
-      print(private$.h5obj)
 
-      if (!is.null(obs)) {
-        self$obs <- obs
-      }
-      cat("after obs\n")
-      print(private$.h5obj)
-
-      if (!is.null(var)) {
-        self$var <- var
-      }
-      cat("after var\n")
-      print(private$.h5obj)
-
-      # Update remaining slots
-      if (!is.null(X)) {
-        self$X <- X
-      }
-      cat("after X\n")
-      print(private$.h5obj)
-
-      if (!is.null(layers)) {
-        self$layers <- layers
-      }
-
-      if (!is.null(obsm)) {
-        self$obsm <- obsm
-      }
-
-      if (!is.null(varm)) {
-        self$varm <- varm
-      }
-
-      if (!is.null(obsp)) {
-        self$obsp <- obsp
-      }
-
-      if (!is.null(varp)) {
-        self$varp <- varp
-      }
-
-      if (!is.null(uns)) {
-        self$uns <- uns
+        # assert other arguments are NULL
+        if (!is.null(obs_names)) {
+          stop("obs_names must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(var_names)) {
+          stop("var_names must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(X)) {
+          stop("X must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(layers)) {
+          stop("layers must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(obsm)) {
+          stop("obsm must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(varm)) {
+          stop("varm must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(obsp)) {
+          stop("obsp must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(varp)) {
+          stop("varp must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(uns)) {
+          stop("uns must be NULL when loading an existing .h5ad file")
+        }
       }
     },
 
-    finalize = function() {
-      if (private$.close_on_finalize) {
-        ## first trigger the garbage collection, so that lost, but not yet collected objects are closed
-        gc()
-        ## need to flush before closing objects; the file itself is returned as an object,
-        ## so would close the file before we can flush
-        cat("Finalizing HDF5AnnData object, closing h5obj\n")
-        private$.h5obj$close_all()
-        private$.h5obj <- NULL
-      }
-      return(invisible(self))
-    },
+    # finalize = function() {
+    #   if (private$.close_on_finalize) {
+    #     ## first triFinalizing HDF5AnnData object, closing h5obj\n")
+    #     private$.h5obj$close_all()
+    #     private$.h5obj <- NULL
+    #   }
+    #   return(invisible(self))
+    # },
 
     #' @description Number of observations in the AnnData object
     n_obs = function() {
