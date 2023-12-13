@@ -23,8 +23,8 @@ for (name in uns_names) {
   test_that(paste0("roundtrip with uns '", name, "'"), {
     # create anndata
     ad <- AnnData(
-      obs_names = data$obs_names,
-      var_names = data$var_names,
+      obs = data.frame(row.names = rownames(data$obs)),
+      var = data.frame(row.names = rownames(data$var)),
       uns = data$uns[name]
     )
 

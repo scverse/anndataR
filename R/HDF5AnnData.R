@@ -367,10 +367,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 
     #' @description Close the HDF5 file
     close = function() {
-      if (!is.null(private$.h5obj)) {
-        private$.h5obj$close_all()
-        private$.h5obj <- NULL
-      }
+      private$.h5obj$close_all()
     },
 
     #' @description Number of observations in the AnnData object
