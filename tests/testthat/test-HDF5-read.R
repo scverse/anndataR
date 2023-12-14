@@ -1,7 +1,7 @@
 skip_if_not_installed("hdf5r")
 
 file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
-on.exit(file$close_all())
+on.exit(file$close())
 
 test_that("reading encoding works", {
   encoding <- read_h5ad_encoding(file, "obs")
