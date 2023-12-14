@@ -133,11 +133,14 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 \item{\code{uns}}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
 
-\item{\code{mode}}{The mode to open the HDF5 file. \code{a} creates a new file or opens
-an existing one for read/write. \code{r} opens an existing file for reading,
-\verb{r+} opens an existing file for read/write. \code{w} creates a file, truncating
-any existing ones and \verb{w-}/\code{x} are synonyms, creating a file and failing if
-it already exists.}
+\item{\code{mode}}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{r} opens an existing file for reading.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
+}}
 
 \item{\code{compression}}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to

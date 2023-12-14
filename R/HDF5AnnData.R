@@ -233,11 +233,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @param compression The compression algorithm to use when writing the
     #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
     #' `"none"`.
-    #' @param mode The mode to open the HDF5 file. `a` creates a new file or opens
-    #'  an existing one for read/write. `r` opens an existing file for reading,
-    #'  `r+` opens an existing file for read/write. `w` creates a file, truncating
-    #'  any existing ones and `w-`/`x` are synonyms, creating a file and failing if
-    #'  it already exists.
+    #' @param mode The mode to open the HDF5 file.
+    #'
+    #'   * `a` creates a new file or opens an existing one for read/write.
+    #'   * `r` opens an existing file for reading.
+    #'   * `r+` opens an existing file for read/write.
+    #'   * `w` creates a file, truncating any existing ones.
+    #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
@@ -394,6 +396,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' @param compression The compression algorithm to use when writing the
 #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
+#' @param mode The mode to open the HDF5 file.
+#'
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r` opens an existing file for reading.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #'
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
@@ -413,11 +422,11 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' to_HDF5AnnData(ad, "test.h5ad")
 #' # remove file
 #' file.remove("test.h5ad")
-to_HDF5AnnData <- function(
+to_HDF5AnnData <- function( # nolint
     adata,
     file,
     compression = c("none", "gzip", "lzf"),
-    mode = c("w-", "r", "r+", "a", "w", "x")) { # nolint
+    mode = c("w-", "r", "r+", "a", "w", "x")) {
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )

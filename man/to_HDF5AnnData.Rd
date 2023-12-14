@@ -19,6 +19,15 @@ to_HDF5AnnData(
 \item{compression}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
+
+\item{mode}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{r} opens an existing file for reading.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
+}}
 }
 \value{
 An HDF5AnnData object with the same data as the input AnnData
