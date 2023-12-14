@@ -83,7 +83,6 @@ for (name in uns_names) {
       uns = data$uns[name]
     )
     write_h5ad(ad, filename)
-    gc()
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)

@@ -22,8 +22,6 @@ for (name in layer_names) {
     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     write_h5ad(ad, filename)
 
-    gc()
-
     # read from file
     ad_new <- read_h5ad(filename, to = "HDF5AnnData")
 
@@ -91,8 +89,7 @@ for (name in r2py_names) {
       obs = data$obs,
       var = data$var
     )
-    rm(ad)
-    gc()
+    ad$close()
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)

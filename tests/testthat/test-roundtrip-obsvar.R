@@ -82,7 +82,6 @@ for (name in test_names) {
       var = var
     )
     write_h5ad(ad, filename)
-    gc()
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)
