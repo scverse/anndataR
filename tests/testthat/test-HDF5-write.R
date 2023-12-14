@@ -161,7 +161,7 @@ test_that("Writing H5AD data frames works", {
 test_that("writing H5AD from SingleCellExperiment works", {
   skip_if_not_installed("SingleCellExperiment")
 
-  file <- withr::local_file("SingleCellExperiment.h5ad")
+  file <- withr::local_file(tempfile(fileext = ".h5ad"))
 
   sce <- generate_dataset(format = "SingleCellExperiment")
   write_h5ad(sce, file)
@@ -172,7 +172,7 @@ test_that("writing H5AD from Seurat works", {
   skip_if_not_installed("SeuratObject")
   skip("while Seurat converter is failing")
 
-  file <- withr::local_file("Seurat.h5ad")
+  file <- withr::local_file(tempfile(fileext = ".h5ad"))
 
   seurat <- generate_dataset(format = "Seurat")
   write_h5ad(seurat, file)

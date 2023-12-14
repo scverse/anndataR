@@ -16,7 +16,7 @@
 #     )
 
 #     # write to file
-#     filename <- withr::local_file(paste0("roundtrip_obspvarp_", name, ".h5ad"))
+#     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 #     write_h5ad(ad, filename)
 
 #     # read from file
@@ -56,7 +56,7 @@
 #     )
 
 #     # write to file
-#     filename <- withr::local_file(paste0("reticulate_to_hdf5_obspvarp_", name, ".h5ad"))
+#     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 #     ad$write_h5ad(filename)
 
 #     # read from file
@@ -79,7 +79,7 @@
 # for (name in names(data$obsp)) {
 #   test_that(paste0("hdf5->reticulate with obsp and varp '", name, "'"), {
 #     # write to file
-#     filename <- withr::local_file(paste0("hdf5_to_reticulate_obspvarp_", name, ".h5ad"))
+#     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
 #     # strip rownames
 #     obsp <- data$obsp[name]

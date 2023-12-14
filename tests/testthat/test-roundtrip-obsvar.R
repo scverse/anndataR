@@ -22,7 +22,7 @@ for (name in test_names) {
     )
 
     # write to file
-    filename <- withr::local_file(paste0("roundtrip_obsvar_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     write_h5ad(ad, filename)
 
     # read from file
@@ -52,7 +52,7 @@ for (name in test_names) {
     )
 
     # write to file
-    filename <- withr::local_file(paste0("reticulate_to_hdf5_obsvar_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     ad$write_h5ad(filename)
 
     # read from file
@@ -70,7 +70,7 @@ for (name in test_names) {
 for (name in test_names) {
   test_that(paste0("hdf5->reticulate with obs and var '", name, "'"), {
     # write to file
-    filename <- withr::local_file(paste0("hdf5_to_reticulate_obsvar_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
     # strip rownames
     obs <- data$obs[, name, drop = FALSE]

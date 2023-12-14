@@ -29,7 +29,7 @@ for (name in uns_names) {
     )
 
     # write to file
-    filename <- withr::local_file(paste0("roundtrip_uns_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     write_h5ad(ad, filename)
 
     # read from file
@@ -55,7 +55,7 @@ for (name in uns_names) {
     )
 
     # write to file
-    filename <- withr::local_file(paste0("reticulate_to_hdf5_uns_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     ad$write_h5ad(filename)
 
     # read from file
@@ -74,7 +74,7 @@ for (name in uns_names) {
 for (name in uns_names) {
   test_that(paste0("hdf5->reticulate with uns '", name, "'"), {
     # write to file
-    filename <- withr::local_file(paste0("hdf5_to_reticulate_uns_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
     # make anndata
     ad <- AnnData(

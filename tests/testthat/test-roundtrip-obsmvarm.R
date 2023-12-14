@@ -20,7 +20,7 @@
 #     )
 
 #     # write to file
-#     filename <- withr::local_file(paste0("roundtrip_obsmvarm_", name, ".h5ad"))
+#     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 #     write_h5ad(ad, filename)
 
 #     # read from file
@@ -65,7 +65,7 @@
 #     )
 
 #     # write to file
-#     filename <- withr::local_file(paste0("reticulate_to_hdf5_obsmvarm_", name, ".h5ad"))
+#     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 #     ad$write_h5ad(filename)
 
 #     # read from file
@@ -88,7 +88,7 @@
 # for (name in r2py_names) {
 #   test_that(paste0("hdf5->reticulate with obsm and varm '", name, "'"), {
 #     # write to file
-#     filename <- withr::local_file(paste0("hdf5_to_reticulate_obsmvarm_", name, ".h5ad"))
+#     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
 #     # strip rownames
 #     obsm <- data$obsm[name]
