@@ -15,8 +15,8 @@
 #     ad <- AnnData(
 #       obsm = data$obsm[name],
 #       varm = data$varm[name],
-#       obs_names = data$obs_names,
-#       var_names = data$var_names
+#       obs = data$obs[, c(), drop = FALSE]
+#       var = data$var[, c(), drop = FALSE]
 #     )
 
 #     # write to file
@@ -101,8 +101,8 @@
 #       file = filename,
 #       obsm = obsm,
 #       varm = varm,
-#       obs_names = data$obs_names,
-#       var_names = data$var_names
+#       obs = data$obs[, c(), drop = FALSE]
+#       var = data$var[, c(), drop = FALSE]
 #     )
 
 #     # read from file

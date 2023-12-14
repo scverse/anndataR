@@ -8,8 +8,8 @@ test_that("to_Seurat with inmemoryanndata", {
   )
   # running to_seurat when ad0$X is null probably doesn't make any sense
   ad0 <- AnnData(
-    obs_names = letters[1:5],
-    var_names = LETTERS[1:10]
+    obs = data.frame(row.names = letters[1:5]),
+    var = data.frame(row.names = LETTERS[1:10])
   )
 
   # TODO: remove suppressWarnings when to_Seurat gets updated
