@@ -13,6 +13,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
   active = list(
     #' @field X The X slot
     X = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
         read_h5ad_element(private$.h5obj, "X")
@@ -32,6 +33,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   with with all elements having the dimensions consistent with
     #'   `obs` and `var`.
     layers = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
         read_h5ad_element(private$.h5obj, "layers")
@@ -50,6 +52,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field obsm The obsm slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows as `obs`.
     obsm = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
         read_h5ad_element(private$.h5obj, "obsm")
@@ -67,6 +70,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field varm The varm slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows as `var`.
     varm = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
         read_h5ad_element(private$.h5obj, "varm")
@@ -84,6 +88,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field obsp The obsp slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows and columns as `obs`.
     obsp = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
         read_h5ad_element(private$.h5obj, "obsp")
@@ -102,6 +107,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' @field varp The varp slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows and columns as `var`.
     varp = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
         read_h5ad_element(private$.h5obj, "varp")
@@ -120,6 +126,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 
     #' @field obs The obs slot
     obs = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
         read_h5ad_element(private$.h5obj, "obs")
@@ -136,6 +143,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
     #' @field var The var slot
     var = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
         read_h5ad_element(private$.h5obj, "var")
@@ -151,6 +159,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # TODO: fix efficiency
         # read_h5ad_data_frame_index(private$.h5obj, "obs")
@@ -166,6 +175,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
     #' @field var_names Names of variables
     var_names = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       # TODO: directly write to and read from /var/_index
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
@@ -182,6 +192,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     },
     #' @field uns The uns slot. Must be `NULL` or a named list.
     uns = function(value) {
+      if (!private$.h5obj$is_valid) stop("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
         read_h5ad_element(private$.h5obj, "uns")
@@ -369,7 +380,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 
     #' @description Close the HDF5 file
     close = function() {
-      private$.h5obj$close_all()
+      if (private$.h5obj$is_valid) {
+        private$.h5obj$close_all()
+      }
     },
 
     #' @description Number of observations in the AnnData object
