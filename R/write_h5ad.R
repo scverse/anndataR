@@ -105,6 +105,8 @@ write_h5ad <- function(
       stop("Unable to write object of class: ", class(object))
     }
   adata$close()
+  rm(adata)
+  gc()
 
   invisible(path)
 }
