@@ -1,3 +1,8 @@
+# should take a look at
+# https://anndata.readthedocs.io/en/latest/fileformat-prose.html
+# again
+
+
 #' Write H5AD element
 #'
 #' Write an element to an H5AD file
@@ -350,7 +355,7 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
   # )
 
   # TODO: add compression, variable length string and encoding!
-  hdf5_write_compressed(file, name, value, compression)
+  hdf5_write_compressed(file, name, value, compression, scalar = TRUE)
 
   # Write encoding
   write_h5ad_encoding(file, name, "string", version)
@@ -370,7 +375,7 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # Write scalar
-  hdf5_write_compressed(file, name, value, compression)
+  hdf5_write_compressed(file, name, value, compression, scalar = TRUE)
 
   # Write encoding
   write_h5ad_encoding(file, name, "numeric-scalar", version)
@@ -528,20 +533,33 @@ hdf5_path_exists <- function(file, target_path) {
 #' frame.
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param scalar Whether to write the value as a scalar or not
 #'
 #' @return Whether the `path` exists in `file`
-hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf")) {
+hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf"), scalar = FALSE) {
   compression <- match.arg(compression)
   if (!is.null(dim(value))) {
     dims <- dim(value)
   } else {
     dims <- length(value)
   }
-  # TODO: lzf compression is not supported
-  file$create_dataset(
+  dtype <- hdf5r::guess_dtype(value, scalar = scalar, string_len = Inf)
+  space <- hdf5r::guess_space(value, dtype = dtype, chunked = FALSE)
+
+  # TODO: lzf compression is not supported in hdf5r
+  # TODO: allow the user to choose compression level
+  gzip_level <- if (compression == "none") 0 else 9
+
+  out <- file$create_dataset(
     name = name,
     dims = dims,
-    gzip_level = if (compression == "none") 0 else 9,
-    robj = value
+    gzip_level = gzip_level,
+    robj = value,
+    chunk_dims = NULL,
+    space = space,
+    dtype = dtype
   )
+  # todo: create attr?
+
+  out
 }

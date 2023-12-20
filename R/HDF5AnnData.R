@@ -275,8 +275,11 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
         stop("The HDF5 interface requires the 'hdf5r' package to be installed")
       }
 
+      # check arguments
       compression <- match.arg(compression)
       mode <- match.arg(mode)
+
+      # store compression for later use
       private$.compression <- compression
 
       if (is.character(file) && !file.exists(file)) {
