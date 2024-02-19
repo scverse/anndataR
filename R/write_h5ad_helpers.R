@@ -299,8 +299,8 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   # hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
   # hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
 
-  write_h5ad_boolean_array(value_no_na, file, paste0(name, "/values"), compression)
-  write_h5ad_boolean_array(is.na(value), file, paste0(name, "/mask"), compression)
+  write_h5ad_boolean_array(value_no_na, file, paste0(name, "/values"))
+  write_h5ad_boolean_array(is.na(value), file, paste0(name, "/mask"))
 
   # Write encoding
   write_h5ad_encoding(file, name, "nullable-boolean", version)
@@ -315,9 +315,7 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
 #' @param value Value to write
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-write_h5ad_boolean_array <- function(value, file, name, compression) {
+write_h5ad_boolean_array <- function(value, file, name) {
   # Based on https://stackoverflow.com/a/74653515/4384120
 
   h5file <- rhdf5::H5Fopen(file)
