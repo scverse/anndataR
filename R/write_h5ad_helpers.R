@@ -143,13 +143,43 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
 
   for (attr_name in names(attributes)) {
     attr_value <- attributes[[attr_name]]
-    rhdf5::h5writeAttribute(
-      attr = attr_value,
-      h5obj = h5obj,
-      name = attr_name,
-      asScalar = attr_name %in% scalar_attr_names
-    )
+    if (isTRUE(attr_value) || isFALSE(attr_value)) {
+      write_h5ad_boolean_attribute(attr_value, h5obj, attr_name)
+    } else {
+      scalar_value <- attr_name %in% is_scalar
+      rhdf5::h5writeAttribute(
+        attr_value, h5obj, attr_name, asScalar = scalar_value
+      ) # nolint
+    }
   }
+}
+
+#' Write a H5AD Boolean attribute
+#'
+#' Write a Boolean attribute to a HDF5 element
+#'
+#' @noRd
+#'
+#' @param attr_value Boolean value to write
+#' @param h5obj Object representing the HDF5 element to write the attribute to
+#' @param attr_name Name of the attribute to write
+write_h5ad_boolean_attribute <- function(attr_value, h5obj, attr_name) {
+
+  # Create an ENUM datatype and insert our two key:value pairs
+  tid <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_UCHAR")
+  rhdf5::H5Tenum_insert(tid, name = "TRUE", value = ifelse(attr_value, 1L, 0L))
+  rhdf5::H5Tenum_insert(tid, name = "FALSE", value = ifelse(attr_value, 0L, 1L))
+
+  # Create the attribute using our new data type
+  sid <- rhdf5::H5Screate()
+  on.exit(rhdf5::H5Sclose(sid), add = TRUE)
+  aid <- rhdf5::H5Acreate(
+    h5obj = h5obj, name = attr_name, dtype_id = tid, h5space = sid
+  )
+  on.exit(rhdf5::H5Aclose(aid), add = TRUE)
+
+  # Write the value
+  rhdf5::H5Awrite(aid, buf = attr_value)
 }
 
 #' Write H5AD encoding
