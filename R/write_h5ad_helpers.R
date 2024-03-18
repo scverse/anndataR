@@ -122,16 +122,15 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
   type <- rhdf5::H5Iget_type(oid)
   rhdf5::H5Oclose(oid)
 
-  scalar_attr_names <-
-    if (isTRUE(is_scalar)) {
-      names(attributes)
-    } else if (isFALSE(is_scalar)) {
-      c()
-    } else if (is.character(is_scalar)) {
-      is_scalar
-    } else {
-      stop("is_scalar must be TRUE, FALSE or a character vector")
-    }
+  if (isTRUE(is_scalar)) {
+    is_scalar <- names(attributes)
+  } else if (isFALSE(is_scalar)) {
+    is_scalar <- c()
+  } else if (is.character(is_scalar)) {
+    is_scalar <- is_scalar
+  } else {
+    stop("is_scalar must be TRUE, FALSE or a character vector")
+  }
 
   if (type == "H5I_GROUP") {
     h5obj <- rhdf5::H5Gopen(h5file, name)
