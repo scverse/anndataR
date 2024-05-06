@@ -487,7 +487,7 @@ read_zarr_data_frame_index <- function(store, name, version = "0.2.0") {
   attributes <- g$get_attrs()$to_list()
   index_name <- attributes$`_index`
 
-  read_zarr_element(file, file.path(name, index_name))
+  read_zarr_element(store, file.path(name, index_name))
 }
 
 #' Read multiple H5AD datatypes
