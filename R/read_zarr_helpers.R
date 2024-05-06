@@ -9,7 +9,14 @@
 #'
 #' @noRd
 read_zarr_encoding <- function(store, name) {
-  g <- pizzarr::zarr_open_group(store, path = name)
+
+  is_group <- store$contains_item(paste0(name, "/.zgroup"))
+  if(is_group) {
+    g <- pizzarr::zarr_open_group(store, path = name)
+  } else {
+    g <- pizzarr::zarr_open_array(store, path = name)
+  }
+  
   attrs <- g$get_attrs()$to_list()
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
@@ -44,9 +51,9 @@ read_zarr_encoding <- function(store, name) {
 #' @return Value depending on the encoding
 #'
 #' @noRd
-read_zarr_element <- function(file, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
+read_zarr_element <- function(store, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
   if (is.null(type)) {
-    encoding_list <- read_zarr_encoding(file, name)
+    encoding_list <- read_zarr_encoding(store, name)
     type <- encoding_list$type
     version <- encoding_list$version
   }
@@ -72,7 +79,7 @@ read_zarr_element <- function(file, name, type = NULL, version = NULL, stop_on_e
 
   tryCatch(
     {
-      read_fun(file = file, name = name, version = version, ...)
+      read_fun(store = store, name = name, version = version, ...)
     },
     error = function(e) {
       message <- paste0(
@@ -95,6 +102,13 @@ read_zarr_array <- function(store, name) {
   return(nested_arr$data)
 }
 
+# TODO: fix bug in pizzarr?
+read_zarr_scalar <- function(store, name) {
+  zarr_arr <- pizzarr::zarr_open_array(store, path = name)
+  nested_arr <- zarr_arr$get_item("...")
+  return(nested_arr$data)
+}
+
 #' Read H5AD dense array
 #'
 #' Read a dense array from an H5AD file
@@ -112,27 +126,28 @@ read_zarr_dense_array <- function(store, name, version = "0.2.0") {
   # Extract the NestedArray contents as a base R array.
   darr <- read_zarr_array(store, name)
 
+
   # TODO: ideally, native = TRUE should take care of the row order and column order,
   # but it doesn't
   # If the dense array is a 1D matrix, convert to vector
-  if (any(dim(darr) == 1)) {
+  if (length(dim(darr)) == 1) {
     darr <- as.vector(darr)
   }
   darr
 }
 
-read_zarr_csr_matrix <- function(file, name, version) {
+read_zarr_csr_matrix <- function(store, name, version) {
   read_zarr_sparse_array(
-    file = file,
+    store = store,
     name = name,
     version = version,
     type = "csr_matrix"
   )
 }
 
-read_zarr_csc_matrix <- function(file, name, version) {
+read_zarr_csc_matrix <- function(store, name, version) {
   read_zarr_sparse_array(
-    file = file,
+    store = store,
     name = name,
     version = version,
     type = "csc_matrix"
@@ -206,10 +221,10 @@ read_zarr_sparse_array <- function(store, name, version = "0.1.0",
 #' @return a named list of 1D arrays
 #'
 #' @noRd
-read_zarr_rec_array <- function(file, name, version = "0.2.0") {
+read_zarr_rec_array <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  rhdf5::h5read(file, name, compoundAsDataFrame = FALSE)
+  stop("Reading recarrays is not yet implemented")
 }
 
 #' Read H5AD nullable boolean
@@ -223,8 +238,8 @@ read_zarr_rec_array <- function(file, name, version = "0.2.0") {
 #' @return a boolean vector
 #'
 #' @noRd
-read_zarr_nullable_boolean <- function(file, name, version = "0.1.0") {
-  as.logical(read_zarr_nullable(file, name, version))
+read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
+  as.logical(read_zarr_nullable(store, name, version))
 }
 
 #' Read H5AD nullable integer
@@ -238,8 +253,8 @@ read_zarr_nullable_boolean <- function(file, name, version = "0.1.0") {
 #' @return an integer vector
 #'
 #' @noRd
-read_zarr_nullable_integer <- function(file, name, version = "0.1.0") {
-  as.integer(read_zarr_nullable(file, name, version))
+read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
+  as.integer(read_zarr_nullable(store, name, version))
 }
 
 #' Read H5AD nullable
@@ -253,21 +268,16 @@ read_zarr_nullable_integer <- function(file, name, version = "0.1.0") {
 #' @return a nullable vector
 #'
 #' @noRd
-read_zarr_nullable <- function(file, name, version = "0.1.0") {
+read_zarr_nullable <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  element <- rhdf5::h5read(file, name)
-
-  # Some versions of rhdf5 automatically apply mask, in which case
-  # there is no 'mask' element
-  if (!is.null(names(element))) {
-    # Get mask and convert to Boolean
-    mask <- as.logical(element[["mask"]])
-    # Get values and set missing
-    element <- as.vector(element[["values"]])
-    element[mask] <- NA
-  }
-
+  mask <- read_zarr_array(store, paste0(name, "/mask"))
+  values <- read_zarr_array(store, paste0(name, "/values"))
+  
+  # Get values and set missing
+  element <- values
+  element[mask] <- NA
+  
   return(element)
 }
 
@@ -282,13 +292,10 @@ read_zarr_nullable <- function(file, name, version = "0.1.0") {
 #' @return a character vector/matrix
 #'
 #' @noRd
-read_zarr_string_array <- function(file, name, version = "0.2.0") {
+read_zarr_string_array <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
   # reads in transposed
-  string_array <- rhdf5::h5read(file, name)
-  if (is.matrix(string_array)) {
-    string_array <- t(string_array)
-  }
+  string_array <- read_zarr_array(store, name)
 
   # If the array is 1D, convert to vector
   if (length(dim(string_array)) == 1) {
@@ -309,13 +316,14 @@ read_zarr_string_array <- function(file, name, version = "0.2.0") {
 #' @return a factor
 #'
 #' @noRd
-read_zarr_categorical <- function(file, name, version = "0.2.0") {
+read_zarr_categorical <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  element <- rhdf5::h5read(file, name)
+  codes <- read_zarr_array(store, paste0(name, "/codes"))
+  categories <- read_zarr_array(store, paste0(name, "/categories"))
 
   # Get codes and convert to 1-based indexing
-  codes <- element[["codes"]] + 1
+  codes <- codes + 1
 
   if (!length(dim(codes)) == 1) {
     stop("There is currently no support for multidimensional categorical arrays")
@@ -324,9 +332,11 @@ read_zarr_categorical <- function(file, name, version = "0.2.0") {
   # Set missing values
   codes[codes == 0] <- NA
 
-  levels <- element[["categories"]]
+  levels <- categories
 
-  attributes <- rhdf5::h5readAttributes(file, name)
+  g <- pizzarr::zarr_open_group(store, path = name)
+
+  attributes <- g$get_attrs()$to_list()
   ordered <- attributes[["ordered"]]
   if (is.null(ordered) || is.na(ordered)) {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
@@ -354,9 +364,10 @@ read_zarr_categorical <- function(file, name, version = "0.2.0") {
 #' @return a character vector of length 1
 #'
 #' @noRd
-read_zarr_string_scalar <- function(file, name, version = "0.2.0") {
+read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
-  rhdf5::h5read(file, name)
+  scalar <- read_zarr_scalar(store, name)
+  scalar
 }
 
 #' Read H5AD numeric scalar
@@ -370,9 +381,9 @@ read_zarr_string_scalar <- function(file, name, version = "0.2.0") {
 #' @return a numeric vector of length 1
 #'
 #' @noRd
-read_zarr_numeric_scalar <- function(file, name, version = "0.2.0") {
+read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
-  scalar <- rhdf5::h5read(file, name)
+  scalar <- read_zarr_scalar(store, name)
 
   # If the numeric vector is Boolean it gets read as a factor by {rhdf5}
   if (is.factor(scalar)) {
@@ -393,7 +404,7 @@ read_zarr_numeric_scalar <- function(file, name, version = "0.2.0") {
 #' @return a named list
 #'
 #' @noRd
-read_zarr_mapping <- function(file, name, version = "0.1.0") {
+read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
   groupname <- paste0("/", name)
 
@@ -421,25 +432,27 @@ read_zarr_mapping <- function(file, name, version = "0.1.0") {
 #' @return a data.frame
 #'
 #' @noRd
-read_zarr_data_frame <- function(file, name, include_index = FALSE,
+read_zarr_data_frame <- function(store, name, include_index = FALSE,
                                  version = "0.2.0") {
   version <- match.arg(version)
 
-  attributes <- rhdf5::h5readAttributes(file, name)
+  g <- pizzarr::zarr_open_group(store, path = name)
+
+  attributes <- g$get_attrs()$to_list()
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
 
-  columns <- read_zarr_collection(file, name, column_order)
+  columns <- read_zarr_collection(store, name, column_order)
 
   if (length(columns) == 0) {
-    index <- read_zarr_data_frame_index(file, name)
+    index <- read_zarr_data_frame_index(store, name)
     df <- data.frame(row.names = seq_along(index))
   } else {
     df <- data.frame(columns)
   }
 
   if (isTRUE(include_index)) {
-    index <- read_zarr_data_frame_index(file, name)
+    index <- read_zarr_data_frame_index(store, name)
     df <- cbind(index, df)
 
     # The default index name is not allowed as a column name so adjust it
@@ -465,10 +478,13 @@ read_zarr_data_frame <- function(file, name, include_index = FALSE,
 #' @return an object containing the index
 #'
 #' @noRd
-read_zarr_data_frame_index <- function(file, name, version = "0.2.0") {
+read_zarr_data_frame_index <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  attributes <- rhdf5::h5readAttributes(file, name)
+  g <- pizzarr::zarr_open_group(store, path = name)
+
+
+  attributes <- g$get_attrs()$to_list()
   index_name <- attributes$`_index`
 
   read_zarr_element(file, file.path(name, index_name))
@@ -483,13 +499,13 @@ read_zarr_data_frame_index <- function(file, name, version = "0.2.0") {
 #' @return a named list
 #'
 #' @noRd
-read_zarr_collection <- function(file, name, column_order) {
+read_zarr_collection <- function(store, name, column_order) {
   columns <- list()
   for (col_name in column_order) {
     new_name <- paste0(name, "/", col_name)
-    encoding <- read_zarr_encoding(file, new_name)
+    encoding <- read_zarr_encoding(store, new_name)
     columns[[col_name]] <- read_zarr_element(
-      file = file,
+      store = store,
       name = new_name,
       type = encoding$type,
       version = encoding$version
