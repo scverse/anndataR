@@ -126,13 +126,13 @@ test_that("reading var names works", {
 
 # SETTERS ----------------------------------------------------------------
 test_that("creating empty H5AD works", {
-  empty_store <- pizzarr::MemoryStore()
+  empty_store <- pizzarr::MemoryStore$new()
   expect_silent(ZarrAnnData$new(empty_store, obs_names = 1:10, var_names = 1:20))
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_X, status=done
 test_that("writing X works", {
-  store <- pizzarr::MemoryStore()
+  store <- pizzarr::MemoryStore$new()
   h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
@@ -141,7 +141,7 @@ test_that("writing X works", {
 
 # trackstatus: class=ZarrAnnData, feature=test_set_layers, status=done
 test_that("writing layers works", {
-  store <- pizzarr::MemoryStore()
+  store <- pizzarr::MemoryStore$new()
   h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
@@ -150,7 +150,7 @@ test_that("writing layers works", {
 
 # trackstatus: class=ZarrAnnData, feature=test_set_obs, status=done
 test_that("writing obs works", {
-  store <- pizzarr::MemoryStore()
+  store <- pizzarr::MemoryStore$new()
   h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
 
   obs <- data.frame(
@@ -164,7 +164,7 @@ test_that("writing obs works", {
 
 # trackstatus: class=ZarrAnnData, feature=test_set_var, status=done
 test_that("writing var works", {
-  store <- pizzarr::MemoryStore()
+  store <- pizzarr::MemoryStore$new()
   h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
 
   var <- data.frame(
@@ -178,7 +178,7 @@ test_that("writing var works", {
 
 # trackstatus: class=ZarrAnnData, feature=test_set_obs_names, status=done
 test_that("writing obs names works", {
-  store <- pizzarr::MemoryStore()
+  store <- pizzarr::MemoryStore$new()
   h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
 
   h5ad$obs_names <- LETTERS[1:10]
@@ -187,7 +187,7 @@ test_that("writing obs names works", {
 
 # trackstatus: class=ZarrAnnData, feature=test_set_var_names, status=done
 test_that("writing var names works", {
-  store <- pizzarr::MemoryStore()
+  store <- pizzarr::MemoryStore$new()
   h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
 
   h5ad$var_names <- LETTERS[1:20]

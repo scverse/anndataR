@@ -430,28 +430,29 @@ write_zarr_data_frame_index <- function(value, store, name, compression, index_n
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
 write_empty_zarr <- function(store, obs_names, var_names, compression, version = "0.1.0") {
+  pizzarr::zarr_create_group(store, path = "/")
   write_zarr_encoding(store, "/", "anndata", "0.1.0")
 
-  write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression)
-  write_zarr_element(data.frame(row.names = var_names), store, "/var", compression)
+  # write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression)
+  # write_zarr_element(data.frame(row.names = var_names), store, "/var", compression)
 
-  pizzarr::zarr_create_group(store, path = "layers")
-  write_zarr_encoding(store, "/layers", "dict", "0.1.0")
+  # pizzarr::zarr_create_group(store, path = "layers")
+  # write_zarr_encoding(store, "/layers", "dict", "0.1.0")
 
-  pizzarr::zarr_create_group(store, path = "obsm")
-  write_zarr_encoding(store, "/obsm", "dict", "0.1.0")
+  # pizzarr::zarr_create_group(store, path = "obsm")
+  # write_zarr_encoding(store, "/obsm", "dict", "0.1.0")
 
-  pizzarr::zarr_create_group(store, path = "obsp")
-  write_zarr_encoding(store, "/obsp", "dict", "0.1.0")
+  # pizzarr::zarr_create_group(store, path = "obsp")
+  # write_zarr_encoding(store, "/obsp", "dict", "0.1.0")
 
-  pizzarr::zarr_create_group(store, path = "uns")
-  write_zarr_encoding(store, "/uns", "dict", "0.1.0")
+  # pizzarr::zarr_create_group(store, path = "uns")
+  # write_zarr_encoding(store, "/uns", "dict", "0.1.0")
 
-  pizzarr::zarr_create_group(store, path = "varm")
-  write_zarr_encoding(store, "/varm", "dict", "0.1.0")
+  # pizzarr::zarr_create_group(store, path = "varm")
+  # write_zarr_encoding(store, "/varm", "dict", "0.1.0")
 
-  pizzarr::zarr_create_group(store, path = "varp")
-  write_zarr_encoding(store, "/varp", "dict", "0.1.0")
+  # pizzarr::zarr_create_group(store, path = "varp")
+  # write_zarr_encoding(store, "/varp", "dict", "0.1.0")
 }
 
 #' HDF5 path exists

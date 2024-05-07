@@ -112,7 +112,7 @@ to_SingleCellExperiment <- function(object) { # nolint
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
 #' @export
-from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData"), ...) { # nolint
+from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData"), ...) { # nolint
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )

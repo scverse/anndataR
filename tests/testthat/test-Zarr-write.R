@@ -179,10 +179,10 @@ test_that("writing Zarr from Seurat works", {
   skip_if_not_installed("SeuratObject")
   skip("while Seurat converter is failing")
 
-  file <- withr::local_file("Seurat.h5ad")
+  store <- pizzarr::MemoryStore$new()
 
   seurat <- generate_dataset(format = "Seurat")
-  write_zarr(seurat, file)
+  write_zarr(seurat, store)
   expect_true(file.exists(file))
 })
 

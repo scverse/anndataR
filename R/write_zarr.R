@@ -67,26 +67,24 @@
 #'   # h5ad_file <- tempfile(fileext = ".h5ad")
 #'   # write_zarr(obj, h5ad_file)
 #' }
-write_zarr <- function(object, path, compression = c("none", "gzip", "lzf")) {
+write_zarr <- function(object, store, compression = c("none", "gzip", "lzf")) {
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,
       output_class = "ZarrAnnData",
-      file = path,
+      store = store,
       compression = compression
     )
   } else if (inherits(object, "Seurat")) {
     from_Seurat(
       object,
       output_class = "ZarrAnnData",
-      file = path,
+      store = store,
       compression = compression
     )
   } else if (inherits(object, "AbstractAnnData")) {
-    to_ZarrAnnData(object, path, compression = compression)
+    to_ZarrAnnData(object, store, compression = compression)
   } else {
     stop("Unable to write object of class: ", class(object))
   }
-
-  invisible(path)
 }

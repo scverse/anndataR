@@ -269,7 +269,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
 
       compression <- match.arg(compression)
       private$.compression <- compression
-
+      
       root <- pizzarr::zarr_open_group(store, path = "/")
 
 

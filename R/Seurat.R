@@ -117,7 +117,7 @@ to_Seurat <- function(obj) { # nolint
 #'
 #' @export
 # TODO: add tests with Seurat objects not created by anndataR
-from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
+from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData"), assay = NULL, X = "counts", ...) { # nolint
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
