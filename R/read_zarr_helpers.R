@@ -389,10 +389,12 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
   groupname <- paste0("/", name)
 
-  file_structure <- rhdf5::h5ls(file, recursive = TRUE)
-  columns <- file_structure[file_structure$group == groupname, "name"]
+  stop("Reading mappings is not yet implemented for Zarr (and can only be implemented Stores that support listdir)")
 
-  read_zarr_collection(file, name, columns)
+  #file_structure <- rhdf5::h5ls(file, recursive = TRUE)
+  #columns <- file_structure[file_structure$group == groupname, "name"]
+
+  #read_zarr_collection(file, name, columns)
 }
 
 #' Read H5AD data frame

@@ -16,13 +16,11 @@
 #' `write_zarr_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-write_zarr_element <- function(value, file, name, compression = c("none", "gzip", "lzf"), stop_on_error = FALSE, ...) { # nolint
+write_zarr_element <- function(value, store, name, compression = c("none", "gzip", "lzf"), stop_on_error = FALSE, ...) { # nolint
   compression <- match.arg(compression)
 
   # Delete the path if it already exists
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
-  }
+  # TODO: https://github.com/keller-mark/pizzarr/issues/69
 
   # Sparse matrices
   write_fun <-
@@ -63,23 +61,25 @@ write_zarr_element <- function(value, file, name, compression = c("none", "gzip"
       stop("Writing '", class(value), "' objects to H5AD files is not supported")
     }
 
-  tryCatch(
-    {
-      write_fun(value = value, file = file, name = name, compression = compression, ...)
-    },
-    error = function(e) {
-      message <- paste0(
-        "Could not write element '", name, "' of type '", class(value), "':\n",
-        conditionMessage(e)
-      )
-      if (stop_on_error) {
-        stop(message)
-      } else {
-        warning(message)
-        return(NULL)
-      }
-    }
-  )
+  write_fun(value = value, store = store, name = name, compression = compression, ...)
+
+  # tryCatch(
+  #   {
+  #     write_fun(value = value, store = store, name = name, compression = compression, ...)
+  #   },
+  #   error = function(e) {
+  #     message <- paste0(
+  #       "Could not write element '", name, "' of type '", class(value), "':\n",
+  #       conditionMessage(e)
+  #     )
+  #     if (stop_on_error) {
+  #       stop(message)
+  #     } else {
+  #       warning(message)
+  #       return(NULL)
+  #     }
+  #   }
+  # )
 }
 
 #' Write H5AD encoding
@@ -92,24 +92,12 @@ write_zarr_element <- function(value, file, name, compression = c("none", "gzip"
 #' @param name Name of the element within the H5AD file
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
-write_zarr_encoding <- function(file, name, encoding, version) {
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
+write_zarr_encoding <- function(store, name, encoding, version) {
+  g <- pizzarr::zarr_open(store, path = name)
+  attrs <- g$get_attrs()
 
-  oid <- rhdf5::H5Oopen(h5file, name)
-  type <- rhdf5::H5Iget_type(oid)
-  rhdf5::H5Oclose(oid)
-
-  if (type == "H5I_GROUP") {
-    h5obj <- rhdf5::H5Gopen(h5file, name)
-    on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-  } else {
-    h5obj <- rhdf5::H5Dopen(h5file, name)
-    on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
-  }
-
-  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type", asScalar = TRUE) # nolint
-  rhdf5::h5writeAttribute(version, h5obj, "encoding-version", asScalar = TRUE) # nolint
+  attrs$set_item("encoding-type", encoding)
+  attrs$set_item("encoding-version", encoding)
 }
 
 #' Write H5AD dense array
@@ -124,19 +112,13 @@ write_zarr_encoding <- function(file, name, encoding, version) {
 #' @param version Encoding version of the element to write
 #'
 #' @noRd
-write_zarr_dense_array <- function(value, file, name, compression, version = "0.2.0") {
+write_zarr_dense_array <- function(value, store, name, compression, version = "0.2.0") {
   version <- match.arg(version)
 
-  if (!is.vector(value)) {
-    # Transpose the value because writing with native=TRUE does not
-    # seem to work as expected
-    value <- t(value)
-  }
-
-  hdf5_write_compressed(file, name, value, compression)
+  zarr_write_compressed(store, name, value, compression)
 
   # Write attributes
-  write_zarr_encoding(file, name, "array", version)
+  write_zarr_encoding(store, name, "array", version)
 }
 
 #' Write H5AD sparse array
@@ -151,7 +133,7 @@ write_zarr_dense_array <- function(value, file, name, compression, version = "0.
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_sparse_array <- function(value, file, name, compression, version = "0.1.0") {
+write_zarr_sparse_array <- function(value, store, name, compression, version = "0.1.0") {
   version <- match.arg(version)
 
   # check types
@@ -171,23 +153,19 @@ write_zarr_sparse_array <- function(value, file, name, compression, version = "0
     )
   }
 
+  print(value)
+
   # Write sparse matrix
-  rhdf5::h5createGroup(file, name)
-  hdf5_write_compressed(file, paste0(name, "/indices"), attr(value, indices_attr), compression)
-  hdf5_write_compressed(file, paste0(name, "/indptr"), value@p, compression)
-  hdf5_write_compressed(file, paste0(name, "/data"), value@x, compression)
+  g <- pizzarr::zarr_create_group(store, path = name)
+  zarr_write_compressed(store, paste0(name, "/indices"), attr(value, indices_attr), compression)
+  zarr_write_compressed(store, paste0(name, "/indptr"), value@p, compression)
+  zarr_write_compressed(store, paste0(name, "/data"), value@x, compression)
 
   # Add encoding
-  write_zarr_encoding(file, name, type, version)
+  write_zarr_encoding(store, name, type, version)
 
   # Write shape attribute
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-
-  h5obj <- rhdf5::H5Gopen(h5file, name)
-  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-
-  rhdf5::h5writeAttribute(dim(value), h5obj, "shape")
+  g$get_attrs()$set_item("shape", dim(value))
 }
 
 #' Write H5AD nullable boolean
@@ -202,17 +180,17 @@ write_zarr_sparse_array <- function(value, file, name, compression, version = "0
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_nullable_boolean <- function(value, file, name, compression, version = "0.1.0") {
+write_zarr_nullable_boolean <- function(value, store, name, compression, version = "0.1.0") {
   # write mask and values
-  rhdf5::h5createGroup(file, name)
+  g <- pizzarr::zarr_create_group(store, path = name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
-  hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
-  hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
+  zarr_write_compressed(store, paste0(name, "/values"), value_no_na, compression)
+  zarr_write_compressed(store, paste0(name, "/mask"), is.na(value), compression)
 
   # Write attributes
-  write_zarr_encoding(file, name, "nullable-boolean", version)
+  write_zarr_encoding(store, name, "nullable-boolean", version)
 }
 
 #' Write H5AD nullable integer
@@ -227,17 +205,17 @@ write_zarr_nullable_boolean <- function(value, file, name, compression, version 
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_nullable_integer <- function(value, file, name, compression, version = "0.1.0") {
+write_zarr_nullable_integer <- function(value, store, name, compression, version = "0.1.0") {
   # write mask and values
-  rhdf5::h5createGroup(file, name)
+  g <- pizzarr::zarr_create_group(store, path = name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- -1L
 
-  hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
-  hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
+  zarr_write_compressed(store, paste0(name, "/values"), value_no_na, compression)
+  zarr_write_compressed(store, paste0(name, "/mask"), is.na(value), compression)
 
   # Write attributes
-  write_zarr_encoding(file, name, "nullable-integer", version)
+  write_zarr_encoding(store, name, "nullable-integer", version)
 }
 
 #' Write H5AD string array
@@ -252,16 +230,19 @@ write_zarr_nullable_integer <- function(value, file, name, compression, version 
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_string_array <- function(value, file, name, compression, version = "0.2.0") {
-  rhdf5::h5write(
-    value,
-    file,
-    name,
-    variableLengthString = TRUE,
-    encoding = "UTF-8"
-  )
+write_zarr_string_array <- function(value, store, name, compression, version = "0.2.0") {
 
-  write_zarr_encoding(file, name, "string-array", version)
+  if (!is.null(dim(value))) {
+    dims <- dim(value)
+  } else {
+    dims <- length(value)
+  }
+  
+  object_codec = pizzarr::VLenUtf8Codec$new()
+  data <- array(data = value, dim = dims)
+  a <- pizzarr::zarr_create_array(data, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = dims)
+
+  write_zarr_encoding(store, name, "string-array", version)
 }
 
 #' Write H5AD categorical
@@ -276,13 +257,13 @@ write_zarr_string_array <- function(value, file, name, compression, version = "0
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_categorical <- function(value, file, name, compression, version = "0.2.0") {
-  rhdf5::h5createGroup(file, name)
-  hdf5_write_compressed(file, paste0(name, "/categories"), as.integer(levels(value)), compression)
-  hdf5_write_compressed(file, paste0(name, "/codes"), as.integer(value), compression)
-  hdf5_write_compressed(file, paste0(name, "/ordered"), is.ordered(value), compression)
+write_zarr_categorical <- function(value, store, name, compression, version = "0.2.0") {
+  g <- pizzarr::zarr_create_group(store, path = name)
+  zarr_write_compressed(store, paste0(name, "/categories"), as.integer(levels(value)), compression)
+  zarr_write_compressed(store, paste0(name, "/codes"), as.integer(value), compression)
+  zarr_write_compressed(store, paste0(name, "/ordered"), is.ordered(value), compression)
 
-  write_zarr_encoding(file, name, "categorical", version)
+  write_zarr_encoding(store, name, "categorical", version)
 }
 
 #' Write H5AD string scalar
@@ -297,18 +278,13 @@ write_zarr_categorical <- function(value, file, name, compression, version = "0.
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_string_scalar <- function(value, file, name, compression, version = "0.2.0") {
+write_zarr_string_scalar <- function(value, store, name, compression, version = "0.2.0") {
   # Write scalar
-  rhdf5::h5write(
-    value,
-    file,
-    name,
-    variableLengthString = TRUE,
-    encoding = "UTF-8"
-  )
+  object_codec = pizzarr::VLenUtf8Codec$new()
+  a <- pizzarr::zarr_create_array(value, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = list())
 
   # Write attributes
-  write_zarr_encoding(file, name, "string", version)
+  write_zarr_encoding(store, name, "string", version)
 }
 
 #' Write H5AD numeric scalar
@@ -323,13 +299,12 @@ write_zarr_string_scalar <- function(value, file, name, compression, version = "
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_numeric_scalar <- function(value, file, name, compression, version = "0.2.0") {
+write_zarr_numeric_scalar <- function(value, store, name, compression, version = "0.2.0") {
   # Write scalar
-
-  hdf5_write_compressed(file, name, value, compression)
+  zarr_write_compressed(store, name, value, compression)
 
   # Write attributes
-  write_zarr_encoding(file, name, "numeric-scalar", version)
+  write_zarr_encoding(store, name, "numeric-scalar", version)
 }
 
 #' Write H5AD mapping
@@ -344,15 +319,15 @@ write_zarr_numeric_scalar <- function(value, file, name, compression, version = 
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_mapping <- function(value, file, name, compression, version = "0.1.0") {
-  rhdf5::h5createGroup(file, name)
+write_zarr_mapping <- function(value, store, name, compression, version = "0.1.0") {
+  g <- pizzarr::zarr_create_group(store, path = name)
 
   # Write mapping elements
   for (key in names(value)) {
-    write_zarr_element(value[[key]], file, paste0(name, "/", key), compression)
+    write_zarr_element(value[[key]], store, paste0(name, "/", key), compression)
   }
 
-  write_zarr_encoding(file, name, "dict", version)
+  write_zarr_encoding(store, name, "dict", version)
 }
 
 #' Write H5AD data frame
@@ -370,10 +345,10 @@ write_zarr_mapping <- function(value, file, name, compression, version = "0.1.0"
 #' the number of rows in `values` or a single character string giving the name
 #' of a column in `values`. If `NULL` then `rownames(value)` is used.
 #' @param version Encoding version of the element to write
-write_zarr_data_frame <- function(value, file, name, compression, index = NULL,
+write_zarr_data_frame <- function(value, store, name, compression, index = NULL,
                                   version = "0.2.0") {
-  rhdf5::h5createGroup(file, name)
-  write_zarr_encoding(file, name, "dataframe", version)
+  g <- pizzarr::zarr_create_group(store, path = name)
+  write_zarr_encoding(store, name, "dataframe", version)
 
   if (is.null(index)) {
     index_name <- "_index"
@@ -393,20 +368,14 @@ write_zarr_data_frame <- function(value, file, name, compression, index = NULL,
   }
 
   # Write index
-  write_zarr_data_frame_index(index_value, file, name, compression, index_name)
+  write_zarr_data_frame_index(index_value, store, name, compression, index_name)
 
   # Write data frame columns
   for (col in colnames(value)) {
-    write_zarr_element(value[[col]], file, paste0(name, "/", col), compression)
+    write_zarr_element(value[[col]], store, paste0(name, "/", col), compression)
   }
 
   # Write additional data frame attributes
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-
-  h5obj <- rhdf5::H5Gopen(h5file, name)
-  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-
   col_order <- colnames(value)
   col_order <- col_order[col_order != index_name]
   # If there are no columns other than the index we set column order to an
@@ -414,7 +383,8 @@ write_zarr_data_frame <- function(value, file, name, compression, index = NULL,
   if (length(col_order) == 0) {
     col_order <- numeric()
   }
-  rhdf5::h5writeAttribute(col_order, h5obj, "column-order") # nolint
+
+  g$get_attrs()$set_item("column-order", col_order)
 }
 
 #' Write H5AD data frame index
@@ -431,27 +401,22 @@ write_zarr_data_frame <- function(value, file, name, compression, index = NULL,
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param index_name Name of the data frame column storing the index
-write_zarr_data_frame_index <- function(value, file, name, compression, index_name) {
-  if (!hdf5_path_exists(file, name)) {
-    stop("The data frame '", name, "' does not exist in '", file, "'")
+write_zarr_data_frame_index <- function(value, store, name, compression, index_name) {
+  if (!zarr_path_exists(store, name)) {
+    stop("The data frame '", name, "' does not exist in store")
   }
 
-  encoding <- read_h5ad_encoding(file, name)
+  encoding <- read_zarr_encoding(store, name)
   if (encoding$type != "dataframe") {
-    stop("'", name, "' in '", file, "' is not a data frame")
+    stop("'", name, "' in '", store, "' is not a data frame")
   }
 
   # Write index columns
-  write_zarr_element(value, file, paste0(name, "/", index_name))
+  write_zarr_element(value, store, paste0(name, "/", index_name))
 
   # Write data frame index attribute
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-
-  h5obj <- rhdf5::H5Gopen(h5file, name)
-  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-
-  rhdf5::h5writeAttribute(index_name, h5obj, "_index", asScalar = TRUE)
+  g <- pizzarr::zarr_open_group(store, path = name)
+  g$get_attrs()$set_item("_index", index_name)
 }
 
 #' Write empty H5AD
@@ -466,32 +431,29 @@ write_zarr_data_frame_index <- function(value, file, name, compression, index_na
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
-write_empty_h5ad <- function(file, obs_names, var_names, compression, version = "0.1.0") {
-  h5file <- rhdf5::H5Fcreate(file)
-  rhdf5::H5Fclose(h5file)
+write_empty_zarr <- function(store, obs_names, var_names, compression, version = "0.1.0") {
+  write_zarr_encoding(store, "/", "anndata", "0.1.0")
 
-  write_zarr_encoding(file, "/", "anndata", "0.1.0")
+  write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression)
+  write_zarr_element(data.frame(row.names = var_names), store, "/var", compression)
 
-  write_zarr_element(data.frame(row.names = obs_names), file, "/obs", compression)
-  write_zarr_element(data.frame(row.names = var_names), file, "/var", compression)
+  pizzarr::zarr_create_group(store, path = "layers")
+  write_zarr_encoding(store, "/layers", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "layers")
-  write_zarr_encoding(file, "/layers", "dict", "0.1.0")
+  pizzarr::zarr_create_group(store, path = "obsm")
+  write_zarr_encoding(store, "/obsm", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "obsm")
-  write_zarr_encoding(file, "/obsm", "dict", "0.1.0")
+  pizzarr::zarr_create_group(store, path = "obsp")
+  write_zarr_encoding(store, "/obsp", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "obsp")
-  write_zarr_encoding(file, "/obsp", "dict", "0.1.0")
+  pizzarr::zarr_create_group(store, path = "uns")
+  write_zarr_encoding(store, "/uns", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "uns")
-  write_zarr_encoding(file, "/uns", "dict", "0.1.0")
+  pizzarr::zarr_create_group(store, path = "varm")
+  write_zarr_encoding(store, "/varm", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "varm")
-  write_zarr_encoding(file, "/varm", "dict", "0.1.0")
-
-  rhdf5::h5createGroup(file, "varp")
-  write_zarr_encoding(file, "/varp", "dict", "0.1.0")
+  pizzarr::zarr_create_group(store, path = "varp")
+  write_zarr_encoding(store, "/varp", "dict", "0.1.0")
 }
 
 #' HDF5 path exists
@@ -504,17 +466,17 @@ write_empty_h5ad <- function(file, obs_names, var_names, compression, version = 
 #' @param target_path The path within the file to test for
 #'
 #' @return Whether the `path` exists in `file`
-hdf5_path_exists <- function(file, target_path) {
-  if (substr(target_path, 1, 1) != "/") {
-    target_path <- paste0("/", target_path)
-  }
-
-  content <- rhdf5::h5ls(file)
-
-  paths <- file.path(content$group, content$name)
-  paths <- gsub("//", "/", paths) # Remove double slash for root paths
-
-  target_path %in% paths
+zarr_path_exists <- function(store, target_path) {
+  result <- tryCatch({
+    store$get_item(target_path)
+    return(TRUE)
+  }, error = function(cond) {
+    if(pizzarr::is_key_error(cond)) {
+      return(FALSE)
+    }
+    stop(cond)
+  })
+  return(result)
 }
 
 #' HDF5 write compressed
@@ -532,19 +494,25 @@ hdf5_path_exists <- function(file, target_path) {
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #'
 #' @return Whether the `path` exists in `file`
-hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf")) {
+zarr_write_compressed <- function(store, name, value, compression = c("none", "gzip", "lzf")) {
   compression <- match.arg(compression)
   if (!is.null(dim(value))) {
     dims <- dim(value)
   } else {
     dims <- length(value)
   }
-  rhdf5::h5createDataset(
-    file,
-    name,
-    dims,
-    storage.mode = storage.mode(value),
-    filter = toupper(compression)
-  )
-  rhdf5::h5write(value, file, name)
+
+  if(is.integer(value)) {
+    dtype <- "<i8"
+  } else if(is.numeric(value)) {
+    dtype <- "<f8"
+  } else if(is.logical(value)) {
+    dtype <- "|b1"
+  } else if(is.character(value)) {
+    dtype <- "|O"
+  } else {
+    stop("Unsupported data type for writing to Zarr: ", class(value))
+  }
+  data <- array(data = value, dim = dims)
+  pizzarr::zarr_create_array(data, store = store, path = name, shape = dims, dtype = dtype) # TODO: compression
 }

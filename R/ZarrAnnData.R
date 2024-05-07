@@ -273,8 +273,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       root <- pizzarr::zarr_open_group(store, path = "/")
 
 
-      #if (!file.exists(file)) {/
-      if(FALSE) { # TODO: how to determine if the store has been initialized as an AnnData-Zarr store, vs. should be initialized here?
+      if(length(root$get_attrs()$to_list()) == 0) {
         # Check obs_names and var_names have been provided
         if (is.null(obs_names)) {
           stop("When creating a new .h5ad file, `obs_names` must be defined.")
@@ -284,10 +283,10 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         }
 
         # Create an empty H5AD using the provided obs/var names
-        write_empty_zarr(file, obs_names, var_names, compression)
+        write_empty_zarr(store, obs_names, var_names, compression)
 
         # Set private object slots
-        private$zarr_store <- file
+        private$zarr_store <- store
         private$.n_obs <- length(obs_names)
         private$.n_vars <- length(var_names)
         private$.obs_names <- obs_names
