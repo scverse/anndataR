@@ -153,8 +153,6 @@ write_zarr_sparse_array <- function(value, store, name, compression, version = "
     )
   }
 
-  print(value)
-
   # Write sparse matrix
   g <- pizzarr::zarr_create_group(store, path = name)
   zarr_write_compressed(store, paste0(name, "/indices"), attr(value, indices_attr), compression)
@@ -238,7 +236,7 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
     dims <- length(value)
   }
   
-  object_codec = pizzarr::VLenUtf8Codec$new()
+  object_codec <- pizzarr::VLenUtf8Codec$new()
   data <- array(data = value, dim = dims)
   a <- pizzarr::zarr_create_array(data, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = dims)
 

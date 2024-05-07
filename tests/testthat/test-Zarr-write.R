@@ -17,7 +17,7 @@ test_that("Writing Zarr sparse arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
   csc_array <- as(array, "CsparseMatrix")
-  write_zarr_element(csc_array, store, "csc_array", compression = "none")
+  expect_silent(write_zarr_element(csc_array, store, "csc_array", compression = "none"))
   expect_true(zarr_path_exists(store, "csc_array"))
   expect_true(zarr_path_exists(store, "csc_array/data"))
   expect_true(zarr_path_exists(store, "csc_array/indices"))
@@ -66,7 +66,7 @@ test_that("Writing H5AD nullable integers works", {
 test_that("Writing H5AD string arrays works", {
   string <- LETTERS[1:5]
 
-  expect_silent(write_zarr_element(string, store, "string_array"))
+  write_zarr_element(string, store, "string_array")
   expect_true(zarr_path_exists(store, "string_array"))
   g <- pizzarr::zarr_open(store, path = "string_array")
   attrs <- g$get_attrs()$to_list()
