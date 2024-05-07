@@ -19,32 +19,32 @@ test_that("reading X works", {
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_get_layers, status=done
-# test_that("reading layers works", {
-#   layers <- adata$layers
-#   expect_true(is.list(layers), "list")
-#   expect_equal(
-#     names(layers),
-#     c("counts", "csc_counts", "dense_X", "dense_counts")
-#   )
-# })
+test_that("reading layers works", {
+  layers <- adata$layers
+  expect_true(is.list(layers), "list")
+  expect_equal(
+    names(layers),
+    c("counts", "csc_counts", "dense_X", "dense_counts")
+  )
+})
 
-# test_that("reading obsm works", {
-#   obsm <- adata$obsm
-#   expect_true(is.list(obsm), "list")
-#   expect_equal(
-#     names(obsm),
-#     c("X_pca", "X_umap")
-#   )
-# })
+test_that("reading obsm works", {
+  obsm <- adata$obsm
+  expect_true(is.list(obsm), "list")
+  expect_equal(
+    names(obsm),
+    c("X_pca", "X_umap")
+  )
+})
 
-# test_that("reading varm works", {
-#   varm <- adata$varm
-#   expect_true(is.list(varm), "list")
-#   expect_equal(
-#     names(varm),
-#     c("PCs")
-#   )
-# })
+test_that("reading varm works", {
+  varm <- adata$varm
+  expect_true(is.list(varm), "list")
+  expect_equal(
+    names(varm),
+    c("PCs")
+  )
+})
 
 test_that("obsm/ varm validation", {
   N_OBS <- 5
@@ -125,9 +125,9 @@ test_that("reading var names works", {
 })
 
 # SETTERS ----------------------------------------------------------------
-test_that("creating empty H5AD works", {
+test_that("creating empty Zarr works", {
   empty_store <- pizzarr::MemoryStore$new()
-  expect_silent(ZarrAnnData$new(empty_store, obs_names = 1:10, var_names = 1:20))
+  ZarrAnnData$new(empty_store, obs_names = 1:10, var_names = 1:20)
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_X, status=done

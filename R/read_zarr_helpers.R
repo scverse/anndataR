@@ -389,12 +389,9 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
   groupname <- paste0("/", name)
 
-  stop("Reading mappings is not yet implemented for Zarr (and can only be implemented Stores that support listdir)")
+  columns <- store$listdir(name)
 
-  #file_structure <- rhdf5::h5ls(file, recursive = TRUE)
-  #columns <- file_structure[file_structure$group == groupname, "name"]
-
-  #read_zarr_collection(file, name, columns)
+  read_zarr_collection(store, name, columns)
 }
 
 #' Read H5AD data frame
@@ -486,13 +483,17 @@ read_zarr_collection <- function(store, name, column_order) {
   columns <- list()
   for (col_name in column_order) {
     new_name <- paste0(name, "/", col_name)
-    encoding <- read_zarr_encoding(store, new_name)
-    columns[[col_name]] <- read_zarr_element(
-      store = store,
-      name = new_name,
-      type = encoding$type,
-      version = encoding$version
-    )
+    tryCatch({
+      encoding <- read_zarr_encoding(store, new_name)
+      columns[[col_name]] <- read_zarr_element(
+        store = store,
+        name = new_name,
+        type = encoding$type,
+        version = encoding$version
+      )
+    }, error = function(cond) {
+      warning("Not reading file '", new_name, "' in collection")
+    })
   }
   columns
 }

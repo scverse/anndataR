@@ -61,25 +61,24 @@ write_zarr_element <- function(value, store, name, compression = c("none", "gzip
       stop("Writing '", class(value), "' objects to H5AD files is not supported")
     }
 
-  write_fun(value = value, store = store, name = name, compression = compression, ...)
 
-  # tryCatch(
-  #   {
-  #     write_fun(value = value, store = store, name = name, compression = compression, ...)
-  #   },
-  #   error = function(e) {
-  #     message <- paste0(
-  #       "Could not write element '", name, "' of type '", class(value), "':\n",
-  #       conditionMessage(e)
-  #     )
-  #     if (stop_on_error) {
-  #       stop(message)
-  #     } else {
-  #       warning(message)
-  #       return(NULL)
-  #     }
-  #   }
-  # )
+  tryCatch(
+    {
+      write_fun(value = value, store = store, name = name, compression = compression, ...)
+    },
+    error = function(e) {
+      message <- paste0(
+        "Could not write element '", name, "' of type '", class(value), "':\n",
+        conditionMessage(e)
+      )
+      if (stop_on_error) {
+        stop(message)
+      } else {
+        warning(message)
+        return(NULL)
+      }
+    }
+  )
 }
 
 #' Write H5AD encoding
@@ -154,7 +153,7 @@ write_zarr_sparse_array <- function(value, store, name, compression, version = "
   }
 
   # Write sparse matrix
-  g <- pizzarr::zarr_create_group(store, path = name)
+  g <- pizzarr::zarr_open_group(store, path = name)
   zarr_write_compressed(store, paste0(name, "/indices"), attr(value, indices_attr), compression)
   zarr_write_compressed(store, paste0(name, "/indptr"), value@p, compression)
   zarr_write_compressed(store, paste0(name, "/data"), value@x, compression)
@@ -180,7 +179,7 @@ write_zarr_sparse_array <- function(value, store, name, compression, version = "
 #' @param version Encoding version of the element to write
 write_zarr_nullable_boolean <- function(value, store, name, compression, version = "0.1.0") {
   # write mask and values
-  g <- pizzarr::zarr_create_group(store, path = name)
+  g <- pizzarr::zarr_open_group(store, path = name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
@@ -205,7 +204,7 @@ write_zarr_nullable_boolean <- function(value, store, name, compression, version
 #' @param version Encoding version of the element to write
 write_zarr_nullable_integer <- function(value, store, name, compression, version = "0.1.0") {
   # write mask and values
-  g <- pizzarr::zarr_create_group(store, path = name)
+  g <- pizzarr::zarr_open_group(store, path = name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- -1L
 
@@ -256,7 +255,7 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_zarr_categorical <- function(value, store, name, compression, version = "0.2.0") {
-  g <- pizzarr::zarr_create_group(store, path = name)
+  g <- pizzarr::zarr_open_group(store, path = name)
   zarr_write_compressed(store, paste0(name, "/categories"), levels(value), compression)
   zarr_write_compressed(store, paste0(name, "/codes"), as.integer(value), compression)
   zarr_write_compressed(store, paste0(name, "/ordered"), is.ordered(value), compression)
@@ -318,7 +317,7 @@ write_zarr_numeric_scalar <- function(value, store, name, compression, version =
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_zarr_mapping <- function(value, store, name, compression, version = "0.1.0") {
-  g <- pizzarr::zarr_create_group(store, path = name)
+  g <- pizzarr::zarr_open_group(store, path = name)
 
   # Write mapping elements
   for (key in names(value)) {
@@ -345,7 +344,7 @@ write_zarr_mapping <- function(value, store, name, compression, version = "0.1.0
 #' @param version Encoding version of the element to write
 write_zarr_data_frame <- function(value, store, name, compression, index = NULL,
                                   version = "0.2.0") {
-  g <- pizzarr::zarr_create_group(store, path = name)
+  g <- pizzarr::zarr_open_group(store, path = name)
   write_zarr_encoding(store, name, "dataframe", version)
 
   if (is.null(index)) {
@@ -401,7 +400,9 @@ write_zarr_data_frame <- function(value, store, name, compression, index = NULL,
 #' @param index_name Name of the data frame column storing the index
 write_zarr_data_frame_index <- function(value, store, name, compression, index_name) {
   if (!zarr_path_exists(store, name)) {
-    stop("The data frame '", name, "' does not exist in store")
+    warning("The data frame '", name, "' does not exist in store. Creating it.")
+    g <- pizzarr::zarr_open_group(store, path = name)
+    write_zarr_encoding(store, name, "dataframe", "0.2.0")
   }
 
   encoding <- read_zarr_encoding(store, name)
@@ -430,29 +431,29 @@ write_zarr_data_frame_index <- function(value, store, name, compression, index_n
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
 write_empty_zarr <- function(store, obs_names, var_names, compression, version = "0.1.0") {
-  pizzarr::zarr_create_group(store, path = "/")
+  pizzarr::zarr_open_group(store, path = "/")
   write_zarr_encoding(store, "/", "anndata", "0.1.0")
 
-  # write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression)
-  # write_zarr_element(data.frame(row.names = var_names), store, "/var", compression)
+  write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression)
+  write_zarr_element(data.frame(row.names = var_names), store, "/var", compression)
 
-  # pizzarr::zarr_create_group(store, path = "layers")
-  # write_zarr_encoding(store, "/layers", "dict", "0.1.0")
+  pizzarr::zarr_open_group(store, path = "layers")
+  write_zarr_encoding(store, "/layers", "dict", "0.1.0")
 
-  # pizzarr::zarr_create_group(store, path = "obsm")
-  # write_zarr_encoding(store, "/obsm", "dict", "0.1.0")
+  pizzarr::zarr_open_group(store, path = "obsm")
+  write_zarr_encoding(store, "/obsm", "dict", "0.1.0")
 
-  # pizzarr::zarr_create_group(store, path = "obsp")
-  # write_zarr_encoding(store, "/obsp", "dict", "0.1.0")
+  pizzarr::zarr_open_group(store, path = "obsp")
+  write_zarr_encoding(store, "/obsp", "dict", "0.1.0")
 
-  # pizzarr::zarr_create_group(store, path = "uns")
-  # write_zarr_encoding(store, "/uns", "dict", "0.1.0")
+  pizzarr::zarr_open_group(store, path = "uns")
+  write_zarr_encoding(store, "/uns", "dict", "0.1.0")
 
-  # pizzarr::zarr_create_group(store, path = "varm")
-  # write_zarr_encoding(store, "/varm", "dict", "0.1.0")
+  pizzarr::zarr_open_group(store, path = "varm")
+  write_zarr_encoding(store, "/varm", "dict", "0.1.0")
 
-  # pizzarr::zarr_create_group(store, path = "varp")
-  # write_zarr_encoding(store, "/varp", "dict", "0.1.0")
+  pizzarr::zarr_open_group(store, path = "varp")
+  write_zarr_encoding(store, "/varp", "dict", "0.1.0")
 }
 
 #' HDF5 path exists
