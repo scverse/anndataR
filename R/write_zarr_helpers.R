@@ -257,7 +257,7 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
 #' @param version Encoding version of the element to write
 write_zarr_categorical <- function(value, store, name, compression, version = "0.2.0") {
   g <- pizzarr::zarr_create_group(store, path = name)
-  zarr_write_compressed(store, paste0(name, "/categories"), as.integer(levels(value)), compression)
+  zarr_write_compressed(store, paste0(name, "/categories"), levels(value), compression)
   zarr_write_compressed(store, paste0(name, "/codes"), as.integer(value), compression)
   zarr_write_compressed(store, paste0(name, "/ordered"), is.ordered(value), compression)
 
@@ -500,6 +500,7 @@ zarr_write_compressed <- function(store, name, value, compression = c("none", "g
     dims <- length(value)
   }
 
+  object_codec <- NA
   if(is.integer(value)) {
     dtype <- "<i8"
   } else if(is.numeric(value)) {
@@ -508,9 +509,10 @@ zarr_write_compressed <- function(store, name, value, compression = c("none", "g
     dtype <- "|b1"
   } else if(is.character(value)) {
     dtype <- "|O"
+    object_codec <- pizzarr::VLenUtf8Codec$new()
   } else {
     stop("Unsupported data type for writing to Zarr: ", class(value))
   }
   data <- array(data = value, dim = dims)
-  pizzarr::zarr_create_array(data, store = store, path = name, shape = dims, dtype = dtype) # TODO: compression
+  pizzarr::zarr_create_array(data, store = store, path = name, shape = dims, dtype = dtype, object_codec = object_codec) # TODO: compression
 }

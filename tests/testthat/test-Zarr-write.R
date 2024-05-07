@@ -39,7 +39,7 @@ test_that("Writing Zarr sparse arrays works", {
   expect_equal(attrs[["encoding-type"]], "csr_matrix")
 })
 
-test_that("Writing H5AD nullable booleans works", {
+test_that("Writing Zarr nullable booleans works", {
   nullable <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
   nullable[5] <- NA
 
@@ -51,7 +51,7 @@ test_that("Writing H5AD nullable booleans works", {
   expect_equal(attrs[["encoding-type"]], "nullable-boolean")
 })
 
-test_that("Writing H5AD nullable integers works", {
+test_that("Writing Zarr nullable integers works", {
   nullable <- as.integer(1:5)
   nullable[5] <- NA
 
@@ -63,7 +63,7 @@ test_that("Writing H5AD nullable integers works", {
   expect_equal(attrs[["encoding-type"]], "nullable-integer")
 })
 
-test_that("Writing H5AD string arrays works", {
+test_that("Writing Zarr string arrays works", {
   string <- LETTERS[1:5]
 
   write_zarr_element(string, store, "string_array")
@@ -83,7 +83,7 @@ test_that("Writing H5AD string arrays works", {
   expect_equal(attrs[["encoding-type"]], "string-array")
 })
 
-test_that("Writing H5AD categoricals works", {
+test_that("Writing Zarr categoricals works", {
   categorical <- factor(LETTERS[1:5])
 
   expect_no_error(write_zarr_element(categorical, store, "categorical"))
@@ -97,7 +97,7 @@ test_that("Writing H5AD categoricals works", {
   expect_equal(attrs[["encoding-type"]], "categorical")
 })
 
-test_that("Writing H5AD string scalars works", {
+test_that("Writing Zarr string scalars works", {
   string <- "A"
 
   expect_silent(write_zarr_element(string, store, "string_scalar"))
@@ -108,7 +108,7 @@ test_that("Writing H5AD string scalars works", {
   expect_equal(attrs[["encoding-type"]], "string")
 })
 
-test_that("Writing H5AD numeric scalars works", {
+test_that("Writing Zarr numeric scalars works", {
   number <- 1.0
 
   expect_silent(write_zarr_element(number, store, "numeric_scalar"))
@@ -119,7 +119,7 @@ test_that("Writing H5AD numeric scalars works", {
   expect_equal(attrs[["encoding-type"]], "numeric-scalar")
 })
 
-test_that("Writing H5AD mappings works", {
+test_that("Writing Zarr mappings works", {
   mapping <- list(
     array = matrix(rnorm(20), nrow = 5, ncol = 4),
     sparse = as(matrix(rnorm(20), nrow = 5, ncol = 4), "CsparseMatrix"),
@@ -144,7 +144,7 @@ test_that("Writing H5AD mappings works", {
   expect_equal(attrs[["encoding-type"]], "dict")
 })
 
-test_that("Writing H5AD data frames works", {
+test_that("Writing Zarr data frames works", {
   df <- data.frame(
     Letters = letters[1:5],
     Numbers = 1:5
@@ -161,10 +161,10 @@ test_that("Writing H5AD data frames works", {
   expect_equal(attrs[["encoding-type"]], "dataframe")
   expect_true(all(c("_index", "column-order") %in% names(attrs)))
   expect_equal(attrs[["_index"]], "_index")
-  expect_identical(as.vector(attrs[["column-order"]]), c("Letters", "Numbers"))
+  expect_identical(as.character(attrs[["column-order"]]), c("Letters", "Numbers"))
 })
 
-test_that("writing H5AD from SingleCellExperiment works", {
+test_that("writing Zarr from SingleCellExperiment works", {
   skip_if_not_installed("SingleCellExperiment")
 
   store <- pizzarr::MemoryStore$new()
@@ -175,7 +175,7 @@ test_that("writing H5AD from SingleCellExperiment works", {
   # TODO: expect things
 })
 
-test_that("writing H5AD from Seurat works", {
+test_that("writing Zarr from Seurat works", {
   skip_if_not_installed("SeuratObject")
   skip("while Seurat converter is failing")
 
@@ -186,7 +186,7 @@ test_that("writing H5AD from Seurat works", {
   expect_true(file.exists(file))
 })
 
-test_that("writing gzip compressed files works", {
+test_that("writing gzip compressed files works for Zarr", {
   dummy <- generate_dataset(100, 200)
   non_random_X <- matrix(5, 100, 200) # nolint
 
@@ -208,7 +208,7 @@ test_that("writing gzip compressed files works", {
   # TODO: expect things
 })
 
-test_that("writing lzf compressed files works", {
+test_that("writing lzf compressed files works for Zarr", {
   dummy <- generate_dataset(100, 200)
   non_random_X <- matrix(5, 100, 200) # nolint
 
