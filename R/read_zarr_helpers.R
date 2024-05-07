@@ -9,14 +9,8 @@
 #'
 #' @noRd
 read_zarr_encoding <- function(store, name) {
-
-  is_group <- store$contains_item(paste0(name, "/.zgroup"))
-  if(is_group) {
-    g <- pizzarr::zarr_open_group(store, path = name)
-  } else {
-    g <- pizzarr::zarr_open_array(store, path = name)
-  }
-  
+  # Path can be to array or group
+  g <- pizzarr::zarr_open(store, path = name)
   attrs <- g$get_attrs()$to_list()
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
@@ -97,13 +91,6 @@ read_zarr_element <- function(store, name, type = NULL, version = NULL, stop_on_
 }
 
 read_zarr_array <- function(store, name) {
-  zarr_arr <- pizzarr::zarr_open_array(store, path = name)
-  nested_arr <- zarr_arr$get_item("...")
-  return(nested_arr$data)
-}
-
-# TODO: fix bug in pizzarr?
-read_zarr_scalar <- function(store, name) {
   zarr_arr <- pizzarr::zarr_open_array(store, path = name)
   nested_arr <- zarr_arr$get_item("...")
   return(nested_arr$data)
@@ -366,8 +353,8 @@ read_zarr_categorical <- function(store, name, version = "0.2.0") {
 #' @noRd
 read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
-  scalar <- read_zarr_scalar(store, name)
-  scalar
+  scalar <- as.character(read_zarr_array(store, name))
+  return(scalar)
 }
 
 #' Read H5AD numeric scalar
@@ -383,13 +370,7 @@ read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
 #' @noRd
 read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
-  scalar <- read_zarr_scalar(store, name)
-
-  # If the numeric vector is Boolean it gets read as a factor by {rhdf5}
-  if (is.factor(scalar)) {
-    scalar <- as.logical(scalar)
-  }
-
+  scalar <- as.numeric(read_zarr_array(store, name))
   return(scalar)
 }
 

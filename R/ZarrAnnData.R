@@ -5,7 +5,8 @@
 ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
-    .h5obj = NULL,
+    zarr_store = NULL,
+    zarr_root = NULL,
     .n_obs = NULL,
     .n_vars = NULL,
     .obs_names = NULL,
@@ -17,7 +18,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     X = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_zarr_element(private$.h5obj, "/X")
+        read_zarr_element(private$zarr_store, "/X")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_X, status=done
         value <- private$.validate_aligned_array(
@@ -27,7 +28,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/X", private$.compression)
+        write_zarr_element(value, private$zarr_store, "/X", private$.compression)
       }
     },
     #' @field layers The layers slot. Must be NULL or a named list
@@ -36,7 +37,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     layers = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_zarr_element(private$.h5obj, "layers")
+        read_zarr_element(private$zarr_store, "layers")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
         value <- private$.validate_aligned_mapping(
@@ -46,7 +47,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/layers", private$.compression)
+        write_zarr_element(value, private$zarr_store, "/layers", private$.compression)
       }
     },
     #' @field obsm The obsm slot. Must be `NULL` or a named list with
@@ -54,7 +55,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_zarr_element(private$.h5obj, "obsm")
+        read_zarr_element(private$zarr_store, "obsm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
         value <- private$.validate_aligned_mapping(
@@ -63,7 +64,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           c(self$n_obs()),
           expected_rownames = rownames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/obsm")
+        write_zarr_element(value, private$zarr_store, "/obsm")
       }
     },
     #' @field varm The varm slot. Must be `NULL` or a named list with
@@ -71,7 +72,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_zarr_element(private$.h5obj, "varm")
+        read_zarr_element(private$zarr_store, "varm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
         value <- private$.validate_aligned_mapping(
@@ -80,7 +81,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           c(self$n_vars()),
           expected_rownames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/varm")
+        write_zarr_element(value, private$zarr_store, "/varm")
       }
     },
     #' @field obsp The obsp slot. Must be `NULL` or a named list with
@@ -88,7 +89,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_zarr_element(private$.h5obj, "obsp")
+        read_zarr_element(private$zarr_store, "obsp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
         value <- private$.validate_aligned_mapping(
@@ -98,7 +99,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = rownames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/obsp")
+        write_zarr_element(value, private$zarr_store, "/obsp")
       }
     },
     #' @field varp The varp slot. Must be `NULL` or a named list with
@@ -106,7 +107,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_zarr_element(private$.h5obj, "varp")
+        read_zarr_element(private$zarr_store, "varp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
         value <- private$.validate_aligned_mapping(
@@ -116,7 +117,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = colnames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/varp")
+        write_zarr_element(value, private$zarr_store, "/varp")
       }
     },
 
@@ -124,13 +125,13 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_zarr_element(private$.h5obj, "/obs", include_index = FALSE)
+        read_zarr_element(private$zarr_store, "/obs", include_index = FALSE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
-        write_h5ad_element(
+        write_zarr_element(
           value,
-          private$.h5obj,
+          private$zarr_store,
           "/obs",
           private$.compression,
           index = self$obs_names
@@ -141,13 +142,13 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_zarr_element(private$.h5obj, "/var", include_index = FALSE)
+        read_zarr_element(private$zarr_store, "/var", include_index = FALSE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
-        write_h5ad_element(
+        write_zarr_element(
           value,
-          private$.h5obj,
+          private$zarr_store,
           "/var",
           index = self$var_names
         )
@@ -160,13 +161,13 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         # obs names are cached to avoid reading all of obs whenever they are
         # accessed
         if (is.null(private$.obs_names)) {
-          private$.obs_names <- read_zarr_data_frame_index(private$.h5obj, "obs")
+          private$.obs_names <- read_zarr_data_frame_index(private$zarr_store, "obs")
         }
         private$.obs_names
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
         value <- private$.validate_obsvar_names(value, "obs")
-        write_h5ad_data_frame_index(value, private$.h5obj, "obs", private$.compression, "_index")
+        write_zarr_data_frame_index(value, private$zarr_store, "obs", private$.compression, "_index")
         private$.obs_names <- value
       }
     },
@@ -178,13 +179,13 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         # var names are cached to avoid reading all of var whenever they are
         # accessed
         if (is.null(private$.var_names)) {
-          private$.var_names <- read_zarr_data_frame_index(private$.h5obj, "var")
+          private$.var_names <- read_zarr_data_frame_index(private$zarr_store, "var")
         }
         private$.var_names
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
         value <- private$.validate_obsvar_names(value, "var")
-        write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression, "_index")
+        write_zarr_data_frame_index(value, private$zarr_store, "var", private$.compression, "_index")
         private$.var_names <- value
       }
     },
@@ -192,11 +193,11 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     uns = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
-        read_zarr_element(private$.h5obj, "uns")
+        read_zarr_element(private$zarr_store, "uns")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
         value <- private$.validate_named_list(value, "uns")
-        write_h5ad_element(value, private$.h5obj, "/uns")
+        write_zarr_element(value, private$zarr_store, "/uns")
       }
     }
   ),
@@ -249,7 +250,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     #' must be specified. In both cases, any additional slots provided will be
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
-    initialize = function(file,
+    initialize = function(store,
                           obs_names = NULL,
                           var_names = NULL,
                           X = NULL,
@@ -269,7 +270,11 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       compression <- match.arg(compression)
       private$.compression <- compression
 
-      if (!file.exists(file)) {
+      root <- pizzarr::zarr_open_group(store, path = "/")
+
+
+      #if (!file.exists(file)) {/
+      if(FALSE) { # TODO: how to determine if the store has been initialized as an AnnData-Zarr store, vs. should be initialized here?
         # Check obs_names and var_names have been provided
         if (is.null(obs_names)) {
           stop("When creating a new .h5ad file, `obs_names` must be defined.")
@@ -279,17 +284,18 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         }
 
         # Create an empty H5AD using the provided obs/var names
-        write_empty_h5ad(file, obs_names, var_names, compression)
+        write_empty_zarr(file, obs_names, var_names, compression)
 
         # Set private object slots
-        private$.h5obj <- file
+        private$zarr_store <- file
         private$.n_obs <- length(obs_names)
         private$.n_vars <- length(var_names)
         private$.obs_names <- obs_names
         private$.var_names <- var_names
       } else {
         # Check the file is a valid H5AD
-        attrs <- rhdf5::h5readAttributes(file, "/")
+        
+        attrs <- root$get_attrs()$to_list()
 
         if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
           stop(
@@ -299,7 +305,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         }
 
         # Set the file path
-        private$.h5obj <- file
+        private$zarr_store <- store
+        private$zarr_root <- root
 
         # If obs or var names have been provided update those
         if (!is.null(obs_names)) {
@@ -398,12 +405,12 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
 #' to_HDF5AnnData(ad, "test.h5ad")
 #' # remove file
 #' file.remove("test.h5ad")
-to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) { # nolint
+to_ZarrAnnData <- function(adata, store, compression = c("none", "gzip", "lzf")) { # nolint
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
-  HDF5AnnData$new(
-    file = file,
+  ZarrAnnData$new(
+    store = store,
     X = adata$X,
     obs = adata$obs,
     var = adata$var,
