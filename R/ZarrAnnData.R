@@ -269,8 +269,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
 
       compression <- match.arg(compression)
       private$.compression <- compression
-      
-      
+
+
       root <- pizzarr::zarr_open_group(store, path = "/")
 
 
@@ -294,7 +294,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         private$.var_names <- var_names
       } else {
         # Check the file is a valid H5AD
-        
+
         attrs <- root$get_attrs()$to_list()
 
         if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {

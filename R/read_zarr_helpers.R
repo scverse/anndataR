@@ -8,17 +8,20 @@
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_zarr_encoding <- function(store, name) {
+read_zarr_encoding <- function(store, name, stop_on_error = TRUE) {
   # Path can be to array or group
   g <- pizzarr::zarr_open(store, path = name)
   attrs <- g$get_attrs()$to_list()
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-    path <- "TODO: get path from store"
-    stop(
-      "Encoding attributes not found for element '", name, "' ",
-      "in '", path, "'"
-    )
+    path <- name
+    if(stop_on_error) {
+      stop(
+        "Encoding attributes not found for element '", name, "' "
+      )
+    } else {
+      return(NULL)
+    }
   }
 
   list(
@@ -47,7 +50,15 @@ read_zarr_encoding <- function(store, name) {
 #' @noRd
 read_zarr_element <- function(store, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
   if (is.null(type)) {
-    encoding_list <- read_zarr_encoding(store, name)
+    encoding_list <- read_zarr_encoding(store, name, stop_on_error = stop_on_error)
+    if(is.null(encoding_list)) {
+      if(stop_on_error) {
+        stop("No encoding info found for element '", name, "'")
+      } else {
+        warning("No encoding found for element '", name, "'")
+        return(NULL)
+      }
+    }
     type <- encoding_list$type
     version <- encoding_list$version
   }
@@ -99,12 +110,17 @@ read_zarr_array <- function(store, name) {
 read_zarr_array_with_rarr <- function(store, name) {
   if("DirectoryStore" %in% class(store)) {
     store_root <- store$root
-    arr <- Rarr::read_zarr_array(
-      zarr_array_path = file.path(store_root, name),
-    )
+    arr <- tryCatch({
+      Rarr::read_zarr_array(
+        zarr_array_path = file.path(store_root, name),
+      )
+    }, error = function(e) {
+      # Reading with Rarr failed; Try with Pizzarr.
+      read_zarr_array(store, name)
+    })
     return(arr)
   }
-  # Use pizzarr as a fallback
+  # Not a DirectoryStore, so cannot use Rarr.
   return(read_zarr_array(store, name))
 }
 
@@ -402,6 +418,9 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
   groupname <- paste0("/", name)
 
   columns <- store$listdir(name)
+
+  # Omit Zarr metadata files from the list of columns.
+  columns <- columns[!columns %in% c(".zgroup", ".zattrs", ".zarray")]
 
   read_zarr_collection(store, name, columns)
 }

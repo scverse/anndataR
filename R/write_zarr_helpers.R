@@ -96,7 +96,7 @@ write_zarr_encoding <- function(store, name, encoding, version) {
   attrs <- g$get_attrs()
 
   attrs$set_item("encoding-type", encoding)
-  attrs$set_item("encoding-version", encoding)
+  attrs$set_item("encoding-version", version)
 }
 
 #' Write H5AD dense array
@@ -234,7 +234,7 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
   } else {
     dims <- length(value)
   }
-  
+
   object_codec <- pizzarr::VLenUtf8Codec$new()
   data <- array(data = value, dim = dims)
   a <- pizzarr::zarr_create_array(data, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = dims)
@@ -468,6 +468,12 @@ write_empty_zarr <- function(store, obs_names, var_names, compression, version =
 #' @return Whether the `path` exists in `file`
 zarr_path_exists <- function(store, target_path) {
   result <- tryCatch({
+    if(store$contains_item(target_path)) {
+      # This should work for DirectoryStore but not yet for MemoryStore.
+      return(TRUE)
+    }
+    # Fall back to use get_item.
+    # This should work for any store but can fail if DirectoryStore tries to read a directory as a file.
     store$get_item(target_path)
     return(TRUE)
   }, error = function(cond) {
@@ -475,7 +481,7 @@ zarr_path_exists <- function(store, target_path) {
       return(FALSE)
     }
     stop(cond)
-  })
+  }, warnings = function(w){})
   return(result)
 }
 
