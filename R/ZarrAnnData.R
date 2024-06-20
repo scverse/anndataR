@@ -1,3 +1,5 @@
+VAR_CHUNK_SIZE <- 10
+
 #' @title ZarrAnnData
 #'
 #' @description
@@ -33,7 +35,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           value <- as.matrix(value)
           result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
         } else {
-          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE, chunks = c(10, self$n_vars()))
+          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE, chunks = c(self$n_obs(), VAR_CHUNK_SIZE))
         }
         return(result)
       }
