@@ -33,9 +33,9 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         )
         if(private$.to_dense) {
           value <- as.matrix(value)
-          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
-        } else {
           result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE, chunks = c(self$n_obs(), VAR_CHUNK_SIZE))
+        } else {
+          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
         }
         return(result)
       }
