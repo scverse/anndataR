@@ -11,7 +11,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     .n_vars = NULL,
     .obs_names = NULL,
     .var_names = NULL,
-    .compression = NULL
+    .compression = NULL,
+    .to_dense = NULL
   ),
   active = list(
     #' @field X The X slot
@@ -28,7 +29,13 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_zarr_element(value, private$zarr_store, "/X", private$.compression)
+        if(private$.to_dense) {
+          value <- as.matrix(value)
+          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
+        } else {
+          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE, chunks = c(10, self$n_vars()))
+        }
+        return(result)
       }
     },
     #' @field layers The layers slot. Must be NULL or a named list
@@ -47,7 +54,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_zarr_element(value, private$zarr_store, "/layers", private$.compression)
+        write_zarr_element(value, private$zarr_store, "/layers", private$.compression, overwrite = TRUE)
       }
     },
     #' @field obsm The obsm slot. Must be `NULL` or a named list with
@@ -134,7 +141,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           private$zarr_store,
           "/obs",
           private$.compression,
-          index = self$obs_names
+          index = self$obs_names,
+          overwrite = TRUE
         )
       }
     },
@@ -150,7 +158,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           value,
           private$zarr_store,
           "/var",
-          index = self$var_names
+          index = self$var_names,
+          overwrite = TRUE
         )
       }
     },
@@ -167,7 +176,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
         value <- private$.validate_obsvar_names(value, "obs")
-        write_zarr_data_frame_index(value, private$zarr_store, "obs", private$.compression, "_index")
+        write_zarr_data_frame_index(value, private$zarr_store, "obs", private$.compression, "_index", overwrite = TRUE)
         private$.obs_names <- value
       }
     },
@@ -185,7 +194,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
         value <- private$.validate_obsvar_names(value, "var")
-        write_zarr_data_frame_index(value, private$zarr_store, "var", private$.compression, "_index")
+        write_zarr_data_frame_index(value, private$zarr_store, "var", private$.compression, "_index", overwrite = TRUE)
         private$.var_names <- value
       }
     },
@@ -262,13 +271,16 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
                           obsp = NULL,
                           varp = NULL,
                           uns = NULL,
-                          compression = c("none", "gzip", "lzf")) {
+                          compression = c("none", "gzip", "lzf"),
+                          to_dense = FALSE
+                        ) {
       if (!requireNamespace("pizzarr", quietly = TRUE)) {
         stop("The Zarr interface requires the 'pizzarr' package to be installed")
       }
 
       compression <- match.arg(compression)
       private$.compression <- compression
+      private$.to_dense <- to_dense
 
 
       root <- pizzarr::zarr_open_group(store, path = "/")
