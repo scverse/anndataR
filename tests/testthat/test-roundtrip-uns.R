@@ -15,9 +15,9 @@ uns_names <- uns_names[!grepl("mat_", uns_names)]
 # TODO: re-enable these tests
 uns_names <- uns_names[uns_names != "list"]
 # TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")] # nolint
+# uns_names <- uns_names[!uns_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")] # nolint
 # TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("df_factor", "df_factor_ordered", "df_logical")] # nolint
+# uns_names <- uns_names[!uns_names %in% c("df_factor", "df_factor_ordered", "df_logical")] # nolint
 
 for (name in uns_names) {
   test_that(paste0("roundtrip with uns '", name, "'"), {
