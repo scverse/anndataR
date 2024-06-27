@@ -12,8 +12,6 @@ uns_names <- uns_names[!grepl("_na$", uns_names)]
 uns_names <- uns_names[!grepl("mat_", uns_names)]
 # TODO: re-enable these tests
 uns_names <- uns_names[!uns_names %in% c("vec_factor", "vec_factor_ordered", "vec_logical")]
-# # TODO: re-enable these tests
-# uns_names <- uns_names[uns_names != "list"] # nolint
 # TODO: re-enable these tests
 uns_names <- uns_names[!uns_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")]
 # TODO: re-enable these tests
