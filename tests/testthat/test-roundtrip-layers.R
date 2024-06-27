@@ -4,10 +4,6 @@ skip_if_not_installed("rhdf5")
 data <- generate_dataset(10L, 20L)
 
 layer_names <- names(data$layers)
-# # TODO: Add denseMatrix support to anndata and anndataR
-# layer_names <- layer_names[!grepl("_dense", layer_names)]
-# TODO: re-enable these tests
-layer_names <- layer_names[!grepl("_with_nas", layer_names)]
 
 for (name in layer_names) {
   test_that(paste0("roundtrip with layer '", name, "'"), {
@@ -69,8 +65,6 @@ for (name in layer_names) {
 r2py_names <- layer_names
 # TODO: rsparse gets converted to csparse by anndata
 r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
-# TODO: fix when this is working
-r2py_names <- r2py_names[!grepl("with_nas", r2py_names)]
 
 for (name in r2py_names) {
   test_that(paste0("hdf5->reticulate with layer '", name, "'"), {
