@@ -27,7 +27,7 @@
 #'   var_names = LETTERS[1:5]
 #' )
 #' ad
-#' @export
+#' @noRd
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
@@ -296,7 +296,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #' @return An InMemoryAnnData object with the same data as the input AnnData
 #'   object.
 #'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' ad <- AnnData(

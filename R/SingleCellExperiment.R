@@ -1,48 +1,31 @@
-#' @rdname SingleCellExperiment
+#' Convert to/from SingleCellExperiment objects
 #'
-#' @title Convert Between AnnData and SingleCellExperiment
+#' Conversion between AnnData and `SingleCellExperiment` objects.
 #'
-#' @description `to_SingleCellExperiment()` converts an AnnData object
-#'   to a SingleCellExperiment.
+#' @seealso
+#' [`write_h5ad()`] and [`read_h5ad()`] for directly interacting with H5AD files.
 #'
-#' @param object an AnnData object, e.g., InMemoryAnnData
+#' @name SingleCellExperiment-Conversion
+#' @rdname SingleCellExperiment-Conversion
+NULL
+
+#' @rdname SingleCellExperiment-Conversion
 #'
-#' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
-#'   representing the content of `object`.
+#' @param obj an AnnData object, e.g., InMemoryAnnData
 #'
-#' @examples
-#' if (interactive()) {
-#'   ## useful when interacting with the SingleCellExperiment !
-#'   library(SingleCellExperiment)
-#' }
-#' ad <- AnnData(
-#'   X = matrix(1:15, 3L, 5L),
-#'   layers = list(
-#'     A = matrix(15:1, 3L, 5L),
-#'     B = matrix(letters[1:15], 3L, 5L)
-#'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
-#' )
-#'
-#' ## construct a SingleCellExperiment from an AnnData object
-#' sce <- to_SingleCellExperiment(ad)
-#' sce
-#'
-#' @export
-to_SingleCellExperiment <- function(object) { # nolint
+#' @return `to_SingleCellExperiment()` returns a `SingleCellExperiment`
+#'   representing the content of `object`
+to_SingleCellExperiment <- function(obj) { # nolint
   stopifnot(
-    inherits(object, "AbstractAnnData")
+    inherits(obj, "AbstractAnnData")
   )
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   ## FIXME: name of 'X' from metadata[["X_name"]]
   x_name <- "X"
   assay_names <- as.character(c(
-    if (!is.null(object$X)) x_name,
-    object$layers_keys()
+    if (!is.null(obj$X)) x_name,
+    obj$layers_keys()
   ))
 
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
@@ -50,9 +33,9 @@ to_SingleCellExperiment <- function(object) { # nolint
   names(assays) <- assay_names
   for (assay in assay_names) {
     value <- if (identical(assay, x_name)) {
-      object$X
+      obj$X
     } else {
-      object$layers[[assay]]
+      obj$layers[[assay]]
     }
     ## FIXME: is transposition robust & efficient here?
     assays[[assay]] <- t(value)
@@ -62,16 +45,16 @@ to_SingleCellExperiment <- function(object) { # nolint
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
   col_data <- S4Vectors::DataFrame(
-    object$obs,
-    row.names = object$obs_names
+    obj$obs,
+    row.names = obj$obs_names
   )
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
   row_data <- S4Vectors::DataFrame(
-    object$var,
-    row.names = object$var_names
+    obj$var,
+    row.names = obj$var_names
   )
 
   # construct output object
@@ -80,7 +63,7 @@ to_SingleCellExperiment <- function(object) { # nolint
     colData = col_data,
     rowData = row_data,
     metadata = list(),
-    ## FIXME: assign object$uns to metadata
+    ## FIXME: assign obj$uns to metadata
     checkDimnames = TRUE
   )
 
@@ -91,28 +74,19 @@ to_SingleCellExperiment <- function(object) { # nolint
   sce
 }
 
-#' @rdname SingleCellExperiment
+#' @rdname SingleCellExperiment-Conversion
 #'
-#' @description `from_SingleCellExperiment()` converts a
-#'   SingleCellExperiment to an AnnData object.
-#'
-#' @param sce An object inheriting from SingleCellExperiment.
-#'
+#' @param sce An object inheriting from SingleCellExperiment
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
-#' or `"InMemoryAnnData"`.
-#'
-#' @param ... Additional arguments passed to the generator function.
-#' See the "Details" section for more information on which parameters
+#'   or `"InMemoryAnnData"`.
+#' @param ... Additional arguments passed to the object constructor
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
-#'   (e.g., InMemoryAnnData) representing the content of `sce`.
-#'
-#' @examples
-#' ## construct an AnnData object from a SingleCellExperiment
-#' from_SingleCellExperiment(sce, "InMemory")
-#'
-#' @export
-from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData"), ...) { # nolint
+#'   (e.g., InMemoryAnnData) representing the content of `sce`
+from_SingleCellExperiment <- function(sce, # nolint
+                                      output_class = c("InMemory", "HDF5AnnData"),
+                                      ...) {
+
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )
