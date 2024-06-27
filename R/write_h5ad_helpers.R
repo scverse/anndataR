@@ -108,7 +108,7 @@ write_h5ad_element <- function(
 #' @param is_scalar Whether to write attributes as scalar values. Can be `TRUE`
 #' to write all attributes as scalars, `FALSE` to write no attributes as
 #' scalars, or a vector of the names of `attributes` that should be written.
-write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
+write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) { # nolint: cyclocomp_linter
   if (is.character(file) && length(file) == 1 && !is.na(file)) {
     h5file <- rhdf5::H5Fopen(file)
     on.exit(rhdf5::H5Fclose(h5file))
@@ -295,8 +295,10 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
+  # nolint start: commented_code_linter
   # hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
   # hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
+  # nolint
 
   write_h5ad_boolean_array(value_no_na, file, paste0(name, "/values"))
   write_h5ad_boolean_array(is.na(value), file, paste0(name, "/mask"))
