@@ -209,6 +209,8 @@ read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a boolean vector
+#'
+#' @noRd
 read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
   as.logical(read_h5ad_nullable(file, name, version))
 }
@@ -358,7 +360,14 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 #' @noRd
 read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  rhdf5::h5read(file, name)
+  scalar <- rhdf5::h5read(file, name)
+
+  # If the numeric vector is Boolean it gets read as a factor by {rhdf5}
+  if (is.factor(scalar)) {
+    scalar <- as.logical(scalar)
+  }
+
+  return(scalar)
 }
 
 #' Read H5AD mapping
