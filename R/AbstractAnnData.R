@@ -69,6 +69,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   with all elements having the same number of rows and columns as `var`.
     varp = function(value) {
       .abstract_function("ad$varp")
+    },
+    #' @field uns The uns slot. Must be `NULL` or a named list.
+    uns = function(value) {
+      .abstract_function("ad$uns")
     }
   ),
   public = list(
@@ -82,7 +86,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       for (attribute in c(
         "obs",
         "var",
-        # "uns", # TODO: remove this when uns is implemented
+        "uns",
         "obsm",
         "varm",
         "layers",
@@ -98,8 +102,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           }
         if (length(keys) > 0) {
           cat(
-            "    ", attribute, ":",
-            paste("'", keys, "'", collapse = ", "),
+            "    ", attribute, ": ",
+            paste(paste0("'", keys, "'"), collapse = ", "),
             "\n",
             sep = ""
           )
@@ -231,6 +235,21 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           expected_rownames = expected_rownames,
           expected_colnames = expected_colnames
         )
+      }
+
+      collection
+    },
+
+    # @description `.validate_named_list()` checks for whether a value
+    #   is NULL or a named list and throws an error if it is not.
+    .validate_named_list = function(collection, label) {
+      if (is.null(collection)) {
+        return(collection)
+      }
+
+      collection_names <- names(collection)
+      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
+        stop(paste0(label, " must be a named list, was ", class(collection)))
       }
 
       collection
