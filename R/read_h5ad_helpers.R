@@ -328,7 +328,7 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
     ordered <- FALSE
   }
 
-  factor(codes, labels = levels, ordered = ordered)
+  factor(levels[codes], levels = levels, ordered = ordered)
 }
 
 #' Read H5AD string scalar
