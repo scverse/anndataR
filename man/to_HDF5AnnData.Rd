@@ -4,7 +4,12 @@
 \alias{to_HDF5AnnData}
 \title{Convert an AnnData object to an HDF5AnnData object}
 \usage{
-to_HDF5AnnData(adata, file, compression = c("none", "gzip", "lzf"))
+to_HDF5AnnData(
+  adata,
+  file,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)
 }
 \arguments{
 \item{adata}{An AnnData object to be converted to HDF5AnnData.}
@@ -14,6 +19,15 @@ to_HDF5AnnData(adata, file, compression = c("none", "gzip", "lzf"))
 \item{compression}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
+
+\item{mode}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{r} opens an existing file for reading.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
+}}
 }
 \value{
 An HDF5AnnData object with the same data as the input AnnData
@@ -30,10 +44,8 @@ ad <- AnnData(
     A = matrix(5:1, 3L, 5L),
     B = matrix(letters[1:5], 3L, 5L)
   ),
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5),
-  obs_names = LETTERS[1:3],
-  var_names = letters[1:5]
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5),
 )
 to_HDF5AnnData(ad, "test.h5ad")
 # remove file

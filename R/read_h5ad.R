@@ -5,6 +5,14 @@
 #' @param path Path to the H5AD file to read
 #' @param to The type of object to return. Must be one of: "InMemoryAnnData",
 #'   "HDF5AnnData", "SingleCellExperiment", "Seurat"
+#' @param mode The mode to open the HDF5 file.
+#'
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r` opens an existing file for reading.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
+#'
 #' @param ... Extra arguments provided to [to_SingleCellExperiment()] or
 #'   [to_Seurat()]
 #'
@@ -26,10 +34,12 @@
 read_h5ad <- function(
     path,
     to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+    mode = c("r", "r+", "a", "w", "w-", "x"),
     ...) {
   to <- match.arg(to)
+  mode <- match.arg(mode)
 
-  adata <- HDF5AnnData$new(path)
+  adata <- HDF5AnnData$new(path, mode = mode)
 
   fun <- switch(to,
     "SingleCellExperiment" = to_SingleCellExperiment,
