@@ -86,7 +86,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       for (attribute in c(
         "obs",
         "var",
-        # "uns", # TODO: remove this when uns is implemented
+        "uns",
         "obsm",
         "varm",
         "layers",
@@ -102,8 +102,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           }
         if (length(keys) > 0) {
           cat(
-            "    ", attribute, ":",
-            paste("'", keys, "'", collapse = ", "),
+            "    ", attribute, ": ",
+            paste(paste0("'", keys, "'"), collapse = ", "),
             "\n",
             sep = ""
           )
