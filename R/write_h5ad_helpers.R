@@ -16,7 +16,7 @@
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-# nolint start cyclocomp_linter
+# nolint start: cyclocomp_linter
 write_h5ad_element <- function(
     value,
     file,
@@ -94,7 +94,7 @@ write_h5ad_element <- function(
     }
   )
 }
-# nolint end cyclocomp_linter
+# nolint end: cyclocomp_linter
 
 #' Write H5AD attributes
 #'
@@ -298,7 +298,7 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   # nolint start: commented_code_linter
   # hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
   # hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
-  # nolint
+  # nolint end: commented_code_linter
 
   write_h5ad_boolean_array(value_no_na, file, paste0(name, "/values"))
   write_h5ad_boolean_array(is.na(value), file, paste0(name, "/mask"))
