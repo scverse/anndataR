@@ -7,6 +7,7 @@
 read_h5ad(
   path,
   to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+  mode = c("r", "r+", "a", "w", "w-", "x"),
   ...
 )
 }
@@ -15,6 +16,15 @@ read_h5ad(
 
 \item{to}{The type of object to return. Must be one of: "InMemoryAnnData",
 "HDF5AnnData", "SingleCellExperiment", "Seurat"}
+
+\item{mode}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{r} opens an existing file for reading.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
+}}
 
 \item{...}{Extra arguments provided to \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} or
 \code{\link[=to_Seurat]{to_Seurat()}}}

@@ -7,26 +7,22 @@
 #'
 #' @examples
 #' ## complete example
-#' ad <- InMemoryAnnData$new(
+#' ad <- AnnData(
 #'   X = matrix(1:15, 3L, 5L),
 #'   layers = list(
 #'     A = matrix(5:1, 3L, 5L),
 #'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' ad
 #'
 #' ## minimum example
-#' # -> using `AnnData()` is synonymous to `InMemoryAnnData$new()`
-#' ad <- AnnData(
-#'   obs_names = letters[1:10],
-#'   var_names = LETTERS[1:5]
+#' AnnData(
+#'   obs = data.frame(row.names = letters[1:10]),
+#'   var = data.frame(row.names = LETTERS[1:5])
 #' )
-#' ad
 #' @export
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
@@ -35,8 +31,6 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     .layers = NULL,
     .obs = NULL,
     .var = NULL,
-    .obs_names = NULL,
-    .var_names = NULL,
     .obsm = NULL,
     .varm = NULL,
     .obsp = NULL,
@@ -115,10 +109,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     obs_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obs_names, status=done
-        private$.obs_names
+        rownames(private$.obs)
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_obs_names, status=done
-        private$.obs_names <- private$.validate_obsvar_names(value, "obs")
+        rownames(private$.obs) <- private$.validate_obsvar_names(value, "obs")
         self
       }
     },
@@ -130,10 +124,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     var_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_var_names, status=done
-        private$.var_names
+        rownames(private$.var)
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_var_names, status=done
-        private$.var_names <- private$.validate_obsvar_names(value, "var")
+        rownames(private$.var) <- private$.validate_obsvar_names(value, "var")
         self
       }
     },
@@ -257,9 +251,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   element is a sparse matrix where each dimension has length `n_vars`.
     #' @param uns The uns slot is used to store unstructured annotation.
     #'   It must be either `NULL` or a named list.
-    initialize = function(obs_names,
-                          var_names,
-                          X = NULL,
+    initialize = function(X = NULL,
                           obs = NULL,
                           var = NULL,
                           layers = NULL,
@@ -268,13 +260,29 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
                           obsp = NULL,
                           varp = NULL,
                           uns = NULL) {
-      # write obs and var first, because these are used by other validators
-      self$obs_names <- obs_names
-      self$var_names <- var_names
+      # initialise obs
+      if (is.null(obs)) {
+        # TODO: if X or layers is not null,
+        # derive the correct dimensions
+        obs <- data.frame()
+      }
+      if (!is.data.frame(obs)) {
+        stop("obs must be a data.frame")
+      }
+      private$.obs <- obs
+
+      # initialize var
+      if (is.null(var)) {
+        # TODO: if X or layers is not null,
+        # derive the correct dimensions
+        var <- data.frame()
+      }
+      if (!is.data.frame(var)) {
+        stop("var must be a data.frame")
+      }
+      private$.var <- var
 
       # write other slots later
-      self$obs <- obs
-      self$var <- var
       self$X <- X
       self$layers <- layers
       self$obsm <- obsm
@@ -305,10 +313,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #'     A = matrix(5:1, 3L, 5L),
 #'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' to_InMemoryAnnData(ad)
 to_InMemoryAnnData <- function(adata) { # nolint
@@ -319,8 +325,6 @@ to_InMemoryAnnData <- function(adata) { # nolint
     X = adata$X,
     obs = adata$obs,
     var = adata$var,
-    obs_names = adata$obs_names,
-    var_names = adata$var_names,
     layers = adata$layers,
     obsm = adata$obsm,
     varm = adata$varm,

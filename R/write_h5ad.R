@@ -8,21 +8,25 @@
 #' @param compression The compression algorithm to use when writing the
 #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
+#' @param mode The mode to open the HDF5 file.
+#'
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones
+#'   * `w-`/`x` are synonyms creating a file and failing if it already exists.
 #'
 #' @return `path` invisibly
 #' @export
 #'
 #' @examples
-#' adata <- AnnData(
-#'   X = matrix(1:15, 3L, 5L),
+#' ad <- AnnData(
+#'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
-#'     A = matrix(15:1, 3L, 5L),
-#'     B = matrix(letters[1:15], 3L, 5L)
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' h5ad_file <- tempfile(fileext = ".h5ad")
 #' write_h5ad(adata, h5ad_file)
@@ -67,26 +71,42 @@
 #'   # h5ad_file <- tempfile(fileext = ".h5ad")
 #'   # write_h5ad(obj, h5ad_file)
 #' }
-write_h5ad <- function(object, path, compression = c("none", "gzip", "lzf")) {
-  if (inherits(object, "SingleCellExperiment")) {
-    from_SingleCellExperiment(
-      object,
-      output_class = "HDF5AnnData",
-      file = path,
-      compression = compression
-    )
-  } else if (inherits(object, "Seurat")) {
-    from_Seurat(
-      object,
-      output_class = "HDF5AnnData",
-      file = path,
-      compression = compression
-    )
-  } else if (inherits(object, "AbstractAnnData")) {
-    to_HDF5AnnData(object, path, compression = compression)
-  } else {
-    stop("Unable to write object of class: ", class(object))
-  }
+write_h5ad <- function(
+    object,
+    path,
+    compression = c("none", "gzip", "lzf"),
+    mode = c("w-", "r", "r+", "a", "w", "x")) {
+  mode <- match.arg(mode)
+  adata <-
+    if (inherits(object, "SingleCellExperiment")) {
+      from_SingleCellExperiment(
+        object,
+        output_class = "HDF5AnnData",
+        file = path,
+        compression = compression,
+        mode = mode
+      )
+    } else if (inherits(object, "Seurat")) {
+      from_Seurat(
+        object,
+        output_class = "HDF5AnnData",
+        file = path,
+        compression = compression,
+        mode = mode
+      )
+    } else if (inherits(object, "AbstractAnnData")) {
+      to_HDF5AnnData(
+        object,
+        path,
+        compression = compression,
+        mode = mode
+      )
+    } else {
+      stop("Unable to write object of class: ", class(object))
+    }
+  adata$close()
+  rm(adata)
+  gc()
 
   invisible(path)
 }

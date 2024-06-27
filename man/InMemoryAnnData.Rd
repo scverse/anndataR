@@ -8,26 +8,22 @@ Implementation of an in memory AnnData object.
 }
 \examples{
 ## complete example
-ad <- InMemoryAnnData$new(
+ad <- AnnData(
   X = matrix(1:15, 3L, 5L),
   layers = list(
     A = matrix(5:1, 3L, 5L),
     B = matrix(letters[1:5], 3L, 5L)
   ),
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5),
-  obs_names = LETTERS[1:3],
-  var_names = letters[1:5]
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
 ad
 
 ## minimum example
-# -> using `AnnData()` is synonymous to `InMemoryAnnData$new()`
-ad <- AnnData(
-  obs_names = letters[1:10],
-  var_names = LETTERS[1:5]
+AnnData(
+  obs = data.frame(row.names = letters[1:10]),
+  var = data.frame(row.names = LETTERS[1:5])
 )
-ad
 }
 \section{Super class}{
 \code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{InMemoryAnnData}
@@ -114,8 +110,6 @@ Creates a new instance of an in memory AnnData object.
 Inherits from AbstractAnnData.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
-  obs_names,
-  var_names,
   X = NULL,
   obs = NULL,
   var = NULL,
@@ -131,18 +125,6 @@ Inherits from AbstractAnnData.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{obs_names}}{A vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. The length of
-the \code{obs_names} defines the observation dimension of the AnnData
-object.}
-
-\item{\code{var_names}}{A vector of unique identifers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. The length of
-the \code{var_names} defines the variable dimension of the AnnData
-object.}
-
 \item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
 dimensions consistent with \code{obs} and \code{var}.}
 
@@ -176,6 +158,18 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 
 \item{\code{uns}}{The uns slot is used to store unstructured annotation.
 It must be either \code{NULL} or a named list.}
+
+\item{\code{obs_names}}{A vector of unique identifiers
+used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the AnnData object. The length of
+the \code{obs_names} defines the observation dimension of the AnnData
+object.}
+
+\item{\code{var_names}}{A vector of unique identifers
+used to identify each row of \code{var} and to act as an index into
+the variable dimension of the AnnData object. The length of
+the \code{var_names} defines the variable dimension of the AnnData
+object.}
 }
 \if{html}{\out{</div>}}
 }
