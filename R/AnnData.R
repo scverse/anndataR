@@ -39,6 +39,8 @@
 #' @param varp The varp slot is used to store sparse multi-dimensional
 #'   annotation arrays. It must be either `NULL` or a named list, where each
 #'   element is a sparse matrix where each dimension has length `n_vars`.
+#' @param uns The uns slot is used to store unstructured annotation. It must
+#'   be either `NULL` or a named list.
 #'
 #' @export
 #'
@@ -67,7 +69,8 @@ AnnData <- function(
     obsm = NULL,
     varm = NULL,
     obsp = NULL,
-    varp = NULL) {
+    varp = NULL,
+    uns = NULL) {
   InMemoryAnnData$new(
     obs_names = obs_names,
     var_names = var_names,
@@ -78,6 +81,7 @@ AnnData <- function(
     obsm = obsm,
     varm = varm,
     obsp = obsp,
-    varp = varp
+    varp = varp,
+    uns = uns
   )
 }

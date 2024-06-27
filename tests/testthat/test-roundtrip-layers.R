@@ -1,7 +1,7 @@
 skip_if_no_anndata()
 skip_if_not_installed("rhdf5")
 
-data <- generate_dataset_as_list(10L, 20L)
+data <- generate_dataset(10L, 20L)
 
 layer_names <- names(data$layers)
 # # TODO: Add denseMatrix support to anndata and anndataR
