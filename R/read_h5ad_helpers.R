@@ -209,6 +209,8 @@ read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
 #' @param version Encoding version of the element to read
 #'
 #' @return a boolean vector
+#'
+#' @noRd
 read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
   as.logical(read_h5ad_nullable(file, name, version))
 }
