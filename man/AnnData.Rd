@@ -50,8 +50,6 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 
 \item{uns}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
-
-\item{AnnData}{object.}
 }
 \description{
 This class is used to represent an AnnData object in memory.

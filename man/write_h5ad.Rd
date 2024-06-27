@@ -36,7 +36,7 @@ HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults 
 Write an H5AD file
 }
 \examples{
-ad <- AnnData(
+adata <- AnnData(
   X = matrix(1:5, 3L, 5L),
   layers = list(
     A = matrix(5:1, 3L, 5L),

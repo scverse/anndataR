@@ -8,7 +8,6 @@
 #'
 #' To read an AnnData file from disk, use [read_h5ad()] instead.
 #'
-#' @param  AnnData object.
 #' @param X Either `NULL` or a observation × variable matrix with
 #'   dimensions consistent with `obs` and `var`.
 #' @param layers Either `NULL` or a named list, where each element is an
