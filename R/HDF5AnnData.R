@@ -269,7 +269,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       compression <- match.arg(compression)
       private$.compression <- compression
 
-      if (!file.exists(file)) {
+      # check if file already exists (as a path or as an rhdf5::H5Fopen object)
+      if (!inherits(file, "H5IdComponent") && !file.exists(file)) {
         # Check obs_names and var_names have been provided
         if (is.null(obs_names)) {
           stop("When creating a new .h5ad file, `obs_names` must be defined.")
