@@ -6,8 +6,6 @@ data <- generate_dataset(10L, 20L)
 layer_names <- names(data$layers)
 # TODO: re-enable these tests
 layer_names <- layer_names[!grepl("_dense", layer_names)]
-# TODO: re-enable these tests
-layer_names <- layer_names[!grepl("_with_nas", layer_names)]
 
 for (layer_name in layer_names) {
   test_that(paste0("roundtrip with layer '", layer_name, "'"), {
@@ -41,6 +39,12 @@ for (name in layer_names) {
     X <- data$layers[[name]]
     rownames(X) <- data$obs_names
     colnames(X) <- data$var_names
+
+    if (is.matrix(X) && any(is.na(X))) {
+      # is.na(value) <- NaN gets ignored
+      na_indices <- is.na(X)
+      X[na_indices] <- NaN
+    }
 
     # create anndata
     ad <- anndata::AnnData(
