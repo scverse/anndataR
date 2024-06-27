@@ -4,8 +4,6 @@ skip_if_not_installed("rhdf5")
 data <- generate_dataset(10L, 20L)
 
 layer_names <- names(data$layers)
-# TODO: Add denseMatrix support to anndata and anndataR
-layer_names <- layer_names[!grepl("_dense", layer_names)]
 
 for (name in layer_names) {
   test_that(paste0("roundtrip with layer '", name, "'"), {
