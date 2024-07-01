@@ -110,20 +110,20 @@ to_Seurat <- function(obj) { # nolint
 #' @param seurat_obj An object inheriting from Seurat.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
 #' @param assay Assay to be converted. If NULL, `DefaultAssay()` is used.
-#' @param X Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
-#'   not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
-#'   layers.
+#' @param X Which of 'counts', 'data', or NULL will be used for X. By default, 'counts' is used, and the remaining non-empty slot is stored in a different layer. If NULL, all non-empty slots are stored in layers.
 #' @param ... Additional arguments passed to the generator function.
 #'
 #' @export
 # TODO: add tests with Seurat objects not created by anndataR
+# TODO: check that obsm, varm, ... only contains info from relevant assay
+# NOTE: For now, 'scale.data' is not considered since by default, it only uses HVGs (X and layers in AnnData does not allow different matrix sizes)
 from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
   if (!is.null(X)) {
-    if (!X %in% c("counts", "data", "scale.data")) {
-      stop("X must be NULL or one of: 'counts', 'data', 'scale.data'")
+    if (!X %in% c("counts", "data")) {
+      stop("X must be NULL or one of: 'counts', 'data'")
     }
   }
 
@@ -179,6 +179,7 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
       stop("The '", X, "' slot is empty.")
     }
 
+    message("Converting '", X, "' slot as X.")
     assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = X, assay = assay_name)
 
     # Remove names
@@ -186,18 +187,110 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     ad$X <- Matrix::t(assay_data)
   } else {
     # Cannot compare other values with NULL
+    message("X is NULL, storing non-empty slots in layers.")
     X <- "none"
   }
 
   # Add the remaining non-empty slots as layers
-  slots <- c("counts", "data", "scale.data")
+  slots <- c("counts", "data")
   slots <- slots[slots != X]
 
   for (slot in slots) {
     if (!all(dim(SeuratObject::GetAssayData(seurat_obj, slot = slot)) == 0)) {
+      message("Storing '", slot, "' slot in '", slot, "' layer.")
       assay_data <- SeuratObject::GetAssayData(seurat_obj, slot = slot, assay = assay_name)
       dimnames(assay_data) <- list(NULL, NULL)
       ad$layers[[slot]] <- Matrix::t(assay_data)
+    }
+  }
+
+  # Throw warning if scale.data is present that it is not being converted
+  if (!all(dim(SeuratObject::GetAssayData(seurat_obj, layer = "scale.data")) == 0)) {
+    message("'scale.data' is present but it will not be converted.")
+  }
+
+  # TODO: add checks
+  # TODO: can anything be stored in varp?
+
+  # Dimensionality reduction
+  for (reduction in names(seurat_obj@reductions)) {
+    # Check if the dimreduc was calculated by the selected assay
+    reduction <- seurat_obj@reductions[[reduction]]
+    if (reduction@assay.used != assay_name) {
+      next
+    }
+
+    # cell embeddings (reductions) to obsm
+    cell_embeddings <- reduction@cell.embeddings
+    dimnames(cell_embeddings) <- list(NULL, NULL)
+    ad$obsm[[reduction]] <- cell_embeddings
+
+    # feature loadings to .varm
+    # check if there are feature loadings
+    feature_loadings <- reduction@feature.loadings
+    if (!all(dim(feature_loadings) == 0)) {
+      # check dimensions - are the same genes present?
+      if (nrow(feature_loadings) != nrow(assay_name)) {
+        # TODO
+        # all_loadings <- matrix(
+        #   ncol = ncol(feature_loadings),
+        #   nrow = length(var_names_for_loadings)
+        # )
+      }
+    }
+
+    # in Seurat, we return the dimensions n_hvgs x n_pcs
+    # in Scanpy, I think the dimensions are n_genes x n_pcs so it goes to varm (please double check)
+
+    # Test once `uns` is complete
+    # feature_loadings <- seurat_obj@reductions[[reduction]]@feature.loadings
+    # feature_loadings_projected <- seurat_obj@reductions[[reduction]]@feature.loadings.projected
+    #
+    # if (!all(dim(feature_loadings) == 0)) {
+    #   ad$uns[[paste0(reduction, "_loadings")]] <- seurat_obj@reductions[[reduction]]@feature.loadings
+    # }
+    #
+    # if (!all(dim(feature_loadings_projected) == 0)) {
+    #   ad$uns[[paste0(reduction, "_loadings_projected")]] <- seurat_obj@reductions[[reduction]]@feature.loadings.projected
+    # }
+
+    # uns
+    # stdev <- seurat_obj@reductions[[reduction]]@stdev
+    # misc <- seurat_obj@reductions[[reduction]]@misc
+    # if (length(stdev) > 0) {
+    #   ad$uns[[paste0(reduction, "_stdev")]] <- stdev
+    # }
+    #
+    # if (length(misc) > 0) {
+    #   ad$uns[[paste0(reduction, "_misc")]] <- misc
+    # }
+
+    # TODO: seurat_obj@reductions[[reduction]]@jackstraw
+  }
+
+  # Graphs (inherits from dgCMatrix)
+  for (graph in names(seurat_obj@graphs)) {
+    # Check if graphs was created from selected assay
+    if (grepl(paste0("^", assay_name), graph)) {
+      # pairwise distances -> obsp
+      ad$obsp[[graph]] <- seurat_obj@graphs[[graph]]
+    }
+  }
+
+  # Neighbors
+  for (neighbor in names(seurat_obj@neighbors)) {
+    # Check if neighbors was created from selected assay
+    if (grepl(paste0("^", assay_name), neighbor)) {
+      # Unlike Graphs, this is not a pairwise distance
+      ad$obsm[[neighbor]] <- seurat_obj@neighbors[[neighbor]]@nn.idx
+      ad$obsm[[neighbor]] <- seurat_obj@neighbors[[neighbor]]@nn.dist
+
+      # Other parameters
+      # Test once uns is complete
+      # ad$uns[[neighbor]] <- seurat_obj@neighbors[[neighbor]]@alg.info
+
+      # TODO: @alg.idx is not considered right now
+      # TODO: check if @cell.names can be different from all cells
     }
   }
 
