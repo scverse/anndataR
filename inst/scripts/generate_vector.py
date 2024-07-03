@@ -47,8 +47,21 @@ vector_generators = {
     "nullable_boolean_array": nullable_boolean_array,
 }
 
-def generate_vector(vector_type, n):
+def generate_vector(n, vector_type):
+    """
+    Generate a vector of a specified type.
+
+    Parameters:
+    vector_type (str): The type of vector to generate.
+    n (int): The length of the vector.
+
+    Returns:
+    list: The generated vector.
+
+    Raises:
+    AssertionError: If the vector_type is unknown.
+    """
     # check if vector_type is valid
-    if vector_type not in vector_generators:
-        raise ValueError(f"Invalid vector type: {vector_type}")
+    assert vector_type in vector_generators, f"Unknown vector type: {vector_type}"
+
     return vector_generators[vector_type](n)
