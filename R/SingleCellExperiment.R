@@ -110,8 +110,9 @@ to_SingleCellExperiment <- function(object) { # nolint
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
 #' @export
+# nolint start: object_name_linter
 from_SingleCellExperiment <- function(
-    # nolint
+    # nolint end: object_name_linter
     sce,
     output_class = c("InMemory", "HDF5AnnData"),
     ...) {

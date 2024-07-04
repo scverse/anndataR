@@ -47,7 +47,7 @@
 #'     n_cells = c(1, 2, 3)
 #'   ),
 #'   var = data.frame(
-#'     row.names = paste0()
+#'     row.names = paste0("var", 1:4),
 #'     n_cells = c(1, 2, 3, 4)
 #'   )
 #' )
