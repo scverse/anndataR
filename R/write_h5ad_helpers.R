@@ -147,7 +147,8 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) { # 
     } else {
       scalar_value <- attr_name %in% is_scalar
       rhdf5::h5writeAttribute(
-        attr_value, h5obj, attr_name, asScalar = scalar_value
+        attr_value, h5obj, attr_name,
+        asScalar = scalar_value
       ) # nolint
     }
   }
@@ -674,7 +675,6 @@ hdf5_path_exists <- function(file, target_path) {
 #'
 #' @return Whether the `path` exists in `file`
 hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf")) {
-
   compression <- match.arg(compression)
 
   if (!is.null(dim(value))) {
