@@ -66,10 +66,9 @@
 #'   # write_h5ad(obj, h5ad_file)
 #' }
 write_h5ad <- function(
-  object,
-  path,
-  compression = c("none", "gzip", "lzf")
-) {
+    object,
+    path,
+    compression = c("none", "gzip", "lzf")) {
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,

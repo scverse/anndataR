@@ -361,10 +361,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' # remove file
 #' file.remove("test.h5ad")
 to_HDF5AnnData <- function(
-  adata,
-  file,
-  compression = c("none", "gzip", "lzf")
-) { # nolint
+    adata,
+    file,
+    compression = c("none", "gzip", "lzf")) { # nolint
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )

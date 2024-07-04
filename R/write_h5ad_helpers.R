@@ -18,13 +18,12 @@
 #' elements are written correctly.
 # nolint start cyclocomp_linter
 write_h5ad_element <- function(
-  value,
-  file,
-  name,
-  compression = c("none", "gzip", "lzf"),
-  stop_on_error = FALSE,
-  ...
-) {
+    value,
+    file,
+    name,
+    compression = c("none", "gzip", "lzf"),
+    stop_on_error = FALSE,
+    ...) {
   compression <- match.arg(compression)
 
   # Sparse matrices
@@ -485,7 +484,7 @@ write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
   rhdf5::H5Fclose(h5file)
 
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
-  
+
   write_h5ad_element(obs, file, "/obs", compression)
   write_h5ad_element(var, file, "/var", compression)
 
