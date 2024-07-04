@@ -47,7 +47,7 @@ write_h5ad_element <- function(
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) { # Numeric values
       if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
-      } else if (is.integer(value) && any(is.na(value))) {
+      } else if (is.integer(value) && any(is.na(value)) && !is.matrix(value)) {
         write_h5ad_nullable_integer
       } else {
         write_h5ad_dense_array
@@ -141,6 +141,12 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @noRd
 write_h5ad_dense_array <- function(value, file, name, compression, version = "0.2.0") {
   version <- match.arg(version)
+
+  if (is.matrix(value) && any(is.na(value))) {
+    # is.na(value) <- NaN gets ignored
+    na_indices <- is.na(value)
+    value[na_indices] <- NaN
+  }
 
   if (!is.vector(value)) {
     value <- t(value)
