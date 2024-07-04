@@ -5,7 +5,7 @@ def float_mtx(n_obs, n_vars, NAs=False):
     mtx = np.random.random((n_obs, n_vars))
     if NAs: # numpy matrices do no support pd.NA
         mtx[0, 0] = np.nan
-        mtx[0, 1] = None
+        mtx[0, 1] = None # gets converted to np.nan
     return mtx
 
 def int_mtx(n_obs, n_vars):

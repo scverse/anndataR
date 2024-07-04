@@ -12,7 +12,7 @@ def nullable_integer_array(n):
     return pd.array(nullable_array, dtype="Int64")
 
 def nullable_boolean_array(n):
-    nullable_array = [rd.choices([True, False], k=n)]
+    nullable_array = rd.choices([True, False], k=n)
     # np.nan, pd.NA and None should all end up as null values, masked in the h5ad file
     nullable_array[0] = pd.NA
     nullable_array[1] = np.nan
@@ -43,7 +43,7 @@ vector_generators = {
     "integer_array": lambda n: [1 for _ in range(n)],
     "nullable_integer_array": nullable_integer_array,
 
-    "boolean_array": lambda n: [rd.choices([True, False], k=n)],
+    "boolean_array": lambda n: rd.choices([True, False], k=n),
     "nullable_boolean_array": nullable_boolean_array,
 }
 
