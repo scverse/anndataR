@@ -16,7 +16,7 @@
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-# nolint start cyclocomp_linter
+# nolint start: cyclocomp_linter
 write_h5ad_element <- function(
     value,
     file,
@@ -94,8 +94,92 @@ write_h5ad_element <- function(
     }
   )
 }
-# nolint end cyclocomp_linter
+# nolint end: cyclocomp_linter
 
+#' Write H5AD attributes
+#'
+#' Write H5AD attributes to an element in an H5AD file
+#'
+#' @noRd
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param attributes Named list of attributes to write
+#' @param is_scalar Whether to write attributes as scalar values. Can be `TRUE`
+#' to write all attributes as scalars, `FALSE` to write no attributes as
+#' scalars, or a vector of the names of `attributes` that should be written.
+write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) { # nolint: cyclocomp_linter
+  if (is.character(file) && length(file) == 1 && !is.na(file)) {
+    h5file <- rhdf5::H5Fopen(file)
+    on.exit(rhdf5::H5Fclose(h5file))
+  } else if (inherits(file, "H5IdComponent")) {
+    h5file <- file
+  } else {
+    stop("file must be a path to an H5AD file or an open H5AD handle")
+  }
+
+  oid <- rhdf5::H5Oopen(h5file, name)
+  type <- rhdf5::H5Iget_type(oid)
+  rhdf5::H5Oclose(oid)
+
+  if (isTRUE(is_scalar)) {
+    is_scalar <- names(attributes)
+  } else if (isFALSE(is_scalar)) {
+    is_scalar <- c()
+  } else if (is.character(is_scalar)) {
+    is_scalar <- is_scalar
+  } else {
+    stop("is_scalar must be TRUE, FALSE or a character vector")
+  }
+
+  if (type == "H5I_GROUP") {
+    h5obj <- rhdf5::H5Gopen(h5file, name)
+    on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
+  } else {
+    h5obj <- rhdf5::H5Dopen(h5file, name)
+    on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
+  }
+
+  for (attr_name in names(attributes)) {
+    attr_value <- attributes[[attr_name]]
+    if (isTRUE(attr_value) || isFALSE(attr_value)) {
+      write_h5ad_boolean_attribute(attr_value, h5obj, attr_name)
+    } else {
+      scalar_value <- attr_name %in% is_scalar
+      rhdf5::h5writeAttribute(
+        attr_value, h5obj, attr_name, asScalar = scalar_value
+      ) # nolint
+    }
+  }
+}
+
+#' Write a H5AD Boolean attribute
+#'
+#' Write a Boolean attribute to a HDF5 element
+#'
+#' @noRd
+#'
+#' @param attr_value Boolean value to write
+#' @param h5obj Object representing the HDF5 element to write the attribute to
+#' @param attr_name Name of the attribute to write
+write_h5ad_boolean_attribute <- function(attr_value, h5obj, attr_name) {
+  # Based on https://github.com/grimbough/rhdf5/issues/136#issuecomment-1940860832
+
+  # Create an ENUM datatype and insert our two key:value pairs
+  type_id <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_UCHAR")
+  rhdf5::H5Tenum_insert(type_id, name = "TRUE", value = 1L)
+  rhdf5::H5Tenum_insert(type_id, name = "FALSE", value = 0L)
+
+  # Create the attribute using our new data type
+  space_id <- rhdf5::H5Screate()
+  on.exit(rhdf5::H5Sclose(space_id), add = TRUE)
+  attribute_id <- rhdf5::H5Acreate(
+    h5obj = h5obj, name = attr_name, dtype_id = type_id, h5space = space_id
+  )
+  on.exit(rhdf5::H5Aclose(attribute_id), add = TRUE)
+
+  rhdf5::H5Awrite(attribute_id, buf = attr_value)
+}
 
 #' Write H5AD encoding
 #'
@@ -108,23 +192,14 @@ write_h5ad_element <- function(
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
 write_h5ad_encoding <- function(file, name, encoding, version) {
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-
-  oid <- rhdf5::H5Oopen(h5file, name)
-  type <- rhdf5::H5Iget_type(oid)
-  rhdf5::H5Oclose(oid)
-
-  if (type == "H5I_GROUP") {
-    h5obj <- rhdf5::H5Gopen(h5file, name)
-    on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-  } else {
-    h5obj <- rhdf5::H5Dopen(h5file, name)
-    on.exit(rhdf5::H5Dclose(h5obj), add = TRUE)
-  }
-
-  rhdf5::h5writeAttribute(encoding, h5obj, "encoding-type", asScalar = TRUE) # nolint
-  rhdf5::h5writeAttribute(version, h5obj, "encoding-version", asScalar = TRUE) # nolint
+  write_h5ad_attributes(
+    file = file,
+    name = name,
+    attributes = list(
+      "encoding-type" = encoding,
+      "encoding-version" = version
+    )
+  )
 }
 
 #' Write H5AD dense array
@@ -200,13 +275,10 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
   write_h5ad_encoding(file, name, type, version)
 
   # Write shape attribute
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-
-  h5obj <- rhdf5::H5Gopen(h5file, name)
-  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-
-  rhdf5::h5writeAttribute(dim(value), h5obj, "shape")
+  write_h5ad_attributes(
+    file, name, list("shape" = dim(value)),
+    is_scalar = FALSE
+  )
 }
 
 #' Write H5AD nullable boolean
@@ -222,17 +294,63 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_boolean <- function(value, file, name, compression, version = "0.1.0") {
-  # write mask and values
+  # Write mask and values
   rhdf5::h5createGroup(file, name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
-  hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
-  hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
+  # nolint start: commented_code_linter
+  # hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
+  # hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
+  # nolint end: commented_code_linter
 
-  # Write attributes
+  write_h5ad_boolean_array(value_no_na, file, paste0(name, "/values"))
+  write_h5ad_boolean_array(is.na(value), file, paste0(name, "/mask"))
+
+  # Write encoding
   write_h5ad_encoding(file, name, "nullable-boolean", version)
 }
+
+#' Write H5AD boolean array
+#'
+#' Write a boolean array to an H5AD file as a custom ENUM dataset
+#'
+#' @noRd
+#'
+#' @param value Value to write
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+write_h5ad_boolean_array <- function(value, file, name) {
+  # Based on https://stackoverflow.com/a/74653515/4384120
+
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+
+  value <- as.integer(value)
+  if (!is.null(dim(value))) {
+    dims <- dim(value)
+  } else {
+    dims <- length(value)
+  }
+
+  # Create the dataspace for the data to write
+  h5space <- rhdf5::H5Screate_simple(dims = dims, NULL, native = TRUE)
+  on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
+
+  # Create the Boolean ENUM datatype (TRUE = 1 FALSE = 0)
+  tid <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_UCHAR")
+  rhdf5::H5Tenum_insert(tid, name = "TRUE", value = 1L)
+  rhdf5::H5Tenum_insert(tid, name = "FALSE", value = 0L)
+
+  # Create the dataset with this new datatype
+  h5dataset <- rhdf5::H5Dcreate(h5file, name, tid, h5space)
+  on.exit(rhdf5::H5Dclose(h5dataset), add = TRUE)
+
+  # Write the data. We have to use as.raw() because our base type is 8-bit and
+  # R integers are 32-bit
+  rhdf5::H5Dwrite(h5dataset, as.raw(value), h5type = tid)
+}
+
 
 #' Write H5AD nullable integer
 #'
@@ -255,7 +373,7 @@ write_h5ad_nullable_integer <- function(value, file, name, compression, version 
   hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
   hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
 
-  # Write attributes
+  # Write encoding
   write_h5ad_encoding(file, name, "nullable-integer", version)
 }
 
@@ -297,11 +415,24 @@ write_h5ad_string_array <- function(value, file, name, compression, version = "0
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(value, file, name, compression, version = "0.2.0") {
   rhdf5::h5createGroup(file, name)
-  hdf5_write_compressed(file, paste0(name, "/categories"), as.integer(levels(value)), compression)
-  hdf5_write_compressed(file, paste0(name, "/codes"), as.integer(value), compression)
-  hdf5_write_compressed(file, paste0(name, "/ordered"), is.ordered(value), compression)
 
-  write_h5ad_encoding(file, name, "categorical", version)
+  categories <- levels(value)
+
+  # Use zero-indexed values
+  codes <- as.integer(value) - 1L
+
+  # Set missing values to -1
+  codes[is.na(codes)] <- -1L
+
+  # write values to file
+  hdf5_write_compressed(file, paste0(name, "/categories"), categories, compression)
+  hdf5_write_compressed(file, paste0(name, "/codes"), codes, compression)
+
+  # Write encoding
+  write_h5ad_encoding(file = file, name = name, encoding = "categorical", version = version)
+
+  # Write ordered attribute
+  write_h5ad_attributes(file, name, list("ordered" = is.ordered(value)))
 }
 
 #' Write H5AD string scalar
@@ -326,7 +457,7 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
     encoding = "UTF-8"
   )
 
-  # Write attributes
+  # Write encoding
   write_h5ad_encoding(file, name, "string", version)
 }
 
@@ -344,10 +475,9 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # Write scalar
-
   hdf5_write_compressed(file, name, value, compression)
 
-  # Write attributes
+  # Write encoding
   write_h5ad_encoding(file, name, "numeric-scalar", version)
 }
 
@@ -420,12 +550,6 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
   }
 
   # Write additional data frame attributes
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-
-  h5obj <- rhdf5::H5Gopen(h5file, name)
-  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-
   col_order <- colnames(value)
   col_order <- col_order[col_order != index_name]
   # If there are no columns other than the index we set column order to an
@@ -433,7 +557,11 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
   if (length(col_order) == 0) {
     col_order <- numeric()
   }
-  rhdf5::h5writeAttribute(col_order, h5obj, "column-order") # nolint
+
+  write_h5ad_attributes(
+    file, name, list("column-order" = col_order),
+    is_scalar = FALSE
+  )
 }
 
 #' Write H5AD data frame index
@@ -464,13 +592,7 @@ write_h5ad_data_frame_index <- function(value, file, name, compression, index_na
   write_h5ad_element(value, file, paste0(name, "/", index_name))
 
   # Write data frame index attribute
-  h5file <- rhdf5::H5Fopen(file)
-  on.exit(rhdf5::H5Fclose(h5file))
-
-  h5obj <- rhdf5::H5Gopen(h5file, name)
-  on.exit(rhdf5::H5Gclose(h5obj), add = TRUE)
-
-  rhdf5::h5writeAttribute(index_name, h5obj, "_index", asScalar = TRUE)
+  write_h5ad_attributes(file, name, list("_index" = index_name))
 }
 
 #' Write empty H5AD
@@ -552,12 +674,15 @@ hdf5_path_exists <- function(file, target_path) {
 #'
 #' @return Whether the `path` exists in `file`
 hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf")) {
+
   compression <- match.arg(compression)
+
   if (!is.null(dim(value))) {
     dims <- dim(value)
   } else {
     dims <- length(value)
   }
+
   rhdf5::h5createDataset(
     file,
     name,
@@ -565,5 +690,6 @@ hdf5_write_compressed <- function(file, name, value, compression = c("none", "gz
     storage.mode = storage.mode(value),
     filter = toupper(compression)
   )
+
   rhdf5::h5write(value, file, name)
 }

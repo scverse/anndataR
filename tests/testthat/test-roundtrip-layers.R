@@ -81,8 +81,8 @@ for (name in r2py_names) {
     # make anndata
     ad <- AnnData(
       layers = layers,
-      obs = data$obs,
-      var = data$var
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE]
     )
     write_h5ad(ad, filename)
 
