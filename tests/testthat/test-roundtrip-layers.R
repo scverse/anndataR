@@ -14,12 +14,12 @@ for (name in layer_names) {
     # create anndata
     ad <- AnnData(
       layers = data$layers[name],
-      obs_names = data$obs_names,
-      var_names = data$var_names
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE]
     )
 
     # write to file
-    filename <- withr::local_file(paste0("roundtrip_layer_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     write_h5ad(ad, filename)
 
     # read from file
@@ -39,19 +39,19 @@ for (name in layer_names) {
   test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
     # add rownames
     layers <- data$layers[name]
-    rownames(layers[[name]]) <- data$obs_names
-    colnames(layers[[name]]) <- data$var_names
+    obs <- data.frame(row.names = rownames(data$obs))
+    var <- data.frame(row.names = rownames(data$var))
 
     # create anndata
     ad <- anndata::AnnData(
       layers = layers,
       shape = dim(data$X),
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names)
+      obs = obs,
+      var = var
     )
 
     # write to file
-    filename <- withr::local_file(paste0("reticulate_to_hdf5_layer_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     ad$write_h5ad(filename)
 
     # read from file
@@ -75,7 +75,7 @@ r2py_names <- r2py_names[!grepl("with_nas", r2py_names)]
 for (name in r2py_names) {
   test_that(paste0("hdf5->reticulate with layer '", name, "'"), {
     # write to file
-    filename <- withr::local_file(paste0("hdf5_to_reticulate_layer_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
     # strip rownames
     layers <- data$layers[name]
@@ -83,12 +83,12 @@ for (name in r2py_names) {
     colnames(layers[[name]]) <- NULL
 
     # make anndata
-    ad <- HDF5AnnData$new(
-      file = filename,
+    ad <- AnnData(
       layers = layers,
-      obs_names = data$obs_names,
-      var_names = data$var_names
+      obs = data$obs,
+      var = data$var
     )
+    write_h5ad(ad, filename)
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)

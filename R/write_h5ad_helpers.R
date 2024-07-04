@@ -16,13 +16,16 @@
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-write_h5ad_element <- function(value, file, name, compression = c("none", "gzip", "lzf"), stop_on_error = FALSE, ...) { # nolint
+# nolint start cyclocomp_linter
+write_h5ad_element <- function(
+  value,
+  file,
+  name,
+  compression = c("none", "gzip", "lzf"),
+  stop_on_error = FALSE,
+  ...
+) {
   compression <- match.arg(compression)
-
-  # Delete the path if it already exists
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
-  }
 
   # Sparse matrices
   write_fun <-
@@ -63,9 +66,20 @@ write_h5ad_element <- function(value, file, name, compression = c("none", "gzip"
       stop("Writing '", class(value), "' objects to H5AD files is not supported")
     }
 
+  # Delete the path if it already exists
+  if (hdf5_path_exists(file, name)) {
+    rhdf5::h5delete(file, name)
+  }
+
   tryCatch(
     {
-      write_fun(value = value, file = file, name = name, compression = compression, ...)
+      write_fun(
+        value = value,
+        file = file,
+        name = name,
+        compression = compression,
+        ...
+      )
     },
     error = function(e) {
       message <- paste0(
@@ -81,6 +95,8 @@ write_h5ad_element <- function(value, file, name, compression = c("none", "gzip"
     }
   )
 }
+# nolint end cyclocomp_linter
+
 
 #' Write H5AD encoding
 #'
@@ -128,14 +144,12 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
   version <- match.arg(version)
 
   if (!is.vector(value)) {
-    # Transpose the value because writing with native=TRUE does not
-    # seem to work as expected
     value <- t(value)
   }
 
   hdf5_write_compressed(file, name, value, compression)
 
-  # Write attributes
+  # Write encoding
   write_h5ad_encoding(file, name, "array", version)
 }
 
@@ -461,19 +475,19 @@ write_h5ad_data_frame_index <- function(value, file, name, compression, index_na
 #' @noRd
 #'
 #' @param file Path to the H5AD file to write
-#' @param obs_names Vector containing observation names
-#' @param var_names Vector containing variable names
+#' @param obs Data frame with observations
+#' @param var Data frame with variables
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
-write_empty_h5ad <- function(file, obs_names, var_names, compression, version = "0.1.0") {
+write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
   h5file <- rhdf5::H5Fcreate(file)
   rhdf5::H5Fclose(h5file)
 
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
-
-  write_h5ad_element(data.frame(row.names = obs_names), file, "/obs", compression)
-  write_h5ad_element(data.frame(row.names = var_names), file, "/var", compression)
+  
+  write_h5ad_element(obs, file, "/obs", compression)
+  write_h5ad_element(var, file, "/var", compression)
 
   rhdf5::h5createGroup(file, "layers")
   write_h5ad_encoding(file, "/layers", "dict", "0.1.0")

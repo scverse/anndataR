@@ -24,15 +24,13 @@ Write an H5AD file
 }
 \examples{
 adata <- AnnData(
-  X = matrix(1:15, 3L, 5L),
+  X = matrix(1:5, 3L, 5L),
   layers = list(
-    A = matrix(15:1, 3L, 5L),
-    B = matrix(letters[1:15], 3L, 5L)
+    A = matrix(5:1, 3L, 5L),
+    B = matrix(letters[1:5], 3L, 5L)
   ),
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5),
-  obs_names = LETTERS[1:3],
-  var_names = letters[1:5]
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
 h5ad_file <- tempfile(fileext = ".h5ad")
 write_h5ad(adata, h5ad_file)
