@@ -132,8 +132,8 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 \item{\code{uns}}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
 
-\item{\code{shape}}{Shape tuple (#observations, #variables). Can only be provided
-if \code{X} is \code{None}.}
+\item{\code{shape}}{Shape tuple (#observations, #variables). Can be provided
+if \code{X} or \code{obs} and \code{var} are not provided.}
 
 \item{\code{compression}}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to

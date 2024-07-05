@@ -52,8 +52,8 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 \item{uns}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
 
-\item{shape}{Shape tuple (#observations, #variables). Can only be provided
-if \code{X} is \code{None}.}
+\item{shape}{Shape tuple (#observations, #variables). Can be provided
+if \code{X} or \code{obs} and \code{var} are not provided.}
 }
 \description{
 This class is used to represent an AnnData object in memory.

@@ -33,8 +33,8 @@
 #'   element is a sparse matrix where each dimension has length `n_vars`.
 #' @param uns The uns slot is used to store unstructured annotation. It must
 #'   be either `NULL` or a named list.
-#' @param shape Shape tuple (#observations, #variables). Can only be provided
-#'   if `X` is `None`.
+#' @param shape Shape tuple (#observations, #variables). Can be provided
+#'   if `X` or `obs` and `var` are not provided.
 #'
 #' @export
 #'

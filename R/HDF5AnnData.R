@@ -209,8 +209,8 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   element is a sparse matrix where each dimension has length `n_vars`.
     #' @param uns The uns slot is used to store unstructured annotation. It must
     #'   be either `NULL` or a named list.
-    #' @param shape Shape tuple (#observations, #variables). Can only be provided
-    #'   if `X` is `None`.
+    #' @param shape Shape tuple (#observations, #variables). Can be provided
+    #'   if `X` or `obs` and `var` are not provided.
     #' @param compression The compression algorithm to use when writing the
     #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
     #' `"none"`.
