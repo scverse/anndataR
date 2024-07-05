@@ -89,7 +89,7 @@ generate_dataset <- function(
       "mat_numeric_matrix_with_nas", "mat_numeric_dense_with_nas", "mat_numeric_csparse_with_nas",
       "mat_numeric_rsparse_with_nas", "mat_integer_matrix", "mat_integer_dense", "mat_integer_csparse",
       "mat_integer_rsparse", "mat_integer_matrix_with_nas", "mat_integer_dense_with_nas",
-      "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas"
+      "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas", "list"
     ),
     example = FALSE,
     format = c("list", "AnnData", "SingleCellExperiment", "Seurat")) {
@@ -153,7 +153,8 @@ generate_dataset <- function(
       paste0("scalar_", names(vector_generators)),
       paste0("vec_", names(vector_generators)),
       paste0("df_", names(vector_generators)),
-      paste0("mat_", names(matrix_generators))
+      paste0("mat_", names(matrix_generators)),
+      "list"
     )) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)

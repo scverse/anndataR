@@ -65,7 +65,7 @@ generate_dataset(
     
      "mat_integer_dense", "mat_integer_csparse", "mat_integer_rsparse",
     "mat_integer_matrix_with_nas", "mat_integer_dense_with_nas",
-    "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas"),
+    "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas", "list"),
   example = FALSE,
   format = c("list", "AnnData", "SingleCellExperiment", "Seurat")
 )
