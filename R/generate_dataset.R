@@ -97,7 +97,7 @@ generate_dataset <- function(
 
   if (example) {
     x_type <- "numeric_matrix"
-    layer_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
+    layer_types <- c("integer_csparse", "numeric_matrix", "numeric_csparse")
     obs_types <- c("character", "integer", "factor")
     var_types <- c("character", "integer", "factor")
     obsm_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
