@@ -19,6 +19,8 @@
 #' * `X`: A matrix of observations by variables.
 #' * `obs`: A data frame of observations.
 #' * `var`: A data frame of variables.
+#' * `obs_names`: Names of observations (alias for `rownames(obs)`).
+#' * `var_names`: Names of variables (alias for `rownames(var)`).
 #' * `layers`: A named list of matrices with the same dimensions as `X`.
 #' * `obsm`: A named list of matrices with the same number of rows as `obs`.
 #' * `varm`: A named list of matrices with the same number of rows as `var`.
@@ -58,8 +60,6 @@
 #' @param var Either `NULL` or a `data.frame` with columns containing
 #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
 #'   automatically be generated.
-#' @param obs_names Names of observations (alias for `rownames(obs)`).
-#' @param var_names Names of variables (alias for `rownames(var)`).
 #' @param obsm The obsm slot is used to store multi-dimensional annotation
 #'   arrays. It must be either `NULL` or a named list, where each element is a
 #'   matrix with `n_obs` rows and an arbitrary number of columns.

@@ -54,10 +54,6 @@ be either \code{NULL} or a named list.}
 
 \item{shape}{Shape tuple (#observations, #variables). Can be provided
 if \code{X} or \code{obs} and \code{var} are not provided.}
-
-\item{obs_names}{Names of observations (alias for \code{rownames(obs)}).}
-
-\item{var_names}{Names of variables (alias for \code{rownames(var)}).}
 }
 \value{
 An \link{AbstractAnnData} object.
@@ -86,6 +82,8 @@ annotations in \code{uns}.
 \item \code{X}: A matrix of observations by variables.
 \item \code{obs}: A data frame of observations.
 \item \code{var}: A data frame of variables.
+\item \code{obs_names}: Names of observations (alias for \code{rownames(obs)}).
+\item \code{var_names}: Names of variables (alias for \code{rownames(var)}).
 \item \code{layers}: A named list of matrices with the same dimensions as \code{X}.
 \item \code{obsm}: A named list of matrices with the same number of rows as \code{obs}.
 \item \code{varm}: A named list of matrices with the same number of rows as \code{var}.
