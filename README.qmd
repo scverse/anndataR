@@ -1,5 +1,7 @@
 ---
 title: anndataR
+author: "`r rworkflows::use_badges(branch='main', add_bioc_release=TRUE)`" 
+date: "<h4>Most recent update: <i>`r format( Sys.Date(), '%b-%d-%Y')`</i></h4>"
 format: gfm
 ---
 
