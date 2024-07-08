@@ -2,9 +2,8 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
   release:
     types: [published]
   workflow_dispatch:
@@ -44,5 +43,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           clean: false
+          repository-name: data-intuitive/anndataR
           branch: gh-pages
           folder: docs
+          token: ${{ secrets.GTHB_PAT }}

@@ -36,6 +36,20 @@ used to identify each row of \code{var} and to act as an index into
 the variable dimension of the AnnData object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
+
+\item{\code{obsm}}{The obsm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{obs}.}
+
+\item{\code{varm}}{The varm slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows as \code{var}.}
+
+\item{\code{obsp}}{The obsp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{obs}.}
+
+\item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
+with all elements having the same number of rows and columns as \code{var}.}
+
+\item{\code{uns}}{The uns slot. Must be \code{NULL} or a named list.}
 }
 \if{html}{\out{</div>}}
 }
@@ -49,10 +63,15 @@ vector.}
 \item \href{#method-AbstractAnnData-obs_keys}{\code{AbstractAnnData$obs_keys()}}
 \item \href{#method-AbstractAnnData-var_keys}{\code{AbstractAnnData$var_keys()}}
 \item \href{#method-AbstractAnnData-layers_keys}{\code{AbstractAnnData$layers_keys()}}
+\item \href{#method-AbstractAnnData-obsm_keys}{\code{AbstractAnnData$obsm_keys()}}
+\item \href{#method-AbstractAnnData-varm_keys}{\code{AbstractAnnData$varm_keys()}}
+\item \href{#method-AbstractAnnData-obsp_keys}{\code{AbstractAnnData$obsp_keys()}}
+\item \href{#method-AbstractAnnData-varp_keys}{\code{AbstractAnnData$varp_keys()}}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-to_ReticulateAnnData}{\code{AbstractAnnData$to_ReticulateAnnData()}}
+\item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -136,6 +155,46 @@ Keys (element names) of \code{layers}.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obsm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obsm_keys}{}}}
+\subsection{Method \code{obsm_keys()}}{
+Keys (element names) of \code{obsm}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-varm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-varm_keys}{}}}
+\subsection{Method \code{varm_keys()}}{
+Keys (element names) of \code{varm}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-obsp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-obsp_keys}{}}}
+\subsection{Method \code{obsp_keys()}}{
+Keys (element names) of \code{obsp}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsp_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-varp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-varp_keys}{}}}
+\subsection{Method \code{varp_keys()}}{
+Keys (element names) of \code{varp}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varp_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
 \subsection{Method \code{to_SingleCellExperiment()}}{
@@ -174,6 +233,23 @@ Convert to a ReticulateAnnData
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_ReticulateAnnData()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_HDF5AnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_HDF5AnnData}{}}}
+\subsection{Method \code{to_HDF5AnnData()}}{
+Convert to an HDF5 Backed AnnData
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(path)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{The path to the HDF5 file}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-clone"></a>}}

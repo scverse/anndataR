@@ -15,16 +15,14 @@
 #'   ## useful when interacting with the SingleCellExperiment !
 #'   library(SingleCellExperiment)
 #' }
-#' ad <- InMemoryAnnData$new(
-#'   X = matrix(1:15, 3L, 5L),
+#' ad <- AnnData(
+#'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
-#'     A = matrix(15:1, 3L, 5L),
-#'     B = matrix(letters[1:15], 3L, 5L)
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #'
 #' ## construct a SingleCellExperiment from an AnnData object
@@ -112,45 +110,49 @@ to_SingleCellExperiment <- function(object) { # nolint
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
 #' @export
-from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData"), ...) { # nolint
+# nolint start: object_name_linter
+from_SingleCellExperiment <- function(
+    # nolint end: object_name_linter
+    sce,
+    output_class = c("InMemory", "HDF5AnnData"),
+    ...) {
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )
 
   # fetch generator
-  generator <- get_generator(output_class)
+  generator <- get_anndata_constructor(output_class)
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
+  # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
   obs <- as.data.frame(
     SummarizedExperiment::colData(sce)
   )
-  rownames(obs) <- NULL
 
   # trackstatus: class=SingleCellExperiment, feature=set_var, status=done
+  # trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
   var <- as.data.frame(
     SummarizedExperiment::rowData(sce)
   )
-  rownames(var) <- NULL
-
-  # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
-  obs_names <- colnames(sce)
-  if (is.null(obs_names)) {
-    warning(wrap_message("colnames(sce) should not be NULL"))
-    obs_names <- as.character(seq_len(nrow(obs)))
-  }
-
-  # trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
-  var_names <- rownames(sce)
-  if (is.null(var_names)) {
-    warning(wrap_message("rownames(sce) should not be NULL"))
-    var_names <- as.character(seq_len(nrow(var)))
-  }
 
   # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
   x_and_layers <- lapply(
     SummarizedExperiment::assays(sce, withDimnames = FALSE),
-    t
+    function(mat) {
+      m <- t(mat)
+      # nolint start
+      # WORKAROUND: convert denseMatrix to matrix, because otherwise:
+      # - Could not write element '/layers/integer_dense' of type 'dgeMatrix':
+      #   no applicable method for 'h5writeDataset' applied to an object of class "c('dgeMatrix', 'unpackedMatrix', 'ddenseMatrix', 'generalMatrix', 'dMatrix', 'denseMatrix', 'compMa
+      # - Could not write element '/layers/integer_dense_with_nas' of type 'dgeMatrix':
+      #   no applicable method for 'h5writeDataset' applied to an object of class "c('dgeMatrix', 'unpackedMatrix', 'ddenseMatrix', 'generalMatrix', 'dMatrix', 'denseMatrix', 'compMatrix', 'Matrix', 'replValueSp')"
+      # nolint end
+      if (inherits(m, "denseMatrix")) {
+        m <- as.matrix(m)
+      }
+      m
+    }
   )
   if (length(x_and_layers) == 0L) {
     x <- NULL
@@ -165,8 +167,6 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
     X = x,
     obs = obs,
     var = var,
-    obs_names = obs_names,
-    var_names = var_names,
     layers = layers,
     ...
   )

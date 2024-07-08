@@ -38,7 +38,7 @@ test_that("reading recarrays works", {
   for (array in array_list) {
     expect_true(is.array(array))
     expect_type(array, "double")
-    expect_equal(dim(array), 100)
+    expect_equal(length(array), 100)
   }
 })
 
@@ -107,9 +107,24 @@ test_that("reading dataframes works", {
   expect_equal(
     colnames(df),
     c(
-      ".index", "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA",
+      "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA",
       "n_genes_by_counts", "log1p_n_genes_by_counts", "total_counts",
       "log1p_total_counts", "leiden"
     )
   )
+})
+
+test_that("reading H5AD as SingleCellExperiment works", {
+  skip_if_not_installed("SingleCellExperiment")
+
+  sce <- read_h5ad(file, to = "SingleCellExperiment")
+  expect_s4_class(sce, "SingleCellExperiment")
+})
+
+test_that("reading H5AD as Seurat works", {
+  skip_if_not_installed("SeuratObject")
+
+  # TODO: remove this suppression when the to_seurat, from_seurat functions are updated.
+  seurat <- suppressWarnings(read_h5ad(file, to = "Seurat"))
+  expect_s4_class(seurat, "Seurat")
 })
