@@ -1,4 +1,5 @@
-# copied from https://github.com/dynverse/anndata/blob/main/R/reticulate_conversions.R#L1
+
+# copied from https://github.com/dynverse/anndata/blob/main/R/reticulate_conversions.R#L1/
 py_to_r_ifneedbe <- function(x) {
   requireNamespace("reticulate")
   if (inherits(x, "python.builtin.object")) {
@@ -8,6 +9,16 @@ py_to_r_ifneedbe <- function(x) {
   }
 }
 
+#' Convert between Python and R objects
+#'
+#' @param x A Python object.
+#' @param name A name
+#' @param value A value
+#'
+#' @return An \R object, as converted from the Python object.
+#'
+#' @name r-py-conversion
+#' @export
 # copied from https://github.com/dynverse/anndata/blob/main/R/reticulate_conversions.R#L61
 py_to_r.pandas.core.indexes.base.Index <- function(x) { # nolint
   requireNamespace("reticulate")
@@ -17,6 +28,8 @@ py_to_r.pandas.core.indexes.base.Index <- function(x) { # nolint
   out
 }
 
+#' @name r-py-conversion
+#' @export
 # copied from https://github.com/dynverse/anndata/blob/main/R/reticulate_conversions.R#LL77C38-L90C2
 py_to_r.collections.abc.Mapping <- function(x) { # nolint
   requireNamespace("reticulate")
@@ -33,3 +46,7 @@ py_to_r.collections.abc.Mapping <- function(x) { # nolint
 
   x_list
 }
+
+# `py_to_r.collections.abc.Set` ?
+# `py_to_r.collections.abc.KeysView` ?
+# `py_to_r.scipy.sparse.csc.csc_matrix` ?

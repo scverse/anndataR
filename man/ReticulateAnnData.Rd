@@ -85,7 +85,7 @@ Creates a new instance of an in memory AnnData object.
 Inherits from ReticulateAnnData.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ReticulateAnnData$new(
-  file,
+  file = NULL,
   X = NULL,
   obs = NULL,
   var = NULL,

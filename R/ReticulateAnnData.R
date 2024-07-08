@@ -125,7 +125,7 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
     #'   be either `NULL` or a named list.
     #' @param shape Shape tuple (#observations, #variables). Can be provided
     #'   if `X` or `obs` and `var` are not provided.
-    initialize = function(file,
+    initialize = function(file = NULL,
                           X = NULL,
                           obs = NULL,
                           var = NULL,
