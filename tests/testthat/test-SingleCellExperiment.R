@@ -1,8 +1,8 @@
 test_that("to_SingleCellExperiment() works", {
   ad <- AnnData(
     X = matrix(1:5, 3L, 5L),
-    obs = data.frame(row.names = letters[1:5], cell = 1:3),
-    var = data.frame(row.names = LETTERS[1:10], gene = 1:5)
+    obs = data.frame(row.names = letters[1:3], cell = 1:3),
+    var = data.frame(row.names = LETTERS[1:5], gene = 1:5)
   )
   ad0 <- AnnData(
     obs = data.frame(row.names = letters[1:5]),
@@ -20,23 +20,19 @@ test_that("to_SingleCellExperiment() works", {
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_obs_names, status=done
   # trackstatus: class=SingleCellExperiment, feature=test_get_var_names, status=done
-  expect_identical(dimnames(sce), list(letters[1:5], LETTERS[1:3]))
-  expect_identical(dimnames(sce0), list(letters[1:8], LETTERS[1:6]))
+  expect_identical(dimnames(sce), list(LETTERS[1:5], letters[1:3]))
+  expect_identical(dimnames(sce0), list(LETTERS[1:10], letters[1:5]))
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_var, status=done
   var_ <- as.data.frame(SummarizedExperiment::rowData(sce))
-  rownames(var_) <- NULL
   expect_identical(var_, ad$var)
   var0_ <- as.data.frame(SummarizedExperiment::rowData(sce0))
-  rownames(var0_) <- NULL
   expect_identical(var0_, ad0$var)
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_obs, status=done
   obs_ <- as.data.frame(SummarizedExperiment::colData(sce))
-  rownames(obs_) <- NULL
   expect_identical(obs_, ad$obs)
   obs0_ <- as.data.frame(SummarizedExperiment::colData(sce0))
-  rownames(obs0_) <- NULL
   expect_identical(obs0_, ad0$obs)
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_X, status=done
@@ -66,9 +62,6 @@ test_that("from_SingleCellExperiment() works", {
   )
   dimnames <- dimnames(sce)
 
-  rownames(obs) <- NULL
-  rownames(var) <- NULL
-
   ad0 <- from_SingleCellExperiment(sce0, "InMemory")
   ad <- from_SingleCellExperiment(sce, "InMemory")
 
@@ -76,10 +69,10 @@ test_that("from_SingleCellExperiment() works", {
   expect_identical(ad0$X, NULL)
   expect_identical(ad$X, x)
   # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
-  expect_identical(ad0$obs, data.frame())
+  expect_identical(ad0$obs, data.frame(row.names = character(0)))
   expect_identical(ad$obs, obs)
   # trackstatus: class=SingleCellExperiment, feature=test_set_var, status=done
-  expect_identical(ad0$var, data.frame())
+  expect_identical(ad0$var, data.frame(row.names = character(0)))
   expect_identical(ad$var, var)
   # trackstatus: class=SingleCellExperiment, feature=test_set_obs_names, status=done
   expect_identical(ad0$obs_names, character(0))

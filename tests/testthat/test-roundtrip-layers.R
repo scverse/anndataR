@@ -6,16 +6,14 @@ data <- generate_dataset(10L, 20L)
 layer_names <- names(data$layers)
 # TODO: Add denseMatrix support to anndata and anndataR
 layer_names <- layer_names[!grepl("_dense", layer_names)]
-# TODO: re-enable these tests
-layer_names <- layer_names[!grepl("_with_nas", layer_names)]
 
 for (name in layer_names) {
   test_that(paste0("roundtrip with layer '", name, "'"), {
     # create anndata
     ad <- AnnData(
       layers = data$layers[name],
-      obs = data$obs,
-      var = data$var
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE]
     )
 
     # write to file
@@ -69,8 +67,6 @@ for (name in layer_names) {
 r2py_names <- layer_names
 # TODO: rsparse gets converted to csparse by anndata
 r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
-# TODO: fix when this is working
-r2py_names <- r2py_names[!grepl("with_nas", r2py_names)]
 
 for (name in r2py_names) {
   test_that(paste0("hdf5->reticulate with layer '", name, "'"), {
@@ -89,13 +85,6 @@ for (name in r2py_names) {
       var = data$var
     )
     write_h5ad(ad, filename)
-    # ad <- HDF5AnnData$new(
-    #   file = filename,
-    #   layers = layers,
-    #   obs = data$obs,
-    #   var = data$var
-    # )
-    # ad$close()
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)

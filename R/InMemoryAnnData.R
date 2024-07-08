@@ -216,16 +216,6 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   public = list(
     #' @description Creates a new instance of an in memory AnnData object.
     #'   Inherits from AbstractAnnData.
-    #' @param obs_names A vector of unique identifiers
-    #'   used to identify each row of `obs` and to act as an index into
-    #'   the observation dimension of the AnnData object. The length of
-    #'   the `obs_names` defines the observation dimension of the AnnData
-    #'   object.
-    #' @param var_names A vector of unique identifers
-    #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object. The length of
-    #'   the `var_names` defines the variable dimension of the AnnData
-    #'   object.
     #' @param X Either `NULL` or a observation × variable matrix with
     #'   dimensions consistent with `obs` and `var`.
     #' @param layers Either `NULL` or a named list, where each element
@@ -251,6 +241,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   element is a sparse matrix where each dimension has length `n_vars`.
     #' @param uns The uns slot is used to store unstructured annotation.
     #'   It must be either `NULL` or a named list.
+    #' @param shape Shape tuple (#observations, #variables). Can be provided
+    #'   if `X` or `obs` and `var` are not provided.
     initialize = function(X = NULL,
                           obs = NULL,
                           var = NULL,
@@ -259,27 +251,21 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
                           varm = NULL,
                           obsp = NULL,
                           varp = NULL,
-                          uns = NULL) {
-      # initialise obs
-      if (is.null(obs)) {
-        # TODO: if X or layers is not null,
-        # derive the correct dimensions
-        obs <- data.frame()
-      }
+                          uns = NULL,
+                          shape = NULL) {
+      # Determine initial obs and var
+      shape <- get_shape(obs, var, X, shape)
+      obs <- get_initial_obs(obs, X, shape)
+      var <- get_initial_var(var, X, shape)
+
+      # set obs and var first
       if (!is.data.frame(obs)) {
         stop("obs must be a data.frame")
-      }
-      private$.obs <- obs
-
-      # initialize var
-      if (is.null(var)) {
-        # TODO: if X or layers is not null,
-        # derive the correct dimensions
-        var <- data.frame()
       }
       if (!is.data.frame(var)) {
         stop("var must be a data.frame")
       }
+      private$.obs <- obs
       private$.var <- var
 
       # write other slots later
@@ -330,6 +316,7 @@ to_InMemoryAnnData <- function(adata) { # nolint
     varm = adata$varm,
     obsp = adata$obsp,
     varp = adata$varp,
-    uns = adata$uns
+    uns = adata$uns,
+    shape = adata$shape()
   )
 }

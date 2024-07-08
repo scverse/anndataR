@@ -21,7 +21,7 @@
 #' `write_h5ad_element()` should always be used instead of any of the specific
 #' writing functions as it contains additional boilerplate to make sure
 #' elements are written correctly.
-# nolint start cyclocomp_linter
+# nolint start: cyclocomp_linter
 write_h5ad_element <- function(
     value,
     file,
@@ -52,7 +52,7 @@ write_h5ad_element <- function(
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) { # Numeric values
       if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
-      } else if (is.integer(value) && any(is.na(value))) {
+      } else if (is.integer(value) && any(is.na(value)) && !is.matrix(value)) {
         write_h5ad_nullable_integer
       } else {
         write_h5ad_dense_array
@@ -100,7 +100,7 @@ write_h5ad_element <- function(
     }
   )
 }
-# nolint end cyclocomp_linter
+# nolint end: cyclocomp_linter
 
 #' Write H5AD attributes
 #'
@@ -160,6 +160,12 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @noRd
 write_h5ad_dense_array <- function(value, file, name, compression, version = "0.2.0") {
   version <- match.arg(version)
+
+  if (is.matrix(value) && any(is.na(value))) {
+    # is.na(value) <- NaN gets ignored
+    na_indices <- is.na(value)
+    value[na_indices] <- NaN
+  }
 
   if (!is.vector(value)) {
     value <- t(value)
@@ -245,6 +251,47 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   # TODO: could pass 'grp' here instead
   write_h5ad_encoding(file, name, "nullable-boolean", version)
 }
+
+#' Write H5AD boolean array
+#'
+#' Write a boolean array to an H5AD file as a custom ENUM dataset
+#'
+#' @noRd
+#'
+#' @param value Value to write
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+write_h5ad_boolean_array <- function(value, file, name) {
+  # Based on https://stackoverflow.com/a/74653515/4384120
+
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file))
+
+  value <- as.integer(value)
+  if (!is.null(dim(value))) {
+    dims <- dim(value)
+  } else {
+    dims <- length(value)
+  }
+
+  # Create the dataspace for the data to write
+  h5space <- rhdf5::H5Screate_simple(dims = dims, NULL, native = TRUE)
+  on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
+
+  # Create the Boolean ENUM datatype (TRUE = 1 FALSE = 0)
+  tid <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_UCHAR")
+  rhdf5::H5Tenum_insert(tid, name = "TRUE", value = 1L)
+  rhdf5::H5Tenum_insert(tid, name = "FALSE", value = 0L)
+
+  # Create the dataset with this new datatype
+  h5dataset <- rhdf5::H5Dcreate(h5file, name, tid, h5space)
+  on.exit(rhdf5::H5Dclose(h5dataset), add = TRUE)
+
+  # Write the data. We have to use as.raw() because our base type is 8-bit and
+  # R integers are 32-bit
+  rhdf5::H5Dwrite(h5dataset, as.raw(value), h5type = tid)
+}
+
 
 #' Write H5AD nullable integer
 #'
@@ -467,12 +514,15 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
 #' @noRd
 #'
 #' @param file Path to the H5AD file to write
-#' @param obs_names Vector containing observation names
-#' @param var_names Vector containing variable names
+#' @param obs Data frame with observations
+#' @param var Data frame with variables
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
 write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
+  h5file <- rhdf5::H5Fcreate(file)
+  rhdf5::H5Fclose(h5file)
+
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
 
   write_h5ad_element(obs, file, "/obs", compression)
@@ -538,6 +588,7 @@ hdf5_path_exists <- function(file, target_path) {
 #' @return Whether the `path` exists in `file`
 hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf"), scalar = FALSE) {
   compression <- match.arg(compression)
+
   if (!is.null(dim(value))) {
     dims <- dim(value)
   } else {

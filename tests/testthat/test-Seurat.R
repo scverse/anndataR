@@ -20,11 +20,11 @@ test_that("to_Seurat with inmemoryanndata", {
   expect_equal(ncol(seu), 10)
 
   # trackstatus: class=Seurat, feature=test_get_var_names, status=done
-  expect_equal(rownames(seu), dummy$var_names)
+  expect_equal(rownames(seu), rownames(dummy$var))
   expect_equal(rownames(seu0), LETTERS[1:10])
 
   # trackstatus: class=Seurat, feature=test_get_obs_names, status=done
-  expect_equal(colnames(seu), dummy$obs_names)
+  expect_equal(colnames(seu), rownames(dummy$obs))
   expect_equal(colnames(seu0), letters[1:5])
 
   # check whether all obs keys are found in the seu metadata

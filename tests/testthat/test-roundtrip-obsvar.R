@@ -18,7 +18,7 @@ for (name in test_names) {
     ad <- AnnData(
       X = data$X,
       obs = data$obs[, name, drop = FALSE],
-      var = data$var[, name, drop = FALSE],
+      var = data$var[, name, drop = FALSE]
     )
 
     # write to file

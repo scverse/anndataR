@@ -2,7 +2,7 @@
 % Please edit documentation in R/AnnData.R
 \name{AnnData}
 \alias{AnnData}
-\title{An in-memory AnnData object}
+\title{An AnnData object}
 \usage{
 AnnData(
   X = NULL,
@@ -13,7 +13,8 @@ AnnData(
   varm = NULL,
   obsp = NULL,
   varp = NULL,
-  uns = NULL
+  uns = NULL,
+  shape = shape
 )
 }
 \arguments{
@@ -50,15 +51,75 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 
 \item{uns}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
+
+\item{shape}{Shape tuple (#observations, #variables). Can be provided
+if \code{X} or \code{obs} and \code{var} are not provided.}
+}
+\value{
+An \link{AbstractAnnData} object.
 }
 \description{
-This class is used to represent an AnnData object in memory.
-AnnData stores a data matrix \code{X} together with annotations of
-observations \code{obs} (\code{obsm}, \code{obsp}), variables \code{var} (\code{varm}, \code{varp}), and
-unstructured annotations \code{uns}.
-
-To read an AnnData file from disk, use \code{\link[=read_h5ad]{read_h5ad()}} instead.
+An AnnData object. This class can either be an in-memory
+AnnData (InMemoryAnnData) or an HDF5-backed AnnData (HDF5AnnData). The
+AnnData object stores a data matrix \code{X} together with annotations of
+observations \code{obs} (\code{obsm}, \code{obsp}) and variables \code{var} (\code{varm}, \code{varp}).
+Additional layers of data can be stored in \code{layers} and unstructured
+annotations in \code{uns}.
 }
+\section{Functions that can be used to create AnnData objects}{
+
+\itemize{
+\item \code{\link[=AnnData]{AnnData()}}: Create an in-memory AnnData object.
+\item \code{\link[=read_h5ad]{read_h5ad()}}: Read an HDF5-backed AnnData file from disk.
+\item \code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}: Convert a SingleCellExperiment object to an AnnData object.
+\item \code{\link[=from_Seurat]{from_Seurat()}}: Convert a Seurat object to an AnnData object.
+}
+}
+
+\section{Slots}{
+
+\itemize{
+\item \code{X}: A matrix of observations by variables.
+\item \code{obs}: A data frame of observations.
+\item \code{var}: A data frame of variables.
+\item \code{obs_names}: Names of observations (alias for \code{rownames(obs)}).
+\item \code{var_names}: Names of variables (alias for \code{rownames(var)}).
+\item \code{layers}: A named list of matrices with the same dimensions as \code{X}.
+\item \code{obsm}: A named list of matrices with the same number of rows as \code{obs}.
+\item \code{varm}: A named list of matrices with the same number of rows as \code{var}.
+\item \code{obsp}: A named list of sparse matrices with the same number of rows and columns as the number of observations.
+\item \code{varp}: A named list of sparse matrices with the same number of rows and columns as the number of variables.
+\item \code{uns}: A named list of unstructured annotations.
+}
+}
+
+\section{Methods}{
+
+\itemize{
+\item \code{print()}: Print a summary of the AnnData object.
+\item \code{shape()}: Dimensions (observations x variables) of the AnnData object.
+\item \code{n_obs()}: Number of observations in the AnnData object.
+\item \code{n_vars()}: Number of variables in the AnnData object.
+\item \code{obs_keys()}: Column names of \code{obs}.
+\item \code{var_keys()}: Column names of \code{var}.
+\item \code{layers_keys()}: Element names of \code{layers}.
+\item \code{obsm_keys()}: Element names of \code{obsm}.
+\item \code{varm_keys()}: Element names of \code{varm}.
+\item \code{obsp_keys()}: Element names of \code{obsp}.
+\item \code{varp_keys()}: Element names of \code{varp}.
+}
+}
+
+\section{Conversion methods}{
+
+\itemize{
+\item \code{to_SingleCellExperiment()}: Convert to SingleCellExperiment.
+\item \code{to_Seurat()}: Convert to Seurat.
+\item \code{to_InMemoryAnnData()}: Convert to an InMemory AnnData.
+\item \code{to_HDF5AnnData()}: Convert to an HDF5 Backed AnnData.
+}
+}
+
 \examples{
 adata <- AnnData(
   X = matrix(1:12, nrow = 3, ncol = 4),
@@ -74,4 +135,7 @@ adata <- AnnData(
 )
 
 adata
+}
+\seealso{
+\link{AbstractAnnData}
 }

@@ -23,8 +23,8 @@ for (name in uns_names) {
   test_that(paste0("roundtrip with uns '", name, "'"), {
     # create anndata
     ad <- AnnData(
-      obs = data.frame(row.names = rownames(data$obs)),
-      var = data.frame(row.names = rownames(data$var)),
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE],
       uns = data$uns[name]
     )
 
@@ -49,8 +49,8 @@ for (name in uns_names) {
   test_that(paste0("reticulate->hdf5 with uns '", name, "'"), {
     # create anndata
     ad <- anndata::AnnData(
-      obs = data.frame(row.names = rownames(data$obs)),
-      var = data.frame(row.names = rownames(data$var)),
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE],
       uns = data$uns[name]
     )
 
@@ -78,8 +78,8 @@ for (name in uns_names) {
 
     # make anndata
     ad <- AnnData(
-      obs = data.frame(row.names = rownames(data$obs)),
-      var = data.frame(row.names = rownames(data$var)),
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE],
       uns = data$uns[name]
     )
     write_h5ad(ad, filename)

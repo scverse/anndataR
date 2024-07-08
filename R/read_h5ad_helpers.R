@@ -313,7 +313,7 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   ordered <- hdf5r::h5attr(element, "ordered")
 
-  factor(codes, levels = levels, ordered = ordered)
+  factor(levels[codes], levels = levels, ordered = ordered)
 }
 
 #' Read H5AD string scalar
@@ -384,7 +384,7 @@ read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
   index_name <- hdf5r::h5attr(file[[name]], "_index")
   column_order <- hdf5r::h5attr(file[[name]], "column-order")
 
-  index <- read_h5ad_element(file, paste0(name, "/", index_name))
+  index <- read_h5ad_element(file, file.path(name, index_name))
   data <- read_h5ad_collection(file, name, column_order)
 
   as.data.frame(

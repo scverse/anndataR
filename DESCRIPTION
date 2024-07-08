@@ -83,6 +83,6 @@ Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 biocViews: SingleCell, DataImport, DataRepresentation
 Remotes: github::hhoeflin/hdf5r@bug/fix_empty_attrs_again

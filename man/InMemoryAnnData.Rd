@@ -118,7 +118,8 @@ Inherits from AbstractAnnData.
   varm = NULL,
   obsp = NULL,
   varp = NULL,
-  uns = NULL
+  uns = NULL,
+  shape = NULL
 )}\if{html}{\out{</div>}}
 }
 
@@ -159,17 +160,8 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 \item{\code{uns}}{The uns slot is used to store unstructured annotation.
 It must be either \code{NULL} or a named list.}
 
-\item{\code{obs_names}}{A vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. The length of
-the \code{obs_names} defines the observation dimension of the AnnData
-object.}
-
-\item{\code{var_names}}{A vector of unique identifers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. The length of
-the \code{var_names} defines the variable dimension of the AnnData
-object.}
+\item{\code{shape}}{Shape tuple (#observations, #variables). Can be provided
+if \code{X} or \code{obs} and \code{var} are not provided.}
 }
 \if{html}{\out{</div>}}
 }
