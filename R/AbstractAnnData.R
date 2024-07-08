@@ -120,11 +120,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     },
     #' @description Number of observations in the AnnData object.
     n_obs = function() {
-      length(self$obs_names)
+      nrow(self$obs)
     },
     #' @description Number of variables in the AnnData object.
     n_vars = function() {
-      length(self$var_names)
+      nrow(self$var)
     },
     #' @description Keys ('column names') of `obs`.
     obs_keys = function() {
@@ -282,13 +282,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           "Expected nrow: ", expected_nrow, ". ",
           "Observed nrow: ", nrow(df), "."
         ))
-      }
-
-      if (has_row_names(df)) {
-        warning(wrap_message(
-          "'", label, "' should not have any rownames, removing them from the data frame."
-        ))
-        rownames(df) <- NULL
       }
 
       df

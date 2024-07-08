@@ -26,11 +26,6 @@ write_h5ad_element <- function(
     ...) {
   compression <- match.arg(compression)
 
-  # Delete the path if it already exists
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
-  }
-
   # Sparse matrices
   write_fun <-
     if (inherits(value, "sparseMatrix")) { # Sparse matrices
@@ -69,6 +64,11 @@ write_h5ad_element <- function(
     } else { # Fail if unknown
       stop("Writing '", class(value), "' objects to H5AD files is not supported")
     }
+
+  # Delete the path if it already exists
+  if (hdf5_path_exists(file, name)) {
+    rhdf5::h5delete(file, name)
+  }
 
   tryCatch(
     {
@@ -147,7 +147,8 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) { # 
     } else {
       scalar_value <- attr_name %in% is_scalar
       rhdf5::h5writeAttribute(
-        attr_value, h5obj, attr_name, asScalar = scalar_value
+        attr_value, h5obj, attr_name,
+        asScalar = scalar_value
       ) # nolint
     }
   }
@@ -224,8 +225,6 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
   }
 
   if (!is.vector(value)) {
-    # Transpose the value because writing with native=TRUE does not
-    # seem to work as expected
     value <- t(value)
   }
 
@@ -421,10 +420,10 @@ write_h5ad_categorical <- function(value, file, name, compression, version = "0.
   categories <- levels(value)
 
   # Use zero-indexed values
-  codes <- as.integer(value) - 1
+  codes <- as.integer(value) - 1L
 
   # Set missing values to -1
-  codes[is.na(codes)] <- -1
+  codes[is.na(codes)] <- -1L
 
   # write values to file
   hdf5_write_compressed(file, paste0(name, "/categories"), categories, compression)
@@ -604,19 +603,19 @@ write_h5ad_data_frame_index <- function(value, file, name, compression, index_na
 #' @noRd
 #'
 #' @param file Path to the H5AD file to write
-#' @param obs_names Vector containing observation names
-#' @param var_names Vector containing variable names
+#' @param obs Data frame with observations
+#' @param var Data frame with variables
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
-write_empty_h5ad <- function(file, obs_names, var_names, compression, version = "0.1.0") {
+write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
   h5file <- rhdf5::H5Fcreate(file)
   rhdf5::H5Fclose(h5file)
 
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
 
-  write_h5ad_element(data.frame(row.names = obs_names), file, "/obs", compression)
-  write_h5ad_element(data.frame(row.names = var_names), file, "/var", compression)
+  write_h5ad_element(obs, file, "/obs", compression)
+  write_h5ad_element(var, file, "/var", compression)
 
   rhdf5::h5createGroup(file, "layers")
   write_h5ad_encoding(file, "/layers", "dict", "0.1.0")
@@ -676,7 +675,6 @@ hdf5_path_exists <- function(file, target_path) {
 #'
 #' @return Whether the `path` exists in `file`
 hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf")) {
-
   compression <- match.arg(compression)
 
   if (!is.null(dim(value))) {

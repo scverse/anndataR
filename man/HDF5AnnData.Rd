@@ -78,8 +78,6 @@ HDF5AnnData constructor
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(
   file,
-  obs_names = NULL,
-  var_names = NULL,
   X = NULL,
   obs = NULL,
   var = NULL,
@@ -89,6 +87,7 @@ HDF5AnnData constructor
   obsp = NULL,
   varp = NULL,
   uns = NULL,
+  shape = NULL,
   compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
@@ -98,16 +97,6 @@ HDF5AnnData constructor
 \describe{
 \item{\code{file}}{The filename (character) of the \code{.h5ad} file. If this
 file does not exist yet, \code{obs_names} and \code{var_names} must be provided.}
-
-\item{\code{obs_names}}{A vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into the
-observation dimension of the AnnData object. The length of \code{obs_names}
-defines the observation dimension of the AnnData object.}
-
-\item{\code{var_names}}{A vector of unique identifiers used to identify each row
-of \code{var} and to act as an index into the variable dimension of the
-AnnData object. The length of \code{var_names} defines the variable
-dimension of the AnnData object.}
 
 \item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
 dimensions consistent with \code{obs} and \code{var}.}
@@ -142,6 +131,9 @@ element is a sparse matrix where each dimension has length \code{n_vars}.}
 
 \item{\code{uns}}{The uns slot is used to store unstructured annotation. It must
 be either \code{NULL} or a named list.}
+
+\item{\code{shape}}{Shape tuple (#observations, #variables). Can be provided
+if \code{X} or \code{obs} and \code{var} are not provided.}
 
 \item{\code{compression}}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
