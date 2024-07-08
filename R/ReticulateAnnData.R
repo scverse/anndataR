@@ -39,20 +39,11 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_obs, status=done
-        obs_ <- py_to_r_ifneedbe(private$.obj$obs)
-        rownames(obs_) <- NULL
-        attr(obs_, "pandas.index") <- NULL # nolint
-        obs_
+        py_to_r_ifneedbe(private$.obj$obs)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_obs, status=done
-        # orig_obs_names <- self$obs_names
-        # private$.obj$obs <- private$.validate_obsvar_dataframe(value, "obs")
-        # self$obs_names <- orig_obs_names
         obs_ <- private$.validate_obsvar_dataframe(value, "obs")
-        reticulate::py_del_attr(private$.obj, "obs")
-        for (name in colnames(obs_)) {
-          reticulate::py_set_item(private$.obj$obs, name, obs_[[name]])
-        }
+        reticulate::py_set_attr(private$.obj, "obs", obs_)
         self
       }
     },
@@ -62,20 +53,11 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_var, status=done
-        var_ <- py_to_r_ifneedbe(private$.obj$var)
-        rownames(var_) <- NULL
-        attr(var_, "pandas.index") <- NULL # nolint
-        var_
+        py_to_r_ifneedbe(private$.obj$var)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_var, status=done
-        # orig_var_names <- self$var_names
-        # private$.obj$var <- private$.validate_obsvar_dataframe(value, "var")
-        # self$var_names <- orig_var_names
         var_ <- private$.validate_obsvar_dataframe(value, "var")
-        reticulate::py_del_attr(private$.obj, "var")
-        for (name in colnames(var_)) {
-          reticulate::py_set_item(private$.obj$var, name, var_[[name]])
-        }
+        reticulate::py_set_attr(private$.obj, "var", var_)
         self
       }
     },
@@ -114,33 +96,46 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
     #' @description Creates a new instance of an in memory AnnData object.
     #'   Inherits from ReticulateAnnData.
     #'
-    #' @param file The filename (character) of the `.h5ad` file. Alternatively,
-    #' you can also provide an object created by
-    #' `anndata <- reticulate::import("anndata"); anndata$read_h5ad(...)`. If this
-    #' file does not exist yet, you must provide values for `X`, `obs`, `var` to
-    #' create a new AnnData with.
-    #' @param obs_names A vector of unique identifiers
-    #'   used to identify each row of `obs` and to act as an index into
-    #'   the observation dimension of the AnnData object. The length of
-    #'   the `obs_names` defines the observation dimension of the AnnData
-    #'   object.
-    #' @param var_names A vector of unique identifers
-    #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object. The length of
-    #'   the `var_names` defines the variable dimension of the AnnData
-    #'   object.
+    #' @param file The filename (character) of the `.h5ad` file. If this
+    #'   file does not exist yet, `obs_names` and `var_names` must be provided.
     #' @param X Either `NULL` or a observation × variable matrix with
     #'   dimensions consistent with `obs` and `var`.
-    #' @param layers Either `NULL` or a named list, where each element
-    #'   is an observation × variable matrix with dimensions consistent
-    #'   with `obs` and `var`.
-    #' @param obs Either `NULL` or a `data.frame` with columns containing information
-    #'   about observations. If `NULL`, an `n_obs`×0 data frame will automatically
-    #'   be generated.
-    #' @param var Either `NULL` or a `data.frame` with columns containing information
-    #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
-    #'   be generated.
-    initialize = function(obs_names, var_names, file = NULL, X = NULL, obs = NULL, var = NULL, layers = NULL) {
+    #' @param layers Either `NULL` or a named list, where each element is an
+    #'   observation × variable matrix with dimensions consistent with `obs` and
+    #'   `var`.
+    #' @param obs Either `NULL` or a `data.frame` with columns containing
+    #'   information about observations. If `NULL`, an `n_obs`×0 data frame will
+    #'   automatically be generated.
+    #' @param var Either `NULL` or a `data.frame` with columns containing
+    #'   information about variables. If `NULL`, an `n_vars`×0 data frame will
+    #'   automatically be generated.
+    #' @param obsm The obsm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_obs` rows and an arbitrary number of columns.
+    #' @param varm The varm slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is a
+    #'   matrix with `n_vars` rows and an arbitrary number of columns.
+    #' @param obsp The obsp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_obs`.
+    #' @param varp The varp slot is used to store sparse multi-dimensional
+    #'   annotation arrays. It must be either `NULL` or a named list, where each
+    #'   element is a sparse matrix where each dimension has length `n_vars`.
+    #' @param uns The uns slot is used to store unstructured annotation. It must
+    #'   be either `NULL` or a named list.
+    #' @param shape Shape tuple (#observations, #variables). Can be provided
+    #'   if `X` or `obs` and `var` are not provided.
+    initialize = function(file,
+                          X = NULL,
+                          obs = NULL,
+                          var = NULL,
+                          layers = NULL,
+                          obsm = NULL,
+                          varm = NULL,
+                          obsp = NULL,
+                          varp = NULL,
+                          uns = NULL,
+                          shape = NULL) {
       python_anndata <- .reticulate_load_anndata()
 
       # in case the user also loaded the 'anndata' package
@@ -161,39 +156,74 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
 
       if (is.null(file)) {
         # create a new h5ad from scratch
-        if (missing(X)) X <- NULL
-        if (missing(obs)) obs <- NULL
-        if (missing(var)) var <- NULL
-        if (missing(obs_names)) stop("When creating a new .h5ad file, `obs_names` must be defined.")
-        if (missing(var_names)) stop("When creating a new .h5ad file, `var_names` must be defined.")
-        if (missing(layers)) layers <- NULL
+        
+        # Determine initial obs and var
+        shape <- get_shape(obs, var, X, shape)
+        obs <- get_initial_obs(obs, X, shape)
+        var <- get_initial_var(var, X, shape)
 
-        private$.obj <- python_anndata$AnnData(shape = c(length(obs_names), length(var_names)))
-
-        # write obs and var first, because these are used by other validators
-        self$obs_names <- obs_names
-        self$var_names <- var_names
-
-        # write other slots later
-        self$obs <- obs
-        self$var <- var
-        self$X <- X
-        self$layers <- layers
+        # Create an empty H5AD
+        private$.obj <- python_anndata$AnnData(
+          obs = obs,
+          var = var
+        )
+        
+        # set other slots
+        if (!is.null(X)) {
+          self$X <- X
+        }
+        if (!is.null(layers)) {
+          self$layers <- layers
+        }
+        if (!is.null(obsm)) {
+          self$obsm <- obsm
+        }
+        if (!is.null(varm)) {
+          self$varm <- varm
+        }
+        if (!is.null(obsp)) {
+          self$obsp <- obsp
+        }
+        if (!is.null(varp)) {
+          self$varp <- varp
+        }
+        if (!is.null(uns)) {
+          self$uns <- uns
+        }
       } else {
-        # check if other arguments are defined
-        slots_missing <- missing(X) && missing(obs) && missing(var) &&
-          missing(obs_names) && missing(var_names) && missing(layers)
-        if (!slots_missing) {
-          stop(
-            "Failed to create ReticulateAnnData object. ",
-            "Reason: If the file provided already exists, ",
-            "then the other arguments (X, obs, var, ...) ",
-            "should not be passed any value."
-          )
+        if (!is.null(obs)) {
+          stop("obs must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(var)) {
+          stop("var must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(X)) {
+          stop("X must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(layers)) {
+          stop("layers must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(obsm)) {
+          stop("obsm must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(varm)) {
+          stop("varm must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(obsp)) {
+          stop("obsp must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(varp)) {
+          stop("varp must be NULL when loading an existing .h5ad file")
+        }
+        if (!is.null(uns)) {
+          stop("uns must be NULL when loading an existing .h5ad file")
         }
 
-        # open h5 file if this isn't the already
         if (is.character(file)) {
+          if (!file.exists(file)) {
+            stop("File '", file, "' does not exist.")
+          }
+
           file <- python_anndata$read_h5ad(file)
         }
 
@@ -258,9 +288,13 @@ to_ReticulateAnnData <- function(adata) { # nolint
     X = adata$X,
     obs = adata$obs,
     var = adata$var,
-    obs_names = adata$obs_names,
-    var_names = adata$var_names,
-    layers = adata$layers
+    obsm = adata$obsm,
+    varm = adata$varm,
+    layers = adata$layers,
+    obsp = adata$obsp,
+    varp = adata$varp,
+    uns = adata$uns,
+    shape = adata$shape()
   )
 }
 
