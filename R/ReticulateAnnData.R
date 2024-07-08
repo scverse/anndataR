@@ -146,8 +146,8 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
       # file should be a Python AnnData object or a path
       if (
         !is.null(file) &&
-        !inherits(file, "anndata._core.anndata.AnnData") &&
-        !is.character(file)) {
+          !inherits(file, "anndata._core.anndata.AnnData") &&
+          !is.character(file)) {
         stop(
           "Argument 'file' should be NULL, a character path, or a Python AnnData created by ",
           "`anndata <- reticulate::anndata(\"anndata\"); file <- anndata$read_h5ad(...)`."
@@ -156,7 +156,7 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
 
       if (is.null(file)) {
         # create a new h5ad from scratch
-        
+
         # Determine initial obs and var
         shape <- get_shape(obs, var, X, shape)
         obs <- get_initial_obs(obs, X, shape)
@@ -167,7 +167,7 @@ ReticulateAnnData <- R6::R6Class("ReticulateAnnData", # nolint
           obs = obs,
           var = var
         )
-        
+
         # set other slots
         if (!is.null(X)) {
           self$X <- X
@@ -305,10 +305,15 @@ to_ReticulateAnnData <- function(adata) { # nolint
   }
 
   # check whether python anndata is installed
-  tryCatch({
-    reticulate::import("anndata", convert = FALSE)
-  }, error = function(e) {
-    stop("Could not find the Python anndata package.\n  Please run ",
-    "`reticulate::py_install(\"anndata\")` to solve this issue.")
-  })
+  tryCatch(
+    {
+      reticulate::import("anndata", convert = FALSE)
+    },
+    error = function(e) {
+      stop(
+        "Could not find the Python anndata package.\n  Please run ",
+        "`reticulate::py_install(\"anndata\")` to solve this issue."
+      )
+    }
+  )
 }

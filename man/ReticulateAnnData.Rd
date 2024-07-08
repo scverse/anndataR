@@ -85,51 +85,62 @@ Creates a new instance of an in memory AnnData object.
 Inherits from ReticulateAnnData.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ReticulateAnnData$new(
-  obs_names,
-  var_names,
-  file = NULL,
+  file,
   X = NULL,
   obs = NULL,
   var = NULL,
-  layers = NULL
+  layers = NULL,
+  obsm = NULL,
+  varm = NULL,
+  obsp = NULL,
+  varp = NULL,
+  uns = NULL,
+  shape = NULL
 )}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{obs_names}}{A vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. The length of
-the \code{obs_names} defines the observation dimension of the AnnData
-object.}
-
-\item{\code{var_names}}{A vector of unique identifers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. The length of
-the \code{var_names} defines the variable dimension of the AnnData
-object.}
-
-\item{\code{file}}{The filename (character) of the \code{.h5ad} file. Alternatively,
-you can also provide an object created by
-\verb{anndata <- reticulate::import("anndata"); anndata$read_h5ad(...)}. If this
-file does not exist yet, you must provide values for \code{X}, \code{obs}, \code{var} to
-create a new AnnData with.}
+\item{\code{file}}{The filename (character) of the \code{.h5ad} file. If this
+file does not exist yet, \code{obs_names} and \code{var_names} must be provided.}
 
 \item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
 dimensions consistent with \code{obs} and \code{var}.}
 
-\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing information
-about observations. If \code{NULL}, an \code{n_obs}×0 data frame will automatically
-be generated.}
+\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing
+information about observations. If \code{NULL}, an \code{n_obs}×0 data frame will
+automatically be generated.}
 
-\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing information
-about variables. If \code{NULL}, an \code{n_vars}×0 data frame will automatically
-be generated.}
+\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing
+information about variables. If \code{NULL}, an \code{n_vars}×0 data frame will
+automatically be generated.}
 
-\item{\code{layers}}{Either \code{NULL} or a named list, where each element
-is an observation × variable matrix with dimensions consistent
-with \code{obs} and \code{var}.}
+\item{\code{layers}}{Either \code{NULL} or a named list, where each element is an
+observation × variable matrix with dimensions consistent with \code{obs} and
+\code{var}.}
+
+\item{\code{obsm}}{The obsm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_obs} rows and an arbitrary number of columns.}
+
+\item{\code{varm}}{The varm slot is used to store multi-dimensional annotation
+arrays. It must be either \code{NULL} or a named list, where each element is a
+matrix with \code{n_vars} rows and an arbitrary number of columns.}
+
+\item{\code{obsp}}{The obsp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_obs}.}
+
+\item{\code{varp}}{The varp slot is used to store sparse multi-dimensional
+annotation arrays. It must be either \code{NULL} or a named list, where each
+element is a sparse matrix where each dimension has length \code{n_vars}.}
+
+\item{\code{uns}}{The uns slot is used to store unstructured annotation. It must
+be either \code{NULL} or a named list.}
+
+\item{\code{shape}}{Shape tuple (#observations, #variables). Can be provided
+if \code{X} or \code{obs} and \code{var} are not provided.}
 }
 \if{html}{\out{</div>}}
 }
