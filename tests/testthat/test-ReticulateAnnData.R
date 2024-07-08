@@ -1,6 +1,6 @@
 library(reticulate)
 
-dummy <- dummy_data(10L, 20L)
+dummy <- generate_dataset(10L, 20L)
 
 # GETTERS ----------------------------------------------------------------
 test_that("test getters", {
@@ -8,8 +8,6 @@ test_that("test getters", {
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names,
     layers = dummy$layers
   )
 
@@ -36,9 +34,7 @@ test_that("write to X", {
   ad <- ReticulateAnnData$new(
     X = dummy$X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   X2 <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
@@ -60,9 +56,7 @@ test_that("write to obs", {
   ad <- ReticulateAnnData$new(
     X = dummy$X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   obs2 <- data.frame(
@@ -91,9 +85,7 @@ test_that("write to var", {
   ad <- ReticulateAnnData$new(
     X = dummy$X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   var2 <- data.frame(
@@ -122,9 +114,7 @@ test_that("write to obs_names", {
   ad <- ReticulateAnnData$new(
     X = dummy$X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   obs_names2 <- letters[1:10]
@@ -142,9 +132,7 @@ test_that("write to var_names", {
   ad <- ReticulateAnnData$new(
     X = dummy$X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   var_names2 <- LETTERS[1:20]
@@ -163,8 +151,6 @@ test_that("write to layers", {
     X = dummy$X,
     obs = dummy$obs,
     var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names,
     layers = dummy$layers
   )
 
