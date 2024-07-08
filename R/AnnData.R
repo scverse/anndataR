@@ -1,21 +1,54 @@
-#' An in-memory AnnData object
+#' An AnnData object
 #'
-#' @description
-#' This class is used to represent an AnnData object in memory.
-#' AnnData stores a data matrix `X` together with annotations of
-#' observations `obs` (`obsm`, `obsp`), variables `var` (`varm`, `varp`), and
-#' unstructured annotations `uns`.
+#' @description An AnnData object. This class can either be an in-memory
+#' AnnData (InMemoryAnnData) or an HDF5-backed AnnData (HDF5AnnData). The
+#' AnnData object stores a data matrix `X` together with annotations of
+#' observations `obs` (`obsm`, `obsp`) and variables `var` (`varm`, `varp`).
+#' Additional layers of data can be stored in `layers` and unstructured
+#' annotations in `uns`.
 #'
-#' To read an AnnData file from disk, use [read_h5ad()] instead.
+#' @section Functions that can be used to create AnnData objects:
 #'
-#' @param obs_names A vector of unique identifiers
-#'   used to identify each row of `obs` and to act as an index into the
-#'   observation dimension of the AnnData object. The length of `obs_names`
-#'   defines the observation dimension of the AnnData object.
-#' @param var_names A vector of unique identifiers used to identify each row
-#'   of `var` and to act as an index into the variable dimension of the
-#'   AnnData object. The length of `var_names` defines the variable
-#'   dimension of the AnnData object.
+#'   * [AnnData()]: Create an in-memory AnnData object.
+#'   * [read_h5ad()]: Read an HDF5-backed AnnData file from disk.
+#'   * [from_SingleCellExperiment()]: Convert a SingleCellExperiment object to an AnnData object.
+#'   * [from_Seurat()]: Convert a Seurat object to an AnnData object.
+#'
+#' @section Slots:
+#'
+#' * `X`: A matrix of observations by variables.
+#' * `obs`: A data frame of observations.
+#' * `var`: A data frame of variables.
+#' * `obs_names`: Names of observations (alias for `rownames(obs)`).
+#' * `var_names`: Names of variables (alias for `rownames(var)`).
+#' * `layers`: A named list of matrices with the same dimensions as `X`.
+#' * `obsm`: A named list of matrices with the same number of rows as `obs`.
+#' * `varm`: A named list of matrices with the same number of rows as `var`.
+#' * `obsp`: A named list of sparse matrices with the same number of rows and columns as the number of observations.
+#' * `varp`: A named list of sparse matrices with the same number of rows and columns as the number of variables.
+#' * `uns`: A named list of unstructured annotations.
+#'
+#' @section Methods:
+#'
+#' * `print()`: Print a summary of the AnnData object.
+#' * `shape()`: Dimensions (observations x variables) of the AnnData object.
+#' * `n_obs()`: Number of observations in the AnnData object.
+#' * `n_vars()`: Number of variables in the AnnData object.
+#' * `obs_keys()`: Column names of `obs`.
+#' * `var_keys()`: Column names of `var`.
+#' * `layers_keys()`: Element names of `layers`.
+#' * `obsm_keys()`: Element names of `obsm`.
+#' * `varm_keys()`: Element names of `varm`.
+#' * `obsp_keys()`: Element names of `obsp`.
+#' * `varp_keys()`: Element names of `varp`.
+#'
+#' @section Conversion methods:
+#'
+#' * `to_SingleCellExperiment()`: Convert to SingleCellExperiment.
+#' * `to_Seurat()`: Convert to Seurat.
+#' * `to_InMemoryAnnData()`: Convert to an InMemory AnnData.
+#' * `to_HDF5AnnData()`: Convert to an HDF5 Backed AnnData.
+#'
 #' @param X Either `NULL` or a observation × variable matrix with
 #'   dimensions consistent with `obs` and `var`.
 #' @param layers Either `NULL` or a named list, where each element is an
@@ -41,27 +74,31 @@
 #'   element is a sparse matrix where each dimension has length `n_vars`.
 #' @param uns The uns slot is used to store unstructured annotation. It must
 #'   be either `NULL` or a named list.
+#' @param shape Shape tuple (#observations, #variables). Can be provided
+#'   if `X` or `obs` and `var` are not provided.
+#'
+#' @return An [AbstractAnnData] object.
+#'
+#' @seealso [AbstractAnnData]
 #'
 #' @export
 #'
 #' @examples
 #' adata <- AnnData(
-#'   obs_names = paste0("obs", 1:3),
-#'   var_names = paste0("var", 1:4),
 #'   X = matrix(1:12, nrow = 3, ncol = 4),
 #'   obs = data.frame(
+#'     row.names = paste0("obs", 1:3),
 #'     n_counts = c(1, 2, 3),
 #'     n_cells = c(1, 2, 3)
 #'   ),
 #'   var = data.frame(
+#'     row.names = paste0("var", 1:4),
 #'     n_cells = c(1, 2, 3, 4)
 #'   )
 #' )
 #'
 #' adata
 AnnData <- function(
-    obs_names = NULL,
-    var_names = NULL,
     X = NULL,
     obs = NULL,
     var = NULL,
@@ -70,10 +107,9 @@ AnnData <- function(
     varm = NULL,
     obsp = NULL,
     varp = NULL,
-    uns = NULL) {
+    uns = NULL,
+    shape = shape) {
   InMemoryAnnData$new(
-    obs_names = obs_names,
-    var_names = var_names,
     X = X,
     obs = obs,
     var = var,
@@ -82,6 +118,7 @@ AnnData <- function(
     varm = varm,
     obsp = obsp,
     varp = varp,
-    uns = uns
+    uns = uns,
+    shape = shape
   )
 }
