@@ -73,16 +73,11 @@ for (name in r2py_names) {
     # write to file
     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
-    # strip rownames
-    layers <- data$layers[name]
-    rownames(layers[[name]]) <- NULL
-    colnames(layers[[name]]) <- NULL
-
     # make anndata
     ad <- AnnData(
-      layers = layers,
-      obs = data$obs,
-      var = data$var
+      layers = data$layers[name],
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE]
     )
     write_h5ad(ad, filename)
 
@@ -91,14 +86,12 @@ for (name in r2py_names) {
 
     # expect slots are unchanged
     layer_ <- ad_new$layers[[name]]
-    if (!is.null(layer_)) {
-      rownames(layer_) <- NULL
-      colnames(layer_) <- NULL
-    }
     # anndata returns these layers as CsparseMatrix
     if (grepl("rsparse", name)) {
       layer_ <- as(layer_, "RsparseMatrix")
     }
+    # strip rownames
+    dimnames(layer_) <- list(NULL, NULL)
     expect_equal(
       layer_,
       data$layers[[name]],
