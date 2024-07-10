@@ -102,27 +102,39 @@ write_h5ad_element <- function(
 }
 # nolint end: cyclocomp_linter
 
-#' Write H5AD attributes
+
+#' Write H5AD attribute
 #'
-#' Write H5AD attributes to an element in an H5AD file
+#' Write H5AD attribute to an element in an H5AD file
 #'
 #' @noRd
 #'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
-#' @param attributes Named list of attributes to write
+#' @param attr_name Name of the attribute to write
+#' @param attr_value Value of the attribute to write
 #' @param is_scalar Whether to write attributes as scalar values. Can be `TRUE`
 #' to write all attributes as scalars, `FALSE` to write no attributes as
 #' scalars, or a vector of the names of `attributes` that should be written.
-write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
+write_h5ad_attribute <- function(file, name, attr_name, attr_value, is_scalar = TRUE) {
   if (!inherits(file, "H5File")) {
     stop("file must be an open H5AD handle")
   }
 
-  for (attr_name in names(attributes)) {
-    attr_val <- attributes[[attr_name]]
-    hdf5r::h5attr(file[[name]], attr_name) <- attr_val
-  }
+  attr_dtype <- hdf5r::guess_dtype(attr_value, scalar = is_scalar, string_len = Inf)
+  attr_space <-
+    if (is_scalar) {
+      hdf5r::H5S$new(type = "scalar")
+    } else {
+      hdf5r::guess_space(attr_value, dtype = attr_dtype, chunked = FALSE)
+    }
+  file$create_attr_by_name(
+    attr_name = attr_name,
+    obj_name = name,
+    robj = attr_value,
+    space = attr_space,
+    dtype = attr_dtype
+  )
 }
 
 #' Write H5AD encoding
@@ -136,14 +148,25 @@ write_h5ad_attributes <- function(file, name, attributes, is_scalar = TRUE) {
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
 write_h5ad_encoding <- function(file, name, encoding, version) {
-  write_h5ad_attributes(
-    file = file,
-    name = name,
-    attributes = list(
-      "encoding-type" = encoding,
-      "encoding-version" = version
-    )
+  # interpreted from:
+  # https://github.com/ycli1995/hdf5r.Extra/blob/a09078234a9457d74c019dabae8619393826b581/R/hdf5-internal.R#L76
+
+  write_h5ad_attribute(
+    file,
+    name,
+    "encoding-type",
+    encoding,
+    is_scalar = TRUE
   )
+  write_h5ad_attribute(
+    file,
+    name,
+    "encoding-version",
+    version,
+    is_scalar = TRUE
+  )
+
+  file
 }
 
 #' Write H5AD dense array
@@ -220,8 +243,11 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
   write_h5ad_encoding(file, name, type, version)
 
   # Write shape attribute
-  write_h5ad_attributes(
-    file, name, list("shape" = dim(value)),
+  write_h5ad_attribute(
+    file,
+    name,
+    "shape",
+    dim(value),
     is_scalar = FALSE
   )
 }
@@ -329,14 +355,20 @@ write_h5ad_categorical <- function(value, file, name, compression, version = "0.
   codes[is.na(codes)] <- -1L
 
   # write values to file
-  hdf5_write_compressed(file, paste0(name, "/categories"), categories, compression)
-  hdf5_write_compressed(file, paste0(name, "/codes"), codes, compression)
+  write_h5ad_string_array(categories, file, paste0(name, "/categories"), compression)
+  write_h5ad_dense_array(codes, file, paste0(name, "/codes"), compression)
 
   # Write encoding
   write_h5ad_encoding(file = file, name = name, encoding = "categorical", version = version)
 
   # Write ordered attribute
-  write_h5ad_attributes(file, name, list("ordered" = is.ordered(value)))
+  write_h5ad_attribute(
+    file,
+    name,
+    "ordered",
+    is.ordered(value),
+    is_scalar = TRUE
+  )
 }
 
 #' Write H5AD string scalar
@@ -459,10 +491,18 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
   write_h5ad_element(index_value, file, paste0(name, "/", index_name), compression)
 
   # Write additional data frame attributes
-  write_h5ad_attributes(
+  write_h5ad_attribute(
     file,
     name,
-    list("_index" = index_name, "column-order" = colnames(value)),
+    "_index",
+    index_name,
+    is_scalar = TRUE
+  )
+  write_h5ad_attribute(
+    file,
+    name,
+    "column-order",
+    colnames(value),
     is_scalar = FALSE
   )
 }
