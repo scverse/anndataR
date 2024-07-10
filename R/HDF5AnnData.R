@@ -418,7 +418,9 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' to_HDF5AnnData(ad, "test.h5ad")
 #' # remove file
 #' file.remove("test.h5ad")
-to_HDF5AnnData <- function( # nolint object_name_linter
+# nolint start: object_name_linter
+to_HDF5AnnData <- function(
+    # nolint end: object_name_linter
     adata,
     file,
     compression = c("none", "gzip", "lzf"),
