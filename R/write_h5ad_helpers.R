@@ -233,13 +233,10 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
   }
 
   # Write sparse matrix
-  # TODO: just pass the group to the write function
-  grp <- file$create_group(name)
-  hdf5_write_compressed(grp, "indices", attr(value, indices_attr), compression)
-  hdf5_write_compressed(grp, "indptr", value@p, compression)
-  hdf5_write_compressed(grp, "data", value@x, compression)
-
-  # Add encoding
+  file$create_group(name)
+  write_h5ad_dense_array(attr(value, indices_attr), file, paste0(name, "/indices"), compression)
+  write_h5ad_dense_array(value@p, file, paste0(name, "/indptr"), compression)
+  write_h5ad_dense_array(value@x, file, paste0(name, "/data"), compression)
   write_h5ad_encoding(file, name, type, version)
 
   # Write shape attribute
@@ -265,16 +262,31 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_boolean <- function(value, file, name, compression, version = "0.1.0") {
-  # write mask and values
-  grp <- file$create_group(name)
+  file$create_group(name)
+
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
-  hdf5_write_compressed(grp, "values", value_no_na, compression)
-  hdf5_write_compressed(grp, "mask", is.na(value), compression)
+  write_h5ad_dense_array(value_no_na, file, paste0(name, "/values"), compression)
+  # write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
 
-  # Write encoding
-  # TODO: could pass 'grp' here instead
+  # write mask manually
+  mask_value <- is.na(value)
+  mask_dims <- length(mask_value)
+  mask_dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
+  mask_space <- hdf5r::guess_space(mask_value, dtype = mask_dtype, chunked = FALSE)
+  mask_gzip_level <- if (compression == "none") 0 else 9
+  mask_name <- paste0(name, "/mask")
+  file$create_dataset(
+    name = mask_name,
+    dims = mask_dims,
+    gzip_level = mask_gzip_level,
+    robj = mask_value,
+    chunk_dims = NULL,
+    space = mask_space,
+    dtype = mask_dtype
+  )
+  write_h5ad_encoding(file, mask_name, "array", "0.2.0")
   write_h5ad_encoding(file, name, "nullable-boolean", version)
 }
 
@@ -292,15 +304,31 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_nullable_integer <- function(value, file, name, compression, version = "0.1.0") {
-  # write mask and values
   file$create_group(name)
+
   value_no_na <- value
-  value_no_na[is.na(value_no_na)] <- -1L
+  value_no_na[is.na(value_no_na)] <- 1L
 
-  hdf5_write_compressed(file, paste0(name, "/values"), value_no_na, compression)
-  hdf5_write_compressed(file, paste0(name, "/mask"), is.na(value), compression)
+  write_h5ad_dense_array(value_no_na, file, paste0(name, "/values"), compression)
+  # write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
 
-  # Write encoding
+  # write mask manually
+  mask_value <- is.na(value)
+  mask_dims <- length(mask_value)
+  mask_dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
+  mask_space <- hdf5r::guess_space(mask_value, dtype = mask_dtype, chunked = FALSE)
+  mask_gzip_level <- if (compression == "none") 0 else 9
+  mask_name <- paste0(name, "/mask")
+  file$create_dataset(
+    name = mask_name,
+    dims = mask_dims,
+    gzip_level = mask_gzip_level,
+    robj = mask_value,
+    chunk_dims = NULL,
+    space = mask_space,
+    dtype = mask_dtype
+  )
+  write_h5ad_encoding(file, mask_name, "array", "0.2.0")
   write_h5ad_encoding(file, name, "nullable-integer", version)
 }
 
@@ -434,12 +462,13 @@ write_h5ad_numeric_scalar <- function(value, file, name, compression, version = 
 #' @param version Encoding version of the element to write
 write_h5ad_mapping <- function(value, file, name, compression, version = "0.1.0") {
   file$create_group(name)
-  write_h5ad_encoding(file, name, "dict", version)
 
   # Write mapping elements
   for (key in names(value)) {
     write_h5ad_element(value[[key]], file, paste0(name, "/", key), compression)
   }
+
+  write_h5ad_encoding(file, name, "dict", version)
 }
 
 #' Write H5AD data frame
@@ -520,9 +549,6 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
 write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
-  # h5file <- rhdf5::H5Fcreate(file)
-  # rhdf5::H5Fclose(h5file)
-
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
 
   write_h5ad_element(obs, file, "/obs", compression)
