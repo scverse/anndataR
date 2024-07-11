@@ -167,9 +167,27 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       to_InMemoryAnnData(self)
     },
     #' @description Convert to an HDF5 Backed AnnData
-    #' @param path The path to the HDF5 file
-    to_HDF5AnnData = function(path) {
-      to_HDF5AnnData(self, path)
+    #' @param file The path to the HDF5 file
+    #' @param compression The compression algorithm to use when writing the
+    #' HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+    #' `"none"`.
+    #' @param mode The mode to open the HDF5 file.
+    #'  * `a` creates a new file or opens an existing one for read/write.
+    #' * `r+` opens an existing file for read/write.
+    #' * `w` creates a file, truncating any existing ones
+    #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
+    #' @return An HDF5AnnData object
+    to_HDF5AnnData = function(
+      file,
+      compression = c("none", "gzip", "lzf"),
+      mode = c("w-", "r", "r+", "a", "w", "x")
+    ) {
+      to_HDF5AnnData(
+        adata = self,
+        file = file,
+        compression = compression,
+        mode = mode
+      )
     }
   ),
   private = list(

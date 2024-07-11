@@ -268,7 +268,9 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   value_no_na[is.na(value_no_na)] <- FALSE
 
   write_h5ad_dense_array(value_no_na, file, paste0(name, "/values"), compression)
+  # nolint start: commented_code_linter
   # write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
+  # nolint end: commented_code_linter
 
   # write mask manually
   mask_value <- is.na(value)
@@ -310,7 +312,9 @@ write_h5ad_nullable_integer <- function(value, file, name, compression, version 
   value_no_na[is.na(value_no_na)] <- 1L
 
   write_h5ad_dense_array(value_no_na, file, paste0(name, "/values"), compression)
+  # nolint start: commented_code_linter
   # write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
+  # nolint end: commented_code_linter
 
   # write mask manually
   mask_value <- is.na(value)
@@ -347,14 +351,6 @@ write_h5ad_nullable_integer <- function(value, file, name, compression, version 
 write_h5ad_string_array <- function(value, file, name, compression, version = "0.2.0") {
   # TODO: add variable length string and encoding?
   hdf5_write_compressed(file, name, value, compression)
-
-  # rhdf5::h5write(
-  #   value,
-  #   file,
-  #   name,
-  #   variableLengthString = TRUE,
-  #   encoding = "UTF-8"
-  # )
 
   write_h5ad_encoding(file, name, "string-array", version)
 }
@@ -412,15 +408,6 @@ write_h5ad_categorical <- function(value, file, name, compression, version = "0.
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_string_scalar <- function(value, file, name, compression, version = "0.2.0") {
-  # Write scalar
-  # rhdf5::h5write(
-  #   value,
-  #   file,
-  #   name,
-  #   variableLengthString = TRUE,
-  #   encoding = "UTF-8"
-  # )
-
   # TODO: add compression, variable length string and encoding!
   hdf5_write_compressed(file, name, value, compression, scalar = TRUE)
 

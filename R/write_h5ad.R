@@ -95,8 +95,7 @@ write_h5ad <- function(
         mode = mode
       )
     } else if (inherits(object, "AbstractAnnData")) {
-      to_HDF5AnnData(
-        object,
+      object$to_HDF5AnnData(
         path,
         compression = compression,
         mode = mode
