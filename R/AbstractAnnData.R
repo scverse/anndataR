@@ -162,9 +162,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     to_Seurat = function() {
       to_Seurat(self)
     },
-    #' @description Convert to an InMemory AnnData
+    #' @description Convert to an InMemoryAnnData
     to_InMemoryAnnData = function() {
       to_InMemoryAnnData(self)
+    },
+    #' @description Convert to a ReticulateAnnData
+    to_ReticulateAnnData = function() {
+      to_ReticulateAnnData(self)
     },
     #' @description Convert to an HDF5 Backed AnnData
     #' @param file The path to the HDF5 file
@@ -194,6 +198,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param mat A matrix to validate
     # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
     #   the name of a layer.
+
     # @param shape Expected dimensions of matrix
     # @param expected_rownames
     # @param excepted_colnames
