@@ -3,15 +3,15 @@ import scipy as sp
 
 
 def float_mtx(n_obs, n_vars, NAs=False):
-    mtx = np.random.random((n_obs, n_vars))
+    # add 0.5 to easily spot conversion issues
+    mtx = np.arange(n_obs * n_vars, dtype=float).reshape(n_obs, n_vars) + 0.5
     if NAs:  # numpy matrices do no support pd.NA
         mtx[0, 0] = np.nan
-        mtx[0, 1] = None  # gets converted to np.nan
     return mtx
 
 
 def int_mtx(n_obs, n_vars):
-    mtx = np.random.randint(0, 101, size=(n_obs, n_vars))
+    mtx = np.arange(n_obs * n_vars).reshape(n_obs, n_vars)
     return mtx
 
 

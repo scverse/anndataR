@@ -97,6 +97,8 @@ def generate_dataset(
 
     uns = generate_dict(n_obs, n_vars, uns_types)
 
+    #TODO figure out why it cannot write NAs in a GROUP
+
     return ad.AnnData(
         X,
         layers=layers,
