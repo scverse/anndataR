@@ -103,40 +103,6 @@ write_h5ad_element <- function(
 # nolint end: cyclocomp_linter
 
 
-#' Write H5AD attribute
-#'
-#' Write H5AD attribute to an element in an H5AD file
-#'
-#' @noRd
-#'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
-#' @param attr_name Name of the attribute to write
-#' @param attr_value Value of the attribute to write
-#' @param is_scalar Whether to write attributes as scalar values. Can be `TRUE`
-#' to write all attributes as scalars, `FALSE` to write no attributes as
-#' scalars, or a vector of the names of `attributes` that should be written.
-write_h5ad_attribute <- function(file, name, attr_name, attr_value, is_scalar = TRUE) {
-  if (!inherits(file, "H5File")) {
-    stop("file must be an open H5AD handle")
-  }
-
-  attr_dtype <- hdf5r::guess_dtype(attr_value, scalar = is_scalar, string_len = Inf)
-  attr_space <-
-    if (is_scalar) {
-      hdf5r::H5S$new(type = "scalar")
-    } else {
-      hdf5r::guess_space(attr_value, dtype = attr_dtype, chunked = FALSE)
-    }
-  file$create_attr_by_name(
-    attr_name = attr_name,
-    obj_name = name,
-    robj = attr_value,
-    space = attr_space,
-    dtype = attr_dtype
-  )
-}
-
 #' Write H5AD encoding
 #'
 #' Write H5AD encoding attributes to an element in an H5AD file
@@ -151,14 +117,14 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
   # interpreted from:
   # https://github.com/ycli1995/hdf5r.Extra/blob/a09078234a9457d74c019dabae8619393826b581/R/hdf5-internal.R#L76
 
-  write_h5ad_attribute(
+  hdf5_create_attribute(
     file,
     name,
     "encoding-type",
     encoding,
     is_scalar = TRUE
   )
-  write_h5ad_attribute(
+  hdf5_create_attribute(
     file,
     name,
     "encoding-version",
@@ -194,7 +160,7 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
     value <- t(value)
   }
 
-  hdf5_write_compressed(file, name, value, compression)
+  hdf5_create_dataset(file, name, value, compression)
 
   # Write encoding
   write_h5ad_encoding(file, name, "array", version)
@@ -240,7 +206,7 @@ write_h5ad_sparse_array <- function(value, file, name, compression, version = "0
   write_h5ad_encoding(file, name, type, version)
 
   # Write shape attribute
-  write_h5ad_attribute(
+  hdf5_create_attribute(
     file,
     name,
     "shape",
@@ -350,7 +316,7 @@ write_h5ad_nullable_integer <- function(value, file, name, compression, version 
 #' @param version Encoding version of the element to write
 write_h5ad_string_array <- function(value, file, name, compression, version = "0.2.0") {
   # TODO: add variable length string and encoding?
-  hdf5_write_compressed(file, name, value, compression)
+  hdf5_create_dataset(file, name, value, compression)
 
   write_h5ad_encoding(file, name, "string-array", version)
 }
@@ -386,7 +352,7 @@ write_h5ad_categorical <- function(value, file, name, compression, version = "0.
   write_h5ad_encoding(file = file, name = name, encoding = "categorical", version = version)
 
   # Write ordered attribute
-  write_h5ad_attribute(
+  hdf5_create_attribute(
     file,
     name,
     "ordered",
@@ -409,7 +375,7 @@ write_h5ad_categorical <- function(value, file, name, compression, version = "0.
 #' @param version Encoding version of the element to write
 write_h5ad_string_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # TODO: add compression, variable length string and encoding!
-  hdf5_write_compressed(file, name, value, compression, scalar = TRUE)
+  hdf5_create_dataset(file, name, value, compression, scalar = TRUE)
 
   # Write encoding
   write_h5ad_encoding(file, name, "string", version)
@@ -429,7 +395,7 @@ write_h5ad_string_scalar <- function(value, file, name, compression, version = "
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(value, file, name, compression, version = "0.2.0") {
   # Write scalar
-  hdf5_write_compressed(file, name, value, compression, scalar = TRUE)
+  hdf5_create_dataset(file, name, value, compression, scalar = TRUE)
 
   # Write encoding
   write_h5ad_encoding(file, name, "numeric-scalar", version)
@@ -507,14 +473,14 @@ write_h5ad_data_frame <- function(value, file, name, compression, index = NULL,
   write_h5ad_element(index_value, file, paste0(name, "/", index_name), compression)
 
   # Write additional data frame attributes
-  write_h5ad_attribute(
+  hdf5_create_attribute(
     file,
     name,
     "_index",
     index_name,
     is_scalar = TRUE
   )
-  write_h5ad_attribute(
+  hdf5_create_attribute(
     file,
     name,
     "column-order",
@@ -560,70 +526,4 @@ write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
   write_h5ad_encoding(file, "/varp", "dict", "0.1.0")
 
   invisible(NULL)
-}
-
-#' HDF5 path exists
-#'
-#' Check that a path in HDF5 exists
-#'
-#' @noRd
-#'
-#' @param file Path to a HDF5 file
-#' @param target_path The path within the file to test for
-#'
-#' @return Whether the `path` exists in `file`
-hdf5_path_exists <- function(file, target_path) {
-  tryCatch(
-    {
-      file$exists(target_path)
-    },
-    error = function(e) {
-      FALSE
-    }
-  )
-}
-
-#' HDF5 write compressed
-#'
-#' Write HDF5 dataset with chosen compression (can be none)
-#'
-#' @noRd
-#'
-#' @param file Path to a HDF5 file
-#' @param name Name of the element within the H5AD file containing the data
-#' frame
-#' @param value Value to write. Must be a vector to the same length as the data
-#' frame.
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param scalar Whether to write the value as a scalar or not
-#'
-#' @return Whether the `path` exists in `file`
-hdf5_write_compressed <- function(file, name, value, compression = c("none", "gzip", "lzf"), scalar = FALSE) {
-  compression <- match.arg(compression)
-
-  if (!is.null(dim(value))) {
-    dims <- dim(value)
-  } else {
-    dims <- length(value)
-  }
-  dtype <- hdf5r::guess_dtype(value, scalar = scalar, string_len = Inf)
-  space <- hdf5r::guess_space(value, dtype = dtype, chunked = FALSE)
-
-  # TODO: lzf compression is not supported in hdf5r
-  # TODO: allow the user to choose compression level
-  gzip_level <- if (compression == "none") 0 else 9
-
-  out <- file$create_dataset(
-    name = name,
-    dims = dims,
-    gzip_level = gzip_level,
-    robj = value,
-    chunk_dims = NULL,
-    space = space,
-    dtype = dtype
-  )
-  # todo: create attr?
-
-  out
 }
