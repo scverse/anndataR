@@ -1,13 +1,14 @@
 skip_if_no_anndata()
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("hdf5r")
 
 data <- generate_dataset(10L, 20L)
 
-layer_names <- names(data$layers)
-# TODO: Add denseMatrix support to anndata and anndataR
-layer_names <- layer_names[!grepl("_dense", layer_names)]
+test_names <- names(data$layers)
 
-for (name in layer_names) {
+# TODO: Add denseMatrix support to anndata and anndataR
+test_names <- test_names[!grepl("_dense", test_names)]
+
+for (name in test_names) {
   test_that(paste0("roundtrip with layer '", name, "'"), {
     # create anndata
     ad <- AnnData(
@@ -33,7 +34,7 @@ for (name in layer_names) {
   })
 }
 
-for (name in layer_names) {
+for (name in test_names) {
   test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
     # add rownames
     layers <- data$layers[name]
@@ -64,7 +65,7 @@ for (name in layer_names) {
   })
 }
 
-r2py_names <- layer_names
+r2py_names <- test_names
 # TODO: rsparse gets converted to csparse by anndata
 r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
 
@@ -73,14 +74,9 @@ for (name in r2py_names) {
     # write to file
     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
-    # strip rownames
-    layers <- data$layers[name]
-    rownames(layers[[name]]) <- NULL
-    colnames(layers[[name]]) <- NULL
-
     # make anndata
     ad <- AnnData(
-      layers = layers,
+      layers = data$layers[name],
       obs = data$obs[, c(), drop = FALSE],
       var = data$var[, c(), drop = FALSE]
     )
@@ -91,14 +87,12 @@ for (name in r2py_names) {
 
     # expect slots are unchanged
     layer_ <- ad_new$layers[[name]]
-    if (!is.null(layer_)) {
-      rownames(layer_) <- NULL
-      colnames(layer_) <- NULL
-    }
     # anndata returns these layers as CsparseMatrix
     if (grepl("rsparse", name)) {
       layer_ <- as(layer_, "RsparseMatrix")
     }
+    # strip rownames
+    dimnames(layer_) <- list(NULL, NULL)
     expect_equal(
       layer_,
       data$layers[[name]],

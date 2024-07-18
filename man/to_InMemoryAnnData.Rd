@@ -24,8 +24,8 @@ ad <- AnnData(
     A = matrix(5:1, 3L, 5L),
     B = matrix(letters[1:5], 3L, 5L)
   ),
-  obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
-  var = data.frame(gene = 1:5, row.names = letters[1:5])
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
 to_InMemoryAnnData(ad)
 }

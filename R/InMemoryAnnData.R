@@ -19,12 +19,10 @@
 #' ad
 #'
 #' ## minimum example
-#' # -> using `AnnData()` is synonymous to `InMemoryAnnData$new()`
-#' ad <- AnnData(
+#' AnnData(
 #'   obs = data.frame(row.names = letters[1:10]),
 #'   var = data.frame(row.names = LETTERS[1:5])
 #' )
-#' ad
 #' @export
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
@@ -301,8 +299,8 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #'     A = matrix(5:1, 3L, 5L),
 #'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3, row.names = LETTERS[1:3]),
-#'   var = data.frame(gene = 1:5, row.names = letters[1:5])
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' to_InMemoryAnnData(ad)
 to_InMemoryAnnData <- function(adata) { # nolint

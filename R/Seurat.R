@@ -143,7 +143,6 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     }
   }
 
-
   # get obs
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   # trackstatus: class=Seurat, feature=set_obs, status=done

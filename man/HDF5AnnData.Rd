@@ -46,9 +46,10 @@ with all elements having the same number of rows and columns as \code{var}.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-HDF5AnnData-new}{\code{HDF5AnnData$new()}}
+\item \href{#method-HDF5AnnData-finalize}{\code{HDF5AnnData$finalize()}}
+\item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
 \item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
 \item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
-\item \href{#method-HDF5AnnData-clone}{\code{HDF5AnnData$clone()}}
 }
 }
 \if{html}{\out{
@@ -88,6 +89,7 @@ HDF5AnnData constructor
   varp = NULL,
   uns = NULL,
   shape = NULL,
+  mode = c("r", "r+", "a", "w", "w-", "x"),
   compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
@@ -135,6 +137,15 @@ be either \code{NULL} or a named list.}
 \item{\code{shape}}{Shape tuple (#observations, #variables). Can be provided
 if \code{X} or \code{obs} and \code{var} are not provided.}
 
+\item{\code{mode}}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{r} opens an existing file for reading.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
+}}
+
 \item{\code{compression}}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
@@ -148,6 +159,26 @@ create a new one. To create a new file both \code{obs_names} and \code{var_names
 must be specified. In both cases, any additional slots provided will be
 set on the created object. This will cause data to be overwritten if the
 file already exists.
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-finalize"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-finalize}{}}}
+\subsection{Method \code{finalize()}}{
+Close the HDF5 file when the object is garbage collected
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$finalize()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-close"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-close}{}}}
+\subsection{Method \code{close()}}{
+Close the HDF5 file
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$close()}\if{html}{\out{</div>}}
 }
 
 }
@@ -170,22 +201,5 @@ Number of variables in the AnnData object
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_vars()}\if{html}{\out{</div>}}
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$clone(deep = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
 }
 }
