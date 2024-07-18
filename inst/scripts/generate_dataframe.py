@@ -1,6 +1,7 @@
 import pandas as pd
 from generate_vector import vector_generators
 
+
 def generate_dataframe(n_rows, types=None):
     """
     Generate a pandas DataFrame with specified number of rows and column types.
