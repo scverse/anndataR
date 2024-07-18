@@ -253,11 +253,15 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   # nolint start: commented_code_linter
   # write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
   # nolint end: commented_code_linter
+
+  # NOTE: `mask_dtype` will be written as a H5T_STD_U8LE, but h5py writes this as a H5T_STD_I8LE
+  mask_dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
+
   hdf5_create_dataset(
     file = file,
     name = paste0(name, "/mask"),
     value = is.na(value),
-    dtype = hdf5r::H5T_LOGICAL$new(include_NA = FALSE),
+    dtype = mask_dtype
   )
   write_h5ad_encoding(file, paste0(name, "/mask"), "array", "0.2.0")
 

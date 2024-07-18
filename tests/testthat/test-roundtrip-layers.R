@@ -3,11 +3,12 @@ skip_if_not_installed("hdf5r")
 
 data <- generate_dataset(10L, 20L)
 
-layer_names <- names(data$layers)
-# TODO: Add denseMatrix support to anndata and anndataR
-layer_names <- layer_names[!grepl("_dense", layer_names)]
+test_names <- names(data$layers)
 
-for (name in layer_names) {
+# TODO: Add denseMatrix support to anndata and anndataR
+test_names <- test_names[!grepl("_dense", test_names)]
+
+for (name in test_names) {
   test_that(paste0("roundtrip with layer '", name, "'"), {
     # create anndata
     ad <- AnnData(
@@ -33,7 +34,7 @@ for (name in layer_names) {
   })
 }
 
-for (name in layer_names) {
+for (name in test_names) {
   test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
     # add rownames
     layers <- data$layers[name]
@@ -64,7 +65,7 @@ for (name in layer_names) {
   })
 }
 
-r2py_names <- layer_names
+r2py_names <- test_names
 # TODO: rsparse gets converted to csparse by anndata
 r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
 
