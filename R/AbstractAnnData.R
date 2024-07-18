@@ -177,11 +177,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' * `w` creates a file, truncating any existing ones
     #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
     #' @return An HDF5AnnData object
-    to_HDF5AnnData = function(
-      file,
-      compression = c("none", "gzip", "lzf"),
-      mode = c("w-", "r", "r+", "a", "w", "x")
-    ) {
+    to_HDF5AnnData = function(file,
+                              compression = c("none", "gzip", "lzf"),
+                              mode = c("w-", "r", "r+", "a", "w", "x")) {
       to_HDF5AnnData(
         adata = self,
         file = file,
