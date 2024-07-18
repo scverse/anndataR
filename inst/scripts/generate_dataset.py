@@ -3,9 +3,10 @@ import anndata as ad
 from generate_matrix import matrix_generators
 from generate_vector import vector_generators
 from generate_dataframe import generate_dataframe
+from generate_dict import scalar_generators, generate_dict
 
 
-def generate_dataset(n_obs = 10, n_vars = 20, x_type = "numeric_matrix", layer_types = None, obs_types = None, var_types = None, 
+def generate_dataset(n_obs = 10, n_vars = 20, x_type = "generate_integer_matrix", layer_types = None, obs_types = None, var_types = None, 
                      obsm_types = None, varm_types = None, obsp_types = None, varp_types = None, uns_types = None):
     
     assert x_type in matrix_generators, f"Unknown matrix type: {x_type}"
@@ -32,17 +33,19 @@ def generate_dataset(n_obs = 10, n_vars = 20, x_type = "numeric_matrix", layer_t
         obsp_types = list(matrix_generators.keys())
     if varp_types is None: # varp_types are all matrices
         varp_types = list(matrix_generators.keys())
-    # if uns_types is None: # uns_types are scalar values, vectors, dataframes or matrices
-    #     scalar_types =
-    # TODO uns types
+    if uns_types is None:
+        uns_types = list(vector_generators.keys()) + list(matrix_generators.keys()) + list(scalar_generators.keys())
 
     X = matrix_generators[x_type](n_obs, n_vars)
     layers = {t: matrix_generators[t](n_obs, n_vars) for t in layer_types}
 
-    obs = generate_dataframe(n_obs, obs_types)
-    var = generate_dataframe(n_vars, var_types)
     obs_names = [f"Cell{i:03d}" for i in range(n_obs)]
     var_names = [f"Gene{i:03d}" for i in range(n_vars)]
+
+    obs = generate_dataframe(n_obs, obs_types)
+    var = generate_dataframe(n_vars, var_types)
+    obs.index = obs_names
+    var.index = var_names
 
     obsm = {}
     for t in obsm_types:
@@ -61,6 +64,8 @@ def generate_dataset(n_obs = 10, n_vars = 20, x_type = "numeric_matrix", layer_t
     obsp = {t: matrix_generators[t](n_obs, n_obs) for t in obsp_types}
     varp = {t: matrix_generators[t](n_vars, n_vars) for t in varp_types}
 
-    return ad.AnnData(X, layers = layers, obs = obs, var = var, obs_names = obs_names, var_names = var_names, 
-                      obsm = obsm, varm = varm, obsp = obsp, varp = varp)
+    uns = generate_dict(n_obs, n_vars, uns_types)
+
+    return ad.AnnData(X, layers = layers, obs = obs, var = var, obsm = obsm, varm = varm, 
+                      obsp = obsp, varp = varp, uns = uns)
     

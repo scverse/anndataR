@@ -1,12 +1,18 @@
 from generate_vector import vector_generators
 from generate_matrix import matrix_generators
 
+import pandas as pd
+import numpy as np
+
 scalar_generators = {        
         "string": "version",
         "char": 'a',
         "integer": 1,
         "float": 1.0,
-        "boolean": True
+        "boolean": True,
+        "none": None,
+        "NA": pd.NA,
+        "nan": np.nan,
     }
 
 def generate_scalar(scalar_type):
