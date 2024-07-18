@@ -160,7 +160,21 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
     value <- t(value)
   }
 
-  hdf5_create_dataset(file, name, value, compression)
+  # Guess data type
+  dtype <- NULL
+
+  if (is.logical(value)) {
+    dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
+  }
+
+  # Write dense array
+  hdf5_create_dataset(
+    file = file,
+    name = name,
+    value = value,
+    compression = compression,
+    dtype = dtype
+  )
 
   # Write encoding
   write_h5ad_encoding(file, name, "array", version)
