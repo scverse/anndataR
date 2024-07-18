@@ -234,27 +234,20 @@ write_h5ad_nullable_boolean <- function(value, file, name, compression, version 
   value_no_na[is.na(value_no_na)] <- FALSE
 
   write_h5ad_dense_array(value_no_na, file, paste0(name, "/values"), compression)
+
+  # write mask manually
   # nolint start: commented_code_linter
   # write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
   # nolint end: commented_code_linter
-
-  # write mask manually
-  mask_value <- is.na(value)
-  mask_dims <- length(mask_value)
-  mask_dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
-  mask_space <- hdf5r::guess_space(mask_value, dtype = mask_dtype, chunked = FALSE)
-  mask_gzip_level <- if (compression == "none") 0 else 9
-  mask_name <- paste0(name, "/mask")
-  file$create_dataset(
-    name = mask_name,
-    dims = mask_dims,
-    gzip_level = mask_gzip_level,
-    robj = mask_value,
-    chunk_dims = NULL,
-    space = mask_space,
-    dtype = mask_dtype
+  hdf5_create_dataset(
+    file = file,
+    name = paste0(name, "/mask"),
+    value = is.na(value),
+    dtype = hdf5r::H5T_LOGICAL$new(include_NA = FALSE),
   )
-  write_h5ad_encoding(file, mask_name, "array", "0.2.0")
+  write_h5ad_encoding(file, paste0(name, "/mask"), "array", "0.2.0")
+
+  # set encoding
   write_h5ad_encoding(file, name, "nullable-boolean", version)
 }
 
