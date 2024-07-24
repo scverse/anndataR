@@ -11,7 +11,7 @@ scalar_generators = {
     "float": 1.0,
     "boolean": True,
     "none": None,
-    "NA": pd.NA,
+    # "NA": pd.NA, cannot write to h5 group
     "nan": np.nan,
 }
 
