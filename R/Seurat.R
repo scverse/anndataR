@@ -1,8 +1,6 @@
-#' @rdname Seurat
+#' Convert a Seurat object to an AnnData object
 #'
-#' @title Convert Between AnnData and Seurat
-#'
-#' @description `to_Seurat()` converts an AnnData object to a Seurat object.
+#' `to_Seurat()` converts an AnnData object to a Seurat object.
 #'
 #' @param obj An AnnData object
 #'
@@ -100,10 +98,12 @@ to_Seurat <- function(obj) { # nolint
   names
 }
 
-#' @rdname Seurat
+#' Convert a Seurat object to an AnnData object
 #'
-#' @description `from_Seurat()` converts a Seurat object to an AnnData object.
+#' `from_Seurat()` converts a Seurat object to an AnnData object.
 #' Only one assay can be converted at a time.
+#'
+#' For more information on the functionality of an AnnData object, see [anndataR-package].
 #'
 #' @param seurat_obj An object inheriting from Seurat.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
@@ -114,8 +114,19 @@ to_Seurat <- function(obj) { # nolint
 #' @param ... Additional arguments passed to the generator function.
 #'
 #' @export
-# TODO: add tests with Seurat objects not created by anndataR
-from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData"), assay = NULL, X = "counts", ...) { # nolint
+#'
+#' @seealso [anndataR-package]
+# TODO: Add examples
+# nolint start: object_name_linter
+from_Seurat <- function(
+# nolint end: object_name_linter
+  seurat_obj,
+  output_class = c("InMemoryAnnData", "HDF5AnnData"),
+  assay = NULL,
+  X = "counts",
+  ...) {
+
+  output_class <- match.arg(output_class)
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
