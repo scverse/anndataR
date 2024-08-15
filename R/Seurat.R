@@ -119,13 +119,12 @@ to_Seurat <- function(obj) { # nolint
 # TODO: Add examples
 # nolint start: object_name_linter
 from_Seurat <- function(
-# nolint end: object_name_linter
-  seurat_obj,
-  output_class = c("InMemoryAnnData", "HDF5AnnData"),
-  assay = NULL,
-  X = "counts",
-  ...) {
-
+    # nolint end: object_name_linter
+    seurat_obj,
+    output_class = c("InMemoryAnnData", "HDF5AnnData"),
+    assay = NULL,
+    X = "counts",
+    ...) {
   output_class <- match.arg(output_class)
 
   stopifnot(inherits(seurat_obj, "Seurat"))

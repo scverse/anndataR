@@ -9,7 +9,7 @@
 #'   Abstract [R6][R6::R6Class] class representing an AnnData
 #'   object. Defines the interface.
 #' @importFrom R6 R6Class
-#' 
+#'
 #' @noRd
 AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
