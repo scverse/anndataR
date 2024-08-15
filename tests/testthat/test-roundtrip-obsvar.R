@@ -1,5 +1,5 @@
 skip_if_no_anndata()
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("hdf5r")
 
 data <- generate_dataset(10L, 20L)
 
@@ -7,10 +7,10 @@ test_names <- names(data$obs)
 
 # TODO: re-enable tests
 test_names <- test_names[!grepl("_with_nas", test_names)]
+
 # TODO: re-enable tests
-test_names <- test_names[!test_names %in% c("factor", "factor_ordered")]
-# TODO: re-enable tests
-test_names <- test_names[test_names != "logical"]
+# NOTE: I think this doesn't work in cran anndata
+test_names <- test_names[test_names != "logical_with_nas"]
 
 for (name in test_names) {
   test_that(paste0("roundtrip with obs and var '", name, "'"), {
@@ -64,6 +64,11 @@ for (name in test_names) {
       data$obs[[name]],
       tolerance = 1e-6
     )
+    expect_equal(
+      ad_new$var[[name]],
+      data$var[[name]],
+      tolerance = 1e-6
+    )
   })
 }
 
@@ -72,14 +77,10 @@ for (name in test_names) {
     # write to file
     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
-    # strip rownames
-    obs <- data$obs[, name, drop = FALSE]
-    var <- data$var[, name, drop = FALSE]
-
     # create anndata
     ad <- AnnData(
-      obs = obs,
-      var = var
+      obs = data$obs[, name, drop = FALSE],
+      var = data$var[, name, drop = FALSE]
     )
     write_h5ad(ad, filename)
 
@@ -87,10 +88,15 @@ for (name in test_names) {
     ad_new <- anndata::read_h5ad(filename)
 
     # expect slots are unchanged
-    obs_ <- ad_new$obs[[name]]
     expect_equal(
-      obs_,
+      ad_new$obs[[name]],
       data$obs[[name]],
+      ignore_attr = TRUE,
+      tolerance = 1e-6
+    )
+    expect_equal(
+      ad_new$var[[name]],
+      data$var[[name]],
       ignore_attr = TRUE,
       tolerance = 1e-6
     )

@@ -4,7 +4,12 @@
 \alias{write_h5ad}
 \title{Write H5AD}
 \usage{
-write_h5ad(object, path, compression = c("none", "gzip", "lzf"))
+write_h5ad(
+  object,
+  path,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)
 }
 \arguments{
 \item{object}{The object to write, either a "SingleCellExperiment" or a
@@ -15,6 +20,14 @@ write_h5ad(object, path, compression = c("none", "gzip", "lzf"))
 \item{compression}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
+
+\item{mode}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+}}
 }
 \value{
 \code{path} invisibly

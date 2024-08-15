@@ -1,25 +1,23 @@
 skip_if_no_anndata()
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("hdf5r")
 
 data <- generate_dataset(10L, 20L)
 
-uns_names <- names(data$uns)
+test_names <- names(data$uns)
 # TODO: re-enable these tests
-uns_names <- uns_names[!grepl("_with_nas", uns_names)]
+test_names <- test_names[!grepl("_with_nas", test_names)]
 # TODO: re-enable these tests
-uns_names <- uns_names[!grepl("_na$", uns_names)]
+test_names <- test_names[!grepl("_na$", test_names)]
 # TODO: re-enable these tests
-uns_names <- uns_names[!grepl("mat_", uns_names)]
+test_names <- test_names[!grepl("mat_", test_names)]
 # TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("vec_factor", "vec_factor_ordered", "vec_logical")]
+test_names <- test_names[!test_names %in% c("vec_factor", "vec_factor_ordered", "vec_logical")]
 # TODO: re-enable these tests
-uns_names <- uns_names[uns_names != "list"]
+test_names <- test_names[test_names != "list"]
 # TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")]
-# TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("df_factor", "df_factor_ordered", "df_logical")]
+test_names <- test_names[!test_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")]
 
-for (name in uns_names) {
+for (name in test_names) {
   test_that(paste0("roundtrip with uns '", name, "'"), {
     # create anndata
     ad <- AnnData(
@@ -45,7 +43,7 @@ for (name in uns_names) {
   })
 }
 
-for (name in uns_names) {
+for (name in test_names) {
   test_that(paste0("reticulate->hdf5 with uns '", name, "'"), {
     # create anndata
     ad <- anndata::AnnData(
@@ -71,7 +69,7 @@ for (name in uns_names) {
   })
 }
 
-for (name in uns_names) {
+for (name in test_names) {
   test_that(paste0("hdf5->reticulate with uns '", name, "'"), {
     # write to file
     filename <- withr::local_file(tempfile(fileext = ".h5ad"))

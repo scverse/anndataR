@@ -229,15 +229,34 @@ Convert to an InMemory AnnData
 \subsection{Method \code{to_HDF5AnnData()}}{
 Convert to an HDF5 Backed AnnData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(
+  file,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{path}}{The path to the HDF5 file}
+\item{\code{file}}{The path to the HDF5 file}
+
+\item{\code{compression}}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\code{"none"}.}
+
+\item{\code{mode}}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+}}
 }
 \if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An HDF5AnnData object
 }
 }
 \if{html}{\out{<hr>}}

@@ -20,12 +20,10 @@ ad <- AnnData(
 ad
 
 ## minimum example
-# -> using `AnnData()` is synonymous to `InMemoryAnnData$new()`
-ad <- AnnData(
+AnnData(
   obs = data.frame(row.names = letters[1:10]),
   var = data.frame(row.names = LETTERS[1:5])
 )
-ad
 }
 \section{Super class}{
 \code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{InMemoryAnnData}
