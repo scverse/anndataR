@@ -13,8 +13,10 @@
 #'   * `w` creates a file, truncating any existing ones.
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #'
-#' @param ... Extra arguments provided to [to_SingleCellExperiment()] or
-#'   [to_Seurat()]
+#' @param ... Extra arguments provided to `adata$to_SingleCellExperiment()` or
+#'   `adata$to_Seurat()`. See [AnnData()] for more information on the arguments of
+#'   these functions. Note: update this documentation when
+#'   [`r-lib/roxygen2#955`](https://github.com/r-lib/roxygen2/issues/955) is resolved.
 #'
 #' @return The object specified by `to`
 #' @export

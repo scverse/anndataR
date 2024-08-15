@@ -5,6 +5,8 @@
 #'
 #' @importFrom Matrix as.matrix
 #'
+#' @noRd
+#'
 #' @examples
 #' ## complete example
 #' ad <- AnnData(
@@ -23,7 +25,6 @@
 #'   obs = data.frame(row.names = letters[1:10]),
 #'   var = data.frame(row.names = LETTERS[1:5])
 #' )
-#' @export
 InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
@@ -290,7 +291,7 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #' @return An InMemoryAnnData object with the same data as the input AnnData
 #'   object.
 #'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' ad <- AnnData(

@@ -1,8 +1,6 @@
-#' @rdname SingleCellExperiment
+#' Convert an AnnData object to a SingleCellExperiment object
 #'
-#' @title Convert Between AnnData and SingleCellExperiment
-#'
-#' @description `to_SingleCellExperiment()` converts an AnnData object
+#' `to_SingleCellExperiment()` converts an AnnData object
 #'   to a SingleCellExperiment.
 #'
 #' @param object an AnnData object, e.g., InMemoryAnnData
@@ -10,6 +8,7 @@
 #' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
 #'   representing the content of `object`.
 #'
+#' @noRd
 #' @examples
 #' if (interactive()) {
 #'   ## useful when interacting with the SingleCellExperiment !
@@ -28,8 +27,6 @@
 #' ## construct a SingleCellExperiment from an AnnData object
 #' sce <- to_SingleCellExperiment(ad)
 #' sce
-#'
-#' @export
 to_SingleCellExperiment <- function(object) { # nolint
   stopifnot(
     inherits(object, "AbstractAnnData")
@@ -89,9 +86,9 @@ to_SingleCellExperiment <- function(object) { # nolint
   sce
 }
 
-#' @rdname SingleCellExperiment
+#' Convert a SingleCellExperiment object to an AnnData object
 #'
-#' @description `from_SingleCellExperiment()` converts a
+#' `from_SingleCellExperiment()` converts a
 #'   SingleCellExperiment to an AnnData object.
 #'
 #' @param sce An object inheriting from SingleCellExperiment.
@@ -107,6 +104,12 @@ to_SingleCellExperiment <- function(object) { # nolint
 #'
 #' @examples
 #' ## construct an AnnData object from a SingleCellExperiment
+#' library(SingleCellExperiment)
+#' sce <- SingleCellExperiment(
+#'   assays = list(counts = matrix(1:5, 5L, 3L)),
+#'   colData = DataFrame(cell = 1:3),
+#'   rowData = DataFrame(gene = 1:5)
+#' )
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
 #' @export
@@ -119,6 +122,8 @@ from_SingleCellExperiment <- function(
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )
+
+  output_class <- match.arg(output_class)
 
   # fetch generator
   generator <- get_anndata_constructor(output_class)

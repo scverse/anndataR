@@ -2,6 +2,7 @@
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
+#' @noRd
 HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
   inherit = AbstractAnnData,
   cloneable = FALSE,
@@ -403,7 +404,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
 #'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' ad <- AnnData(
