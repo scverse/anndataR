@@ -10,6 +10,7 @@
 #' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
 #'   representing the content of `object`.
 #'
+#' @noRd
 #' @examples
 #' if (interactive()) {
 #'   ## useful when interacting with the SingleCellExperiment !
@@ -28,8 +29,6 @@
 #' ## construct a SingleCellExperiment from an AnnData object
 #' sce <- to_SingleCellExperiment(ad)
 #' sce
-#'
-#' @export
 to_SingleCellExperiment <- function(object) { # nolint
   stopifnot(
     inherits(object, "AbstractAnnData")

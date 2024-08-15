@@ -8,7 +8,7 @@
 #'
 #' @importFrom Matrix t
 #'
-#' @export
+#' @noRd
 #' @examples
 #' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
