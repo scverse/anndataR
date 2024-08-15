@@ -48,7 +48,7 @@ jobs:
           needs: check
 
       - name: Cache miniconda
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: runner.os == 'Linux'
         # no need to cache on macOS or Windows, since it takes longer to unpack
         # the cache than to install miniconda and dependencies
