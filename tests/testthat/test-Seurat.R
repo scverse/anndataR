@@ -46,7 +46,7 @@ test_that("to_Seurat with inmemoryanndata", {
 })
 
 test_that("to_Seurat() fails gracefully", {
-  expect_error(to_Seurat(), regexp = "obj.*is missing")
+  expect_error(to_Seurat(), regexp = "adata.*is missing")
   expect_error(to_Seurat("foo"), regexp = "AbstractAnnData.*not TRUE")
 })
 
