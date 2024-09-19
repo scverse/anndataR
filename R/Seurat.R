@@ -57,7 +57,7 @@ to_Seurat <- function(
   # trackstatus: class=Seurat, feature=get_var, status=done
   assay <- obj@assays[[assay_name]]
   if (!is.null(var)) {
-    assay <- SeuratObject::AddMetaData(assay, metadata = var)
+    assay <- SeuratObject::AddMetaData(assay, metadata = adata$var)
   }
 
   colnames(obj) <- obs_names
