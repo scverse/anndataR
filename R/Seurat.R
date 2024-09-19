@@ -16,24 +16,23 @@
 #' to_Seurat(ad)
 # nolint start: object_name_linter
 to_Seurat <- function(
-  adata,
-  assay_name = "RNA",
-  counts_layer = ".X",
-  data_layer = NULL,
-  reductions = list(
-    list(
-      name = "pca",
-      key = "PC_",
-      obsm_embedding = "X_pca",
-      varm_loadings = "PCs"
-    ),
-    list(
-      name = "umap",
-      key = "umap_",
-      obsm_embedding = "X_umap"
-    )
-  )
-) {
+    adata,
+    assay_name = "RNA",
+    counts_layer = ".X",
+    data_layer = NULL,
+    reductions = list(
+      list(
+        name = "pca",
+        key = "PC_",
+        obsm_embedding = "X_pca",
+        varm_loadings = "PCs"
+      ),
+      list(
+        name = "umap",
+        key = "umap_",
+        obsm_embedding = "X_umap"
+      )
+    )) {
   # nolint end: object_name_linter
   requireNamespace("SeuratObject")
 
@@ -110,7 +109,7 @@ to_Seurat <- function(
     return(Matrix::t(adata$X))
   }
 
-  if (! layer_name %in% names(adata$layers)) {
+  if (!layer_name %in% names(adata$layers)) {
     stop("layer_name must be the name of one of the layers, \".X\", or NULL")
   }
 
