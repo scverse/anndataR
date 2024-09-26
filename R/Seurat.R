@@ -41,6 +41,27 @@ guess_seurat_embeddings <- function(adata) {
   embeddings
 }
 
+guess_seurat_graphs <- function(adata) {
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  graphs <- list()
+
+  for (graph_name in names(adata$obsp)) {
+    if (graph_name == "connectivities") {
+      graphs[["nn"]] <- graph_name
+    } else if (grepl("^connectivities_", graph_name)) {
+      new_name <- gsub("^connectivities_", "", graph_name)
+      graphs[[new_name]] <- graph_name
+    }
+  }
+
+  ## TODO: rename 'neighbors' to 'nn'?
+
+  graphs
+}
+
 #' Convert a Seurat object to an AnnData object
 #'
 #' `to_Seurat()` converts an AnnData object to a Seurat object.
@@ -53,6 +74,7 @@ guess_seurat_embeddings <- function(adata) {
 #'   embedding must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the embedding names, 'obsm'
 #'   is the name of the embedding in `obsm`, and 'varm' is the name of the loadings in `varm`. If 'varm' is `NULL`, no
 #'   loadings will be added.
+#' @param graph_mapping A named list mapping graph names to the names of the graphs in the AnnData object.
 #'
 #' @importFrom Matrix t
 #'
@@ -69,7 +91,8 @@ to_Seurat <- function(
     adata,
     assay_name = "RNA",
     layer_mapping = guess_seurat_layers(adata),
-    embedding_mapping = guess_seurat_embeddings(adata)) {
+    embedding_mapping = guess_seurat_embeddings(adata),
+    graph_mapping = guess_seurat_graphs(adata)) {
   # nolint end: object_name_linter
   requireNamespace("SeuratObject")
 
@@ -152,9 +175,27 @@ to_Seurat <- function(
     }
   }
 
-  # trackstatus: class=Seurat, feature=get_obsp, status=missing
+  # trackstatus: class=Seurat, feature=get_obsp, status=done
+  for (i in seq_along(graph_mapping)) {
+    graph_name <- names(graph_mapping)[[i]]
+    graph <- graph_mapping[[i]]
+    if (!is.character(graph) || length(graph) != 1) {
+      stop("each graph must be a character vector of length 1")
+    }
+    obsp <- adata$obsp[[graph]]
+    if (!is.null(obsp)) {
+      dimnames(obsp) <- list(obs_names, obs_names)
+      obsp_gr <- Seurat::as.Graph(obsp)
+      obj[[paste0(assay_name, "_", graph_name)]] <- obsp_gr
+    }
+  }
+
+  # trackstatus: class=Seurat, feature=get_uns, status=wip
+  # TODO: should we store everything that is not stored elsewhere (e.g. unused obsm, varm, obsp) in misc?
+  obj@misc <- adata$uns
+
   # trackstatus: class=Seurat, feature=get_varp, status=missing
-  # trackstatus: class=Seurat, feature=get_uns, status=missing
+  # TODO: could store varp in misc?
 
   obj
 }
