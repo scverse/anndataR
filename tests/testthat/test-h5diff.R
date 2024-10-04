@@ -7,7 +7,8 @@ testthat::skip_if_not(
 )
 
 test_that("h5diff", {
-
+  requireNamespace("processx")
+  
   data_R <- generate_dataset(10L, 20L, format = "AnnData")
 
   da <- reticulate::import("dummy_anndata")
