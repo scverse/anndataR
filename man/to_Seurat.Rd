@@ -12,7 +12,7 @@ to_Seurat(
   adata,
   assay_name = "RNA",
   layer_mapping = to_Seurat_guess_layers(adata),
-  embedding_mapping = to_Seurat_guess_embeddings(adata),
+  reduction_mapping = to_Seurat_guess_reductions(adata),
   graph_mapping = to_Seurat_guess_graphs(adata),
   misc_mapping = to_Seurat_guess_misc(adata)
 )
@@ -33,9 +33,9 @@ to_Seurat_guess_misc(adata)
 \item{layer_mapping}{A named list mapping layer names to the names of the layers in the AnnData object. If the layer
 name is \code{NULL}, the \code{X} slot will be used. In the named list, at least 'counts' or 'data' must be present.}
 
-\item{embedding_mapping}{A named list mapping embedding names to the names of the embeddings in the AnnData object.
-Each embedding must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the embedding names,
-'obsm' is the name of the embedding in \code{obsm}, and 'varm' is the name of the loadings in \code{varm}. If 'varm' is
+\item{reduction_mapping}{A named list mapping reduction names to the names of the reductions in the AnnData object.
+Each reduction must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the reduction names,
+'obsm' is the name of the reduction in \code{obsm}, and 'varm' is the name of the loadings in \code{varm}. If 'varm' is
 \code{NULL}, no loadings will be added.}
 
 \item{graph_mapping}{A named list mapping graph names to the names of the graphs in the AnnData object.}
