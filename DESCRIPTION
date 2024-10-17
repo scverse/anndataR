@@ -75,7 +75,8 @@ Suggests:
     SingleCellExperiment,
     SummarizedExperiment,
     testthat (>= 3.0.0),
-    withr
+    withr,
+    processx,
 VignetteBuilder: 
     knitr
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
