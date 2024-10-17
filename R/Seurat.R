@@ -1,84 +1,29 @@
-# TODO: export this?
-guess_seurat_layers <- function(adata) {
-  if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
-  }
-
-  layers <- list()
-
-  if (!is.null(adata$X)) {
-    layers["data"] <- list(NULL)
-  }
-
-  for (layer_name in names(adata$layers)) {
-    layers[[layer_name]] <- layer_name
-  }
-
-  layers
-}
-# TODO: export this?
-guess_seurat_embeddings <- function(adata) {
-  if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
-  }
-
-  embeddings <- list()
-
-  for (embedding_name in names(adata$obsm)) {
-    if (grepl("^X_", embedding_name)) {
-      name <- gsub("^X_", "", embedding_name)
-      out <-
-        if (embedding_name == "X_pca") {
-          list(key = "PC_", obsm = "X_pca", varm = "PCs")
-        } else {
-          list(key = paste0(name, "_"), obsm = embedding_name, varm = NULL)
-        }
-
-      embeddings[[name]] <- out
-    }
-  }
-
-  embeddings
-}
-
-guess_seurat_graphs <- function(adata) {
-  if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
-  }
-
-  graphs <- list()
-
-  for (graph_name in names(adata$obsp)) {
-    if (graph_name == "connectivities") {
-      graphs[["nn"]] <- graph_name
-    } else if (grepl("^connectivities_", graph_name)) {
-      new_name <- gsub("^connectivities_", "", graph_name)
-      graphs[[new_name]] <- graph_name
-    }
-  }
-
-  ## TODO: rename 'neighbors' to 'nn'?
-
-  graphs
-}
-
-#' Convert a Seurat object to an AnnData object
+#' @title Convert a Seurat object to an AnnData object
 #'
+#' @description
 #' `to_Seurat()` converts an AnnData object to a Seurat object.
 #'
 #' @param obj An AnnData object
 #' @param assay_name Name of the assay to be created
 #' @param layer_mapping A named list mapping layer names to the names of the layers in the AnnData object. If the layer
 #'   name is `NULL`, the `X` slot will be used. In the named list, at least 'counts' or 'data' must be present.
-#' @param embedding_mapping A named list mapping embedding names to the names of the embeddings in the AnnData object. Each
-#'   embedding must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the embedding names, 'obsm'
-#'   is the name of the embedding in `obsm`, and 'varm' is the name of the loadings in `varm`. If 'varm' is `NULL`, no
-#'   loadings will be added.
+#' @param embedding_mapping A named list mapping embedding names to the names of the embeddings in the AnnData object.
+#'   Each embedding must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the embedding names,
+#'   'obsm' is the name of the embedding in `obsm`, and 'varm' is the name of the loadings in `varm`. If 'varm' is
+#'   `NULL`, no loadings will be added.
 #' @param graph_mapping A named list mapping graph names to the names of the graphs in the AnnData object.
+#' @param misc_mapping A named list mapping miscellaneous data to the names of the data in the AnnData object. Each item
+#'   in the list must be a named list with one or two elements. The first element must be one of: 'X', 'layers', 'obs',
+#'   'obsm', 'obsp', 'var', 'varm', 'varp', 'uns'. The second element is the name of the data in the corresponding
+#'   slot. If the second element is not present, the data in the first element will be used.
+#'   Example: `misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))` will copy the data in
+#'   `adata$uns` to `seurat_obj@misc$uns` and the data in `adata$varp$neighbors` to `seurat_obj@misc$varp_neighbors`.
 #'
 #' @importFrom Matrix t
 #'
-#' @noRd
+#' @export
+#'
+#' @rdname to_Seurat
 #' @examples
 #' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
@@ -90,13 +35,18 @@ guess_seurat_graphs <- function(adata) {
 to_Seurat <- function(
     adata,
     assay_name = "RNA",
-    layer_mapping = guess_seurat_layers(adata),
-    embedding_mapping = guess_seurat_embeddings(adata),
-    graph_mapping = guess_seurat_graphs(adata)) {
+    layer_mapping = to_Seurat_guess_layers(adata),
+    embedding_mapping = to_Seurat_guess_embeddings(adata),
+    graph_mapping = to_Seurat_guess_graphs(adata),
+    misc_mapping = to_Seurat_guess_misc(adata)) {
   # nolint end: object_name_linter
   requireNamespace("SeuratObject")
 
   stopifnot(inherits(adata, "AbstractAnnData"))
+
+  if (length(adata$layers) == 0 && is.null(adata$X)) {
+    stop("to_Seurat: adata must have an $X slot or at least one layer")
+  }
 
   # store obs and var names
   obs_names <- adata$obs_names[]
@@ -116,11 +66,19 @@ to_Seurat <- function(
   # trackstatus: class=Seurat, feature=get_obs, status=done
   # trackstatus: class=Seurat, feature=get_X, status=done
   # trackstatus: class=Seurat, feature=get_layers, status=done
+  counts <- .to_seurat_get_matrix_by_key(adata, layer_mapping, "counts")
+  data <- .to_seurat_get_matrix_by_key(adata, layer_mapping, "data")
+  if (!is.null(counts)) {
+    dimnames(counts) <- list(adata$var_names, adata$obs_names)
+  }
+  if (!is.null(data)) {
+    dimnames(data) <- list(adata$var_names, adata$obs_names)
+  }
   obj <- SeuratObject::CreateSeuratObject(
     meta.data = adata$obs,
     assay = assay_name,
-    counts = .to_seurat_get_matrix_by_key(adata, layer_mapping, "counts"),
-    data = .to_seurat_get_matrix_by_key(adata, layer_mapping, "data")
+    counts = counts,
+    data = data
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
@@ -146,8 +104,8 @@ to_Seurat <- function(
   }
 
   # copy embeddings
-  # trackstatus: class=Seurat, feature=get_obsm, status=done
-  # trackstatus: class=Seurat, feature=get_varm, status=done
+  # trackstatus: class=Seurat, feature=get_obsm, status=wip
+  # trackstatus: class=Seurat, feature=get_varm, status=wip
   if (!is.null(embedding_mapping)) {
     if (!is.list(embedding_mapping) || (length(embedding_mapping) > 0 && is.null(names(embedding_mapping)))) {
       stop("embedding_mapping must be a named list")
@@ -156,10 +114,11 @@ to_Seurat <- function(
       embedding_name <- names(embedding_mapping)[[i]]
       embedding <- embedding_mapping[[i]]
 
-      if (!is.list(embedding) ||
-        is.null(names(embedding)) ||
-        !all(names(embedding) %in% c("key", "obsm", "varm")) ||
-        !all(c("key", "obsm", "varm") %in% names(embedding))) {
+      if (
+        !is.list(embedding) || is.null(names(embedding)) ||
+          !all(names(embedding) %in% c("key", "obsm", "varm")) ||
+          !all(c("key", "obsm", "varm") %in% names(embedding))
+      ) {
         stop("each embedding must be a list with keys 'key', 'obsm', and 'varm'")
       }
       dr <- .to_seurat_process_reduction(
@@ -175,7 +134,7 @@ to_Seurat <- function(
     }
   }
 
-  # trackstatus: class=Seurat, feature=get_obsp, status=done
+  # trackstatus: class=Seurat, feature=get_obsp, status=wip
   for (i in seq_along(graph_mapping)) {
     graph_name <- names(graph_mapping)[[i]]
     graph <- graph_mapping[[i]]
@@ -190,12 +149,33 @@ to_Seurat <- function(
     }
   }
 
-  # trackstatus: class=Seurat, feature=get_uns, status=wip
-  # TODO: should we store everything that is not stored elsewhere (e.g. unused obsm, varm, obsp) in misc?
-  obj@misc <- adata$uns
-
-  # trackstatus: class=Seurat, feature=get_varp, status=missing
-  # TODO: could store varp in misc?
+  # trackstatus: class=Seurat, feature=get_uns, status=done
+  # trackstatus: class=Seurat, feature=get_varp, status=done
+  obj@misc <- list()
+  for (i in seq_along(misc_mapping)) {
+    misc_name <- names(misc_mapping)[[i]]
+    misc <- misc_mapping[[i]]
+    if (!is.character(misc) || length(misc) <= 0 || length(misc) > 2) {
+      stop("misc_mapping must be a named list with one or two elements")
+    }
+    expected_slots <- c("X", "layers", "obs", "obsm", "obsp", "var", "varm", "varp", "uns")
+    if (!misc[[1]] %in% expected_slots) {
+      stop(paste0(
+        "The first element of each item in misc_mapping must be one of: ",
+        paste0("'", expected_slots, "'", collapse = ", ")
+      ))
+    }
+    misc_data <- adata[[misc[[1]]]]
+    if (length(misc) == 2) {
+      if (!misc[[2]] %in% names(misc_data)) {
+        stop(paste0("misc_mapping: adata$", misc[[1]], "[[", misc[[2]], "]] does not exist"))
+      }
+      misc_data <- misc_data[[misc[[2]]]]
+    }
+    if (!is.null(misc_data)) {
+      obj@misc[[misc_name]] <- misc_data
+    }
+  }
 
   obj
 }
@@ -203,7 +183,6 @@ to_Seurat <- function(
 .to_seurat_is_atomic_character <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
-
 
 .to_seurat_get_matrix_by_key <- function(adata, mapping, key) {
   if (!key %in% names(mapping)) {
@@ -288,6 +267,121 @@ to_Seurat <- function(
   do.call(SeuratObject::CreateDimReducObject, args)
 }
 
+#' @section Guessing layers:
+#' * If `adata$X` is defined, we assume this the `data`.
+#' * Other layers are copied by name.
+#'
+#' @param adata The AnnData to be converted
+#'
+#' @rdname to_Seurat
+#' @export
+to_Seurat_guess_layers <- function(adata) { # nolint
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  layers <- list()
+
+  if (!is.null(adata$X)) {
+    layers["counts"] <- list(NULL)
+  }
+
+  for (layer_name in names(adata$layers)) {
+    layers[[layer_name]] <- layer_name
+  }
+
+  layers
+}
+
+#' @section Guessing embeddings:
+#'
+#' * If `X_pca` is defined, we assume this is the PCA embedding.
+#' * Other embeddings starting with `X_` are copied by name.
+#'
+#' @param adata The AnnData to be converted
+#'
+#' @rdname to_Seurat
+#' @export
+to_Seurat_guess_embeddings <- function(adata) { # nolint
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  embeddings <- list()
+
+  for (embedding_name in names(adata$obsm)) {
+    if (grepl("^X_", embedding_name)) {
+      name <- gsub("^X_", "", embedding_name)
+      out <-
+        if (embedding_name == "X_pca") {
+          list(key = "PC_", obsm = "X_pca", varm = "PCs")
+        } else {
+          list(key = paste0(name, "_"), obsm = embedding_name, varm = NULL)
+        }
+
+      embeddings[[name]] <- out
+    }
+  }
+
+  embeddings
+}
+
+#' @section Guessing graphs:
+#'
+#' * If `connectivities` is defined, we assume this is the nearest neighbor graph.
+#' * Other graphs starting with `connectivities_` are copied by name.
+#'
+#' @param adata The AnnData to be converted
+#'
+#' @rdname to_Seurat
+#' @export
+to_Seurat_guess_graphs <- function(adata) { # nolint
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  graphs <- list()
+
+  for (graph_name in names(adata$obsp)) {
+    if (graph_name == "connectivities") {
+      graphs[["nn"]] <- graph_name
+    } else if (grepl("^connectivities_", graph_name)) {
+      new_name <- gsub("^connectivities_", "", graph_name)
+      graphs[[new_name]] <- graph_name
+    }
+  }
+
+  graphs
+}
+
+#' @section Guessing miscellaneous data:
+#'
+#' * If `adata$obsp` is defined, we assume this is the `obsp`.
+#' * If `adata$uns` is defined, we assume this is the `uns`.
+#'
+#' @param adata The AnnData to be converted
+#'
+#' @rdname to_Seurat
+#' @export
+to_Seurat_guess_misc <- function(adata) {
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  misc_mapping <- list()
+
+  if (!is.null(adata$obsp)) {
+    misc_mapping["obsp"] <- "obsp"
+  }
+  if (!is.null(adata$uns)) {
+    misc_mapping["uns"] <- "uns"
+  }
+
+  # TODO: copy obsm which were not used as embeddings?
+  # TODO: copy varm which were not used as loadings?
+
+  misc_mapping
+}
 
 #' Convert a Seurat object to an AnnData object
 #'
@@ -320,6 +414,7 @@ from_Seurat <- function(
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
+  # nolint start
   # if (!is.null(X)) {
   #   if (!X %in% c("counts", "data", "scale.data")) {
   #     stop("X must be NULL or one of: 'counts', 'data', 'scale.data'")
@@ -393,4 +488,6 @@ from_Seurat <- function(
   # }
 
   # return(ad)
+
+  # nolint end
 }
