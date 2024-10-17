@@ -2,28 +2,71 @@
 % Please edit documentation in R/Seurat.R
 \name{from_Seurat}
 \alias{from_Seurat}
+\alias{from_Seurat_guess_layers}
+\alias{from_Seurat_guess_obsms}
+\alias{from_Seurat_guess_varms}
+\alias{from_Seurat_guess_obsps}
+\alias{from_Seurat_guess_varps}
+\alias{from_Seurat_guess_uns}
 \title{Convert a Seurat object to an AnnData object}
 \usage{
 from_Seurat(
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
-  assay = NULL,
-  X = "counts",
+  assay = "RNA",
+  layer_mapping = from_Seurat_guess_layers(seurat_obj),
+  obsm_mapping = from_Seurat_guess_obsms(seurat_obj),
+  varm_mapping = from_Seurat_guess_varms(seurat_obj),
+  obsp_mapping = from_Seurat_guess_obsps(seurat_obj),
+  varp_mapping = from_Seurat_guess_varps(seurat_obj),
+  uns_mapping = from_Seurat_guess_uns(seurat_obj),
   ...
 )
+
+from_Seurat_guess_layers(seurat_assay)
+
+from_Seurat_guess_obsms(seurat_obj)
+
+from_Seurat_guess_varms(seurat_obj)
+
+from_Seurat_guess_obsps(seurat_obj)
+
+from_Seurat_guess_varps(seurat_obj)
+
+from_Seurat_guess_uns(seurat_obj)
 }
 \arguments{
-\item{seurat_obj}{An object inheriting from Seurat.}
+\item{seurat_obj}{The Seurat object to be converted}
 
 \item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
 
-\item{assay}{Assay to be converted. If NULL, \code{DefaultAssay()} is used.}
+\item{assay}{Name of the assay to be converted.}
 
-\item{X}{Which of 'counts', 'data', or 'scale.data' will be used for X. By default, 'counts' will be used (if it is
-not empty), followed by 'data', then 'scale.data'. The remaining non-empty slots will be stored in different
-layers.}
+\item{layer_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. If the layer
+name is \code{"$X"}, the \code{X} slot will be used. In the named list, at least 'counts' or 'data' must be present.}
+
+\item{obsm_mapping}{A named list mapping reduction names to the names of the reductions in the Seurat object.
+Each reduction must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the reduction names,
+'obsm' is the name of the reduction in \code{obsm}, and 'varm' is the name of the loadings in \code{varm}. If 'varm' is
+\code{NULL}, no loadings will be added.}
+
+\item{varm_mapping}{A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.}
+
+\item{obsp_mapping}{A named list mapping graph names to the names of the graphs in the Seurat object.}
+
+\item{varp_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object. Each item
+in the list must be a named list with one or two elements. The first element must be one of: 'graphs', 'misc'.
+The second element is the name of the data in the corresponding slot. If the second element is not present, the data
+in the first element will be used.}
+
+\item{uns_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object. Each item
+in the list must be a named list with one or two elements. The first element must be one of: 'misc'.
+The second element is the name of the data in the corresponding slot. If the second element is not present, the data
+in the first element will be used.}
 
 \item{...}{Additional arguments passed to the generator function.}
+
+\item{seurat_assay}{The Seurat Assay to be converted}
 }
 \description{
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
@@ -32,6 +75,47 @@ Only one assay can be converted at a time.
 \details{
 For more information on the functionality of an AnnData object, see \link{anndataR-package}.
 }
-\seealso{
-\link{anndataR-package}
+\section{Guessing layers}{
+
+\itemize{
+\item The names of the Seurat Assay's layers are copied by name.
 }
+}
+
+\section{Guessing obsms}{
+
+\itemize{
+\item The names of the Seurat object's reductions are copied by name.
+}
+}
+
+\section{Guessing varms}{
+
+\itemize{
+\item The names of the Seurat object's PCA loadings are copied by name.
+}
+}
+
+\section{Guessing obsps}{
+
+\itemize{
+\item The names of the Seurat object's graphs are copied by name.
+}
+}
+
+\section{Guessing varps}{
+
+\itemize{
+\item The names of the Seurat object's miscellaneous data are copied by name.
+}
+}
+
+\section{Guessing uns}{
+
+\itemize{
+\item The names of elements in the misc's "uns" slot are copied by name.
+\item Other items in the misc slot are copied by name, unless their name is
+one of 'obsm', 'obsp', 'varm', 'varp', or 'uns'.
+}
+}
+
