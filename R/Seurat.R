@@ -418,10 +418,10 @@ from_Seurat <- function(
     # nolint end: object_name_linter
     seurat_obj,
     output_class = c("InMemoryAnnData", "HDF5AnnData"),
-    assay = "RNA",
+    assay_name = "RNA",
     layer_mapping = from_Seurat_guess_layers(seurat_obj),
-    obsm_mapping = from_Seurat_guess_obsms(seurat_obj),
-    varm_mapping = from_Seurat_guess_varms(seurat_obj),
+    obsm_mapping = from_Seurat_guess_obsms(seurat_obj, assay_name),
+    varm_mapping = from_Seurat_guess_varms(seurat_obj, assay_name),
     obsp_mapping = from_Seurat_guess_obsps(seurat_obj),
     varp_mapping = from_Seurat_guess_varps(seurat_obj),
     uns_mapping = from_Seurat_guess_uns(seurat_obj),
@@ -430,10 +430,10 @@ from_Seurat <- function(
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
-  seurat_assay <- seurat_obj@assays[[assay]]
+  seurat_assay <- seurat_obj@assays[[assay_name]]
 
   if (is.null(seurat_assay) || !inherits(seurat_assay, "Assay5")) {
-    stop(paste0("Assay '", assay, "' is not a valid Seurat v5 assay"))
+    stop(paste0("Assay '", assay_name, "' is not a valid Seurat v5 assay"))
   }
 
   # fetch obs
@@ -610,10 +610,11 @@ from_Seurat_guess_layers <- function(seurat_assay) { # nolint
 #' * The names of the Seurat object's reductions are copied by name.
 #'
 #' @param seurat_obj The Seurat object to be converted
+#' @param assay_name The name of the assay to be converted
 #'
 #' @rdname from_Seurat
 #' @export
-from_Seurat_guess_obsms <- function(seurat_obj) { # nolint
+from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
   }
@@ -621,6 +622,13 @@ from_Seurat_guess_obsms <- function(seurat_obj) { # nolint
   obsm_mapping <- list()
 
   for (reduction_name in names(seurat_obj@reductions)) {
+
+    # Check if the dimreduc was calculated by the selected assay
+    reduction <- seurat_obj@reductions[[reduction]]
+    if (reduction@assay.used != assay_name) {
+      next
+    }
+
     obsm_mapping[[paste0("X_", reduction_name)]] <- c("reductions", reduction_name)
   }
 
@@ -632,10 +640,11 @@ from_Seurat_guess_obsms <- function(seurat_obj) { # nolint
 #' * The names of the Seurat object's PCA loadings are copied by name.
 #'
 #' @param seurat_obj The Seurat object to be converted
+#' @param assay_name The name of the assay to be converted
 #'
 #' @rdname from_Seurat
 #' @export
-from_Seurat_guess_varms <- function(seurat_obj) { # nolint
+from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
   }
@@ -643,6 +652,13 @@ from_Seurat_guess_varms <- function(seurat_obj) { # nolint
   varm_mapping <- list()
 
   if ("pca" %in% names(seurat_obj@reductions)) {
+
+    # Check if the dimreduc was calculated by the selected assay
+    reduction <- seurat_obj@reductions[[reduction]]
+    if (reduction@assay.used != assay_name) {
+      next
+    }
+
     varm_mapping[["PCs"]] <- c("reductions", "pca")
   }
 

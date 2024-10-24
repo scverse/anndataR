@@ -13,10 +13,10 @@
 from_Seurat(
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
-  assay = "RNA",
+  assay_name = "RNA",
   layer_mapping = from_Seurat_guess_layers(seurat_obj),
-  obsm_mapping = from_Seurat_guess_obsms(seurat_obj),
-  varm_mapping = from_Seurat_guess_varms(seurat_obj),
+  obsm_mapping = from_Seurat_guess_obsms(seurat_obj, assay_name),
+  varm_mapping = from_Seurat_guess_varms(seurat_obj, assay_name),
   obsp_mapping = from_Seurat_guess_obsps(seurat_obj),
   varp_mapping = from_Seurat_guess_varps(seurat_obj),
   uns_mapping = from_Seurat_guess_uns(seurat_obj),
@@ -25,9 +25,9 @@ from_Seurat(
 
 from_Seurat_guess_layers(seurat_assay)
 
-from_Seurat_guess_obsms(seurat_obj)
+from_Seurat_guess_obsms(seurat_obj, assay_name)
 
-from_Seurat_guess_varms(seurat_obj)
+from_Seurat_guess_varms(seurat_obj, assay_name)
 
 from_Seurat_guess_obsps(seurat_obj)
 
@@ -40,7 +40,7 @@ from_Seurat_guess_uns(seurat_obj)
 
 \item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
 
-\item{assay}{Name of the assay to be converted.}
+\item{assay_name}{The name of the assay to be converted}
 
 \item{layer_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. If the layer
 name is \code{"$X"}, the \code{X} slot will be used. In the named list, at least 'counts' or 'data' must be present.}
@@ -67,6 +67,8 @@ in the first element will be used.}
 \item{...}{Additional arguments passed to the generator function.}
 
 \item{seurat_assay}{The Seurat Assay to be converted}
+
+\item{assay}{Name of the assay to be converted.}
 }
 \description{
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
