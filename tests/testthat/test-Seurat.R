@@ -8,6 +8,7 @@ test_that("to_Seurat with inmemoryanndata", {
   )
   # running to_seurat when ad0$X is null probably doesn't make any sense
   ad0 <- AnnData(
+    X = matrix(1L, nrow = 5, ncol = 10),
     obs = data.frame(row.names = letters[1:5]),
     var = data.frame(row.names = LETTERS[1:10])
   )
@@ -40,8 +41,8 @@ test_that("to_Seurat with inmemoryanndata", {
   # trackstatus: class=Seurat, feature=test_get_var, status=done
   active_assay <- seu@assays[[seu@active.assay]]
   for (var_key in colnames(dummy$var)) {
-    expect_true(var_key %in% colnames(active_assay@meta.features))
-    expect_equal(active_assay@meta.features[[var_key]], dummy$var[[var_key]])
+    expect_true(var_key %in% colnames(active_assay@meta.data))
+    expect_equal(active_assay@meta.data[[var_key]], dummy$var[[var_key]])
   }
 })
 
