@@ -29,7 +29,7 @@ from_Seurat_guess_obsms(seurat_obj, assay_name)
 
 from_Seurat_guess_varms(seurat_obj, assay_name)
 
-from_Seurat_guess_obsps(seurat_obj)
+from_Seurat_guess_obsps(seurat_obj, assay_name)
 
 from_Seurat_guess_varps(seurat_obj)
 

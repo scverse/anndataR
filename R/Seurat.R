@@ -1,23 +1,71 @@
 #' @title Convert a Seurat object to an AnnData object
 #'
 #' @description
-#' `to_Seurat()` converts an AnnData object to a Seurat object.
+#' `to_Seurat()` converts an AnnData object to a Seurat object. Only one assay can be converted at a time.
+#' Arguments are used to configure the conversion. If `NULL`, the functions `to_Seurat_guess_*` will be used to guess
+#' the mapping.
 #'
-#' @param obj An AnnData object
+#' @param adata An AnnData object to be converted
 #' @param assay_name Name of the assay to be created
-#' @param layer_mapping A named list mapping layer names to the names of the layers in the AnnData object. If the layer
-#'   name is `NULL`, the `X` slot will be used. In the named list, at least 'counts' or 'data' must be present.
-#' @param reduction_mapping A named list mapping reduction names to the names of the reductions in the AnnData object.
-#'   Each reduction must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the reduction names,
-#'   'obsm' is the name of the reduction in `obsm`, and 'varm' is the name of the loadings in `varm`. If 'varm' is
-#'   `NULL`, no loadings will be added.
-#' @param graph_mapping A named list mapping graph names to the names of the graphs in the AnnData object.
-#' @param misc_mapping A named list mapping miscellaneous data to the names of the data in the AnnData object. Each item
-#'   in the list must be a named list with one or two elements. The first element must be one of: 'X', 'layers', 'obs',
-#'   'obsm', 'obsp', 'var', 'varm', 'varp', 'uns'. The second element is the name of the data in the corresponding
-#'   slot. If the second element is not present, the data in the first element will be used.
-#'   Example: `misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))` will copy the data in
-#'   `adata$uns` to `seurat_obj@misc$uns` and the data in `adata$varp$neighbors` to `seurat_obj@misc$varp_neighbors`.
+#' @param layer_mapping A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
+#'   details.
+#' @param reduction_mapping A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
+#'   named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for more details.
+#' @param graph_mapping A named list to map AnnData graphs to Seurat graphs. Each item in the list must be a character
+#'   vector of length 1. See section "Graph mapping" for more details.
+#' @param misc_mapping A named list to map miscellaneous data to the names of the data in the Seurat object. See section
+#'   "Miscellaneous mapping" for more details.
+#'
+#' @section Layer mapping:
+#'
+#' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
+#' A value of `NULL` corresponds to the `X` slot.
+#'
+#' Example: `layer_mapping = list(counts = "counts", data = NULL, foo = "bar")`.
+#'
+#' If `NULL`, the function [to_Seurat_guess_layers] will be used to guess the layer mapping as follows:
+#'
+#' * If `adata$X` is defined, we assume this the `counts`.
+#' * Other layers are copied by name.
+#'
+#' @section Reduction mapping:
+#'
+#' A named list to map AnnData `obsm` and `varm` to Seurat reductions. Each item in the list must be a named list
+#' with keys `'key'`, `'obsm'`, and `'varm'`.
+#
+#' Example: `reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
+#'
+#' If `NULL`, the function [to_Seurat_guess_reductions] will be used to guess the reduction mapping as follows:
+#'
+#' * All obsm starting with `X_` are copied by name.
+#'
+#' @section Graph mapping:
+#'
+#' A named list mapping graph names to the names of the graphs in the AnnData object. Each item in the list must be a
+#' character vector of length 1.
+#'
+#' Example: `graph_mapping = list(nn = "connectivities")`.
+#'
+#' If `NULL`, the function [to_Seurat_guess_graphs] will be used to guess the graph mapping as follows:
+#'
+#' * An obsp named `connectivities` will be mapped to `nn`.
+#' * Other graphs starting with `connectivities_` are stripped of the prefix and copied by name.
+#'
+#' @section Miscellaneous mapping:
+#'
+#' A named list mapping miscellaneous data to the names of the data in the AnnData object. Each item in the list must be
+#' a named list with one or two elements. The first element must be one of: 'X', 'layers', 'obs', 'obsm', 'obsp', 'var',
+#' 'varm', 'varp', 'uns'. The second element is the name of the data in the corresponding slot. If the second element is
+#' not present, the data in the first element will be used.
+#'
+#' Example: `misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))`.
+#'
+#' If `NULL`, the function [to_Seurat_guess_misc] will be used to guess the miscellaneous mapping as follows:
+#'
+#' * If `adata$obsp` is defined, this is mapped to a misc value named `obsp`.
+#' * If `adata$uns` is defined, this is mapped to a misc value named `uns`.
+#'
+#' @return A Seurat object
 #'
 #' @importFrom Matrix t
 #'
@@ -35,14 +83,27 @@
 to_Seurat <- function(
     adata,
     assay_name = "RNA",
-    layer_mapping = to_Seurat_guess_layers(adata),
-    reduction_mapping = to_Seurat_guess_reductions(adata),
-    graph_mapping = to_Seurat_guess_graphs(adata),
-    misc_mapping = to_Seurat_guess_misc(adata)) {
+    layer_mapping = NULL,
+    reduction_mapping = NULL,
+    graph_mapping = NULL,
+    misc_mapping = NULL) {
   # nolint end: object_name_linter
   requireNamespace("SeuratObject")
 
   stopifnot(inherits(adata, "AbstractAnnData"))
+
+  if (is.null(layer_mapping)) {
+    layer_mapping <- to_Seurat_guess_layers(adata)
+  }
+  if (is.null(reduction_mapping)) {
+    reduction_mapping <- to_Seurat_guess_reductions(adata)
+  }
+  if (is.null(graph_mapping)) {
+    graph_mapping <- to_Seurat_guess_graphs(adata)
+  }
+  if (is.null(misc_mapping)) {
+    misc_mapping <- to_Seurat_guess_misc(adata)
+  }
 
   if (length(adata$layers) == 0 && is.null(adata$X)) {
     stop("to_Seurat: adata must have an $X slot or at least one layer")
@@ -293,46 +354,32 @@ to_Seurat_guess_layers <- function(adata) { # nolint
   layers
 }
 
-#' @section Guessing embeddings:
-#'
-#' * If `X_pca` is defined, we assume this is the PCA embedding.
-#' * Other embeddings starting with `X_` are copied by name.
-#'
-#' @param adata The AnnData to be converted
-#'
 #' @rdname to_Seurat
 #' @export
-to_Seurat_guess_embeddings <- function(adata) { # nolint
+to_Seurat_guess_reductions <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
   }
 
-  embeddings <- list()
+  reductions <- list()
 
-  for (embedding_name in names(adata$obsm)) {
-    if (grepl("^X_", embedding_name)) {
-      name <- gsub("^X_", "", embedding_name)
+  for (reduction_name in names(adata$obsm)) {
+    if (grepl("^X_", reduction_name)) {
+      name <- gsub("^X_", "", reduction_name)
       out <-
-        if (embedding_name == "X_pca") {
+        if (reduction_name == "X_pca") {
           list(key = "PC_", obsm = "X_pca", varm = "PCs")
         } else {
-          list(key = paste0(name, "_"), obsm = embedding_name, varm = NULL)
+          list(key = paste0(name, "_"), obsm = reduction_name, varm = NULL)
         }
 
-      embeddings[[name]] <- out
+      reductions[[name]] <- out
     }
   }
 
-  embeddings
+  reductions
 }
 
-#' @section Guessing graphs:
-#'
-#' * If `connectivities` is defined, we assume this is the nearest neighbor graph.
-#' * Other graphs starting with `connectivities_` are copied by name.
-#'
-#' @param adata The AnnData to be converted
-#'
 #' @rdname to_Seurat
 #' @export
 to_Seurat_guess_graphs <- function(adata) { # nolint
@@ -354,13 +401,6 @@ to_Seurat_guess_graphs <- function(adata) { # nolint
   graphs
 }
 
-#' @section Guessing miscellaneous data:
-#'
-#' * If `adata$obsp` is defined, we assume this is the `obsp`.
-#' * If `adata$uns` is defined, we assume this is the `uns`.
-#'
-#' @param adata The AnnData to be converted
-#'
 #' @rdname to_Seurat
 #' @export
 to_Seurat_guess_misc <- function(adata) {
@@ -670,10 +710,11 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
 #' * The names of the Seurat object's graphs are copied by name.
 #'
 #' @param seurat_obj The Seurat object to be converted
+#' @param assay_name The name of the assay to be converted
 #'
 #' @rdname from_Seurat
 #' @export
-from_Seurat_guess_obsps <- function(seurat_obj) { # nolint
+from_Seurat_guess_obsps <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
   }
@@ -681,8 +722,20 @@ from_Seurat_guess_obsps <- function(seurat_obj) { # nolint
   obsp_mapping <- list()
 
   for (graph_name in names(seurat_obj@graphs)) {
-    # todo: map '<assay>_nn' to 'connectivities'
-    obsp_mapping[[graph_name]] <- c("graphs", graph_name)
+
+    graph <- seurat_obj@graphs[[graph_name]]
+
+    if (graph@assay.used != assay_name) {
+      next
+    }
+
+    dest_name <- gsub(paste0(assay_name, "_"), "", graph_name)
+
+    if (dest_name == "nn") {
+      dest_name <- "connectivities"
+    }
+
+    obsp_mapping[[dest_name]] <- c("graphs", graph_name)
   }
 
   obsp_mapping

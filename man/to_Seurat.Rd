@@ -3,7 +3,7 @@
 \name{to_Seurat}
 \alias{to_Seurat}
 \alias{to_Seurat_guess_layers}
-\alias{to_Seurat_guess_embeddings}
+\alias{to_Seurat_guess_reductions}
 \alias{to_Seurat_guess_graphs}
 \alias{to_Seurat_guess_misc}
 \title{Convert a Seurat object to an AnnData object}
@@ -11,15 +11,15 @@
 to_Seurat(
   adata,
   assay_name = "RNA",
-  layer_mapping = to_Seurat_guess_layers(adata),
-  reduction_mapping = to_Seurat_guess_reductions(adata),
-  graph_mapping = to_Seurat_guess_graphs(adata),
-  misc_mapping = to_Seurat_guess_misc(adata)
+  layer_mapping = NULL,
+  reduction_mapping = NULL,
+  graph_mapping = NULL,
+  misc_mapping = NULL
 )
 
 to_Seurat_guess_layers(adata)
 
-to_Seurat_guess_embeddings(adata)
+to_Seurat_guess_reductions(adata)
 
 to_Seurat_guess_graphs(adata)
 
@@ -30,57 +30,91 @@ to_Seurat_guess_misc(adata)
 
 \item{assay_name}{Name of the assay to be created}
 
-\item{layer_mapping}{A named list mapping layer names to the names of the layers in the AnnData object. If the layer
-name is \code{NULL}, the \code{X} slot will be used. In the named list, at least 'counts' or 'data' must be present.}
+\item{layer_mapping}{A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
+details.}
 
-\item{reduction_mapping}{A named list mapping reduction names to the names of the reductions in the AnnData object.
-Each reduction must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the reduction names,
-'obsm' is the name of the reduction in \code{obsm}, and 'varm' is the name of the loadings in \code{varm}. If 'varm' is
-\code{NULL}, no loadings will be added.}
+\item{reduction_mapping}{A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
+named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for more details.}
 
-\item{graph_mapping}{A named list mapping graph names to the names of the graphs in the AnnData object.}
+\item{graph_mapping}{A named list to map AnnData graphs to Seurat graphs. Each item in the list must be a character
+vector of length 1. See section "Graph mapping" for more details.}
 
-\item{misc_mapping}{A named list mapping miscellaneous data to the names of the data in the AnnData object. Each item
-in the list must be a named list with one or two elements. The first element must be one of: 'X', 'layers', 'obs',
-'obsm', 'obsp', 'var', 'varm', 'varp', 'uns'. The second element is the name of the data in the corresponding
-slot. If the second element is not present, the data in the first element will be used.
-Example: \code{misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))} will copy the data in
-\code{adata$uns} to \code{seurat_obj@misc$uns} and the data in \code{adata$varp$neighbors} to \code{seurat_obj@misc$varp_neighbors}.}
-
-\item{obj}{An AnnData object}
+\item{misc_mapping}{A named list to map miscellaneous data to the names of the data in the Seurat object. See section
+"Miscellaneous mapping" for more details.}
+}
+\value{
+A Seurat object
 }
 \description{
-\code{to_Seurat()} converts an AnnData object to a Seurat object.
+\code{to_Seurat()} converts an AnnData object to a Seurat object. Only one assay can be converted at a time.
+Arguments are used to configure the conversion. If \code{NULL}, the functions \verb{to_Seurat_guess_*} will be used to guess
+the mapping.
 }
+\section{Layer mapping}{
+
+
+A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
+A value of \code{NULL} corresponds to the \code{X} slot.
+
+Example: \code{layer_mapping = list(counts = "counts", data = NULL, foo = "bar")}.
+
+If \code{NULL}, the function \link{to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
+\itemize{
+\item If \code{adata$X} is defined, we assume this the \code{counts}.
+\item Other layers are copied by name.
+}
+}
+
+\section{Reduction mapping}{
+
+
+A named list to map AnnData \code{obsm} and \code{varm} to Seurat reductions. Each item in the list must be a named list
+with keys \code{'key'}, \code{'obsm'}, and \code{'varm'}.
+Example: \code{reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
+
+If \code{NULL}, the function \link{to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
+\itemize{
+\item All obsm starting with \code{X_} are copied by name.
+}
+}
+
+\section{Graph mapping}{
+
+
+A named list mapping graph names to the names of the graphs in the AnnData object. Each item in the list must be a
+character vector of length 1.
+
+Example: \code{graph_mapping = list(nn = "connectivities")}.
+
+If \code{NULL}, the function \link{to_Seurat_guess_graphs} will be used to guess the graph mapping as follows:
+\itemize{
+\item An obsp named \code{connectivities} will be mapped to \code{nn}.
+\item Other graphs starting with \code{connectivities_} are stripped of the prefix and copied by name.
+}
+}
+
+\section{Miscellaneous mapping}{
+
+
+A named list mapping miscellaneous data to the names of the data in the AnnData object. Each item in the list must be
+a named list with one or two elements. The first element must be one of: 'X', 'layers', 'obs', 'obsm', 'obsp', 'var',
+'varm', 'varp', 'uns'. The second element is the name of the data in the corresponding slot. If the second element is
+not present, the data in the first element will be used.
+
+Example: \code{misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))}.
+
+If \code{NULL}, the function \link{to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
+\itemize{
+\item If \code{adata$obsp} is defined, this is mapped to a misc value named \code{obsp}.
+\item If \code{adata$uns} is defined, this is mapped to a misc value named \code{uns}.
+}
+}
+
 \section{Guessing layers}{
 
 \itemize{
 \item If \code{adata$X} is defined, we assume this the \code{data}.
 \item Other layers are copied by name.
-}
-}
-
-\section{Guessing embeddings}{
-
-\itemize{
-\item If \code{X_pca} is defined, we assume this is the PCA embedding.
-\item Other embeddings starting with \code{X_} are copied by name.
-}
-}
-
-\section{Guessing graphs}{
-
-\itemize{
-\item If \code{connectivities} is defined, we assume this is the nearest neighbor graph.
-\item Other graphs starting with \code{connectivities_} are copied by name.
-}
-}
-
-\section{Guessing miscellaneous data}{
-
-\itemize{
-\item If \code{adata$obsp} is defined, we assume this is the \code{obsp}.
-\item If \code{adata$uns} is defined, we assume this is the \code{uns}.
 }
 }
 
