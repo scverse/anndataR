@@ -772,11 +772,9 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
   if ("pca" %in% names(seurat_obj@reductions)) {
     # Check if the dimreduc was calculated by the selected assay
     reduction <- seurat_obj@reductions[["pca"]]
-    if (reduction@assay.used != assay_name) {
-      next
+    if (reduction@assay.used == assay_name) {
+      varm_mapping[["PCs"]] <- c("reductions", "pca")
     }
-
-    varm_mapping[["PCs"]] <- c("reductions", "pca")
   }
 
   varm_mapping
