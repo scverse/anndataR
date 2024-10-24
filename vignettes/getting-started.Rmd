@@ -1,13 +1,6 @@
 ---
 title: "Using anndataR to read and convert"
-shorttitle: "Using anndataR"
-author:
-  - name: Robrecht Cannoodt
-  - name: Luke Zappia
-  - name: Martin Morgan
-  - name: Louise Deconinck
-package: anndataR
-output: BiocStyle::html_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using anndataR to read and convert}
   %\VignetteEngine{knitr::rmarkdown}
