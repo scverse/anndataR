@@ -81,5 +81,4 @@ test_that("from_Seurat() works", {
 
   # trackstatus: class=AnnData, feature=test_set_varm, status=done
   expect_equal(ad$varm_keys(), "PCs")
-
 })
