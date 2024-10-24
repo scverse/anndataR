@@ -143,7 +143,7 @@ to_Seurat <- function(
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
-  if (!is.null(var)) {
+  if (!is.null(adata$var)) {
     obj@assays[[assay_name]] <- SeuratObject::AddMetaData(
       obj@assays[[assay_name]],
       metadata = adata$var
