@@ -26,7 +26,7 @@ to_Seurat_guess_graphs(adata)
 to_Seurat_guess_misc(adata)
 }
 \arguments{
-\item{adata}{The AnnData to be converted}
+\item{adata}{An AnnData object to be converted}
 
 \item{assay_name}{Name of the assay to be created}
 
@@ -107,14 +107,6 @@ If \code{NULL}, the function \link{to_Seurat_guess_misc} will be used to guess t
 \itemize{
 \item If \code{adata$obsp} is defined, this is mapped to a misc value named \code{obsp}.
 \item If \code{adata$uns} is defined, this is mapped to a misc value named \code{uns}.
-}
-}
-
-\section{Guessing layers}{
-
-\itemize{
-\item If \code{adata$X} is defined, we assume this the \code{data}.
-\item Other layers are copied by name.
 }
 }
 

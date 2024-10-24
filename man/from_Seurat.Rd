@@ -157,3 +157,16 @@ If \code{NULL}, the function \link{from_Seurat_guess_uns} will be used to guess 
 }
 }
 
+\examples{
+library(Seurat)
+
+counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
+obj <- CreateSeuratObject(counts = counts)
+obj <- NormalizeData(obj)
+obj <- FindVariableFeatures(obj)
+obj <- ScaleData(obj)
+obj <- RunPCA(obj, npcs = 10L)
+obj <- FindNeighbors(obj)
+obj <- RunUMAP(obj, dims = 1:10)
+from_Seurat(obj)
+}

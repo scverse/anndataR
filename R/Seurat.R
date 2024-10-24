@@ -328,12 +328,6 @@ to_Seurat <- function(
   do.call(SeuratObject::CreateDimReducObject, args)
 }
 
-#' @section Guessing layers:
-#' * If `adata$X` is defined, we assume this the `data`.
-#' * Other layers are copied by name.
-#'
-#' @param adata The AnnData to be converted
-#'
 #' @rdname to_Seurat
 #' @export
 to_Seurat_guess_layers <- function(adata) { # nolint
@@ -514,10 +508,23 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #' If `NULL`, the function [from_Seurat_guess_uns] will be used to guess the uns mapping as follows:
 #'
 #' * All Seurat miscellaneous data is copied to `uns` by name.
-#' 
+#'
 #' @return An AnnData object
 #'
 #' @export
+#'
+#' @examples
+#' library(Seurat)
+#'
+#' counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
+#' obj <- CreateSeuratObject(counts = counts)
+#' obj <- NormalizeData(obj)
+#' obj <- FindVariableFeatures(obj)
+#' obj <- ScaleData(obj)
+#' obj <- RunPCA(obj, npcs = 10L)
+#' obj <- FindNeighbors(obj)
+#' obj <- RunUMAP(obj, dims = 1:10)
+#' from_Seurat(obj)
 # nolint start: object_name_linter
 from_Seurat <- function(
     # nolint end: object_name_linter
@@ -741,7 +748,7 @@ from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
   for (reduction_name in names(seurat_obj@reductions)) {
 
     # Check if the dimreduc was calculated by the selected assay
-    reduction <- seurat_obj@reductions[[reduction]]
+    reduction <- seurat_obj@reductions[[reduction_name]]
     if (reduction@assay.used != assay_name) {
       next
     }
