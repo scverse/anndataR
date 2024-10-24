@@ -746,7 +746,6 @@ from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
   obsm_mapping <- list()
 
   for (reduction_name in names(seurat_obj@reductions)) {
-
     # Check if the dimreduc was calculated by the selected assay
     reduction <- seurat_obj@reductions[[reduction_name]]
     if (reduction@assay.used != assay_name) {
@@ -769,7 +768,6 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
   varm_mapping <- list()
 
   if ("pca" %in% names(seurat_obj@reductions)) {
-
     # Check if the dimreduc was calculated by the selected assay
     reduction <- seurat_obj@reductions[[reduction]]
     if (reduction@assay.used != assay_name) {
@@ -792,7 +790,6 @@ from_Seurat_guess_obsps <- function(seurat_obj, assay_name) { # nolint
   obsp_mapping <- list()
 
   for (graph_name in names(seurat_obj@graphs)) {
-
     graph <- seurat_obj@graphs[[graph_name]]
 
     if (graph@assay.used != assay_name) {
