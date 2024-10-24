@@ -560,7 +560,7 @@ from_Seurat <- function(
     varm_mapping <- from_Seurat_guess_varms(seurat_obj, assay_name)
   }
   if (is.null(obsp_mapping)) {
-    obsp_mapping <- from_Seurat_guess_obsps(seurat_obj)
+    obsp_mapping <- from_Seurat_guess_obsps(seurat_obj, assay_name)
   }
   if (is.null(varp_mapping)) {
     varp_mapping <- from_Seurat_guess_varps(seurat_obj)
@@ -771,7 +771,7 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
 
   if ("pca" %in% names(seurat_obj@reductions)) {
     # Check if the dimreduc was calculated by the selected assay
-    reduction <- seurat_obj@reductions[[reduction]]
+    reduction <- seurat_obj@reductions[["pca"]]
     if (reduction@assay.used != assay_name) {
       next
     }
