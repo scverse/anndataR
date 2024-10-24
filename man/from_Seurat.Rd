@@ -14,16 +14,16 @@ from_Seurat(
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
   assay_name = "RNA",
-  layer_mapping = from_Seurat_guess_layers(seurat_obj),
-  obsm_mapping = from_Seurat_guess_obsms(seurat_obj, assay_name),
-  varm_mapping = from_Seurat_guess_varms(seurat_obj, assay_name),
-  obsp_mapping = from_Seurat_guess_obsps(seurat_obj),
-  varp_mapping = from_Seurat_guess_varps(seurat_obj),
-  uns_mapping = from_Seurat_guess_uns(seurat_obj),
+  layer_mapping = NULL,
+  obsm_mapping = NULL,
+  varm_mapping = NULL,
+  obsp_mapping = NULL,
+  varp_mapping = NULL,
+  uns_mapping = NULL,
   ...
 )
 
-from_Seurat_guess_layers(seurat_assay)
+from_Seurat_guess_layers(seurat_obj, assay_name)
 
 from_Seurat_guess_obsms(seurat_obj, assay_name)
 
@@ -36,88 +36,124 @@ from_Seurat_guess_varps(seurat_obj)
 from_Seurat_guess_uns(seurat_obj)
 }
 \arguments{
-\item{seurat_obj}{The Seurat object to be converted}
+\item{seurat_obj}{A Seurat object to be converted.}
 
 \item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
 
-\item{assay_name}{The name of the assay to be converted}
+\item{assay_name}{The name of the assay to be converted.}
 
-\item{layer_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. If the layer
-name is \code{"$X"}, the \code{X} slot will be used. In the named list, at least 'counts' or 'data' must be present.}
+\item{layer_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. Each item in
+the list must be a character vector of length 1. See section "Layer mapping" for more details.}
 
 \item{obsm_mapping}{A named list mapping reduction names to the names of the reductions in the Seurat object.
-Each reduction must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the reduction names,
-'obsm' is the name of the reduction in \code{obsm}, and 'varm' is the name of the loadings in \code{varm}. If 'varm' is
-\code{NULL}, no loadings will be added.}
+Each item in the list must be a named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for
+more details.}
 
-\item{varm_mapping}{A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.}
+\item{varm_mapping}{A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
+Each item in the list must be a character vector of length 1. See section "Varm mapping" for more details.}
 
-\item{obsp_mapping}{A named list mapping graph names to the names of the graphs in the Seurat object.}
+\item{obsp_mapping}{A named list mapping graph names to the names of the graphs in the Seurat object.
+Each item in the list must be a character vector of length 1. See section "Obsp mapping" for more details.}
 
-\item{varp_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object. Each item
-in the list must be a named list with one or two elements. The first element must be one of: 'graphs', 'misc'.
-The second element is the name of the data in the corresponding slot. If the second element is not present, the data
-in the first element will be used.}
+\item{varp_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object.
+Each item in the list must be a named list with one or two elements. See section "Varp mapping" for more details.}
 
-\item{uns_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object. Each item
-in the list must be a named list with one or two elements. The first element must be one of: 'misc'.
-The second element is the name of the data in the corresponding slot. If the second element is not present, the data
-in the first element will be used.}
+\item{uns_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object.
+Each item in the list must be a named list with one or two elements. See section "Uns mapping" for more details.}
 
 \item{...}{Additional arguments passed to the generator function.}
-
-\item{seurat_assay}{The Seurat Assay to be converted}
-
-\item{assay}{Name of the assay to be converted.}
+}
+\value{
+An AnnData object
 }
 \description{
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
-Only one assay can be converted at a time.
+Only one assay can be converted at a time. Arguments are used to configure the conversion.
+If \code{NULL}, the functions \verb{from_Seurat_guess_*} will be used to guess the mapping.
 }
 \details{
 For more information on the functionality of an AnnData object, see \link{anndataR-package}.
 }
-\section{Guessing layers}{
+\section{Layer mapping}{
 
+
+A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
+The \verb{$X} key maps to the \code{X} slot.
+
+Example: \code{layer_mapping = list(counts = "counts", "$X" = "data", foo = "bar")}.
+
+If \code{NULL}, the function \link{from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
-\item The names of the Seurat Assay's layers are copied by name.
+\item All Seurat layers are copied by name.
 }
 }
 
-\section{Guessing obsms}{
+\section{Obsm mapping}{
 
+
+A named list to map Seurat reductions to AnnData \code{obsm}. Each item in the list must be a named list with keys 'key',
+'obsm', and 'varm'.
+
+Example: \code{obsm_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
+
+If \code{NULL}, the function \link{from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
 \itemize{
-\item The names of the Seurat object's reductions are copied by name.
+\item All Seurat reductions are prefixed with \code{X_} and copied to AnnData \code{obsm}.
 }
 }
 
-\section{Guessing varms}{
+\section{Varm mapping}{
 
+
+A named list to map Seurat PCA loadings to AnnData \code{varm}.
+
+Example: \code{varm_mapping = list(pca = "PCs")}.
+
+If \code{NULL}, the function \link{from_Seurat_guess_varms} will be used to guess the varm mapping as follows:
 \itemize{
-\item The names of the Seurat object's PCA loadings are copied by name.
+\item The name of the PCA loadings is copied by name.
 }
 }
 
-\section{Guessing obsps}{
+\section{Obsp mapping}{
 
+
+A named list to map Seurat graphs to AnnData \code{obsp}.
+
+Example: \code{obsp_mapping = list(nn = "connectivities")}.
+
+If \code{NULL}, the function \link{from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
 \itemize{
-\item The names of the Seurat object's graphs are copied by name.
+\item All Seurat graphs are copied to \code{obsp} by name.
 }
 }
 
-\section{Guessing varps}{
+\section{Varp mapping}{
 
+
+A named list to map Seurat miscellaneous data to AnnData \code{varp}. Each item in the list must be a character
+vector of length 3 or less. The first element must be \code{"misc"}. The second element is the name of the data in the
+corresponding slot. The third element is used to subset the data even further.
+
+Example: \code{varp_mapping = list(foo = c("misc", "foo"))}.
+
+If \code{NULL}, the function \link{from_Seurat_guess_varps} will be used to guess the varp mapping as follows:
 \itemize{
-\item The names of the Seurat object's miscellaneous data are copied by name.
+\item No data is mapped to \code{varp}.
 }
 }
 
-\section{Guessing uns}{
+\section{Uns mapping}{
 
+
+A named list to map Seurat miscellaneous data to AnnData \code{uns}. Each item in the list must be a character of
+length 2. The first element must be \code{"misc"}. The second element is the name of the data in the corresponding slot.
+
+Example: \code{uns_mapping = list(foo = c("misc", "foo"))}.
+
+If \code{NULL}, the function \link{from_Seurat_guess_uns} will be used to guess the uns mapping as follows:
 \itemize{
-\item The names of elements in the misc's "uns" slot are copied by name.
-\item Other items in the misc slot are copied by name, unless their name is
-one of 'obsm', 'obsp', 'varm', 'varp', or 'uns'.
+\item All Seurat miscellaneous data is copied to \code{uns} by name.
 }
 }
 

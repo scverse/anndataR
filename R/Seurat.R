@@ -403,7 +403,7 @@ to_Seurat_guess_graphs <- function(adata) { # nolint
 
 #' @rdname to_Seurat
 #' @export
-to_Seurat_guess_misc <- function(adata) {
+to_Seurat_guess_misc <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
   }
@@ -427,30 +427,95 @@ to_Seurat_guess_misc <- function(adata) {
 #' Convert a Seurat object to an AnnData object
 #'
 #' `from_Seurat()` converts a Seurat object to an AnnData object.
-#' Only one assay can be converted at a time.
+#' Only one assay can be converted at a time. Arguments are used to configure the conversion.
+#' If `NULL`, the functions `from_Seurat_guess_*` will be used to guess the mapping.
 #'
 #' For more information on the functionality of an AnnData object, see [anndataR-package].
 #'
-#' @param seurat_obj An object inheriting from Seurat.
+#' @param seurat_obj A Seurat object to be converted.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
-#' @param assay Name of the assay to be converted.
-#' @param layer_mapping A named list mapping layer names to the names of the layers in the Seurat object. If the layer
-#'  name is `"$X"`, the `X` slot will be used. In the named list, at least 'counts' or 'data' must be present.
+#' @param assay_name The name of the assay to be converted.
+#' @param layer_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in
+#' the list must be a character vector of length 1. See section "Layer mapping" for more details.
 #' @param obsm_mapping A named list mapping reduction names to the names of the reductions in the Seurat object.
-#' Each reduction must be a list with keys 'key', 'obsm', and 'varm'. The 'key' is the prefix of the reduction names,
-#' 'obsm' is the name of the reduction in `obsm`, and 'varm' is the name of the loadings in `varm`. If 'varm' is
-#' `NULL`, no loadings will be added.
+#' Each item in the list must be a named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for
+#' more details.
 #' @param varm_mapping A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
+#' Each item in the list must be a character vector of length 1. See section "Varm mapping" for more details.
 #' @param obsp_mapping A named list mapping graph names to the names of the graphs in the Seurat object.
-#' @param varp_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object. Each item
-#' in the list must be a named list with one or two elements. The first element must be one of: 'graphs', 'misc'.
-#' The second element is the name of the data in the corresponding slot. If the second element is not present, the data
-#' in the first element will be used.
-#' @param uns_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object. Each item
-#' in the list must be a named list with one or two elements. The first element must be one of: 'misc'.
-#' The second element is the name of the data in the corresponding slot. If the second element is not present, the data
-#' in the first element will be used.
+#' Each item in the list must be a character vector of length 1. See section "Obsp mapping" for more details.
+#' @param varp_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object.
+#' Each item in the list must be a named list with one or two elements. See section "Varp mapping" for more details.
+#' @param uns_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object.
+#' Each item in the list must be a named list with one or two elements. See section "Uns mapping" for more details.
 #' @param ... Additional arguments passed to the generator function.
+#'
+#' @section Layer mapping:
+#'
+#' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
+#' The `$X` key maps to the `X` slot.
+#'
+#' Example: `layer_mapping = list(counts = "counts", "$X" = "data", foo = "bar")`.
+#'
+#' If `NULL`, the function [from_Seurat_guess_layers] will be used to guess the layer mapping as follows:
+#'
+#' * All Seurat layers are copied by name.
+#'
+#' @section Obsm mapping:
+#'
+#' A named list to map Seurat reductions to AnnData `obsm`. Each item in the list must be a named list with keys 'key',
+#' 'obsm', and 'varm'.
+#'
+#' Example: `obsm_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
+#'
+#' If `NULL`, the function [from_Seurat_guess_obsms] will be used to guess the obsm mapping as follows:
+#'
+#' * All Seurat reductions are prefixed with `X_` and copied to AnnData `obsm`.
+#'
+#' @section Varm mapping:
+#'
+#' A named list to map Seurat PCA loadings to AnnData `varm`.
+#'
+#' Example: `varm_mapping = list(pca = "PCs")`.
+#'
+#' If `NULL`, the function [from_Seurat_guess_varms] will be used to guess the varm mapping as follows:
+#'
+#' * The name of the PCA loadings is copied by name.
+#'
+#' @section Obsp mapping:
+#'
+#' A named list to map Seurat graphs to AnnData `obsp`.
+#'
+#' Example: `obsp_mapping = list(nn = "connectivities")`.
+#'
+#' If `NULL`, the function [from_Seurat_guess_obsps] will be used to guess the obsp mapping as follows:
+#'
+#' * All Seurat graphs are copied to `obsp` by name.
+#'
+#' @section Varp mapping:
+#'
+#' A named list to map Seurat miscellaneous data to AnnData `varp`. Each item in the list must be a character
+#' vector of length 3 or less. The first element must be `"misc"`. The second element is the name of the data in the
+#' corresponding slot. The third element is used to subset the data even further.
+#'
+#' Example: `varp_mapping = list(foo = c("misc", "foo"))`.
+#'
+#' If `NULL`, the function [from_Seurat_guess_varps] will be used to guess the varp mapping as follows:
+#'
+#' * No data is mapped to `varp`.
+#'
+#' @section Uns mapping:
+#'
+#' A named list to map Seurat miscellaneous data to AnnData `uns`. Each item in the list must be a character of
+#' length 2. The first element must be `"misc"`. The second element is the name of the data in the corresponding slot.
+#'
+#' Example: `uns_mapping = list(foo = c("misc", "foo"))`.
+#'
+#' If `NULL`, the function [from_Seurat_guess_uns] will be used to guess the uns mapping as follows:
+#'
+#' * All Seurat miscellaneous data is copied to `uns` by name.
+#' 
+#' @return An AnnData object
 #'
 #' @export
 # nolint start: object_name_linter
@@ -459,12 +524,12 @@ from_Seurat <- function(
     seurat_obj,
     output_class = c("InMemoryAnnData", "HDF5AnnData"),
     assay_name = "RNA",
-    layer_mapping = from_Seurat_guess_layers(seurat_obj),
-    obsm_mapping = from_Seurat_guess_obsms(seurat_obj, assay_name),
-    varm_mapping = from_Seurat_guess_varms(seurat_obj, assay_name),
-    obsp_mapping = from_Seurat_guess_obsps(seurat_obj),
-    varp_mapping = from_Seurat_guess_varps(seurat_obj),
-    uns_mapping = from_Seurat_guess_uns(seurat_obj),
+    layer_mapping = NULL,
+    obsm_mapping = NULL,
+    varm_mapping = NULL,
+    obsp_mapping = NULL,
+    varp_mapping = NULL,
+    uns_mapping = NULL,
     ...) {
   output_class <- match.arg(output_class)
 
@@ -474,6 +539,25 @@ from_Seurat <- function(
 
   if (is.null(seurat_assay) || !inherits(seurat_assay, "Assay5")) {
     stop(paste0("Assay '", assay_name, "' is not a valid Seurat v5 assay"))
+  }
+
+  if (is.null(layer_mapping)) {
+    layer_mapping <- from_Seurat_guess_layers(seurat_obj, assay_name)
+  }
+  if (is.null(obsm_mapping)) {
+    obsm_mapping <- from_Seurat_guess_obsms(seurat_obj, assay_name)
+  }
+  if (is.null(varm_mapping)) {
+    varm_mapping <- from_Seurat_guess_varms(seurat_obj, assay_name)
+  }
+  if (is.null(obsp_mapping)) {
+    obsp_mapping <- from_Seurat_guess_obsps(seurat_obj)
+  }
+  if (is.null(varp_mapping)) {
+    varp_mapping <- from_Seurat_guess_varps(seurat_obj)
+  }
+  if (is.null(uns_mapping)) {
+    uns_mapping <- from_Seurat_guess_uns(seurat_obj)
   }
 
   # fetch obs
@@ -623,15 +707,15 @@ from_Seurat <- function(
   return(adata)
 }
 
-#' @section Guessing layers:
-#'
-#' * The names of the Seurat Assay's layers are copied by name.
-#'
-#' @param seurat_assay The Seurat Assay to be converted
-#'
 #' @rdname from_Seurat
 #' @export
-from_Seurat_guess_layers <- function(seurat_assay) { # nolint
+from_Seurat_guess_layers <- function(seurat_obj, assay_name) { # nolint
+  if (!inherits(seurat_obj, "Seurat")) {
+    stop("The provided object must be a Seurat object")
+  }
+
+  seurat_assay <- seurat_obj@assays[[assay_name]]
+
   if (!inherits(seurat_assay, "Assay5")) {
     stop("The provided object must be a Seurat v5 assay")
   }
@@ -645,13 +729,6 @@ from_Seurat_guess_layers <- function(seurat_assay) { # nolint
   layers_mapping
 }
 
-#' @section Guessing obsms:
-#'
-#' * The names of the Seurat object's reductions are copied by name.
-#'
-#' @param seurat_obj The Seurat object to be converted
-#' @param assay_name The name of the assay to be converted
-#'
 #' @rdname from_Seurat
 #' @export
 from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
@@ -675,13 +752,6 @@ from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
   obsm_mapping
 }
 
-#' @section Guessing varms:
-#'
-#' * The names of the Seurat object's PCA loadings are copied by name.
-#'
-#' @param seurat_obj The Seurat object to be converted
-#' @param assay_name The name of the assay to be converted
-#'
 #' @rdname from_Seurat
 #' @export
 from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
@@ -705,13 +775,6 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
   varm_mapping
 }
 
-#' @section Guessing obsps:
-#'
-#' * The names of the Seurat object's graphs are copied by name.
-#'
-#' @param seurat_obj The Seurat object to be converted
-#' @param assay_name The name of the assay to be converted
-#'
 #' @rdname from_Seurat
 #' @export
 from_Seurat_guess_obsps <- function(seurat_obj, assay_name) { # nolint
@@ -741,12 +804,6 @@ from_Seurat_guess_obsps <- function(seurat_obj, assay_name) { # nolint
   obsp_mapping
 }
 
-#' @section Guessing varps:
-#'
-#' * The names of the Seurat object's miscellaneous data are copied by name.
-#'
-#' @param seurat_obj The Seurat object to be converted
-#'
 #' @rdname from_Seurat
 #' @export
 from_Seurat_guess_varps <- function(seurat_obj) { # nolint
@@ -754,25 +811,9 @@ from_Seurat_guess_varps <- function(seurat_obj) { # nolint
     stop("The provided object must be a Seurat object")
   }
 
-  varp_mapping <- list()
-
-  if ("varp" %in% names(seurat_obj@misc)) {
-    for (varp_name in names(seurat_obj@misc$varp)) {
-      varp_mapping[[varp_name]] <- c("misc", "varp", varp_name)
-    }
-  }
-
-  varp_mapping
+  list()
 }
 
-#' @section Guessing uns:
-#'
-#' * The names of elements in the misc's "uns" slot are copied by name.
-#' * Other items in the misc slot are copied by name, unless their name is
-#'   one of 'obsm', 'obsp', 'varm', 'varp', or 'uns'.
-#'
-#' @param seurat_obj The Seurat object to be converted
-#'
 #' @rdname from_Seurat
 #' @export
 from_Seurat_guess_uns <- function(seurat_obj) { # nolint
@@ -782,16 +823,7 @@ from_Seurat_guess_uns <- function(seurat_obj) { # nolint
 
   uns_mapping <- list()
 
-  if (!is.null(seurat_obj@misc$uns)) {
-    for (uns_name in names(seurat_obj@misc$uns)) {
-      uns_mapping[[uns_name]] <- c("misc", "uns", uns_name)
-    }
-  }
-
   for (uns_name in names(seurat_obj@misc)) {
-    if (uns_name %in% c("obsm", "obsp", "varm", "varp", "uns")) {
-      next
-    }
     uns_mapping[[uns_name]] <- c("misc", uns_name)
   }
 
