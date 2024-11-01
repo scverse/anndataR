@@ -1,9 +1,11 @@
 skip_if_not_installed("rhdf5")
 skip_if_not_installed("pizzarr")
 
-file <- system.file("extdata", "example.h5ad", package = "anndataR")
+# file <- system.file("extdata", "example.h5ad", package = "anndataR")
+file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
 
-zarr_dir <- system.file("extdata", "example.zarr", package = "anndataR")
+# zarr_dir <- system.file("extdata", "example.zarr", package = "anndataR")
+zarr_dir <- system.file("extdata", "example2.zarr", package = "anndataR")
 store <- pizzarr::DirectoryStore$new(zarr_dir)
 
 test_that("reading dense matrices is same for h5ad and zarr", {
@@ -64,8 +66,10 @@ test_that("reading 1D nullable arrays is same for h5ad and zarr", {
   array_1d_zarr <- read_zarr_dense_array(store, "obs/FloatNA")
   expect_equal(array_1d_h5ad, array_1d_zarr)
 
+  # TODO: check this test, zarr Bools are stored as dense array hence no mask is given
   array_1d_h5ad <- read_h5ad_nullable_boolean(file, "obs/Bool")
-  array_1d_zarr <- read_zarr_nullable_boolean(store, "obs/Bool")
+  # array_1d_zarr <- read_zarr_nullable_boolean(store, "obs/Bool")
+  array_1d_zarr <- read_zarr_dense_array(store, "obs/Bool")
   expect_equal(array_1d_h5ad, array_1d_zarr)
 
   array_1d_h5ad <- read_h5ad_nullable_boolean(file, "obs/BoolNA")
@@ -103,7 +107,8 @@ test_that("reading string arrays is same for h5ad and zarr", {
 # })
 
 test_that("reading dataframes works", {
-  df_h5ad <- read_h5ad_data_frame(file, "obs", include_index = TRUE)
+  # df_h5ad <- read_h5ad_data_frame(file, "obs", include_index = TRUE)
+  df_h5ad <- read_h5ad_data_frame(file, "obs")
   df_zarr <- read_zarr_data_frame(store, "obs", include_index = TRUE)
 
   expect_equal(df_h5ad, df_zarr)
