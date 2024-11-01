@@ -121,7 +121,7 @@ to_Seurat <- function(obj) { # nolint
 from_Seurat <- function(
     # nolint end: object_name_linter
     seurat_obj,
-    output_class = c("InMemoryAnnData", "HDF5AnnData"),
+    output_class = c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData"),
     assay = NULL,
     X = "counts",
     ...) {

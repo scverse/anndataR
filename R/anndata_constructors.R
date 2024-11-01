@@ -4,7 +4,8 @@
 anndata_constructors <- function() {
   list(
     "HDF5AnnData" = HDF5AnnData,
-    "InMemoryAnnData" = InMemoryAnnData
+    "InMemoryAnnData" = InMemoryAnnData,
+    "ZarrAnnData" = ZarrAnnData
   )
 }
 
@@ -14,7 +15,7 @@ anndata_constructors <- function() {
 #' or `"InMemoryAnnData"`.
 #'
 #' @noRd
-get_anndata_constructor <- function(class = c("HDF5AnnData", "InMemoryAnnData")) {
+get_anndata_constructor <- function(class = c("HDF5AnnData", "ZarrAnnData", "InMemoryAnnData")) {
   # TODO: also support directly passing the correct class?
   class <- match.arg(class)
   anndata_constructors()[[class]]

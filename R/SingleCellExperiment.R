@@ -117,7 +117,7 @@ to_SingleCellExperiment <- function(object) { # nolint
 from_SingleCellExperiment <- function(
     # nolint end: object_name_linter
     sce,
-    output_class = c("InMemory", "HDF5AnnData"),
+    output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData"),
     ...) {
   stopifnot(
     inherits(sce, "SingleCellExperiment")

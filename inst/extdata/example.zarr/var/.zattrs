@@ -1,0 +1,18 @@
+{
+    "_index": "_index",
+    "column-order": [
+        "String",
+        "n_cells_by_counts",
+        "mean_counts",
+        "log1p_mean_counts",
+        "pct_dropout_by_counts",
+        "total_counts",
+        "log1p_total_counts",
+        "highly_variable",
+        "means",
+        "dispersions",
+        "dispersions_norm"
+    ],
+    "encoding-type": "dataframe",
+    "encoding-version": "0.2.0"
+}
