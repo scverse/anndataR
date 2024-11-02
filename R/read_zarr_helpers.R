@@ -389,9 +389,8 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
   groupname <- paste0("/", name)
 
-  store <- pizzarr::zarr_open(store)
-  # columns <- store$listdir(name)
-  columns <- store$get_store()$listdir(name)
+  g <- pizzarr::zarr_open(store)
+  columns <- g$get_store()$listdir(name)
 
   read_zarr_collection(store, name, columns)
 }
@@ -414,7 +413,7 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
 #' @return a data.frame
 #'
 #' @noRd
-read_zarr_data_frame <- function(store, name, include_index = FALSE,
+read_zarr_data_frame <- function(store, name, include_index = TRUE,
                                  version = "0.2.0") {
   version <- match.arg(version)
 
@@ -435,16 +434,12 @@ read_zarr_data_frame <- function(store, name, include_index = FALSE,
 
   if (isTRUE(include_index)) {
     index <- read_zarr_data_frame_index(store, name)
-    # df <- cbind(index, df)
 
     # The default index name is not allowed as a column name so adjust it
     if (index_name == "_index") {
       rownames(df) <- index
-      # index_name <- ".index"
-      # colnames(df)[1] <- index_name
     }
 
-    attr(df, "_index") <- index_name # nolint
   }
 
   df

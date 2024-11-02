@@ -193,9 +193,7 @@ test_that("writing gzip compressed files works for Zarr", {
   adata <- AnnData(
     X = non_random_X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   store_none <- pizzarr::MemoryStore$new()
@@ -215,9 +213,7 @@ test_that("writing lzf compressed files works for Zarr", {
   adata <- AnnData(
     X = non_random_X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
 
   store_none <- pizzarr::MemoryStore$new()

@@ -237,7 +237,8 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
 
   object_codec <- pizzarr::VLenUtf8Codec$new()
   data <- array(data = value, dim = dims)
-  a <- pizzarr::zarr_create_array(data, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = dims)
+  # TODO: existing _index does not allow overwriting, so shall we keep overwrite=TRUE here ?
+  a <- pizzarr::zarr_create_array(data, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = dims, overwrite = TRUE)
 
   write_zarr_encoding(store, name, "string-array", version)
 }
@@ -278,7 +279,8 @@ write_zarr_categorical <- function(value, store, name, compression, version = "0
 write_zarr_string_scalar <- function(value, store, name, compression, version = "0.2.0") {
   # Write scalar
   object_codec = pizzarr::VLenUtf8Codec$new()
-  a <- pizzarr::zarr_create_array(value, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = list())
+  value <- array(data = value, dim = 1)
+  a <- pizzarr::zarr_create_array(value, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = 1)
 
   # Write attributes
   write_zarr_encoding(store, name, "string", version)
@@ -469,7 +471,7 @@ write_empty_zarr <- function(store, obs, var, compression, version = "0.1.0") {
 #'
 #' @return Whether the `path` exists in `file`
 zarr_path_exists <- function(store, target_path) {
-  store <- pizzarr::zarr_open(store, path = target_path)
+  store <- pizzarr::zarr_open(store, path = "")
   result <- tryCatch({
     store$get_item(target_path)
     return(TRUE)

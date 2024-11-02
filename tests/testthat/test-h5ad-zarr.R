@@ -4,8 +4,7 @@ skip_if_not_installed("pizzarr")
 # file <- system.file("extdata", "example.h5ad", package = "anndataR")
 file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
 
-# zarr_dir <- system.file("extdata", "example.zarr", package = "anndataR")
-zarr_dir <- system.file("extdata", "example2.zarr", package = "anndataR")
+zarr_dir <- system.file("extdata", "example.zarr", package = "anndataR")
 store <- pizzarr::DirectoryStore$new(zarr_dir)
 
 test_that("reading dense matrices is same for h5ad and zarr", {
@@ -119,9 +118,9 @@ test_that("reading H5AD as SingleCellExperiment is same for h5ad and zarr", {
 
   sce_h5ad <- read_h5ad(file, to = "SingleCellExperiment")
   # h5ad reads this column as characters like 'TRUE', 'FALSE', while zarr reads as logical
-  sce_h5ad@rowRanges@elementMetadata@listData$highly_variable <- as.logical(
-    sce_h5ad@rowRanges@elementMetadata@listData$highly_variable
-  )
+  # sce_h5ad@rowRanges@elementMetadata@listData$highly_variable <- as.logical(
+  #   sce_h5ad@rowRanges@elementMetadata@listData$highly_variable
+  # )
   sce_zarr <- read_zarr(store, to = "SingleCellExperiment")
 
   expect_equal(sce_h5ad, sce_zarr)

@@ -126,7 +126,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_zarr_element(private$zarr_store, "/obs", include_index = FALSE)
+        # TODO: shall we keep include_index = TRUE, or get rid of the argument ?
+        read_zarr_element(private$zarr_store, "/obs", include_index = TRUE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
@@ -134,8 +135,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           value,
           private$zarr_store,
           "/obs",
-          private$.compression,
-          index = self$obs_names
+          private$.compression
         )
       }
     },
@@ -143,34 +143,20 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_zarr_element(private$zarr_store, "/var", include_index = FALSE)
+        # TODO: shall we keep include_index = TRUE, or get rid of the argument ?
+        read_zarr_element(private$zarr_store, "/var", include_index = TRUE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
         write_zarr_element(
           value,
           private$zarr_store,
-          "/var",
-          index = self$var_names
+          "/var"
         )
       }
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
-      # if (missing(value)) {
-      #   # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-      #   # obs names are cached to avoid reading all of obs whenever they are
-      #   # accessed
-      #   if (is.null(private$.obs_names)) {
-      #     private$.obs_names <- read_zarr_data_frame_index(private$zarr_store, "obs")
-      #   }
-      #   private$.obs_names
-      # } else {
-      #   # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
-      #   value <- private$.validate_obsvar_names(value, "obs")
-      #   write_zarr_data_frame_index(value, private$zarr_store, "obs", private$.compression, "_index")
-      #   private$.obs_names <- value
-      # }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
         rownames(self$obs)
@@ -181,21 +167,6 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     },
     #' @field var_names Names of variables
     var_names = function(value) {
-      # TODO: directly write to and read from /var/_index
-      # if (missing(value)) {
-      #   # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-      #   # var names are cached to avoid reading all of var whenever they are
-      #   # accessed
-      #   if (is.null(private$.var_names)) {
-      #     private$.var_names <- read_zarr_data_frame_index(private$zarr_store, "var")
-      #   }
-      #   private$.var_names
-      # } else {
-      #   # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
-      #   value <- private$.validate_obsvar_names(value, "var")
-      #   write_zarr_data_frame_index(value, private$zarr_store, "var", private$.compression, "_index")
-      #   private$.var_names <- value
-      # }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
         rownames(self$var)
@@ -292,7 +263,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       private$.compression <- compression
 
       # if(length(root$get_attrs()$to_list()) == 0) {
-      if (is.character(store) && !dir.exists(store)) {
+      if ((is.character(store) && !dir.exists(store)) || inherits(store, "MemoryStore")) {
         # Check obs_names and var_names have been provided
         # if (is.null(obs_names)) {
         #   stop("When creating a new .h5ad file, `obs_names` must be defined.")
