@@ -1,10 +1,10 @@
-#' Write H5AD element
+#' Write Zarr element
 #'
-#' Write an element to an H5AD file
+#' Write an element to a Zarr store
 #'
 #' @param value The value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' #' @param stop_on_error Whether to stop on error or generate a warning instead
@@ -58,7 +58,7 @@ write_zarr_element <- function(value, store, name, compression = c("none", "gzip
         write_zarr_dense_array
       }
     } else { # Fail if unknown
-      stop("Writing '", class(value), "' objects to H5AD files is not supported")
+      stop("Writing '", class(value), "' objects to Zarr stores is not supported")
     }
 
 
@@ -81,14 +81,14 @@ write_zarr_element <- function(value, store, name, compression = c("none", "gzip
   )
 }
 
-#' Write H5AD encoding
+#' Write Zarr encoding
 #'
-#' Write H5AD encoding attributes to an element in an H5AD file
+#' Write Zarr encoding attributes to an element in a Zarr store
 #'
 #' @noRd
 #'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
 write_zarr_encoding <- function(store, name, encoding, version) {
@@ -99,13 +99,13 @@ write_zarr_encoding <- function(store, name, encoding, version) {
   attrs$set_item("encoding-version", version)
 }
 
-#' Write H5AD dense array
+#' Write Zarr dense array
 #'
-#' Write a dense array to an H5AD file
+#' Write a dense array to a Zarr store
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -120,15 +120,15 @@ write_zarr_dense_array <- function(value, store, name, compression, version = "0
   write_zarr_encoding(store, name, "array", version)
 }
 
-#' Write H5AD sparse array
+#' Write Zarr sparse array
 #'
-#' Write a sparse array to an H5AD file
+#' Write a sparse array to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -165,15 +165,15 @@ write_zarr_sparse_array <- function(value, store, name, compression, version = "
   g$get_attrs()$set_item("shape", dim(value))
 }
 
-#' Write H5AD nullable boolean
+#' Write Zarr nullable boolean
 #'
-#' Write a nullable boolean to an H5AD file
+#' Write a nullable boolean to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -190,15 +190,15 @@ write_zarr_nullable_boolean <- function(value, store, name, compression, version
   write_zarr_encoding(store, name, "nullable-boolean", version)
 }
 
-#' Write H5AD nullable integer
+#' Write Zarr nullable integer
 #'
-#' Write a nullable integer to an H5AD file
+#' Write a nullable integer to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -215,15 +215,15 @@ write_zarr_nullable_integer <- function(value, store, name, compression, version
   write_zarr_encoding(store, name, "nullable-integer", version)
 }
 
-#' Write H5AD string array
+#' Write Zarr string array
 #'
-#' Write a string array to an H5AD file
+#' Write a string array to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -243,15 +243,15 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
   write_zarr_encoding(store, name, "string-array", version)
 }
 
-#' Write H5AD categorical
+#' Write Zarr categorical
 #'
-#' Write a categorical to an H5AD file
+#' Write a categorical to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -264,15 +264,15 @@ write_zarr_categorical <- function(value, store, name, compression, version = "0
   write_zarr_encoding(store, name, "categorical", version)
 }
 
-#' Write H5AD string scalar
+#' Write Zarr string scalar
 #'
-#' Write a string scalar to an H5AD file
+#' Write a string scalar to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -286,15 +286,15 @@ write_zarr_string_scalar <- function(value, store, name, compression, version = 
   write_zarr_encoding(store, name, "string", version)
 }
 
-#' Write H5AD numeric scalar
+#' Write Zarr numeric scalar
 #'
-#' Write a numeric scalar to an H5AD file
+#' Write a numeric scalar to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -306,15 +306,15 @@ write_zarr_numeric_scalar <- function(value, store, name, compression, version =
   write_zarr_encoding(store, name, "numeric-scalar", version)
 }
 
-#' Write H5AD mapping
+#' Write Zarr mapping
 #'
-#' Write a mapping to an H5AD file
+#' Write a mapping to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
@@ -329,15 +329,15 @@ write_zarr_mapping <- function(value, store, name, compression, version = "0.1.0
   write_zarr_encoding(store, name, "dict", version)
 }
 
-#' Write H5AD data frame
+#' Write Zarr data frame
 #'
-#' Write a data frame to an H5AD file
+#' Write a data frame to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param index The index to write. Can either be a vector of length equal to
@@ -386,16 +386,16 @@ write_zarr_data_frame <- function(value, store, name, compression, index = NULL,
   g$get_attrs()$set_item("column-order", col_order)
 }
 
-#' Write H5AD data frame index
+#' Write Zarr data frame index
 #'
-#' Write an for a data frame to an H5AD file
+#' Write an for a data frame to a Zarr store
 #'
 #' @noRd
 #'
 #' @param value Value to write. Must be a vector to the same length as the data
 #' frame.
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file containing the data
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store containing the data
 #' frame
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
@@ -419,18 +419,18 @@ write_zarr_data_frame_index <- function(value, store, name, compression, index_n
   g$get_attrs()$set_item("_index", index_name)
 }
 
-#' Write empty H5AD
+#' Write empty Zarr
 #'
-#' Write a new empty H5AD file
+#' Write a new empty Zarr store
 #'
 #' @noRd
 #'
-#' @param file Path to the Zarr store to write
+#' @param store Path to the Zarr store to write
 #' @param obs Data frame with observations
 #' @param var Data frame with variables
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version The H5AD version to write
+#' @param version The anndata on-disk format version to write
 write_empty_zarr <- function(store, obs, var, compression, version = "0.1.0", overwrite = FALSE) {
   pizzarr::zarr_open_group(store, path = "/")
   write_zarr_encoding(store, "/", "anndata", "0.1.0")
@@ -459,16 +459,16 @@ write_empty_zarr <- function(store, obs, var, compression, version = "0.1.0", ov
   write_zarr_encoding(store, "/varp", "dict", "0.1.0")
 }
 
-#' HDF5 path exists
+#' Zarr path exists
 #'
-#' Check that a path in HDF5 exists
+#' Check that a path in Zarr exists
 #'
 #' @noRd
 #'
 #' @param store Path to a Zarr store
-#' @param target_path The path within the file to test for
+#' @param target_path The path within the store to test for
 #'
-#' @return Whether the `path` exists in `file`
+#' @return Whether the `target_path` exists in `store`
 zarr_path_exists <- function(store, target_path) {
   store <- pizzarr::zarr_open(store, path = "")
   result <- tryCatch({
@@ -489,14 +489,14 @@ zarr_path_exists <- function(store, target_path) {
   return(result)
 }
 
-#' HDF5 write compressed
+#' Zarr write compressed
 #'
-#' Write HDF5 dataset with chosen compression (can be none)
+#' Write Zarr dataset with chosen compression (can be none)
 #'
 #' @noRd
 #'
-#' @param file Path to a HDF5 file
-#' @param name Name of the element within the H5AD file containing the data
+#' @param store Path to a Zarr store
+#' @param name Name of the element within the Zarr store containing the data
 #' frame
 #' @param value Value to write. Must be a vector to the same length as the data
 #' frame.

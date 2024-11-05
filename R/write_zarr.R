@@ -5,10 +5,10 @@
 #' @param object The object to write, either a "SingleCellExperiment" or a
 #' "Seurat" object
 #' @param path Path of the file to write to
-#' @param compression The compression algorithm to use when writing the
-#'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+#' @param compression The compression algorithm to use when writing
+#'  Zarr arrays. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
-#' @param mode The mode to open the HDF5 file.
+#' @param mode The mode to open the Zarr store.
 #'
 #'   * `a` creates a new file or opens an existing one for read/write.
 #'   * `r+` opens an existing file for read/write.
@@ -30,10 +30,10 @@
 #'   obs_names = LETTERS[1:3],
 #'   var_names = letters[1:5]
 #' )
-#' h5ad_file <- tempfile(fileext = ".h5ad")
-#' write_zarr(adata, h5ad_file)
+#' store <- pizzarr::MemoryStore$new()
+#' write_zarr(adata, store)
 #'
-#' # Write a SingleCellExperiment as an H5AD
+#' # Write a SingleCellExperiment as a Zarr store
 #' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
 #'   ncells <- 100
 #'   counts <- matrix(rpois(20000, 5), ncol = ncells)
@@ -47,11 +47,11 @@
 #'     reducedDims = list(PCA = pca, tSNE = tsne)
 #'   )
 #'
-#'   h5ad_file <- tempfile(fileext = ".h5ad")
-#'   write_zarr(sce, h5ad_file)
+#'   store <- pizzarr::MemoryStore$new()
+#'   write_zarr(sce, store)
 #' }
 #'
-#' # Write a Seurat as a H5AD
+#' # Write a Seurat as a Zarr store
 #' if (requireNamespace("SeuratObject", quietly = TRUE)) {
 #'   # TODO: uncomment this code when the seurat converter is fixed
 #'   # counts <- matrix(1:15, 3L, 5L)
@@ -70,8 +70,8 @@
 #'   # )
 #'   # obj <- SeuratObject::AddMetaData(obj, cell.metadata)
 #'   #
-#'   # h5ad_file <- tempfile(fileext = ".h5ad")
-#'   # write_zarr(obj, h5ad_file)
+#'   # store <- pizzarr::MemoryStore$new()
+#'   # write_zarr(obj, store)
 #' }
 write_zarr <- function(object, store, compression = c("none", "gzip", "lzf"),
                        mode = c("w-", "r", "r+", "a", "w", "x")) {

@@ -2,7 +2,7 @@
 #'
 #' Read data from a Zarr store
 #'
-#' @param path Path to the H5AD file to read
+#' @param path Path to the Zarr store to read
 #' @param to The type of object to return. Must be one of: "InMemoryAnnData",
 #'   "HDF5AnnData", "SingleCellExperiment", "Seurat"
 #' @param ... Extra arguments provided to [to_SingleCellExperiment()] or
@@ -12,16 +12,17 @@
 #' @export
 #'
 #' @examples
-#' h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+#' file <- system.file("extdata", "example.zarr", package = "anndataR")
+#' store <- pizzarr::DirectoryStore$new(file)
 #'
-#' # Read the H5AD as a SingleCellExperiment object
+#' # Read the Zarr store as a SingleCellExperiment object
 #' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-#'   sce <- read_zarr(h5ad_file, to = "SingleCellExperiment")
+#'   sce <- read_zarr(store, to = "SingleCellExperiment")
 #' }
 #'
-#' # Read the H5AD as a Seurat object
+#' # Read the Zarr store as a Seurat object
 #' if (requireNamespace("SeuratObject", quietly = TRUE)) {
-#'   seurat <- read_zarr(h5ad_file, to = "Seurat")
+#'   seurat <- read_zarr(store, to = "Seurat")
 #' }
 read_zarr <- function(
     path,
