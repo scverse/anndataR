@@ -330,8 +330,6 @@ to_Seurat <- function(
   do.call(SeuratObject::CreateDimReducObject, args)
 }
 
-#' @rdname to_Seurat
-#' @export
 to_Seurat_guess_layers <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
@@ -350,8 +348,6 @@ to_Seurat_guess_layers <- function(adata) { # nolint
   layers
 }
 
-#' @rdname to_Seurat
-#' @export
 to_Seurat_guess_reductions <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
@@ -376,8 +372,6 @@ to_Seurat_guess_reductions <- function(adata) { # nolint
   reductions
 }
 
-#' @rdname to_Seurat
-#' @export
 to_Seurat_guess_graphs <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
@@ -397,8 +391,6 @@ to_Seurat_guess_graphs <- function(adata) { # nolint
   graphs
 }
 
-#' @rdname to_Seurat
-#' @export
 to_Seurat_guess_misc <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
@@ -716,8 +708,6 @@ from_Seurat <- function(
   return(adata)
 }
 
-#' @rdname from_Seurat
-#' @export
 from_Seurat_guess_layers <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
@@ -738,8 +728,6 @@ from_Seurat_guess_layers <- function(seurat_obj, assay_name) { # nolint
   layers_mapping
 }
 
-#' @rdname from_Seurat
-#' @export
 from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
@@ -760,8 +748,6 @@ from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
   obsm_mapping
 }
 
-#' @rdname from_Seurat
-#' @export
 from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
@@ -780,8 +766,6 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
   varm_mapping
 }
 
-#' @rdname from_Seurat
-#' @export
 from_Seurat_guess_obsps <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
@@ -808,8 +792,6 @@ from_Seurat_guess_obsps <- function(seurat_obj, assay_name) { # nolint
   obsp_mapping
 }
 
-#' @rdname from_Seurat
-#' @export
 from_Seurat_guess_varps <- function(seurat_obj) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
@@ -818,8 +800,6 @@ from_Seurat_guess_varps <- function(seurat_obj) { # nolint
   list()
 }
 
-#' @rdname from_Seurat
-#' @export
 from_Seurat_guess_uns <- function(seurat_obj) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
