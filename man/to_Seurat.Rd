@@ -2,10 +2,6 @@
 % Please edit documentation in R/Seurat.R
 \name{to_Seurat}
 \alias{to_Seurat}
-\alias{to_Seurat_guess_layers}
-\alias{to_Seurat_guess_reductions}
-\alias{to_Seurat_guess_graphs}
-\alias{to_Seurat_guess_misc}
 \title{Convert a Seurat object to an AnnData object}
 \usage{
 to_Seurat(
@@ -16,14 +12,6 @@ to_Seurat(
   graph_mapping = NULL,
   misc_mapping = NULL
 )
-
-to_Seurat_guess_layers(adata)
-
-to_Seurat_guess_reductions(adata)
-
-to_Seurat_guess_graphs(adata)
-
-to_Seurat_guess_misc(adata)
 }
 \arguments{
 \item{adata}{An AnnData object to be converted}

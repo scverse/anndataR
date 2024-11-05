@@ -2,12 +2,6 @@
 % Please edit documentation in R/Seurat.R
 \name{from_Seurat}
 \alias{from_Seurat}
-\alias{from_Seurat_guess_layers}
-\alias{from_Seurat_guess_obsms}
-\alias{from_Seurat_guess_varms}
-\alias{from_Seurat_guess_obsps}
-\alias{from_Seurat_guess_varps}
-\alias{from_Seurat_guess_uns}
 \title{Convert a Seurat object to an AnnData object}
 \usage{
 from_Seurat(
@@ -22,18 +16,6 @@ from_Seurat(
   uns_mapping = NULL,
   ...
 )
-
-from_Seurat_guess_layers(seurat_obj, assay_name)
-
-from_Seurat_guess_obsms(seurat_obj, assay_name)
-
-from_Seurat_guess_varms(seurat_obj, assay_name)
-
-from_Seurat_guess_obsps(seurat_obj, assay_name)
-
-from_Seurat_guess_varps(seurat_obj)
-
-from_Seurat_guess_uns(seurat_obj)
 }
 \arguments{
 \item{seurat_obj}{A Seurat object to be converted.}
