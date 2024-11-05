@@ -288,11 +288,11 @@ read_zarr_nullable <- function(store, name, version = "0.1.0") {
 
   mask <- read_zarr_array(store, paste0(name, "/mask"))
   values <- read_zarr_array(store, paste0(name, "/values"))
-  
+
   # Get values and set missing
   element <- values
   element[mask] <- NA
-  
+
   return(element)
 }
 
@@ -417,7 +417,8 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
   groupname <- paste0("/", name)
 
-  columns <- store$listdir(name)
+  g <- pizzarr::zarr_open(store)
+  columns <- g$get_store()$listdir(name)
 
   # Omit Zarr metadata files from the list of columns.
   columns <- columns[!columns %in% c(".zgroup", ".zattrs", ".zarray")]
@@ -443,7 +444,7 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
 #' @return a data.frame
 #'
 #' @noRd
-read_zarr_data_frame <- function(store, name, include_index = FALSE,
+read_zarr_data_frame <- function(store, name, include_index = TRUE,
                                  version = "0.2.0") {
   version <- match.arg(version)
 
@@ -464,15 +465,12 @@ read_zarr_data_frame <- function(store, name, include_index = FALSE,
 
   if (isTRUE(include_index)) {
     index <- read_zarr_data_frame_index(store, name)
-    df <- cbind(index, df)
 
     # The default index name is not allowed as a column name so adjust it
     if (index_name == "_index") {
-      index_name <- ".index"
-      colnames(df)[1] <- index_name
+      rownames(df) <- index
     }
 
-    attr(df, "_index") <- index_name # nolint
   }
 
   df
@@ -493,7 +491,6 @@ read_zarr_data_frame_index <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
 
   g <- pizzarr::zarr_open_group(store, path = name)
-
 
   attributes <- g$get_attrs()$to_list()
   index_name <- attributes$`_index`

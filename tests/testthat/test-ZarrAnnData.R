@@ -58,8 +58,8 @@ test_that("obsm/ varm validation", {
 
   adata <- AnnData(
     X = mtx,
-    obs_names = as.character(1:N_OBS),
-    var_names = as.character(1:N_VAR)
+    obs = data.frame(row.names = as.character(1:N_OBS)),
+    var = data.frame(row.names = as.character(1:N_VAR))
   )
 
   adata$obsm <- list(PCA = matrix(0, N_OBS, 4))
@@ -74,8 +74,8 @@ test_that("obsp/ varp validation", {
   N_VAR <- 3
 
   adata <- AnnData(
-    obs_names = as.character(1:N_OBS),
-    var_names = as.character(1:N_VAR)
+    obs = data.frame(row.names = as.character(1:N_OBS)),
+    var = data.frame(row.names = as.character(1:N_VAR))
   )
 
   adata$obsp <- list(graph1 = matrix(0, N_OBS, N_OBS))
@@ -127,69 +127,81 @@ test_that("reading var names works", {
 # SETTERS ----------------------------------------------------------------
 test_that("creating empty Zarr works", {
   empty_store <- pizzarr::MemoryStore$new()
-  ZarrAnnData$new(empty_store, obs_names = 1:10, var_names = 1:20)
+  expect_silent(ZarrAnnData$new(empty_store))
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_X, status=done
 test_that("writing X works", {
   store <- pizzarr::MemoryStore$new()
-  h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(store, obs = obs, var = var)
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
-  expect_silent(h5ad$X <- X)
+  expect_silent(zarr$X <- X)
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_layers, status=done
 test_that("writing layers works", {
   store <- pizzarr::MemoryStore$new()
-  h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(store, obs = obs, var = var)
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
-  expect_silent(h5ad$layers <- list(layer1 = X, layer2 = X))
+  expect_silent(zarr$layers <- list(layer1 = X, layer2 = X))
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_obs, status=done
 test_that("writing obs works", {
   store <- pizzarr::MemoryStore$new()
-  h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(store, obs = obs, var = var)
 
   obs <- data.frame(
     Letters = LETTERS[1:10],
     Numbers = 1:10,
     row.names = paste0("Row", 1:10)
   )
-  expect_warning(h5ad$obs <- obs, "should not have any rownames")
-  expect_identical(h5ad$obs_names, 1:10)
+  zarr$obs <- obs
+  expect_identical(zarr$obs_names, paste0("Row", 1:10))
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_var, status=done
 test_that("writing var works", {
   store <- pizzarr::MemoryStore$new()
-  h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(store, obs = obs, var = var)
 
   var <- data.frame(
     Letters = LETTERS[1:20],
     Numbers = 1:20,
     row.names = paste0("Row", 1:20)
   )
-  expect_warning(h5ad$var <- var, "should not have any rownames")
-  expect_identical(h5ad$var_names, 1:20)
+  zarr$var <- var
+  expect_identical(zarr$var_names, paste0("Row", 1:20))
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_obs_names, status=done
 test_that("writing obs names works", {
   store <- pizzarr::MemoryStore$new()
-  h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(store, obs = obs, var = var)
 
-  h5ad$obs_names <- LETTERS[1:10]
-  expect_identical(h5ad$obs_names, LETTERS[1:10])
+  zarr$obs_names <- LETTERS[1:10]
+  expect_identical(zarr$obs_names, LETTERS[1:10])
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_var_names, status=done
 test_that("writing var names works", {
   store <- pizzarr::MemoryStore$new()
-  h5ad <- ZarrAnnData$new(store, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(store, obs = obs, var = var)
 
-  h5ad$var_names <- LETTERS[1:20]
-  expect_identical(h5ad$var_names, LETTERS[1:20])
+  zarr$var_names <- LETTERS[1:20]
+  expect_identical(zarr$var_names, LETTERS[1:20])
 })

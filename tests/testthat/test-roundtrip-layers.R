@@ -1,25 +1,24 @@
 skip_if_no_anndata()
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("hdf5r")
 
 data <- generate_dataset(10L, 20L)
 
-layer_names <- names(data$layers)
-# TODO: Add denseMatrix support to anndata and anndataR
-layer_names <- layer_names[!grepl("_dense", layer_names)]
-# TODO: re-enable these tests
-layer_names <- layer_names[!grepl("_with_nas", layer_names)]
+test_names <- names(data$layers)
 
-for (name in layer_names) {
+# TODO: Add denseMatrix support to anndata and anndataR
+test_names <- test_names[!grepl("_dense", test_names)]
+
+for (name in test_names) {
   test_that(paste0("roundtrip with layer '", name, "'"), {
     # create anndata
     ad <- AnnData(
       layers = data$layers[name],
-      obs_names = data$obs_names,
-      var_names = data$var_names
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE]
     )
 
     # write to file
-    filename <- withr::local_file(paste0("roundtrip_layer_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     write_h5ad(ad, filename)
 
     # read from file
@@ -35,23 +34,23 @@ for (name in layer_names) {
   })
 }
 
-for (name in layer_names) {
+for (name in test_names) {
   test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
     # add rownames
     layers <- data$layers[name]
-    rownames(layers[[name]]) <- data$obs_names
-    colnames(layers[[name]]) <- data$var_names
+    obs <- data.frame(row.names = rownames(data$obs))
+    var <- data.frame(row.names = rownames(data$var))
 
     # create anndata
     ad <- anndata::AnnData(
       layers = layers,
       shape = dim(data$X),
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names)
+      obs = obs,
+      var = var
     )
 
     # write to file
-    filename <- withr::local_file(paste0("reticulate_to_hdf5_layer_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     ad$write_h5ad(filename)
 
     # read from file
@@ -66,43 +65,34 @@ for (name in layer_names) {
   })
 }
 
-r2py_names <- layer_names
+r2py_names <- test_names
 # TODO: rsparse gets converted to csparse by anndata
 r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
-# TODO: fix when this is working
-r2py_names <- r2py_names[!grepl("with_nas", r2py_names)]
 
 for (name in r2py_names) {
   test_that(paste0("hdf5->reticulate with layer '", name, "'"), {
     # write to file
-    filename <- withr::local_file(paste0("hdf5_to_reticulate_layer_", name, ".h5ad"))
-
-    # strip rownames
-    layers <- data$layers[name]
-    rownames(layers[[name]]) <- NULL
-    colnames(layers[[name]]) <- NULL
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
     # make anndata
-    ad <- HDF5AnnData$new(
-      file = filename,
-      layers = layers,
-      obs_names = data$obs_names,
-      var_names = data$var_names
+    ad <- AnnData(
+      layers = data$layers[name],
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE]
     )
+    write_h5ad(ad, filename)
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)
 
     # expect slots are unchanged
     layer_ <- ad_new$layers[[name]]
-    if (!is.null(layer_)) {
-      rownames(layer_) <- NULL
-      colnames(layer_) <- NULL
-    }
     # anndata returns these layers as CsparseMatrix
     if (grepl("rsparse", name)) {
       layer_ <- as(layer_, "RsparseMatrix")
     }
+    # strip rownames
+    dimnames(layer_) <- list(NULL, NULL)
     expect_equal(
       layer_,
       data$layers[[name]],

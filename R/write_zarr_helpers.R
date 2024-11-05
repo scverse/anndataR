@@ -237,6 +237,7 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
 
   object_codec <- pizzarr::VLenUtf8Codec$new()
   data <- array(data = value, dim = dims)
+  # TODO: existing _index does not allow overwriting, so shall we keep overwrite=TRUE here ?
   a <- pizzarr::zarr_create_array(data, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = dims, overwrite = overwrite)
 
   write_zarr_encoding(store, name, "string-array", version)
@@ -278,7 +279,8 @@ write_zarr_categorical <- function(value, store, name, compression, version = "0
 write_zarr_string_scalar <- function(value, store, name, compression, version = "0.2.0", overwrite = FALSE) {
   # Write scalar
   object_codec = pizzarr::VLenUtf8Codec$new()
-  a <- pizzarr::zarr_create_array(value, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = list(), overwrite = overwrite)
+  value <- array(data = value, dim = 1)
+  a <- pizzarr::zarr_create_array(value, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = 1, overwrite = overwrite)
 
   # Write attributes
   write_zarr_encoding(store, name, "string", version)
@@ -423,18 +425,20 @@ write_zarr_data_frame_index <- function(value, store, name, compression, index_n
 #'
 #' @noRd
 #'
-#' @param file Path to the H5AD file to write
-#' @param obs_names Vector containing observation names
-#' @param var_names Vector containing variable names
+#' @param file Path to the Zarr store to write
+#' @param obs Data frame with observations
+#' @param var Data frame with variables
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
-write_empty_zarr <- function(store, obs_names, var_names, compression, version = "0.1.0", overwrite = FALSE) {
+write_empty_zarr <- function(store, obs, var, compression, version = "0.1.0") {
   pizzarr::zarr_open_group(store, path = "/")
   write_zarr_encoding(store, "/", "anndata", "0.1.0")
 
-  write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression, overwrite = overwrite)
-  write_zarr_element(data.frame(row.names = var_names), store, "/var", compression, overwrite = overwrite)
+  # write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression)
+  # write_zarr_element(data.frame(row.names = var_names), store, "/var", compression)
+  write_zarr_element(obs, store, "/obs", compression, overwrite = overwrite)
+  write_zarr_element(var, store, "/var", compression, overwrite = overwrite)
 
   pizzarr::zarr_open_group(store, path = "layers")
   write_zarr_encoding(store, "/layers", "dict", "0.1.0")
@@ -461,11 +465,12 @@ write_empty_zarr <- function(store, obs_names, var_names, compression, version =
 #'
 #' @noRd
 #'
-#' @param file Path to a HDF5 file
+#' @param store Path to a Zarr store
 #' @param target_path The path within the file to test for
 #'
 #' @return Whether the `path` exists in `file`
 zarr_path_exists <- function(store, target_path) {
+  store <- pizzarr::zarr_open(store, path = "")
   result <- tryCatch({
     if(store$contains_item(target_path)) {
       # This should work for DirectoryStore but not yet for MemoryStore.

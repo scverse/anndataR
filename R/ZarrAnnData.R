@@ -4,15 +4,16 @@ VAR_CHUNK_SIZE <- 10
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
+#' @noRd
 ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
     zarr_store = NULL,
     zarr_root = NULL,
-    .n_obs = NULL,
-    .n_vars = NULL,
-    .obs_names = NULL,
-    .var_names = NULL,
+    # .n_obs = NULL,
+    # .n_vars = NULL,
+    # .obs_names = NULL,
+    # .var_names = NULL,
     .compression = NULL,
     .to_dense = NULL
   ),
@@ -134,7 +135,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_zarr_element(private$zarr_store, "/obs", include_index = FALSE)
+        # TODO: shall we keep include_index = TRUE, or get rid of the argument ?
+        read_zarr_element(private$zarr_store, "/obs", include_index = TRUE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
@@ -143,7 +145,6 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           private$zarr_store,
           "/obs",
           private$.compression,
-          index = self$obs_names,
           overwrite = TRUE
         )
       }
@@ -152,7 +153,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_zarr_element(private$zarr_store, "/var", include_index = FALSE)
+        # TODO: shall we keep include_index = TRUE, or get rid of the argument ?
+        read_zarr_element(private$zarr_store, "/var", include_index = TRUE)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
@@ -160,7 +162,6 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           value,
           private$zarr_store,
           "/var",
-          index = self$var_names,
           overwrite = TRUE
         )
       }
@@ -169,35 +170,20 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     obs_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-        # obs names are cached to avoid reading all of obs whenever they are
-        # accessed
-        if (is.null(private$.obs_names)) {
-          private$.obs_names <- read_zarr_data_frame_index(private$zarr_store, "obs")
-        }
-        private$.obs_names
+        rownames(self$obs)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
-        value <- private$.validate_obsvar_names(value, "obs")
-        write_zarr_data_frame_index(value, private$zarr_store, "obs", private$.compression, "_index", overwrite = TRUE)
-        private$.obs_names <- value
+        rownames(self$obs) <- value
       }
     },
     #' @field var_names Names of variables
     var_names = function(value) {
-      # TODO: directly write to and read from /var/_index
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        # var names are cached to avoid reading all of var whenever they are
-        # accessed
-        if (is.null(private$.var_names)) {
-          private$.var_names <- read_zarr_data_frame_index(private$zarr_store, "var")
-        }
-        private$.var_names
+        rownames(self$var)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
-        value <- private$.validate_obsvar_names(value, "var")
-        write_zarr_data_frame_index(value, private$zarr_store, "var", private$.compression, "_index", overwrite = TRUE)
-        private$.var_names <- value
+        rownames(self$var) <- value
       }
     },
     #' @field uns The uns slot. Must be `NULL` or a named list.
@@ -262,8 +248,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
     initialize = function(store,
-                          obs_names = NULL,
-                          var_names = NULL,
+                          # obs_names = NULL,
+                          # var_names = NULL,
                           X = NULL,
                           obs = NULL,
                           var = NULL,
@@ -273,42 +259,82 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
                           obsp = NULL,
                           varp = NULL,
                           uns = NULL,
+                          shape = NULL,
+                          mode = c("r", "r+", "a", "w", "w-", "x"),
                           compression = c("none", "gzip", "lzf"),
-                          to_dense = FALSE
-                        ) {
+                          to_dense = FALSE) {
       if (!requireNamespace("pizzarr", quietly = TRUE)) {
         stop("The Zarr interface requires the 'pizzarr' package to be installed")
       }
 
+      # check arguments
       compression <- match.arg(compression)
+      mode <- match.arg(mode)
+
+      # store compression for later use
       private$.compression <- compression
       private$.to_dense <- to_dense
 
-
-      root <- pizzarr::zarr_open_group(store, path = "/")
-
-
-      if(length(root$get_attrs()$to_list()) == 0) {
+      # if(length(root$get_attrs()$to_list()) == 0) {
+      if ((is.character(store) && !dir.exists(store)) || inherits(store, "MemoryStore")) {
         # Check obs_names and var_names have been provided
-        if (is.null(obs_names)) {
-          stop("When creating a new .h5ad file, `obs_names` must be defined.")
-        }
-        if (is.null(var_names)) {
-          stop("When creating a new .h5ad file, `var_names` must be defined.")
-        }
+        # if (is.null(obs_names)) {
+        #   stop("When creating a new .h5ad file, `obs_names` must be defined.")
+        # }
+        # if (is.null(var_names)) {
+        #   stop("When creating a new .h5ad file, `var_names` must be defined.")
+        # }
 
-        # Create an empty H5AD using the provided obs/var names
-        write_empty_zarr(store, obs_names, var_names, compression)
-
-        # Set private object slots
+        # store private values
         private$zarr_store <- store
-        private$.n_obs <- length(obs_names)
-        private$.n_vars <- length(var_names)
-        private$.obs_names <- obs_names
-        private$.var_names <- var_names
-      } else {
-        # Check the file is a valid H5AD
+        # private$zarr_root <- root
 
+        # Determine initial obs and var
+        shape <- get_shape(obs, var, X, shape)
+        obs <- get_initial_obs(obs, X, shape)
+        var <- get_initial_var(var, X, shape)
+
+        # # Create an empty H5ad store using the provided obs/var names
+        # write_empty_zarr(store, obs_names, var_names, compression)
+
+        # Create an empty Zarr
+        write_empty_zarr(store, obs, var, compression)
+
+        # set other slots
+        if (!is.null(X)) {
+          self$X <- X
+        }
+        if (!is.null(layers)) {
+          self$layers <- layers
+        }
+        if (!is.null(obsm)) {
+          self$obsm <- obsm
+        }
+        if (!is.null(varm)) {
+          self$varm <- varm
+        }
+        if (!is.null(obsp)) {
+          self$obsp <- obsp
+        }
+        if (!is.null(varp)) {
+          self$varp <- varp
+        }
+        if (!is.null(uns)) {
+          self$uns <- uns
+        }
+
+        # # Set private object slots
+        # private$zarr_store <- store
+        # private$.n_obs <- length(obs_names)
+        # private$.n_vars <- length(var_names)
+        # private$.obs_names <- obs_names
+        # private$.var_names <- var_names
+      } else {
+
+        # get root
+        root <- pizzarr::zarr_open_group(store, path = "/")
+
+        # Check the file is a valid H5AD
         attrs <- root$get_attrs()$to_list()
 
         if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
@@ -323,67 +349,61 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         private$zarr_root <- root
 
         # If obs or var names have been provided update those
-        if (!is.null(obs_names)) {
-          self$obs_names <- obs_names
+        # if (!is.null(obs_names)) {
+        #   self$obs_names <- obs_names
+        # }
+        #
+        # if (!is.null(var_names)) {
+        #   self$var_names <- var_names
+        # }
+
+        # assert other arguments are NULL
+        if (!is.null(obs)) {
+          stop("obs must be NULL when loading an existing zarr store")
         }
-
-        if (!is.null(var_names)) {
-          self$var_names <- var_names
+        if (!is.null(var)) {
+          stop("var must be NULL when loading an existing zarr store")
         }
-      }
-
-      # Update remaining slots
-      if (!is.null(X)) {
-        self$X <- X
-      }
-
-      if (!is.null(obs)) {
-        self$obs <- obs
-      }
-
-      if (!is.null(var)) {
-        self$var <- var
-      }
-
-      if (!is.null(layers)) {
-        self$layers <- layers
-      }
-
-      if (!is.null(obsm)) {
-        self$obsm <- obsm
-      }
-
-      if (!is.null(varm)) {
-        self$varm <- varm
-      }
-
-      if (!is.null(obsp)) {
-        self$obsp <- obsp
-      }
-
-      if (!is.null(varp)) {
-        self$varp <- varp
-      }
-
-      if (!is.null(uns)) {
-        self$uns <- uns
+        if (!is.null(X)) {
+          stop("X must be NULL when loading an existing zarr store")
+        }
+        if (!is.null(layers)) {
+          stop("layers must be NULL when loading an existing zarr store")
+        }
+        if (!is.null(obsm)) {
+          stop("obsm must be NULL when loading an existing zarr store")
+        }
+        if (!is.null(varm)) {
+          stop("varm must be NULL when loading an existing zarr store")
+        }
+        if (!is.null(obsp)) {
+          stop("obsp must be NULL when loading an existing zarr store")
+        }
+        if (!is.null(varp)) {
+          stop("varp must be NULL when loading an existing zarr store")
+        }
+        if (!is.null(uns)) {
+          stop("uns must be NULL when loading an existing zarr store")
+        }
       }
     },
 
     #' @description Number of observations in the AnnData object
     n_obs = function() {
-      if (is.null(private$.n_obs)) {
-        private$.n_obs <- length(self$obs_names)
-      }
-      private$.n_obs
+      # if (is.null(private$.n_obs)) {
+      #   private$.n_obs <- length(self$obs_names)
+      # }
+      # private$.n_obs
+      nrow(self$obs)
     },
 
     #' @description Number of variables in the AnnData object
     n_vars = function() {
-      if (is.null(private$.n_vars)) {
-        private$.n_vars <- length(self$var_names)
-      }
-      private$.n_vars
+      # if (is.null(private$.n_vars)) {
+      #   private$.n_vars <- length(self$var_names)
+      # }
+      # private$.n_vars
+      nrow(self$var)
     }
   )
 )
@@ -398,11 +418,18 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
 #' @param compression The compression algorithm to use when writing the
 #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
+#' @param mode The mode to open the HDF5 file.
+#'
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r` opens an existing file for reading.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #'
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
 #'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' ad <- AnnData(
@@ -419,7 +446,10 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
 #' to_HDF5AnnData(ad, "test.h5ad")
 #' # remove file
 #' file.remove("test.h5ad")
-to_ZarrAnnData <- function(adata, store, compression = c("none", "gzip", "lzf")) { # nolint
+to_ZarrAnnData <- function(adata,
+                           store,
+                           compression = c("none", "gzip", "lzf"),
+                           mode = c("w-", "r", "r+", "a", "w", "x")) {
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
@@ -430,12 +460,14 @@ to_ZarrAnnData <- function(adata, store, compression = c("none", "gzip", "lzf"))
     var = adata$var,
     obsm = adata$obsm,
     varm = adata$varm,
-    obs_names = adata$obs_names,
-    var_names = adata$var_names,
+    # obs_names = adata$obs_names,
+    # var_names = adata$var_names,
     layers = adata$layers,
     obsp = adata$obsp,
     varp = adata$varp,
     uns = adata$uns,
-    compression = compression
+    compression = compression,
+    shape = adata$shape(),
+    mode = mode
   )
 }
