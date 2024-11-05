@@ -29,8 +29,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
-        return(result)
+        write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
       }
     },
     #' @field layers The layers slot. Must be NULL or a named list

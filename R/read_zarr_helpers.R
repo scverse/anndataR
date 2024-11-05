@@ -171,7 +171,7 @@ read_zarr_sparse_array <- function(store, name, version = "0.1.0",
   type <- match.arg(type)
 
   g <- pizzarr::zarr_open_group(store, path = name)
-  
+
   data <- as.vector(read_zarr_array(store, paste0(name, "/data")))
   indices <- as.vector(read_zarr_array(store, paste0(name, "/indices")))
   indptr <- as.vector(read_zarr_array(store, paste0(name, "/indptr")))
