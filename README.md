@@ -1,5 +1,6 @@
 # anndataR
 
+
 <!-- README.md is generated from README.qmd. Please edit that file -->
 <!-- badges: start -->
 
@@ -22,6 +23,14 @@ Feature list:
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
+> [!WARNING]
+>
+> This package is still in the experimental stage, and may not work as
+> expected. You can find the status of development of anndataR on the
+> [feature tracking
+> page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking)
+> of the website.Please report any issues you encounter.
+
 ## Installation
 
 You can install the development version of `{anndataR}` like so:
@@ -34,8 +43,8 @@ You might need to install suggested dependencies manually, depending on
 the task you want to perform.
 
 - To read/write \*.h5ad files, you need to install
-  [rhdf5](https://bioconductor.org/packages/release/bioc/html/rhdf5.html):  
-  `BiocManager::install("rhdf5")`
+  [hdf5r](https://cran.r-project.org/package=hdf5r):  
+  `BiocManager::install("hdf5r")`
 - To convert to/from `SingleCellExperiment` objects, you need to install
   [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
   `BiocManager::install("SingleCellExperiment")`
@@ -43,8 +52,8 @@ the task you want to perform.
   [SeuratObject](https://cran.r-project.org/package=SeuratObject):  
   `install.packages("SeuratObject")`
 
-You can also install all suggested dependencies at once (though note
-that this might take a while to run):
+If you’re feeling adventurous, you can install all suggested
+dependencies at once:
 
 ``` r
 devtools::install_github("scverse/anndataR", dependencies = TRUE)
@@ -61,25 +70,29 @@ library(anndataR)
 h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
 ```
 
-Read an h5ad file:
+Read an h5ad file in memory:
 
 ``` r
-adata <- read_h5ad(h5ad_path, to = "InMemoryAnnData")
+adata <- read_h5ad(h5ad_path)
+```
+
+Read an h5ad file on disk:
+
+``` r
+adata <- read_h5ad(h5ad_path, to = "HDF5AnnData")
 ```
 
 View structure:
 
 ``` r
 adata
-#> class: InMemoryAnnData
-#> dim: 50 obs x 100 var
-#> X: dgRMatrix
-#> layers: counts csc_counts dense_X dense_counts
-#> obs: Float FloatNA Int IntNA Bool BoolNA n_genes_by_counts
-#>   log1p_n_genes_by_counts total_counts log1p_total_counts leiden
-#> var: String n_cells_by_counts mean_counts log1p_mean_counts
-#>   pct_dropout_by_counts total_counts log1p_total_counts highly_variable
-#>   means dispersions dispersions_norm
+#> AnnData object with n_obs × n_vars = 50 × 100
+#>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
+#>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
+#>     obsm: 'X_pca', 'X_umap'
+#>     varm: 'PCs'
+#>     layers: 'counts', 'csc_counts', 'dense_X', 'dense_counts'
+#>     obsp: 'connectivities', 'distances'
 ```
 
 Access AnnData slots:
@@ -88,25 +101,19 @@ Access AnnData slots:
 dim(adata$X)
 #> [1]  50 100
 adata$obs[1:5, 1:6]
-#>   Float FloatNA Int IntNA  Bool BoolNA
-#> 1 42.42     NaN   0    NA FALSE  FALSE
-#> 2 42.42   42.42   1    42  TRUE     NA
-#> 3 42.42   42.42   2    42  TRUE   TRUE
-#> 4 42.42   42.42   3    42  TRUE   TRUE
-#> 5 42.42   42.42   4    42  TRUE   TRUE
+#>         Float FloatNA Int IntNA  Bool BoolNA
+#> Cell000 42.42     NaN   0    NA FALSE  FALSE
+#> Cell001 42.42   42.42   1    42  TRUE     NA
+#> Cell002 42.42   42.42   2    42  TRUE   TRUE
+#> Cell003 42.42   42.42   3    42  TRUE   TRUE
+#> Cell004 42.42   42.42   4    42  TRUE   TRUE
 adata$var[1:5, 1:6]
-#>    String n_cells_by_counts mean_counts log1p_mean_counts pct_dropout_by_counts
-#> 1 String0                44        1.94          1.078410                    12
-#> 2 String1                42        2.04          1.111858                    16
-#> 3 String2                43        2.12          1.137833                    14
-#> 4 String3                41        1.72          1.000632                    18
-#> 5 String4                42        2.06          1.118415                    16
-#>   total_counts
-#> 1           97
-#> 2          102
-#> 3          106
-#> 4           86
-#> 5          103
+#>          String n_cells_by_counts mean_counts log1p_mean_counts pct_dropout_by_counts total_counts
+#> Gene000 String0                44        1.94          1.078410                    12           97
+#> Gene001 String1                42        2.04          1.111858                    16          102
+#> Gene002 String2                43        2.12          1.137833                    14          106
+#> Gene003 String3                41        1.72          1.000632                    18           86
+#> Gene004 String4                42        2.06          1.118415                    16          103
 ```
 
 ## Interoperability
@@ -121,8 +128,7 @@ sce
 #> metadata(0):
 #> assays(5): X counts csc_counts dense_X dense_counts
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
-#> rowData names(11): String n_cells_by_counts ... dispersions
-#>   dispersions_norm
+#> rowData names(11): String n_cells_by_counts ... dispersions dispersions_norm
 #> colnames(50): Cell000 Cell001 ... Cell048 Cell049
 #> colData names(11): Float FloatNA ... log1p_total_counts leiden
 #> reducedDimNames(0):
@@ -134,17 +140,29 @@ Convert the AnnData object to a Seurat object:
 
 ``` r
 obj <- adata$to_Seurat()
-#> Warning: Keys should be one or more alphanumeric characters followed by an
-#> underscore, setting key from rna to rna_
-#> Warning: Keys should be one or more alphanumeric characters followed by an
-#> underscore, setting key from csc_counts_ to csccounts_
-#> Warning: Keys should be one or more alphanumeric characters followed by an
-#> underscore, setting key from dense_x_ to densex_
-#> Warning: Keys should be one or more alphanumeric characters followed by an
-#> underscore, setting key from dense_counts_ to densecounts_
 obj
 #> An object of class Seurat 
 #> 500 features across 50 samples within 5 assays 
 #> Active assay: RNA (100 features, 0 variable features)
+#>  2 layers present: counts, data
 #>  4 other assays present: counts, csc_counts, dense_X, dense_counts
+```
+
+## Manually create an object
+
+``` r
+adata <- AnnData(
+  X = matrix(rnorm(100), nrow = 10),
+  obs = data.frame(
+    cell_type = factor(rep(c("A", "B"), each = 5))
+  ),
+  var = data.frame(
+    gene_name = paste0("gene_", 1:10)
+  )
+)
+
+adata
+#> AnnData object with n_obs × n_vars = 10 × 10
+#>     obs: 'cell_type'
+#>     var: 'gene_name'
 ```

@@ -1,136 +1,114 @@
-# TODO: re-enable
-# nolint start
-# skip_if_no_anndata()
-# skip_if_not_installed("rhdf5")
+skip_if_no_anndata()
+skip_if_not_installed("hdf5r")
 
-# data <- generate_dataset(10L, 20L)
+data <- generate_dataset(10L, 20L)
 
-# obsm_names <- names(data$obsm)
-# # TODO: Add denseMatrix support to anndata and anndataR
-# obsm_names <- obsm_names[!grepl("_dense", obsm_names)]
+test_names <- names(data$obsm)
 
-# for (name in obsm_names) {
-#   test_that(paste0("roundtrip with obsm and varm '", name, "'"), {
-#     # create anndata
-#     ad <- AnnData(
-#       obsm = data$obsm[name],
-#       varm = data$varm[name],
-#       obs_names = data$obs_names,
-#       var_names = data$var_names
-#     )
+# TODO: re-enable this
+test_names <- test_names[test_names != "character_with_nas"]
 
-#     # write to file
-#     filename <- withr::local_file(paste0("roundtrip_obsmvarm_", name, ".h5ad"))
-#     write_h5ad(ad, filename)
+# TODO: Add denseMatrix support to anndata and anndataR
+test_names <- test_names[!grepl("_dense", test_names)]
 
-#     # read from file
-#     ad_new <- read_h5ad(filename, to = "HDF5AnnData")
+for (name in test_names) {
+  test_that(paste0("roundtrip with obsm and varm '", name, "'"), {
+    # create anndata
+    ad <- AnnData(
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE],
+      obsm = data$obsm[name],
+      varm = data$varm[name]
+    )
 
-#     # expect slots are unchanged
-#     expect_equal(
-#       ad_new$obsm[[name]],
-#       data$obsm[[name]],
-#       ignore_attr = TRUE,
-#       tolerance = 1e-6
-#     )
-#     expect_equal(
-#       ad_new$varm[[name]],
-#       data$varm[[name]],
-#       ignore_attr = TRUE,
-#       tolerance = 1e-6
-#     )
-#   })
-# }
+    # write to file
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
+    write_h5ad(ad, filename)
 
-# r2py_names <- names(data$obsm)
+    # read from file
+    ad_new <- read_h5ad(filename, to = "HDF5AnnData")
 
-# # TODO: remove this when https://github.com/scverse/anndata/issues/1146 is fixed
-# r2py_names <- r2py_names[!grepl("_with_nas", r2py_names)]
+    # expect slots are unchanged
+    expect_equal(
+      ad_new$obsm[[name]],
+      data$obsm[[name]],
+      ignore_attr = TRUE,
+      tolerance = 1e-6
+    )
+    expect_equal(
+      ad_new$varm[[name]],
+      data$varm[[name]],
+      ignore_attr = TRUE,
+      tolerance = 1e-6
+    )
+  })
+}
 
-# for (name in r2py_names) {
-#   test_that(paste0("reticulate->hdf5 with obsm and varm '", name, "'"), {
-#     # add rownames
-#     obsm <- data$obsm[name]
-#     varm <- data$varm[name]
-#     rownames(obsm[[name]]) <- data$obs_names
-#     rownames(varm[[name]]) <- data$var_names
+# TODO: re-enable these tests
+# it seemed like there is a difference in the dimnames of the
+# obsm and varm between anndata and anndataR
+test_names <- c()
 
-#     # create anndata
-#     ad <- anndata::AnnData(
-#       obsm = obsm,
-#       varm = varm,
-#       shape = dim(data$X),
-#       obs = data.frame(row.names = data$obs_names),
-#       var = data.frame(row.names = data$var_names)
-#     )
+for (name in test_names) {
+  test_that(paste0("reticulate->hdf5 with obsm and varm '", name, "'"), {
+    # create anndata
+    ad <- anndata::AnnData(
+      obs = data.frame(row.names = data$obs_names),
+      var = data.frame(row.names = data$var_names),
+      obsm = data$obsm[name],
+      varm = data$varm[name]
+    )
 
-#     # write to file
-#     filename <- withr::local_file(paste0("reticulate_to_hdf5_obsmvarm_", name, ".h5ad"))
-#     ad$write_h5ad(filename)
+    # write to file
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
+    ad$write_h5ad(filename)
 
-#     # read from file
-#     ad_new <- HDF5AnnData$new(filename)
+    # read from file
+    ad_new <- HDF5AnnData$new(filename)
 
-#     # expect slots are unchanged
-#     expect_equal(
-#       ad_new$obsm[[name]],
-#       data$obsm[[name]],
-#       tolerance = 1e-6
-#     )
-#     expect_equal(
-#       ad_new$varm[[name]],
-#       data$varm[[name]],
-#       tolerance = 1e-6
-#     )
-#   })
-# }
+    # expect slots are unchanged
+    expect_equal(
+      ad_new$obsm[[name]],
+      data$obsm[[name]],
+      tolerance = 1e-6
+    )
+    expect_equal(
+      ad_new$varm[[name]],
+      data$varm[[name]],
+      tolerance = 1e-6
+    )
+  })
+}
 
-# for (name in r2py_names) {
-#   test_that(paste0("hdf5->reticulate with obsm and varm '", name, "'"), {
-#     # write to file
-#     filename <- withr::local_file(paste0("hdf5_to_reticulate_obsmvarm_", name, ".h5ad"))
+for (name in test_names) {
+  test_that(paste0("hdf5->reticulate with obsm and varm '", name, "'"), {
+    # write to file
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
-#     # strip rownames
-#     obsm <- data$obsm[name]
-#     varm <- data$varm[name]
-#     rownames(obsm[[name]]) <- NULL
-#     rownames(varm[[name]]) <- NULL
+    # create anndata
+    ad <- AnnData(
+      obsm = data$obsm[name],
+      varm = data$varm[name],
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE]
+    )
+    write_h5ad(ad, filename)
 
-#     # make anndata
-#     ad <- HDF5AnnData$new(
-#       file = filename,
-#       obsm = obsm,
-#       varm = varm,
-#       obs_names = data$obs_names,
-#       var_names = data$var_names
-#     )
+    # read from file
+    ad_new <- anndata::read_h5ad(filename)
 
-#     # read from file
-#     ad_new <- anndata::read_h5ad(filename)
-
-#     # expect slots are unchanged
-#     obsm_ <- ad_new$obsm[[name]]
-#     if (!is.null(obsm_)) {
-#       rownames(obsm_) <- NULL
-#       colnames(obsm_) <- NULL
-#     }
-#     expect_equal(
-#       obsm_,
-#       data$obsm[[name]],
-#       ignore_attr = TRUE,
-#       tolerance = 1e-6
-#     )
-#     varm_ <- ad_new$varm[[name]]
-#     if (!is.null(varm_)) {
-#       rownames(varm_) <- NULL
-#       colnames(varm_) <- NULL
-#     }
-#     expect_equal(
-#       varm_,
-#       data$varm[[name]],
-#       ignore_attr = TRUE,
-#       tolerance = 1e-6
-#     )
-#   })
-# }
-# nolint end
+    # expect slots are unchanged
+    expect_equal(
+      ad_new$obsm[[name]],
+      data$obsm[[name]],
+      ignore_attr = TRUE,
+      tolerance = 1e-6
+    )
+    expect_equal(
+      ad_new$varm[[name]],
+      data$varm[[name]],
+      ignore_attr = TRUE,
+      tolerance = 1e-6
+    )
+  })
+}

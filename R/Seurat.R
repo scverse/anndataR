@@ -1,21 +1,17 @@
-#' @rdname Seurat
+#' Convert a Seurat object to an AnnData object
 #'
-#' @title Convert Between AnnData and Seurat
-#'
-#' @description `to_Seurat()` converts an AnnData object to a Seurat object.
+#' `to_Seurat()` converts an AnnData object to a Seurat object.
 #'
 #' @param obj An AnnData object
 #'
 #' @importFrom Matrix t
 #'
-#' @export
+#' @noRd
 #' @examples
 #' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
-#'   obs = data.frame(cell = 1:3),
-#'   obs_names = letters[1:3],
-#'   var = data.frame(gene = 1:5),
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' to_Seurat(ad)
 # TODO: Add parameters to choose which how X and layers are translated into counts, data and scaled.data
@@ -102,10 +98,12 @@ to_Seurat <- function(obj) { # nolint
   names
 }
 
-#' @rdname Seurat
+#' Convert a Seurat object to an AnnData object
 #'
-#' @description `from_Seurat()` converts a Seurat object to an AnnData object.
+#' `from_Seurat()` converts a Seurat object to an AnnData object.
 #' Only one assay can be converted at a time.
+#'
+#' For more information on the functionality of an AnnData object, see [anndataR-package].
 #'
 #' @param seurat_obj An object inheriting from Seurat.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
@@ -116,8 +114,18 @@ to_Seurat <- function(obj) { # nolint
 #' @param ... Additional arguments passed to the generator function.
 #'
 #' @export
-# TODO: add tests with Seurat objects not created by anndataR
-from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData"), assay = NULL, X = "counts", ...) { # nolint
+#'
+#' @seealso [anndataR-package]
+# TODO: Add examples
+# nolint start: object_name_linter
+from_Seurat <- function(
+    # nolint end: object_name_linter
+    seurat_obj,
+    output_class = c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData"),
+    assay = NULL,
+    X = "counts",
+    ...) {
+  output_class <- match.arg(output_class)
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
@@ -145,31 +153,23 @@ from_Seurat <- function(seurat_obj, output_class = c("InMemoryAnnData", "HDF5Ann
     }
   }
 
-  # get obs_names
-  # trackstatus: class=Seurat, feature=set_obs_names, status=done
-  obs_names <- colnames(seurat_obj)
-
   # get obs
+  # trackstatus: class=Seurat, feature=set_obs_names, status=done
   # trackstatus: class=Seurat, feature=set_obs, status=done
   obs <- seurat_obj@meta.data
-  rownames(obs) <- NULL
-
-  # construct var_names
-  # trackstatus: class=Seurat, feature=set_var_names, status=done
-  var_names <- rownames(seurat_obj@assays[[assay_name]])
+  rownames(obs) <- colnames(seurat_obj) # TODO: this is probably not needed
 
   # construct var
+  # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
   var <- seurat_obj@assays[[assay_name]]@meta.features
-  rownames(var) <- NULL
+  rownames(var) <- rownames(seurat_obj@assays[[assay_name]]) # TODO: this is probably not needed
 
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
   ad <- generator$new(
     obs = obs,
     var = var,
-    obs_names = obs_names,
-    var_names = var_names,
     ...
   )
 

@@ -89,7 +89,7 @@ generate_dataset <- function(
       "mat_numeric_matrix_with_nas", "mat_numeric_dense_with_nas", "mat_numeric_csparse_with_nas",
       "mat_numeric_rsparse_with_nas", "mat_integer_matrix", "mat_integer_dense", "mat_integer_csparse",
       "mat_integer_rsparse", "mat_integer_matrix_with_nas", "mat_integer_dense_with_nas",
-      "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas"
+      "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas", "list"
     ),
     example = FALSE,
     format = c("list", "AnnData", "SingleCellExperiment", "Seurat")) {
@@ -153,7 +153,8 @@ generate_dataset <- function(
       paste0("scalar_", names(vector_generators)),
       paste0("vec_", names(vector_generators)),
       paste0("df_", names(vector_generators)),
-      paste0("mat_", names(matrix_generators))
+      paste0("mat_", names(matrix_generators)),
+      "list"
     )) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
@@ -170,9 +171,11 @@ generate_dataset <- function(
 
   # generate obs_names
   obs_names <- paste0("cell", seq_len(n_obs))
+  rownames(obs) <- obs_names
 
   # generate var_names
   var_names <- paste0("gene", seq_len(n_vars))
+  rownames(var) <- var_names
 
   # generate obsm
   obsm <- lapply(obsm_types, function(obsm_type) {
@@ -235,11 +238,9 @@ generate_dataset <- function(
   list(
     X = X,
     obs = obs,
-    obs_names = obs_names,
     obsm = obsm,
     obsp = obsp,
     var = var,
-    var_names = var_names,
     varm = varm,
     varp = varp,
     layers = layers,
@@ -333,11 +334,9 @@ generate_dataset <- function(
     obs = dataset_list$obs,
     obsm = dataset_list$obsm,
     obsp = dataset_list$obsp,
-    obs_names = dataset_list$obs_names,
     var = dataset_list$var,
     varm = dataset_list$varm,
     varp = dataset_list$varp,
-    var_names = dataset_list$var_names,
     layers = dataset_list$layers,
     uns = dataset_list$uns
   )

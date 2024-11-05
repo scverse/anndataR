@@ -1,35 +1,33 @@
 skip_if_no_anndata()
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("hdf5r")
 
 data <- generate_dataset(10L, 20L)
 
-uns_names <- names(data$uns)
+test_names <- names(data$uns)
 # TODO: re-enable these tests
-uns_names <- uns_names[!grepl("_with_nas", uns_names)]
+test_names <- test_names[!grepl("_with_nas", test_names)]
 # TODO: re-enable these tests
-uns_names <- uns_names[!grepl("_na$", uns_names)]
+test_names <- test_names[!grepl("_na$", test_names)]
 # TODO: re-enable these tests
-uns_names <- uns_names[!grepl("mat_", uns_names)]
+test_names <- test_names[!grepl("mat_", test_names)]
 # TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("vec_factor", "vec_factor_ordered", "vec_logical")]
+test_names <- test_names[!test_names %in% c("vec_factor", "vec_factor_ordered", "vec_logical")]
 # TODO: re-enable these tests
-uns_names <- uns_names[uns_names != "list"]
+test_names <- test_names[test_names != "list"]
 # TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")]
-# TODO: re-enable these tests
-uns_names <- uns_names[!uns_names %in% c("df_factor", "df_factor_ordered", "df_logical")]
+test_names <- test_names[!test_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")]
 
-for (name in uns_names) {
+for (name in test_names) {
   test_that(paste0("roundtrip with uns '", name, "'"), {
     # create anndata
     ad <- AnnData(
-      obs_names = data$obs_names,
-      var_names = data$var_names,
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE],
       uns = data$uns[name]
     )
 
     # write to file
-    filename <- withr::local_file(paste0("roundtrip_uns_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     write_h5ad(ad, filename)
 
     # read from file
@@ -45,17 +43,17 @@ for (name in uns_names) {
   })
 }
 
-for (name in uns_names) {
+for (name in test_names) {
   test_that(paste0("reticulate->hdf5 with uns '", name, "'"), {
     # create anndata
     ad <- anndata::AnnData(
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names),
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE],
       uns = data$uns[name]
     )
 
     # write to file
-    filename <- withr::local_file(paste0("reticulate_to_hdf5_uns_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
     ad$write_h5ad(filename)
 
     # read from file
@@ -71,18 +69,18 @@ for (name in uns_names) {
   })
 }
 
-for (name in uns_names) {
+for (name in test_names) {
   test_that(paste0("hdf5->reticulate with uns '", name, "'"), {
     # write to file
-    filename <- withr::local_file(paste0("hdf5_to_reticulate_uns_", name, ".h5ad"))
+    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
 
     # make anndata
-    ad <- HDF5AnnData$new(
-      file = filename,
-      obs_names = data$obs_names,
-      var_names = data$var_names,
+    ad <- AnnData(
+      obs = data$obs[, c(), drop = FALSE],
+      var = data$var[, c(), drop = FALSE],
       uns = data$uns[name]
     )
+    write_h5ad(ad, filename)
 
     # read from file
     ad_new <- anndata::read_h5ad(filename)

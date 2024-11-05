@@ -1,8 +1,6 @@
-#' @rdname SingleCellExperiment
+#' Convert an AnnData object to a SingleCellExperiment object
 #'
-#' @title Convert Between AnnData and SingleCellExperiment
-#'
-#' @description `to_SingleCellExperiment()` converts an AnnData object
+#' `to_SingleCellExperiment()` converts an AnnData object
 #'   to a SingleCellExperiment.
 #'
 #' @param object an AnnData object, e.g., InMemoryAnnData
@@ -10,28 +8,25 @@
 #' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
 #'   representing the content of `object`.
 #'
+#' @noRd
 #' @examples
 #' if (interactive()) {
 #'   ## useful when interacting with the SingleCellExperiment !
 #'   library(SingleCellExperiment)
 #' }
 #' ad <- AnnData(
-#'   X = matrix(1:15, 3L, 5L),
+#'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
-#'     A = matrix(15:1, 3L, 5L),
-#'     B = matrix(letters[1:15], 3L, 5L)
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #'
 #' ## construct a SingleCellExperiment from an AnnData object
 #' sce <- to_SingleCellExperiment(ad)
 #' sce
-#'
-#' @export
 to_SingleCellExperiment <- function(object) { # nolint
   stopifnot(
     inherits(object, "AbstractAnnData")
@@ -91,9 +86,9 @@ to_SingleCellExperiment <- function(object) { # nolint
   sce
 }
 
-#' @rdname SingleCellExperiment
+#' Convert a SingleCellExperiment object to an AnnData object
 #'
-#' @description `from_SingleCellExperiment()` converts a
+#' `from_SingleCellExperiment()` converts a
 #'   SingleCellExperiment to an AnnData object.
 #'
 #' @param sce An object inheriting from SingleCellExperiment.
@@ -109,42 +104,41 @@ to_SingleCellExperiment <- function(object) { # nolint
 #'
 #' @examples
 #' ## construct an AnnData object from a SingleCellExperiment
+#' library(SingleCellExperiment)
+#' sce <- SingleCellExperiment(
+#'   assays = list(counts = matrix(1:5, 5L, 3L)),
+#'   colData = DataFrame(cell = 1:3),
+#'   rowData = DataFrame(gene = 1:5)
+#' )
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
 #' @export
-from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData"), ...) { # nolint
+# nolint start: object_name_linter
+from_SingleCellExperiment <- function(
+    # nolint end: object_name_linter
+    sce,
+    output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData"),
+    ...) {
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )
+
+  output_class <- match.arg(output_class)
 
   # fetch generator
   generator <- get_anndata_constructor(output_class)
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
+  # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
   obs <- as.data.frame(
     SummarizedExperiment::colData(sce)
   )
-  rownames(obs) <- NULL
 
   # trackstatus: class=SingleCellExperiment, feature=set_var, status=done
+  # trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
   var <- as.data.frame(
     SummarizedExperiment::rowData(sce)
   )
-  rownames(var) <- NULL
-
-  # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
-  obs_names <- colnames(sce)
-  if (is.null(obs_names)) {
-    warning(wrap_message("colnames(sce) should not be NULL"))
-    obs_names <- as.character(seq_len(nrow(obs)))
-  }
-
-  # trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
-  var_names <- rownames(sce)
-  if (is.null(var_names)) {
-    warning(wrap_message("rownames(sce) should not be NULL"))
-    var_names <- as.character(seq_len(nrow(var)))
-  }
 
   # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
@@ -178,8 +172,6 @@ from_SingleCellExperiment <- function(sce, output_class = c("InMemory", "HDF5Ann
     X = x,
     obs = obs,
     var = var,
-    obs_names = obs_names,
-    var_names = var_names,
     layers = layers,
     ...
   )

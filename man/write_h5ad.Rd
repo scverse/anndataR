@@ -4,7 +4,12 @@
 \alias{write_h5ad}
 \title{Write H5AD}
 \usage{
-write_h5ad(object, path, compression = c("none", "gzip", "lzf"))
+write_h5ad(
+  object,
+  path,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)
 }
 \arguments{
 \item{object}{The object to write, either a "SingleCellExperiment" or a
@@ -15,6 +20,14 @@ write_h5ad(object, path, compression = c("none", "gzip", "lzf"))
 \item{compression}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
+
+\item{mode}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+}}
 }
 \value{
 \code{path} invisibly
@@ -24,15 +37,13 @@ Write an H5AD file
 }
 \examples{
 adata <- AnnData(
-  X = matrix(1:15, 3L, 5L),
+  X = matrix(1:5, 3L, 5L),
   layers = list(
-    A = matrix(15:1, 3L, 5L),
-    B = matrix(letters[1:15], 3L, 5L)
+    A = matrix(5:1, 3L, 5L),
+    B = matrix(letters[1:5], 3L, 5L)
   ),
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5),
-  obs_names = LETTERS[1:3],
-  var_names = letters[1:5]
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
 h5ad_file <- tempfile(fileext = ".h5ad")
 write_h5ad(adata, h5ad_file)

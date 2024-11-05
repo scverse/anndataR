@@ -4,14 +4,12 @@ test_that("to_Seurat with inmemoryanndata", {
   ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
-    var = dummy$var,
-    obs_names = dummy$obs_names,
-    var_names = dummy$var_names
+    var = dummy$var
   )
   # running to_seurat when ad0$X is null probably doesn't make any sense
   ad0 <- AnnData(
-    obs_names = letters[1:5],
-    var_names = LETTERS[1:10]
+    obs = data.frame(row.names = letters[1:5]),
+    var = data.frame(row.names = LETTERS[1:10])
   )
 
   # TODO: remove suppressWarnings when to_Seurat gets updated
@@ -22,11 +20,11 @@ test_that("to_Seurat with inmemoryanndata", {
   expect_equal(ncol(seu), 10)
 
   # trackstatus: class=Seurat, feature=test_get_var_names, status=done
-  expect_equal(rownames(seu), dummy$var_names)
+  expect_equal(rownames(seu), rownames(dummy$var))
   expect_equal(rownames(seu0), LETTERS[1:10])
 
   # trackstatus: class=Seurat, feature=test_get_obs_names, status=done
-  expect_equal(colnames(seu), dummy$obs_names)
+  expect_equal(colnames(seu), rownames(dummy$obs))
   expect_equal(colnames(seu0), letters[1:5])
 
   # check whether all obs keys are found in the seu metadata

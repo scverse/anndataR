@@ -37,6 +37,9 @@ Feature list:
 * Convert to/from `SingleCellExperiment` objects
 * Convert to/from `Seurat` objects
 
+:::{.callout-warning}
+This package is still in the experimental stage, and may not work as expected. You can find the status of development of anndataR on the [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking) of the website.Please report any issues you encounter.
+:::
 
 ## Installation
 
@@ -48,14 +51,14 @@ devtools::install_github("scverse/anndataR")
 
 You might need to install suggested dependencies manually, depending on the task you want to perform.
 
-* To read/write *.h5ad files, you need to install [rhdf5](https://bioconductor.org/packages/release/bioc/html/rhdf5.html):  
-  `BiocManager::install("rhdf5")`
+* To read/write *.h5ad files, you need to install [hdf5r](https://cran.r-project.org/package=hdf5r):  
+  `BiocManager::install("hdf5r")`
 * To convert to/from `SingleCellExperiment` objects, you need to install [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
   `BiocManager::install("SingleCellExperiment")`
 * To convert to/from `Seurat` objects, you need to install [SeuratObject](https://cran.r-project.org/package=SeuratObject):  
   `install.packages("SeuratObject")`
 
-You can also install all suggested dependencies at once (though note that this might take a while to run):
+If you're feeling adventurous, you can install all suggested dependencies at once:
 
 ``` r
 devtools::install_github("scverse/anndataR", dependencies = TRUE)
@@ -71,10 +74,16 @@ library(anndataR)
 h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
 ```
 
-Read an h5ad file:
+Read an h5ad file in memory:
 
 ```{r warning=FALSE}
-adata <- read_h5ad(h5ad_path, to = "InMemoryAnnData")
+adata <- read_h5ad(h5ad_path)
+```
+
+Read an h5ad file on disk:
+
+```{r warning=FALSE}
+adata <- read_h5ad(h5ad_path, to = "HDF5AnnData")
 ```
 
 View structure:
@@ -108,3 +117,18 @@ obj <- adata$to_Seurat()
 obj
 ```
 
+## Manually create an object
+
+```{r}
+adata <- AnnData(
+  X = matrix(rnorm(100), nrow = 10),
+  obs = data.frame(
+    cell_type = factor(rep(c("A", "B"), each = 5))
+  ),
+  var = data.frame(
+    gene_name = paste0("gene_", 1:10)
+  )
+)
+
+adata
+```

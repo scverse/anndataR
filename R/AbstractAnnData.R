@@ -9,6 +9,8 @@
 #'   Abstract [R6][R6::R6Class] class representing an AnnData
 #'   object. Defines the interface.
 #' @importFrom R6 R6Class
+#'
+#' @noRd
 AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
@@ -120,11 +122,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     },
     #' @description Number of observations in the AnnData object.
     n_obs = function() {
-      length(self$obs_names)
+      nrow(self$obs)
     },
     #' @description Number of variables in the AnnData object.
     n_vars = function() {
-      length(self$var_names)
+      nrow(self$var)
     },
     #' @description Keys ('column names') of `obs`.
     obs_keys = function() {
@@ -167,9 +169,25 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       to_InMemoryAnnData(self)
     },
     #' @description Convert to an HDF5 Backed AnnData
-    #' @param path The path to the HDF5 file
-    to_HDF5AnnData = function(path) {
-      to_HDF5AnnData(self, path)
+    #' @param file The path to the HDF5 file
+    #' @param compression The compression algorithm to use when writing the
+    #' HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+    #' `"none"`.
+    #' @param mode The mode to open the HDF5 file.
+    #'  * `a` creates a new file or opens an existing one for read/write.
+    #' * `r+` opens an existing file for read/write.
+    #' * `w` creates a file, truncating any existing ones
+    #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
+    #' @return An HDF5AnnData object
+    to_HDF5AnnData = function(file,
+                              compression = c("none", "gzip", "lzf"),
+                              mode = c("w-", "r", "r+", "a", "w", "x")) {
+      to_HDF5AnnData(
+        adata = self,
+        file = file,
+        compression = compression,
+        mode = mode
+      )
     }
   ),
   private = list(
@@ -282,13 +300,6 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           "Expected nrow: ", expected_nrow, ". ",
           "Observed nrow: ", nrow(df), "."
         ))
-      }
-
-      if (has_row_names(df)) {
-        warning(wrap_message(
-          "'", label, "' should not have any rownames, removing them from the data frame."
-        ))
-        rownames(df) <- NULL
       }
 
       df
