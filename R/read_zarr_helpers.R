@@ -107,23 +107,6 @@ read_zarr_array <- function(store, name) {
   return(nested_arr$data)
 }
 
-read_zarr_array_with_rarr <- function(store, name) {
-  if("DirectoryStore" %in% class(store)) {
-    store_root <- store$root
-    arr <- tryCatch({
-      Rarr::read_zarr_array(
-        zarr_array_path = file.path(store_root, name),
-      )
-    }, error = function(e) {
-      # Reading with Rarr failed; Try with Pizzarr.
-      read_zarr_array(store, name)
-    })
-    return(arr)
-  }
-  # Not a DirectoryStore, so cannot use Rarr.
-  return(read_zarr_array(store, name))
-}
-
 #' Read H5AD dense array
 #'
 #' Read a dense array from an H5AD file
@@ -139,7 +122,7 @@ read_zarr_dense_array <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
 
   # Extract the NestedArray contents as a base R array.
-  darr <- read_zarr_array_with_rarr(store, name)
+  darr <- read_zarr_array(store, name)
 
 
   # TODO: ideally, native = TRUE should take care of the row order and column order,
@@ -189,9 +172,9 @@ read_zarr_sparse_array <- function(store, name, version = "0.1.0",
 
   g <- pizzarr::zarr_open_group(store, path = name)
   
-  data <- as.vector(read_zarr_array_with_rarr(store, paste0(name, "/data")))
-  indices <- as.vector(read_zarr_array_with_rarr(store, paste0(name, "/indices")))
-  indptr <- as.vector(read_zarr_array_with_rarr(store, paste0(name, "/indptr")))
+  data <- as.vector(read_zarr_array(store, paste0(name, "/data")))
+  indices <- as.vector(read_zarr_array(store, paste0(name, "/indices")))
+  indptr <- as.vector(read_zarr_array(store, paste0(name, "/indptr")))
   shape <- as.vector(unlist(g$get_attrs()$to_list()$shape, use.names = FALSE))
 
   if (type == "csc_matrix") {

@@ -1,5 +1,3 @@
-VAR_CHUNK_SIZE <- 10
-
 #' @title ZarrAnnData
 #'
 #' @description
@@ -14,8 +12,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
     # .n_vars = NULL,
     # .obs_names = NULL,
     # .var_names = NULL,
-    .compression = NULL,
-    .to_dense = NULL
+    .compression = NULL
   ),
   active = list(
     #' @field X The X slot
@@ -32,12 +29,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        if(private$.to_dense) {
-          value <- as.matrix(value)
-          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE, chunks = c(self$n_obs(), VAR_CHUNK_SIZE))
-        } else {
-          result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
-        }
+        result <- write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
         return(result)
       }
     },
@@ -261,8 +253,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
                           uns = NULL,
                           shape = NULL,
                           mode = c("r", "r+", "a", "w", "w-", "x"),
-                          compression = c("none", "gzip", "lzf"),
-                          to_dense = FALSE) {
+                          compression = c("none", "gzip", "lzf")) {
       if (!requireNamespace("pizzarr", quietly = TRUE)) {
         stop("The Zarr interface requires the 'pizzarr' package to be installed")
       }
@@ -273,7 +264,6 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
 
       # store compression for later use
       private$.compression <- compression
-      private$.to_dense <- to_dense
 
       root <- pizzarr::zarr_open_group(store, path = "/")
       if(length(root$get_attrs()$to_list()) == 0) {
