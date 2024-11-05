@@ -8,17 +8,20 @@
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_zarr_encoding <- function(store, name) {
+read_zarr_encoding <- function(store, name, stop_on_error = TRUE) {
   # Path can be to array or group
   g <- pizzarr::zarr_open(store, path = name)
   attrs <- g$get_attrs()$to_list()
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-    path <- "TODO: get path from store"
-    stop(
-      "Encoding attributes not found for element '", name, "' ",
-      "in '", path, "'"
-    )
+    path <- name
+    if(stop_on_error) {
+      stop(
+        "Encoding attributes not found for element '", name, "' "
+      )
+    } else {
+      return(NULL)
+    }
   }
 
   list(
@@ -47,7 +50,15 @@ read_zarr_encoding <- function(store, name) {
 #' @noRd
 read_zarr_element <- function(store, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
   if (is.null(type)) {
-    encoding_list <- read_zarr_encoding(store, name)
+    encoding_list <- read_zarr_encoding(store, name, stop_on_error = stop_on_error)
+    if(is.null(encoding_list)) {
+      if(stop_on_error) {
+        stop("No encoding info found for element '", name, "'")
+      } else {
+        warning("No encoding found for element '", name, "'")
+        return(NULL)
+      }
+    }
     type <- encoding_list$type
     version <- encoding_list$version
   }
@@ -391,6 +402,9 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
 
   g <- pizzarr::zarr_open(store)
   columns <- g$get_store()$listdir(name)
+
+  # Omit Zarr metadata files from the list of columns.
+  columns <- columns[!columns %in% c(".zgroup", ".zattrs", ".zarray")]
 
   read_zarr_collection(store, name, columns)
 }

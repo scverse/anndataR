@@ -86,3 +86,47 @@ test_that("from_SingleCellExperiment() works", {
   expect_identical(ad0$layers, layers0)
   expect_identical(ad$layers, layers)
 })
+
+test_that("from_SingleCellExperiment() works with Zarr", {
+  ## 0-dimensioned
+  sce0 <- SingleCellExperiment::SingleCellExperiment()
+  dimnames(sce0) <- list(character(0), character(0))
+
+  ## complete
+  x <- matrix(1:15, 3, 5)
+  layers <- list(A = matrix(15:1, 3, 5), B = matrix(LETTERS[1:15], 3, 5))
+  obs <- data.frame(cell = 1:3, row.names = LETTERS[1:3])
+  var <- data.frame(gene = 1:5, row.names = letters[1:5])
+  sce <- SingleCellExperiment::SingleCellExperiment(
+    assays = lapply(c(list(x), layers), t),
+    colData = obs,
+    rowData = var
+  )
+  dimnames <- dimnames(sce)
+
+  store0 <- pizzarr::MemoryStore$new()
+  store <- pizzarr::MemoryStore$new()
+
+  ad0 <- from_SingleCellExperiment(sce0, "ZarrAnnData", store = store0)
+  ad <- from_SingleCellExperiment(sce, "ZarrAnnData", store = store)
+
+  # trackstatus: class=SingleCellExperiment, feature=test_set_X, status=done
+  expect_identical(ad0$X, NULL)
+  expect_identical(ad$X, x)
+  # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
+  expect_identical(ad0$obs, data.frame(row.names = character(0)))
+  expect_identical(ad$obs, obs)
+  # trackstatus: class=SingleCellExperiment, feature=test_set_var, status=done
+  expect_identical(ad0$var, data.frame(row.names = character(0)))
+  expect_identical(ad$var, var)
+  # trackstatus: class=SingleCellExperiment, feature=test_set_obs_names, status=done
+  expect_identical(rownames(ad0$obs), character(0))
+  expect_identical(rownames(ad$obs), dimnames[[2]])
+  # trackstatus: class=SingleCellExperiment, feature=test_set_var_names, status=done
+  expect_identical(rownames(ad0$var), character(0))
+  expect_identical(rownames(ad$var), dimnames[[1]])
+  # trackstatus: class=SingleCellExperiment, feature=test_set_layers, status=done
+  layers0 <- list()
+  expect_identical(ad0$layers, layers0)
+  expect_identical(ad$layers, layers)
+})

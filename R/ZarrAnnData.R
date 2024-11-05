@@ -29,7 +29,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_zarr_element(value, private$zarr_store, "/X", private$.compression)
+        write_zarr_element(value, private$zarr_store, "/X", private$.compression, overwrite = TRUE)
       }
     },
     #' @field layers The layers slot. Must be NULL or a named list
@@ -48,7 +48,7 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_zarr_element(value, private$zarr_store, "/layers", private$.compression)
+        write_zarr_element(value, private$zarr_store, "/layers", private$.compression, overwrite = TRUE)
       }
     },
     #' @field obsm The obsm slot. Must be `NULL` or a named list with
@@ -135,7 +135,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
           value,
           private$zarr_store,
           "/obs",
-          private$.compression
+          private$.compression,
+          overwrite = TRUE
         )
       }
     },
@@ -151,7 +152,8 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         write_zarr_element(
           value,
           private$zarr_store,
-          "/var"
+          "/var",
+          overwrite = TRUE
         )
       }
     },
@@ -262,8 +264,9 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       # store compression for later use
       private$.compression <- compression
 
-      # if(length(root$get_attrs()$to_list()) == 0) {
-      if ((is.character(store) && !dir.exists(store)) || inherits(store, "MemoryStore")) {
+      root <- pizzarr::zarr_open_group(store, path = "/")
+      if(length(root$get_attrs()$to_list()) == 0) {
+      #if ((is.character(store) && !dir.exists(store)) || inherits(store, "MemoryStore")) {
         # Check obs_names and var_names have been provided
         # if (is.null(obs_names)) {
         #   stop("When creating a new .h5ad file, `obs_names` must be defined.")
