@@ -275,8 +275,9 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       private$.compression <- compression
       private$.to_dense <- to_dense
 
-      # if(length(root$get_attrs()$to_list()) == 0) {
-      if ((is.character(store) && !dir.exists(store)) || inherits(store, "MemoryStore")) {
+      root <- pizzarr::zarr_open_group(store, path = "/")
+      if(length(root$get_attrs()$to_list()) == 0) {
+      #if ((is.character(store) && !dir.exists(store)) || inherits(store, "MemoryStore")) {
         # Check obs_names and var_names have been provided
         # if (is.null(obs_names)) {
         #   stop("When creating a new .h5ad file, `obs_names` must be defined.")
