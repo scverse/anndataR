@@ -1,6 +1,3 @@
-# https://github.com/theislab/zellkonverter/blob/devel/R/AnnData2SCE.R#L101
-
-
 #' Convert an AnnData object to a SingleCellExperiment object
 #'
 #' `to_SingleCellExperiment()` converts an AnnData object
