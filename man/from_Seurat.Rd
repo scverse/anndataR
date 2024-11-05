@@ -64,7 +64,7 @@ The \verb{$X} key maps to the \code{X} slot.
 
 Example: \code{layer_mapping = list(counts = "counts", "$X" = "data", foo = "bar")}.
 
-If \code{NULL}, the function \link{from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
+If \code{NULL}, the internal function \code{from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
 \item All Seurat layers are copied by name.
 }
@@ -78,7 +78,7 @@ A named list to map Seurat reductions to AnnData \code{obsm}. Each item in the l
 
 Example: \code{obsm_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
 
-If \code{NULL}, the function \link{from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
+If \code{NULL}, the internal function \code{from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
 \itemize{
 \item All Seurat reductions are prefixed with \code{X_} and copied to AnnData \code{obsm}.
 }
@@ -91,7 +91,7 @@ A named list to map Seurat PCA loadings to AnnData \code{varm}.
 
 Example: \code{varm_mapping = list(pca = "PCs")}.
 
-If \code{NULL}, the function \link{from_Seurat_guess_varms} will be used to guess the varm mapping as follows:
+If \code{NULL}, the internal function \code{from_Seurat_guess_varms} will be used to guess the varm mapping as follows:
 \itemize{
 \item The name of the PCA loadings is copied by name.
 }
@@ -104,7 +104,7 @@ A named list to map Seurat graphs to AnnData \code{obsp}.
 
 Example: \code{obsp_mapping = list(nn = "connectivities")}.
 
-If \code{NULL}, the function \link{from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
+If \code{NULL}, the internal function \code{from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
 \itemize{
 \item All Seurat graphs are copied to \code{obsp} by name.
 }
@@ -119,7 +119,7 @@ corresponding slot. The third element is used to subset the data even further.
 
 Example: \code{varp_mapping = list(foo = c("misc", "foo"))}.
 
-If \code{NULL}, the function \link{from_Seurat_guess_varps} will be used to guess the varp mapping as follows:
+If \code{NULL}, the internal function \code{from_Seurat_guess_varps} will be used to guess the varp mapping as follows:
 \itemize{
 \item No data is mapped to \code{varp}.
 }
@@ -133,7 +133,7 @@ length 2. The first element must be \code{"misc"}. The second element is the nam
 
 Example: \code{uns_mapping = list(foo = c("misc", "foo"))}.
 
-If \code{NULL}, the function \link{from_Seurat_guess_uns} will be used to guess the uns mapping as follows:
+If \code{NULL}, the internal function \code{from_Seurat_guess_uns} will be used to guess the uns mapping as follows:
 \itemize{
 \item All Seurat miscellaneous data is copied to \code{uns} by name.
 }

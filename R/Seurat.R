@@ -23,7 +23,7 @@
 #'
 #' Example: `layer_mapping = list(counts = "counts", data = NULL, foo = "bar")`.
 #'
-#' If `NULL`, the function [to_Seurat_guess_layers] will be used to guess the layer mapping as follows:
+#' If `NULL`, the internal function `to_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
 #' * If `adata$X` is defined, we assume this the `counts`.
 #' * Other layers are copied by name.
@@ -35,7 +35,7 @@
 #
 #' Example: `reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
 #'
-#' If `NULL`, the function [to_Seurat_guess_reductions] will be used to guess the reduction mapping as follows:
+#' If `NULL`, the internal function `to_Seurat_guess_reductions` will be used to guess the reduction mapping as follows:
 #'
 #' * All obsm starting with `X_` are copied by name.
 #'
@@ -46,7 +46,7 @@
 #'
 #' Example: `graph_mapping = list(nn = "connectivities")`.
 #'
-#' If `NULL`, the function [to_Seurat_guess_graphs] will be used to guess the graph mapping as follows:
+#' If `NULL`, the internal function `to_Seurat_guess_graphs` will be used to guess the graph mapping as follows:
 #'
 #' * An obsp named `connectivities` will be mapped to `nn`.
 #' * Other graphs starting with `connectivities_` are stripped of the prefix and copied by name.
@@ -60,7 +60,7 @@
 #'
 #' Example: `misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))`.
 #'
-#' If `NULL`, the function [to_Seurat_guess_misc] will be used to guess the miscellaneous mapping as follows:
+#' If `NULL`, the internal function `to_Seurat_guess_misc` will be used to guess the miscellaneous mapping as follows:
 #'
 #' * If `adata$obsp` is defined, this is mapped to a misc value named `obsp`.
 #' * If `adata$uns` is defined, this is mapped to a misc value named `uns`.
@@ -445,7 +445,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' Example: `layer_mapping = list(counts = "counts", "$X" = "data", foo = "bar")`.
 #'
-#' If `NULL`, the function [from_Seurat_guess_layers] will be used to guess the layer mapping as follows:
+#' If `NULL`, the internal function `from_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
 #' * All Seurat layers are copied by name.
 #'
@@ -456,7 +456,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' Example: `obsm_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
 #'
-#' If `NULL`, the function [from_Seurat_guess_obsms] will be used to guess the obsm mapping as follows:
+#' If `NULL`, the internal function `from_Seurat_guess_obsms` will be used to guess the obsm mapping as follows:
 #'
 #' * All Seurat reductions are prefixed with `X_` and copied to AnnData `obsm`.
 #'
@@ -466,7 +466,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' Example: `varm_mapping = list(pca = "PCs")`.
 #'
-#' If `NULL`, the function [from_Seurat_guess_varms] will be used to guess the varm mapping as follows:
+#' If `NULL`, the internal function `from_Seurat_guess_varms` will be used to guess the varm mapping as follows:
 #'
 #' * The name of the PCA loadings is copied by name.
 #'
@@ -476,7 +476,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' Example: `obsp_mapping = list(nn = "connectivities")`.
 #'
-#' If `NULL`, the function [from_Seurat_guess_obsps] will be used to guess the obsp mapping as follows:
+#' If `NULL`, the internal function `from_Seurat_guess_obsps` will be used to guess the obsp mapping as follows:
 #'
 #' * All Seurat graphs are copied to `obsp` by name.
 #'
@@ -488,7 +488,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' Example: `varp_mapping = list(foo = c("misc", "foo"))`.
 #'
-#' If `NULL`, the function [from_Seurat_guess_varps] will be used to guess the varp mapping as follows:
+#' If `NULL`, the internal function `from_Seurat_guess_varps` will be used to guess the varp mapping as follows:
 #'
 #' * No data is mapped to `varp`.
 #'
@@ -499,7 +499,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' Example: `uns_mapping = list(foo = c("misc", "foo"))`.
 #'
-#' If `NULL`, the function [from_Seurat_guess_uns] will be used to guess the uns mapping as follows:
+#' If `NULL`, the internal function `from_Seurat_guess_uns` will be used to guess the uns mapping as follows:
 #'
 #' * All Seurat miscellaneous data is copied to `uns` by name.
 #'

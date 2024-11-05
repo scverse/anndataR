@@ -46,7 +46,7 @@ A value of \code{NULL} corresponds to the \code{X} slot.
 
 Example: \code{layer_mapping = list(counts = "counts", data = NULL, foo = "bar")}.
 
-If \code{NULL}, the function \link{to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
+If \code{NULL}, the internal function \code{to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
 \item If \code{adata$X} is defined, we assume this the \code{counts}.
 \item Other layers are copied by name.
@@ -60,7 +60,7 @@ A named list to map AnnData \code{obsm} and \code{varm} to Seurat reductions. Ea
 with keys \code{'key'}, \code{'obsm'}, and \code{'varm'}.
 Example: \code{reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
 
-If \code{NULL}, the function \link{to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
+If \code{NULL}, the internal function \code{to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
 \itemize{
 \item All obsm starting with \code{X_} are copied by name.
 }
@@ -74,7 +74,7 @@ character vector of length 1.
 
 Example: \code{graph_mapping = list(nn = "connectivities")}.
 
-If \code{NULL}, the function \link{to_Seurat_guess_graphs} will be used to guess the graph mapping as follows:
+If \code{NULL}, the internal function \code{to_Seurat_guess_graphs} will be used to guess the graph mapping as follows:
 \itemize{
 \item An obsp named \code{connectivities} will be mapped to \code{nn}.
 \item Other graphs starting with \code{connectivities_} are stripped of the prefix and copied by name.
@@ -91,7 +91,7 @@ not present, the data in the first element will be used.
 
 Example: \code{misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))}.
 
-If \code{NULL}, the function \link{to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
+If \code{NULL}, the internal function \code{to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
 \itemize{
 \item If \code{adata$obsp} is defined, this is mapped to a misc value named \code{obsp}.
 \item If \code{adata$uns} is defined, this is mapped to a misc value named \code{uns}.
