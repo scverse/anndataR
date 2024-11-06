@@ -161,10 +161,9 @@ to_Seurat <- function(
   for (i in seq_along(layer_mapping)) {
     from <- layer_mapping[[i]]
     to <- names(layer_mapping)[[i]]
-    if (to == "counts" || to == "data") {
-      next
+    if (!to %in% c("counts", "data")) {
+      SeuratObject::LayerData(obj, assay = assay_name, layer = to) <- adata$layers[[from]]
     }
-    SeuratObject::LayerData(obj, assay = assay_name, layer = to) <- adata$layers[[from]]
   }
 
   # copy reductions
