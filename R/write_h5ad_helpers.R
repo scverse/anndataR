@@ -157,7 +157,8 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
   }
 
   if (!is.vector(value)) {
-    value <- t(value)
+    # value <- t(value)
+    value <- value
   }
 
   # Guess data type
