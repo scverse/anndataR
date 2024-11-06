@@ -41,8 +41,9 @@ the mapping.
 \section{Layer mapping}{
 
 
-A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
-A value of \code{NULL} corresponds to the \code{X} slot.
+A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1,
+where the values correspond to the names of the layers in the AnnData object, and the names correspond
+to the names of the layers in the resulting Seurat object. A value of \code{NULL} corresponds to the AnnData \code{X} slot.
 
 Example: \code{layer_mapping = list(counts = "counts", data = NULL, foo = "bar")}.
 
@@ -70,7 +71,8 @@ If \code{NULL}, the internal function \code{to_Seurat_guess_reductions} will be 
 
 
 A named list mapping graph names to the names of the graphs in the AnnData object. Each item in the list must be a
-character vector of length 1.
+character vector of length 1. The values correspond to the names of the graphs in the resulting Seurat object, while
+the names correspond to the names of the graphs in the AnnData object.
 
 Example: \code{graph_mapping = list(nn = "connectivities")}.
 
@@ -85,16 +87,15 @@ If \code{NULL}, the internal function \code{to_Seurat_guess_graphs} will be used
 
 
 A named list mapping miscellaneous data to the names of the data in the AnnData object. Each item in the list must be
-a named list with one or two elements. The first element must be one of: 'X', 'layers', 'obs', 'obsm', 'obsp', 'var',
+a vector with one or two elements. The first element must be one of: 'X', 'layers', 'obs', 'obsm', 'obsp', 'var',
 'varm', 'varp', 'uns'. The second element is the name of the data in the corresponding slot. If the second element is
-not present, the data in the first element will be used.
+not present, the whole slot as specified by the first element will be used.
 
 Example: \code{misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))}.
 
 If \code{NULL}, the internal function \code{to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
 \itemize{
-\item If \code{adata$obsp} is defined, this is mapped to a misc value named \code{obsp}.
-\item If \code{adata$uns} is defined, this is mapped to a misc value named \code{uns}.
+\item If \verb{$uns} is defined, all values in \verb{$uns} are copied to the Seurat misc.
 }
 }
 

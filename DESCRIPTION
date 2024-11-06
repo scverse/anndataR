@@ -60,8 +60,10 @@ BugReports: https://github.com/scverse/anndataR/issues
 Depends: 
     R (>= 4.0.0)
 Imports:
+    cli,
     Matrix,
     methods,
+    purrr,
     R6
 Suggests:
     anndata,
