@@ -221,19 +221,21 @@ to_Seurat <- function(
     if (!is.character(misc) || length(misc) <= 0 || length(misc) > 2) {
       stop("misc_mapping must be a named list with one or two elements")
     }
+    misc_slot <- misc[[1]]
+    misc_key <- misc[[2]]
     expected_slots <- c("X", "layers", "obs", "obsm", "obsp", "var", "varm", "varp", "uns")
-    if (!misc[[1]] %in% expected_slots) {
+    if (!misc_slot %in% expected_slots) {
       stop(paste0(
         "The first element of each item in misc_mapping must be one of: ",
         paste0("'", expected_slots, "'", collapse = ", ")
       ))
     }
-    misc_data <- adata[[misc[[1]]]]
+    misc_data <- adata[[misc_slot]]
     if (length(misc) == 2) {
-      if (!misc[[2]] %in% names(misc_data)) {
-        stop(paste0("misc_mapping: adata$", misc[[1]], "[[", misc[[2]], "]] does not exist"))
+      if (!misc_key %in% names(misc_data)) {
+        stop(paste0("misc_mapping: adata$", misc_slot, "[[", misc_key, "]] does not exist"))
       }
-      misc_data <- misc_data[[misc[[2]]]]
+      misc_data <- misc_data[[misc_key]]
     }
     if (!is.null(misc_data)) {
       obj@misc[[misc_name]] <- misc_data
