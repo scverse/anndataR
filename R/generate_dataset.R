@@ -256,12 +256,7 @@ generate_dataset <- function(
 #'
 #' @noRd
 .generate_dataset_as_sce <- function(dataset_list) {
-  if (!requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-    stop(
-      "Creating a SingleCellExperiment requires the 'SingleCellExperiment'",
-      "package to be installed"
-    )
-  }
+  check_requires("Creating a SingleCellExperiment", "SingleCellExperiment")
 
   assays_list <- c(
     list(X = dataset_list$X),
@@ -290,11 +285,7 @@ generate_dataset <- function(
 #'
 #' @noRd
 .generate_dataset_as_seurat <- function(dataset_list) {
-  if (!requireNamespace("SeuratObject", quietly = TRUE)) {
-    stop(
-      "Creating a Seurat requires the 'SeuratObject' package to be installed"
-    )
-  }
+  check_requires("Creating a SeuratObject", "SeuratObject")
 
   X <- t(dataset_list$layers[["integer_csparse"]])
   colnames(X) <- dataset_list$obs_names

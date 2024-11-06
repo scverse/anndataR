@@ -255,9 +255,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
                           shape = NULL,
                           mode = c("r", "r+", "a", "w", "w-", "x"),
                           compression = c("none", "gzip", "lzf")) {
-      if (!requireNamespace("hdf5r", quietly = TRUE)) {
-        stop("The HDF5 interface requires the 'hdf5r' package to be installed")
-      }
+      check_requires("HDF5AnnData", "hdf5r")
 
       # check arguments
       compression <- match.arg(compression)

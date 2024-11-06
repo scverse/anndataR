@@ -89,7 +89,7 @@ to_Seurat <- function(
     graph_mapping = NULL,
     misc_mapping = NULL) {
   # nolint end: object_name_linter
-  requireNamespace("SeuratObject")
+  check_requires("Converting AnnData to Seurat", "SeuratObject")
 
   stopifnot(inherits(adata, "AbstractAnnData"))
 
@@ -287,7 +287,6 @@ to_Seurat <- function(
 }
 
 .to_seurat_process_reduction <- function(adata, assay_name, key, obsm_embedding, varm_loadings) {
-  requireNamespace("SeuratObject")
   if (!.to_seurat_is_atomic_character(key)) {
     stop("key must be a character scalar")
   }
@@ -532,6 +531,8 @@ from_Seurat <- function(
     varp_mapping = NULL,
     uns_mapping = NULL,
     ...) {
+  check_requires("Converting Seurat to AnnData", "SeuratObject")
+
   output_class <- match.arg(output_class)
 
   stopifnot(inherits(seurat_obj, "Seurat"))

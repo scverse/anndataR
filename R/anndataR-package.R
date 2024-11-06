@@ -61,5 +61,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom cli cli_abort cli_warn cli_inform
+#' @importFrom purrr map_lgl
 ## usethis namespace: end
 NULL

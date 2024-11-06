@@ -28,6 +28,8 @@
 #' sce <- to_SingleCellExperiment(ad)
 #' sce
 to_SingleCellExperiment <- function(object) { # nolint
+  check_requires("Converting AnnData to SingleCellExperiment", "SingleCellExperiment")
+
   stopifnot(
     inherits(object, "AbstractAnnData")
   )
@@ -119,6 +121,7 @@ from_SingleCellExperiment <- function(
     sce,
     output_class = c("InMemory", "HDF5AnnData"),
     ...) {
+  check_requires("Converting SingleCellExperiment to AnnData", "SingleCellExperiment")
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )
