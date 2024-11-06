@@ -26,7 +26,7 @@
 #'
 #' If `NULL`, the internal function `to_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
-#' * If `adata$X` is defined, we assume this the `counts`.
+#' * If `adata$X` is defined, we assume this is the `counts`.
 #' * Other layers are copied by name.
 #'
 #' @section Reduction mapping:
@@ -38,7 +38,7 @@
 #'
 #' If `NULL`, the internal function `to_Seurat_guess_reductions` will be used to guess the reduction mapping as follows:
 #'
-#' * All obsm starting with `X_` are copied by name.
+#' * All `obsm` items starting with `X_` are copied by name.
 #'
 #' @section Graph mapping:
 #'
@@ -203,7 +203,7 @@ to_Seurat <- function(
     graph_name <- names(graph_mapping)[[i]]
     graph <- graph_mapping[[i]]
     if (!is.character(graph) || length(graph) != 1) {
-      stop("each graph must be a character vector of length 1")
+      stop("item ", graph_name, " in graph_mapping is not a character vector of length 1")
     }
     obsp <- adata$obsp[[graph]]
     if (!is.null(obsp)) {
