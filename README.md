@@ -37,7 +37,7 @@ pak::pak("scverse/anndataR")
 You will need to install additional dependencies, depending on
 the task you want to perform.
 
-- To read/write `*.h5ad` files, install [hdf5r](https://cran.r-project.org/package=hdf5r):
+- To read/write `*.h5ad` files, install [hdf5r](https://cran.r-project.org/package=hdf5r):  
   `install.packages("hdf5r")`
 - To convert to/from `SingleCellExperiment` objects, install [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
   `BiocManager::install("SingleCellExperiment")`
