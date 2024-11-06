@@ -6,7 +6,7 @@
 \usage{
 write_zarr(
   object,
-  store,
+  path,
   compression = c("none", "gzip", "lzf"),
   mode = c("w-", "r", "r+", "a", "w", "x")
 )
@@ -15,19 +15,19 @@ write_zarr(
 \item{object}{The object to write, either a "SingleCellExperiment" or a
 "Seurat" object}
 
-\item{compression}{The compression algorithm to use when writing the
-HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\item{path}{Path of the file (or zarr store) to write to}
+
+\item{compression}{The compression algorithm to use when writing
+Zarr arrays. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
 
-\item{mode}{The mode to open the HDF5 file.
+\item{mode}{The mode to open the Zarr store.
 \itemize{
 \item \code{a} creates a new file or opens an existing one for read/write.
 \item \verb{r+} opens an existing file for read/write.
 \item \code{w} creates a file, truncating any existing ones
 \item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
 }}
-
-\item{path}{Path of the file to write to}
 }
 \value{
 \code{path} invisibly
@@ -37,20 +37,18 @@ Write a Zarr store
 }
 \examples{
 adata <- AnnData(
-  X = matrix(1:15, 3L, 5L),
+  X = matrix(1:5, 3L, 5L),
   layers = list(
-    A = matrix(15:1, 3L, 5L),
-    B = matrix(letters[1:15], 3L, 5L)
+    A = matrix(5:1, 3L, 5L),
+    B = matrix(letters[1:5], 3L, 5L)
   ),
-  obs = data.frame(cell = 1:3),
-  var = data.frame(gene = 1:5),
-  obs_names = LETTERS[1:3],
-  var_names = letters[1:5]
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
-h5ad_file <- tempfile(fileext = ".h5ad")
-write_zarr(adata, h5ad_file)
+store <- pizzarr::MemoryStore$new()
+write_zarr(adata, store)
 
-# Write a SingleCellExperiment as an H5AD
+# Write a SingleCellExperiment as a Zarr store
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
   ncells <- 100
   counts <- matrix(rpois(20000, 5), ncol = ncells)
@@ -64,11 +62,11 @@ if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
     reducedDims = list(PCA = pca, tSNE = tsne)
   )
 
-  h5ad_file <- tempfile(fileext = ".h5ad")
-  write_zarr(sce, h5ad_file)
+  store <- pizzarr::MemoryStore$new()
+  write_zarr(sce, store)
 }
 
-# Write a Seurat as a H5AD
+# Write a Seurat as a Zarr store
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
   # TODO: uncomment this code when the seurat converter is fixed
   # counts <- matrix(1:15, 3L, 5L)
@@ -87,7 +85,7 @@ if (requireNamespace("SeuratObject", quietly = TRUE)) {
   # )
   # obj <- SeuratObject::AddMetaData(obj, cell.metadata)
   #
-  # h5ad_file <- tempfile(fileext = ".h5ad")
-  # write_zarr(obj, h5ad_file)
+  # store <- pizzarr::MemoryStore$new()
+  # write_zarr(obj, store)
 }
 }

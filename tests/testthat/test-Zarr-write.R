@@ -171,7 +171,6 @@ test_that("writing Zarr from SingleCellExperiment works", {
 
   sce <- generate_dataset(format = "SingleCellExperiment")
   write_zarr(sce, store)
-  #expect_true(file.exists(file))
   # TODO: expect things
 })
 
@@ -202,7 +201,6 @@ test_that("writing gzip compressed files works for Zarr", {
   write_zarr(adata, store_none, compression = "none")
   write_zarr(adata, store_gzip, compression = "gzip")
 
-  #expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_gzip)$size)
   # TODO: expect things
 })
 
@@ -222,6 +220,5 @@ test_that("writing lzf compressed files works for Zarr", {
   write_zarr(adata, store_none, compression = "none")
   write_zarr(adata, store_lzf, compression = "lzf")
 
-  #expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
   # TODO: expect things
 })

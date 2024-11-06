@@ -59,14 +59,16 @@ test_that("reading 1D nullable arrays works", {
   expect_vector(array_1d, ptype = double(), size = 50)
   expect_true(any(is.na(array_1d)))
 
-  # # TODO: non NA booleans dont have mask arrays, should they ?
-  # array_1d <- read_zarr_nullable_boolean(store, "obs/Bool")
-  # expect_vector(array_1d, ptype = logical(), size = 50)
-  # expect_false(any(is.na(array_1d)))
-
   array_1d <- read_zarr_nullable_boolean(store, "obs/BoolNA")
   expect_vector(array_1d, ptype = logical(), size = 50)
   expect_true(any(is.na(array_1d)))
+})
+
+test_that("reading 1D nullable arrays works (Nullable boolean)", {
+  skip("TODO: non NA booleans dont have mask arrays, should they ?")
+  array_1d <- read_zarr_nullable_boolean(store, "obs/Bool")
+  expect_vector(array_1d, ptype = logical(), size = 50)
+  expect_false(any(is.na(array_1d)))
 })
 
 test_that("reading string scalars works", {

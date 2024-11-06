@@ -6,18 +6,21 @@
 \usage{
 read_zarr(
   path,
-  to = c("InMemoryAnnData", "ZarrAnnData", "SingleCellExperiment", "Seurat"),
+  to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat",
+    "ZarrAnnData"),
   ...
 )
 }
 \arguments{
-\item{path}{Path to the H5AD file to read}
+\item{path}{Path to the Zarr store to read}
 
 \item{to}{The type of object to return. Must be one of: "InMemoryAnnData",
 "HDF5AnnData", "SingleCellExperiment", "Seurat"}
 
-\item{...}{Extra arguments provided to \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} or
-\code{\link[=to_Seurat]{to_Seurat()}}}
+\item{...}{Extra arguments provided to \code{adata$to_SingleCellExperiment()} or
+\code{adata$to_Seurat()}. See \code{\link[=AnnData]{AnnData()}} for more information on the arguments of
+these functions. Note: update this documentation when
+\href{https://github.com/r-lib/roxygen2/issues/955}{\code{r-lib/roxygen2#955}} is resolved.}
 }
 \value{
 The object specified by \code{to}
@@ -26,15 +29,16 @@ The object specified by \code{to}
 Read data from a Zarr store
 }
 \examples{
-h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+file <- system.file("extdata", "example.zarr", package = "anndataR")
+store <- pizzarr::DirectoryStore$new(file)
 
-# Read the H5AD as a SingleCellExperiment object
+# Read the Zarr store as a SingleCellExperiment object
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-  sce <- read_zarr(h5ad_file, to = "SingleCellExperiment")
+  sce <- read_zarr(store, to = "SingleCellExperiment")
 }
 
-# Read the H5AD as a Seurat object
+# Read the Zarr store as a Seurat object
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
-  seurat <- read_zarr(h5ad_file, to = "Seurat")
+  seurat <- read_zarr(store, to = "Seurat")
 }
 }

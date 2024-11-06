@@ -14,8 +14,7 @@ read_zarr_encoding <- function(store, name, stop_on_error = TRUE) {
   attrs <- g$get_attrs()$to_list()
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-    path <- name
-    if(stop_on_error) {
+    if (stop_on_error) {
       stop(
         "Encoding attributes not found for element '", name, "' "
       )
@@ -51,8 +50,8 @@ read_zarr_encoding <- function(store, name, stop_on_error = TRUE) {
 read_zarr_element <- function(store, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
   if (is.null(type)) {
     encoding_list <- read_zarr_encoding(store, name, stop_on_error = stop_on_error)
-    if(is.null(encoding_list)) {
-      if(stop_on_error) {
+    if (is.null(encoding_list)) {
+      if (stop_on_error) {
         stop("No encoding info found for element '", name, "'")
       } else {
         warning("No encoding found for element '", name, "'")
@@ -398,7 +397,6 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
 #' @noRd
 read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
-  groupname <- paste0("/", name)
 
   g <- pizzarr::zarr_open(store)
   columns <- g$get_store()$listdir(name)

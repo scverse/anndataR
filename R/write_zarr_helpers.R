@@ -111,7 +111,13 @@ write_zarr_encoding <- function(store, name, encoding, version) {
 #' @param version Encoding version of the element to write
 #'
 #' @noRd
-write_zarr_dense_array <- function(value, store, name, compression, version = "0.2.0", chunks = TRUE, overwrite = FALSE) {
+write_zarr_dense_array <- function(value,
+                                   store,
+                                   name,
+                                   compression,
+                                   version = "0.2.0",
+                                   chunks = TRUE,
+                                   overwrite = FALSE) {
   version <- match.arg(version)
 
   zarr_write_compressed(store, name, value, compression, chunks = chunks, overwrite = overwrite)
@@ -132,7 +138,12 @@ write_zarr_dense_array <- function(value, store, name, compression, version = "0
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_sparse_array <- function(value, store, name, compression, version = "0.1.0", overwrite = FALSE) {
+write_zarr_sparse_array <- function(value,
+                                    store,
+                                    name,
+                                    compression,
+                                    version = "0.1.0",
+                                    overwrite = FALSE) {
   version <- match.arg(version)
 
   # check types
@@ -179,7 +190,7 @@ write_zarr_sparse_array <- function(value, store, name, compression, version = "
 #' @param version Encoding version of the element to write
 write_zarr_nullable_boolean <- function(value, store, name, compression, version = "0.1.0", overwrite = FALSE) {
   # write mask and values
-  g <- pizzarr::zarr_open_group(store, path = name)
+  pizzarr::zarr_open_group(store, path = name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
@@ -204,7 +215,7 @@ write_zarr_nullable_boolean <- function(value, store, name, compression, version
 #' @param version Encoding version of the element to write
 write_zarr_nullable_integer <- function(value, store, name, compression, version = "0.1.0", overwrite = FALSE) {
   # write mask and values
-  g <- pizzarr::zarr_open_group(store, path = name)
+  pizzarr::zarr_open_group(store, path = name)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- -1L
 
@@ -227,7 +238,12 @@ write_zarr_nullable_integer <- function(value, store, name, compression, version
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_string_array <- function(value, store, name, compression, version = "0.2.0", overwrite = FALSE) {
+write_zarr_string_array <- function(value,
+                                    store,
+                                    name,
+                                    compression,
+                                    version = "0.2.0",
+                                    overwrite = FALSE) {
 
   if (!is.null(dim(value))) {
     dims <- dim(value)
@@ -238,7 +254,9 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
   object_codec <- pizzarr::VLenUtf8Codec$new()
   data <- array(data = value, dim = dims)
   # TODO: existing _index does not allow overwriting, so shall we keep overwrite=TRUE here ?
-  a <- pizzarr::zarr_create_array(data, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = dims, overwrite = TRUE)
+  pizzarr::zarr_create_array(data,
+                             store = store, path = name, dtype = "|O",
+                             object_codec = object_codec, shape = dims, overwrite = TRUE)
 
   write_zarr_encoding(store, name, "string-array", version)
 }
@@ -255,8 +273,13 @@ write_zarr_string_array <- function(value, store, name, compression, version = "
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_categorical <- function(value, store, name, compression, version = "0.2.0", overwrite = FALSE) {
-  g <- pizzarr::zarr_open_group(store, path = name)
+write_zarr_categorical <- function(value,
+                                   store,
+                                   name,
+                                   compression,
+                                   version = "0.2.0",
+                                   overwrite = FALSE) {
+  pizzarr::zarr_open_group(store, path = name)
   zarr_write_compressed(store, paste0(name, "/categories"), levels(value), compression, overwrite = overwrite)
   zarr_write_compressed(store, paste0(name, "/codes"), as.integer(value), compression, overwrite = overwrite)
   zarr_write_compressed(store, paste0(name, "/ordered"), is.ordered(value), compression, overwrite = overwrite)
@@ -276,11 +299,22 @@ write_zarr_categorical <- function(value, store, name, compression, version = "0
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_string_scalar <- function(value, store, name, compression, version = "0.2.0", overwrite = FALSE) {
+write_zarr_string_scalar <- function(value,
+                                     store,
+                                     name,
+                                     compression,
+                                     version = "0.2.0",
+                                     overwrite = FALSE) {
   # Write scalar
-  object_codec = pizzarr::VLenUtf8Codec$new()
+  object_codec <- pizzarr::VLenUtf8Codec$new()
   value <- array(data = value, dim = 1)
-  a <- pizzarr::zarr_create_array(value, store = store, path = name, dtype = "|O", object_codec = object_codec, shape = 1, overwrite = overwrite)
+  pizzarr::zarr_create_array(value,
+                             store = store,
+                             path = name,
+                             dtype = "|O",
+                             object_codec = object_codec,
+                             shape = 1,
+                             overwrite = overwrite)
 
   # Write attributes
   write_zarr_encoding(store, name, "string", version)
@@ -298,7 +332,12 @@ write_zarr_string_scalar <- function(value, store, name, compression, version = 
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-write_zarr_numeric_scalar <- function(value, store, name, compression, version = "0.2.0", overwrite = FALSE) {
+write_zarr_numeric_scalar <- function(value,
+                                      store,
+                                      name,
+                                      compression,
+                                      version = "0.2.0",
+                                      overwrite = FALSE) {
   # Write scalar
   zarr_write_compressed(store, name, value, compression, overwrite = overwrite)
 
@@ -319,7 +358,7 @@ write_zarr_numeric_scalar <- function(value, store, name, compression, version =
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_zarr_mapping <- function(value, store, name, compression, version = "0.1.0", overwrite = FALSE) {
-  g <- pizzarr::zarr_open_group(store, path = name)
+  pizzarr::zarr_open_group(store, path = name)
 
   # Write mapping elements
   for (key in names(value)) {
@@ -435,8 +474,6 @@ write_empty_zarr <- function(store, obs, var, compression, version = "0.1.0", ov
   pizzarr::zarr_open_group(store, path = "/")
   write_zarr_encoding(store, "/", "anndata", "0.1.0")
 
-  # write_zarr_element(data.frame(row.names = obs_names), store, "/obs", compression)
-  # write_zarr_element(data.frame(row.names = var_names), store, "/var", compression)
   write_zarr_element(obs, store, "/obs", compression, overwrite = overwrite)
   write_zarr_element(var, store, "/var", compression, overwrite = overwrite)
 
@@ -472,7 +509,7 @@ write_empty_zarr <- function(store, obs, var, compression, version = "0.1.0", ov
 zarr_path_exists <- function(store, target_path) {
   store <- pizzarr::zarr_open(store, path = "")
   result <- tryCatch({
-    if(store$contains_item(target_path)) {
+    if (store$contains_item(target_path)) {
       # This should work for DirectoryStore but not yet for MemoryStore.
       return(TRUE)
     }
@@ -481,11 +518,11 @@ zarr_path_exists <- function(store, target_path) {
     store$get_item(target_path)
     return(TRUE)
   }, error = function(cond) {
-    if(pizzarr::is_key_error(cond)) {
+    if (pizzarr::is_key_error(cond)) {
       return(FALSE)
     }
     stop(cond)
-  }, warnings = function(w){})
+  }, warnings = function(w) {})
   return(result)
 }
 
@@ -504,7 +541,12 @@ zarr_path_exists <- function(store, target_path) {
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #'
 #' @return Whether the `path` exists in `file`
-zarr_write_compressed <- function(store, name, value, compression = c("none", "gzip", "lzf"), chunks = TRUE, overwrite = FALSE) {
+zarr_write_compressed <- function(store,
+                                  name,
+                                  value,
+                                  compression = c("none", "gzip", "lzf"),
+                                  chunks = TRUE,
+                                  overwrite = FALSE) {
   compression <- match.arg(compression)
   if (!is.null(dim(value))) {
     dims <- dim(value)
@@ -513,18 +555,25 @@ zarr_write_compressed <- function(store, name, value, compression = c("none", "g
   }
 
   object_codec <- NA
-  if(is.integer(value)) {
+  if (is.integer(value)) {
     dtype <- "<i4" # TODO: make 32-vs-64-bit configurable
-  } else if(is.numeric(value)) {
+  } else if (is.numeric(value)) {
     dtype <- "<f4" # TODO: make 32-vs-64-bit configurable
-  } else if(is.logical(value)) {
+  } else if (is.logical(value)) {
     dtype <- "|b1"
-  } else if(is.character(value)) {
+  } else if (is.character(value)) {
     dtype <- "|O"
     object_codec <- pizzarr::VLenUtf8Codec$new()
   } else {
     stop("Unsupported data type for writing to Zarr: ", class(value))
   }
   data <- array(data = value, dim = dims)
-  pizzarr::zarr_create_array(data, store = store, path = name, shape = dims, dtype = dtype, object_codec = object_codec, chunks = chunks, overwrite = overwrite) # TODO: compression
+  pizzarr::zarr_create_array(data,
+                             store = store,
+                             path = name,
+                             shape = dims,
+                             dtype = dtype,
+                             object_codec = object_codec,
+                             chunks = chunks,
+                             overwrite = overwrite) # TODO: compression
 }

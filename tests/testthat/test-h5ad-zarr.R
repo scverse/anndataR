@@ -1,7 +1,6 @@
 skip_if_not_installed("rhdf5")
 skip_if_not_installed("pizzarr")
 
-# file <- system.file("extdata", "example.h5ad", package = "anndataR")
 file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
 
 zarr_dir <- system.file("extdata", "example.zarr", package = "anndataR")
@@ -27,18 +26,19 @@ test_that("reading sparse matrices is same for h5ad and zarr", {
   expect_equal(mat_h5ad, mat_zarr)
 })
 
-# test_that("reading recarrays works", {
-#   array_list <- read_h5ad_rec_array(
-#     file, "uns/rank_genes_groups/logfoldchanges"
-#   )
-#   expect_true(is.list(array_list))
-#   expect_equal(names(array_list), c("0", "1", "2", "3", "4", "5"))
-#   for (array in array_list) {
-#     expect_true(is.array(array))
-#     expect_type(array, "double")
-#     expect_equal(dim(array), 100)
-#   }
-# })
+test_that("reading recarrays works", {
+  skip("read_zarr_rec_array is not implemented yet")
+  array_list <- read_zarr_rec_array(
+    file, "uns/rank_genes_groups/logfoldchanges"
+  )
+  expect_true(is.list(array_list))
+  expect_equal(names(array_list), c("0", "1", "2", "3", "4", "5"))
+  for (array in array_list) {
+    expect_true(is.array(array))
+    expect_type(array, "double")
+    expect_equal(dim(array), 100)
+  }
+})
 
 test_that("reading 1D numeric arrays is same for h5ad and zarr", {
   array_1d_h5ad <- read_h5ad_dense_array(file, "obs/Int")
@@ -67,8 +67,7 @@ test_that("reading 1D nullable arrays is same for h5ad and zarr", {
 
   # TODO: check this test, zarr Bools are stored as dense array hence no mask is given
   array_1d_h5ad <- read_h5ad_nullable_boolean(file, "obs/Bool")
-  # array_1d_zarr <- read_zarr_nullable_boolean(store, "obs/Bool")
-  array_1d_zarr <- read_zarr_dense_array(store, "obs/Bool")
+  array_1d_zarr <- read_zarr_dense_array(store, "obs/Bool") # TODO: read_zarr_nullable_boolean should be used instead ?
   expect_equal(array_1d_h5ad, array_1d_zarr)
 
   array_1d_h5ad <- read_h5ad_nullable_boolean(file, "obs/BoolNA")
@@ -98,15 +97,15 @@ test_that("reading string arrays is same for h5ad and zarr", {
   expect_equal(array_h5ad, array_zarr)
 })
 
-# test_that("reading mappings is same for h5ad and zarr", {
-#   mapping_h5ad <- read_h5ad_mapping(file, "uns")
-#   mapping_zarr <- read_zarr_mapping(store, "uns")
+test_that("reading mappings is same for h5ad and zarr", {
+  skip("read_zarr_mapping returns list in different order")
+  mapping_h5ad <- read_h5ad_mapping(file, "uns")
+  mapping_zarr <- read_zarr_mapping(store, "uns")
 
-#   expect_equal(mapping_h5ad, mapping_zarr)
-# })
+  expect_equal(mapping_h5ad, mapping_zarr)
+})
 
 test_that("reading dataframes works", {
-  # df_h5ad <- read_h5ad_data_frame(file, "obs", include_index = TRUE)
   df_h5ad <- read_h5ad_data_frame(file, "obs")
   df_zarr <- read_zarr_data_frame(store, "obs", include_index = TRUE)
 
@@ -117,10 +116,6 @@ test_that("reading H5AD as SingleCellExperiment is same for h5ad and zarr", {
   skip_if_not_installed("SingleCellExperiment")
 
   sce_h5ad <- read_h5ad(file, to = "SingleCellExperiment")
-  # h5ad reads this column as characters like 'TRUE', 'FALSE', while zarr reads as logical
-  # sce_h5ad@rowRanges@elementMetadata@listData$highly_variable <- as.logical(
-  #   sce_h5ad@rowRanges@elementMetadata@listData$highly_variable
-  # )
   sce_zarr <- read_zarr(store, to = "SingleCellExperiment")
 
   expect_equal(sce_h5ad, sce_zarr)

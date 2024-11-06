@@ -4,7 +4,7 @@
 #'
 #' @param object The object to write, either a "SingleCellExperiment" or a
 #' "Seurat" object
-#' @param path Path of the file to write to
+#' @param path Path of the file (or zarr store) to write to
 #' @param compression The compression algorithm to use when writing
 #'  Zarr arrays. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
@@ -20,15 +20,13 @@
 #'
 #' @examples
 #' adata <- AnnData(
-#'   X = matrix(1:15, 3L, 5L),
+#'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
-#'     A = matrix(15:1, 3L, 5L),
-#'     B = matrix(letters[1:15], 3L, 5L)
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' store <- pizzarr::MemoryStore$new()
 #' write_zarr(adata, store)
@@ -73,14 +71,17 @@
 #'   # store <- pizzarr::MemoryStore$new()
 #'   # write_zarr(obj, store)
 #' }
-write_zarr <- function(object, store, compression = c("none", "gzip", "lzf"),
-                       mode = c("w-", "r", "r+", "a", "w", "x")) {
+write_zarr <- function(
+    object,
+    path,
+    compression = c("none", "gzip", "lzf"),
+    mode = c("w-", "r", "r+", "a", "w", "x")) {
   mode <- match.arg(mode)
   if (inherits(object, "SingleCellExperiment")) {
     from_SingleCellExperiment(
       object,
       output_class = "ZarrAnnData",
-      store = store,
+      store = path,
       compression = compression,
       mode = mode
     )
@@ -88,12 +89,12 @@ write_zarr <- function(object, store, compression = c("none", "gzip", "lzf"),
     from_Seurat(
       object,
       output_class = "ZarrAnnData",
-      store = store,
+      store = path,
       compression = compression,
       mode = mode
     )
   } else if (inherits(object, "AbstractAnnData")) {
-    to_ZarrAnnData(object, store, compression = compression, mode = mode)
+    to_ZarrAnnData(object, path, compression = compression, mode = mode)
   } else {
     stop("Unable to write object of class: ", class(object))
   }
