@@ -399,11 +399,10 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 
   misc_mapping <- list()
 
-  if (!is.null(adata$obsp)) {
-    misc_mapping["obsp"] <- "obsp"
-  }
   if (!is.null(adata$uns)) {
-    misc_mapping["uns"] <- "uns"
+    for (key in names(adata$uns)) {
+      misc_mapping[[key]] <- c("uns", key)
+    }
   }
 
   # TODO: copy obsm which were not used as embeddings?
