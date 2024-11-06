@@ -54,8 +54,10 @@ pak::pak("scverse/anndataR", dependencies = TRUE)
 
 The best way to get started with **{anndataR}** is to explore the package vignettes (available at https://anndatar.data-intuitive.com/articles/).
 
-- **Getting started**: An introduction to the package and its features. `vignette("anndataR", package = "anndataR")`
-- **Design**: An overview of the design of the package. `vignette("design", package = "anndataR")`
+- **Getting started**: An introduction to the package and its features.  
+  `vignette("anndataR", package = "anndataR")`
+- **Design**: An overview of the design of the package.  
+  `vignette("design", package = "anndataR")`
 
 ## Funding
 
