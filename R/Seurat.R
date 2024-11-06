@@ -180,7 +180,7 @@ to_Seurat <- function(
       if (
         !is.list(reduction) || is.null(names(reduction)) ||
           !all(names(reduction) %in% c("key", "obsm", "varm")) ||
-          !all(c("key", "obsm", "varm") %in% names(reduction))
+          !all(c("key", "obsm") %in% names(reduction))
       ) {
         stop("each reduction must be a list with keys 'key', 'obsm', and 'varm'")
       }
@@ -416,7 +416,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' @param seurat_obj A Seurat object to be converted.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
-#' @param assay_name The name of the assay to be converted.
+#' @param assay_name The name of the assay to be converted. If `NULL`, the default assay will be used.
 #' @param layer_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in
 #' the list must be a character vector of length 1. See section "Layer mapping" for more details.
 #' @param obsm_mapping A named list mapping reduction names to the names of the reductions in the Seurat object.
@@ -447,10 +447,13 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' @section Obsm mapping:
 #'
-#' A named list to map Seurat reductions to AnnData `obsm`. Each item in the list must be a named list with keys 'key',
-#' 'obsm', and 'varm'.
+#' A named list to map Seurat reductions to AnnData `$obsm`.
+#' 
+#' Each item in the list must be a vector of length 2,
+#' where the name corresponds to the name of the resulting `$obsm` slot, and the values correspond to the
+#' the location of the data in the Seurat object.
 #'
-#' Example: `obsm_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
+#' Example: `obsm_mapping = list(pca = c("reductions", "pca"), umap = c("reductions", "umap"))`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_obsms` will be used to guess the obsm mapping as follows:
 #'
@@ -458,9 +461,12 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' @section Varm mapping:
 #'
-#' A named list to map Seurat PCA loadings to AnnData `varm`.
+#' A named list to map Seurat reduction loadings to AnnData `varm`.
 #'
-#' Example: `varm_mapping = list(pca = "PCs")`.
+#' Each item in the list must be a character vector of length 2, where the name corresponds to the name of the
+#' resulting `varm` slot, and the value corresponds to the location of the data in the Seurat object.
+#'
+#' Example: `varm_mapping = list(PCs = c("reductions", "pca")`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_varms` will be used to guess the varm mapping as follows:
 #'
@@ -478,9 +484,9 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' @section Varp mapping:
 #'
-#' A named list to map Seurat miscellaneous data to AnnData `varp`. Each item in the list must be a character
-#' vector of length 3 or less. The first element must be `"misc"`. The second element is the name of the data in the
-#' corresponding slot. The third element is used to subset the data even further.
+#' A named list to map Seurat miscellaneous data to AnnData `varp`. The name of each item corresponds to the
+#' resulting `$varp` slot, while the value of each item must be a fector which corresponds to the location of the data
+#' in the Seurat object.
 #'
 #' Example: `varp_mapping = list(foo = c("misc", "foo"))`.
 #'
@@ -520,7 +526,7 @@ from_Seurat <- function(
     # nolint end: object_name_linter
     seurat_obj,
     output_class = c("InMemoryAnnData", "HDF5AnnData"),
-    assay_name = "RNA",
+    assay_name = NULL,
     layer_mapping = NULL,
     obsm_mapping = NULL,
     varm_mapping = NULL,
@@ -534,10 +540,21 @@ from_Seurat <- function(
 
   stopifnot(inherits(seurat_obj, "Seurat"))
 
+  if (is.null(assay_name)) {
+    assay_name <- SeuratObject::DefaultAssay(seurat_obj)
+  }
+
   seurat_assay <- seurat_obj@assays[[assay_name]]
 
-  if (is.null(seurat_assay) || !inherits(seurat_assay, "Assay5")) {
-    stop(paste0("Assay '", assay_name, "' is not a valid Seurat v5 assay"))
+  if (is.null(seurat_assay)) {
+    stop(paste0("The assay '", assay_name, "' does not exist in the Seurat object"))
+  }
+
+  if (!inherits(seurat_assay, "Assay5")) {
+    stop(paste0(
+      "Assay '", assay_name, "' is not a valid Seurat v5 assay.\n",
+      "Please use `SeuratObject::UpdateSeuratObject()` to upgrade the object to Seurat v5."
+    ))
   }
 
   if (is.null(layer_mapping)) {
@@ -601,13 +618,13 @@ from_Seurat <- function(
       stop("each obsm_mapping must be a character vector of length 2")
     }
 
-    key1 <- obsm[[1]]
-    key2 <- obsm[[2]]
+    obsm_slot <- obsm[[1]]
+    obsm_key <- obsm[[2]]
 
-    if (key1 == "reductions") {
-      adata$obsm[[obsm_name]] <- seurat_obj@reductions[[key2]]@cell.embeddings
-    } else if (key1 == "misc") {
-      adata$obsm[[obsm_name]] <- seurat_obj@misc[[key2]]
+    if (obsm_slot == "reductions") {
+      adata$obsm[[obsm_name]] <- seurat_obj@reductions[[obsm_key]]@cell.embeddings
+    } else if (obsm_slot == "misc") {
+      adata$obsm[[obsm_name]] <- seurat_obj@misc[[obsm_key]]
     }
   }
 
@@ -621,13 +638,13 @@ from_Seurat <- function(
       stop("each varm_mapping must be a character vector of length 2 or 3")
     }
 
-    key1 <- varm[[1]]
-    key2 <- varm[[2]]
+    varm_slot <- varm[[1]]
+    varm_key <- varm[[2]]
 
-    if (key1 == "reductions") {
-      adata$varm[[varm_name]] <- seurat_obj@reductions[[key2]]@feature.loadings
-    } else if (key1 == "misc") {
-      data <- seurat_obj@misc[[key2]]
+    if (varm_slot == "reductions") {
+      adata$varm[[varm_name]] <- seurat_obj@reductions[[varm_key]]@feature.loadings
+    } else if (varm_slot == "misc") {
+      data <- seurat_obj@misc[[varm_key]]
       if (length(varm) == 3) {
         data <- data[[varm[[3]]]]
       }
