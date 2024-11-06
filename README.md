@@ -45,6 +45,9 @@ the task you want to perform.
 - To read/write \*.h5ad files, you need to install
   [hdf5r](https://cran.r-project.org/package=hdf5r):  
   `BiocManager::install("hdf5r")`
+- To read/write \*.zarr files, you need to install
+  [zarr](https://github.com/keller-mark/pizzarr):  
+  `devtools::install_github("keller-mark/pizzarr")`
 - To convert to/from `SingleCellExperiment` objects, you need to install
   [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
   `BiocManager::install("SingleCellExperiment")`

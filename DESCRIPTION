@@ -69,6 +69,7 @@ Suggests:
     knitr,
     reticulate (>= 1.36.1),
     hdf5r (>= 1.3.11),
+    pizzarr,
     rmarkdown,
     S4Vectors,
     SeuratObject,
