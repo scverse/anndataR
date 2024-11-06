@@ -307,27 +307,22 @@ to_Seurat <- function(
 
   loadings <-
     if (is.null(varm_loadings)) {
-      NULL
+      new(Class = "matrix")
     } else if (!varm_loadings %in% names(adata$varm)) {
-      warning(paste0("The loadings ", varm_loadings, " is not present in adata$varm, skipping"))
-      NULL
+      stop(paste0("The loadings ", varm_loadings, " is not present in adata$varm"))
     } else {
-      adata$varm[[varm_loadings]]
+      load <- adata$varm[[varm_loadings]]
+      rownames(load) <- adata$var_names
+      load
     }
 
-  args <- list(
+  SeuratObject::CreateDimReducObject(
     embeddings = embed,
+    loadings = loadings,
     key = key,
     assay = assay_name,
     global = TRUE
   )
-
-  if (!is.null(loadings)) {
-    rownames(loadings) <- adata$var_names
-    args$loadings <- loadings
-  }
-
-  do.call(SeuratObject::CreateDimReducObject, args)
 }
 
 to_Seurat_guess_layers <- function(adata) { # nolint
