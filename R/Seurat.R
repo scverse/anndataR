@@ -26,7 +26,7 @@
 #'
 #' If `NULL`, the internal function `to_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
-#' * If `adata$X` is defined, we assume this the `counts`.
+#' * If `adata$X` is defined, we assume this is the `counts`.
 #' * Other layers are copied by name.
 #'
 #' @section Reduction mapping:
