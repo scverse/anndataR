@@ -18,8 +18,9 @@
 #'
 #' @section Layer mapping:
 #'
-#' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
-#' A value of `NULL` corresponds to the `X` slot.
+#' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1,
+#' where the values correspond to the names of the layers in the AnnData object, and the names correspond
+#' to the names of the layers in the resulting Seurat object. A value of `NULL` corresponds to the AnnData `X` slot.
 #'
 #' Example: `layer_mapping = list(counts = "counts", data = NULL, foo = "bar")`.
 #'
