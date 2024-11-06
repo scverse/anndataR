@@ -448,7 +448,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #' @section Obsm mapping:
 #'
 #' A named list to map Seurat reductions to AnnData `$obsm`.
-#' 
+#'
 #' Each item in the list must be a vector of length 2,
 #' where the name corresponds to the name of the resulting `$obsm` slot, and the values correspond to the
 #' the location of the data in the Seurat object.
