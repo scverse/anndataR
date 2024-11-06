@@ -256,7 +256,7 @@ to_Seurat <- function(
 
   layer_name <- mapping[[key]]
 
-  if (is.null(layer_name)) {
+  if (is.null(layer_name) || layer_name == "$X") {
     return(Matrix::t(adata$X))
   }
 
@@ -300,8 +300,7 @@ to_Seurat <- function(
   embed <- adata$obsm[[obsm_embedding]]
 
   if (is.null(embed)) {
-    warning(paste0("The reduction ", obsm_embedding, " is not present in adata$obsm, skipping"))
-    return(NULL)
+    stop(paste0("The reduction ", obsm_embedding, " is not present in adata$obsm"))
   }
 
   rownames(embed) <- adata$obs_names
