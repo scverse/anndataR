@@ -43,7 +43,8 @@
 #' @section Graph mapping:
 #'
 #' A named list mapping graph names to the names of the graphs in the AnnData object. Each item in the list must be a
-#' character vector of length 1.
+#' character vector of length 1. The values correspond to the names of the graphs in the resulting Seurat object, while
+#' the names correspond to the names of the graphs in the AnnData object.
 #'
 #' Example: `graph_mapping = list(nn = "connectivities")`.
 #'
@@ -55,16 +56,15 @@
 #' @section Miscellaneous mapping:
 #'
 #' A named list mapping miscellaneous data to the names of the data in the AnnData object. Each item in the list must be
-#' a named list with one or two elements. The first element must be one of: 'X', 'layers', 'obs', 'obsm', 'obsp', 'var',
+#' a vector with one or two elements. The first element must be one of: 'X', 'layers', 'obs', 'obsm', 'obsp', 'var',
 #' 'varm', 'varp', 'uns'. The second element is the name of the data in the corresponding slot. If the second element is
-#' not present, the data in the first element will be used.
+#' not present, the whole slot as specified by the first element will be used.
 #'
 #' Example: `misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))`.
 #'
 #' If `NULL`, the internal function `to_Seurat_guess_misc` will be used to guess the miscellaneous mapping as follows:
 #'
-#' * If `adata$obsp` is defined, this is mapped to a misc value named `obsp`.
-#' * If `adata$uns` is defined, this is mapped to a misc value named `uns`.
+#' * If `$uns` is defined, all values in `$uns` are copied to the Seurat misc.
 #'
 #' @return A Seurat object
 #'
