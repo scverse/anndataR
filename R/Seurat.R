@@ -441,7 +441,9 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
-#' * All Seurat layers are copied by name.
+#' * All Seurat layers are copied to AnnData `layers` by name.
+#' * This means that the AnnData `X` slot will be `NULL` (empty). If you want to copy data to the `X` slot,
+#'   you must define the layer mapping explicitly.
 #'
 #' @section Obsm mapping:
 #'
