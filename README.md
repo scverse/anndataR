@@ -59,6 +59,6 @@ The best way to get started with **{anndataR}** is to explore the package vignet
 
 ## Funding
 
-This project is supported by the [Chan Zuckerberg Initiative DAF, an advised fund of Silicon Valley Community Foundation](https://chanzuckerberg.com/). 
+This project is supported by the Chan Zuckerberg Initiative DAF, an advised fund of Silicon Valley Community Foundation. 
 
-![](https://chanzuckerberg.com/wp-content/themes/czi/img/logo.svg)
+[![](https://chanzuckerberg.com/wp-content/themes/czi/img/logo.svg)](https://chanzuckerberg.com/)
