@@ -64,7 +64,8 @@ Imports:
     Matrix,
     methods,
     purrr,
-    R6
+    R6,
+    rlang
 Suggests:
     anndata,
     BiocStyle,

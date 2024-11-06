@@ -9,6 +9,8 @@
 #'
 #' @return `'TRUE` invisibly if all packages are available, otherwise calls
 #'   [cli::cli_abort()]
+#'
+#' @importFrom rlang caller_env
 #' @noRd
 check_requires <- function(what, requires) {
   is_available <- map_lgl(requires, requireNamespace, quietly = TRUE)
@@ -24,7 +26,7 @@ check_requires <- function(what, requires) {
           "{.code install.packages(c({missing_str}))}"
         )
       ),
-      call = rlang::caller_env()
+      call = caller_env()
     )
   }
 

@@ -1,5 +1,4 @@
 #' @keywords internal
-#' @importFrom methods as
 #'
 #' @description An AnnData object. This class can either be an in-memory
 #' AnnData (InMemoryAnnData) or an HDF5-backed AnnData (HDF5AnnData). The
@@ -63,5 +62,6 @@
 ## usethis namespace: start
 #' @importFrom cli cli_abort cli_warn cli_inform
 #' @importFrom purrr map_lgl
+#' @importFrom methods as new
 ## usethis namespace: end
 NULL
