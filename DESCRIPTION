@@ -62,8 +62,7 @@ Depends:
 Imports:
     Matrix,
     methods,
-    R6,
-    vctrs
+    R6
 Suggests:
     anndata,
     BiocStyle,
@@ -76,6 +75,7 @@ Suggests:
     SingleCellExperiment,
     SummarizedExperiment,
     testthat (>= 3.0.0),
+    vctrs,
     withr
 VignetteBuilder: 
     knitr
