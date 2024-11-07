@@ -61,7 +61,7 @@ jobs:
           if (!reticulate:::miniconda_exists()) {
             reticulate::install_miniconda()
           }
-          reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
+          reticulate::py_install(c("anndata", "scanpy", "dummy-anndata"), pip = TRUE)
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
