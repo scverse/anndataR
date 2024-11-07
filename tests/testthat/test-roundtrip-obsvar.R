@@ -11,25 +11,22 @@ da <- reticulate::import("dummy_anndata")
 
 test_names <- names(da$vector_generators)
 
-data <- da$generate_dataset(
-  layer_types = list(),
-  obsm_types = list(),
-  varm_types = list(),
-  obsp_types = list(),
-  varp_types = list(),
-  uns_types = list()
-)
-
 for (name in test_names) {
   test_that(paste0("roundtrip with obs and var '", name, "'"), {
-    # subset data to make sure only one column is present
-    adata_py <-
-      ad$AnnData(
-        X = data$X, # todo: remove X
-        # shape = data$shape, # nolint
-        obs = data$obs[, name, drop = FALSE],
-        var = data$var[, name, drop = FALSE]
-      )
+    adata_py <- da$generate_dataset(
+      x_type = "generate_float_matrix",
+      obs_types = list(name),
+      var_types = list(name),
+      layer_types = list(),
+      obsm_types = list(),
+      varm_types = list(),
+      obsp_types = list(),
+      varp_types = list(),
+      uns_types = list()
+    )
+    # remove uns
+    adata_py$uns <- NULL
+    # TODO: remove X
 
     # write to file
     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
