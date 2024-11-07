@@ -1,102 +1,75 @@
 skip_if_no_anndata()
-skip_if_not_installed("hdf5r")
+skip_if_not_installed("reticulate")
+requireNamespace("reticulate")
+testthat::skip_if_not(
+  reticulate::py_module_available("dummy_anndata"),
+  message = "Python dummy_anndata module not available for testing"
+)
 
-data <- generate_dataset(10L, 20L)
+ad <- reticulate::import("anndata")
+da <- reticulate::import("dummy_anndata")
 
-test_names <- names(data$obs)
+test_names <- names(da$vector_generators)
 
-# TODO: re-enable tests
-test_names <- test_names[!grepl("_with_nas", test_names)]
-
-# TODO: re-enable tests
-# NOTE: I think this doesn't work in cran anndata
-test_names <- test_names[test_names != "logical_with_nas"]
+data <- da$generate_dataset(
+  layer_types = list(),
+  obsm_types = list(),
+  varm_types = list(),
+  obsp_types = list(),
+  varp_types = list(),
+  uns_types = list()
+)
 
 for (name in test_names) {
   test_that(paste0("roundtrip with obs and var '", name, "'"), {
-    # create anndata
-    ad <- AnnData(
-      X = data$X,
-      obs = data$obs[, name, drop = FALSE],
-      var = data$var[, name, drop = FALSE]
-    )
+    # subset data to make sure only one column is present
+    adata_py <-
+      ad$AnnData(
+        X = data$X, # todo: remove X
+        # shape = data$shape,
+        obs = data$obs[, name, drop = FALSE],
+        var = data$var[, name, drop = FALSE]
+      )
 
     # write to file
     filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    write_h5ad(ad, filename)
+    adata_py$write_h5ad(filename)
 
     # read from file
-    ad_new <- read_h5ad(filename, to = "HDF5AnnData")
+    adata_r <- read_h5ad(filename, to = "HDF5AnnData")
 
     # expect slots are unchanged
     expect_equal(
-      ad_new$obs[[name]],
-      data$obs[[name]],
+      adata_r$obs[[name]],
+      adata_py$obs[[name]],
       ignore_attr = TRUE,
       tolerance = 1e-6
     )
     expect_equal(
-      ad_new$var[[name]],
-      data$var[[name]],
+      adata_r$var[[name]],
+      adata_py$var[[name]],
       ignore_attr = TRUE,
       tolerance = 1e-6
     )
-  })
-}
 
-for (name in test_names) {
-  test_that(paste0("reticulate->hdf5 with obs and var '", name, "'"), {
-    ad <- anndata::AnnData(
-      obs = data$obs[, name, drop = FALSE],
-      var = data$var[, name, drop = FALSE]
-    )
-
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    ad$write_h5ad(filename)
+    # write back to file
+    filename2 <- withr::local_file(tempfile(fileext = ".h5ad"))
+    write_h5ad(adata_r, filename2)
 
     # read from file
-    ad_new <- HDF5AnnData$new(filename)
+    adata_py2 <- ad$read_h5ad(filename2)
 
     # expect slots are unchanged
     expect_equal(
-      ad_new$obs[[name]],
-      data$obs[[name]],
-      tolerance = 1e-6
-    )
-    expect_equal(
-      ad_new$var[[name]],
-      data$var[[name]],
-      tolerance = 1e-6
-    )
-  })
-}
-
-for (name in test_names) {
-  test_that(paste0("hdf5->reticulate with obs and var '", name, "'"), {
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-
-    # create anndata
-    ad <- AnnData(
-      obs = data$obs[, name, drop = FALSE],
-      var = data$var[, name, drop = FALSE]
-    )
-    write_h5ad(ad, filename)
-
-    # read from file
-    ad_new <- anndata::read_h5ad(filename)
-
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$obs[[name]],
-      data$obs[[name]],
+      adata_py2$obs[[name]],
+      adata_py$obs[[name]],
       ignore_attr = TRUE,
       tolerance = 1e-6
     )
+
     expect_equal(
-      ad_new$var[[name]],
-      data$var[[name]],
+      adata_py2$var[[name]],
+      adata_py$var[[name]],
       ignore_attr = TRUE,
       tolerance = 1e-6
     )
