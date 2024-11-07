@@ -62,7 +62,8 @@ Depends:
 Imports:
     Matrix,
     methods,
-    R6
+    R6,
+    vctrs
 Suggests:
     anndata,
     BiocStyle,
