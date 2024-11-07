@@ -26,7 +26,7 @@ for (name in test_names) {
     adata_py <-
       ad$AnnData(
         X = data$X, # todo: remove X
-        # shape = data$shape,
+        # shape = data$shape, # nolint
         obs = data$obs[, name, drop = FALSE],
         var = data$var[, name, drop = FALSE]
       )
