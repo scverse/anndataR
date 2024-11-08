@@ -8,7 +8,7 @@
 
 **{anndataR}** aims to make the AnnData format a first-class citizen in
 the R ecosystem, and to make it easy to work with AnnData files in R,
-either directly or by converting it to a SingleCellExperiment or Seurat
+either directly or by converting them to a SingleCellExperiment or Seurat
 object.
 
 ## Features of {anndataR}
