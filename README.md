@@ -11,6 +11,10 @@ the R ecosystem, and to make it easy to work with AnnData files in R,
 either directly or by converting it to a SingleCellExperiment or Seurat
 object.
 
+anndataR is an scverse community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
+
+![](https://chanzuckerberg.com/wp-content/themes/czi/img/logo.svg){height=200px} ![](https://www.data-intuitive.com/images/logoditext.svg){height=200px}
+
 ## Features of {anndataR}
 
 - Provide an `R6` class to work with AnnData objects in R (either in-memory or on-disk).
@@ -23,7 +27,7 @@ object.
 > This package is still in the experimental stage, and may not work as
 > expected. You can find the status of development of anndataR on the
 > [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking)
-> of the website. Please report any issues you encounter.
+> of the website. Please [report](https://github.com/scverse/anndataR/issues) any issues you encounter.
 
 ## Installation
 
@@ -58,9 +62,3 @@ The best way to get started with **{anndataR}** is to explore the package vignet
   `vignette("anndataR", package = "anndataR")`
 - **Design**: An overview of the design of the package.  
   `vignette("design", package = "anndataR")`
-
-## Funding
-
-This project is supported by the Chan Zuckerberg Initiative DAF, an advised fund of Silicon Valley Community Foundation. 
-
-[![](https://chanzuckerberg.com/wp-content/themes/czi/img/logo.svg)](https://chanzuckerberg.com/)
