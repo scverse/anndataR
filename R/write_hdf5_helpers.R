@@ -29,7 +29,7 @@ hdf5_create_dataset <- function(
   compression <- match.arg(compression)
 
   if (!is.null(dim(value))) {
-    dims <- dim(value)
+    dims <- rev(dim(value))
   } else {
     dims <- length(value)
   }
