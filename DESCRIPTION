@@ -75,6 +75,7 @@ Suggests:
     SingleCellExperiment,
     SummarizedExperiment,
     testthat (>= 3.0.0),
+    vctrs,
     withr
 VignetteBuilder: 
     knitr
