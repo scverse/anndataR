@@ -1,6 +1,5 @@
 ---
-title: "Using anndataR to read and convert"
-shorttitle: "Using anndataR"
+title: "Using anndataR"
 author:
   - name: Robrecht Cannoodt
   - name: Luke Zappia
