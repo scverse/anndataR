@@ -1,6 +1,7 @@
 skip_if_no_anndata()
 skip_if_not_installed("reticulate")
-requireNamespace("reticulate")
+
+library(reticulate)
 testthat::skip_if_not(
   reticulate::py_module_available("dummy_anndata"),
   message = "Python dummy_anndata module not available for testing"
@@ -26,7 +27,7 @@ for (name in test_names) {
       varp_types = list(),
       uns_types = list()
     )
-    # remove uns
+    # remove uns - workaround for https://github.com/data-intuitive/dummy-anndata/issues/2
     adata_py$uns <- bi$dict()
     # TODO: remove X
 
@@ -36,6 +37,25 @@ for (name in test_names) {
 
     # read from file
     adata_r <- read_h5ad(filename, to = "InMemoryAnnData")
+
+    # simple checks first
+    expect_equal(
+      adata_r$shape(),
+      unlist(reticulate::py_to_r(adata_py$shape))
+    )
+    expect_equal(
+      adata_r$obs_keys(),
+      py_to_r(adata_py$obs_keys())
+    )
+    expect_equal(
+      adata_r$var_keys(),
+      py_to_r(adata_py$var_keys())
+    )
+
+    # check that the print output is the same
+    str_r <- capture.output(print(adata_r))
+    str_py <- capture.output(print(adata_py))
+    expect_equal(str_r, str_py)
 
     # if we would test the objects at this stage,
     # we're also testing reticulate's conversion
@@ -58,11 +78,6 @@ for (name in test_names) {
 
     # read from file
     adata_py2 <- ad$read_h5ad(filename2)
-
-    expect_equal(
-      reticulate::py_to_r(adata_py2$shape),
-      reticulate::py_to_r(adata_py$shape)
-    )
 
     # expect slots are unchanged
     zz <- pd$testing$assert_frame_equal(
