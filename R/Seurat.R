@@ -637,7 +637,7 @@ from_Seurat <- function(
     obsm_key <- obsm[[2]]
 
     if (obsm_slot == "reductions") {
-      adata$obsm[[obsm_name]] <- seurat_obj@reductions[[obsm_key]]@cell.embeddings
+      adata$obsm[[obsm_name]] <- SeuratObject::Embeddings(seurat_obj, obsm_key)
     } else if (obsm_slot == "misc") {
       adata$obsm[[obsm_name]] <- seurat_obj@misc[[obsm_key]]
     }
@@ -657,7 +657,7 @@ from_Seurat <- function(
     varm_key <- varm[[2]]
 
     if (varm_slot == "reductions") {
-      adata$varm[[varm_name]] <- seurat_obj@reductions[[varm_key]]@feature.loadings
+      adata$varm[[varm_name]] <- SeuratObject::Loadings(seurat_obj, varm_key)
     } else if (varm_slot == "misc") {
       data <- seurat_obj@misc[[varm_key]]
       if (length(varm) == 3) {
@@ -765,7 +765,7 @@ from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
 
   obsm_mapping <- list()
 
-  for (reduction_name in names(seurat_obj@reductions)) {
+  for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
     # Check if the dimreduc was calculated by the selected assay
     reduction <- seurat_obj@reductions[[reduction_name]]
     if (reduction@assay.used != assay_name) {
@@ -803,7 +803,7 @@ from_Seurat_guess_obsps <- function(seurat_obj, assay_name) { # nolint
 
   obsp_mapping <- list()
 
-  for (graph_name in names(seurat_obj@graphs)) {
+  for (graph_name in SeuratObject::Graphs(seurat_obj)) {
     graph <- seurat_obj@graphs[[graph_name]]
 
     if (graph@assay.used != assay_name) {
