@@ -444,3 +444,12 @@ to_HDF5AnnData <- function(
     mode = mode
   )
 }
+
+cleanup_HDF5AnnData <- function(...) { # nolint object_name_linter
+  args <- list(...)
+
+  if (!is.null(args$file) && is.character(args$file) && file.exists(args$file)) {
+    cli::cli_alert("Removing file: ", args$file)
+    unlink(args$file)
+  }
+}

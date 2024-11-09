@@ -602,140 +602,148 @@ from_Seurat <- function(
 
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
-  adata <- generator$new(
-    obs = obs,
-    var = var,
-    ...
-  )
 
-  # fetch X
-  # trackstatus: class=Seurat, feature=set_X, status=done
-  if (!is.null(x_mapping)) {
-    adata$X <- Matrix::t(seurat_assay@layers[[layer]])
-  }
+  tryCatch({
+    adata <- generator$new(
+      obs = obs,
+      var = var,
+      ...
+    )
 
-  # fetch layers
-  # trackstatus: class=Seurat, feature=set_layers, status=done
-  for (i in seq_along(layers_mapping)) {
-    layer <- layers_mapping[[i]]
-    layer_name <- names(layers_mapping)[[i]]
-
-    adata$layers[[layer_name]] <- Matrix::t(seurat_assay@layers[[layer]])
-  }
-
-  # fetch obsm
-  # trackstatus: class=Seurat, feature=set_obsm, status=wip
-  for (i in seq_along(obsm_mapping)) {
-    obsm <- obsm_mapping[[i]]
-    obsm_name <- names(obsm_mapping)[[i]]
-
-    if (!is.character(obsm) || length(obsm) != 2) {
-      stop("each obsm_mapping must be a character vector of length 2")
+    # fetch X
+    # trackstatus: class=Seurat, feature=set_X, status=done
+    if (!is.null(x_mapping)) {
+      adata$X <- Matrix::t(seurat_assay@layers[[layer]])
     }
 
-    obsm_slot <- obsm[[1]]
-    obsm_key <- obsm[[2]]
+    # fetch layers
+    # trackstatus: class=Seurat, feature=set_layers, status=done
+    for (i in seq_along(layers_mapping)) {
+      layer <- layers_mapping[[i]]
+      layer_name <- names(layers_mapping)[[i]]
 
-    if (obsm_slot == "reductions") {
-      adata$obsm[[obsm_name]] <- SeuratObject::Embeddings(seurat_obj, obsm_key)
-    } else if (obsm_slot == "misc") {
-      adata$obsm[[obsm_name]] <- seurat_obj@misc[[obsm_key]]
-    }
-  }
-
-  # fetch varm
-  # trackstatus: class=Seurat, feature=set_varm, status=wip
-  for (i in seq_along(varm_mapping)) {
-    varm <- varm_mapping[[i]]
-    varm_name <- names(varm_mapping)[[i]]
-
-    if (!is.character(varm) || length(varm) < 2 || length(varm) > 3) {
-      stop("each varm_mapping must be a character vector of length 2 or 3")
+      adata$layers[[layer_name]] <- Matrix::t(seurat_assay@layers[[layer]])
     }
 
-    varm_slot <- varm[[1]]
-    varm_key <- varm[[2]]
+    # fetch obsm
+    # trackstatus: class=Seurat, feature=set_obsm, status=wip
+    for (i in seq_along(obsm_mapping)) {
+      obsm <- obsm_mapping[[i]]
+      obsm_name <- names(obsm_mapping)[[i]]
 
-    if (varm_slot == "reductions") {
-      adata$varm[[varm_name]] <- SeuratObject::Loadings(seurat_obj, varm_key)
-    } else if (varm_slot == "misc") {
-      data <- seurat_obj@misc[[varm_key]]
-      if (length(varm) == 3) {
-        data <- data[[varm[[3]]]]
+      if (!is.character(obsm) || length(obsm) != 2) {
+        stop("each obsm_mapping must be a character vector of length 2")
       }
-      adata$varm[[varm_name]] <- data
-    }
-  }
 
-  # fetch obsp
-  # trackstatus: class=Seurat, feature=set_obsp, status=wip
-  for (i in seq_along(obsp_mapping)) {
-    obsp <- obsp_mapping[[i]]
-    obsp_name <- names(obsp_mapping)[[i]]
+      obsm_slot <- obsm[[1]]
+      obsm_key <- obsm[[2]]
 
-    if (!is.character(obsp) || length(obsp) < 2 || length(obsp) > 3) {
-      stop("each obsp_mapping must be a character vector of length 2 or 3")
-    }
-
-    key1 <- obsp[[1]]
-    key2 <- obsp[[2]]
-
-    if (key1 == "graphs") {
-      adata$obsp[[obsp_name]] <- as(seurat_obj@graphs[[key2]], "sparseMatrix")
-    } else if (key1 == "misc") {
-      data <- seurat_obj@misc[[key2]]
-      if (length(obsp) == 3) {
-        data <- data[[obsp[[3]]]]
+      if (obsm_slot == "reductions") {
+        adata$obsm[[obsm_name]] <- SeuratObject::Embeddings(seurat_obj, obsm_key)
+      } else if (obsm_slot == "misc") {
+        adata$obsm[[obsm_name]] <- seurat_obj@misc[[obsm_key]]
       }
-      adata$obsp[[obsp_name]] <- data
-    }
-  }
-
-  # fetch varp
-  # trackstatus: class=Seurat, feature=set_varp, status=wip
-  for (i in seq_along(varp_mapping)) {
-    varp <- varp_mapping[[i]]
-    varp_name <- names(varp_mapping)[[i]]
-
-    if (!is.character(varp) || length(varp) < 2 || length(varp) > 3) {
-      stop("each varp_mapping must be a character vector of length 2 or 3")
     }
 
-    key1 <- varp[[1]]
-    key2 <- varp[[2]]
+    # fetch varm
+    # trackstatus: class=Seurat, feature=set_varm, status=wip
+    for (i in seq_along(varm_mapping)) {
+      varm <- varm_mapping[[i]]
+      varm_name <- names(varm_mapping)[[i]]
 
-    if (key1 == "misc") {
-      data <- seurat_obj@misc[[key2]]
-      if (length(varp) == 3) {
-        data <- data[[varp[[3]]]]
+      if (!is.character(varm) || length(varm) < 2 || length(varm) > 3) {
+        stop("each varm_mapping must be a character vector of length 2 or 3")
       }
-      adata$varp[[varp_name]] <- data
-    }
-  }
 
-  # fetch uns
-  # trackstatus: class=Seurat, feature=set_uns, status=wip
-  for (i in seq_along(uns_mapping)) {
-    uns <- uns_mapping[[i]]
-    uns_name <- names(uns_mapping)[[i]]
+      varm_slot <- varm[[1]]
+      varm_key <- varm[[2]]
 
-    if (!is.character(uns) || length(uns) < 2 || length(uns) > 3) {
-      stop("each uns_mapping must be a character vector of length 2 or 3")
-    }
-
-    key1 <- uns[[1]]
-    key2 <- uns[[2]]
-
-    if (key1 == "misc") {
-      data <- seurat_obj@misc[[key2]]
-      if (length(uns) == 3) {
-        data <- data[[uns[[3]]]]
+      if (varm_slot == "reductions") {
+        adata$varm[[varm_name]] <- SeuratObject::Loadings(seurat_obj, varm_key)
+      } else if (varm_slot == "misc") {
+        data <- seurat_obj@misc[[varm_key]]
+        if (length(varm) == 3) {
+          data <- data[[varm[[3]]]]
+        }
+        adata$varm[[varm_name]] <- data
       }
-      adata$uns[[uns_name]] <- data
     }
-  }
 
-  return(adata)
+    # fetch obsp
+    # trackstatus: class=Seurat, feature=set_obsp, status=wip
+    for (i in seq_along(obsp_mapping)) {
+      obsp <- obsp_mapping[[i]]
+      obsp_name <- names(obsp_mapping)[[i]]
+
+      if (!is.character(obsp) || length(obsp) < 2 || length(obsp) > 3) {
+        stop("each obsp_mapping must be a character vector of length 2 or 3")
+      }
+
+      key1 <- obsp[[1]]
+      key2 <- obsp[[2]]
+
+      if (key1 == "graphs") {
+        adata$obsp[[obsp_name]] <- as(seurat_obj@graphs[[key2]], "sparseMatrix")
+      } else if (key1 == "misc") {
+        data <- seurat_obj@misc[[key2]]
+        if (length(obsp) == 3) {
+          data <- data[[obsp[[3]]]]
+        }
+        adata$obsp[[obsp_name]] <- data
+      }
+    }
+
+    # fetch varp
+    # trackstatus: class=Seurat, feature=set_varp, status=wip
+    for (i in seq_along(varp_mapping)) {
+      varp <- varp_mapping[[i]]
+      varp_name <- names(varp_mapping)[[i]]
+
+      if (!is.character(varp) || length(varp) < 2 || length(varp) > 3) {
+        stop("each varp_mapping must be a character vector of length 2 or 3")
+      }
+
+      key1 <- varp[[1]]
+      key2 <- varp[[2]]
+
+      if (key1 == "misc") {
+        data <- seurat_obj@misc[[key2]]
+        if (length(varp) == 3) {
+          data <- data[[varp[[3]]]]
+        }
+        adata$varp[[varp_name]] <- data
+      }
+    }
+
+    # fetch uns
+    # trackstatus: class=Seurat, feature=set_uns, status=wip
+    for (i in seq_along(uns_mapping)) {
+      uns <- uns_mapping[[i]]
+      uns_name <- names(uns_mapping)[[i]]
+
+      if (!is.character(uns) || length(uns) < 2 || length(uns) > 3) {
+        stop("each uns_mapping must be a character vector of length 2 or 3")
+      }
+
+      key1 <- uns[[1]]
+      key2 <- uns[[2]]
+
+      if (key1 == "misc") {
+        data <- seurat_obj@misc[[key2]]
+        if (length(uns) == 3) {
+          data <- data[[uns[[3]]]]
+        }
+        adata$uns[[uns_name]] <- data
+      }
+    }
+
+    return(adata)
+  }, error = function(e) {
+    if (output_class == "HDF5AnnData") {
+      on.exit(cleanup_HDF5AnnData(adata))
+    }
+    stop(e)
+  })
 }
 
 from_Seurat_guess_layers <- function(seurat_obj, assay_name) { # nolint

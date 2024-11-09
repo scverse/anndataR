@@ -171,11 +171,19 @@ from_SingleCellExperiment <- function(
     layers <- x_and_layers[-1]
   }
 
-  generator$new(
-    X = x,
-    obs = obs,
-    var = var,
-    layers = layers,
-    ...
+  tryCatch(
+    generator$new(
+      X = x,
+      obs = obs,
+      var = var,
+      layers = layers,
+      ...
+    ),
+    error = function(e) {
+      if (output_class == "HDF5AnnData") {
+        on.exit(cleanup_HDF5AnnData(...))
+      }
+      stop(e)
+    }
   )
 }
