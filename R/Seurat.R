@@ -6,7 +6,7 @@
 #' the mapping.
 #'
 #' @param adata An AnnData object to be converted
-#' @param assay_name Name of the assay to be created
+#' @param assay_name Name of the assay to be created (default: "RNA").
 #' @param layers_mapping A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
 #'   details.
 #' @param reduction_mapping A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
@@ -422,7 +422,8 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' @param seurat_obj A Seurat object to be converted.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
-#' @param assay_name The name of the assay to be converted. If `NULL`, the default assay will be used.
+#' @param assay_name The name of the assay to be converted. If `NULL`, the default assay will be used
+#' ([SeuratObject::DefaultAssay()]).
 #' @param x_mapping A mapping of a Seurat layer to the AnnData `X` slot. If `NULL`, no data will be copied to the
 #' `X` slot.
 #' @param layers_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in

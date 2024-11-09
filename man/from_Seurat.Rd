@@ -23,7 +23,8 @@ from_Seurat(
 
 \item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
 
-\item{assay_name}{The name of the assay to be converted. If \code{NULL}, the default assay will be used.}
+\item{assay_name}{The name of the assay to be converted. If \code{NULL}, the default assay will be used
+(\code{\link[SeuratObject:DefaultAssay]{SeuratObject::DefaultAssay()}}).}
 
 \item{x_mapping}{A mapping of a Seurat layer to the AnnData \code{X} slot. If \code{NULL}, no data will be copied to the
 \code{X} slot.}

@@ -16,7 +16,7 @@ to_Seurat(
 \arguments{
 \item{adata}{An AnnData object to be converted}
 
-\item{assay_name}{Name of the assay to be created}
+\item{assay_name}{Name of the assay to be created (default: "RNA").}
 
 \item{layers_mapping}{A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
 details.}
