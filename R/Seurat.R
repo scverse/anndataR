@@ -339,7 +339,7 @@ to_Seurat_guess_layers <- function(adata) { # nolint
         "data"
       }
 
-    layers[[layer_name_for_x]] <- list(NULL)
+    layers[layer_name_for_x] <- list(NULL)
   }
 
   for (layer_name in names(adata$layers)) {
