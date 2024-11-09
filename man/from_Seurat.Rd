@@ -8,7 +8,8 @@ from_Seurat(
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
   assay_name = NULL,
-  layer_mapping = NULL,
+  x_mapping = NULL,
+  layers_mapping = NULL,
   obsm_mapping = NULL,
   varm_mapping = NULL,
   obsp_mapping = NULL,
@@ -24,24 +25,26 @@ from_Seurat(
 
 \item{assay_name}{The name of the assay to be converted. If \code{NULL}, the default assay will be used.}
 
-\item{layer_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. Each item in
-the list must be a character vector of length 1. See section "Layer mapping" for more details.}
+\item{x_mapping}{A mapping of a Seurat layer to the AnnData \code{X} slot. If \code{NULL}, no data will be copied to the
+\code{X} slot.}
 
-\item{obsm_mapping}{A named list mapping reduction names to the names of the reductions in the Seurat object.
-Each item in the list must be a named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for
-more details.}
+\item{layers_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. Each item in
+the list must be a character vector of length 1. See section "\verb{$layers} mapping" for more details.}
+
+\item{obsm_mapping}{A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
+the list must be a vector of length 2. See section "\verb{$obsm} mapping" for more details.}
 
 \item{varm_mapping}{A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
-Each item in the list must be a character vector of length 1. See section "Varm mapping" for more details.}
+Each item in the list must be a character vector of length 1. See section "\verb{$varm} mapping" for more details.}
 
 \item{obsp_mapping}{A named list mapping graph names to the names of the graphs in the Seurat object.
-Each item in the list must be a character vector of length 1. See section "Obsp mapping" for more details.}
+Each item in the list must be a character vector of length 1. See section "\verb{$obsp} mapping" for more details.}
 
 \item{varp_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object.
-Each item in the list must be a named list with one or two elements. See section "Varp mapping" for more details.}
+Each item in the list must be a named list with one or two elements. See section "\verb{$varp} mapping" for more details.}
 
 \item{uns_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object.
-Each item in the list must be a named list with one or two elements. See section "Uns mapping" for more details.}
+Each item in the list must be a named list with one or two elements. See section "\verb{$uns} mapping" for more details.}
 
 \item{...}{Additional arguments passed to the generator function.}
 }
@@ -56,13 +59,20 @@ If \code{NULL}, the functions \verb{from_Seurat_guess_*} will be used to guess t
 \details{
 For more information on the functionality of an AnnData object, see \link{anndataR-package}.
 }
+\section{\verb{$X} mapping}{
+
+
+A mapping of a Seurat layer to the AnnData \code{X} slot. Its value must be \code{NULL} or a character vector of the Seurat
+layer name to copy. If \code{NULL}, no data will be copied to the \code{X} slot.
+}
+
 \section{\verb{$layers} mapping}{
 
 
 A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
 The \verb{$X} key maps to the \code{X} slot.
 
-Example: \code{layer_mapping = list(counts = "counts", "$X" = "data", foo = "bar")}.
+Example: \code{layers_mapping = list(counts = "counts", foo = "bar")}.
 
 If \code{NULL}, the internal function \code{from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{

@@ -7,7 +7,7 @@
 #'
 #' @param adata An AnnData object to be converted
 #' @param assay_name Name of the assay to be created
-#' @param layer_mapping A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
+#' @param layers_mapping A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
 #'   details.
 #' @param reduction_mapping A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
 #'   named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for more details.
@@ -22,12 +22,11 @@
 #' where the values correspond to the names of the layers in the AnnData object, and the names correspond
 #' to the names of the layers in the resulting Seurat object. A value of `NULL` corresponds to the AnnData `X` slot.
 #'
-#' Example: `layer_mapping = list(counts = "counts", data = NULL, foo = "bar")`.
+#' Example: `layers_mapping = list(counts = "counts", data = NULL, foo = "bar")`.
 #'
 #' If `NULL`, the internal function `to_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
-#' * If `$X` is defined, we assume this is the `counts`.
-#' * Other layers are copied by name.
+#' * All AnnData layers are copied to Seurat layers by name.
 #'
 #' @section Reduction mapping:
 #'
@@ -84,7 +83,7 @@
 to_Seurat <- function(
     adata,
     assay_name = "RNA",
-    layer_mapping = NULL,
+    layers_mapping = NULL,
     reduction_mapping = NULL,
     graph_mapping = NULL,
     misc_mapping = NULL) {
@@ -93,8 +92,8 @@ to_Seurat <- function(
 
   stopifnot(inherits(adata, "AbstractAnnData"))
 
-  if (is.null(layer_mapping)) {
-    layer_mapping <- to_Seurat_guess_layers(adata)
+  if (is.null(layers_mapping)) {
+    layers_mapping <- to_Seurat_guess_layers(adata)
   }
   if (is.null(reduction_mapping)) {
     reduction_mapping <- to_Seurat_guess_reductions(adata)
@@ -115,21 +114,21 @@ to_Seurat <- function(
   var_names <- adata$var_names[]
 
   # check seurat layers
-  if (is.null(names(layer_mapping))) {
-    names(layer_mapping) <- layer_mapping
+  if (is.null(names(layers_mapping))) {
+    names(layers_mapping) <- layers_mapping
   }
-  if (!"counts" %in% names(layer_mapping) && !"data" %in% names(layer_mapping)) {
+  if (!"counts" %in% names(layers_mapping) && !"data" %in% names(layers_mapping)) {
     stop(paste0(
-      "layer_mapping must contain at least an item named \"counts\" or \"data\". Found names: ",
-      paste(names(layer_mapping), collapse = ", ")
+      "layers_mapping must contain at least an item named \"counts\" or \"data\". Found names: ",
+      paste(names(layers_mapping), collapse = ", ")
     ))
   }
 
   # trackstatus: class=Seurat, feature=get_obs, status=done
   # trackstatus: class=Seurat, feature=get_X, status=done
   # trackstatus: class=Seurat, feature=get_layers, status=done
-  counts <- .to_seurat_get_matrix_by_key(adata, layer_mapping, "counts")
-  data <- .to_seurat_get_matrix_by_key(adata, layer_mapping, "data")
+  counts <- .to_seurat_get_matrix_by_key(adata, layers_mapping, "counts")
+  data <- .to_seurat_get_matrix_by_key(adata, layers_mapping, "data")
   if (!is.null(counts)) {
     dimnames(counts) <- list(adata$var_names, adata$obs_names)
   }
@@ -158,9 +157,9 @@ to_Seurat <- function(
   rownames(obj) <- var_names
 
   # copy other layers
-  for (i in seq_along(layer_mapping)) {
-    from <- layer_mapping[[i]]
-    to <- names(layer_mapping)[[i]]
+  for (i in seq_along(layers_mapping)) {
+    from <- layers_mapping[[i]]
+    to <- names(layers_mapping)[[i]]
     if (!to %in% c("counts", "data")) {
       SeuratObject::LayerData(obj, assay = assay_name, layer = to) <- adata$layers[[from]]
     }
@@ -214,7 +213,6 @@ to_Seurat <- function(
 
   # trackstatus: class=Seurat, feature=get_uns, status=done
   # trackstatus: class=Seurat, feature=get_varp, status=done
-  obj@misc <- list()
   for (i in seq_along(misc_mapping)) {
     misc_name <- names(misc_mapping)[[i]]
     misc <- misc_mapping[[i]]
@@ -238,7 +236,7 @@ to_Seurat <- function(
       misc_data <- misc_data[[misc_key]]
     }
     if (!is.null(misc_data)) {
-      obj@misc[[misc_name]] <- misc_data
+      SeuratObject::Misc(obj, misc_name) <- misc_data
     }
   }
 
@@ -256,7 +254,7 @@ to_Seurat <- function(
 
   layer_name <- mapping[[key]]
 
-  if (is.null(layer_name) || layer_name == "$X") {
+  if (is.null(layer_name)) {
     return(Matrix::t(adata$X))
   }
 
@@ -333,7 +331,15 @@ to_Seurat_guess_layers <- function(adata) { # nolint
   layers <- list()
 
   if (!is.null(adata$X)) {
-    layers["counts"] <- list(NULL)
+    # guess the name of the X slot
+    layer_name_for_x <-
+      if (!"counts" %in% names(adata$layers)) {
+        "counts"
+      } else {
+        "data"
+      }
+
+    layers[[layer_name_for_x]] <- list(NULL)
   }
 
   for (layer_name in names(adata$layers)) {
@@ -417,27 +423,33 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #' @param seurat_obj A Seurat object to be converted.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
 #' @param assay_name The name of the assay to be converted. If `NULL`, the default assay will be used.
-#' @param layer_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in
-#' the list must be a character vector of length 1. See section "Layer mapping" for more details.
-#' @param obsm_mapping A named list mapping reduction names to the names of the reductions in the Seurat object.
-#' Each item in the list must be a named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for
-#' more details.
+#' @param x_mapping A mapping of a Seurat layer to the AnnData `X` slot. If `NULL`, no data will be copied to the
+#' `X` slot.
+#' @param layers_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in
+#' the list must be a character vector of length 1. See section "`$layers` mapping" for more details.
+#' @param obsm_mapping A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
+#' the list must be a vector of length 2. See section "`$obsm` mapping" for more details.
 #' @param varm_mapping A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
-#' Each item in the list must be a character vector of length 1. See section "Varm mapping" for more details.
+#' Each item in the list must be a character vector of length 1. See section "`$varm` mapping" for more details.
 #' @param obsp_mapping A named list mapping graph names to the names of the graphs in the Seurat object.
-#' Each item in the list must be a character vector of length 1. See section "Obsp mapping" for more details.
+#' Each item in the list must be a character vector of length 1. See section "`$obsp` mapping" for more details.
 #' @param varp_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object.
-#' Each item in the list must be a named list with one or two elements. See section "Varp mapping" for more details.
+#' Each item in the list must be a named list with one or two elements. See section "`$varp` mapping" for more details.
 #' @param uns_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object.
-#' Each item in the list must be a named list with one or two elements. See section "Uns mapping" for more details.
+#' Each item in the list must be a named list with one or two elements. See section "`$uns` mapping" for more details.
 #' @param ... Additional arguments passed to the generator function.
+#'
+#' @section `$X` mapping:
+#'
+#' A mapping of a Seurat layer to the AnnData `X` slot. Its value must be `NULL` or a character vector of the Seurat
+#' layer name to copy. If `NULL`, no data will be copied to the `X` slot.
 #'
 #' @section `$layers` mapping:
 #'
 #' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
 #' The `$X` key maps to the `X` slot.
 #'
-#' Example: `layer_mapping = list(counts = "counts", "$X" = "data", foo = "bar")`.
+#' Example: `layers_mapping = list(counts = "counts", foo = "bar")`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
@@ -527,7 +539,8 @@ from_Seurat <- function(
     seurat_obj,
     output_class = c("InMemoryAnnData", "HDF5AnnData"),
     assay_name = NULL,
-    layer_mapping = NULL,
+    x_mapping = NULL,
+    layers_mapping = NULL,
     obsm_mapping = NULL,
     varm_mapping = NULL,
     obsp_mapping = NULL,
@@ -557,8 +570,8 @@ from_Seurat <- function(
     ))
   }
 
-  if (is.null(layer_mapping)) {
-    layer_mapping <- from_Seurat_guess_layers(seurat_obj, assay_name)
+  if (is.null(layers_mapping)) {
+    layers_mapping <- from_Seurat_guess_layers(seurat_obj, assay_name)
   }
   if (is.null(obsm_mapping)) {
     obsm_mapping <- from_Seurat_guess_obsms(seurat_obj, assay_name)
@@ -594,18 +607,19 @@ from_Seurat <- function(
     ...
   )
 
-  # fetch layers
+  # fetch X
   # trackstatus: class=Seurat, feature=set_X, status=done
-  # trackstatus: class=Seurat, feature=set_layers, status=done
-  for (i in seq_along(layer_mapping)) {
-    layer <- layer_mapping[[i]]
-    layer_name <- names(layer_mapping)[[i]]
+  if (!is.null(x_mapping)) {
+    adata$X <- Matrix::t(seurat_assay@layers[[layer]])
+  }
 
-    if (layer_name != "$X") {
-      adata$layers[[layer_name]] <- Matrix::t(seurat_assay@layers[[layer]])
-    } else {
-      adata$X <- Matrix::t(seurat_assay@layers[[layer]])
-    }
+  # fetch layers
+  # trackstatus: class=Seurat, feature=set_layers, status=done
+  for (i in seq_along(layers_mapping)) {
+    layer <- layers_mapping[[i]]
+    layer_name <- names(layers_mapping)[[i]]
+
+    adata$layers[[layer_name]] <- Matrix::t(seurat_assay@layers[[layer]])
   }
 
   # fetch obsm

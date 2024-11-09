@@ -7,7 +7,7 @@
 to_Seurat(
   adata,
   assay_name = "RNA",
-  layer_mapping = NULL,
+  layers_mapping = NULL,
   reduction_mapping = NULL,
   graph_mapping = NULL,
   misc_mapping = NULL
@@ -18,7 +18,7 @@ to_Seurat(
 
 \item{assay_name}{Name of the assay to be created}
 
-\item{layer_mapping}{A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
+\item{layers_mapping}{A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
 details.}
 
 \item{reduction_mapping}{A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
@@ -45,12 +45,11 @@ A named list to map AnnData layers to Seurat layers. Each item in the list must 
 where the values correspond to the names of the layers in the AnnData object, and the names correspond
 to the names of the layers in the resulting Seurat object. A value of \code{NULL} corresponds to the AnnData \code{X} slot.
 
-Example: \code{layer_mapping = list(counts = "counts", data = NULL, foo = "bar")}.
+Example: \code{layers_mapping = list(counts = "counts", data = NULL, foo = "bar")}.
 
 If \code{NULL}, the internal function \code{to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
-\item If \verb{$X} is defined, we assume this is the \code{counts}.
-\item Other layers are copied by name.
+\item All AnnData layers are copied to Seurat layers by name.
 }
 }
 
