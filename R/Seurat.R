@@ -751,7 +751,7 @@ from_Seurat_guess_layers <- function(seurat_obj, assay_name) { # nolint
 
   layers_mapping <- list()
 
-  for (layer_name in names(seurat_assay@layers)) {
+  for (layer_name in SeuratObject::Layers(seurat_assay)) {
     layers_mapping[[layer_name]] <- layer_name
   }
 
@@ -785,7 +785,7 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) { # nolint
 
   varm_mapping <- list()
 
-  if ("pca" %in% names(seurat_obj@reductions)) {
+  if ("pca" %in% SeuratObject::Reductions(seurat_obj)) {
     # Check if the dimreduc was calculated by the selected assay
     reduction <- seurat_obj@reductions[["pca"]]
     if (reduction@assay.used == assay_name) {
