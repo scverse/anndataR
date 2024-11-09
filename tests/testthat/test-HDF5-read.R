@@ -1,5 +1,7 @@
 skip_if_not_installed("hdf5r")
 
+requireNamespace("vctrs")
+
 file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
 on.exit(file$close())
 

@@ -1,5 +1,7 @@
 skip_if_not_installed("hdf5r")
 
+requireNamespace("vctrs")
+
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 test_that("opening H5AD works", {

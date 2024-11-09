@@ -1,5 +1,7 @@
 skip_if_not_installed("hdf5r")
 
+requireNamespace("vctrs")
+
 file <- tempfile(pattern = "hdf5_write_", fileext = ".h5ad")
 if (file.exists(file)) {
   file.remove(file)
