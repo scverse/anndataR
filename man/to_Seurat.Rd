@@ -49,7 +49,7 @@ Example: \code{layer_mapping = list(counts = "counts", data = NULL, foo = "bar")
 
 If \code{NULL}, the internal function \code{to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
-\item If \code{adata$X} is defined, we assume this is the \code{counts}.
+\item If \verb{$X} is defined, we assume this is the \code{counts}.
 \item Other layers are copied by name.
 }
 }
@@ -57,13 +57,13 @@ If \code{NULL}, the internal function \code{to_Seurat_guess_layers} will be used
 \section{Reduction mapping}{
 
 
-A named list to map AnnData \code{obsm} and \code{varm} to Seurat reductions. Each item in the list must be a named list
+A named list to map AnnData \verb{$obsm} and \verb{$varm} to Seurat reductions. Each item in the list must be a named list
 with keys \code{'key'}, \code{'obsm'}, and \code{'varm'}.
 Example: \code{reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
 
 If \code{NULL}, the internal function \code{to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
 \itemize{
-\item All \code{obsm} items starting with \code{X_} are copied by name.
+\item All \verb{$obsm} items starting with \code{X_} are copied by name.
 }
 }
 

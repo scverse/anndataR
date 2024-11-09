@@ -26,19 +26,19 @@
 #'
 #' If `NULL`, the internal function `to_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
-#' * If `adata$X` is defined, we assume this is the `counts`.
+#' * If `$X` is defined, we assume this is the `counts`.
 #' * Other layers are copied by name.
 #'
 #' @section Reduction mapping:
 #'
-#' A named list to map AnnData `obsm` and `varm` to Seurat reductions. Each item in the list must be a named list
+#' A named list to map AnnData `$obsm` and `$varm` to Seurat reductions. Each item in the list must be a named list
 #' with keys `'key'`, `'obsm'`, and `'varm'`.
 #
 #' Example: `reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
 #'
 #' If `NULL`, the internal function `to_Seurat_guess_reductions` will be used to guess the reduction mapping as follows:
 #'
-#' * All `obsm` items starting with `X_` are copied by name.
+#' * All `$obsm` items starting with `X_` are copied by name.
 #'
 #' @section Graph mapping:
 #'
@@ -432,7 +432,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #' Each item in the list must be a named list with one or two elements. See section "Uns mapping" for more details.
 #' @param ... Additional arguments passed to the generator function.
 #'
-#' @section Layer mapping:
+#' @section `$layers` mapping:
 #'
 #' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
 #' The `$X` key maps to the `X` slot.
@@ -445,7 +445,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #' * This means that the AnnData `X` slot will be `NULL` (empty). If you want to copy data to the `X` slot,
 #'   you must define the layer mapping explicitly.
 #'
-#' @section Obsm mapping:
+#' @section `$obsm` mapping:
 #'
 #' A named list to map Seurat reductions to AnnData `$obsm`.
 #'
@@ -457,14 +457,14 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_obsms` will be used to guess the obsm mapping as follows:
 #'
-#' * All Seurat reductions are prefixed with `X_` and copied to AnnData `obsm`.
+#' * All Seurat reductions are prefixed with `X_` and copied to AnnData `$obsm`.
 #'
-#' @section Varm mapping:
+#' @section `$varm` mapping:
 #'
-#' A named list to map Seurat reduction loadings to AnnData `varm`.
+#' A named list to map Seurat reduction loadings to AnnData `$varm`.
 #'
 #' Each item in the list must be a character vector of length 2, where the name corresponds to the name of the
-#' resulting `varm` slot, and the value corresponds to the location of the data in the Seurat object.
+#' resulting `$varm` slot, and the value corresponds to the location of the data in the Seurat object.
 #'
 #' Example: `varm_mapping = list(PCs = c("reductions", "pca")`.
 #'
@@ -472,19 +472,19 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' * The name of the PCA loadings is copied by name.
 #'
-#' @section Obsp mapping:
+#' @section `$obsp` mapping:
 #'
-#' A named list to map Seurat graphs to AnnData `obsp`.
+#' A named list to map Seurat graphs to AnnData `$obsp`.
 #'
 #' Example: `obsp_mapping = list(nn = "connectivities")`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_obsps` will be used to guess the obsp mapping as follows:
 #'
-#' * All Seurat graphs are copied to `obsp` by name.
+#' * All Seurat graphs are copied to `$obsp` by name.
 #'
-#' @section Varp mapping:
+#' @section `$varp` mapping:
 #'
-#' A named list to map Seurat miscellaneous data to AnnData `varp`. The name of each item corresponds to the
+#' A named list to map Seurat miscellaneous data to AnnData `$varp`. The name of each item corresponds to the
 #' resulting `$varp` slot, while the value of each item must be a fector which corresponds to the location of the data
 #' in the Seurat object.
 #'
@@ -492,9 +492,9 @@ to_Seurat_guess_misc <- function(adata) { # nolint
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_varps` will be used to guess the varp mapping as follows:
 #'
-#' * No data is mapped to `varp`.
+#' * No data is mapped to `$varp`.
 #'
-#' @section Uns mapping:
+#' @section `$uns` mapping:
 #'
 #' A named list to map Seurat miscellaneous data to AnnData `uns`. Each item in the list must be a character of
 #' length 2. The first element must be `"misc"`. The second element is the name of the data in the corresponding slot.

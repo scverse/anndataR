@@ -56,7 +56,7 @@ If \code{NULL}, the functions \verb{from_Seurat_guess_*} will be used to guess t
 \details{
 For more information on the functionality of an AnnData object, see \link{anndataR-package}.
 }
-\section{Layer mapping}{
+\section{\verb{$layers} mapping}{
 
 
 A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
@@ -72,7 +72,7 @@ you must define the layer mapping explicitly.
 }
 }
 
-\section{Obsm mapping}{
+\section{\verb{$obsm} mapping}{
 
 
 A named list to map Seurat reductions to AnnData \verb{$obsm}.
@@ -85,17 +85,17 @@ Example: \code{obsm_mapping = list(pca = c("reductions", "pca"), umap = c("reduc
 
 If \code{NULL}, the internal function \code{from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
 \itemize{
-\item All Seurat reductions are prefixed with \code{X_} and copied to AnnData \code{obsm}.
+\item All Seurat reductions are prefixed with \code{X_} and copied to AnnData \verb{$obsm}.
 }
 }
 
-\section{Varm mapping}{
+\section{\verb{$varm} mapping}{
 
 
-A named list to map Seurat reduction loadings to AnnData \code{varm}.
+A named list to map Seurat reduction loadings to AnnData \verb{$varm}.
 
 Each item in the list must be a character vector of length 2, where the name corresponds to the name of the
-resulting \code{varm} slot, and the value corresponds to the location of the data in the Seurat object.
+resulting \verb{$varm} slot, and the value corresponds to the location of the data in the Seurat object.
 
 Example: \verb{varm_mapping = list(PCs = c("reductions", "pca")}.
 
@@ -105,23 +105,23 @@ If \code{NULL}, the internal function \code{from_Seurat_guess_varms} will be use
 }
 }
 
-\section{Obsp mapping}{
+\section{\verb{$obsp} mapping}{
 
 
-A named list to map Seurat graphs to AnnData \code{obsp}.
+A named list to map Seurat graphs to AnnData \verb{$obsp}.
 
 Example: \code{obsp_mapping = list(nn = "connectivities")}.
 
 If \code{NULL}, the internal function \code{from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
 \itemize{
-\item All Seurat graphs are copied to \code{obsp} by name.
+\item All Seurat graphs are copied to \verb{$obsp} by name.
 }
 }
 
-\section{Varp mapping}{
+\section{\verb{$varp} mapping}{
 
 
-A named list to map Seurat miscellaneous data to AnnData \code{varp}. The name of each item corresponds to the
+A named list to map Seurat miscellaneous data to AnnData \verb{$varp}. The name of each item corresponds to the
 resulting \verb{$varp} slot, while the value of each item must be a fector which corresponds to the location of the data
 in the Seurat object.
 
@@ -129,11 +129,11 @@ Example: \code{varp_mapping = list(foo = c("misc", "foo"))}.
 
 If \code{NULL}, the internal function \code{from_Seurat_guess_varps} will be used to guess the varp mapping as follows:
 \itemize{
-\item No data is mapped to \code{varp}.
+\item No data is mapped to \verb{$varp}.
 }
 }
 
-\section{Uns mapping}{
+\section{\verb{$uns} mapping}{
 
 
 A named list to map Seurat miscellaneous data to AnnData \code{uns}. Each item in the list must be a character of
