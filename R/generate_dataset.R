@@ -256,7 +256,7 @@ generate_dataset <- function(
 #'
 #' @noRd
 .generate_dataset_as_sce <- function(dataset_list) {
-  check_requires("Creating a SingleCellExperiment", "SingleCellExperiment")
+  check_requires("Creating a SingleCellExperiment", "SingleCellExperiment", "Bioc")
 
   assays_list <- c(
     list(X = dataset_list$X),
