@@ -49,7 +49,7 @@ get_initial_var <- function(var, X, shape) {
   if (is.null(var)) {
     var <- data.frame(matrix(NA, nrow = shape[[2]], ncol = 0))
     if (!is.null(X)) {
-      colnames(var) <- colnames(X)
+      rownames(var) <- colnames(X)
     }
   }
   var
