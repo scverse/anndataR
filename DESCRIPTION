@@ -62,9 +62,12 @@ BugReports: https://github.com/scverse/anndataR/issues
 Depends: 
     R (>= 4.0.0)
 Imports:
+    cli,
     Matrix,
     methods,
-    R6
+    purrr,
+    R6,
+    rlang
 Suggests:
     anndata,
     BiocStyle,
@@ -73,6 +76,7 @@ Suggests:
     hdf5r (>= 1.3.11),
     rmarkdown,
     S4Vectors,
+    Seurat,
     SeuratObject,
     SingleCellExperiment,
     SummarizedExperiment,
