@@ -49,6 +49,10 @@ read_h5ad_encoding <- function(file, name) {
 #'
 #' @noRd
 read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
+  if (!hdf5_path_exists(name)) {
+    return(NULL)
+  }
+
   if (is.null(type)) {
     encoding_list <- read_h5ad_encoding(file, name)
     type <- encoding_list$type
