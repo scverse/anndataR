@@ -259,11 +259,11 @@ to_Seurat <- function(
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {
-    stop("layer_name must be the name of one of the layers or NULL")
+    stop("layer_name must be character vector of length 1")
   }
 
   if (!layer_name %in% names(adata$layers)) {
-    stop("layer_name must be the name of one of the layers or NULL")
+    stop("layer_name '", layer_name, "' is not an item in adata$layers")
   }
 
   return(Matrix::t(adata$layers[[layer_name]]))
