@@ -255,9 +255,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
                           shape = NULL,
                           mode = c("r", "r+", "a", "w", "w-", "x"),
                           compression = c("none", "gzip", "lzf")) {
-      if (!requireNamespace("hdf5r", quietly = TRUE)) {
-        stop("The HDF5 interface requires the 'hdf5r' package to be installed")
-      }
+      check_requires("HDF5AnnData", "hdf5r")
 
       # check arguments
       compression <- match.arg(compression)
@@ -445,4 +443,13 @@ to_HDF5AnnData <- function(
     shape = adata$shape(),
     mode = mode
   )
+}
+
+cleanup_HDF5AnnData <- function(...) { # nolint object_name_linter
+  args <- list(...)
+
+  if (!is.null(args$file) && is.character(args$file) && file.exists(args$file)) {
+    cli::cli_alert("Removing file: ", args$file)
+    unlink(args$file)
+  }
 }

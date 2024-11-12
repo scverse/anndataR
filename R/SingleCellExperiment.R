@@ -28,6 +28,8 @@
 #' sce <- to_SingleCellExperiment(ad)
 #' sce
 to_SingleCellExperiment <- function(object) { # nolint
+  check_requires("Converting AnnData to SingleCellExperiment", "SingleCellExperiment", "Bioc")
+
   stopifnot(
     inherits(object, "AbstractAnnData")
   )
@@ -119,6 +121,7 @@ from_SingleCellExperiment <- function(
     sce,
     output_class = c("InMemory", "HDF5AnnData"),
     ...) {
+  check_requires("Converting SingleCellExperiment to AnnData", "SingleCellExperiment", "Bioc")
   stopifnot(
     inherits(sce, "SingleCellExperiment")
   )
@@ -168,11 +171,19 @@ from_SingleCellExperiment <- function(
     layers <- x_and_layers[-1]
   }
 
-  generator$new(
-    X = x,
-    obs = obs,
-    var = var,
-    layers = layers,
-    ...
+  tryCatch(
+    generator$new(
+      X = x,
+      obs = obs,
+      var = var,
+      layers = layers,
+      ...
+    ),
+    error = function(e) {
+      if (output_class == "HDF5AnnData") {
+        on.exit(cleanup_HDF5AnnData(...))
+      }
+      stop(e)
+    }
   )
 }
