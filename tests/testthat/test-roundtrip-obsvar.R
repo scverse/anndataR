@@ -17,7 +17,7 @@ test_names <- names(da$vector_generators)
 for (name in test_names) {
   # first generate a python h5ad
   adata_py <- da$generate_dataset(
-    x_type = "generate_float_matrix",
+    x_type = NULL,
     obs_types = list(name),
     var_types = list(name),
     layer_types = list(),
