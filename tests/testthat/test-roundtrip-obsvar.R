@@ -89,7 +89,7 @@ for (name in test_names) {
       check_exact = FALSE
     )
     expect_null(reticulate::py_to_r(zz))
-    pd$testing$assert_frame_equal(
+    zz <- pd$testing$assert_frame_equal(
       adata_py2$var,
       adata_py$var,
       check_dtype = FALSE,
