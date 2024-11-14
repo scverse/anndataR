@@ -1,106 +1,121 @@
 skip_if_no_anndata()
-skip_if_not_installed("hdf5r")
+skip_if_not_installed("reticulate")
 
-data <- generate_dataset(10L, 20L)
+library(reticulate)
+testthat::skip_if_not(
+  reticulate::py_module_available("dummy_anndata"),
+  message = "Python dummy_anndata module not available for testing"
+)
 
-test_names <- names(data$obsp)
+ad <- reticulate::import("anndata", convert = FALSE)
+da <- reticulate::import("dummy_anndata", convert = FALSE)
+bi <- reticulate::import_builtins()
 
-# TODO: re-enable test
-test_names <- c()
+known_issues <- read_known_issues()
+
+test_names <- names(da$matrix_generators)
 
 for (name in test_names) {
-  test_that(paste0("roundtrip with obsp and varp '", name, "'"), {
-    # create anndata
-    ad <- AnnData(
-      obs = data$obs[, c(), drop = FALSE],
-      var = data$var[, c(), drop = FALSE],
-      obsp = data$obsp[name],
-      varp = data$varp[name]
+  # first generate a python h5ad
+  adata_py <- da$generate_dataset(
+    x_type = NULL,
+    obs_types = list(),
+    var_types = list(),
+    layer_types = list(),
+    obsm_types = list(),
+    varm_types = list(),
+    obsp_types = list(name),
+    varp_types = list(name),
+    uns_types = list(),
+    nested_uns_types = list()
+  )
+
+  # create a couple of paths
+  file_py <- withr::local_file(tempfile(paste0("anndata_py_", name), fileext = ".h5ad"))
+  file_r <- withr::local_file(tempfile(paste0("anndata_r_", name), fileext = ".h5ad"))
+
+  # write to file
+  adata_py$write_h5ad(file_py)
+
+  test_that(paste0("Reading an AnnData with obsp and varp '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("obsp", "varp"),
+      dtype = name,
+      process = "read",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+    expect_equal(
+      adata_r$shape(),
+      unlist(reticulate::py_to_r(adata_py$shape))
+    )
+    expect_equal(
+      adata_r$obsp_keys(),
+      py_to_r(adata_py$obsp$keys())
+    )
+    expect_equal(
+      adata_r$varp_keys(),
+      py_to_r(adata_py$varp$keys())
     )
 
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    write_h5ad(ad, filename)
+    # check that the print output is the same
+    str_r <- capture.output(print(adata_r))
+    str_py <- capture.output(print(adata_py))
+    expect_equal(str_r, str_py)
+  })
 
-    # read from file
-    ad_new <- read_h5ad(filename, to = "HDF5AnnData")
+  # maybe this test simply shouldn't be run if there is a known issue with reticulate
+  test_that(paste0("Comparing an anndata with obsp and varp '", name, "' with reticulate works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("obsp", "varp"),
+      dtype = name,
+      process = c("read", "reticulate"),
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
 
-    # expect slots are unchanged
+    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+
     expect_equal(
-      ad_new$obsp[[name]],
-      data$obsp[[name]],
-      ignore_attr = TRUE,
+      adata_r$obsp[[name]],
+      py_to_r(py_get_item(adata_py$obsp, name)),
       tolerance = 1e-6
     )
     expect_equal(
-      ad_new$varp[[name]],
-      data$varp[[name]],
-      ignore_attr = TRUE,
+      adata_r$varp[[name]],
+      py_to_r(py_get_item(adata_py$varp, name)),
       tolerance = 1e-6
     )
   })
-}
 
-for (name in test_names) {
-  test_that(paste0("reticulate->hdf5 with obsp and varp '", name, "'"), {
-    # create anndata
-    ad <- anndata::AnnData(
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names),
-      obsp = data$obsp[name],
-      varp = data$varp[name]
+  test_that(paste0("Writing an AnnData with obsp and varp '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("obsp", "varp"),
+      dtype = name,
+      process = c("read", "write"),
+      known_issues = known_issues
     )
+    skip_if(!is.null(msg), message = msg)
 
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    ad$write_h5ad(filename)
+    adata_r <- read_h5ad(file_py, to = "InMemoryAnnData")
+    write_h5ad(adata_r, file_r)
 
     # read from file
-    ad_new <- HDF5AnnData$new(filename)
+    adata_py2 <- ad$read_h5ad(file_r)
 
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$obsp[[name]],
-      data$obsp[[name]],
-      tolerance = 1e-6
+    # expect that the objects are the same
+    expect_py_matrix_equal(
+      py_get_item(adata_py2$obsp, name),
+      py_get_item(adata_py$obsp, name)
     )
-    expect_equal(
-      ad_new$varp[[name]],
-      data$varp[[name]],
-      tolerance = 1e-6
-    )
-  })
-}
-
-for (name in test_names) {
-  test_that(paste0("hdf5->reticulate with obsp and varp '", name, "'"), {
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-
-    # create anndata
-    ad <- AnnData(
-      obsp = data$obsp[name],
-      varp = data$varp[name],
-      obs = data$obs[, c(), drop = FALSE],
-      var = data$var[, c(), drop = FALSE]
-    )
-    write_h5ad(ad, filename)
-
-    # read from file
-    ad_new <- anndata::read_h5ad(filename)
-
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$obsp[[name]],
-      data$obsp[[name]],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
-    )
-    expect_equal(
-      ad_new$varp[[name]],
-      data$varp[[name]],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
+    expect_py_matrix_equal(
+      py_get_item(adata_py2$varp, name),
+      py_get_item(adata_py$varp, name)
     )
   })
 }

@@ -1,0 +1,20 @@
+known_issues:
+  - backend: HDF5AnnData
+    slot:
+      - obsp
+      - varp
+    dtype:
+      - integer_csparse
+      - integer_matrix
+      - integer_rsparse
+    process: [read]
+    error_message: |
+      Failure (test-roundtrip-obspvarp.R:111:5): Writing an AnnData with obs and var 'integer_csparse' works
+      a$dtype (`actual`) not equal to b$dtype (`expected`).
+
+      `class(actual)`:   "numpy.dtypes.Float64DType" "numpy.dtype" "python.builtin.object"
+      `class(expected)`: "numpy.dtypes.Int64DType"   "numpy.dtype" "python.builtin.object"
+    description: Integers are being converted to floats.
+    proposed_solution: Debug
+    to_investigate: True
+    to_fix: True
