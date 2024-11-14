@@ -82,7 +82,8 @@ Suggests:
     SummarizedExperiment,
     testthat (>= 3.0.0),
     vctrs,
-    withr
+    withr,
+    yaml
 VignetteBuilder: 
     knitr
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
