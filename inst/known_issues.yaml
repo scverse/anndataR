@@ -1,11 +1,12 @@
 known_issues:
   - backend: HDF5AnnData
     slot:
+      - X
+      - layers
       - obsp
       - varp
       - obsm
       - varm
-      - layers
     dtype:
       - integer_csparse
       - integer_rsparse
