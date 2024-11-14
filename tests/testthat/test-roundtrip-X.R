@@ -96,7 +96,7 @@ for (name in test_names) {
     adata_py2 <- ad$read_h5ad(file_r)
 
     # expect that the objects are the same
-    expect_py_matrix_equal(
+    expect_equal_py(
       adata_py2$X,
       adata_py$X
     )

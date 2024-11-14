@@ -54,7 +54,7 @@ for (name in test_names) {
     )
     expect_equal(
       adata_r$layers_keys(),
-      py_to_r(adata_py$layers$keys())
+      bi$list(adata_py$layers$keys())
     )
 
     # check that the print output is the same
@@ -100,7 +100,7 @@ for (name in test_names) {
     adata_py2 <- ad$read_h5ad(file_r)
 
     # expect that the objects are the same
-    expect_py_matrix_equal(
+    expect_equal_py(
       py_get_item(adata_py2$layers, name),
       py_get_item(adata_py$layers, name)
     )

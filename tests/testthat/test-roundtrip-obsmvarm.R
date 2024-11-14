@@ -7,16 +7,16 @@ testthat::skip_if_not(
   message = "Python dummy_anndata module not available for testing"
 )
 
-# TODO: make sure data frames in obsm / varm are also tested?
-# TODO: create a github issue for this
-
 ad <- reticulate::import("anndata", convert = FALSE)
 da <- reticulate::import("dummy_anndata", convert = FALSE)
 bi <- reticulate::import_builtins()
 
 known_issues <- read_known_issues()
 
-test_names <- names(da$matrix_generators)
+test_names <- c(
+  names(da$matrix_generators),
+  names(da$vector_generators)
+)
 
 for (name in test_names) {
   # first generate a python h5ad
@@ -57,11 +57,11 @@ for (name in test_names) {
     )
     expect_equal(
       adata_r$obsm_keys(),
-      py_to_r(adata_py$obsm$keys())
+      bi$list(adata_py$obsm$keys())
     )
     expect_equal(
       adata_r$varm_keys(),
-      py_to_r(adata_py$varm$keys())
+      bi$list(adata_py$varm$keys())
     )
 
     # check that the print output is the same
@@ -112,11 +112,11 @@ for (name in test_names) {
     adata_py2 <- ad$read_h5ad(file_r)
 
     # expect that the objects are the same
-    expect_py_matrix_equal(
+    expect_equal_py(
       py_get_item(adata_py2$obsm, name),
       py_get_item(adata_py$obsm, name)
     )
-    expect_py_matrix_equal(
+    expect_equal_py(
       py_get_item(adata_py2$varm, name),
       py_get_item(adata_py$varm, name)
     )

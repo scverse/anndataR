@@ -53,11 +53,11 @@ for (name in test_names) {
     )
     expect_equal(
       adata_r$obs_keys(),
-      py_to_r(adata_py$obs_keys())
+      bi$list(adata_py$obs_keys())
     )
     expect_equal(
       adata_r$var_keys(),
-      py_to_r(adata_py$var_keys())
+      bi$list(adata_py$var_keys())
     )
 
     # check that the print output is the same
@@ -108,7 +108,7 @@ for (name in test_names) {
     adata_py2 <- ad$read_h5ad(file_r)
 
     # expect that the objects are the same
-    expect_py_df_equal(adata_py2$obs, adata_py$obs)
-    expect_py_df_equal(adata_py2$var, adata_py$var)
+    expect_equal_py(adata_py2$obs, adata_py$obs)
+    expect_equal_py(adata_py2$var, adata_py$var)
   })
 }
