@@ -7,6 +7,9 @@ testthat::skip_if_not(
   message = "Python dummy_anndata module not available for testing"
 )
 
+# TODO: make sure data frames in obsm / varm are also tested?
+# TODO: create a github issue for this
+
 ad <- reticulate::import("anndata", convert = FALSE)
 da <- reticulate::import("dummy_anndata", convert = FALSE)
 bi <- reticulate::import_builtins()
