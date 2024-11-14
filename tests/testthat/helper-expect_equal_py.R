@@ -43,7 +43,6 @@ expect_equal_py <- function(a, b) {
     testthat::expect_null(
       np$testing$assert_allclose(a_dense, b_dense)
     )
-
   }
 }
 
