@@ -1,114 +1,121 @@
 skip_if_no_anndata()
-skip_if_not_installed("hdf5r")
+skip_if_not_installed("reticulate")
 
-data <- generate_dataset(10L, 20L)
+library(reticulate)
+testthat::skip_if_not(
+  reticulate::py_module_available("dummy_anndata"),
+  message = "Python dummy_anndata module not available for testing"
+)
 
-test_names <- names(data$obsm)
+ad <- reticulate::import("anndata", convert = FALSE)
+da <- reticulate::import("dummy_anndata", convert = FALSE)
+bi <- reticulate::import_builtins()
 
-# TODO: re-enable this
-test_names <- test_names[test_names != "character_with_nas"]
+known_issues <- read_known_issues()
 
-# TODO: Add denseMatrix support to anndata and anndataR
-test_names <- test_names[!grepl("_dense", test_names)]
+test_names <- names(da$matrix_generators)
 
 for (name in test_names) {
-  test_that(paste0("roundtrip with obsm and varm '", name, "'"), {
-    # create anndata
-    ad <- AnnData(
-      obs = data$obs[, c(), drop = FALSE],
-      var = data$var[, c(), drop = FALSE],
-      obsm = data$obsm[name],
-      varm = data$varm[name]
+  # first generate a python h5ad
+  adata_py <- da$generate_dataset(
+    x_type = NULL,
+    obs_types = list(),
+    var_types = list(),
+    layer_types = list(),
+    obsm_types = list(name),
+    varm_types = list(name),
+    obsp_types = list(),
+    varp_types = list(),
+    uns_types = list(),
+    nested_uns_types = list()
+  )
+
+  # create a couple of paths
+  file_py <- withr::local_file(tempfile(paste0("anndata_py_", name), fileext = ".h5ad"))
+  file_r <- withr::local_file(tempfile(paste0("anndata_r_", name), fileext = ".h5ad"))
+
+  # write to file
+  adata_py$write_h5ad(file_py)
+
+  test_that(paste0("Reading an AnnData with obsm and varm '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("obsm", "varm"),
+      dtype = name,
+      process = "read",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+    expect_equal(
+      adata_r$shape(),
+      unlist(reticulate::py_to_r(adata_py$shape))
+    )
+    expect_equal(
+      adata_r$obsm_keys(),
+      py_to_r(adata_py$obsm$keys())
+    )
+    expect_equal(
+      adata_r$varm_keys(),
+      py_to_r(adata_py$varm$keys())
     )
 
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    write_h5ad(ad, filename)
+    # check that the print output is the same
+    str_r <- capture.output(print(adata_r))
+    str_py <- capture.output(print(adata_py))
+    expect_equal(str_r, str_py)
+  })
 
-    # read from file
-    ad_new <- read_h5ad(filename, to = "HDF5AnnData")
+  # maybe this test simply shouldn't be run if there is a known issue with reticulate
+  test_that(paste0("Comparing an anndata with obsm and varm '", name, "' with reticulate works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("obsm", "varm"),
+      dtype = name,
+      process = c("read", "reticulate"),
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
 
-    # expect slots are unchanged
+    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+
     expect_equal(
-      ad_new$obsm[[name]],
-      data$obsm[[name]],
-      ignore_attr = TRUE,
+      adata_r$obsm[[name]],
+      py_to_r(py_get_item(adata_py$obsm, name)),
       tolerance = 1e-6
     )
     expect_equal(
-      ad_new$varm[[name]],
-      data$varm[[name]],
-      ignore_attr = TRUE,
+      adata_r$varm[[name]],
+      py_to_r(py_get_item(adata_py$varm, name)),
       tolerance = 1e-6
     )
   })
-}
 
-# TODO: re-enable these tests
-# it seemed like there is a difference in the dimnames of the
-# obsm and varm between anndata and anndataR
-test_names <- c()
-
-for (name in test_names) {
-  test_that(paste0("reticulate->hdf5 with obsm and varm '", name, "'"), {
-    # create anndata
-    ad <- anndata::AnnData(
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names),
-      obsm = data$obsm[name],
-      varm = data$varm[name]
+  test_that(paste0("Writing an AnnData with obsm and varm '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("obsm", "varm"),
+      dtype = name,
+      process = c("read", "write"),
+      known_issues = known_issues
     )
+    skip_if(!is.null(msg), message = msg)
 
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    ad$write_h5ad(filename)
+    adata_r <- read_h5ad(file_py, to = "InMemoryAnnData")
+    write_h5ad(adata_r, file_r)
 
     # read from file
-    ad_new <- HDF5AnnData$new(filename)
+    adata_py2 <- ad$read_h5ad(file_r)
 
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$obsm[[name]],
-      data$obsm[[name]],
-      tolerance = 1e-6
+    # expect that the objects are the same
+    expect_py_matrix_equal(
+      py_get_item(adata_py2$obsm, name),
+      py_get_item(adata_py$obsm, name)
     )
-    expect_equal(
-      ad_new$varm[[name]],
-      data$varm[[name]],
-      tolerance = 1e-6
-    )
-  })
-}
-
-for (name in test_names) {
-  test_that(paste0("hdf5->reticulate with obsm and varm '", name, "'"), {
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-
-    # create anndata
-    ad <- AnnData(
-      obsm = data$obsm[name],
-      varm = data$varm[name],
-      obs = data$obs[, c(), drop = FALSE],
-      var = data$var[, c(), drop = FALSE]
-    )
-    write_h5ad(ad, filename)
-
-    # read from file
-    ad_new <- anndata::read_h5ad(filename)
-
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$obsm[[name]],
-      data$obsm[[name]],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
-    )
-    expect_equal(
-      ad_new$varm[[name]],
-      data$varm[[name]],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
+    expect_py_matrix_equal(
+      py_get_item(adata_py2$varm, name),
+      py_get_item(adata_py$varm, name)
     )
   })
 }

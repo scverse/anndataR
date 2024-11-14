@@ -3,6 +3,8 @@ known_issues:
     slot:
       - obsp
       - varp
+      - obsm
+      - varm
     dtype:
       - integer_csparse
       - integer_matrix
