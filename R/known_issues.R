@@ -1,19 +1,25 @@
 # This file contains the known issues that are currently present in the package.
 # It can be used to generate documentation, but also throw warnings instead of errors
 # in tests.
-#' @importFrom assertthat are_equal
 read_known_issues <- function() {
-  # file is at inst/known_issues.yaml
+  check_requires("Reading known issues", "yaml")
+
   data <- yaml::read_yaml(system.file("known_issues.yaml", package = "anndataR"))
 
   map_dfr(
     data$known_issues,
     function(row) {
-      assertthat::are_equal(row, c(
+      expected_names <- c(
         "backend", "slot", "dtype", "process", "error_message",
         "description", "proposed_solution", "to_investigate",
         "to_fix"
-      ))
+      )
+      if (!all(expected_names %in% names(row))) {
+        stop(
+          "Expected columns ", paste0("'", expected_names, "'", collapse = ", "),
+          " in known_issues.yaml, but got ", paste0("'", names(row), "'", collapse = ", ")
+        )
+      }
 
       expand.grid(row)
     }
