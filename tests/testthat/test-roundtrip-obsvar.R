@@ -9,6 +9,7 @@ testthat::skip_if_not(
 
 ad <- reticulate::import("anndata", convert = FALSE)
 da <- reticulate::import("dummy_anndata", convert = FALSE)
+bi <- reticulate::import_builtins()
 
 known_issues <- read_known_issues()
 
