@@ -9,12 +9,12 @@ known_issues:
       - integer_rsparse
     process: [read]
     error_message: |
-      Failure (test-roundtrip-obspvarp.R:111:5): Writing an AnnData with obs and var 'integer_csparse' works
+      Failure (test-roundtrip-obspvarp.R:111:5): Writing an AnnData with obsp and varp 'integer_csparse' works
       a$dtype (`actual`) not equal to b$dtype (`expected`).
 
       `class(actual)`:   "numpy.dtypes.Float64DType" "numpy.dtype" "python.builtin.object"
       `class(expected)`: "numpy.dtypes.Int64DType"   "numpy.dtype" "python.builtin.object"
     description: Integers are being converted to floats.
-    proposed_solution: Debug
+    proposed_solution: Debug and fix
     to_investigate: True
     to_fix: True
