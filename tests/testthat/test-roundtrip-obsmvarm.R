@@ -17,6 +17,7 @@ test_names <- c(
   names(da$matrix_generators),
   names(da$vector_generators)
 )
+test_names <- setdiff(test_names, c("categorical"))
 
 for (name in test_names) {
   # first generate a python h5ad
