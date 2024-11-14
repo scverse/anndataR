@@ -5,10 +5,11 @@ known_issues:
       - varp
       - obsm
       - varm
+      - layers
     dtype:
       - integer_csparse
-      - integer_matrix
       - integer_rsparse
+      - integer_matrix
     process: [read]
     error_message: |
       Failure (test-roundtrip-obspvarp.R:111:5): Writing an AnnData with obsp and varp 'integer_csparse' works
