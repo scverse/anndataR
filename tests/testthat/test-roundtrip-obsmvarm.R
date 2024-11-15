@@ -17,7 +17,14 @@ test_names <- c(
   names(da$matrix_generators),
   names(da$vector_generators)
 )
-test_names <- setdiff(test_names, c("categorical"))
+
+# temporary workaround for
+# https://github.com/data-intuitive/dummy-anndata/issues/12
+test_names <- setdiff(test_names, c(
+  "categorical", "categorical_missing_values",
+  "categorical_ordered", "categorical_ordered_missing_values",
+  "nullable_boolean_array", "nullable_integer_array"
+))
 
 for (name in test_names) {
   # first generate a python h5ad
