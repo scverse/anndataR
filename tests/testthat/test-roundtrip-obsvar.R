@@ -40,7 +40,7 @@ for (name in test_names) {
   test_that(paste0("reading an AnnData with obs and var '", name, "' works"), {
     msg <- message_if_known(
       backend = "HDF5AnnData",
-      slot = c("obsp", "varp"),
+      slot = c("obs", "var"),
       dtype = name,
       process = "read",
       known_issues = known_issues
