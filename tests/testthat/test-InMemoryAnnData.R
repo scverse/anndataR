@@ -40,7 +40,7 @@ test_that("with empty var", {
   expect_identical(ad$shape(), c(10L, 0L))
 })
 
-test_that("with only X, no obs or var", function() {
+test_that("Creating AnnData works with only X, no obs or var", {
   X <- dummy$X
   dimnames(X) <- list(
     rownames(dummy$obs),
