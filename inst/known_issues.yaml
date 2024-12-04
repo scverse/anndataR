@@ -72,3 +72,46 @@ known_issues:
     proposed_solution: The input checking function for obsm and varm should allow the object to be a vector of the correct length instead of only a matrix or a data frame.
     to_investigate: True
     to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - X
+    dtype:
+      - float_csparse
+      - float_csparse_nas
+    process: [h5diff]
+    error_message: |
+      Warning: different storage datatype
+      <shape> has file datatype H5T_STD_I64LE
+      <shape> has file datatype H5T_STD_I32LE
+      attribute: <shape of </X>> and <shape of </X>>  
+    description: hdf5py writes the <shape> attribute as a H5T_STD_I64LE, hdf5r writes it as H5T_STD_I32LE.
+    proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - X
+    dtype:
+      - float_csparse
+      - float_csparse_nas
+      - float_rsparse
+      - float_rsparse_nas
+    process: [h5diff]
+    error_message: |
+      dataset: </X/data> and </X/data>
+      Not comparable: </X/data> has rank 1, dimensions [200], max dimensions [18446744073709551615]
+      and </X/data> has rank 1, dimensions [108], max dimensions [108]
+      0 differences found
+      dataset: </X/indices> and </X/indices>
+      Not comparable: </X/indices> has rank 1, dimensions [200], max dimensions [18446744073709551615]
+      and </X/indices> has rank 1, dimensions [108], max dimensions [108]
+      0 differences found
+      dataset: </X/indptr> and </X/indptr>
+      Warning: different maximum dimensions
+      </X/indptr> has max dimensions [18446744073709551615]
+      </X/indptr> has max dimensions [21]
+    description: hdf5py has max dimensions as 2^64 - 1, the max val for an unsigned int. hdf5r has it as the actual value
+    proposed_solution: We should investigate if something goes wrong with h5py, but I think hdf5 provides the expected behaviour.
+    to_investigate: True
+    to_fix: False
+
