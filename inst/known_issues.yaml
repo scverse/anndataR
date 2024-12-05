@@ -114,4 +114,61 @@ known_issues:
     proposed_solution: We should investigate if something goes wrong with h5py, but I think hdf5 provides the expected behaviour.
     to_investigate: True
     to_fix: False
-
+  - backend: HDF5AnnData
+    slot:
+      - obs
+      - var
+    dtype:
+      - integer_with_nas
+    process: [h5diff]
+    error_message: |
+      dataset: </var/nullable_integer_array/mask> and </var/integer_with_nas/mask>
+      Warning: different storage datatype
+      Not comparable: </var/nullable_integer_array/mask> has sign H5T_SGN_2 and </var/integer_with_nas/mask> has sign H5T_SGN_NONE
+      0 differences found
+    description: hdf5py writes a nullable integer array with type H5T_SGN_2, hdf5r writes with type H5T_SGN_NONE
+    proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - obs
+      - var
+    dtype:
+      - nullable_integer_array
+    process: [h5diff]
+    error_message: |
+      dataset: </var/nullable_integer_array/values> and </var/integer_with_nas/values>
+      Warning: different storage datatype
+      </var/nullable_integer_array/values> has file datatype H5T_STD_I64LE
+      </var/integer_with_nas/values> has file datatype H5T_STD_I32LE
+      size:           [20]           [20]
+      position        values          values          difference          
+      ------------------------------------------------------------
+      [ 0 ]          0               1               1              
+      1 differences found
+    description: hdf5py writes a nullable integer array with type H5T_STD_I64LE, hdf5r writes with type H5T_STD_I32LE
+    proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - obs
+      - var
+    dtype:
+      - nullable_integer_array
+    process: [h5diff]
+    error_message: |
+      dataset: </var/nullable_integer_array/values> and </var/integer_with_nas/values>
+      Warning: different storage datatype
+      </var/nullable_integer_array/values> has file datatype H5T_STD_I64LE
+      </var/integer_with_nas/values> has file datatype H5T_STD_I32LE
+      size:           [20]           [20]
+      position        values          values          difference          
+      ------------------------------------------------------------
+      [ 0 ]          0               1               1              
+      1 differences found
+    description: On position 0, hdf5py writes a 0 in the values array, hdf5r writes a 1.
+    proposed_solution: We should investigate why this difference happens.
+    to_investigate: True
+    to_fix: True

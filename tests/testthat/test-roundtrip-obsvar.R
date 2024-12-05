@@ -133,11 +133,11 @@ for (name in test_names) {
       write_h5ad(adata_r, file_r2)
 
       # run h5diff
-      res_obs <- processx::run("h5diff", c("-c", file_py, file_r2, paste0("/obs/", name), paste0("/obs/", r_name)), error_on_status = FALSE)
-      expect_equal(res$status, 0, info = res_obs$stdout)  
+      res_obs <- processx::run("h5diff", c("-v", file_py, file_r2, paste0("/obs/", name), paste0("/obs/", r_name)), error_on_status = FALSE)
+      expect_equal(res_obs$status, 0, info = res_obs$stdout)  
 
-      res_var <- processx::run("h5diff", c("-c", file_py, file_r2, paste0("/var/", name), paste0("/var/", r_name)), error_on_status = FALSE)
-      expect_equal(res$status, 0, info = res_var$stdout)
+      res_var <- processx::run("h5diff", c("-v", file_py, file_r2, paste0("/var/", name), paste0("/var/", r_name)), error_on_status = FALSE)
+      expect_equal(res_var$status, 0, info = res_var$stdout)
 
     })
   }
