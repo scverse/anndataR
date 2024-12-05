@@ -93,6 +93,8 @@ known_issues:
       - X
       - obsm
       - varm
+      - obsp
+      - varp
     dtype:
       - float_csparse
       - float_csparse_nas
