@@ -10,7 +10,7 @@ generate_numeric_matrix <- function(n_obs, n_vars, NAs = FALSE) {
 
 generate_integer_matrix <- function(n_obs, n_vars, NAs = FALSE) {
   # byrow = TRUE to mimic the way a matrix gets filled in Python
-  m <- matrix(seq(0L, n_obs * n_vars), nrow = n_obs, ncol = n_vars, byrow = TRUE)
+  m <- matrix(seq(0L, n_obs * n_vars - 1), nrow = n_obs, ncol = n_vars, byrow = TRUE)
   if (NAs) {
     m[1, 1] <- NA_integer_
   }
