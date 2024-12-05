@@ -127,7 +127,7 @@ for (name in test_names) {
       write_h5ad(adata_r, file_r2)
 
       # run h5diff
-      res <- processx::run("h5diff", c("-v", file_py, file_r2, "/layers"), error_on_status = FALSE)
+      res <- processx::run("h5diff", c("-v", file_py, file_r2, paste0("/layers/", name), paste0("/layers/", r_name)), error_on_status = FALSE)
 
       expect_equal(res$status, 0, info = res$stdout)
 
