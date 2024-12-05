@@ -26,6 +26,8 @@ vector_equivalences <- list(
     c("nullable_boolean_array", "logical_with_nas")
 )
 
+all_equivalences <- c(matrix_equivalences, vector_equivalences)
+
 check_arg <- function(args, name, falseval) {
   if (name %in% names(args)) {
     args[[name]][[1]]

@@ -91,6 +91,8 @@ known_issues:
   - backend: HDF5AnnData
     slot:
       - X
+      - obsm
+      - varm
     dtype:
       - float_csparse
       - float_csparse_nas
