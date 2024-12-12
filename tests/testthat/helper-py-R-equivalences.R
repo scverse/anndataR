@@ -1,29 +1,27 @@
 # python, R
+# does not test numeric_dense, numeric_dense_with_nas or integer_dense
 matrix_equivalences <- list(
-    c("float_matrix", "numeric_matrix"),
-    # c("float_matrix", "numeric_dense"),
-    c("float_matrix_nas", "numeric_matrix_with_nas"),
-    # c("float_matrix_nas", "numeric_dense_with_nas"),
-    c("integer_matrix", "integer_matrix"),
-    # c("integer_matrix", "integer_dense"),
-    c("float_csparse", "numeric_csparse"),
-    c("float_csparse_nas", "numeric_csparse_with_nas"),
-    c("float_rsparse", "numeric_rsparse"),
-    c("float_rsparse_nas", "numeric_rsparse_with_nas")
+  c("float_matrix", "numeric_matrix"),
+  c("float_matrix_nas", "numeric_matrix_with_nas"),
+  c("integer_matrix", "integer_matrix"),
+  c("float_csparse", "numeric_csparse"),
+  c("float_csparse_nas", "numeric_csparse_with_nas"),
+  c("float_rsparse", "numeric_rsparse"),
+  c("float_rsparse_nas", "numeric_rsparse_with_nas")
 )
 
 # python, R
 vector_equivalences <- list(
-    c("categorical", "factor"),
-    c("categorical_ordered", "factor_ordered"),
-    c("categorical_missing_values", "factor_with_nas"),
-    c("categorical_ordered_missing_values", "factor_ordered_with_nas"),
-    c("string_array", "character"),
-    c("dense_array", "numeric"),
-    c("integer_array", "integer"),
-    c("boolean_array", "logical"),
-    c("nullable_integer_array", "integer_with_nas"),
-    c("nullable_boolean_array", "logical_with_nas")
+  c("categorical", "factor"),
+  c("categorical_ordered", "factor_ordered"),
+  c("categorical_missing_values", "factor_with_nas"),
+  c("categorical_ordered_missing_values", "factor_ordered_with_nas"),
+  c("string_array", "character"),
+  c("dense_array", "numeric"),
+  c("integer_array", "integer"),
+  c("boolean_array", "logical"),
+  c("nullable_integer_array", "integer_with_nas"),
+  c("nullable_boolean_array", "logical_with_nas")
 )
 
 all_equivalences <- c(matrix_equivalences, vector_equivalences)
@@ -36,7 +34,7 @@ check_arg <- function(args, name, falseval) {
   }
 }
 
-r_generate_dataset <- function(n_obs, n_vars, write=FALSE, ...){
+r_generate_dataset <- function(n_obs, n_vars, write = FALSE, ...) {
   args <- list(...)
 
   data <- generate_dataset(n_obs, n_vars,
@@ -57,7 +55,7 @@ r_generate_dataset <- function(n_obs, n_vars, write=FALSE, ...){
   data
 }
 
-r_write_dataset <- function(dataset, file=NULL){
+r_write_dataset <- function(dataset, file = NULL) {
   if (is.null(file)) {
     file <- tempfile(pattern = "hdf5_write_R_", fileext = ".h5ad")
   }

@@ -107,8 +107,10 @@ for (name in test_names) {
   res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
   r_datatypes <- sapply(res, function(x) x[[2]])
 
-  for(r_name in r_datatypes) {
-    test_that(paste0("Comparing a python generated .h5ad with X '", name, "' with an R generated .h5ad '", r_name, "' works"), {
+  # nolint start
+  for (r_name in r_datatypes) {
+    test_that(paste0("Comparing a python generated .h5ad with X '", name, 
+                      "' with an R generated .h5ad '", r_name, "' works"), {
       msg <- message_if_known(
         backend = "HDF5AnnData",
         slot = c("X"),
@@ -129,6 +131,5 @@ for (name in test_names) {
 
     })
   }
-
-
+  # nolint end
 }
