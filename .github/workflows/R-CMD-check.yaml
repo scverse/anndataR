@@ -65,13 +65,10 @@ jobs:
         shell: Rscript {0}
 
       - name: Install h5diff
-        run:   |
-              if [ "$RUNNER_OS" == "Linux" ]; then
-                    sudo apt-get install hdf5-tools
-              else
-                    echo "$RUNNER_OS not supported"
-                    exit 1
-              fi
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+                sudo apt-get install hdf5-tools
+          fi
         shell: bash
 
 
