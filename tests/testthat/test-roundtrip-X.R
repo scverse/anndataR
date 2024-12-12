@@ -103,6 +103,7 @@ for (name in test_names) {
     )
   })
 
+  skip_if_no_h5diff()
   # Get all R datatypes that are equivalent to the python datatype (name)
   res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
   r_datatypes <- sapply(res, function(x) x[[2]])

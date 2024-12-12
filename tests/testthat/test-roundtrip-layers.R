@@ -107,11 +107,12 @@ for (name in test_names) {
     )
   })
 
+  skip_if_no_h5diff()
   # Get all R datatypes that are equivalent to the python datatype (name)
   res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
   r_datatypes <- sapply(res, function(x) x[[2]])
 
-# nolint start
+  # nolint start
   for (r_name in r_datatypes) {
     test_that(paste0("Comparing a python generated .h5ad with layer '", name,
                      "' with an R generated .h5ad '", r_name, "' works"), {
@@ -139,5 +140,5 @@ for (name in test_names) {
 
     })
   }
-# nolint end
+  # nolint end
 }
