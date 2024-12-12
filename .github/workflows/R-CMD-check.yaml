@@ -67,7 +67,7 @@ jobs:
       - name: Install h5diff
         run:   |
               if [ "$RUNNER_OS" == "Linux" ]; then
-                    sudo apt-get install hdf5tools
+                    sudo apt-get install hdf5-tools
               else
                     echo "$RUNNER_OS not supported"
                     exit 1
