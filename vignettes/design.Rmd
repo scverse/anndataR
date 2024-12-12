@@ -147,3 +147,29 @@ for (class in unique(status_formatted$class)) {
   cat("\n\n")
 }
 ```
+
+## Known issues
+
+```{r echo=FALSE}
+# how to get a file from a package
+data <- yaml::read_yaml(system.file("known_issues.yaml", package = "anndataR"))$known_issues
+
+for (i in seq_along(data)) {
+  str <- paste0(
+    "### Issue: ", data[[i]]$description, "\n\n",
+    " * Backend: ", paste(data[[i]]$backend, collapse = ", "), "\n",
+    " * Slot: ", paste(data[[i]]$slot, collapse = ", "), "\n",
+    " * Dtype: ", paste(data[[i]]$dtype, collapse = ", "), "\n",
+    " * Process: ", data[[i]]$process, "\n",
+    " * To investigate: ", data[[i]]$to_investigate, "\n",
+    " * To fix: ", data[[i]]$to_fix, "\n\n",
+    # "#### Description\n\n",
+    # data[[i]]$description, "\n\n",
+    "#### Error message\n\n",
+    paste(paste0("  ", strsplit(data[[i]]$error_message, "\n")[[1]], "\n"), collapse = ""), "\n\n",
+    "#### Proposed solution\n\n",
+    data[[i]]$proposed_solution, "\n\n"
+  )
+  cat(str)
+}
+```
