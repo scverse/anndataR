@@ -119,6 +119,16 @@ for (name in test_names) {
     # read from file
     adata_py2 <- ad$read_h5ad(file_r)
 
+    # expect name is one of the keys
+    expect_contains(
+      bi$list(adata_py2$obsm$keys()),
+      name
+    )
+    expect_contains(
+      bi$list(adata_py2$obsm$keys()),
+      name
+    )
+
     # expect that the objects are the same
     expect_equal_py(
       py_get_item(adata_py2$obsm, name),

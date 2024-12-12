@@ -13,21 +13,25 @@ bi <- reticulate::import_builtins()
 
 known_issues <- read_known_issues()
 
-test_names <- names(da$vector_generators)
+test_names <- c(
+  names(da$matrix_generators),
+  names(da$vector_generators),
+  names(da$scalar_generators)
+)
 
 for (name in test_names) {
   # first generate a python h5ad
   adata_py <- da$generate_dataset(
     x_type = NULL,
-    obs_types = list(name),
-    var_types = list(name),
+    obs_types = list(),
+    var_types = list(),
     layer_types = list(),
     obsm_types = list(),
     varm_types = list(),
     obsp_types = list(),
     varp_types = list(),
     uns_types = list(),
-    nested_uns_types = list()
+    nested_uns_types = list(name)
   )
 
   # create a couple of paths
@@ -37,10 +41,10 @@ for (name in test_names) {
   # write to file
   adata_py$write_h5ad(file_py)
 
-  test_that(paste0("reading an AnnData with obs and var '", name, "' works"), {
+  test_that(paste0("Reading an AnnData with uns_nested '", name, "' works"), {
     msg <- message_if_known(
       backend = "HDF5AnnData",
-      slot = c("obs", "var"),
+      slot = c("uns_nested"),
       dtype = name,
       process = "read",
       known_issues = known_issues
@@ -49,16 +53,8 @@ for (name in test_names) {
 
     adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
     expect_equal(
-      adata_r$shape(),
-      unlist(reticulate::py_to_r(adata_py$shape))
-    )
-    expect_equal(
-      adata_r$obs_keys(),
-      bi$list(adata_py$obs_keys())
-    )
-    expect_equal(
-      adata_r$var_keys(),
-      bi$list(adata_py$var_keys())
+      names(adata_r$uns$nested),
+      bi$list(adata_py$uns$nested$keys())
     )
 
     # check that the print output is the same
@@ -68,10 +64,10 @@ for (name in test_names) {
   })
 
   # maybe this test simply shouldn't be run if there is a known issue with reticulate
-  test_that(paste0("Comparing an anndata with obs and var '", name, "' with reticulate works"), {
+  test_that(paste0("Comparing an anndata with uns_nested '", name, "' with reticulate works"), {
     msg <- message_if_known(
       backend = "HDF5AnnData",
-      slot = c("obs", "var"),
+      slot = c("uns_nested"),
       dtype = name,
       process = c("read", "reticulate"),
       known_issues = known_issues
@@ -81,21 +77,15 @@ for (name in test_names) {
     adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
 
     expect_equal(
-      adata_r$obs[[name]],
-      py_to_r(adata_py$obs)[[name]],
-      tolerance = 1e-6
-    )
-    expect_equal(
-      adata_r$var[[name]],
-      py_to_r(adata_py$var)[[name]],
-      tolerance = 1e-6
+      adata_r$uns[["nested"]][[name]],
+      reticulate::py_to_r(adata_py$uns$nested[[name]])
     )
   })
 
-  test_that(paste0("Writing an AnnData with obs and var '", name, "' works"), {
+  test_that(paste0("Writing an AnnData with uns_nested '", name, "' works"), {
     msg <- message_if_known(
       backend = "HDF5AnnData",
-      slot = c("obsp", "varp"),
+      slot = c("uns_nested"),
       dtype = name,
       process = c("read", "write"),
       known_issues = known_issues
@@ -110,16 +100,14 @@ for (name in test_names) {
 
     # expect name is one of the keys
     expect_contains(
-      bi$list(adata_py2$obs$keys()),
-      name
-    )
-    expect_contains(
-      bi$list(adata_py2$var$keys()),
+      bi$list(adata_py2$uns$nested$keys()),
       name
     )
 
     # expect that the objects are the same
-    expect_equal_py(adata_py2$obs, adata_py$obs)
-    expect_equal_py(adata_py2$var, adata_py$var)
+    expect_equal_py(
+      py_get_item(adata_py2$uns$nested, name),
+      py_get_item(adata_py$uns$nested, name)
+    )
   })
 }
