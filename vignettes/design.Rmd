@@ -157,10 +157,10 @@ data <- yaml::read_yaml(system.file("known_issues.yaml", package = "anndataR"))$
 for (i in seq_along(data)) {
   str <- paste0(
     "### Issue: ", data[[i]]$description, "\n\n",
-    " * Backend: ", paste0("`", data[[i]]$backend, "`", collapse = ", "), "\n",
-    " * Slot: ", paste0("`", data[[i]]$slot, "`", collapse = ", "), "\n",
-    " * Dtype: ", paste0("`", data[[i]]$dtype, "`", collapse = ", "), "\n",
-    " * Process: ", data[[i]]$process, "\n",
+    " * Affected backend: ", paste0("`", data[[i]]$backend, "`", collapse = ", "), "\n",
+    " * Affected slot(s): ", paste0("`", data[[i]]$slot, "`", collapse = ", "), "\n",
+    " * Affected dtype(s): ", paste0("`", data[[i]]$dtype, "`", collapse = ", "), "\n",
+    " * Probable cause: ", data[[i]]$process, "\n",
     " * To investigate: ", data[[i]]$to_investigate, "\n",
     " * To fix: ", data[[i]]$to_fix, "\n\n",
     # "#### Description\n\n",
