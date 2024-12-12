@@ -2,10 +2,9 @@
 skip_if_no_h5diff <- function() {
   testthat::skip_if(
     tryCatch({
-      system2("which h5diff", ignore.stdout = TRUE)
+      system2("which h5diff")
       FALSE
-    },
-      error = function(e) TRUE
+    }, error = function(e) TRUE
     ),
     message = "h5diff not available for testing"
   )
