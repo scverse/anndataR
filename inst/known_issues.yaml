@@ -75,6 +75,7 @@ known_issues:
   - backend: HDF5AnnData
     slot:
       - uns
+      - uns_nested
     dtype:
       - empty
       - none
@@ -91,21 +92,7 @@ known_issues:
   - backend: HDF5AnnData
     slot:
       - uns
-    dtype:
-      - boolean_array
-    process: [reticulate]
-    error_message: |
-      adata_r$uns[[name]] (`actual`) not equal to reticulate::py_to_r(adata_py$uns[[name]]) (`expected`).
-
-      `dim(actual)` is absent
-      `dim(expected)` is an integer vector (10)
-    description: The python object has a dimension while the R object does not.
-    proposed_solution: Think about whether this is a problem or not. If it isn't, fix the unit test.
-    to_investigate: True
-    to_fix: True
-  - backend: HDF5AnnData
-    slot:
-      - uns
+      - uns_nested
     dtype:
       - boolean_array
       - dense_array
@@ -124,6 +111,7 @@ known_issues:
   - backend: HDF5AnnData
     slot:
       - uns
+      - uns_nested
     dtype:
       - categorical
       - categorical_missing_values
@@ -155,6 +143,7 @@ known_issues:
   - backend: HDF5AnnData
     slot:
       - uns
+      - uns_nested
     dtype:
       - nullable_boolean_array
       - nullable_integer_array
@@ -171,6 +160,7 @@ known_issues:
   - backend: HDF5AnnData
     slot:
       - uns
+      - uns_nested
     dtype:
       - boolean
       - char
