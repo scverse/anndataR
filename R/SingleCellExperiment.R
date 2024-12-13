@@ -120,16 +120,22 @@ from_SingleCellExperiment <- function(
     # nolint end: object_name_linter
     sce,
     output_class = c("InMemory", "HDF5AnnData"),
+    x_mapping = NULL,
+    layers_mapping = NULL,
+    obsm_mapping = NULL,
+    varm_mapping = NULL,
+    obsp_mapping = NULL,
+    varp_mapping = NULL,
+    uns_mapping = NULL,
     ...) {
+
   check_requires("Converting SingleCellExperiment to AnnData", "SingleCellExperiment", "Bioc")
-  stopifnot(
-    inherits(sce, "SingleCellExperiment")
-  )
 
   output_class <- match.arg(output_class)
 
-  # fetch generator
-  generator <- get_anndata_constructor(output_class)
+  stopifnot(inherits(sce, "SingleCellExperiment"))
+
+  # TODO: guess mappings if not provided
 
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
@@ -143,47 +149,109 @@ from_SingleCellExperiment <- function(
     SummarizedExperiment::rowData(sce)
   )
 
-  # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
-  # trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
-  x_and_layers <- lapply(
-    SummarizedExperiment::assays(sce, withDimnames = FALSE),
-    function(mat) {
-      m <- t(mat)
-      # nolint start
-      # WORKAROUND: convert denseMatrix to matrix, because otherwise:
-      # - Could not write element '/layers/integer_dense' of type 'dgeMatrix':
-      #   no applicable method for 'h5writeDataset' applied to an object of class "c('dgeMatrix', 'unpackedMatrix', 'ddenseMatrix', 'generalMatrix', 'dMatrix', 'denseMatrix', 'compMa
-      # - Could not write element '/layers/integer_dense_with_nas' of type 'dgeMatrix':
-      #   no applicable method for 'h5writeDataset' applied to an object of class "c('dgeMatrix', 'unpackedMatrix', 'ddenseMatrix', 'generalMatrix', 'dMatrix', 'denseMatrix', 'compMatrix', 'Matrix', 'replValueSp')"
-      # nolint end
-      if (inherits(m, "denseMatrix")) {
-        m <- as.matrix(m)
-      }
-      m
-    }
-  )
-  if (length(x_and_layers) == 0L) {
-    x <- NULL
-    layers <- list()
-    names(layers) <- character()
-  } else {
-    x <- x_and_layers[[1]]
-    layers <- x_and_layers[-1]
-  }
+  # fetch generator
+  generator <- get_anndata_constructor(output_class)
 
   tryCatch(
-    generator$new(
-      X = x,
-      obs = obs,
-      var = var,
-      layers = layers,
-      ...
-    ),
+    {
+      adata <- generator$new(
+        obs = obs,
+        var = var,
+        ...
+      )
+
+      # fetch X
+      # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
+      x <- NULL
+      if(!is.null(x_mapping)){
+        x <- .to_anndata_matrix(SummarizedExperiment::assay(sce, withDimnames = FALSE))
+      }
+
+      # fetch layers
+      # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
+      for (i in seq_along(layers_mapping)) {
+        layer <- layers_mapping[[i]]
+        layer_name <- names(layers_mapping)[[i]]
+
+        adata$uns[[layer_name]] <- .to_anndata_matrix(assay(sce, layer))
+      }
+
+      # trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
+      for (i in seq_along(obsm_mapping)) {
+        obsm <- obsm_mapping[[i]]
+        obsm_name <- names(obsm_mapping)[[i]]
+
+        if (!is.character(obsm) || length(obsm) != 2){
+          stop("each obsm_mapping must be a character vector of length 2")
+        }
+
+        obsm_slot <- obsm[[1]]
+        obsm_key <- obsm[[2]]
+
+        if (obsm_slot == "reducedDims") {
+          adata$obsm[[obsm_name]] <- reducedDim(sce, obsm_key)
+        } else if (obsm_slot == "metadata") {
+          adata$obsm[[obsm_name]] <- metadata(sce)[[obsm_key]]
+        } 
+      }
+
+      # have a look at this for loadings: https://github.com/ivirshup/sc-interchange/issues/2
+      # could be in rowData or metadata, or in LinearEmbeddingMatrix (which is in a reducedDims slot)?
+      # if in rowData --> need a prefix? or a subslot?
+      # if in metadata --> need a subslot
+
+      # fetch varm
+      # trackstatus: class=SingleCellExperiment, feature=set_varm, status=todo
+      for (i in seq_along(varm_mapping)) {
+        varm <- varm_mapping[[i]]
+        varm_name <- names(varm_mapping)[[i]]
+
+      }
+
+      # fetch obsp
+      # trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
+      for (i in seq_along(obsp_mapping)) {
+        obsp <- obsp_mapping[[i]]
+        obsp_name <- names(obsp_mapping)[[i]]
+
+        adata$obsp[[obsp_name]] <- .to_anndata_matrix(colPair(sce, obsp))
+      }
+
+      # fetch varp
+      # trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
+      for (i in seq_along(varp_mapping)) {
+        varp <- varp_mapping[[i]]
+        varp_name <- names(varp_mapping)[[i]]
+
+        adata$varp[[varp_name]] <- .to_anndata_matrix(rowPair(sce, varp))
+      }
+
+      # fetch uns
+      # trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
+      for (i in seq_along(uns_mapping)) {
+        uns <- uns_mapping[[i]]
+        uns_name <- names(uns_mapping)[[i]]
+
+        adata$uns[[uns_name]] <- metadata(sce)[[uns]]
+      }
+
+
+    },
     error = function(e) {
       if (output_class == "HDF5AnnData") {
-        on.exit(cleanup_HDF5AnnData(...))
+        on.exit(cleanup_HDF5AnnData(adata))
       }
       stop(e)
     }
   )
+
+}
+
+
+.to_anndata_matrix <- function(dge) {
+  m <- t(mat)
+  if (inherits(m, "denseMatrix")) {
+    m <- as.matrix(m)
+  }
+  m
 }
