@@ -23,7 +23,7 @@ source <- list.files(proj_root, pattern = "*.R$", recursive = TRUE)
 
 # look for trackstatus comments
 status_lines <- map_df(source, function(path) {
-  lines <- readr::read_lines(paste0(proj_root, "/", path))
+  lines <- readLines(paste0(proj_root, "/", path))
   line_numbers <- grep("# trackstatus:", lines)
 
   map_df(line_numbers, function(line_number) {
