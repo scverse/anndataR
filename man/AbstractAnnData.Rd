@@ -248,10 +248,36 @@ Convert to SingleCellExperiment
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
 \subsection{Method \code{to_Seurat()}}{
 Convert to Seurat
+
+See \link{?to_Seurat} for more details on the conversion and each of the parameters.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
+  assay_name = "RNA",
+  layers_mapping = NULL,
+  reduction_mapping = NULL,
+  graph_mapping = NULL,
+  misc_mapping = NULL
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{assay_name}}{The name of the assay to use as the main data}
+
+\item{\code{layers_mapping}}{A named list mapping Seurat layers to AnnData layers}
+
+\item{\code{reduction_mapping}}{A named list mapping Seurat reductions to AnnData obsm/varm}
+
+\item{\code{graph_mapping}}{A named list mapping Seurat graphs to AnnData obsp/varp}
+
+\item{\code{misc_mapping}}{A named list mapping Seurat misc to AnnData uns}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A Seurat object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
