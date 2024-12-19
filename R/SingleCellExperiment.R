@@ -27,65 +27,227 @@
 #' ## construct a SingleCellExperiment from an AnnData object
 #' sce <- to_SingleCellExperiment(ad)
 #' sce
-to_SingleCellExperiment <- function(object) { # nolint
+to_SingleCellExperiment <- function(
+  adata,
+  assays_mapping = NULL,
+  col_data_mapping = NULL,
+  row_data_mapping = NULL,
+  reduction_mapping = NULL,
+  colPairs_mapping = NULL,
+  rowPairs_mapping = NULL,
+  metadata_mapping = NULL) { 
+  # nolint
   check_requires("Converting AnnData to SingleCellExperiment", "SingleCellExperiment", "Bioc")
 
-  stopifnot(
-    inherits(object, "AbstractAnnData")
-  )
+  stopifnot(inherits(adata, "AbstractAnnData"))
+
+  # guess mappings if not provided
+  if (is.null(assays_mapping)) {
+    assays_mapping <- to_SCE_guess_assays(adata)
+  }
+
+  if (is.null(col_data_mapping)) {
+    col_data_mapping <- to_SCE_guess_all(adata, "obs")
+  }
+  if(is.null(row_data_mapping)) {
+    row_data_mapping <- to_SCE_guess_all(adata, "var")
+  }
+
+  if (is.null(reduction_mapping)) {
+    reduction_mapping <- list()
+  }
+
+  if (is.null(colPairs_mapping)) {
+    colPairs_mapping <- to_SCE_guess_all(adata, "obsp")
+  }
+  if (is.null(rowPairs_mapping)) {
+    rowPairs_mapping <- to_SCE_guess_all(adata, "varp")
+  }
+
+  if (is.null(metadata_mapping)) {
+    metadata_mapping <- to_SCE_guess_all(adata, "uns")
+  }
+  
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
-  ## FIXME: name of 'X' from metadata[["X_name"]]
-  x_name <- "X"
-  assay_names <- as.character(c(
-    if (!is.null(object$X)) x_name,
-    object$layers_keys()
-  ))
-
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
-  assays <- vector("list", length(assay_names))
-  names(assays) <- assay_names
-  for (assay in assay_names) {
-    value <- if (identical(assay, x_name)) {
-      object$X
+  sce_assays <- vector("list", length(assays_mapping))
+  names(sce_assays) <- assays_mapping
+  for (i in seq_along(assays_mapping)){
+    to <- assays_mapping[[i]]
+    from <- names(assays_mapping)[[i]]
+    if (from != "X"){
+      sce_assays[[to]] <- t(adata$layers[[from]])
     } else {
-      object$layers[[assay]]
+      sce_assays[[to]] <- t(adata$X)
     }
-    ## FIXME: is transposition robust & efficient here?
-    assays[[assay]] <- t(value)
   }
 
   # construct colData
+  # FIXME: probably better way to make a dataframe from a list of vectors
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
-  col_data <- S4Vectors::DataFrame(
-    object$obs,
-    row.names = object$obs_names
-  )
+  # FIXME: can we not straight up assign col_data <- anndata$obs if we want everything to be copied?
+  col_data <- vector("list", length(col_data_mapping))
+  names(col_data) <- names(col_data_mapping)
+  for (i in seq_along(col_data_mapping)) {
+    col_data[[i]] <- adata$obs[[col_data_mapping[[i]]]]
+  }
+  col_data <- as(col_data, "DataFrame")
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
-  row_data <- S4Vectors::DataFrame(
-    object$var,
-    row.names = object$var_names
-  )
+  row_data <- vector("list", length(row_data_mapping))
+  names(row_data) <- names(row_data_mapping)
+  for (i in seq_along(row_data_mapping)) {
+    row_data[[i]] <- adata$var[[row_data_mapping[[i]]]]
+  }
+  row_data <- as(row_data, "DataFrame")
+
+  # construct reducedDims
+  # trackstatus: class=SingleCellExperiment, feature=get_reductions, status=wip
+  reduceddims <- vector("list", length(reduction_mapping))
+  names(reduceddims) <- names(reduction_mapping)
+  for (i in seq_along(reduction_mapping)) {
+
+    name <- names(reduction_mapping)[[i]]
+    reduction <- reduction_mapping[[i]]
+
+    obsm_key <- reduction$obsm
+    varm_key <- reduction$varm
+    uns_key <- reduction$uns
+
+    reduceddims[[name]] <- .from_SingleCellExperiment_process_reduction(adata, name, obsm_key, varm_key, uns_key)
+  }
+
+  # construct colPairs
+  # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
+  col_pairs <- vector("list", length(colPairs_mapping))
+  names(col_pairs) <- names(colPairs_mapping)
+  for (i in seq_along(colPairs_mapping)) {
+    col_pairs[[i]] <- adata$obsp[[colPairs_mapping[[i]]]]
+  }
+
+  # construct rowPairs
+  # trackstatus: class=SingleCellExperiment, feature=get_varp, status=done
+  row_pairs <- vector("list", length(rowPairs_mapping))
+  names(row_pairs) <- names(rowPairs_mapping)
+  for (i in seq_along(rowPairs_mapping)) {
+    row_pairs[[i]] <- adata$varp[[rowPairs_mapping[[i]]]]
+  }
+
+  # construct metadata
+  # trackstatus: class=SingleCellExperiment, feature=get_uns, status=done
+  metadata <- vector("list", length(metadata_mapping))
+  names(metadata) <- names(metadata_mapping)
+  for (i in seq_along(metadata_mapping)) {
+    metadata[[i]] <- adata$uns[[metadata_mapping[[i]]]]
+  }
 
   # construct output object
   sce <- SingleCellExperiment::SingleCellExperiment(
-    assays = assays,
+    assays = sce_assays,
     colData = col_data,
     rowData = row_data,
-    metadata = list(),
-    ## FIXME: assign object$uns to metadata
+    reducedDims = reduceddims,
+    colPairs = col_pairs,
+    rowPairs = row_pairs,
+    metadata = metadata,
     checkDimnames = TRUE
   )
 
-  ## reducedDims
-
-  ## rowPairs
-
   sce
+}
+
+to_SCE_guess_assays <- function(adata) {
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  layers <- list()
+
+  if (!is.null(adata$X)) {
+    layer_name_for_x <- 
+      if (!"counts" %in% names(adata$layers)) { # could expand checks, to check if integers
+        "counts"
+      } else {
+        "data"
+      }
+    layers[["X"]] <- layer_name_for_x
+  }
+
+  for (layer_name in names(adata$layers)) {
+    layers[[layer_name]] <- layer_name
+  }
+
+  layers
+}
+
+to_SCE_guess_all <- function(adata, slot){
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  mapping <- names(adata[[slot]])
+  names(mapping) <- names(adata[[slot]])
+
+  mapping
+}
+
+# # assumes all obs keys should be in the coldata
+# to_SCE_guess_col_data <- function(adata){
+#   if (!inherits(adata, "AbstractAnnData")) {
+#     stop("adata must be an object inheriting from AbstractAnnData")
+#   }
+
+#   col_data_mapping <- list(names(adata$obs))
+#   names(col_data_mapping) <- names(adata$obs)
+#   col_data_mapping
+# }
+
+# # assumes all var keys should be in the rowdata
+# to_SCE_guess_row_data <- function(adata){
+#   if (!inherits(adata, "AbstractAnnData")) {
+#     stop("adata must be an object inheriting from AbstractAnnData")
+#   }
+
+#   row_data_mapping <- list(names(adata$var))
+#   names(row_data_mapping) <- names(adata$var)
+#   row_data_mapping
+# }
+
+
+
+
+.from_SingleCellExperiment_process_reduction <- function(adata, key, obsm_key, varm_key, uns_key) {
+  # check arguments
+
+  embedding <- adata$obsm[[obsm_key]]
+
+  if (is.null(embedding)) {
+    stop(paste0("No embedding found for key '", obsm_key, "' in adata$obsm"))
+  }
+
+  rownames(embedding) <- adata$obs_names
+
+  if (varm_key %in% names(adata$varm)) {
+    loadings <- adata$varm[[varm_key]]
+    rownames(loadings) <- colnames(embedding)
+    
+    metadata <- list()
+    if (uns_key %in% names(adata$uns)) {
+      metadata <- adata$uns[[uns_key]]
+    }
+
+    LinearEmbeddingMatrix(
+      sampleFactors = embedding,
+      featureLoadings = loadings,
+      metadata = metadata
+    )
+  } else {
+    embedding
+  }
 }
 
 #' Convert a SingleCellExperiment object to an AnnData object
@@ -232,9 +394,21 @@ from_SingleCellExperiment <- function(
         uns <- uns_mapping[[i]]
         uns_name <- names(uns_mapping)[[i]]
 
-        adata$uns[[uns_name]] <- metadata(sce)[[uns]]
-      }
+        if (!is.character(uns) || length(uns) < 2 || length(uns) > 3) {
+          stop("each uns_mapping must be a character vector of length 2 or 3")
+        }
 
+        key1 <- uns[[1]]
+        key2 <- uns[[2]]
+
+        if (key1 == "misc") {
+          data <- seurat_obj@misc[[key2]]
+          if (length(uns) == 3) {
+            data <- data[[uns[[3]]]]
+          }
+          adata$uns[[uns_name]] <- data
+        }
+      }
 
     },
     error = function(e) {
