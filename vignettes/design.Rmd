@@ -137,7 +137,7 @@ status_formatted <-
 ```{r echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as a markdown
 for (class in unique(status_formatted$class)) {
-  cat("# ", class, "\n\n\n", sep = "")
+  cat("### ", class, "\n\n\n", sep = "")
 
   df <- status_formatted %>%
     filter(class == !!class) %>%
@@ -145,5 +145,31 @@ for (class in unique(status_formatted$class)) {
     knitr::kable(escape = FALSE)
   cat(paste(as.character(df), collapse = "\n"))
   cat("\n\n")
+}
+```
+
+## Known issues
+
+```{r echo=FALSE, results="asis"}
+# how to get a file from a package
+data <- yaml::read_yaml(system.file("known_issues.yaml", package = "anndataR"))$known_issues
+
+for (i in seq_along(data)) {
+  str <- paste0(
+    "### Issue: ", data[[i]]$description, "\n\n",
+    " * Affected backend: ", paste0("`", data[[i]]$backend, "`", collapse = ", "), "\n",
+    " * Affected slot(s): ", paste0("`", data[[i]]$slot, "`", collapse = ", "), "\n",
+    " * Affected dtype(s): ", paste0("`", data[[i]]$dtype, "`", collapse = ", "), "\n",
+    " * Probable cause: ", data[[i]]$process, "\n",
+    " * To investigate: ", data[[i]]$to_investigate, "\n",
+    " * To fix: ", data[[i]]$to_fix, "\n\n",
+    # "#### Description\n\n",
+    # data[[i]]$description, "\n\n",
+    "#### Error message\n\n",
+    paste(paste0("    ", strsplit(data[[i]]$error_message, "\n")[[1]], "\n"), collapse = ""), "\n\n",
+    "#### Proposed solution\n\n",
+    data[[i]]$proposed_solution, "\n\n"
+  )
+  cat(str)
 }
 ```
