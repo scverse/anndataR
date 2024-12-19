@@ -3,14 +3,24 @@
   stop(fun_name, " is an abstract function.")
 }
 
-#' @title AbstractAnnData
+#' @title Abstract AnnData class
 #'
 #' @description
-#'   Abstract [R6][R6::R6Class] class representing an AnnData
-#'   object. Defines the interface.
+#' This class is an abstract representation of an AnnData object. It is
+#' intended to be used as a base class for concrete implementations of
+#' AnnData objects, such as `InMemoryAnnData` or `HDF5AnnData`.
+#'
+#' The following functions can be used to create an object that inherits
+#' from `AbstractAnnData`:
+#'
+#' * [AnnData()]: Create an in-memory AnnData object.
+#' * [read_h5ad()]: Create an HDF5-backed AnnData object.
+#' * [from_Seurat()]: Create an in-memory AnnData object from a Seurat object.
+#' * [from_SingleCellExperiment()]: Create an in-memory AnnData object from a SingleCellExperiment object.
+#'
 #' @importFrom R6 R6Class
 #'
-#' @noRd
+#' @export
 AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
