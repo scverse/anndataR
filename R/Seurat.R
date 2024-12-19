@@ -614,7 +614,7 @@ from_Seurat <- function(
       # fetch X
       # trackstatus: class=Seurat, feature=set_X, status=done
       if (!is.null(x_mapping)) {
-        adata$X <- Matrix::t(seurat_assay@layers[[layer]])
+        adata$X <- Matrix::t(seurat_assay@layers[[x_mapping]])
       }
 
       # fetch layers
