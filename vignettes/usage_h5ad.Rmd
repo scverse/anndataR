@@ -1,0 +1,92 @@
+---
+title: Read/write H5AD files
+package: anndataR
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Read/write H5AD files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette demonstrates how to read and write `.h5ad` files using the **{anndataR}** package.
+
+Check out `?anndataR` for a full list of the functions provided by this package.
+
+## Example data
+
+A great place for finding single-cell datasets as `.h5ad` files is the [CELLxGENE](https://cellxgene.cziscience.com/datasets) website. 
+
+We will use an example file included in the package for demonstration.
+
+```{r}
+library(anndataR)
+
+h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
+```
+
+## Reading in memory
+
+To read an h5ad file into memory, use the `read_h5ad` function. By default, the data will be read entirely into memory:
+
+```{r}
+adata <- read_h5ad(h5ad_path)
+```
+
+This reads the entire `.h5ad` file into memory as an `AnnData` object. You can then inspect its structure:
+
+```{r}
+adata
+```
+
+## Reading backed by HDF5
+
+For large datasets that do not fit into memory, you can read the h5ad file in a "backed" mode. This means that the data remains on disk, and only parts that are actively being used are loaded into memory. 
+
+To do this, set the `to` parameter in the `read_h5ad` to `HDF5AnnData`:
+
+```{r}
+adata <- read_h5ad(h5ad_path, to = "HDF5AnnData")
+```
+The structure of the object will look similar to the in-memory representation, but the data is stored on disk.
+
+```{r}
+adata
+```
+
+Note that any changes made to the object will be reflected in the `.h5ad` file!
+
+## Writing h5ad files
+
+You can write an `AnnData` object to an h5ad file using the `write_h5ad` function:
+
+``` r
+# Create a temporary file for demonstration
+temp_h5ad <- tempfile(fileext = ".h5ad")
+
+adata$write_h5ad(temp_h5ad)
+```
+
+## Accessing AnnData slots
+
+The `AnnData` object is a list-like object containing various slots. Here's how you can access some of them:
+
+```{r}
+dim(adata$X)
+adata$obs[1:5, 1:6]
+adata$var[1:5, 1:6]
+```
+
+You can also access other slots like `layers`, `uns`, `obsm`, `varm`, and `obsp` in a similar way.
+
+## Session info
+
+```{r}
+sessionInfo()
+```

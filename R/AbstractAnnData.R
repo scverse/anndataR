@@ -3,14 +3,22 @@
   stop(fun_name, " is an abstract function.")
 }
 
-#' @title AbstractAnnData
+#' @title Abstract AnnData class
 #'
 #' @description
-#'   Abstract [R6][R6::R6Class] class representing an AnnData
-#'   object. Defines the interface.
-#' @importFrom R6 R6Class
+#' This class is an abstract representation of an AnnData object. It is
+#' intended to be used as a base class for concrete implementations of
+#' AnnData objects, such as `InMemoryAnnData` or `HDF5AnnData`.
 #'
-#' @noRd
+#' The following functions can be used to create an object that inherits
+#' from `AbstractAnnData`:
+#'
+#' * [AnnData()]: Create an in-memory AnnData object.
+#' * [read_h5ad()]: Create an HDF5-backed AnnData object.
+#' * [from_Seurat()]: Create an in-memory AnnData object from a Seurat object.
+#' * [from_SingleCellExperiment()]: Create an in-memory AnnData object from a SingleCellExperiment object.
+#'
+#' @importFrom R6 R6Class
 AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
@@ -165,8 +173,27 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       to_SingleCellExperiment(self)
     },
     #' @description Convert to Seurat
-    to_Seurat = function() {
-      to_Seurat(self)
+    #'
+    #' See [to_Seurat()] for more details on the conversion and each of the parameters.
+    #'
+    #' @param assay_name The name of the assay to use as the main data
+    #' @param layers_mapping A named list mapping Seurat layers to AnnData layers
+    #' @param reduction_mapping A named list mapping Seurat reductions to AnnData obsm/varm
+    #' @param graph_mapping A named list mapping Seurat graphs to AnnData obsp/varp
+    #' @param misc_mapping A named list mapping Seurat misc to AnnData uns
+    #' @return A Seurat object
+    to_Seurat = function(
+      assay_name = "RNA", layers_mapping = NULL, reduction_mapping = NULL,
+      graph_mapping = NULL, misc_mapping = NULL
+    ) {
+      to_Seurat(
+        self,
+        assay_name = assay_name,
+        layers_mapping = layers_mapping,
+        reduction_mapping = reduction_mapping,
+        graph_mapping = graph_mapping,
+        misc_mapping = misc_mapping
+      )
     },
     #' @description Convert to an InMemory AnnData
     to_InMemoryAnnData = function() {
@@ -183,9 +210,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' * `w` creates a file, truncating any existing ones
     #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
     #' @return An HDF5AnnData object
-    to_HDF5AnnData = function(file,
-                              compression = c("none", "gzip", "lzf"),
-                              mode = c("w-", "r", "r+", "a", "w", "x")) {
+    to_HDF5AnnData = function(
+      file,
+      compression = c("none", "gzip", "lzf"),
+      mode = c("w-", "r", "r+", "a", "w", "x")
+    ) {
       to_HDF5AnnData(
         adata = self,
         file = file,

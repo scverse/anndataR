@@ -69,16 +69,16 @@ test_that("from_Seurat() works", {
 
   ad <- from_Seurat(obj)
 
-  # trackstatus: class=AnnData, feature=test_set_X, status=done
-  # trackstatus: class=AnnData, feature=test_set_layers, status=done
+  # trackstatus: class=Seurat, feature=test_set_X, status=done
+  # trackstatus: class=Seurat, feature=test_set_layers, status=done
   expect_equal(ad$n_obs(), 200L)
   expect_equal(ad$n_vars(), 100L)
 
   expect_equal(ad$layers_keys(), c("counts", "data", "scale.data"))
 
-  # trackstatus: class=AnnData, feature=test_set_obsm, status=done
+  # trackstatus: class=Seurat, feature=test_set_obsm, status=done
   expect_equal(ad$obsm_keys(), c("X_pca", "X_umap"))
 
-  # trackstatus: class=AnnData, feature=test_set_varm, status=done
+  # trackstatus: class=Seurat, feature=test_set_varm, status=done
   expect_equal(ad$varm_keys(), "PCs")
 })
