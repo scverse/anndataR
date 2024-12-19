@@ -35,8 +35,8 @@ to_SingleCellExperiment <- function(
   reduction_mapping = NULL,
   colPairs_mapping = NULL,
   rowPairs_mapping = NULL,
-  metadata_mapping = NULL) { 
-  # nolint
+  metadata_mapping = NULL) {
+
   check_requires("Converting AnnData to SingleCellExperiment", "SingleCellExperiment", "Bioc")
 
   stopifnot(inherits(adata, "AbstractAnnData"))
@@ -45,29 +45,24 @@ to_SingleCellExperiment <- function(
   if (is.null(assays_mapping)) {
     assays_mapping <- to_SCE_guess_assays(adata)
   }
-
   if (is.null(col_data_mapping)) {
     col_data_mapping <- to_SCE_guess_all(adata, "obs")
   }
   if(is.null(row_data_mapping)) {
     row_data_mapping <- to_SCE_guess_all(adata, "var")
   }
-
   if (is.null(reduction_mapping)) {
-    reduction_mapping <- list()
+    reduction_mapping <- to_SCE_guess_reduction(adata)
   }
-
   if (is.null(colPairs_mapping)) {
     colPairs_mapping <- to_SCE_guess_all(adata, "obsp")
   }
   if (is.null(rowPairs_mapping)) {
     rowPairs_mapping <- to_SCE_guess_all(adata, "varp")
   }
-
   if (is.null(metadata_mapping)) {
     metadata_mapping <- to_SCE_guess_all(adata, "uns")
   }
-  
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
@@ -88,21 +83,14 @@ to_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
   # FIXME: can we not straight up assign col_data <- anndata$obs if we want everything to be copied?
-  col_data <- vector("list", length(col_data_mapping))
-  names(col_data) <- names(col_data_mapping)
-  for (i in seq_along(col_data_mapping)) {
-    col_data[[i]] <- adata$obs[[col_data_mapping[[i]]]]
-  }
+  #        should have a convenience function
+  col_data <- .to_SCE_process_simple_mapping(adata, col_data_mapping, "obs")
   col_data <- as(col_data, "DataFrame")
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
-  row_data <- vector("list", length(row_data_mapping))
-  names(row_data) <- names(row_data_mapping)
-  for (i in seq_along(row_data_mapping)) {
-    row_data[[i]] <- adata$var[[row_data_mapping[[i]]]]
-  }
+  row_data <- .to_SCE_process_simple_mapping(adata, row_data_mapping, "var")
   row_data <- as(row_data, "DataFrame")
 
   # construct reducedDims
@@ -123,27 +111,15 @@ to_SingleCellExperiment <- function(
 
   # construct colPairs
   # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
-  col_pairs <- vector("list", length(colPairs_mapping))
-  names(col_pairs) <- names(colPairs_mapping)
-  for (i in seq_along(colPairs_mapping)) {
-    col_pairs[[i]] <- adata$obsp[[colPairs_mapping[[i]]]]
-  }
+  col_pairs <- .to_SCE_process_simple_mapping(adata, colPairs_mapping, "obsp")
 
   # construct rowPairs
   # trackstatus: class=SingleCellExperiment, feature=get_varp, status=done
-  row_pairs <- vector("list", length(rowPairs_mapping))
-  names(row_pairs) <- names(rowPairs_mapping)
-  for (i in seq_along(rowPairs_mapping)) {
-    row_pairs[[i]] <- adata$varp[[rowPairs_mapping[[i]]]]
-  }
+  row_pairs <- .to_SCE_process_simple_mapping(adata, rowPairs_mapping, "varp")
 
   # construct metadata
   # trackstatus: class=SingleCellExperiment, feature=get_uns, status=done
-  metadata <- vector("list", length(metadata_mapping))
-  names(metadata) <- names(metadata_mapping)
-  for (i in seq_along(metadata_mapping)) {
-    metadata[[i]] <- adata$uns[[metadata_mapping[[i]]]]
-  }
+  metadata <- .to_SCE_process_simple_mapping(adata, metadata_mapping, "uns")
 
   # construct output object
   sce <- SingleCellExperiment::SingleCellExperiment(
@@ -195,30 +171,21 @@ to_SCE_guess_all <- function(adata, slot){
   mapping
 }
 
-# # assumes all obs keys should be in the coldata
-# to_SCE_guess_col_data <- function(adata){
-#   if (!inherits(adata, "AbstractAnnData")) {
-#     stop("adata must be an object inheriting from AbstractAnnData")
-#   }
+to_SCE_guess_reduction <- function(adata){
+  list()
+}
 
-#   col_data_mapping <- list(names(adata$obs))
-#   names(col_data_mapping) <- names(adata$obs)
-#   col_data_mapping
-# }
-
-# # assumes all var keys should be in the rowdata
-# to_SCE_guess_row_data <- function(adata){
-#   if (!inherits(adata, "AbstractAnnData")) {
-#     stop("adata must be an object inheriting from AbstractAnnData")
-#   }
-
-#   row_data_mapping <- list(names(adata$var))
-#   names(row_data_mapping) <- names(adata$var)
-#   row_data_mapping
-# }
-
-
-
+.to_SCE_process_simple_mapping <- function(adata, mapping, slot){
+  # check if mapping contains all columns of slot
+  if(length(setdiff(names(adata[[slot]]), names(mapping))) == 0){
+    adata[[slot]]
+  } else {
+    mapped <- lapply(seq_along(mapping), function(i) {
+      adata[[slot]][[mapping[[i]]]]
+    })
+    names(mapped) <- names(mapping)
+  }
+}
 
 .from_SingleCellExperiment_process_reduction <- function(adata, key, obsm_key, varm_key, uns_key) {
   # check arguments
