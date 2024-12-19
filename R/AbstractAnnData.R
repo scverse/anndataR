@@ -19,8 +19,6 @@
 #' * [from_SingleCellExperiment()]: Create an in-memory AnnData object from a SingleCellExperiment object.
 #'
 #' @importFrom R6 R6Class
-#'
-#' @export
 AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
   active = list(
     #' @field X NULL or an observation x variable matrix (without
