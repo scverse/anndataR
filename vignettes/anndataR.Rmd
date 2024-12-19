@@ -29,7 +29,7 @@ library(SingleCellExperiment)
 
 Check out `?anndataR` for a full list of the functions provided by this package.
 
-# Installation
+## Installation
 
 Install using:
 ```{r, eval = FALSE}
@@ -39,10 +39,11 @@ if (!require("pak", quietly = TRUE)) {
 pak::pak("scverse/anndataR")
 ```
 
-# Usage
+## Usage
 
-Here's a quick example of how to use **{anndataR}**. First, we download an
-h5ad file.
+Here's a quick example of how to use **{anndataR}**.
+
+First, we fetch an example `.h5ad` file included in the package:
 
 ```{r}
 library(anndataR)
@@ -108,7 +109,7 @@ adata <- AnnData(
 adata
 ```
 
-# Session info
+## Session info
 
 ```{r}
 sessionInfo()
