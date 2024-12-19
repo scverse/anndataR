@@ -188,6 +188,33 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         compression = compression,
         mode = mode
       )
+    },
+    #' @description Write the AnnData object to an H5AD file.
+    #' @param path The path to the H5AD file
+    #' @param compression The compression algorithm to use when writing the
+    #' HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+    #' `"none"`.
+    #' @param mode The mode to open the HDF5 file.
+    #' * `a` creates a new file or opens an existing one for read/write.
+    #' * `r+` opens an existing file for read/write.
+    #' * `w` creates a file, truncating any existing ones
+    #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
+    #' @return `path` invisibly
+    #' @examples
+    #' adata <- AnnData(
+    #'   X = matrix(1:5, 3L, 5L),
+    #'   layers = list(
+    #'     A = matrix(5:1, 3L, 5L),
+    #'     B = matrix(letters[1:5], 3L, 5L)
+    #'   ),
+    #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+    #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
+    #' )
+    #' h5ad_file <- tempfile(fileext = ".h5ad")
+    #' adata$write_h5ad(h5ad_file)
+    write_h5ad = function(path, compression = "gzip", mode = "w") {
+      self$to_HDF5AnnData(path, compression = compression, mode = mode)
+      path
     }
   ),
   private = list(
