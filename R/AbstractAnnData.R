@@ -174,7 +174,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     },
     #' @description Convert to Seurat
     #'
-    #' See [?to_Seurat] for more details on the conversion and each of the parameters.
+    #' See [to_Seurat()] for more details on the conversion and each of the parameters.
     #'
     #' @param assay_name The name of the assay to use as the main data
     #' @param layers_mapping A named list mapping Seurat layers to AnnData layers

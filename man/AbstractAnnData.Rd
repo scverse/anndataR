@@ -249,7 +249,7 @@ Convert to SingleCellExperiment
 \subsection{Method \code{to_Seurat()}}{
 Convert to Seurat
 
-See \link{?to_Seurat} for more details on the conversion and each of the parameters.
+See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and each of the parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
   assay_name = "RNA",
