@@ -176,3 +176,41 @@ known_issues:
     proposed_solution: We should investigate why this difference happens.
     to_investigate: True
     to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - X
+      - obsm
+      - varm
+      - layers
+      - obsp
+      - varp
+    dtype:
+      - numeric_dense
+      - numeric_dense_with_nas
+      - integer_dense
+    process: [h5diff]
+    error_message: |
+      Error in `H5File.open(filename, mode, file_create_pl, file_access_pl)`: HDF5-API Errors:
+      error #000: ../../../src/H5F.c in H5Fcreate(): line 349: unable to create file
+          class: HDF5
+          major: File accessibility
+          minor: Unable to open file
+
+      error #001: ../../../src/H5Fint.c in H5F_open(): line 1725: unable to open file
+          class: HDF5
+          major: File accessibility
+          minor: Unable to open file
+
+      error #002: ../../../src/H5FD.c in H5FD_open(): line 722: open failed
+          class: HDF5
+          major: Virtual File Layer
+          minor: Unable to initialize object
+
+      error #003: ../../../src/H5FDsec2.c in H5FD__sec2_open(): line 351: unable to open file: name = '/tmp/RtmpN29Fmn/anndata_r2_integer_matrixbe0976b43e39b.h5ad', errno = 17, error message = 'File exists', flags = 15, o_flags = c2
+          class: HDF5
+          major: File accessibility
+          minor: Unable to open file
+    description: Issue is related to [issue \#198](https://github.com/scverse/anndataR/issues/198).
+    proposed_solution: Fix writing dgeMatrix objects.
+    to_investigate: True
+    to_fix: True

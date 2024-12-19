@@ -133,7 +133,7 @@ for (name in test_names) {
       msg <- message_if_known(
         backend = "HDF5AnnData",
         slot = c("obsp", "varp"),
-        dtype = name,
+        dtype = c(name, r_name),
         process = c("h5diff"),
         known_issues = known_issues
       )

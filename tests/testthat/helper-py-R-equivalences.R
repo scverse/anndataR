@@ -1,5 +1,3 @@
-# python, R
-# does not test numeric_dense, numeric_dense_with_nas or integer_dense
 matrix_equivalences <- list(
   c("float_matrix", "numeric_matrix"),
   c("float_matrix", "numeric_dense"),
