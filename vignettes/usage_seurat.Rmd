@@ -22,8 +22,9 @@ Check out `?anndataR` for a full list of the functions provided by this package.
 
 ## Introduction
 
-Seurat is a widely used toolkit for single-cell analysis in R. **{anndataR}** enables seamless conversion between `Seurat` objects and `AnnData` objects,
-allowing you to leverage the strengths of both ecosystems.
+Seurat is a widely used toolkit for single-cell analysis in R.
+ **{anndataR}** enables conversion between `Seurat` objects and `AnnData` objects,
+allowing you to leverage the strengths of both the scverse and Seurat ecosystems.
 
 ## Prerequisites
 
@@ -69,8 +70,7 @@ to ensure that all necessary information has been transferred.
 See `?to_Seurat` for more details on how to customize the conversion process. For instance:
 
 ```{r}
-to_Seurat(
-  adata,
+adata$to_Seurat(
   assay_name = "ADT",
   layers_mapping = c(counts = "dense_counts", data = "dense_X")
 )
