@@ -136,34 +136,33 @@ for (name in test_names) {
   res <- Filter(function(x) x[[1]] == name, all_equivalences)
   r_datatypes <- sapply(res, function(x) x[[2]])
 
-# nolint start
-  for( r_name in r_datatypes){
+  for (r_name in r_datatypes){
     test_that(paste0("Comparing a python generated .h5ad with obsm and varm '", name,
-              "' with an R generated .h5ad '", r_name, "' works"), {
-      msg <- message_if_known(
-        backend = "HDF5AnnData",
-        slot = c("obsm", "varm"),
-        dtype = name,
-        process = c("h5diff"),
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
-      # generate an R h5ad
-      adata_r <- r_generate_dataset(10L, 20L, obsm_types = list(r_name), varm_types = list(r_name))
-      write_h5ad(adata_r, file_r2)
+                     "' with an R generated .h5ad '", r_name, "' works"), {
 
-      # run h5diff
-      res_obsm <- processx::run("h5diff", c("-v", file_py, file_r2, 
-                                            paste0("/obsm/", name), paste0("/obsm/", r_name)), 
-                                            error_on_status = FALSE)
-      expect_equal(res_obsm$status, 0, info = res_obsm$stdout)
+                msg <- message_if_known(
+                  backend = "HDF5AnnData",
+                  slot = c("obsm", "varm"),
+                  dtype = name,
+                  process = c("h5diff"),
+                  known_issues = known_issues
+                )
 
-      res_varm <- processx::run("h5diff", c("-v", file_py, file_r2, 
-                                            paste0("/varm/", name), paste0("/varm/", r_name)), 
-                                            error_on_status = FALSE)
-      expect_equal(res_varm$status, 0, info = res_varm$stdout)
-    })
+                skip_if(!is.null(msg), message = msg)
+                # generate an R h5ad
+                adata_r <- r_generate_dataset(10L, 20L, obsm_types = list(r_name), varm_types = list(r_name))
+                write_h5ad(adata_r, file_r2)
+
+                # run h5diff
+                res_obsm <- processx::run("h5diff",
+                                          c("-v", file_py, file_r2, paste0("/obsm/", name), paste0("/obsm/", r_name)),
+                                          error_on_status = FALSE)
+                expect_equal(res_obsm$status, 0, info = res_obsm$stdout)
+
+                res_varm <- processx::run("h5diff",
+                                          c("-v", file_py, file_r2, paste0("/varm/", name), paste0("/varm/", r_name)),
+                                          error_on_status = FALSE)
+                expect_equal(res_varm$status, 0, info = res_varm$stdout)
+              })
   }
-
-# nolint end
 }

@@ -125,34 +125,34 @@ for (name in test_names) {
   res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
   r_datatypes <- sapply(res, function(x) x[[2]])
 
-# nolint start
+
   for (r_name in r_datatypes){
     test_that(paste0("Comparing a python generated .h5ad with obsp and varp '", name,
-              "' with an R generated .h5ad '", r_name, "' works"), {
-      msg <- message_if_known(
-        backend = "HDF5AnnData",
-        slot = c("obsp", "varp"),
-        dtype = name,
-        process = c("h5diff"),
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
-      # generate an R h5ad
-      adata_r <- r_generate_dataset(10L, 20L, obsp_types = list(r_name), varp_types = list(r_name))
-      write_h5ad(adata_r, file_r2)
+                     "' with an R generated .h5ad '", r_name, "' works"), {
+                msg <- message_if_known(
+                  backend = "HDF5AnnData",
+                  slot = c("obsp", "varp"),
+                  dtype = name,
+                  process = c("h5diff"),
+                  known_issues = known_issues
+                )
+                skip_if(!is.null(msg), message = msg)
+                # generate an R h5ad
+                adata_r <- r_generate_dataset(10L, 20L, obsp_types = list(r_name), varp_types = list(r_name))
+                write_h5ad(adata_r, file_r2)
 
-      # run h5diff
-      res_obsp <- processx::run("h5diff", c("-v", file_py, file_r2, 
-                                paste0("/obsp/", name), paste0("/obsp/", r_name)), 
-                                error_on_status = FALSE)
-      expect_equal(res_obsp$status, 0, info = res_obsp$stdout)  
+                # run h5diff
+                res_obsp <- processx::run("h5diff",
+                                          c("-v", file_py, file_r2, paste0("/obsp/", name), paste0("/obsp/", r_name)),
+                                          error_on_status = FALSE)
+                expect_equal(res_obsp$status, 0, info = res_obsp$stdout)
 
-      res_varp <- processx::run("h5diff", c("-v", file_py, file_r2, 
-                                            paste0("/varp/", name), paste0("/varp/", r_name)), 
-                                            error_on_status = FALSE)
-      expect_equal(res_varp$status, 0, info = res_varp$stdout)
+                res_varp <- processx::run("h5diff",
+                                          c("-v", file_py, file_r2, paste0("/varp/", name), paste0("/varp/", r_name)),
+                                          error_on_status = FALSE)
+                expect_equal(res_varp$status, 0, info = res_varp$stdout)
 
-    })
+              })
   }
-# nolint end
+
 }

@@ -108,29 +108,29 @@ for (name in test_names) {
   res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
   r_datatypes <- sapply(res, function(x) x[[2]])
 
-  # nolint start
   for (r_name in r_datatypes) {
-    test_that(paste0("Comparing a python generated .h5ad with X '", name, 
-                      "' with an R generated .h5ad '", r_name, "' works"), {
-      msg <- message_if_known(
-        backend = "HDF5AnnData",
-        slot = c("X"),
-        dtype = name,
-        process = c("h5diff"),
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
+    test_that(paste0("Comparing a python generated .h5ad with X '", name,
+                     "' with an R generated .h5ad '", r_name, "' works"), {
+                msg <- message_if_known(
+                  backend = "HDF5AnnData",
+                  slot = c("X"),
+                  dtype = name,
+                  process = c("h5diff"),
+                  known_issues = known_issues
+                )
+                skip_if(!is.null(msg), message = msg)
 
-      # generate an R h5ad
-      adata_r <- r_generate_dataset(10L, 20L, x_type = list(r_name))
-      write_h5ad(adata_r, file_r2)
+                # generate an R h5ad
+                adata_r <- r_generate_dataset(10L, 20L, x_type = list(r_name))
+                write_h5ad(adata_r, file_r2)
 
-      # run h5diff
-      res <- processx::run("h5diff", c("-v", file_py, file_r2, "/X"), error_on_status = FALSE)
+                # run h5diff
+                res <- processx::run("h5diff",
+                                     c("-v", file_py, file_r2, "/X"),
+                                     error_on_status = FALSE)
 
-      expect_equal(res$status, 0, info = res$stdout)
+                expect_equal(res$status, 0, info = res$stdout)
 
-    })
+              })
   }
-  # nolint end
 }
