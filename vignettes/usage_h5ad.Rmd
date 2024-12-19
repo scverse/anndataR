@@ -85,7 +85,7 @@ adata$var[1:5, 1:6]
 
 You can also access other slots like `layers`, `uns`, `obsm`, `varm`, and `obsp` in a similar way.
 
-# Session info
+## Session info
 
 ```{r}
 sessionInfo()
