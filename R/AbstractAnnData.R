@@ -156,6 +156,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     varp_keys = function() {
       names(self$varp)
     },
+    #' @description Keys (element names) of `uns`.
+    uns_keys = function() {
+      names(self$uns)
+    },
     #' @description Convert to SingleCellExperiment
     to_SingleCellExperiment = function() {
       to_SingleCellExperiment(self)
