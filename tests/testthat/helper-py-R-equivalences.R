@@ -2,8 +2,11 @@
 # does not test numeric_dense, numeric_dense_with_nas or integer_dense
 matrix_equivalences <- list(
   c("float_matrix", "numeric_matrix"),
+  c("float_matrix", "numeric_dense"),
   c("float_matrix_nas", "numeric_matrix_with_nas"),
+  c("float_matrix_nas", "numeric_dense_with_nas"),
   c("integer_matrix", "integer_matrix"),
+  c("integer_matrix", "integer_dense"),
   c("float_csparse", "numeric_csparse"),
   c("float_csparse_nas", "numeric_csparse_with_nas"),
   c("float_rsparse", "numeric_rsparse"),
