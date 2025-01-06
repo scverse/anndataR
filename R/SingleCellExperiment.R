@@ -1,9 +1,24 @@
 #' Convert an AnnData object to a SingleCellExperiment object
 #'
 #' `to_SingleCellExperiment()` converts an AnnData object
-#'   to a SingleCellExperiment.
+#'   to a SingleCellExperiment object.
 #'
-#' @param object an AnnData object, e.g., InMemoryAnnData
+#' @param adata an AnnData object, e.g., InMemoryAnnData
+#' 
+#' @param assays_mapping A named list mapping `layers` in `adata` to
+#'   `assay` names in the created SingleCellExperiment object.
+#' @param col_data_mapping a named list mapping `obs` in `adata` to
+#'  `colData` in the created SingleCellExperiment object
+#' @param row_data_mapping a named list mapping `var` names in `adata` to
+#'   `rowData` in the created SingleCellExperiment object
+#' @param reduction_mapping a named list mapping reduction names in `adata` to
+#' reduction names in the created SingleCellExperiment object
+#' @param colPairs_mapping a named list mapping obsp names in `adata` to
+#' colPairs names in the created SingleCellExperiment object
+#' @param rowPairs_mapping a named list mapping varp names in `adata` to
+#' rowPairs names in the created SingleCellExperiment object
+#' @param metadata_mapping a named list mapping uns names in `adata` to
+#' metadata names in the created SingleCellExperiment object
 #'
 #' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
 #'   representing the content of `object`.
@@ -82,8 +97,6 @@ to_SingleCellExperiment <- function(
   # FIXME: probably better way to make a dataframe from a list of vectors
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
-  # FIXME: can we not straight up assign col_data <- anndata$obs if we want everything to be copied?
-  #        should have a convenience function
   col_data <- .to_SCE_process_simple_mapping(adata, col_data_mapping, "obs")
   col_data <- as(col_data, "DataFrame")
 
