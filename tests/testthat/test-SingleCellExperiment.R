@@ -5,6 +5,9 @@ test_that("to_SingleCellExperiment with inmemoryanndata", {
 
   ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
 
+  ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+  ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+
   sce <- ad$to_SingleCellExperiment()
 
   expect_equal(nrow(sce), 20)
@@ -48,9 +51,49 @@ test_that("to_SingleCellExperiment with inmemoryanndata", {
     expect_equal(rowData(sce)[[varp_key]], dummy$varp[[varp_key]], info = paste0("varm_key: ", varm_key))
   }
 
+  thing <- 0
+
   # TODO: obsm keys? varm keys? --> test a reduction
+  # TODO: uns keys?
 
 })
+
+# TODO gracefully failing
+
+# test_that("from_SingleCellExperiment works"){
+  # reverse from to_SCE --> assays to layers, colData to obs, rowData to var, colPairs to obsp, rowPairs to varp
+
+  skip_if_not_installed("SingleCellExperiment")
+  library(SingleCellExperiment)
+
+  ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
+
+  ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+  ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+
+  sce <- ad$to_SingleCellExperiment()
+
+  ad2 <- from_SingleCellExperiment(sce)
+
+  thing <- 0
+
+  # # generate a dataset? or generate a dummy & put stuff in it?
+
+  # # dummy
+  # assays <- c(list(X = dummy$X), dummy$layers)
+  # # names(assays) <- c("counts", names(dummy$layers))
+  # sce <- SingleCellExperiment::SingleCellExperiment(
+  #   assays = assays
+  # )
+
+  # # run reduction?
+  # pca_data <- prcomp(t(dummy$X), rank = 50)
+  # reducedDims(sce) <- list(PCA = pca_data$x)
+
+  # ad <- from_SingleCellExperiment(sce)
+  # thing <- 0
+
+# }
 
 # test_that("to_SingleCellExperiment() works", {
 #   ad <- AnnData(

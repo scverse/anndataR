@@ -7,6 +7,15 @@
 from_SingleCellExperiment(
   sce,
   output_class = c("InMemory", "HDF5AnnData"),
+  x_mapping = NULL,
+  layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
+  obsm_mapping = NULL,
+  varm_mapping = NULL,
+  obsp_mapping = NULL,
+  varp_mapping = NULL,
+  uns_mapping = NULL,
   ...
 )
 }
