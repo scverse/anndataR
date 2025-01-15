@@ -1,0 +1,275 @@
+---
+title: "Converting to and from SingleCellExperiment objects"
+author:
+  - name: Louise Deconinck
+package: anndataR
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Converting to and from SingleCellExperiment objects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+**{anndataR}** allows users to convert to and from SingleCellExperiment and AnnData objects.
+This can be done with or without extra user input as to which fields and slots of the respective objects
+should be converted and should be put where.
+
+```{r construct_anndata}
+library(anndataR)
+library(SingleCellExperiment)
+
+ad <- generate_dataset(
+    n_obs = 10L, 
+    n_var = 20L,
+    x_type = "numeric_matrix",
+    layer_types = c("integer_matrix", "numeric_rsparse"),
+    obs_types = c("integer", "numeric", "factor"),
+    var_types = c("character", "numeric", "logical"),
+    obsm_types = c("numeric_matrix", "numeric_csparse"),
+    varm_types = c("numeric_matrix", "numeric_csparse"),
+    obsp_types = c("numeric_matrix", "numeric_csparse"),
+    varp_types = c("integer_matrix", "numeric_matrix"),
+    uns_types = c("vec_integer", "vec_character", "df_integer"),
+    format = "AnnData"
+)
+
+# add PCA reduction
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+
+ad$obsm[["X_umap"]] <- matrix(1:20, 10, 2)
+
+```
+
+# Convert AnnData objects to SingleCellExperiment objects
+
+## Implicit conversion
+**{anndataR}** will try to make a reasonable guess of which AnnData slots should end up in which SingleCellExperiment slots.
+A SingleCellExperiment object (this is converted from an AnnData object) consists of `assays`, `colData`, `rowData`, `metadata`, 
+`reducedDims`, `colPairs`, `rowPairs` and `metadata`.
+
+Each of these slots can be customized by the user by providing a mapping. We will go more into detail on these
+user-specified mappings in the mapping section.
+
+By default, anndataR will try to guess a reasonable mapping.
+
+### assays
+
+In an AnnData object, count matrices can be present in the `X` slot or in the `layers` slot.
+In a SingleCellExperiment object, count matrices are stored in the `assays` slot, as a named list.
+
+By default, the `X` slot and all the elements of the `layers` slot will be stored in the `assays` slot of the SingleCellExperiment object.
+We try to guess the name of the `X` slot: if there is no `counts` layer present, we will use the `X` slot as the `counts` assay.
+If there is a `counts` layer present, we will name the `X` slot the `data` assay.
+All other layers are stored as assays with their layer name.
+
+
+```{r implicit_layers}
+sce_layers <- to_SingleCellExperiment(ad, col_data_mapping = list(), row_data_mapping = list(), reduction_mapping = list(), colPairs_mapping = list(), rowPairs_mapping = list(), metadata_mapping = list())
+
+sce_layers
+```
+
+We can see that indeed, the `X` slot got stored as `counts` and the `layers` got stored as `assays` with the same name.
+
+### reductions
+A dimensionality reduction can consist of multiple parts that are stored separately in the AnnData object.
+Take for example the very common `PCA` reduction, which stores the principal components in the `obsm` slot (usually named `X_pca`),
+the loadings in the `varm` slot (usually named `PCs`) and the explained variance in the `uns` slot (usually named `pca`).
+
+In a SingleCellExperiment object, the reduced dimensions are usually stored in the `reducedDims` slot, as either an element of a named list,
+or as a LinearEmbeddingMatrix. In the first case, only the reduced dimensions are stored, in the second case, the loadings  and associated metadata are stored as well.
+
+We guess the mapping of the reductions the same way as we do for the Seurat conversion:
+- If the `obsm` slot contains a slot starting with `X_`, we will store this as a `reducedDims` slot and no associated `varm` or `uns` slots.
+- If the `obsm` slot contains a `X_pca` slot, we will also store the associated loadings (in `varm`) in a LinearEmbeddingMatrix.
+
+```{r implicit_pca}
+sce_dimred <- to_SingleCellExperiment(
+    ad, 
+    col_data_mapping = list(),
+    row_data_mapping = list(), 
+    colPairs_mapping = list(), 
+    rowPairs_mapping = list(), 
+    metadata_mapping = list()
+  )
+
+sce_dimred
+```
+
+### colData, rowData, colPairs, rowPairs, metadata
+The other SingleCellExperiment slots are easy one-to-one mappings of AnnData slots.
+We will assume that all `colData` is stored in the `obs` slot, all `rowData` is stored in the `var` slot,
+all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in the `varp` slot,
+and all `metadata` is stored in the `uns` slot.
+
+```{r implicit_colData}
+sce_coldata <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    row_data_mapping = list(), 
+    reduction_mapping = list(), 
+    colPairs_mapping = list(), 
+    rowPairs_mapping = list(), 
+    metadata_mapping = list()
+  )
+
+sce_coldata
+```
+
+```{r implicit_rowData}
+sce_rowdata <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    col_data_mapping = list(), 
+    reduction_mapping = list(), 
+    colPairs_mapping = list(), 
+    rowPairs_mapping = list(), 
+    metadata_mapping = list()
+  )
+
+sce_rowdata
+```
+
+```{r implicit_colPairs}
+sce_colpairs <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    col_data_mapping = list(),
+    row_data_mapping = list(), 
+    reduction_mapping = list(), 
+    rowPairs_mapping = list(), 
+    metadata_mapping = list()
+  )
+
+sce_colpairs
+```
+
+```{r implicit_rowPairs}
+sce_rowpairs <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    col_data_mapping = list(),
+    row_data_mapping = list(), 
+    reduction_mapping = list(), 
+    colPairs_mapping = list(), 
+    metadata_mapping = list()
+  )
+
+sce_rowpairs
+```
+
+```{r implicit_uns}
+sce_metadata <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    col_data_mapping = list(),
+    row_data_mapping = list(), 
+    reduction_mapping = list(), 
+    colPairs_mapping = list(), 
+    rowPairs_mapping = list()
+  )
+
+sce_metadata
+```
+
+
+## Explicit conversion
+Each of the conversions can be customized, up to a point, by providing a mapping.
+You provide this in the form of a named list, where the names are the names of the SingleCellExperiment slots and the values are the names of the AnnData slots.
+
+We will give an example for each of the mappings.
+
+### assays_mapping
+
+```{r explicit_assays}
+sce_assays <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"), 
+    col_data_mapping = list(), 
+    row_data_mapping = list(), 
+    reduction_mapping = list(), 
+    colPairs_mapping = list(), 
+    rowPairs_mapping = list(), 
+    metadata_mapping = list()
+  )
+sce_assays
+```
+
+### col_data_mapping and row_data_mapping
+
+```{r explicit col_data}
+sce_coldatamapping <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    col_data_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
+    row_data_mapping = list(rowdata1 = "character", rowdata2 = "logical"),
+    reduction_mapping = list(), 
+    colPairs_mapping = list(), 
+    rowPairs_mapping = list(), 
+    metadata_mapping = list()
+  )
+sce_coldatamapping
+```
+
+### reductions_mapping
+
+# TODO: add example with uns metadata
+
+### col_pairs_mapping and row_pairs_mapping
+```{r explicit col_pairs}
+
+sce_colrowpairs <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    col_data_mapping = list(),
+    row_data_mapping = list(),
+    reduction_mapping = list(), 
+    colPairs_mapping = list(colPairs_dense = "numeric_matrix", colPairs_sparse = "numeric_csparse"), 
+    rowPairs_mapping = list(rowPairs1 = "integer_matrix", rowPairs2 = "numeric_matrix"), 
+    metadata_mapping = list()
+  )
+
+sce_colrowpairs
+```
+
+### metadata_mapping
+```{r explicit metadata}
+
+sce_metadata <- to_SingleCellExperiment(
+    ad, 
+    assays_mapping = list(), 
+    col_data_mapping = list(),
+    row_data_mapping = list(),
+    reduction_mapping = list(), 
+    colPairs_mapping = list(), 
+    rowPairs_mapping = list(), 
+    metadata_mapping = list(vector1 = "vec_integer", vector2 = "vec_character", df = "df_integer")
+  )
+
+sce_metadata
+```
+# Convert SingleCellExperiment objects to AnnData objects
+
+The reverse, converting SingleCellExperiment objects to AnnData objects works in a similar way.
+There's an implicit conversion, where we attempt a standard conversion, but the user can always provide an explicit mapping as well.
+
+## Implicit conversion
+
+### assays
+### reductions
+
+### obs, var, obsp, varp, uns
+The conversion of `obs`, `var`, `obsp`, `varp` and `uns` is straightforward: there's a one-to-one mapping between the SingleCellExperiment slots and the AnnData slots.
+We assume that all `colData` is stored in the `obs` slot, all `rowData` is stored in the `var` slot, 
+all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in the `varp` slot,
+and all `metadata` is stored in the `uns` slot.
+
+## Explicit conversion

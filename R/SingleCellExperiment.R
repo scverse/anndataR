@@ -89,10 +89,10 @@ to_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
   sce_assays <- vector("list", length(assays_mapping))
-  names(sce_assays) <- assays_mapping
+  names(sce_assays) <- names(assays_mapping)
   for (i in seq_along(assays_mapping)){
-    to <- assays_mapping[[i]]
-    from <- names(assays_mapping)[[i]]
+    from <- assays_mapping[[i]]
+    to <- names(assays_mapping)[[i]]
     if (from != "X") {
       sce_assays[[to]] <- t(adata$layers[[from]])
     } else {
@@ -105,13 +105,11 @@ to_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
   col_data <- .to_SCE_process_simple_mapping(adata, col_data_mapping, "obs")
-  col_data <- as(col_data, "DataFrame")
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
   row_data <- .to_SCE_process_simple_mapping(adata, row_data_mapping, "var")
-  row_data <- as(row_data, "DataFrame")
 
   # construct reducedDims
   # trackstatus: class=SingleCellExperiment, feature=get_reductions, status=wip
@@ -141,17 +139,25 @@ to_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_uns, status=done
   metadata <- .to_SCE_process_simple_mapping(adata, metadata_mapping, "uns")
 
-  # construct output object
-  sce <- SingleCellExperiment::SingleCellExperiment(
+  arguments <- list(
     assays = sce_assays,
-    colData = col_data,
-    rowData = row_data,
     reducedDims = reduceddims,
     colPairs = col_pairs,
     rowPairs = row_pairs,
     metadata = metadata,
     checkDimnames = TRUE
   )
+  # add col_data if not empty list
+  if (length(col_data) > 0) {
+    arguments$colData <- as(col_data, "DataFrame")
+  }
+  # add row_data if not empty list
+  if (length(row_data) > 0) {
+    arguments$rowData <- as(row_data, "DataFrame")
+  }
+
+  # construct output object
+  sce <- do.call(SingleCellExperiment::SingleCellExperiment, arguments)
 
   sce
 }
@@ -219,7 +225,7 @@ to_SCE_guess_reduction <- function(adata) {
 
   rownames(embedding) <- adata$obs_names
 
-  if (varm_key %in% names(adata$varm)) {
+  if (! is.null(varm_key) && varm_key %in% names(adata$varm)) {
     loadings <- adata$varm[[varm_key]]
     rownames(loadings) <- colnames(embedding)
     
@@ -228,11 +234,14 @@ to_SCE_guess_reduction <- function(adata) {
       metadata <- adata$uns[[uns_key]]
     }
 
-    LinearEmbeddingMatrix(
+    lem <- LinearEmbeddingMatrix(
       sampleFactors = embedding,
       featureLoadings = loadings,
       metadata = metadata
     )
+    rownames(lem) <- rownames(embedding)
+    colnames(lem) <- colnames(loadings)
+    lem
   } else {
     embedding
   }
@@ -492,7 +501,7 @@ from_SingleCellExperiment <- function(
   }
 }
 
-.from_SCE_process_obsm_reduction <- function(sce, slot, key)) {
+.from_SCE_process_obsm_reduction <- function(sce, slot, key) {
   reduction <- slot(sce, key)
   if (inherits(reduction, "LinearEmbeddingMatrix")) {
     reduction$sampleFactors
