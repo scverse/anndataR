@@ -1,0 +1,121 @@
+---
+title: Read/write Seurat objects using anndataR
+package: anndataR
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Read/write Seurat objects using anndataR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE
+)
+```
+
+This vignette demonstrates how to read and write `Seurat` objects using the **{anndataR}** package, leveraging the interoperability between `Seurat` and the `AnnData` format.
+
+Check out `?anndataR` for a full list of the functions provided by this package.
+
+## Introduction
+
+Seurat is a widely used toolkit for single-cell analysis in R.
+ **{anndataR}** enables conversion between `Seurat` objects and `AnnData` objects,
+allowing you to leverage the strengths of both the scverse and Seurat ecosystems.
+
+## Prerequisites
+
+Before you begin, make sure you have both Seurat and **{anndataR}** installed. You can install them using the following code:
+
+```r
+if (!requireNamespace("pak", quietly = TRUE)) {
+    install.packages("pak")
+}
+pak::pak("Seurat")
+pak::pak("scverse/anndataR")
+```
+
+## Converting an AnnData Object to a Seurat Object
+
+Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `Seurat` object.
+
+```{r}
+library(anndataR)
+library(Seurat)
+
+h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+```
+
+Read the `.h5ad` file:
+
+```{r}
+adata <- read_h5ad(h5ad_file)
+adata
+```
+
+Convert to a `Seurat` object:
+
+```{r}
+seurat_obj <- adata$to_Seurat()
+seurat_obj
+```
+
+Note that there is no one-to-one mapping possible between the AnnData and SeuratObject data structures,
+so some information might be lost during conversion. It is recommended to carefully inspect the converted object
+to ensure that all necessary information has been transferred.
+
+See `?to_Seurat` for more details on how to customize the conversion process. For instance:
+
+```{r}
+adata$to_Seurat(
+  assay_name = "ADT",
+  layers_mapping = c(counts = "dense_counts", data = "dense_X")
+)
+```
+
+## Convert a Seurat Object to an AnnData Object
+
+Here's an example demonstrating how to create a `Seurat` object from scratch, then convert it to `AnnData` and save it as `.h5ad`
+
+```{r}
+counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
+seurat_obj <- CreateSeuratObject(counts = counts) |>
+  NormalizeData() |>
+  FindVariableFeatures() |>
+  ScaleData() |>
+  RunPCA(npcs = 10) |>
+  FindNeighbors() |>
+  RunUMAP(dims = 1:10)
+seurat_obj
+```
+
+You can convert the `Seurat` object to an `AnnData` object using the `from_Seurat` function:
+
+```{r}
+adata <- from_Seurat(seurat_obj)
+adata
+```
+
+Again note that there is no one-to-one mapping possible between the AnnData and SeuratObject data structures,
+so some information might be lost during conversion. It is recommended to carefully inspect the converted object
+to ensure that all necessary information has been transferred.
+
+See `?from_Seurat` for more details on how to customize the conversion process. Example:
+
+```{r}
+from_Seurat(
+  seurat_obj,
+  assay_name = "RNA",
+  x_mapping = "data",
+  layers_mapping = c(foo = "counts")
+)
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
