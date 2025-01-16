@@ -74,6 +74,116 @@ known_issues:
     to_fix: True
   - backend: HDF5AnnData
     slot:
+      - uns
+      - uns_nested
+    dtype:
+      - empty
+      - none
+    process: [read]
+    error_message: |
+      Error: names(adata_r$uns) (`actual`) not equal to reticulate::py_to_r(adata_py$uns) (`expected`).
+
+      `actual` is NULL
+      `expected` is a list
+    description: None's are being dropped from uns
+    proposed_solution: Debug and fix
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - uns
+      - uns_nested
+    dtype:
+      - boolean_array
+      - dense_array
+      - integer_array
+      - string_array
+    process: [reticulate]
+    error_message: |
+      adata_r$uns[[name]] (`actual`) not equal to reticulate::py_to_r(adata_py$uns[[name]]) (`expected`).
+
+      `dim(actual)` is absent
+      `dim(expected)` is an integer vector (10)
+    description: The python object has a dimension while the R object does not.
+    proposed_solution: Think about whether this is a problem or not. If it isn't, fix the unit test.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - uns
+      - uns_nested
+    dtype:
+      - categorical
+      - categorical_missing_values
+      - categorical_ordered
+      - categorical_ordered_missing_values
+    process: [reticulate]
+    error_message: |
+      <python.builtin.AttributeError/python.builtin.Exception/python.builtin.BaseException/python.builtin.object/error/condition>
+      Error in `py_get_attr(x, name)`: AttributeError: 'Categorical' object has no attribute 'get_values'. Did you mean: 'sort_values'?
+      Run `reticulate::py_last_error()` for details.
+      Backtrace:
+          ▆
+        1. ├─testthat::expect_equal(adata_r$uns[[name]], reticulate::py_to_r(adata_py$uns[[name]])) at test-roundtrip-uns.R:80:5
+        2. │ └─testthat::quasi_label(enquo(expected), expected.label, arg = "expected")
+        3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
+        4. ├─reticulate::py_to_r(adata_py$uns[[name]])
+        5. └─reticulate:::py_to_r.pandas.core.arrays.categorical.Categorical(adata_py$uns[[name]])
+        6.   ├─reticulate::py_to_r(x$get_values())
+        7.   │ ├─reticulate::is_py_object(x <- py_to_r_cpp(x))
+        8.   │ └─reticulate:::py_to_r_cpp(x)
+        9.   ├─x$get_values
+      10.   └─reticulate:::`$.python.builtin.object`(x, "get_values")
+      11.     └─reticulate:::py_get_attr_or_item(x, name, TRUE)
+      12.       └─reticulate::py_get_attr(x, name)
+    description: Python object is not being converted correctly.
+    proposed_solution: Debug and fix
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - uns
+      - uns_nested
+    dtype:
+      - nullable_boolean_array
+      - nullable_integer_array
+    process: [reticulate]
+    error_message: |
+      adata_r$uns[[name]] (`actual`) not equal to reticulate::py_to_r(adata_py$uns[[name]]) (`expected`).
+
+      `actual` is a logical vector (NA, FALSE, TRUE, FALSE, TRUE, ...)
+      `expected` is an S3 object of class <pandas.core.arrays.boolean.BooleanArray/pandas.core.arrays.masked.BaseMaskedArray/pandas.core.arraylike.OpsMixin/pandas.core.arrays.base.ExtensionArray/python.builtin.object>, an environment
+    description: Python object is not being converted correctly.
+    proposed_solution: Debug and fix
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - uns
+      - uns_nested
+    dtype:
+      - boolean
+      - char
+      - float
+      - integer
+      - nan
+      - string
+    process: [write]
+    error_message: |
+      bi$type(a) (`actual`) not equal to bi$type(b) (`expected`).
+
+      `attr(actual, 'py_object')$pyobj` is <pointer: 0x7f4af9694d00>
+      `attr(expected, 'py_object')$pyobj` is <pointer: 0x7f4af9f5eca0>
+      Backtrace:
+          ▆
+      1. └─anndataR:::expect_equal_py(...) at test-roundtrip-uns.R:109:5
+      2.   └─testthat::expect_equal(bi$type(a), bi$type(b)) at tests/testthat/helper-expect_equal_py.R:7:3
+    description: The data type is different after the roundtrip test.
+    proposed_solution: Debug and fix
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
       - X
     dtype:
       - float_csparse
@@ -195,17 +305,14 @@ known_issues:
           class: HDF5
           major: File accessibility
           minor: Unable to open file
-
       error #001: ../../../src/H5Fint.c in H5F_open(): line 1725: unable to open file
           class: HDF5
           major: File accessibility
           minor: Unable to open file
-
       error #002: ../../../src/H5FD.c in H5FD_open(): line 722: open failed
           class: HDF5
           major: Virtual File Layer
           minor: Unable to initialize object
-
       error #003: ../../../src/H5FDsec2.c in H5FD__sec2_open(): line 351: unable to open file: name = '/tmp/RtmpN29Fmn/anndata_r2_integer_matrixbe0976b43e39b.h5ad', errno = 17, error message = 'File exists', flags = 15, o_flags = c2
           class: HDF5
           major: File accessibility

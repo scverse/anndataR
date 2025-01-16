@@ -1,51 +1,11 @@
 ---
-title: "Design"
+title: Development status
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Design}
+  %\VignetteIndexEntry{Development status}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = ""
-)
-```
-
-
-`{anndataR}` is designed to offer the combined functionality of the following packages:
-
-* [theislab/zellkonverter](https://github.com/theislab/zellkonverter): Convert AnnData files to/from `SingleCellExperiment` objects.
-* [mtmorgan/h5ad](https://github.com/mtmorgan/h5ad/): Read/write `*.h5ad` files natively using `rhdf5`.
-* [dynverse/anndata](https://github.com/dynverse/anndata): An R implementation of the AnnData data structures, uses `reticulate` to read/write `*.h5ad` files.
-
-Ideally, this package will be a complete replacement for all of these packages, and will be the go-to package for working with AnnData files in R.
-
-## Desired feature list
-
-* Provide an `R6` class to work with AnnData objects in R (either in-memory or on-disk).
-* Read/write `*.h5ad` files natively
-* Convert to/from `SingleCellExperiment` objects
-* Convert to/from `Seurat` objects
-
-## Class diagram
-
-Here is a diagram of the main R6 classes provided by the package:
-
-![](diagrams/class_diagram.svg)
-
-Notation:
-
-  - `X: Matrix` - variable `X` is of type `Matrix`
-  - `*X: Matrix` - variable `X` is abstract
-  - `to_SingleCellExperiment(): SingleCellExperiment` - function `to_SingleCellExperiment` returns object of type `SingleCellExperiment`
-  - `*to_SingleCellExperiment()` - function `to_SingleCellExperiment` is abstract
-
-
-## Feature tracking
 
 The following tables show the status of the implementation of each feature in the package:
 
@@ -63,19 +23,24 @@ source <- list.files(proj_root, pattern = "*.R$", recursive = TRUE)
 
 # look for trackstatus comments
 status_lines <- map_df(source, function(path) {
-  lines <- readr::read_lines(paste0(proj_root, "/", path))
+  lines <- readLines(paste0(proj_root, "/", path))
   line_numbers <- grep("# trackstatus:", lines)
 
   map_df(line_numbers, function(line_number) {
-    line_stripped <- gsub(" *# trackstatus: *", "", lines[[line_number]])
-    line_split <- str_split_1(line_stripped, ", *")
-    vals_split <- str_split(line_split, " *= *")
-    names <- sapply(vals_split, function(x) x[[1]])
-    values <- lapply(vals_split, function(x) x[[2]])
-    df <- data.frame(setNames(values, names), check.names = FALSE)
-    df$source_file <- path
-    df$line_number <- line_number
-    df
+    tryCatch({
+      line_stripped <- gsub(" *# trackstatus: *", "", lines[[line_number]])
+      line_split <- str_split_1(line_stripped, ", *")
+      vals_split <- str_split(line_split, " *= *")
+      names <- sapply(vals_split, function(x) x[[1]])
+      values <- lapply(vals_split, function(x) x[[2]])
+      df <- data.frame(setNames(values, names), check.names = FALSE)
+      df$source_file <- path
+      df$line_number <- line_number
+      df
+    }, error = function(e) {
+      message("Error in ", path, " at line ", line_number, ": ", e$message)
+      return(NULL)
+    })
   })
 })
 
@@ -137,7 +102,7 @@ status_formatted <-
 ```{r echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as a markdown
 for (class in unique(status_formatted$class)) {
-  cat("# ", class, "\n\n\n", sep = "")
+  cat("### ", class, "\n\n\n", sep = "")
 
   df <- status_formatted %>%
     filter(class == !!class) %>%
