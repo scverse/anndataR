@@ -115,6 +115,7 @@ read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
 
   # If the array is 1D, explicitly add a dimension
   if (is.null(dim(data))) {
+    data <- as.vector(data)
     dim(data) <- length(data)
   }
 
