@@ -24,31 +24,6 @@ known_issues:
     to_fix: True
   - backend: HDF5AnnData
     slot:
-      - obsm
-      - varm
-    dtype:
-      - boolean_array
-      - categorical
-      - categorical_missing_values
-      - categorical_ordered
-      - categorical_ordered_missing_values
-      - dense_array
-      - integer_array
-      - nullable_boolean_array
-      - nullable_integer_array
-      - string_array
-    process: [reticulate]
-    error_message: |
-      adata_r$varm[[name]] (`actual`) not equal to py_to_r(py_get_item(adata_py$varm, name)) (`expected`).
-
-      `dim(actual)` is absent
-      `dim(expected)` is an integer vector (20)
-    description: Python nd.arrays have a dimension while R vectors do not.
-    proposed_solution: Debug and fix
-    to_investigate: True
-    to_fix: True
-  - backend: HDF5AnnData
-    slot:
       - uns
       - uns_nested
     dtype:
