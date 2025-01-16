@@ -381,6 +381,14 @@ ad <- from_SingleCellExperiment(
 ad
 ```
 
+```{r implicit_all}
+ad <- from_SingleCellExperiment(
+  sce,
+  x_mapping = "counts"
+)
+ad
+```
+
 ## Explicit conversion
 
 ```{r to_ad_explicit_obsm}
