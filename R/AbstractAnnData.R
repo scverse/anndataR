@@ -264,12 +264,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         return(mat)
       }
       mat_dims <- dim(mat)
-      for (i in seq_along(shape)) {
-        expected_dim <- shape[i]
-        found_dim <- mat_dims[i]
-        if (found_dim != expected_dim) {
-          stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
-        }
+
+      if (length(shape) > length(mat_dims) || any(shape != mat_dims[seq_along(shape)])) {
+        stop(paste0(
+          "Unexpected shape for ", label, ". Expected: [",
+          paste(shape, collapse = ", "), "], found: [",
+          paste(mat_dims, collapse = ", "), "]."
+        ))
       }
       if (!is.null(expected_rownames) & !has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
