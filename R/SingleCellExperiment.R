@@ -434,7 +434,7 @@ from_SingleCellExperiment <- function(
   layers_mapping <- list()
 
   for (assay_name in names(assays(sce))) {
-    if (assay_name != x_mapping) {
+    if (!is.null(x_mapping) && assay_name != x_mapping) {
       layers_mapping[[assay_name]] <- assay_name
     }
   }

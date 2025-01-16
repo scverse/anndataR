@@ -60,126 +60,65 @@ test_that("to_SingleCellExperiment with inmemoryanndata", {
 
 # TODO gracefully failing
 
-# test_that("from_SingleCellExperiment works"){
+test_that("from_SingleCellExperiment works", {
   # reverse from to_SCE --> assays to layers, colData to obs, rowData to var, colPairs to obsp, rowPairs to varp
 
   skip_if_not_installed("SingleCellExperiment")
   library(SingleCellExperiment)
 
-  ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
+  ad1 <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
 
-  ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
-  ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+  ad1$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+  ad1$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-  sce <- ad$to_SingleCellExperiment()
+  sce <- ad1$to_SingleCellExperiment()
 
-  ad2 <- from_SingleCellExperiment(sce)
+  ad <- from_SingleCellExperiment(sce)
 
-  thing <- 0
+  # trackstatus: class=SingleCellExperiment, feature=test_set_var_names, status=done
+  expect_equal(rownames(sce), rownames(ad$var))
 
-  # # generate a dataset? or generate a dummy & put stuff in it?
+  # trackstatus: class=SingleCellExperiment, feature=test_set_obs_names, status=done
+  expect_equal(colnames(sce), rownames(ad$obs))
 
-  # # dummy
-  # assays <- c(list(X = dummy$X), dummy$layers)
-  # # names(assays) <- c("counts", names(dummy$layers))
-  # sce <- SingleCellExperiment::SingleCellExperiment(
-  #   assays = assays
-  # )
+  # check whether all sce coldata keys are found in the obs 
+  # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
+  for (obs_key in colnames(colData(sce))) {
+    expect_true(obs_key %in% colnames(ad$obs))
+    expect_equal(ad$obs[[obs_key]], colData(sce)[[obs_key]], info = paste0("obs_key: ", obs_key))
+  }
 
-  # # run reduction?
-  # pca_data <- prcomp(t(dummy$X), rank = 50)
-  # reducedDims(sce) <- list(PCA = pca_data$x)
+  # check whether all sce rowdata keys are found in the var
+  # trackstatus: class=SingleCellExperiment, feature=test_set_var, status=done
+  for (var_key in colnames(rowData(sce))) {
+    expect_true(var_key %in% colnames(ad$var))
+    expect_equal(ad$var[[var_key]], rowData(sce)[[var_key]], info = paste0("var_key: ", var_key))
+  }
 
-  # ad <- from_SingleCellExperiment(sce)
-  # thing <- 0
+  # check whether assays are found in the layers
+  for (layer_key in names(assays(sce))) {
+    expect_true(layer_key %in% names(ad$layers), info = paste0("layer_key: ", layer_key))
+    expect_true(all.equal(ad$layers[[layer_key]], t(assay(sce, layer_key)), check.attributes = FALSE), info = paste0("layer_key: ", layer_key)) ## matrix dimensions and dimnames are different
+  }
 
-# }
+  # check whether all colPairs keys are found in the obsp
+  for (obsp_key in names(colPairs(sce))) {
+    expect_true(obsp_key %in% names(ad$obsp))
+    expect_equal(ad$obsp[[obsp_key]], colPairs(sce)[[obsp_key]], info = paste0("obsp_key: ", obsp_key))
+  }
 
-# test_that("to_SingleCellExperiment() works", {
-#   ad <- AnnData(
-#     X = matrix(1:5, 3L, 5L),
-#     obs = data.frame(row.names = letters[1:3], cell = 1:3),
-#     var = data.frame(row.names = LETTERS[1:5], gene = 1:5)
-#   )
-#   ad0 <- AnnData(
-#     obs = data.frame(row.names = letters[1:5]),
-#     var = data.frame(row.names = LETTERS[1:10])
-#   )
+  # check whether all rowPairs keys are found in the varp
+  for (varp_key in names(rowPairs(sce))) {
+    expect_true(varp_key %in% names(ad$varp))
+    expect_equal(ad$varp[[varp_key]], rowPairs(sce)[[varp_key]], info = paste0("varp_key: ", varp_key))
+  }
 
-#   # conversion works
-#   expect_no_error(sce <- to_SingleCellExperiment(ad))
-#   expect_no_error(sce0 <- to_SingleCellExperiment(ad0))
-#   expect_true(validObject(sce))
-#   expect_true(validObject(sce0))
+  # check whether all metadata keys are found in the uns
+  for (uns_key in names(metadata(sce))) {
+    expect_true(uns_key %in% names(ad$uns))
+    expect_equal(ad$uns[[uns_key]], metadata(sce)[[uns_key]], info = paste0("uns_key: ", uns_key))
+  }
 
-#   expect_identical(dim(sce), rev(ad$shape()))
-#   expect_identical(dim(sce0), rev(ad0$shape()))
+  # TODO: obsm keys? varm keys? --> test a reduction
 
-#   # trackstatus: class=SingleCellExperiment, feature=test_get_obs_names, status=done
-#   # trackstatus: class=SingleCellExperiment, feature=test_get_var_names, status=done
-#   expect_identical(dimnames(sce), list(LETTERS[1:5], letters[1:3]))
-#   expect_identical(dimnames(sce0), list(LETTERS[1:10], letters[1:5]))
-
-#   # trackstatus: class=SingleCellExperiment, feature=test_get_var, status=done
-#   var_ <- as.data.frame(SummarizedExperiment::rowData(sce))
-#   expect_identical(var_, ad$var)
-#   var0_ <- as.data.frame(SummarizedExperiment::rowData(sce0))
-#   expect_identical(var0_, ad0$var)
-
-#   # trackstatus: class=SingleCellExperiment, feature=test_get_obs, status=done
-#   obs_ <- as.data.frame(SummarizedExperiment::colData(sce))
-#   expect_identical(obs_, ad$obs)
-#   obs0_ <- as.data.frame(SummarizedExperiment::colData(sce0))
-#   expect_identical(obs0_, ad0$obs)
-
-#   # trackstatus: class=SingleCellExperiment, feature=test_get_X, status=done
-#   expect_identical(
-#     SummarizedExperiment::assay(sce, withDimnames = FALSE),
-#     t(ad$X)
-#   )
-#   expect_error(
-#     SummarizedExperiment::assay(sce0, withDimnames = FALSE)
-#   )
-# })
-
-# test_that("from_SingleCellExperiment() works", {
-#   ## 0-dimensioned
-#   sce0 <- SingleCellExperiment::SingleCellExperiment()
-#   dimnames(sce0) <- list(character(0), character(0))
-
-#   ## complete
-#   x <- matrix(1:15, 3, 5)
-#   layers <- list(A = matrix(15:1, 3, 5), B = matrix(LETTERS[1:15], 3, 5))
-#   obs <- data.frame(cell = 1:3, row.names = LETTERS[1:3])
-#   var <- data.frame(gene = 1:5, row.names = letters[1:5])
-#   sce <- SingleCellExperiment::SingleCellExperiment(
-#     assays = lapply(c(list(x), layers), t),
-#     colData = obs,
-#     rowData = var
-#   )
-#   dimnames <- dimnames(sce)
-
-#   ad0 <- from_SingleCellExperiment(sce0, "InMemory")
-#   ad <- from_SingleCellExperiment(sce, "InMemory")
-
-#   # trackstatus: class=SingleCellExperiment, feature=test_set_X, status=done
-#   expect_identical(ad0$X, NULL)
-#   expect_identical(ad$X, x)
-#   # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
-#   expect_identical(ad0$obs, data.frame(row.names = character(0)))
-#   expect_identical(ad$obs, obs)
-#   # trackstatus: class=SingleCellExperiment, feature=test_set_var, status=done
-#   expect_identical(ad0$var, data.frame(row.names = character(0)))
-#   expect_identical(ad$var, var)
-#   # trackstatus: class=SingleCellExperiment, feature=test_set_obs_names, status=done
-#   expect_identical(ad0$obs_names, character(0))
-#   expect_identical(ad$obs_names, dimnames[[2]])
-#   # trackstatus: class=SingleCellExperiment, feature=test_set_var_names, status=done
-#   expect_identical(ad0$var_names, character(0))
-#   expect_identical(ad$var_names, dimnames[[1]])
-#   # trackstatus: class=SingleCellExperiment, feature=test_set_layers, status=done
-#   layers0 <- list()
-#   names(layers0) <- character()
-#   expect_identical(ad0$layers, layers0)
-#   expect_identical(ad$layers, layers)
-# })
+})
