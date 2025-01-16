@@ -45,6 +45,19 @@ test_that("Writing H5AD sparse arrays works", {
   expect_equal(attrs[["encoding-type"]], "csr_matrix")
 })
 
+test_that("Writing dgeMatrix", {
+  value <- matrix(rnorm(20), nrow = 5, ncol = 4) |>
+    as("dMatrix") |>
+    as("generalMatrix") |>
+    as("unpackedMatrix")
+
+  expect_silent(write_h5ad_element(value, file, "dgematrix", compression = "none"))
+  expect_true(hdf5_path_exists(file, "/dgematrix"))
+  attrs <- hdf5r::h5attributes(file[["dgematrix"]])
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_equal(attrs[["encoding-type"]], "array")
+})
+
 test_that("Writing H5AD nullable booleans works", {
   nullable <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
   nullable[5] <- NA
