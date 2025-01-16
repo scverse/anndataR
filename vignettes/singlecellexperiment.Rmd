@@ -261,9 +261,28 @@ sce_metadata
 The reverse, converting SingleCellExperiment objects to AnnData objects works in a similar way.
 There's an implicit conversion, where we attempt a standard conversion, but the user can always provide an explicit mapping as well.
 
+```{r construct sce}
+sce <- to_SingleCellExperiment(ad)
+```
+
 ## Implicit conversion
 
 ### assays
+
+```{r to_ad_implicit_assays}
+ad_assays <- from_SingleCellExperiment(
+    sce, 
+    obs_mapping = list(), 
+    var_mapping = list(), 
+    obsm_mapping = list(), 
+    varm_mapping = list(), 
+    obsp_mapping = list(),
+    varp_mapping = list(), 
+    uns_mapping = list()
+  )
+ad_assays
+```
+
 ### reductions
 
 ### obs, var, obsp, varp, uns
@@ -272,4 +291,110 @@ We assume that all `colData` is stored in the `obs` slot, all `rowData` is store
 all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in the `varp` slot,
 and all `metadata` is stored in the `uns` slot.
 
+    output_class = "InMemory"
+    x_mapping = NULL
+    layers_mapping = NULL
+    obs_mapping = NULL
+    var_mapping = NULL
+    obsm_mapping = NULL
+    varm_mapping = NULL
+    obsp_mapping = NULL
+    varp_mapping = NULL
+    uns_mapping = NULL
+    layers_mapping = list()
+
+  x_mapping = "counts"
+  obsm_mapping = list()
+  varm_mapping = list()
+  obsp_mapping = list()
+  varp_mapping = list()
+
+<- from_SingleCellExperiment(
+  sce,
+  layers_mapping = list(),
+  obs_mapping = list(), 
+  var_mapping = list(), 
+  obsm_mapping = list(), 
+  varm_mapping = list(), 
+  obsp_mapping = list(),
+  varp_mapping = list(), 
+  uns_mapping = list()
+)
+
+```{r to_ad_implicit_easy}
+ad_implicit_obsvar <- from_SingleCellExperiment(
+  sce,
+  layers_mapping = list(),
+  obsm_mapping = list(), 
+  varm_mapping = list(), 
+  obsp_mapping = list(),
+  varp_mapping = list(), 
+  uns_mapping = list()
+)
+
+ad_implicit_obsvar
+```
+
+```{r to_ad_implicit_colPairs}
+ad_implicit_colpairs <- from_SingleCellExperiment(
+  sce,
+  layers_mapping = list(),
+  obsm_mapping = list(), 
+  varm_mapping = list(), 
+  uns_mapping = list()
+)
+
+ad_implicit_colpairs
+```
+
+```{r to_ad_implicit_colPairs}
+ad_implicit_colpairs <- from_SingleCellExperiment(
+  sce,
+  layers_mapping = list(),
+  obsm_mapping = list(), 
+  varm_mapping = list(), 
+  obsp_mapping = list(),
+  varp_mapping = list(), 
+)
+
+ad_implicit_colpairs
+```
+
+```{r to_ad_implicit_uns}
+
+ad_implicit_uns <- from_SingleCellExperiment(
+  sce,
+  x_mapping = "counts",
+  obsm_mapping = list(),
+  varm_mapping = list()
+)
+ad_implicit_uns
+```
+
+```{r implicit_all}
+ad <- from_SingleCellExperiment(
+  sce,
+  x_mapping = "counts",
+  obsm_mapping = list(),
+  varm_mapping = list()
+)
+ad
+```
+
 ## Explicit conversion
+
+```{r to_ad_explicit_obsm}
+
+ad_obsm <- from_SingleCellExperiment(
+  sce,
+  layers_mapping = list(),
+  obsm_mapping = list(X_pca = c("reducedDim", "pca"), X_umap = c("reducedDim", "umap")), 
+  varm_mapping = list(PCs = c("reducedDim", "pca")), 
+  obsp_mapping = list(),
+  varp_mapping = list(), 
+  uns_mapping = list()
+)
+
+ad_obsm
+
+```
