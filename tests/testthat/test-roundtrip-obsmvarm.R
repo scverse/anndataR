@@ -44,6 +44,7 @@ for (name in test_names) {
   # create a couple of paths
   file_py <- withr::local_file(tempfile(paste0("anndata_py_", name), fileext = ".h5ad"))
   file_r <- withr::local_file(tempfile(paste0("anndata_r_", name), fileext = ".h5ad"))
+  file_r2 <- withr::local_file(tempfile(paste0("anndata_r2_", name), fileext = ".h5ad"))
 
   # write to file
   adata_py$write_h5ad(file_py)
@@ -139,4 +140,39 @@ for (name in test_names) {
       py_get_item(adata_py$varm, name)
     )
   })
+
+  skip_if_no_h5diff()
+  # Get all R datatypes that are equivalent to the python datatype (name)
+  res <- Filter(function(x) x[[1]] == name, all_equivalences)
+  r_datatypes <- sapply(res, function(x) x[[2]])
+
+  for (r_name in r_datatypes){
+    test_msg <- paste0("Comparing a python generated .h5ad with obsm and varm '", name,
+                       "' with an R generated .h5ad '", r_name, "' works")
+    test_that(test_msg, {
+      msg <- message_if_known(
+        backend = "HDF5AnnData",
+        slot = c("obsm", "varm"),
+        dtype = c(name, r_name),
+        process = c("h5diff"),
+        known_issues = known_issues
+      )
+
+      skip_if(!is.null(msg), message = msg)
+      # generate an R h5ad
+      adata_r <- r_generate_dataset(10L, 20L, obsm_types = list(r_name), varm_types = list(r_name))
+      write_h5ad(adata_r, file_r2)
+
+      # run h5diff
+      res_obsm <- processx::run("h5diff",
+                                c("-v", file_py, file_r2, paste0("/obsm/", name), paste0("/obsm/", r_name)),
+                                error_on_status = FALSE)
+      expect_equal(res_obsm$status, 0, info = res_obsm$stdout)
+
+      res_varm <- processx::run("h5diff",
+                                c("-v", file_py, file_r2, paste0("/varm/", name), paste0("/varm/", r_name)),
+                                error_on_status = FALSE)
+      expect_equal(res_varm$status, 0, info = res_varm$stdout)
+    })
+  }
 }
