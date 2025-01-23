@@ -122,6 +122,8 @@ read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
   # transpose the matrix if need be
   if (is.matrix(data)) {
     data <- t(data)
+  } else if (is.array(data) && length(dim(data)) > 1) {
+    data <- aperm(data)
   }
 
   data
@@ -297,6 +299,8 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   # If the array is a matrix, transpose
   if (is.matrix(data)) {
     data <- t(data)
+  } else if (is.array(data) && length(dim(data)) > 1) {
+    data <- aperm(data)
   }
 
   data
