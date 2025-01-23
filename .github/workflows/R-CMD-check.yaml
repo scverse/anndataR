@@ -64,6 +64,13 @@ jobs:
           reticulate::py_install(c("anndata", "scanpy", "dummy-anndata"), pip = TRUE)
         shell: Rscript {0}
 
+      - name: Install h5diff
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+                sudo apt-get install hdf5-tools
+          fi
+        shell: bash
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

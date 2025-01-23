@@ -59,5 +59,15 @@ The best way to get started with **{anndataR}** is to explore the package vignet
 
 - **Getting started**: An introduction to the package and its features.  
   `vignette("anndataR", package = "anndataR")`
-- **Design**: An overview of the design of the package.  
-  `vignette("design", package = "anndataR")`
+- **Reading and writing H5AD files**: How to read and write `*.h5ad` files.  
+  `vignette("usage_h5ad", package = "anndataR")`
+- **Converting to/from Seurat objects**: How to convert between `AnnData` and `Seurat` objects.  
+  `vignette("usage_seurat", package = "anndataR")`
+- **Converting to/from SingleCellExperiment objects**: How to convert between `AnnData` and `SingleCellExperiment` objects.  
+  `vignette("usage_singlecellexperiment", package = "anndataR")`
+- **Software Design**: An overview of the design of the package.  
+  `vignette("software_design", package = "anndataR")`
+- **Development Status**: An overview of the development status of the package.  
+  `vignette("development_status", package = "anndataR")`
+- **Known Isses**: An overview of known issues with the package.  
+  `vignette("known_issues", package = "anndataR")`

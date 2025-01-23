@@ -1,29 +1,6 @@
 known_issues:
   - backend: HDF5AnnData
     slot:
-      - X
-      - layers
-      - obsp
-      - varp
-      - obsm
-      - varm
-    dtype:
-      - integer_csparse
-      - integer_rsparse
-      - integer_matrix
-    process: [read]
-    error_message: |
-      Failure (test-roundtrip-obspvarp.R:111:5): Writing an AnnData with obsp and varp 'integer_csparse' works
-      a$dtype (`actual`) not equal to b$dtype (`expected`).
-
-      `class(actual)`:   "numpy.dtypes.Float64DType" "numpy.dtype" "python.builtin.object"
-      `class(expected)`: "numpy.dtypes.Int64DType"   "numpy.dtype" "python.builtin.object"
-    description: Integers are being converted to floats.
-    proposed_solution: Debug and fix
-    to_investigate: True
-    to_fix: True
-  - backend: HDF5AnnData
-    slot:
       - uns
       - uns_nested
     dtype:
@@ -130,5 +107,144 @@ known_issues:
       2.   └─testthat::expect_equal(bi$type(a), bi$type(b)) at tests/testthat/helper-expect_equal_py.R:7:3
     description: The data type is different after the roundtrip test.
     proposed_solution: Debug and fix
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - X
+    dtype:
+      - float_csparse
+      - float_csparse_nas
+    process: [h5diff]
+    error_message: |
+      Warning: different storage datatype
+      <shape> has file datatype H5T_STD_I64LE
+      <shape> has file datatype H5T_STD_I32LE
+      attribute: <shape of </X>> and <shape of </X>>  
+    description: hdf5py writes the <shape> attribute as a H5T_STD_I64LE, hdf5r writes it as H5T_STD_I32LE.
+    proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - X
+      - obsm
+      - varm
+      - obsp
+      - varp
+    dtype:
+      - float_csparse
+      - float_csparse_nas
+      - float_rsparse
+      - float_rsparse_nas
+    process: [h5diff]
+    error_message: |
+      dataset: </X/data> and </X/data>
+      Not comparable: </X/data> has rank 1, dimensions [200], max dimensions [18446744073709551615]
+      and </X/data> has rank 1, dimensions [108], max dimensions [108]
+      0 differences found
+      dataset: </X/indices> and </X/indices>
+      Not comparable: </X/indices> has rank 1, dimensions [200], max dimensions [18446744073709551615]
+      and </X/indices> has rank 1, dimensions [108], max dimensions [108]
+      0 differences found
+      dataset: </X/indptr> and </X/indptr>
+      Warning: different maximum dimensions
+      </X/indptr> has max dimensions [18446744073709551615]
+      </X/indptr> has max dimensions [21]
+    description: hdf5py has max dimensions as 2^64 - 1, the max val for an unsigned int. hdf5r has it as the actual value
+    proposed_solution: We should investigate if something goes wrong with h5py, but I think hdf5 provides the expected behaviour.
+    to_investigate: True
+    to_fix: False
+  - backend: HDF5AnnData
+    slot:
+      - obs
+      - var
+    dtype:
+      - integer_with_nas
+    process: [h5diff]
+    error_message: |
+      dataset: </var/nullable_integer_array/mask> and </var/integer_with_nas/mask>
+      Warning: different storage datatype
+      Not comparable: </var/nullable_integer_array/mask> has sign H5T_SGN_2 and </var/integer_with_nas/mask> has sign H5T_SGN_NONE
+      0 differences found
+    description: hdf5py writes a nullable integer array with type H5T_SGN_2, hdf5r writes with type H5T_SGN_NONE
+    proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - obs
+      - var
+    dtype:
+      - nullable_integer_array
+    process: [h5diff]
+    error_message: |
+      dataset: </var/nullable_integer_array/values> and </var/integer_with_nas/values>
+      Warning: different storage datatype
+      </var/nullable_integer_array/values> has file datatype H5T_STD_I64LE
+      </var/integer_with_nas/values> has file datatype H5T_STD_I32LE
+      size:           [20]           [20]
+      position        values          values          difference          
+      ------------------------------------------------------------
+      [ 0 ]          0               1               1              
+      1 differences found
+    description: hdf5py writes a nullable integer array with type H5T_STD_I64LE, hdf5r writes with type H5T_STD_I32LE
+    proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - obs
+      - var
+    dtype:
+      - nullable_integer_array
+    process: [h5diff]
+    error_message: |
+      dataset: </var/nullable_integer_array/values> and </var/integer_with_nas/values>
+      Warning: different storage datatype
+      </var/nullable_integer_array/values> has file datatype H5T_STD_I64LE
+      </var/integer_with_nas/values> has file datatype H5T_STD_I32LE
+      size:           [20]           [20]
+      position        values          values          difference          
+      ------------------------------------------------------------
+      [ 0 ]          0               1               1              
+      1 differences found
+    description: On position 0, hdf5py writes a 0 in the values array, hdf5r writes a 1.
+    proposed_solution: We should investigate why this difference happens.
+    to_investigate: True
+    to_fix: True
+  - backend: HDF5AnnData
+    slot:
+      - X
+      - obsm
+      - varm
+      - layers
+      - obsp
+      - varp
+    dtype:
+      - numeric_dense
+      - numeric_dense_with_nas
+      - integer_dense
+    process: [h5diff]
+    error_message: |
+      Error in `H5File.open(filename, mode, file_create_pl, file_access_pl)`: HDF5-API Errors:
+      error #000: ../../../src/H5F.c in H5Fcreate(): line 349: unable to create file
+          class: HDF5
+          major: File accessibility
+          minor: Unable to open file
+      error #001: ../../../src/H5Fint.c in H5F_open(): line 1725: unable to open file
+          class: HDF5
+          major: File accessibility
+          minor: Unable to open file
+      error #002: ../../../src/H5FD.c in H5FD_open(): line 722: open failed
+          class: HDF5
+          major: Virtual File Layer
+          minor: Unable to initialize object
+      error #003: ../../../src/H5FDsec2.c in H5FD__sec2_open(): line 351: unable to open file: name = '/tmp/RtmpN29Fmn/anndata_r2_integer_matrixbe0976b43e39b.h5ad', errno = 17, error message = 'File exists', flags = 15, o_flags = c2
+          class: HDF5
+          major: File accessibility
+          minor: Unable to open file
+    description: Issue is related to [issue \#198](https://github.com/scverse/anndataR/issues/198).
+    proposed_solution: Fix writing dgeMatrix objects.
     to_investigate: True
     to_fix: True
