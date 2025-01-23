@@ -250,6 +250,7 @@ ad
 ad_obsm <- from_SingleCellExperiment(
   sce,
   layers_mapping = list(),
+  obs_mapping = list(integer = "integer", test2 = "numeric", piece3 = "factor"),
   obsm_mapping = list(X_pca = c("reducedDim", "pca"), X_umap = c("reducedDim", "umap")), 
   varm_mapping = list(PCs = c("reducedDim", "pca")), 
   obsp_mapping = list(),

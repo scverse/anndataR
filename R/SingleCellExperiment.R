@@ -349,12 +349,6 @@ from_SingleCellExperiment <- function(
 
       # fetch layers
       # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
-      # for (i in seq_along(layers_mapping)) {
-      #   layer <- layers_mapping[[i]]
-      #   layer_name <- names(layers_mapping)[[i]]
-
-      #   adata$layers[[layer_name]] <- .to_anndata_matrix(assay(sce, layer))
-      # }
 
       adata$layers <- .from_SCE_process_simple_mapping(sce, layers_mapping, assays)
 
@@ -536,20 +530,6 @@ from_SingleCellExperiment <- function(
   
   .from_SCE_convert(pairs)
 }
-
-# .from_SCE_process_layers_mapping <- function(sce, mapping, slot, toDF = TRUE) {
-#   layers <- list()
-#   for (i in seq_along(mapping)) {
-#     layer <- mapping[[i]]
-#     layer_name <- names(mapping)[[i]]
-
-#     layers[[layer_name]] <- .to_anndata_matrix(assay(sce, layer))
-#   }
-#   if (toDF == TRUE) {
-#     layers <- as.data.frame(layers)
-#   }
-#   layers
-# }
 
 .from_SCE_process_obsm_reduction <- function(sce, slot, key) {
   if (slot != "reducedDim") {
