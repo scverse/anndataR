@@ -113,10 +113,17 @@ read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
 
   data <- file[[name]]$read()
 
+  # If the array is 1D, explicitly add a dimension
+  if (is.null(dim(data))) {
+    data <- as.vector(data)
+    dim(data) <- length(data)
+  }
+
   # transpose the matrix if need be
   if (is.matrix(data)) {
     data <- t(data)
   }
+
   data
 }
 
@@ -277,18 +284,22 @@ read_h5ad_nullable <- function(file, name, version = "0.1.0") {
 #' @noRd
 read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
+
   # reads in transposed
-  string_array <- file[[name]]$read()
-  if (is.matrix(string_array)) {
-    string_array <- t(string_array)
+  data <- file[[name]]$read()
+
+  # If the array has no dimension, explicitly add it
+  if (is.null(dim(data))) {
+    data <- as.vector(data)
+    dim(data) <- length(data)
   }
 
-  # If the array is 1D, convert to vector
-  if (length(dim(string_array)) == 1) {
-    string_array <- as.vector(string_array)
+  # If the array is a matrix, transpose
+  if (is.matrix(data)) {
+    data <- t(data)
   }
 
-  string_array
+  data
 }
 
 #' Read H5AD categorical
