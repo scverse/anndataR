@@ -328,11 +328,11 @@ from_SingleCellExperiment <- function(
     {
       # get obs
       # trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
-      obs <- .from_SCE_process_simple_mapping(sce, obs_mapping, colData)
+      obs <- .from_SCE_obsvar(sce, obs_mapping, colData)
 
       # get var
       # trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
-      var <- .from_SCE_process_simple_mapping(sce, var_mapping, rowData)
+      var <- .from_SCE_obsvar(sce, var_mapping, rowData)
 
       adata <- generator$new(
         obs = obs,
@@ -410,7 +410,7 @@ from_SingleCellExperiment <- function(
 
       # fetch uns
       # trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
-      adata$uns <- .from_SCE_process_simple_mapping(sce, uns_mapping, metadata)
+      adata$uns <- .from_SCE_process_simple_mapping(sce, uns_mapping, metadata, convert = FALSE)
 
       adata
     },
@@ -434,7 +434,7 @@ from_SingleCellExperiment <- function(
   layers_mapping <- list()
 
   for (assay_name in names(assays(sce))) {
-    if (!is.null(x_mapping) && assay_name != x_mapping) {
+    if (is.null(x_mapping) || assay_name != x_mapping) {
       layers_mapping[[assay_name]] <- assay_name
     }
   }
@@ -472,7 +472,7 @@ from_SingleCellExperiment <- function(
     as.data.frame(object)
   } else if (inherits(object, "SimpleList")) {
     as.list(object)
-  } else if (inherits(object, "matrix") || inherits(object, "sparseMatrix")) {
+  } else if (inherits(object, "matrix") || inherits(object, "Matrix")) {
     m <- t(object)
     if (inherits(m, "denseMatrix")) {
       m <- as.matrix(m)
@@ -491,18 +491,31 @@ from_SingleCellExperiment <- function(
   m
 }
 
-.from_SCE_process_simple_mapping <- function(sce, mapping, slot, ...) {
-  mapped <- NULL
-  # check if mapping contains all columns of slot
-  if (length(setdiff(names(slot(sce)), names(mapping))) == 0) {
-    mapped <- slot(sce)
-  } else {
-    mapped <- lapply(seq_along(mapping), function(i) {
+.from_SCE_obsvar <- function(sce, mapping, slot, convert = TRUE){
+  mapped <- .from_SCE_process_simple_mapping(sce, mapping, slot, convert)
 
-      .from_SCE_convert(slot(sce, ...)[[mapping[[i]]]])
-    })
-    names(mapped) <- names(mapping)
+  if(inherits(mapped, "list") && length(mapped) == 0) {
+    mapped <- as.data.frame(rownames(slot(sce)))
+    rownames(mapped) <- rownames(slot(sce))
+    mapped[,1] <- NULL
+  } else {
+    mapped <- as.data.frame(mapped)
   }
+
+  mapped
+}
+
+.from_SCE_process_simple_mapping <- function(sce, mapping, slot, convert = TRUE) {
+  mapped <- NULL
+  mapped <- lapply(seq_along(mapping), function(i) {
+    element <- slot(sce)[[mapping[[i]]]]
+    if(convert) {
+      element <- .from_SCE_convert(element)
+    } 
+    element
+  })
+  names(mapped) <- names(mapping)
+  
   
   .from_SCE_convert(mapped)
 }
