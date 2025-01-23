@@ -150,8 +150,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 write_h5ad_dense_array <- function(value, file, name, compression, version = "0.2.0") {
   version <- match.arg(version)
 
-  # workaround for scverse/anndataR#198
-  # matrices of type 'dgeMatrix' are perhaps not supported by hdf5r
+  # matrices of type 'dgeMatrix' can simply be converted to a matrix
   if (inherits(value, "denseMatrix")) {
     value <- as.matrix(value)
   }
