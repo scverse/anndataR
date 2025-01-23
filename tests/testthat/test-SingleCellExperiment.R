@@ -36,7 +36,10 @@ test_that("to_SingleCellExperiment with inmemoryanndata", {
   # check whether layers are found in the sce assays
   for (layer_key in names(dummy$layers)) {
     expect_true(layer_key %in% names(assays(sce)))
-    expect_true(all.equal(assay(sce, layer_key), t(dummy$layers[[layer_key]]), check.attributes = FALSE), info = paste0("layer_key: ", layer_key)) ## matrix dimensions and dimnames are different
+    expect_true(
+      all.equal(assay(sce, layer_key), t(dummy$layers[[layer_key]]), check.attributes = FALSE),
+      info = paste0("layer_key: ", layer_key)
+    )
   }
 
   # check whether all obsp keys are found in the colPairs
@@ -50,8 +53,6 @@ test_that("to_SingleCellExperiment with inmemoryanndata", {
     expect_true(varp_key %in% names(rowPairs(sce)))
     expect_equal(rowData(sce)[[varp_key]], dummy$varp[[varp_key]], info = paste0("varm_key: ", varm_key))
   }
-
-  thing <- 0
 
   # TODO: obsm keys? varm keys? --> test a reduction
   # TODO: uns keys?
@@ -81,7 +82,7 @@ test_that("from_SingleCellExperiment works", {
   # trackstatus: class=SingleCellExperiment, feature=test_set_obs_names, status=done
   expect_equal(colnames(sce), rownames(ad$obs))
 
-  # check whether all sce coldata keys are found in the obs 
+  # check whether all sce coldata keys are found in the obs
   # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
   for (obs_key in colnames(colData(sce))) {
     expect_true(obs_key %in% colnames(ad$obs))
@@ -96,21 +97,28 @@ test_that("from_SingleCellExperiment works", {
   }
 
   # check whether assays are found in the layers
+  # not all true, sometimes they change matrix type --> is this a known issue or not?
   for (layer_key in names(assays(sce))) {
     expect_true(layer_key %in% names(ad$layers), info = paste0("layer_key: ", layer_key))
-    expect_true(all.equal(ad$layers[[layer_key]], t(assay(sce, layer_key)), check.attributes = FALSE), info = paste0("layer_key: ", layer_key)) ## matrix dimensions and dimnames are different
+    expect_true(
+      all.equal(ad$layers[[layer_key]], t(assay(sce, layer_key)), check.attributes = FALSE),
+      info = paste0("layer_key: ", layer_key)
+    )
   }
 
   # check whether all colPairs keys are found in the obsp
   for (obsp_key in names(colPairs(sce))) {
     expect_true(obsp_key %in% names(ad$obsp))
-    expect_equal(ad$obsp[[obsp_key]], colPairs(sce)[[obsp_key]], info = paste0("obsp_key: ", obsp_key))
+    expect_equal(
+      ad$obsp[[obsp_key]], colPairs(sce, asSparse = TRUE)[[obsp_key]], check.attributes = FALSE,
+      info = paste0("obsp_key: ", obsp_key)
+    )
   }
 
   # check whether all rowPairs keys are found in the varp
   for (varp_key in names(rowPairs(sce))) {
     expect_true(varp_key %in% names(ad$varp))
-    expect_equal(ad$varp[[varp_key]], rowPairs(sce)[[varp_key]], info = paste0("varp_key: ", varp_key))
+    expect_equal(ad$varp[[varp_key]], rowPairs(sce, asSparse = TRUE)[[varp_key]], info = paste0("varp_key: ", varp_key))
   }
 
   # check whether all metadata keys are found in the uns
