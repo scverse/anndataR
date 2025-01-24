@@ -189,7 +189,7 @@ to_SingleCellExperiment <- function(
   rownames(sce) <- rownames(adata$var)
   colnames(sce) <- rownames(adata$obs)
 
-  reducedDims(sce) <- reduceddims # only here to ensure that the dimensions are right
+  SingleCellExperiment::reducedDims(sce) <- reduceddims # only here to ensure that the dimensions are right
 
   sce
 }
@@ -366,16 +366,15 @@ from_SingleCellExperiment <- function(
 
       adata <- generator$new(
         obs = obs,
-        var = var
+        var = var,
+        ...
       )
 
       # fetch X
       # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
-      X <- NULL
       if (!is.null(x_mapping)) {
-        X <- .from_SCE_convert(SummarizedExperiment::assay(sce, x_mapping, withDimnames = FALSE))
+        adata$X <- .from_SCE_convert(SummarizedExperiment::assay(sce, x_mapping, withDimnames = FALSE))
       }
-      adata$X <- X
 
       # fetch layers
       # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
@@ -457,7 +456,7 @@ from_SingleCellExperiment <- function(
 .from_SCE_guess_layers <- function(sce, x_mapping) { # nolint
   layers_mapping <- list()
 
-  for (assay_name in names(assays(sce))) {
+  for (assay_name in names(SummarizedExperiment::assays(sce))) {
     if (is.null(x_mapping) || assay_name != x_mapping) {
       layers_mapping[[assay_name]] <- assay_name
     }

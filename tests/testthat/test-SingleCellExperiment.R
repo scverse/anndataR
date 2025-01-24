@@ -1,6 +1,4 @@
-dummy <- generate_dataset(10L, 20L)
-
-test_that("to_SingleCellExperiment with inmemoryanndata", {
+test_that("to_SingleCellExperiment with inmemoryanndata", { # nolint
   library(SingleCellExperiment)
 
   ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
@@ -14,50 +12,70 @@ test_that("to_SingleCellExperiment with inmemoryanndata", {
   expect_equal(ncol(sce), 10)
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_var_names, status=done
-  expect_equal(rownames(sce), rownames(dummy$var))
+  expect_equal(rownames(sce), rownames(ad$var))
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_obs_names, status=done
-  expect_equal(colnames(sce), rownames(dummy$obs))
+  expect_equal(colnames(sce), rownames(ad$obs))
 
   # check whether all obs keys are found in the sce metadata
   # trackstatus: class=SingleCellExperiment, feature=test_get_obs, status=done
-  for (obs_key in colnames(dummy$obs)) {
+  for (obs_key in colnames(ad$obs)) {
     expect_true(obs_key %in% colnames(colData(sce)))
-    expect_equal(colData(sce)[[obs_key]], dummy$obs[[obs_key]], info = paste0("obs_key: ", obs_key))
+    expect_equal(colData(sce)[[obs_key]], ad$obs[[obs_key]], info = paste0("obs_key: ", obs_key))
   }
 
   # check whether all var keys are found in the sce assay metadata
   # trackstatus: class=SingleCellExperiment, feature=test_get_var, status=done
-  for (var_key in colnames(dummy$var)) {
+  for (var_key in colnames(ad$var)) {
     expect_true(var_key %in% colnames(rowData(sce)))
-    expect_equal(rowData(sce)[[var_key]], dummy$var[[var_key]], info = paste0("var_key: ", var_key))
+    expect_equal(rowData(sce)[[var_key]], ad$var[[var_key]], info = paste0("var_key: ", var_key))
   }
 
   # check whether layers are found in the sce assays
-  for (layer_key in names(dummy$layers)) {
+  for (layer_key in names(ad$layers)) {
     expect_true(layer_key %in% names(assays(sce)))
     expect_true(
-      all.equal(assay(sce, layer_key), t(dummy$layers[[layer_key]]), check.attributes = FALSE),
+      all.equal(assay(sce, layer_key), t(ad$layers[[layer_key]]), check.attributes = FALSE),
       info = paste0("layer_key: ", layer_key)
     )
   }
 
   # check whether all obsp keys are found in the colPairs
-  for (obsp_key in names(dummy$obsp)) {
+  for (obsp_key in names(ad$obsp)) {
     expect_true(obsp_key %in% names(colPairs(sce)))
-    expect_equal(colData(sce)[[obsp_key]], dummy$obsp[[obsp_key]], info = paste0("obsm_key: ", obsm_key))
+
+    if (grepl("with_nas", obsp_key) && !grepl("sparse", obsp_key)) {
+      sce_matrix <- as.matrix(colPair(sce, obsp_key, asSparse = TRUE))
+      ad_matrix <- as.matrix(ad$obsp[[obsp_key]])
+
+      if (grepl("with_nas", obsp_key)) {
+        sce_matrix[sce_matrix == 0] <- NA
+      }
+      expect_equal(sce_matrix, ad_matrix, info = paste0("obsp_key: ", obsp_key))
+    }
   }
 
   # check whether all varp keys are found in the rowPairs
-  for (varp_key in names(dummy$varp)) {
+  for (varp_key in names(ad$varp)) {
     expect_true(varp_key %in% names(rowPairs(sce)))
-    expect_equal(rowData(sce)[[varp_key]], dummy$varp[[varp_key]], info = paste0("varm_key: ", varm_key))
+
+    if (grepl("with_nas", varp_key) && !grepl("sparse", varp_key)) {
+      sce_matrix <- as.matrix(rowPair(sce, varp_key, asSparse = TRUE))
+      ad_matrix <- as.matrix(ad$varp[[varp_key]])
+
+      if (grepl("with_nas", varp_key)) {
+        sce_matrix[sce_matrix == 0] <- NA
+      }
+      expect_equal(sce_matrix, ad_matrix, info = paste0("varp_key: ", varp_key))
+    }
+
   }
 
   # TODO: obsm keys? varm keys? --> test a reduction
   # TODO: uns keys?
 
 })
+
 
 # TODO gracefully failing
 
@@ -101,7 +119,7 @@ test_that("from_SingleCellExperiment works", {
   for (layer_key in names(assays(sce))) {
     expect_true(layer_key %in% names(ad$layers), info = paste0("layer_key: ", layer_key))
     expect_true(
-      all.equal(ad$layers[[layer_key]], t(assay(sce, layer_key)), check.attributes = FALSE),
+      all.equal(as.matrix(ad$layers[[layer_key]]), as.matrix(t(assay(sce, layer_key))), check.attributes = FALSE),
       info = paste0("layer_key: ", layer_key)
     )
   }
