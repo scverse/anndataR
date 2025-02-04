@@ -52,7 +52,7 @@ write_h5ad_element <- function(
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) { # Numeric values
       if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
-      } else if (is.integer(value) && any(is.na(value)) && !is.matrix(value)) {
+      } else if (is.integer(value) && any(is.na(value)) && length(dim(value)) <= 1) {
         write_h5ad_nullable_integer
       } else {
         write_h5ad_dense_array
@@ -150,6 +150,11 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 write_h5ad_dense_array <- function(value, file, name, compression, version = "0.2.0") {
   version <- match.arg(version)
 
+  # matrices of type 'dgeMatrix' can simply be converted to a matrix
+  if (inherits(value, "denseMatrix")) {
+    value <- as.matrix(value)
+  }
+
   if (is.matrix(value) && any(is.na(value))) {
     # is.na(value) <- NaN gets ignored
     na_indices <- is.na(value)
@@ -157,7 +162,11 @@ write_h5ad_dense_array <- function(value, file, name, compression, version = "0.
   }
 
   if (!is.vector(value)) {
-    value <- t(value)
+    if (is.matrix(value)) {
+      value <- t(value)
+    } else if (is.array(value)) {
+      value <- aperm(value)
+    }
   }
 
   # Guess data type

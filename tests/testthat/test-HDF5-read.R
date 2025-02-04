@@ -47,10 +47,10 @@ test_that("reading recarrays works", {
 
 test_that("reading 1D numeric arrays works", {
   array_1d <- read_h5ad_dense_array(file, "obs/Int")
-  expect_vector(array_1d, ptype = integer(), size = 50)
+  expect_equal(array_1d, array(0L:49L))
 
   array_1d <- read_h5ad_dense_array(file, "obs/Float")
-  expect_vector(array_1d, ptype = double(), size = 50)
+  expect_equal(array_1d, array(rep(42.42, 50)))
 })
 
 test_that("reading 1D sparse numeric arrays works", {
@@ -65,8 +65,9 @@ test_that("reading 1D nullable arrays works", {
   expect_true(any(is.na(array_1d)))
 
   array_1d <- read_h5ad_dense_array(file, "obs/FloatNA")
-  expect_vector(array_1d, ptype = double(), size = 50)
-  expect_true(any(is.na(array_1d)))
+  expected <- array(rep(42.42, 50))
+  expected[1] <- NA
+  expect_equal(array_1d, expected)
 
   array_1d <- read_h5ad_nullable_boolean(file, "obs/Bool")
   expect_vector(array_1d, ptype = logical(), size = 50)
@@ -89,8 +90,7 @@ test_that("reading numeric scalars works", {
 
 test_that("reading string arrays works", {
   array <- read_h5ad_string_array(file, "uns/String")
-  expect_vector(array, ptype = character(), size = 10)
-  expect_equal(array[3], "String 2")
+  expect_equal(array, array(paste0("String ", 0L:9L)))
 
   array <- read_h5ad_string_array(file, "uns/String2D")
   expect_true(is.matrix(array))

@@ -1,0 +1,45 @@
+---
+title: Software design
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Software design}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = ""
+)
+```
+
+
+`{anndataR}` is designed to offer the combined functionality of the following packages:
+
+* [theislab/zellkonverter](https://github.com/theislab/zellkonverter): Convert AnnData files to/from `SingleCellExperiment` objects.
+* [mtmorgan/h5ad](https://github.com/mtmorgan/h5ad/): Read/write `*.h5ad` files natively using `rhdf5`.
+* [dynverse/anndata](https://github.com/dynverse/anndata): An R implementation of the AnnData data structures, uses `reticulate` to read/write `*.h5ad` files.
+
+Ideally, this package will be a complete replacement for all of these packages, and will be the go-to package for working with AnnData files in R.
+
+## Desired feature list
+
+* Provide an `R6` class to work with AnnData objects in R (either in-memory or on-disk).
+* Read/write `*.h5ad` files natively
+* Convert to/from `SingleCellExperiment` objects
+* Convert to/from `Seurat` objects
+
+## Class diagram
+
+Here is a diagram of the main R6 classes provided by the package:
+
+![](diagrams/class_diagram.svg)
+
+Notation:
+
+  - `X: Matrix` - variable `X` is of type `Matrix`
+  - `*X: Matrix` - variable `X` is abstract
+  - `to_SingleCellExperiment(): SingleCellExperiment` - function `to_SingleCellExperiment` returns object of type `SingleCellExperiment`
+  - `*to_SingleCellExperiment()` - function `to_SingleCellExperiment` is abstract

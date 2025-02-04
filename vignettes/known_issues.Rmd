@@ -1,0 +1,32 @@
+---
+title: Known issues
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Known issues}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This document lists known issues with the package and suggests possible solutions.
+
+```{r echo=FALSE, results="asis"}
+# how to get a file from a package
+data <- yaml::read_yaml(system.file("known_issues.yaml", package = "anndataR"))$known_issues
+
+for (i in seq_along(data)) {
+  str <- paste0(
+    "## Issue: ", data[[i]]$description, "\n\n",
+    " * Affected backend: ", paste0("`", data[[i]]$backend, "`", collapse = ", "), "\n",
+    " * Affected slot(s): ", paste0("`", data[[i]]$slot, "`", collapse = ", "), "\n",
+    " * Affected dtype(s): ", paste0("`", data[[i]]$dtype, "`", collapse = ", "), "\n",
+    " * Probable cause: ", data[[i]]$process, "\n",
+    " * To investigate: ", data[[i]]$to_investigate, "\n",
+    " * To fix: ", data[[i]]$to_fix, "\n\n",
+    "### Error message\n\n",
+    paste(paste0("    ", strsplit(data[[i]]$error_message, "\n")[[1]], "\n"), collapse = ""), "\n\n",
+    "### Proposed solution\n\n",
+    data[[i]]$proposed_solution, "\n\n"
+  )
+  cat(str)
+}
+```
