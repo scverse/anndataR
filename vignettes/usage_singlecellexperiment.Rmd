@@ -41,7 +41,7 @@ pak::pak("scverse/anndataR")
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `SingleCellExperiment` object.
 
-```{r}
+```{r prep_h5ad_file}
 library(anndataR)
 library(SingleCellExperiment)
 
@@ -50,26 +50,27 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 Read the `.h5ad` file:
 
-```{r}
+```{r read_h5ad}
 adata <- read_h5ad(h5ad_file)
 adata
 ```
 
 Convert to a `SingleCellExperiment` object:
 
-```{r eval=FALSE}
+```{r convert_implicit}
 sce_obj <- adata$to_SingleCellExperiment()
 sce_obj
 ```
 
 Note that there is no one-to-one mapping possible between the AnnData and SingleCellExperiment data structures, so some information might be lost during conversion. It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
 
-See `?to_SingleCellExperiment` for more details on how to customize the conversion process. For instance:
+See the [in-depth vignette on conversion to and from SingleCellExperiment objects](singlecellexperiment.html) for more details on how to customize the conversion process. For instance:
 
-```{r eval=FALSE}
+```{r ex_mapping, eval=FALSE}
 adata$to_SingleCellExperiment(
-  # ...
-  # TO DO: add this when scverse/anndataR#212 is merged
+  assays_mapping = list(),
+  col_data_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
+  row_data_mapping = list(rowdata1 = "character", rowdata2 = "logical")
 )
 ```
 
@@ -77,28 +78,29 @@ adata$to_SingleCellExperiment(
 
 Here's an example demonstrating how to create a `SingleCellExperiment` object from scratch, then convert it to `AnnData` and save it as `.h5ad`
 
-```{r}
+```{r construct_sce}
 counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
 sce_obj <- SingleCellExperiment(list(counts = counts))
+
 sce_obj
 ```
 
 You can convert the `SingleCellExperiment` object to an `AnnData` object using the `from_SingleCellExperiment` function:
 
-```{r}
+```{r from_SCE}
 adata <- from_SingleCellExperiment(sce_obj)
 adata
 ```
 
 Again note that there is no one-to-one mapping possible between the AnnData and SingleCellExperiment data structures, so some information might be lost during conversion. It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
 
-See `?from_SingleCellExperiment` for more details on how to customize the conversion process. Example:
+See the [in-depth vignette on conversion to and from SingleCellExperiment objects](singlecellexperiment.html) for more details on how to customize the conversion process. Example:
 
-```{r}
+```{r from_SCE_ex}
 from_SingleCellExperiment(
   sce_obj,
-  # ...
-  # TO DO: add this when scverse/anndataR#212 is merged
+  x_mapping = "counts",
+  layers_mapping = list()
 )
 ```
 

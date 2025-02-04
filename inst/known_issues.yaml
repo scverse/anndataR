@@ -280,6 +280,8 @@ known_issues:
     dtype:
       - numeric_dense_with_nas
       - numeric_matrix_with_nas
+      - integer_dense_with_nas
+      - integer_matrix_with_nas
     process: [convert]
     error_message: |
       `sce_matrix` (`actual`) not equal to `ad_matrix` (`expected`).
@@ -293,5 +295,21 @@ known_issues:
       + expected[3, ]          NA        NA        NA        NA        NA        NA         NA        NA        NA        NA
     description: After conversion of a sparse matrix, also containing NAs to a SelfHits object, the distinction between NA and 0 is lost.
     proposed_solution: Upstream the issue, is this intentional?
+    to_investigate: True
+    to_fix: False
+  - backend: to_SCE
+    slot:
+      - obsm
+      - varm
+    dtype:
+      - pca
+    process: [convert]
+    error_message: 
+      sampleFactors(reducedDims(sce)$pca) (`actual`) not equal to ad$obsm[["X_pca"]] (`expected`).
+
+        `dimnames(actual)` is a list
+        `dimnames(expected)` is absent
+    description: converted sce object has dimnames(), whilst the original anndata does not.
+    proposed_solution: Investigate if this is a problem or not.
     to_investigate: True
     to_fix: False

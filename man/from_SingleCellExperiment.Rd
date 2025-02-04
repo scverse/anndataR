@@ -25,8 +25,49 @@ from_SingleCellExperiment(
 \item{output_class}{Name of the AnnData class. Must be one of \code{"HDF5AnnData"}
 or \code{"InMemoryAnnData"}.}
 
-\item{...}{Additional arguments passed to the generator function.
-See the "Details" section for more information on which parameters}
+\item{x_mapping}{Name of the assay in \code{sce} to use as the \code{X} matrix in the AnnData object.}
+
+\item{layers_mapping}{A named list mapping \code{assay} names in \code{sce} to \code{layers} in the created AnnData object.
+The names of the list should be the names of the \code{layers} in the resulting AnnData object, and the values should be the names
+of the \code{assays} in the \code{sce} object.}
+
+\item{obs_mapping}{A named list mapping \code{colData} in \code{sce} to \code{obs} in the created AnnData object.
+The names of the list should be the names of the \code{obs} columns in the resulting AnnData object. The values of the list should be the
+names of the \code{colData} columns in \code{sce}.}
+
+\item{var_mapping}{A named list mapping \code{rowData} in \code{sce} to \code{var} in the created AnnData object.
+The names of the list should be the names of the \code{var} columns in the resulting AnnData object. The values of the list should be the
+names of the \code{rowData} columns in \code{sce}.}
+
+\item{obsm_mapping}{A named list mapping \code{reducedDim} in \code{sce} to \code{obsm} in the created AnnData object.
+The names of the list should be the names of the \code{obsm} in the resulting AnnData object. The values of the list should be a named list
+with as key the name of the \code{obsm} slot in the resulting AnnData object, and as value a list with the following elements
+\itemize{
+\item \code{reducedDim}
+\item the name of the \code{reducedDim} in \code{sce}
+}}
+
+\item{varm_mapping}{A named list mapping \code{reducedDim} in \code{sce} to \code{varm} in the created AnnData object.
+The names of the list should be the names of the \code{varm} in the resulting AnnData object. The values of the list should be a named list
+with as key the name of the \code{varm} slot in the resulting AnnData object, and as value a list with the following elements
+\itemize{
+\item \code{reducedDim}
+\item the name of the \code{reducedDim} in \code{sce}, that is \code{LinearEmbeddingMatrix} of which you want the featureLoadings to end up in the \code{varm} slot
+}}
+
+\item{obsp_mapping}{A named list mapping \code{colPairs} in \code{sce} to \code{obsp} in the created AnnData object.
+The names of the list should be the names of the \code{obsp} in the resulting AnnData object. The values of the list should be the names of the
+\code{colPairs} in \code{sce}.}
+
+\item{varp_mapping}{A named list mapping \code{rowPairs} in \code{sce} to \code{varp} in the created AnnData object.
+The names of the list should be the names of the \code{varp} in the resulting AnnData object. The values of the list should be the names of the
+\code{rowPairs} in \code{sce}.}
+
+\item{uns_mapping}{A named list mapping \code{metadata} in \code{sce} to \code{uns} in the created AnnData object.
+The names of the list should be the names of the \code{uns} in the resulting AnnData object. The values of the list should be the names of the
+\code{metadata} in \code{sce}.}
+
+\item{...}{Additional arguments to pass to the generator function.}
 }
 \value{
 \code{from_SingleCellExperiment()} returns an AnnData object

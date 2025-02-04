@@ -238,10 +238,42 @@ Keys (element names) of \code{uns}.
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
 \subsection{Method \code{to_SingleCellExperiment()}}{
 Convert to SingleCellExperiment
+
+See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more details on the conversion.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
+  assays_mapping = NULL,
+  col_data_mapping = NULL,
+  row_data_mapping = NULL,
+  reduction_mapping = NULL,
+  colPairs_mapping = NULL,
+  rowPairs_mapping = NULL,
+  metadata_mapping = NULL
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{assays_mapping}}{A named list mapping SingleCellExperiment assays to AnnData layers}
+
+\item{\code{col_data_mapping}}{A named list mapping SingleCellExperiment colData to AnnData obs}
+
+\item{\code{row_data_mapping}}{A named list mapping SingleCellExperiment rowData to AnnData var}
+
+\item{\code{reduction_mapping}}{A named list mapping SingleCellExperiment reductions to AnnData obsm/varm}
+
+\item{\code{colPairs_mapping}}{A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp}
+
+\item{\code{rowPairs_mapping}}{A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp}
+
+\item{\code{metadata_mapping}}{A named list mapping SingleCellExperiment metadata to AnnData uns}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A SingleCellExperiment object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}

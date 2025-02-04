@@ -54,9 +54,8 @@
 #' `uns` in `adata`.
 #'
 #' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
-#'   representing the content of `object`.
+#'   representing the content of `adata`.
 #'
-#' @noRd
 #' @examples
 #' if (interactive()) {
 #'   ## useful when interacting with the SingleCellExperiment !
@@ -287,8 +286,36 @@ to_SCE_guess_reduction <- function(adata) { # nolint
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
 #' or `"InMemoryAnnData"`.
 #'
-#' @param ... Additional arguments passed to the generator function.
-#' See the "Details" section for more information on which parameters
+#' @param x_mapping Name of the assay in `sce` to use as the `X` matrix in the AnnData object.
+#' @param layers_mapping A named list mapping `assay` names in `sce` to `layers` in the created AnnData object.
+#' The names of the list should be the names of the `layers` in the resulting AnnData object, and the values should be the names
+#' of the `assays` in the `sce` object.
+#' @param obs_mapping A named list mapping `colData` in `sce` to `obs` in the created AnnData object.
+#' The names of the list should be the names of the `obs` columns in the resulting AnnData object. The values of the list should be the
+#' names of the `colData` columns in `sce`.
+#' @param var_mapping A named list mapping `rowData` in `sce` to `var` in the created AnnData object.
+#' The names of the list should be the names of the `var` columns in the resulting AnnData object. The values of the list should be the
+#' names of the `rowData` columns in `sce`.
+#' @param obsm_mapping A named list mapping `reducedDim` in `sce` to `obsm` in the created AnnData object.
+#' The names of the list should be the names of the `obsm` in the resulting AnnData object. The values of the list should be a named list
+#' with as key the name of the `obsm` slot in the resulting AnnData object, and as value a list with the following elements
+#' - `reducedDim`
+#' - the name of the `reducedDim` in `sce`
+#' @param varm_mapping A named list mapping `reducedDim` in `sce` to `varm` in the created AnnData object.
+#' The names of the list should be the names of the `varm` in the resulting AnnData object. The values of the list should be a named list
+#' with as key the name of the `varm` slot in the resulting AnnData object, and as value a list with the following elements
+#' - `reducedDim`
+#' - the name of the `reducedDim` in `sce`, that is `LinearEmbeddingMatrix` of which you want the featureLoadings to end up in the `varm` slot
+#' @param obsp_mapping A named list mapping `colPairs` in `sce` to `obsp` in the created AnnData object.
+#' The names of the list should be the names of the `obsp` in the resulting AnnData object. The values of the list should be the names of the
+#' `colPairs` in `sce`.
+#' @param varp_mapping A named list mapping `rowPairs` in `sce` to `varp` in the created AnnData object.
+#' The names of the list should be the names of the `varp` in the resulting AnnData object. The values of the list should be the names of the
+#' `rowPairs` in `sce`.
+#' @param uns_mapping A named list mapping `metadata` in `sce` to `uns` in the created AnnData object.
+#' The names of the list should be the names of the `uns` in the resulting AnnData object. The values of the list should be the names of the
+#' `metadata` in `sce`.
+#' @param ... Additional arguments to pass to the generator function.
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
 #'   (e.g., InMemoryAnnData) representing the content of `sce`.
@@ -339,7 +366,7 @@ from_SingleCellExperiment <- function(
     obsm_mapping <- .from_SCE_guess_obsm(sce)
   }
   if (is.null(varm_mapping)) {
-    varm_mapping <- list()
+    varm_mapping <- .from_SCE_guess_varm(sce)
   }
   if (is.null(obsp_mapping)) {
     obsp_mapping <- .from_SCE_guess_obspvarp(sce, SingleCellExperiment::colPairs)
@@ -525,9 +552,18 @@ from_SingleCellExperiment <- function(
   # Ensure that the obs & var retain rownames, even if there are no columns
   # in the DataFrame.
   if (inherits(mapped, "list") && length(mapped) == 0) {
-    mapped <- as.data.frame(rownames(slot(sce)))
-    rownames(mapped) <- rownames(slot(sce))
-    mapped[, 1] <- NULL
+    if(! is.null(rownames(slot(sce)))){
+      mapped <- as.data.frame(rownames(slot(sce)))
+      rownames(mapped) <- rownames(slot(sce))
+      mapped[, 1] <- NULL
+    } else {
+      # We will infer rownames
+      inferred_rownames <- paste0("", 1:nrow(slot(sce)))
+      mapped <- as.data.frame(inferred_rownames)
+      rownames(mapped) <- inferred_rownames
+      mapped[, 1] <- NULL
+    }
+
   } else {
     mapped <- as.data.frame(mapped)
     rownames(mapped) <- rownames(slot(sce))

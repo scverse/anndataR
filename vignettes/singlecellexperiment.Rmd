@@ -216,7 +216,7 @@ The reverse, converting SingleCellExperiment objects to AnnData objects works in
 There's an implicit conversion, where we attempt a standard conversion, but the user can always provide an explicit mapping as well.
 
 ```{r construct sce}
-sce <- to_SingleCellExperiment(ad)
+ad <- from_SingleCellExperiment(sce)
 ```
 
 ## Implicit conversion
@@ -290,11 +290,10 @@ where the values are stored. The values should be a named list as well, containi
 where the data is stored, and as a second element the name of the slot in the SingleCellExperiment slot where the data is stored.
 
 ```{r to_ad_explicit_obsm}
-
 ad_obsm <- from_SingleCellExperiment(
   sce,
   layers_mapping = list(),
-  obs_mapping = list(integer = "integer", test2 = "numeric", piece3 = "factor"),
+  obs_mapping = list(),
   obsm_mapping = list(X_pca = c("reducedDim", "pca"), X_umap = c("reducedDim", "umap")),
   varm_mapping = list(PCs = c("reducedDim", "pca")),
   obsp_mapping = list(),
