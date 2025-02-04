@@ -1,3 +1,5 @@
+known_issues <- read_known_issues()
+
 test_that("to_SingleCellExperiment with inmemoryanndata", { # nolint
   library(SingleCellExperiment)
 
@@ -32,6 +34,7 @@ test_that("to_SingleCellExperiment with inmemoryanndata", { # nolint
   }
 
   # check whether layers are found in the sce assays
+  # trackstatus: class=SingleCellExperiment, feature=test_get_layers, status=done
   for (layer_key in names(ad$layers)) {
     expect_true(layer_key %in% names(assays(sce)))
     expect_true(
@@ -41,37 +44,62 @@ test_that("to_SingleCellExperiment with inmemoryanndata", { # nolint
   }
 
   # check whether all obsp keys are found in the colPairs
+  # trackstatus: class=SingleCellExperiment, feature=test_get_obsp, status=done
   for (obsp_key in names(ad$obsp)) {
     expect_true(obsp_key %in% names(colPairs(sce)))
 
-    if (grepl("with_nas", obsp_key) && !grepl("sparse", obsp_key)) {
-      sce_matrix <- as.matrix(colPair(sce, obsp_key, asSparse = TRUE))
-      ad_matrix <- as.matrix(ad$obsp[[obsp_key]])
+    msg <- message_if_known(
+      backend = "to_SCE",
+      slot = c("obsp"),
+      dtype = obsp_key,
+      process = "convert",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
 
-      if (grepl("with_nas", obsp_key)) {
-        sce_matrix[sce_matrix == 0] <- NA
-      }
-      expect_equal(sce_matrix, ad_matrix, info = paste0("obsp_key: ", obsp_key))
-    }
+    sce_matrix <- as.matrix(colPair(sce, obsp_key, asSparse = TRUE))
+    ad_matrix <- as.matrix(ad$obsp[[obsp_key]])
+
+    expect_equal(sce_matrix, ad_matrix, info = paste0("obsp_key: ", obsp_key))
   }
 
   # check whether all varp keys are found in the rowPairs
+  # trackstatus: class=SingleCellExperiment, feature=test_get_varp, status=done
   for (varp_key in names(ad$varp)) {
     expect_true(varp_key %in% names(rowPairs(sce)))
 
-    if (grepl("with_nas", varp_key) && !grepl("sparse", varp_key)) {
-      sce_matrix <- as.matrix(rowPair(sce, varp_key, asSparse = TRUE))
-      ad_matrix <- as.matrix(ad$varp[[varp_key]])
+    msg <- message_if_known(
+      backend = "to_SCE",
+      slot = c("obsp"),
+      dtype = varp_key,
+      process = "convert",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
 
-      if (grepl("with_nas", varp_key)) {
-        sce_matrix[sce_matrix == 0] <- NA
-      }
-      expect_equal(sce_matrix, ad_matrix, info = paste0("varp_key: ", varp_key))
-    }
+    sce_matrix <- as.matrix(rowPair(sce, varp_key, asSparse = TRUE))
+    ad_matrix <- as.matrix(ad$varp[[varp_key]])
+
+    expect_equal(sce_matrix, ad_matrix, info = paste0("varp_key: ", varp_key))
 
   }
 
-  # TODO: obsm keys? varm keys? --> test a reduction
+  # check reduction
+  # check if ad$obsm[["X_pca"]] is found in the sce SingleCellExperiment::sampleFactors(reducedDims$PCA)
+  # and check if ad$varm[["PCs"]] is found in the sce SingleCellExperiment::featureLoadings(reducedDims$PCA)
+
+  expect_true("pca" %in% names(reducedDims(sce)))
+  expect_equal(
+    reducedDims(sce)$pca,
+    ad$obsm[["X_pca"]],
+    info = "reducedDims(pca)"
+  )
+  expect_equal(
+    featureLoadings(sce)$pca,
+    ad$varm[["PC"]],
+    info = "featureLoadings(pca)"
+  )
+
   # TODO: uns keys?
 
 })
