@@ -169,9 +169,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       names(self$uns)
     },
     #' @description Convert to SingleCellExperiment
-    #' 
+    #'
     #' See [to_SingleCellExperiment()] for more details on the conversion.
-    #' 
+    #'
     #' @param assays_mapping A named list mapping SingleCellExperiment assays to AnnData layers
     #' @param col_data_mapping A named list mapping SingleCellExperiment colData to AnnData obs
     #' @param row_data_mapping A named list mapping SingleCellExperiment rowData to AnnData var
@@ -179,7 +179,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' @param colPairs_mapping A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp
     #' @param rowPairs_mapping A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp
     #' @param metadata_mapping A named list mapping SingleCellExperiment metadata to AnnData uns
-    #' 
+    #'
     #' @return A SingleCellExperiment object
     to_SingleCellExperiment = function(
       assays_mapping = NULL,

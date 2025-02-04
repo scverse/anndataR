@@ -70,10 +70,6 @@ for (layer_key in names(ad$layers)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(layer_key %in% names(assays(sce)))
-    # expect_true(
-    #   all.equal(assay(sce, layer_key), t(ad$layers[[layer_key]]), ignore_attr = TRUE),
-    #   info = paste0("layer_key: ", layer_key)
-    # )
     expect_true(
       all.equal(as.matrix(t(assay(sce, layer_key))), as.matrix(ad$layers[[layer_key]]), check.attributes = FALSE),
       info = paste0("layer_key: ", layer_key)
