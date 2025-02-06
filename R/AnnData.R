@@ -61,7 +61,7 @@ AnnData <- function(
     obsp = NULL,
     varp = NULL,
     uns = NULL,
-    shape = shape) {
+    shape = NULL) {
   InMemoryAnnData$new(
     X = X,
     obs = obs,
