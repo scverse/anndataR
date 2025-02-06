@@ -80,8 +80,8 @@ to_SingleCellExperiment <- function(
 # nolint end: cyclocomp_linter
     adata,
     assays_mapping = NULL,
-    col_data_mapping = NULL,
-    row_data_mapping = NULL,
+    colData_mapping = NULL, # nolint
+    rowData_mapping = NULL, # nolint
     reduction_mapping = NULL,
     colPairs_mapping = NULL, # nolint
     rowPairs_mapping = NULL, # nolint
@@ -95,11 +95,11 @@ to_SingleCellExperiment <- function(
   if (is.null(assays_mapping)) {
     assays_mapping <- to_SCE_guess_assays(adata)
   }
-  if (is.null(col_data_mapping)) {
-    col_data_mapping <- to_SCE_guess_all(adata, "obs")
+  if (is.null(colData_mapping)) {
+    colData_mapping <- to_SCE_guess_all(adata, "obs")
   }
-  if (is.null(row_data_mapping)) {
-    row_data_mapping <- to_SCE_guess_all(adata, "var")
+  if (is.null(rowData_mapping)) {
+    rowData_mapping <- to_SCE_guess_all(adata, "var")
   }
   if (is.null(reduction_mapping)) {
     reduction_mapping <- to_SCE_guess_reduction(adata)
@@ -132,12 +132,12 @@ to_SingleCellExperiment <- function(
   # FIXME: probably better way to make a dataframe from a list of vectors
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
-  col_data <- .to_SCE_process_simple_mapping(adata, col_data_mapping, "obs")
+  col_data <- .to_SCE_process_simple_mapping(adata, colData_mapping, "obs")
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
-  row_data <- .to_SCE_process_simple_mapping(adata, row_data_mapping, "var")
+  row_data <- .to_SCE_process_simple_mapping(adata, rowData_mapping, "var")
 
   # construct reducedDims
   # trackstatus: class=SingleCellExperiment, feature=get_reductions, status=wip
