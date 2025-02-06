@@ -14,7 +14,7 @@ AnnData(
   obsp = NULL,
   varp = NULL,
   uns = NULL,
-  shape = shape
+  shape = NULL
 )
 }
 \arguments{
