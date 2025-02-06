@@ -183,8 +183,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' @return A SingleCellExperiment object
     to_SingleCellExperiment = function(
       assays_mapping = NULL,
-      colData_mapping = NULL,
-      rowData_mapping = NULL,
+      colData_mapping = NULL, # nolint
+      rowData_mapping = NULL, # nolint
       reduction_mapping = NULL,
       colPairs_mapping = NULL, # nolint
       rowPairs_mapping = NULL, # nolint
