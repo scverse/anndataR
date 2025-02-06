@@ -7,8 +7,8 @@
 to_SingleCellExperiment(
   adata,
   assays_mapping = NULL,
-  col_data_mapping = NULL,
-  row_data_mapping = NULL,
+  colData_mapping = NULL,
+  rowData_mapping = NULL,
   reduction_mapping = NULL,
   colPairs_mapping = NULL,
   rowPairs_mapping = NULL,
@@ -25,13 +25,13 @@ resulting SingleCellExperiment object, and the values should be the names
 of the \code{layers} in \code{adata}, and should include the \code{X} matrix as well.
 If \code{X} is not in the list, it will be added as \code{counts} or \code{data}.}
 
-\item{col_data_mapping}{a named list mapping \code{obs} in \code{adata} to
+\item{colData_mapping}{a named list mapping \code{obs} in \code{adata} to
 \code{colData} in the created SingleCellExperiment object.
 The names of the list should be the names of the \code{colData} columns in the
 resulting SingleCellExperiment object. The values of the list should be the
 names of the \code{obs} columns in \code{adata}.}
 
-\item{row_data_mapping}{a named list mapping \code{var} names in \code{adata} to
+\item{rowData_mapping}{a named list mapping \code{var} names in \code{adata} to
 \code{rowData} in the created SingleCellExperiment object. The names of the list
 should be the names of the \code{rowData} columns in the resulting SingleCellExperiment
 object. The values of the list should be the names of the \code{var} columns in \code{adata}.}

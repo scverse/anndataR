@@ -243,8 +243,8 @@ See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more d
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
   assays_mapping = NULL,
-  col_data_mapping = NULL,
-  row_data_mapping = NULL,
+  colData_mapping = NULL,
+  rowData_mapping = NULL,
   reduction_mapping = NULL,
   colPairs_mapping = NULL,
   rowPairs_mapping = NULL,
@@ -257,9 +257,9 @@ See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more d
 \describe{
 \item{\code{assays_mapping}}{A named list mapping SingleCellExperiment assays to AnnData layers}
 
-\item{\code{col_data_mapping}}{A named list mapping SingleCellExperiment colData to AnnData obs}
+\item{\code{colData_mapping}}{A named list mapping SingleCellExperiment colData to AnnData obs}
 
-\item{\code{row_data_mapping}}{A named list mapping SingleCellExperiment rowData to AnnData var}
+\item{\code{rowData_mapping}}{A named list mapping SingleCellExperiment rowData to AnnData var}
 
 \item{\code{reduction_mapping}}{A named list mapping SingleCellExperiment reductions to AnnData obsm/varm}
 

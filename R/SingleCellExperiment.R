@@ -20,12 +20,12 @@
 #' resulting SingleCellExperiment object, and the values should be the names
 #' of the `layers` in `adata`, and should include the `X` matrix as well.
 #' If `X` is not in the list, it will be added as `counts` or `data`.
-#' @param col_data_mapping a named list mapping `obs` in `adata` to
+#' @param colData_mapping a named list mapping `obs` in `adata` to
 #' `colData` in the created SingleCellExperiment object.
 #' The names of the list should be the names of the `colData` columns in the
 #' resulting SingleCellExperiment object. The values of the list should be the
 #' names of the `obs` columns in `adata`.
-#' @param row_data_mapping a named list mapping `var` names in `adata` to
+#' @param rowData_mapping a named list mapping `var` names in `adata` to
 #' `rowData` in the created SingleCellExperiment object. The names of the list
 #' should be the names of the `rowData` columns in the resulting SingleCellExperiment
 #' object. The values of the list should be the names of the `var` columns in `adata`.

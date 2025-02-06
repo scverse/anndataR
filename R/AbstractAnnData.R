@@ -173,8 +173,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' See [to_SingleCellExperiment()] for more details on the conversion.
     #'
     #' @param assays_mapping A named list mapping SingleCellExperiment assays to AnnData layers
-    #' @param col_data_mapping A named list mapping SingleCellExperiment colData to AnnData obs
-    #' @param row_data_mapping A named list mapping SingleCellExperiment rowData to AnnData var
+    #' @param colData_mapping A named list mapping SingleCellExperiment colData to AnnData obs
+    #' @param rowData_mapping A named list mapping SingleCellExperiment rowData to AnnData var
     #' @param reduction_mapping A named list mapping SingleCellExperiment reductions to AnnData obsm/varm
     #' @param colPairs_mapping A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp
     #' @param rowPairs_mapping A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp
@@ -183,8 +183,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' @return A SingleCellExperiment object
     to_SingleCellExperiment = function(
       assays_mapping = NULL,
-      col_data_mapping = NULL,
-      row_data_mapping = NULL,
+      colData_mapping = NULL,
+      rowData_mapping = NULL,
       reduction_mapping = NULL,
       colPairs_mapping = NULL, # nolint
       rowPairs_mapping = NULL, # nolint
@@ -193,8 +193,8 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       to_SingleCellExperiment(
         self,
         assays_mapping = assays_mapping,
-        col_data_mapping = col_data_mapping,
-        row_data_mapping = row_data_mapping,
+        colData_mapping = colData_mapping,
+        rowData_mapping = rowData_mapping,
         reduction_mapping = reduction_mapping,
         colPairs_mapping = colPairs_mapping, # nolint
         rowPairs_mapping = rowPairs_mapping, # nolint

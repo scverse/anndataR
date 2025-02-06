@@ -91,8 +91,8 @@ We explicitly pass empty lists to the other mapping arguments for clarity in the
 ```{r implicit_layers}
 sce_layers <- to_SingleCellExperiment(
   ad,
-  col_data_mapping = list(),
-  row_data_mapping = list(),
+  colData_mapping = list(),
+  rowData_mapping = list(),
   reduction_mapping = list(),
   colPairs_mapping = list(),
   rowPairs_mapping = list(),
@@ -119,8 +119,8 @@ We guess the mapping of the reductions the same way as we do for the Seurat conv
 ```{r implicit_pca}
 sce_dimred <- to_SingleCellExperiment(
   ad,
-  col_data_mapping = list(),
-  row_data_mapping = list(),
+  colData_mapping = list(),
+  rowData_mapping = list(),
   colPairs_mapping = list(),
   rowPairs_mapping = list(),
   metadata_mapping = list()
@@ -159,8 +159,8 @@ We will give an example for each of the mappings.
 sce_assays <- to_SingleCellExperiment(
   ad,
   assays_mapping = list(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
-  col_data_mapping = list(),
-  row_data_mapping = list(),
+  colData_mapping = list(),
+  rowData_mapping = list(),
   reduction_mapping = list(),
   colPairs_mapping = list(),
   rowPairs_mapping = list(),
@@ -177,8 +177,8 @@ You can see that the `X` slot got stored as `counts`, and the `layers` got store
 sce <- to_SingleCellExperiment(
   ad,
   assays_mapping = list(),
-  col_data_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
-  row_data_mapping = list(rowdata1 = "character", rowdata2 = "logical"),
+  colData_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
+  rowData_mapping = list(rowdata1 = "character", rowdata2 = "logical"),
   reduction_mapping = list(),
   colPairs_mapping = list(colPairs_dense = "numeric_matrix", colPairs_sparse = "numeric_csparse"),
   rowPairs_mapping = list(rowPairs1 = "integer_matrix", rowPairs2 = "numeric_matrix"),
@@ -199,8 +199,8 @@ the SingleCellExperiment object.
 sce <- to_SingleCellExperiment(
   ad,
   assays_mapping = list(counts = "X"),
-  col_data_mapping = list(),
-  row_data_mapping = list(),
+  colData_mapping = list(),
+  rowData_mapping = list(),
   reduction_mapping = list("pca" = list("obsm" = "X_pca", "varm" = "PCs"), "umap" = list("obsm" = "X_umap")),
   colPairs_mapping = list(),
   rowPairs_mapping = list(),

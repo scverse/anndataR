@@ -69,8 +69,8 @@ See the [in-depth vignette on conversion to and from SingleCellExperiment object
 ```{r ex_mapping, eval=FALSE}
 adata$to_SingleCellExperiment(
   assays_mapping = list(),
-  col_data_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
-  row_data_mapping = list(rowdata1 = "character", rowdata2 = "logical")
+  colData_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
+  rowData_mapping = list(rowdata1 = "character", rowdata2 = "logical")
 )
 ```
 
