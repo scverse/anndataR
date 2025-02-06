@@ -96,10 +96,10 @@ to_SingleCellExperiment <- function(
     assays_mapping <- to_SCE_guess_assays(adata)
   }
   if (is.null(colData_mapping)) {
-    colData_mapping <- to_SCE_guess_all(adata, "obs")
+    colData_mapping <- to_SCE_guess_all(adata, "obs") # nolint
   }
   if (is.null(rowData_mapping)) {
-    rowData_mapping <- to_SCE_guess_all(adata, "var")
+    rowData_mapping <- to_SCE_guess_all(adata, "var") # nolint
   }
   if (is.null(reduction_mapping)) {
     reduction_mapping <- to_SCE_guess_reduction(adata)
