@@ -1,11 +1,11 @@
 ---
-title: "Converting to and from SingleCellExperiment objects"
+title: "Detailed look into the mapping between AnnData and SingleCellExperiment objects"
 author:
   - name: Louise Deconinck
 package: anndataR
 output: BiocStyle::html_document
 vignette: >
-  %\VignetteIndexEntry{Converting to and from SingleCellExperiment objects}
+  %\VignetteIndexEntry{Detailed look into the mapping between AnnData and SingleCellExperiment objects}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,10 +23,14 @@ should be converted and should be put where.
 Please take into account that lossless conversion is not always possible between AnnData and SingleCellExperiment, 
 and please inspect the object before and after inspection to ensure that all data is correctly converted.
 
-```{r construct_anndata}
+```{r deps, message=FALSE, warning=FALSE}
 library(anndataR)
 library(SingleCellExperiment)
+```
 
+We first generate a sample dataset to work with.
+
+```{r construct_anndata}
 ad <- generate_dataset(
   n_obs = 10L,
   n_var = 20L,
