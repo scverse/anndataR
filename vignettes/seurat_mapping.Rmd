@@ -1,0 +1,75 @@
+---
+title: "Detailed look into the mapping between AnnData and Seurat objects"
+author:
+  - name: Louise Deconinck
+package: anndataR
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Detailed look into the mapping between AnnData and Seurat objects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+)
+```
+
+
+**{anndataR}** provides a way to convert between `AnnData` and `Seurat` objects. This vignette will provide a detailed look 
+into the mapping between the two objects.
+The conversion can be done with or without extra user input as to which fields and slots of the respective objects should be
+converted and put into the other object.
+Please take into account that lossless conversion is not always possible between AnnData and Seurat objects. 
+Have a look at our known issues section for more information and please inspect the object before and after conversion to make
+sure that the conversion was successful.
+
+```{r deps, message=FALSE, warning=FALSE}
+library(anndataR)
+library(Seurat)
+```
+
+We will first generate a sample dataset to work with:
+
+```{r construct_anndata}
+ad <- generate_dataset(
+  n_obs = 10L,
+  n_var = 20L,
+  x_type = "numeric_matrix",
+  layer_types = c("integer_matrix", "numeric_rsparse"),
+  obs_types = c("integer", "numeric", "factor"),
+  var_types = c("character", "numeric", "logical"),
+  obsm_types = c("numeric_matrix", "numeric_csparse"),
+  varm_types = c("numeric_matrix", "numeric_csparse"),
+  obsp_types = c("numeric_matrix", "numeric_csparse"),
+  varp_types = c("integer_matrix", "numeric_matrix"),
+  uns_types = c("vec_integer", "vec_character", "df_integer"),
+  format = "AnnData"
+)
+
+# add PCA reduction
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+
+ad$obsm[["X_umap"]] <- matrix(1:20, 10, 2)
+
+```
+
+# Convert AnnData objects to Seurat objects
+
+TODO: explain how the implicit mapping works
+
+By default, anndataR will try to guess a reasonable mapping. If you do not want this to happen, and you want 
+nothing of that specific slot to be converted, you can pass an empty list.
+
+Here, we showcase what happens if you do not provide any mapping information for the conversion.
+```{r to_Seurat_implicit}
+seurat_obj <- to_Seurat(ad)
+seurat_obj
+```
+
+In the following subsections, we detail how each of these implicit conversions work.
+
+

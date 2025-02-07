@@ -83,7 +83,9 @@
 to_Seurat <- function(
     adata,
     assay_name = "RNA",
+    object_metadata_mapping = NULL,
     layers_mapping = NULL,
+    assay_metadata_mapping = NULL,
     reduction_mapping = NULL,
     graph_mapping = NULL,
     misc_mapping = NULL) {
@@ -91,9 +93,15 @@ to_Seurat <- function(
   check_requires("Converting AnnData to Seurat", "SeuratObject")
 
   stopifnot(inherits(adata, "AbstractAnnData"))
-
+  
+  if (is.null(object_metadata_mapping)) {
+    object_metadata_mapping <- to_Seurat_guess_object_metadata(adata)
+  }
   if (is.null(layers_mapping)) {
     layers_mapping <- to_Seurat_guess_layers(adata)
+  }
+  if (is.null(assay_metadata_mapping)) {
+    assay_metadata_mapping <- to_Seurat_guess_assay_metadata(adata)
   }
   if (is.null(reduction_mapping)) {
     reduction_mapping <- to_Seurat_guess_reductions(adata)
@@ -135,18 +143,20 @@ to_Seurat <- function(
   if (!is.null(data)) {
     dimnames(data) <- list(adata$var_names, adata$obs_names)
   }
+  object_metadata <- to_Seurat_process_metadata(adata, object_metadata_mapping, "obs")
   obj <- SeuratObject::CreateSeuratObject(
-    meta.data = adata$obs,
+    meta.data = object_metadata,
     assay = assay_name,
     counts = counts,
     data = data
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
+  assay_metadata <- to_Seurat_process_metadata(adata, assay_metadata_mapping, "var")
   if (!is.null(adata$var)) {
     obj@assays[[assay_name]] <- SeuratObject::AddMetaData(
       obj@assays[[assay_name]],
-      metadata = adata$var
+      metadata = assay_metadata
     )
   }
 
@@ -410,6 +420,51 @@ to_Seurat_guess_misc <- function(adata) { # nolint
   # Then again, the user can do this manually if needed
 
   misc_mapping
+}
+
+to_Seurat_guess_object_metadata <- function(adata) {
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  object_metadata_mapping <- list()
+
+  if (!is.null(adata$obs)) {
+    for (key in names(adata$obs)) {
+      object_metadata_mapping[[key]] <- key
+    }
+  }
+
+  object_metadata_mapping
+}
+
+to_Seurat_guess_assay_metadata <- function(adata) {
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  assay_metadata_mapping <- list()
+
+  if (!is.null(adata$var)) {
+    for (key in names(adata$var)) {
+      assay_metadata_mapping[[key]] <- key
+    }
+  }
+
+  assay_metadata_mapping
+}
+
+to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
+  # check if mapping contains all columns of slot
+  if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
+    adata[[slot]]
+  } else {
+    mapped <- lapply(seq_along(mapping), function(i) {
+      adata[[slot]][[mapping[[i]]]]
+    })
+    names(mapped) <- names(mapping)
+    mapped
+  }
 }
 
 #' Convert a Seurat object to an AnnData object
