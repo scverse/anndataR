@@ -621,6 +621,8 @@ from_Seurat <- function(
     assay_name = NULL,
     x_mapping = NULL,
     layers_mapping = NULL,
+    obs_mapping = NULL,
+    var_mapping = NULL,
     obsm_mapping = NULL,
     varm_mapping = NULL,
     obsp_mapping = NULL,
@@ -653,6 +655,12 @@ from_Seurat <- function(
   if (is.null(layers_mapping)) {
     layers_mapping <- from_Seurat_guess_layers(seurat_obj, assay_name)
   }
+  if (is.null(obs_mapping)) {
+    obs_mapping <- from_Seurat_guess_obs(seurat_obj)
+  }
+  if (is.null(var_mapping)) {
+    var_mapping <- from_Seurat_guess_var(seurat_obj)
+  }
   if (is.null(obsm_mapping)) {
     obsm_mapping <- from_Seurat_guess_obsms(seurat_obj, assay_name)
   }
@@ -672,12 +680,14 @@ from_Seurat <- function(
   # fetch obs
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   # trackstatus: class=Seurat, feature=set_obs, status=done
-  obs <- seurat_obj@meta.data
+  # obs <- seurat_obj@meta.data
+  obs <- from_Seurat_process_obs(seurat_obj, assay_name, obs_mapping)
 
   # fetch var
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
-  var <- seurat_assay@meta.data
+  # var <- seurat_assay@meta.data
+  var <- from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
 
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
@@ -828,6 +838,26 @@ from_Seurat <- function(
   )
 }
 
+from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) { # nolint
+  obs <- list()
+
+  for (obs_name in names(obs_mapping)) {
+    obs[[obs_name]] <- seurat_obj@meta.data[[obs_mapping[[obs_name]]]]
+  }
+
+  obs
+}
+
+from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) { # nolint
+  var <- list()
+
+  for (var_name in names(var_mapping)) {
+    var[[var_name]] <- seurat_obj@assays[[assay_name]]@meta.data[[var_mapping[[var_name]]]]
+  }
+
+  var
+}
+
 from_Seurat_guess_layers <- function(seurat_obj, assay_name) { # nolint
   if (!inherits(seurat_obj, "Seurat")) {
     stop("The provided object must be a Seurat object")
@@ -846,6 +876,36 @@ from_Seurat_guess_layers <- function(seurat_obj, assay_name) { # nolint
   }
 
   layers_mapping
+}
+
+from_Seurat_guess_obs <- function(seurat_obj, assay_name) { # nolint
+  if (!inherits(seurat_obj, "Seurat")) {
+    stop("The provided object must be a Seurat object")
+  }
+
+  obs_mapping <- list()
+
+  for (obs_name in seurat_obj@meta.data) {
+    obs_mapping[[obs_name]] <- obs_name
+  }
+
+  obs_mapping
+}
+
+from_Seurat_guess_var <- function(seurat_obj, assay_name) { # nolint
+  if (!inherits(seurat_obj, "Seurat")) {
+    stop("The provided object must be a Seurat object")
+  }
+
+  var_mapping <- list()
+
+  if (!is.null(seurat_obj@assays[[assay_name]]@meta.data)) {
+    for (var_name in seurat_obj@assays[[assay_name]]@meta.data) {
+      var_mapping[[var_name]] <- var_name
+    }
+  }
+
+  var_mapping
 }
 
 from_Seurat_guess_obsms <- function(seurat_obj, assay_name) { # nolint
