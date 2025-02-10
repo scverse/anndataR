@@ -207,18 +207,23 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'
     #' @param assay_name The name of the assay to use as the main data
     #' @param layers_mapping A named list mapping Seurat layers to AnnData layers
+    #' @param object_metadata_mapping A named list mapping Seurat object metadata to AnnData obs
+    #' @param assay_metadata_mapping A named list mapping Seurat assay metadata to AnnData var
     #' @param reduction_mapping A named list mapping Seurat reductions to AnnData obsm/varm
     #' @param graph_mapping A named list mapping Seurat graphs to AnnData obsp/varp
     #' @param misc_mapping A named list mapping Seurat misc to AnnData uns
     #' @return A Seurat object
     to_Seurat = function(
-      assay_name = "RNA", layers_mapping = NULL, reduction_mapping = NULL,
-      graph_mapping = NULL, misc_mapping = NULL
+      assay_name = "RNA", layers_mapping = NULL,
+      object_metadata_mapping = NULL, assay_metadata_mapping = NULL,
+      reduction_mapping = NULL, graph_mapping = NULL, misc_mapping = NULL
     ) {
       to_Seurat(
         self,
         assay_name = assay_name,
         layers_mapping = layers_mapping,
+        object_metadata_mapping = object_metadata_mapping,
+        assay_metadata_mapping = assay_metadata_mapping,
         reduction_mapping = reduction_mapping,
         graph_mapping = graph_mapping,
         misc_mapping = misc_mapping
