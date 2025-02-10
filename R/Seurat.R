@@ -9,6 +9,11 @@
 #' @param assay_name Name of the assay to be created (default: "RNA").
 #' @param layers_mapping A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
 #'   details.
+#' @param object_metadata_mapping A named list to map observation-level metadata to object-level metadata in the Seurat
+#'   object. See section "Metadata mapping" for more details.
+#' @param assay_metadata_mapping A named list to map variable-level metadata to assay-level metadata in the Seurat
+#'   object.
+#'   See section "Metadata mapping" for more details.
 #' @param reduction_mapping A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
 #'   named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for more details.
 #' @param graph_mapping A named list to map AnnData graphs to Seurat graphs. Each item in the list must be a character
@@ -27,6 +32,25 @@
 #' If `NULL`, the internal function `to_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
 #' * All AnnData layers are copied to Seurat layers by name.
+#'
+#' @section Metadata mapping:
+#'
+#' A named list to map observation-level and feature-level metadata to object-level and assay-level metadata in the
+#' Seurat object.
+#'
+#' Each item in the `object_metadata_mapping` list must be a character vector of length 1, where the values
+#' correspond to the names of the `obs` slot in the AnnData object, and the names correspond to the names of the
+#' metadata in the resulting Seurat object.
+#'
+#' Example: `object_metadata_mapping = list(cellType = "cell_type")`.
+#'
+#' Each item in the `assay_metadata_mapping` list must be a character vector of length 1,
+#' where the values correspond to the names of the `var` slot in the AnnData object, and the names correspond to the
+#' names of the metadata in the resulting Seurat object.
+#'
+#' Example: `assay_metadata_mapping = list(geneInfo = "gene_info")`.
+#'
+#' By default, all metadata in the `obs` and `var` slots will be copied to the Seurat object.
 #'
 #' @section Reduction mapping:
 #'
@@ -83,8 +107,8 @@
 to_Seurat <- function(
     adata,
     assay_name = "RNA",
-    object_metadata_mapping = NULL,
     layers_mapping = NULL,
+    object_metadata_mapping = NULL,
     assay_metadata_mapping = NULL,
     reduction_mapping = NULL,
     graph_mapping = NULL,
@@ -93,7 +117,7 @@ to_Seurat <- function(
   check_requires("Converting AnnData to Seurat", "SeuratObject")
 
   stopifnot(inherits(adata, "AbstractAnnData"))
-  
+
   if (is.null(object_metadata_mapping)) {
     object_metadata_mapping <- to_Seurat_guess_object_metadata(adata)
   }
@@ -422,7 +446,7 @@ to_Seurat_guess_misc <- function(adata) { # nolint
   misc_mapping
 }
 
-to_Seurat_guess_object_metadata <- function(adata) {
+to_Seurat_guess_object_metadata <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
   }
@@ -438,7 +462,7 @@ to_Seurat_guess_object_metadata <- function(adata) {
   object_metadata_mapping
 }
 
-to_Seurat_guess_assay_metadata <- function(adata) {
+to_Seurat_guess_assay_metadata <- function(adata) { # nolint
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
   }
@@ -463,7 +487,7 @@ to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
       adata[[slot]][[mapping[[i]]]]
     })
     names(mapped) <- names(mapping)
-    mapped
+    as.data.frame(mapped)
   }
 }
 

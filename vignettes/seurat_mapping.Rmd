@@ -10,10 +10,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
-    collapse = TRUE,
-    comment = "#>",
+  collapse = TRUE,
+  comment = "#>"
 )
 ```
 
@@ -57,12 +57,30 @@ ad$obsm[["X_umap"]] <- matrix(1:20, 10, 2)
 
 ```
 
+# ```{r to_Seurat explicit}
+# to_Seurat(
+#   adata = ad,
+#   assay_name = "RNA",
+#   object_metadata_mapping = list(),
+#   layers_mapping = list(),
+#   assay_metadata_mapping = list(),
+#   reduction_mapping = list(),
+#   graph_mapping = list(),
+#   misc_mapping = list()
+# )
+# ```
+
 # Convert AnnData objects to Seurat objects
 
 TODO: explain how the implicit mapping works
 
 By default, anndataR will try to guess a reasonable mapping. If you do not want this to happen, and you want 
 nothing of that specific slot to be converted, you can pass an empty list.
+
+We will first detail how anndataR guesses a reasonable mapping. In the section after that, we will detail how you can provide
+your own mappings.
+
+## Implicit mapping
 
 Here, we showcase what happens if you do not provide any mapping information for the conversion.
 ```{r to_Seurat_implicit}
@@ -71,5 +89,153 @@ seurat_obj
 ```
 
 In the following subsections, we detail how each of these implicit conversions work.
+If we explicitly don't want to convert a certain slot, we can pass an empty list.
+
+### assay_name
+
+An anndata object can only have one assay, while a Seurat object can have multiple assays. If you want to work
+with multiple assays, you can use (https://mudata.readthedocs.io/en/latest/)[MuData] objects.
+
+The `assay_name` parameter will only determine what the name of the assay in the Seurat object will be. By default, this will be
+"RNA".
+
+```{r to_Seurat explicit}
+to_Seurat(
+  adata = ad,
+  assay_name = "Other_assay",
+  object_metadata_mapping = list(),
+  layers_mapping = list(counts = NULL),
+  assay_metadata_mapping = list(),
+  reduction_mapping = list(),
+  graph_mapping = list(),
+  misc_mapping = list()
+)
+```
+
+### object_metadata_mapping
+
+Seurat allows for metadata to be stored on the object level, corresponding to cell (or observation) level metadata.
+This corresponds with the `obs` slot in the AnnData object.
+
+If no information is provided, anndataR will try to convert the whole `obs` slot.
+
+```{r to_Seurat_implicit_object_metadata}
+to_Seurat(
+  adata = ad,
+  assay_name = "RNA",
+  layers_mapping = list(counts = NULL),
+  assay_metadata_mapping = list(),
+  reduction_mapping = list(),
+  graph_mapping = list(),
+  misc_mapping = list()
+)
+```
+
+### layers_mapping
+
+Seurat allows for multiple layers to be stored in the object. This corresponds with the `layers` slot in the AnnData object.
+Seurat stores this data in the `counts`, `data`, `scale.data` and other slots.
+If no mapping is provided, we will try to guess which layer the `X` anndata slot corresponds to by checking whether another
+layer called `counts` or `data` exists in the AnnData object.
+The other layers of the AnnData object will be copied by name.
+
+```{r to_Seurat_implicit_layers}
+to_Seurat(
+  adata = ad,
+  assay_name = "RNA",
+  object_metadata_mapping = list(),
+  assay_metadata_mapping = list(),
+  reduction_mapping = list(),
+  graph_mapping = list(),
+  misc_mapping = list()
+)
+```
 
 
+### assay_metadata_mapping
+
+Besides metadata on the object level, Seurat also stores metadata on the assay level. This corresponds to gene (or variable or feature)
+level metadata. This corresponds with the `var` slot in the AnnData object.
+
+If no information is provided, anndataR will try to convert the whole `var` slot.
+
+```{r to_Seurat_implicit_assay_metadata}
+to_Seurat(
+  adata = ad,
+  assay_name = "RNA",
+  object_metadata_mapping = list(),
+  layers_mapping = list(counts = NULL),
+  reduction_mapping = list(),
+  graph_mapping = list(),
+  misc_mapping = list()
+)
+```
+
+### reduction_mapping
+
+Reductions are a bit more complicated. Some reductions have a standard way of being saved in an AnnData objecct, some don't.
+We assume that a PCA will always be stored as `X_pca` in the `obsm` slot, with the loadings as `PCs` in the `varm` slot.
+For other reductions, we will assume that they will start with `X_` in the `obsm` slot, with the characters after the `X_` being the name of the reduction.
+
+```{r to_Seurat_implicit_reduction}
+to_Seurat(
+  adata = ad,
+  assay_name = "RNA",
+  object_metadata_mapping = list(),
+  layers_mapping = list(counts = NULL),
+  assay_metadata_mapping = list(),
+  graph_mapping = list(),
+  misc_mapping = list()
+)
+```
+
+### graph_mapping
+
+Graphs are stored in the `obsp` slot in the AnnData object.
+If a graph is stored with the name `connectivities`, we will store it as `nn` in the Seurat object.
+Other graphs, starting with `connectivities_{name}` will be stored as `{name}` in the Seurat object.
+
+```{r to_Seurat_implicit_graph}
+to_Seurat(
+  adata = ad,
+  assay_name = "RNA",
+  object_metadata_mapping = list(),
+  layers_mapping = list(counts = NULL),
+  assay_metadata_mapping = list(),
+  reduction_mapping = list(),
+  misc_mapping = list()
+)
+```
+
+###  misc_mapping
+
+The misc slot in the Seurat object is used to store any other information that does not fit in the other slots.
+By default, it will copy the `uns` slot from the AnnData object.
+
+```{r to_Seurat_implicit_misc}
+to_Seurat(
+  adata = ad,
+  assay_name = "RNA",
+  object_metadata_mapping = list(),
+  layers_mapping = list(counts = NULL),
+  assay_metadata_mapping = list(),
+  reduction_mapping = list(),
+  graph_mapping = list()
+)
+```
+
+## Explicit mapping
+
+```{r to_Seurat explicit_assay_metadata}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  assay_metadata_mapping = list(metadata1 = "numeric", metadata2 = "logical")
+)
+seurat_obj[["RNA"]]@meta.data
+```
+
+# Convert Seurat objects to AnnData objects
+
+## Implicit mapping
+
+## Explicit mapping
