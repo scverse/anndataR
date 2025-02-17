@@ -266,7 +266,7 @@ to_Seurat <- function(
     stop("layer_name '", layer_name, "' is not an item in adata$layers")
   }
 
-  return(Matrix::t(adata$layers[[layer_name]]))
+  Matrix::t(adata$layers[[layer_name]])
 }
 
 .to_seurat_get_matrix <- function(adata, layer_name) {
@@ -282,7 +282,7 @@ to_Seurat <- function(
     stop("layer_name must be the name of one of the layers or NULL")
   }
 
-  return(Matrix::t(adata$layers[[layer_name]]))
+  Matrix::t(adata$layers[[layer_name]])
 }
 
 .to_seurat_process_reduction <- function(adata, assay_name, key, obsm_embedding, varm_loadings) {
