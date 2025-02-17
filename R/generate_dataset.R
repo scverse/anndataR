@@ -274,7 +274,7 @@ generate_dataset <- function(
 
   # TODO: add obsm, varm, obsp, varp, uns?
 
-  return(sce)
+  sce
 }
 
 #' Convert a dummy dataset to a Seurat object
@@ -309,7 +309,7 @@ generate_dataset <- function(
 
   # TODO: add obsm, varm, obsp, varp, uns?
 
-  return(seurat)
+  seurat
 }
 
 #' Convert a dummy dataset to an AnnData object

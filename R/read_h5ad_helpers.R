@@ -91,7 +91,7 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
         stop(message)
       } else {
         warning(message)
-        return(NULL)
+        return(NULL) # nolint
       }
     }
   )
