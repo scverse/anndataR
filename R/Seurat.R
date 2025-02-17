@@ -161,7 +161,7 @@ to_Seurat <- function(
     from <- layers_mapping[[i]]
     to <- names(layers_mapping)[[i]]
     if (!to %in% c("counts", "data")) {
-      SeuratObject::LayerData(obj, assay = assay_name, layer = to) <- adata$layers[[from]]
+      SeuratObject::LayerData(obj, assay = assay_name, layer = to) <- t(adata$layers[[from]])
     }
   }
 
