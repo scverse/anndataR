@@ -39,7 +39,7 @@ status_lines <- map_df(source, function(path) {
       df
     }, error = function(e) {
       message("Error in ", path, " at line ", line_number, ": ", e$message)
-      return(NULL)
+      return(NULL) # nolint
     })
   })
 })

@@ -359,7 +359,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (private$.close_on_finalize) {
         self$close()
       }
-      return(invisible(self))
+      return(invisible(self)) # nolint
     },
 
     #' @description Close the HDF5 file

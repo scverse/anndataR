@@ -195,7 +195,7 @@ to_Seurat <- function(
     from <- layers_mapping[[i]]
     to <- names(layers_mapping)[[i]]
     if (!to %in% c("counts", "data")) {
-      SeuratObject::LayerData(obj, assay = assay_name, layer = to) <- adata$layers[[from]]
+      SeuratObject::LayerData(obj, assay = assay_name, layer = to) <- t(adata$layers[[from]])
     }
   }
 
@@ -300,7 +300,7 @@ to_Seurat <- function(
     stop("layer_name '", layer_name, "' is not an item in adata$layers")
   }
 
-  return(Matrix::t(adata$layers[[layer_name]]))
+  Matrix::t(adata$layers[[layer_name]])
 }
 
 .to_seurat_get_matrix <- function(adata, layer_name) {
@@ -316,7 +316,7 @@ to_Seurat <- function(
     stop("layer_name must be the name of one of the layers or NULL")
   }
 
-  return(Matrix::t(adata$layers[[layer_name]]))
+  Matrix::t(adata$layers[[layer_name]])
 }
 
 .to_seurat_process_reduction <- function(adata, assay_name, key, obsm_embedding, varm_loadings) {
@@ -687,8 +687,8 @@ from_Seurat <- function(
   # fetch var
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
-  # var <- seurat_assay@meta.data
   var <- from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
+  rownames(var) <- rownames(seurat_obj)
 
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
