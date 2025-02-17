@@ -238,4 +238,30 @@ seurat_obj[["RNA"]]@meta.data
 
 ## Implicit mapping
 
+```{r create_Seurat}
+  suppressWarnings({
+    counts <- matrix(rbinom(600, 20000, .001), nrow = 20)
+    obj <- CreateSeuratObject(counts = counts)
+    obj <- NormalizeData(obj)
+    obj <- FindVariableFeatures(obj)
+    obj <- ScaleData(obj)
+    obj <- RunPCA(obj, npcs = 10L)
+    obj <- FindNeighbors(obj)
+    obj <- RunUMAP(obj, dims = 1:10)
+  })
+```
+
+```{r from_Seurat_implicit}
+ad2 <- from_Seurat(obj)
+```
+
+```{r from_Seurat_explicit}
+ad2 <- from_Seurat(obj,
+  output_class = "InMemoryAnnData",
+  assay_name = "RNA",
+  obs_mapping = list(thing1 = "nCount_RNA"),
+  var_mapping = list()
+)
+```
+
 ## Explicit mapping
