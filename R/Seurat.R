@@ -688,6 +688,7 @@ from_Seurat <- function(
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
   var <- from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
+
   rownames(var) <- rownames(seurat_obj)
 
 
@@ -847,6 +848,15 @@ from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) { # nol
     obs[[obs_name]] <- seurat_obj@meta.data[[obs_mapping[[obs_name]]]]
   }
 
+  if (inherits(obs, "list") && length(obs) == 0) {
+    obs <- as.data.frame(colnames(seurat_obj))
+    rownames(obs) <- colnames(seurat_obj)
+    obs[, 1] <- NULL
+  } else {
+    obs <- as.data.frame(obs)
+    rownames(obs) <- colnames(seurat_obj)
+  }
+  
   obs
 }
 
@@ -855,6 +865,15 @@ from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) { # nol
 
   for (var_name in names(var_mapping)) {
     var[[var_name]] <- seurat_obj@assays[[assay_name]]@meta.data[[var_mapping[[var_name]]]]
+  }
+
+  if (inherits(var, "list") && length(var) == 0) {
+    var <- as.data.frame(rownames(seurat_obj))
+    rownames(var) <- rownames(seurat_obj)
+    var[, 1] <- NULL
+  } else {
+    var <- as.data.frame(var)
+    rownames(var) <- rownames(seurat_obj)
   }
 
   var
@@ -889,7 +908,7 @@ from_Seurat_guess_obs <- function(seurat_obj, assay_name) { # nolint
 
   obs_mapping <- list()
 
-  for (obs_name in seurat_obj@meta.data) {
+  for (obs_name in names(seurat_obj@meta.data)) {
     obs_mapping[[obs_name]] <- obs_name
   }
 
