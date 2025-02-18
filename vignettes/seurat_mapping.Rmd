@@ -55,6 +55,9 @@ ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 ad$obsm[["X_umap"]] <- matrix(1:20, 10, 2)
 
+ad$obsp[["connectivities"]] <- ad$obsp[["numeric_matrix"]]
+ad$obsp[["connectivities_sparse"]] <- ad$obsp[["numeric_csparse"]]
+
 ```
 
 # ```{r to_Seurat explicit}
@@ -118,9 +121,10 @@ Seurat allows for metadata to be stored on the object level, corresponding to ce
 This corresponds with the `obs` slot in the AnnData object.
 
 If no information is provided, anndataR will try to convert the whole `obs` slot.
+You can see that Seurat adds some columns by default (`orig.ident`, `nCount_RNA`, `nFeature_RNA`).
 
 ```{r to_Seurat_implicit_object_metadata}
-to_Seurat(
+seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
   layers_mapping = list(counts = NULL),
@@ -129,6 +133,7 @@ to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
+seurat_object@meta.data
 ```
 
 ### layers_mapping
@@ -140,7 +145,7 @@ layer called `counts` or `data` exists in the AnnData object.
 The other layers of the AnnData object will be copied by name.
 
 ```{r to_Seurat_implicit_layers}
-to_Seurat(
+seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
   object_metadata_mapping = list(),
@@ -149,6 +154,7 @@ to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
+seurat_object@assays$RNA@layers
 ```
 
 
@@ -160,7 +166,7 @@ level metadata. This corresponds with the `var` slot in the AnnData object.
 If no information is provided, anndataR will try to convert the whole `var` slot.
 
 ```{r to_Seurat_implicit_assay_metadata}
-to_Seurat(
+seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
   object_metadata_mapping = list(),
@@ -169,6 +175,7 @@ to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
+seurat_object@assays$RNA@meta.data
 ```
 
 ### reduction_mapping
@@ -178,7 +185,7 @@ We assume that a PCA will always be stored as `X_pca` in the `obsm` slot, with t
 For other reductions, we will assume that they will start with `X_` in the `obsm` slot, with the characters after the `X_` being the name of the reduction.
 
 ```{r to_Seurat_implicit_reduction}
-to_Seurat(
+seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
   object_metadata_mapping = list(),
@@ -187,6 +194,7 @@ to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
+seurat_object@reductions
 ```
 
 ### graph_mapping
@@ -196,7 +204,7 @@ If a graph is stored with the name `connectivities`, we will store it as `nn` in
 Other graphs, starting with `connectivities_{name}` will be stored as `{name}` in the Seurat object.
 
 ```{r to_Seurat_implicit_graph}
-to_Seurat(
+seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
   object_metadata_mapping = list(),
@@ -205,6 +213,8 @@ to_Seurat(
   reduction_mapping = list(),
   misc_mapping = list()
 )
+
+seurat_object@graphs
 ```
 
 ###  misc_mapping
@@ -213,7 +223,7 @@ The misc slot in the Seurat object is used to store any other information that d
 By default, it will copy the `uns` slot from the AnnData object.
 
 ```{r to_Seurat_implicit_misc}
-to_Seurat(
+seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
   object_metadata_mapping = list(),
@@ -222,16 +232,138 @@ to_Seurat(
   reduction_mapping = list(),
   graph_mapping = list()
 )
+seurat_object@misc
 ```
 
 ## Explicit mapping
+
+### assay_name
+
+As stated in the section on implicit mapping, an anndata object can only have one assay, while a Seurat object can have multiple assays.
+The name you pass here will only determine what the assay is called in the Seurat object. By default, it is "RNA".
+
+```{r to_Seurat explicit_assay_name}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  assay_name = "Other_assay"
+)
+seurat_obj@assays
+```
+
+### layers_mapping
+
+We can explicitly provide a layers mapping. The names of the named list refer to what the layer will be called
+in the Seurat object. The values refer to what the layers are called in the anndata object.
+
+You must provide at least a layer called `counts` or `data` in the mapping.
+
+```{r to_Seurat explicit_layers}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  layers_mapping = list(counts = "integer_matrix", other_layer2 = "numeric_rsparse")
+)
+seurat_obj@assays$RNA@layers
+```
+
+### object_metadata_mapping
+
+You can provide a mapping for object-level metadata in Seurat, which corresponds to cell-level metadata,
+and thus with the `obs` slot in the AnnData object.
+
+The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what the 
+metadata is called in the `obs` slot of the anndata object.
+
+```{r to_Seurat explicit_object_metadata}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  object_metadata_mapping = list(metadata1 = "integer", metadata2 = "numeric")
+)
+seurat_obj@meta.data
+```
+
+### assay_metadata_mapping
+
+You can provide a mapping for assay-level metadata, which corresponds to gene-level metadata, and with the
+`var` slot in the AnnData object.
+
+The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what 
+the metadata is called in the `var` slot of the anndata object.
 
 ```{r to_Seurat explicit_assay_metadata}
 seurat_obj <- to_Seurat(
   adata = ad,
   assay_metadata_mapping = list(metadata1 = "numeric", metadata2 = "logical")
 )
-seurat_obj[["RNA"]]@meta.data
+seurat_obj@assays$RNA@meta.data
+```
+
+### reduction_mapping
+
+You can provide a mapping for the `reductions` slot. The names of the named list refer to what the reduction will be called
+The values must be a named list, containing the keys: `key`, `obsm` and maybe `varm`, if appropriate for the reduction.
+
+```{r to_Seurat explicit_reduction}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  reduction_mapping = list(
+    pca = list(key = "PC", obsm = "X_pca", varm = "PCs"),
+    umap = list(key = "UMAP", obsm = "X_umap")
+  )
+)
+seurat_obj@reductions
+```
+
+### graph_mapping
+
+You can provide a mapping for the `graph` slot. The names of the named list refer to what the graph will be called
+in the Seurat object. The values refer to what the graph is called in the anndata object. Graphs in an anndata object are
+stored in the `obsp` slot.
+
+```{r to_Seurat explicit_graph}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  graph_mapping = list(connectivities = "numeric_matrix", connectivities_sparse = "numeric_csparse")
+)
+seurat_obj@graphs
+```
+
+### misc_mapping
+
+There are two ways to correctly specify a mapping for the `misc` slot. 
+You must provide a names list.
+
+In the first approach, each element of the named list consists of the name (what it will be called in the Seurat object)
+and a value, being a vector with two elements. The first element refers to the name anndata slot and can be `X`, `layers`,
+ `obs`, `var`, `obsm`, `varm`, `obsp`, `varp` or `uns`.
+the second element points to the specific element in that slot.
+
+```{r to_Seurat explicit_misc}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  misc_mapping = list(varp_neighbors = c("varp", "integer_matrix"), uns_vec = c("uns", "vec_integer"))
+)
+seurat_obj@misc
+```
+
+The second way you can specify a mapping for the `misc` slot is by providing a named list with the name 
+of the full anndata slot as a value. This will copy the whole slot to the misc slot in the Seurat object.
+
+```{r to_Seurat explicit_misc}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  misc_mapping = list(metadata_from_anndata = "uns", varp = "varp")
+)
+seurat_obj@misc
+```
+
+Of course you can also mix these approaches in a single mapping.
+
+```{r to_Seurat explicit_misc}
+seurat_obj <- to_Seurat(
+  adata = ad,
+  misc_mapping = list(metadata_from_anndata = "uns", obs_num = c("obs", "numeric"))
+)
+seurat_obj@misc
 ```
 
 # Convert Seurat objects to AnnData objects
@@ -239,16 +371,16 @@ seurat_obj[["RNA"]]@meta.data
 ## Implicit mapping
 
 ```{r create_Seurat}
-  suppressWarnings({
-    counts <- matrix(rbinom(600, 20000, .001), nrow = 20)
-    obj <- CreateSeuratObject(counts = counts)
-    obj <- NormalizeData(obj)
-    obj <- FindVariableFeatures(obj)
-    obj <- ScaleData(obj)
-    obj <- RunPCA(obj, npcs = 10L)
-    obj <- FindNeighbors(obj)
-    obj <- RunUMAP(obj, dims = 1:10)
-  })
+suppressWarnings({
+  counts <- matrix(rbinom(600, 20000, .001), nrow = 20)
+  obj <- CreateSeuratObject(counts = counts)
+  obj <- NormalizeData(obj)
+  obj <- FindVariableFeatures(obj)
+  obj <- ScaleData(obj)
+  obj <- RunPCA(obj, npcs = 10L)
+  obj <- FindNeighbors(obj)
+  obj <- RunUMAP(obj, dims = 1:10)
+})
 ```
 
 ```{r from_Seurat_implicit}

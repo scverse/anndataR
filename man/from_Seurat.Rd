@@ -10,6 +10,8 @@ from_Seurat(
   assay_name = NULL,
   x_mapping = NULL,
   layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
   obsm_mapping = NULL,
   varm_mapping = NULL,
   obsp_mapping = NULL,

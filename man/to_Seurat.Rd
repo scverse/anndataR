@@ -87,7 +87,7 @@ By default, all metadata in the \code{obs} and \code{var} slots will be copied t
 
 
 A named list to map AnnData \verb{$obsm} and \verb{$varm} to Seurat reductions. Each item in the list must be a named list
-with keys \code{'key'}, \code{'obsm'}, and \code{'varm'}.
+with keys \code{'key'}, \code{'obsm'}, and can contain the key \code{'varm'}.
 Example: \code{reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
 
 If \code{NULL}, the internal function \code{to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:

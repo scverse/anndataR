@@ -55,7 +55,7 @@
 #' @section Reduction mapping:
 #'
 #' A named list to map AnnData `$obsm` and `$varm` to Seurat reductions. Each item in the list must be a named list
-#' with keys `'key'`, `'obsm'`, and `'varm'`.
+#' with keys `'key'`, `'obsm'`, and can contain the key `'varm'`.
 #
 #' Example: `reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
 #'
@@ -215,7 +215,7 @@ to_Seurat <- function(
           !all(names(reduction) %in% c("key", "obsm", "varm")) ||
           !all(c("key", "obsm") %in% names(reduction))
       ) {
-        stop("each reduction must be a list with keys 'key', 'obsm', and 'varm'")
+        stop("each reduction must be a list with keys 'key', 'obsm', and may contain the key 'varm'")
       }
       dr <- .to_seurat_process_reduction(
         adata = adata,
@@ -254,7 +254,7 @@ to_Seurat <- function(
       stop("misc_mapping must be a named list with one or two elements")
     }
     misc_slot <- misc[[1]]
-    misc_key <- misc[[2]]
+
     expected_slots <- c("X", "layers", "obs", "obsm", "obsp", "var", "varm", "varp", "uns")
     if (!misc_slot %in% expected_slots) {
       stop(paste0(
@@ -264,6 +264,7 @@ to_Seurat <- function(
     }
     misc_data <- adata[[misc_slot]]
     if (length(misc) == 2) {
+      misc_key <- misc[[2]]
       if (!misc_key %in% names(misc_data)) {
         stop(paste0("misc_mapping: adata$", misc_slot, "[[", misc_key, "]] does not exist"))
       }
@@ -680,14 +681,12 @@ from_Seurat <- function(
   # fetch obs
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   # trackstatus: class=Seurat, feature=set_obs, status=done
-  # obs <- seurat_obj@meta.data
   obs <- from_Seurat_process_obs(seurat_obj, assay_name, obs_mapping)
 
 
   # fetch var
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
-  # var <- seurat_assay@meta.data
   var <- from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
   rownames(var) <- rownames(seurat_obj)
 
