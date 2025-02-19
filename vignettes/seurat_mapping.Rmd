@@ -60,19 +60,6 @@ ad$obsp[["connectivities_sparse"]] <- ad$obsp[["numeric_csparse"]]
 
 ```
 
-# ```{r to_Seurat explicit}
-# to_Seurat(
-#   adata = ad,
-#   assay_name = "RNA",
-#   object_metadata_mapping = list(),
-#   layers_mapping = list(),
-#   assay_metadata_mapping = list(),
-#   reduction_mapping = list(),
-#   graph_mapping = list(),
-#   misc_mapping = list()
-# )
-# ```
-
 # Convert AnnData objects to Seurat objects
 
 TODO: explain how the implicit mapping works
@@ -337,7 +324,7 @@ and a value, being a vector with two elements. The first element refers to the n
  `obs`, `var`, `obsm`, `varm`, `obsp`, `varp` or `uns`.
 the second element points to the specific element in that slot.
 
-```{r to_Seurat explicit_misc}
+```{r to_Seurat explicit_misc1}
 seurat_obj <- to_Seurat(
   adata = ad,
   misc_mapping = list(varp_neighbors = c("varp", "integer_matrix"), uns_vec = c("uns", "vec_integer"))
@@ -348,7 +335,7 @@ seurat_obj@misc
 The second way you can specify a mapping for the `misc` slot is by providing a named list with the name 
 of the full anndata slot as a value. This will copy the whole slot to the misc slot in the Seurat object.
 
-```{r to_Seurat explicit_misc}
+```{r to_Seurat explicit_misc2}
 seurat_obj <- to_Seurat(
   adata = ad,
   misc_mapping = list(metadata_from_anndata = "uns", varp = "varp")
@@ -358,7 +345,7 @@ seurat_obj@misc
 
 Of course you can also mix these approaches in a single mapping.
 
-```{r to_Seurat explicit_misc}
+```{r to_Seurat explicit_misc3}
 seurat_obj <- to_Seurat(
   adata = ad,
   misc_mapping = list(metadata_from_anndata = "uns", obs_num = c("obs", "numeric"))
@@ -593,30 +580,53 @@ ad <- from_Seurat(
 )
 ad
 
-```{r create_Seurat}
-suppressWarnings({
-  counts <- matrix(rbinom(600, 20000, .001), nrow = 20)
-  obj <- CreateSeuratObject(counts = counts)
-  obj <- NormalizeData(obj)
-  obj <- FindVariableFeatures(obj)
-  obj <- ScaleData(obj)
-  obj <- RunPCA(obj, npcs = 10L)
-  obj <- FindNeighbors(obj)
-  obj <- RunUMAP(obj, dims = 1:10)
-})
-```
-
-```{r from_Seurat_implicit}
-ad2 <- from_Seurat(obj)
-```
-
-```{r from_Seurat_explicit}
-ad2 <- from_Seurat(obj,
-  output_class = "InMemoryAnnData",
-  assay_name = "RNA",
-  obs_mapping = list(thing1 = "nCount_RNA"),
-  var_mapping = list()
-)
-```
-
 ## Explicit mapping
+
+It's also possible to provide an explicit mapping for the conversion from Seurat to AnnData objects.
+For all the simpler mappings, such as `layers_mapping`, `obs_mapping` and `var_mapping`, you can 
+provide a named list with the names of the slots in the AnnData object as names 
+and the names of the slots in the Seurat object as values.
+
+```{r fse_explicit}
+ad <- from_Seurat(
+  obj,
+  layers_mapping = list(counts = "counts", data = "data"),
+  obs_mapping = list(metadata1 = "orig.ident", metadata2 = "nCount_RNA"),
+  var_mapping = list(metadata_mean = "vf_vst_counts_mean", metadata_variance = "vf_vst_counts_variance"),
+  obsm_mapping = list(),
+  varm_mapping = list(),
+  obsp_mapping = list(),
+  varp_mapping = list(),
+  uns_mapping = list()
+)
+ad
+```
+
+### obsm_mapping, varm_mapping, obsp_mapping, varp_mapping, uns_mapping
+The mappings fro `obsm`, `varm` and `obsp` all work in the same way: you need to provide a named list,
+where the name of the list refers to the name of the slot in the AnnData object.
+The values of the list must themselves be vectors of length 2 (for `obsm`) or 2 or 3 (for `varm`, `obsp`, `varp` and `uns`).
+The first element of the vector refers to the name of the slot in the Seurat object, the second element refers 
+to the name of the slot in the Seurat object. The third element, if provided, refers to the name of the column of that data in that slot.
+
+For `obsm`, the first element must be `reductions` or `misc`.
+For `varm`, the first element must be `reductions` or `misc`.
+For `obsp`, the first element must be `graphs` or `misc`.
+
+For `varp`, the first element must be `misc`.
+For `uns`, the first element must also be `misc`.
+
+```{r fse_explicit_obsm}
+ad <- from_Seurat(
+  obj,
+  layers_mapping = list(),
+  obs_mapping = list(),
+  var_mapping = list(),
+  obsm_mapping = list(X_pca = c("reductions", "pca"), X_umap = c("reductions", "umap")),
+  varm_mapping = list(PCs = c("reductions", "pca")),
+  obsp_mapping = list(connectivities = c("graphs", "RNA_nn")),
+  varp_mapping = list(),
+  uns_mapping = list(extra_data = c("misc", "data"))
+)
+ad
+```

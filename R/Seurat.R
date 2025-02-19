@@ -508,6 +508,11 @@ to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
 #' `X` slot.
 #' @param layers_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in
 #' the list must be a character vector of length 1. See section "`$layers` mapping" for more details.
+#' @param obs_mapping A named list mapping obs names to the names of the object-level (cell level) metadata in the
+#' Seurat object. Each item in the list must be a character vector of length 1. See section "`$obs` mapping" for
+#' more details.
+#' @param var_mapping A named list mapping var names to the names of the feature-level metadata in the Seurat object.
+#' Each item in the list must be a character vector of length 1. See section "`$var` mapping" for more details.
 #' @param obsm_mapping A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
 #' the list must be a vector of length 2. See section "`$obsm` mapping" for more details.
 #' @param varm_mapping A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
@@ -538,6 +543,26 @@ to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
 #' * This means that the AnnData `X` slot will be `NULL` (empty). If you want to copy data to the `X` slot,
 #'   you must define the layer mapping explicitly.
 #'
+#' @section `$obs` mapping:
+#'
+#' A named list to map Seurat object-level metadata to AnnData `$obs`. Each item in the list must be a character vector
+#' of length 1, where the values correspond to the names of the metadata in the Seurat object, and the names correspond
+#' to the names of the metadata in the resulting `$obs` slot.
+#'
+#' If `NULL`, the internal function `from_Seurat_guess_obs` will be used to guess the obs mapping as follows:
+#'
+#' * All Seurat object-level metadata is copied to AnnData `$obs` by name.
+#'
+#' @section `$var` mapping:
+#'
+#' A named list to map Seurat feature-level metadata to AnnData `$var`. Each item in the list must be a character vector
+#' of length 1, where the values correspond to the names of the metadata of the assay in the Seurat object, and the
+#' names correspond to the names of the metadata in the resulting `$var` slot.
+#'
+#' If `NULL`, the internal function `from_Seurat_guess_vars` will be used to guess the var mapping as follows:
+#'
+#' * All Seurat feature-level metadata is copied to AnnData `$var` by name.
+#
 #' @section `$obsm` mapping:
 #'
 #' A named list to map Seurat reductions to AnnData `$obsm`.
@@ -569,7 +594,10 @@ to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
 #'
 #' A named list to map Seurat graphs to AnnData `$obsp`.
 #'
-#' Example: `obsp_mapping = list(nn = "connectivities")`.
+#' Each item in the list must be a character vector of length 2, where the name corresponds to the name of the resulting
+#' `$obsp` slot, and the value corresponds to the location of the data in the Seurat object.
+#'
+#' Example: `obsp_mapping = list(connectivities = c("graphs", "RNA_nn"))`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_obsps` will be used to guess the obsp mapping as follows:
 #'
@@ -856,7 +884,7 @@ from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) { # nol
     obs <- as.data.frame(obs)
     rownames(obs) <- colnames(seurat_obj)
   }
-  
+
   obs
 }
 

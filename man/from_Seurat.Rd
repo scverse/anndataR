@@ -34,6 +34,13 @@ from_Seurat(
 \item{layers_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. Each item in
 the list must be a character vector of length 1. See section "\verb{$layers} mapping" for more details.}
 
+\item{obs_mapping}{A named list mapping obs names to the names of the object-level (cell level) metadata in the
+Seurat object. Each item in the list must be a character vector of length 1. See section "\verb{$obs} mapping" for
+more details.}
+
+\item{var_mapping}{A named list mapping var names to the names of the feature-level metadata in the Seurat object.
+Each item in the list must be a character vector of length 1. See section "\verb{$var} mapping" for more details.}
+
 \item{obsm_mapping}{A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
 the list must be a vector of length 2. See section "\verb{$obsm} mapping" for more details.}
 
@@ -85,6 +92,32 @@ you must define the layer mapping explicitly.
 }
 }
 
+\section{\verb{$obs} mapping}{
+
+
+A named list to map Seurat object-level metadata to AnnData \verb{$obs}. Each item in the list must be a character vector
+of length 1, where the values correspond to the names of the metadata in the Seurat object, and the names correspond
+to the names of the metadata in the resulting \verb{$obs} slot.
+
+If \code{NULL}, the internal function \code{from_Seurat_guess_obs} will be used to guess the obs mapping as follows:
+\itemize{
+\item All Seurat object-level metadata is copied to AnnData \verb{$obs} by name.
+}
+}
+
+\section{\verb{$var} mapping}{
+
+
+A named list to map Seurat feature-level metadata to AnnData \verb{$var}. Each item in the list must be a character vector
+of length 1, where the values correspond to the names of the metadata of the assay in the Seurat object, and the
+names correspond to the names of the metadata in the resulting \verb{$var} slot.
+
+If \code{NULL}, the internal function \code{from_Seurat_guess_vars} will be used to guess the var mapping as follows:
+\itemize{
+\item All Seurat feature-level metadata is copied to AnnData \verb{$var} by name.
+}
+}
+
 \section{\verb{$obsm} mapping}{
 
 
@@ -123,7 +156,10 @@ If \code{NULL}, the internal function \code{from_Seurat_guess_varms} will be use
 
 A named list to map Seurat graphs to AnnData \verb{$obsp}.
 
-Example: \code{obsp_mapping = list(nn = "connectivities")}.
+Each item in the list must be a character vector of length 2, where the name corresponds to the name of the resulting
+\verb{$obsp} slot, and the value corresponds to the location of the data in the Seurat object.
+
+Example: \code{obsp_mapping = list(connectivities = c("graphs", "RNA_nn"))}.
 
 If \code{NULL}, the internal function \code{from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
 \itemize{
