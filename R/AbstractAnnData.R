@@ -20,7 +20,7 @@
 #'
 #' @importFrom R6 R6Class
 AbstractAnnData <- R6::R6Class(
-  "AbstractAnnData", # nolint
+  "AbstractAnnData",
   active = list(
     #' @field X NULL or an observation x variable matrix (without
     #'   dimnames) consistent with the number of rows of `obs` and `var`.
