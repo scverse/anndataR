@@ -309,7 +309,7 @@ AbstractAnnData <- R6::R6Class(
       expected_colnames = NULL
     ) {
       if (is.null(mat)) {
-        mat
+        return(mat)
       }
       mat_dims <- dim(mat)
 
@@ -358,7 +358,7 @@ AbstractAnnData <- R6::R6Class(
       expected_colnames = NULL
     ) {
       if (is.null(collection)) {
-        collection
+        return(collection)
       }
 
       collection_names <- names(collection)
@@ -387,7 +387,7 @@ AbstractAnnData <- R6::R6Class(
     #   is NULL or a named list and throws an error if it is not.
     .validate_named_list = function(collection, label) {
       if (is.null(collection)) {
-        collection
+        return(collection)
       }
 
       collection_names <- names(collection)
