@@ -61,7 +61,7 @@ read_h5ad_element <- function(
   ...
 ) {
   if (!hdf5_path_exists(file, name)) {
-    NULL
+    return(NULL)
   }
 
   if (is.null(type)) {

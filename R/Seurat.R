@@ -282,13 +282,13 @@ to_Seurat <- function(
 
 .to_seurat_get_matrix_by_key <- function(adata, mapping, key) {
   if (!key %in% names(mapping)) {
-    NULL
+    return(NULL)
   }
 
   layer_name <- mapping[[key]]
 
   if (is.null(layer_name)) {
-    Matrix::t(adata$X)
+    return(Matrix::t(adata$X))
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {
@@ -304,7 +304,7 @@ to_Seurat <- function(
 
 .to_seurat_get_matrix <- function(adata, layer_name) {
   if (is.null(layer_name)) {
-    Matrix::t(adata$X)
+    return(Matrix::t(adata$X))
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {

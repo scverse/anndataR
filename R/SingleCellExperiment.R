@@ -579,7 +579,7 @@ from_SingleCellExperiment <- function(
 .from_SCE_guess_obsm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
   if (!inherits(sce, "SingleCellExperiment")) {
-    list()
+    return(list())
   }
   obsm_mapping <- list()
 
@@ -612,7 +612,7 @@ from_SingleCellExperiment <- function(
 .from_SCE_guess_obspvarp <- function(sce, slot) {
   # nolint end: object_length_linter object_name_linter
   if (!inherits(sce, "SingleCellExperiment")) {
-    list()
+    return(list())
   }
   .from_SCE_guess_all(sce, slot)
 }
