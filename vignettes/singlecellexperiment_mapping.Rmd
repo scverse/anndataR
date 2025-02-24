@@ -51,7 +51,6 @@ ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 ad$obsm[["X_umap"]] <- matrix(1:20, 10, 2)
-
 ```
 
 # Convert AnnData objects to SingleCellExperiment objects
