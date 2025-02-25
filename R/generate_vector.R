@@ -2,7 +2,8 @@ vector_generators <- list(
   character = function(n) paste0("value_", seq(from = 0, to = n - 1)),
   integer = function(n) seq(from = 0, to = n - 1),
   factor = function(n) factor(rep(c("Value1", "Value2"), length.out = n)),
-  factor_ordered = function(n) factor(rep(c("Value1", "Value2"), length.out = n), ordered = TRUE),
+  factor_ordered = function(n)
+    factor(rep(c("Value1", "Value2"), length.out = n), ordered = TRUE),
   logical = function(n) sample(c(TRUE, FALSE), n, replace = TRUE),
   numeric = function(n) seq(from = 0.5, to = n),
   character_with_nas = function(n) {

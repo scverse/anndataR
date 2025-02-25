@@ -35,8 +35,14 @@ for (name in test_names) {
   )
 
   # create a couple of paths
-  file_py <- withr::local_file(tempfile(paste0("anndata_py_", name), fileext = ".h5ad"))
-  file_r <- withr::local_file(tempfile(paste0("anndata_r_", name), fileext = ".h5ad"))
+  file_py <- withr::local_file(tempfile(
+    paste0("anndata_py_", name),
+    fileext = ".h5ad"
+  ))
+  file_r <- withr::local_file(tempfile(
+    paste0("anndata_r_", name),
+    fileext = ".h5ad"
+  ))
 
   # write to file
   adata_py$write_h5ad(file_py)
@@ -64,23 +70,26 @@ for (name in test_names) {
   })
 
   # maybe this test simply shouldn't be run if there is a known issue with reticulate
-  test_that(paste0("Comparing an anndata with uns '", name, "' with reticulate works"), {
-    msg <- message_if_known(
-      backend = "HDF5AnnData",
-      slot = c("uns"),
-      dtype = name,
-      process = c("read", "reticulate"),
-      known_issues = known_issues
-    )
-    skip_if(!is.null(msg), message = msg)
+  test_that(
+    paste0("Comparing an anndata with uns '", name, "' with reticulate works"),
+    {
+      msg <- message_if_known(
+        backend = "HDF5AnnData",
+        slot = c("uns"),
+        dtype = name,
+        process = c("read", "reticulate"),
+        known_issues = known_issues
+      )
+      skip_if(!is.null(msg), message = msg)
 
-    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+      adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
 
-    expect_equal(
-      adata_r$uns[[name]],
-      reticulate::py_to_r(adata_py$uns[[name]])
-    )
-  })
+      expect_equal(
+        adata_r$uns[[name]],
+        reticulate::py_to_r(adata_py$uns[[name]])
+      )
+    }
+  )
 
   test_that(paste0("Writing an AnnData with uns '", name, "' works"), {
     msg <- message_if_known(

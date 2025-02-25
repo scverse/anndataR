@@ -18,8 +18,14 @@ adata_py <- ad$AnnData()
 name <- "empty"
 
 # create a couple of paths
-file_py <- withr::local_file(tempfile(paste0("anndata_py_", name), fileext = ".h5ad"))
-file_r <- withr::local_file(tempfile(paste0("anndata_r_", name), fileext = ".h5ad"))
+file_py <- withr::local_file(tempfile(
+  paste0("anndata_py_", name),
+  fileext = ".h5ad"
+))
+file_r <- withr::local_file(tempfile(
+  paste0("anndata_r_", name),
+  fileext = ".h5ad"
+))
 
 # write to file
 adata_py$write_h5ad(file_py)

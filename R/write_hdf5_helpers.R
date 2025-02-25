@@ -19,13 +19,14 @@
 #'
 #' @return Whether the `path` exists in `file`
 hdf5_create_dataset <- function(
-    file,
-    name,
-    value,
-    compression = c("none", "gzip", "lzf"),
-    scalar = FALSE,
-    dtype = NULL,
-    space = NULL) {
+  file,
+  name,
+  value,
+  compression = c("none", "gzip", "lzf"),
+  scalar = FALSE,
+  dtype = NULL,
+  space = NULL
+) {
   compression <- match.arg(compression)
 
   if (!is.null(dim(value))) {
@@ -101,19 +102,24 @@ hdf5_path_exists <- function(file, target_path) {
 #'   the space is set to a scalar space. If `NULL` and `!is_scalar` then the space
 #'   is guessed using `hdf5r::guess_space()`.
 hdf5_create_attribute <- function(
-    file,
-    name,
-    attr_name,
-    attr_value,
-    is_scalar = TRUE,
-    dtype = NULL,
-    space = NULL) {
+  file,
+  name,
+  attr_name,
+  attr_value,
+  is_scalar = TRUE,
+  dtype = NULL,
+  space = NULL
+) {
   if (!inherits(file, "H5File")) {
     stop("file must be an open H5AD handle")
   }
 
   if (is.null(dtype)) {
-    dtype <- hdf5r::guess_dtype(attr_value, scalar = is_scalar, string_len = Inf)
+    dtype <- hdf5r::guess_dtype(
+      attr_value,
+      scalar = is_scalar,
+      string_len = Inf
+    )
   }
   if (is.null(space)) {
     space <-

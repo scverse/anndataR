@@ -31,9 +31,18 @@ for (name in test_names) {
   )
 
   # create a couple of paths
-  file_py <- withr::local_file(tempfile(paste0("anndata_py_", name), fileext = ".h5ad"))
-  file_r <- withr::local_file(tempfile(paste0("anndata_r_", name), fileext = ".h5ad"))
-  file_r2 <- withr::local_file(tempfile(paste0("anndata_r2_", name), fileext = ".h5ad"))
+  file_py <- withr::local_file(tempfile(
+    paste0("anndata_py_", name),
+    fileext = ".h5ad"
+  ))
+  file_r <- withr::local_file(tempfile(
+    paste0("anndata_r_", name),
+    fileext = ".h5ad"
+  ))
+  file_r2 <- withr::local_file(tempfile(
+    paste0("anndata_r2_", name),
+    fileext = ".h5ad"
+  ))
 
   # write to file
   adata_py$write_h5ad(file_py)
@@ -61,24 +70,27 @@ for (name in test_names) {
   })
 
   # maybe this test simply shouldn't be run if there is a known issue with reticulate
-  test_that(paste0("Comparing an anndata with X '", name, "' with reticulate works"), {
-    msg <- message_if_known(
-      backend = "HDF5AnnData",
-      slot = c("X"),
-      dtype = name,
-      process = c("read", "reticulate"),
-      known_issues = known_issues
-    )
-    skip_if(!is.null(msg), message = msg)
+  test_that(
+    paste0("Comparing an anndata with X '", name, "' with reticulate works"),
+    {
+      msg <- message_if_known(
+        backend = "HDF5AnnData",
+        slot = c("X"),
+        dtype = name,
+        process = c("read", "reticulate"),
+        known_issues = known_issues
+      )
+      skip_if(!is.null(msg), message = msg)
 
-    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+      adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
 
-    expect_equal(
-      adata_r$X,
-      py_to_r(adata_py$X),
-      tolerance = 1e-6
-    )
-  })
+      expect_equal(
+        adata_r$X,
+        py_to_r(adata_py$X),
+        tolerance = 1e-6
+      )
+    }
+  )
 
   test_that(paste0("Writing an AnnData with X '", name, "' works"), {
     msg <- message_if_known(
@@ -110,8 +122,11 @@ for (name in test_names) {
 
   for (r_name in r_datatypes) {
     test_msg <- paste0(
-      "Comparing a python generated .h5ad with X '", name,
-      "' with an R generated .h5ad '", r_name, "' works"
+      "Comparing a python generated .h5ad with X '",
+      name,
+      "' with an R generated .h5ad '",
+      r_name,
+      "' works"
     )
     test_that(test_msg, {
       msg <- message_if_known(
@@ -128,7 +143,8 @@ for (name in test_names) {
       write_h5ad(adata_r, file_r2)
 
       # run h5diff
-      res <- processx::run("h5diff",
+      res <- processx::run(
+        "h5diff",
         c("-v", file_py, file_r2, "/X"),
         error_on_status = FALSE
       )

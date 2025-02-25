@@ -1,6 +1,10 @@
 test_that("has_row_names works on matrix", {
   expect_false(has_row_names(matrix(1:26, ncol = 1)))
-  expect_true(has_row_names(matrix(1:26, ncol = 1, dimnames = list(letters, NULL))))
+  expect_true(has_row_names(matrix(
+    1:26,
+    ncol = 1,
+    dimnames = list(letters, NULL)
+  )))
 })
 
 test_that("has_row_names works on data.frame", {
