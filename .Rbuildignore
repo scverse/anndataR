@@ -6,6 +6,7 @@
 ^\.metals$
 ^\.vscode$
 ^\.lintr$
+^\.air.toml$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
