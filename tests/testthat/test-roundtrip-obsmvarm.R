@@ -146,9 +146,11 @@ for (name in test_names) {
   res <- Filter(function(x) x[[1]] == name, all_equivalences)
   r_datatypes <- sapply(res, function(x) x[[2]])
 
-  for (r_name in r_datatypes){
-    test_msg <- paste0("Comparing a python generated .h5ad with obsm and varm '", name,
-                       "' with an R generated .h5ad '", r_name, "' works")
+  for (r_name in r_datatypes) {
+    test_msg <- paste0(
+      "Comparing a python generated .h5ad with obsm and varm '", name,
+      "' with an R generated .h5ad '", r_name, "' works"
+    )
     test_that(test_msg, {
       msg <- message_if_known(
         backend = "HDF5AnnData",
@@ -165,13 +167,15 @@ for (name in test_names) {
 
       # run h5diff
       res_obsm <- processx::run("h5diff",
-                                c("-v", file_py, file_r2, paste0("/obsm/", name), paste0("/obsm/", r_name)),
-                                error_on_status = FALSE)
+        c("-v", file_py, file_r2, paste0("/obsm/", name), paste0("/obsm/", r_name)),
+        error_on_status = FALSE
+      )
       expect_equal(res_obsm$status, 0, info = res_obsm$stdout)
 
       res_varm <- processx::run("h5diff",
-                                c("-v", file_py, file_r2, paste0("/varm/", name), paste0("/varm/", r_name)),
-                                error_on_status = FALSE)
+        c("-v", file_py, file_r2, paste0("/varm/", name), paste0("/varm/", r_name)),
+        error_on_status = FALSE
+      )
       expect_equal(res_varm$status, 0, info = res_varm$stdout)
     })
   }
