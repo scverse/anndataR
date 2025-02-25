@@ -307,8 +307,9 @@ InMemoryAnnData <- R6::R6Class(
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' to_InMemoryAnnData(ad)
+# nolint start object_name_linter
 to_InMemoryAnnData <- function(adata) {
-  # nolint
+  # nolint end object_name_linter
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
