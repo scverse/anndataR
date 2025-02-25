@@ -37,9 +37,9 @@ jobs:
         env:
           LINTR_ERROR_ON_LINT: true
 
-      - name: Check code formatting
+      - name: Check code style
         run: air format --check .
 
-      - name: Check vignette formatting
+      - name: Check vignette style
         run: styler::style_dir("vignettes", dry = "fail")
         shell: Rscript {0}
