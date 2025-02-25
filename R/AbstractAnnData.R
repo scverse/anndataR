@@ -19,7 +19,8 @@
 #' * [from_SingleCellExperiment()]: Create an in-memory AnnData object from a SingleCellExperiment object.
 #'
 #' @importFrom R6 R6Class
-AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
+AbstractAnnData <- R6::R6Class(
+  "AbstractAnnData",
   active = list(
     #' @field X NULL or an observation x variable matrix (without
     #'   dimnames) consistent with the number of rows of `obs` and `var`.
@@ -91,7 +92,14 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
-      cat("AnnData object with n_obs \u00D7 n_vars = ", self$n_obs(), " \u00D7 ", self$n_vars(), "\n", sep = "")
+      cat(
+        "AnnData object with n_obs \u00D7 n_vars = ",
+        self$n_obs(),
+        " \u00D7 ",
+        self$n_vars(),
+        "\n",
+        sep = ""
+      )
 
       for (attribute in c(
         "obs",
@@ -112,7 +120,9 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           }
         if (length(keys) > 0) {
           cat(
-            "    ", attribute, ": ",
+            "    ",
+            attribute,
+            ": ",
             paste(paste0("'", keys, "'"), collapse = ", "),
             "\n",
             sep = ""
@@ -212,8 +222,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #' @param misc_mapping A named list mapping Seurat misc to AnnData uns
     #' @return A Seurat object
     to_Seurat = function(
-      assay_name = "RNA", layers_mapping = NULL, reduction_mapping = NULL,
-      graph_mapping = NULL, misc_mapping = NULL
+      assay_name = "RNA",
+      layers_mapping = NULL,
+      reduction_mapping = NULL,
+      graph_mapping = NULL,
+      misc_mapping = NULL
     ) {
       to_Seurat(
         self,
@@ -288,17 +301,30 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param shape Expected dimensions of matrix
     # @param expected_rownames
     # @param excepted_colnames
-    .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    .validate_aligned_array = function(
+      mat,
+      label,
+      shape,
+      expected_rownames = NULL,
+      expected_colnames = NULL
+    ) {
       if (is.null(mat)) {
         return(mat)
       }
       mat_dims <- dim(mat)
 
-      if (length(shape) > length(mat_dims) || any(shape != mat_dims[seq_along(shape)])) {
+      if (
+        length(shape) > length(mat_dims) ||
+          any(shape != mat_dims[seq_along(shape)])
+      ) {
         stop(paste0(
-          "Unexpected shape for ", label, ". Expected: [",
-          paste(shape, collapse = ", "), "], found: [",
-          paste(mat_dims, collapse = ", "), "]."
+          "Unexpected shape for ",
+          label,
+          ". Expected: [",
+          paste(shape, collapse = ", "),
+          "], found: [",
+          paste(mat_dims, collapse = ", "),
+          "]."
         ))
       }
       if (!is.null(expected_rownames) & !has_row_names(mat)) {
@@ -324,13 +350,22 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
     # @param expected_rownames Expected row names
     # @param expected_colnames Expected column names
-    .validate_aligned_mapping = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    .validate_aligned_mapping = function(
+      collection,
+      label,
+      shape,
+      expected_rownames = NULL,
+      expected_colnames = NULL
+    ) {
       if (is.null(collection)) {
         return(collection)
       }
 
       collection_names <- names(collection)
-      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
+      if (
+        !is.list(collection) ||
+          ((length(collection) != 0) && is.null(collection_names))
+      ) {
         stop(paste0(label, " must be a named list, was ", class(collection)))
       }
 
@@ -356,7 +391,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       }
 
       collection_names <- names(collection)
-      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
+      if (
+        !is.list(collection) ||
+          ((length(collection) != 0) && is.null(collection_names))
+      ) {
         stop(paste0(label, " must be a named list, was ", class(collection)))
       }
 
@@ -370,10 +408,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     .validate_obsvar_dataframe = function(df, label = c("obs", "var")) {
       label <- match.arg(label)
 
-      expected_nrow <- switch(label,
-        obs = self$n_obs(),
-        var = self$n_vars()
-      )
+      expected_nrow <- switch(label, obs = self$n_obs(), var = self$n_vars())
 
       if (is.null(df)) {
         # create empty data frame
@@ -386,9 +421,15 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
       if (nrow(df) != expected_nrow) {
         stop(wrap_message(
-          "nrow(df) should match the number of ", label, ". ",
-          "Expected nrow: ", expected_nrow, ". ",
-          "Observed nrow: ", nrow(df), "."
+          "nrow(df) should match the number of ",
+          label,
+          ". ",
+          "Expected nrow: ",
+          expected_nrow,
+          ". ",
+          "Observed nrow: ",
+          nrow(df),
+          "."
         ))
       }
 
@@ -399,7 +440,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_names = function(names, label = c("obs", "var"), check_length = TRUE) {
+    .validate_obsvar_names = function(
+      names,
+      label = c("obs", "var"),
+      check_length = TRUE
+    ) {
       label <- match.arg(label)
 
       if (is.null(names)) {
@@ -414,7 +459,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
         if (length(names) != expected_len) {
           size_check_label <- if (label == "obs") "n_obs" else "n_vars"
           stop(wrap_message(
-            "length(", label, "_names) should be the same as ad$", size_check_label, "()"
+            "length(",
+            label,
+            "_names) should be the same as ad$",
+            size_check_label,
+            "()"
           ))
         }
       }

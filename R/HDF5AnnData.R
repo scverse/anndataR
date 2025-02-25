@@ -3,7 +3,8 @@
 #' @description
 #' Implementation of an in memory AnnData object.
 #' @noRd
-HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
+HDF5AnnData <- R6::R6Class(
+  "HDF5AnnData", # nolint
   inherit = AbstractAnnData,
   cloneable = FALSE,
   private = list(
@@ -47,7 +48,12 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "layers", private$.compression)
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "layers",
+          private$.compression
+        )
       }
     },
     #' @field obsm The obsm slot. Must be `NULL` or a named list with
@@ -242,19 +248,21 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' must be specified. In both cases, any additional slots provided will be
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
-    initialize = function(file,
-                          X = NULL,
-                          obs = NULL,
-                          var = NULL,
-                          layers = NULL,
-                          obsm = NULL,
-                          varm = NULL,
-                          obsp = NULL,
-                          varp = NULL,
-                          uns = NULL,
-                          shape = NULL,
-                          mode = c("r", "r+", "a", "w", "w-", "x"),
-                          compression = c("none", "gzip", "lzf")) {
+    initialize = function(
+      file,
+      X = NULL,
+      obs = NULL,
+      var = NULL,
+      layers = NULL,
+      obsm = NULL,
+      varm = NULL,
+      obsp = NULL,
+      varp = NULL,
+      uns = NULL,
+      shape = NULL,
+      mode = c("r", "r+", "a", "w", "w-", "x"),
+      compression = c("none", "gzip", "lzf")
+    ) {
       check_requires("HDF5AnnData", "hdf5r")
 
       # check arguments
@@ -359,7 +367,7 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
       if (private$.close_on_finalize) {
         self$close()
       }
-      return(invisible(self))
+      invisible(self)
     },
 
     #' @description Close the HDF5 file
@@ -419,11 +427,12 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' file.remove("test.h5ad")
 # nolint start: object_name_linter
 to_HDF5AnnData <- function(
-    # nolint end: object_name_linter
-    adata,
-    file,
-    compression = c("none", "gzip", "lzf"),
-    mode = c("w-", "r", "r+", "a", "w", "x")) {
+  # nolint end: object_name_linter
+  adata,
+  file,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+) {
   stopifnot(
     inherits(adata, "AbstractAnnData")
   )
@@ -445,10 +454,14 @@ to_HDF5AnnData <- function(
   )
 }
 
-cleanup_HDF5AnnData <- function(...) { # nolint object_name_linter
+# nolint start: object_name_linter
+cleanup_HDF5AnnData <- function(...) {
+  # nolint end: object_name_linter
   args <- list(...)
 
-  if (!is.null(args$file) && is.character(args$file) && file.exists(args$file)) {
+  if (
+    !is.null(args$file) && is.character(args$file) && file.exists(args$file)
+  ) {
     cli::cli_alert("Removing file: ", args$file)
     unlink(args$file)
   }
