@@ -5,7 +5,7 @@
 # https://github.com/ivirshup/sc-interchange/issues
 # https://github.com/ivirshup/sc-interchange/issues/2
 # https://www.bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html#3_Adding_low-dimensional_representations
-#nolint end: line_length_linter
+# nolint end: line_length_linter
 
 #' Convert an AnnData object to a SingleCellExperiment object
 #'
@@ -77,17 +77,21 @@
 #' @export
 # nolint start: cyclocomp_linter
 to_SingleCellExperiment <- function(
-# nolint end: cyclocomp_linter
-    adata,
-    assays_mapping = NULL,
-    colData_mapping = NULL, # nolint
-    rowData_mapping = NULL, # nolint
-    reduction_mapping = NULL,
-    colPairs_mapping = NULL, # nolint
-    rowPairs_mapping = NULL, # nolint
-    metadata_mapping = NULL) {
-
-  check_requires("Converting AnnData to SingleCellExperiment", "SingleCellExperiment", "Bioc")
+  # nolint end: cyclocomp_linter
+  adata,
+  assays_mapping = NULL,
+  colData_mapping = NULL, # nolint
+  rowData_mapping = NULL, # nolint
+  reduction_mapping = NULL,
+  colPairs_mapping = NULL, # nolint
+  rowPairs_mapping = NULL, # nolint
+  metadata_mapping = NULL
+) {
+  check_requires(
+    "Converting AnnData to SingleCellExperiment",
+    "SingleCellExperiment",
+    "Bioc"
+  )
 
   stopifnot(inherits(adata, "AbstractAnnData"))
 
@@ -118,7 +122,7 @@ to_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
   sce_assays <- vector("list", length(assays_mapping))
   names(sce_assays) <- names(assays_mapping)
-  for (i in seq_along(assays_mapping)){
+  for (i in seq_along(assays_mapping)) {
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
     if (from != "X") {
@@ -144,7 +148,6 @@ to_SingleCellExperiment <- function(
   reduceddims <- vector("list", length(reduction_mapping))
   names(reduceddims) <- names(reduction_mapping)
   for (i in seq_along(reduction_mapping)) {
-
     name <- names(reduction_mapping)[[i]]
     reduction <- reduction_mapping[[i]]
 
@@ -152,7 +155,13 @@ to_SingleCellExperiment <- function(
     varm_key <- reduction$varm
     uns_key <- reduction$uns
 
-    reduceddims[[name]] <- .to_SingleCellExperiment_process_reduction(adata, name, obsm_key, varm_key, uns_key)
+    reduceddims[[name]] <- .to_SingleCellExperiment_process_reduction(
+      adata,
+      name,
+      obsm_key,
+      varm_key,
+      uns_key
+    )
   }
 
   # construct colPairs
@@ -193,7 +202,9 @@ to_SingleCellExperiment <- function(
   sce
 }
 
-to_SCE_guess_assays <- function(adata) { # nolint
+# nolint start: object_length_linter object_name_linter
+to_SCE_guess_assays <- function(adata) {
+  # nolint end: object_length_linter object_name_linter
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
   }
@@ -202,7 +213,8 @@ to_SCE_guess_assays <- function(adata) { # nolint
 
   if (!is.null(adata$X)) {
     layer_name_for_x <-
-      if (!"counts" %in% names(adata$layers)) { # could expand checks, to check if integers
+      if (!"counts" %in% names(adata$layers)) {
+        # could expand checks, to check if integers
         "counts"
       } else {
         "data"
@@ -217,7 +229,9 @@ to_SCE_guess_assays <- function(adata) { # nolint
   layers
 }
 
-to_SCE_guess_all <- function(adata, slot) { # nolint
+# nolint start: object_length_linter object_name_linter
+to_SCE_guess_all <- function(adata, slot) {
+  # nolint end: object_length_linter object_name_linter
   if (!inherits(adata, "AbstractAnnData")) {
     stop("adata must be an object inheriting from AbstractAnnData")
   }
@@ -228,11 +242,15 @@ to_SCE_guess_all <- function(adata, slot) { # nolint
   mapping
 }
 
-to_SCE_guess_reduction <- function(adata) { # nolint
+# nolint start: object_length_linter object_name_linter
+to_SCE_guess_reduction <- function(adata) {
+  # nolint end: object_length_linter object_name_linter
   to_Seurat_guess_reductions(adata)
 }
 
-.to_SCE_process_simple_mapping <- function(adata, mapping, slot) { # nolint
+# nolint start: object_length_linter object_name_linter
+.to_SCE_process_simple_mapping <- function(adata, mapping, slot) {
+  # nolint end: object_length_linter object_name_linter
   # check if mapping contains all columns of slot
   if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
     adata[[slot]]
@@ -245,7 +263,16 @@ to_SCE_guess_reduction <- function(adata) { # nolint
   }
 }
 
-.to_SingleCellExperiment_process_reduction <- function(adata, key, obsm_key, varm_key, uns_key) { # nolint
+# nolint start: object_length_linter object_name_linter
+.to_SingleCellExperiment_process_reduction <- function(
+  # nolint end: object_length_linter object_name_linter
+  adata,
+  key,
+  obsm_key,
+  varm_key,
+  uns_key
+) {
+  # nolint
   embedding <- adata$obsm[[obsm_key]]
 
   if (is.null(embedding)) {
@@ -254,12 +281,12 @@ to_SCE_guess_reduction <- function(adata) { # nolint
 
   rownames(embedding) <- adata$obs_names
 
-  if (! is.null(varm_key) && varm_key %in% names(adata$varm)) {
+  if (!is.null(varm_key) && varm_key %in% names(adata$varm)) {
     loadings <- adata$varm[[varm_key]]
     rownames(loadings) <- colnames(embedding)
 
     metadata <- list()
-    if (! is.null(uns_key) && uns_key %in% names(adata$uns)) {
+    if (!is.null(uns_key) && uns_key %in% names(adata$uns)) {
       metadata <- adata$uns[[uns_key]]
     }
 
@@ -336,21 +363,25 @@ to_SCE_guess_reduction <- function(adata) { # nolint
 #' @export
 # nolint start: object_name_linter
 from_SingleCellExperiment <- function(
-    # nolint end: object_name_linter
-    sce,
-    output_class = c("InMemory", "HDF5AnnData"),
-    x_mapping = NULL,
-    layers_mapping = NULL,
-    obs_mapping = NULL,
-    var_mapping = NULL,
-    obsm_mapping = NULL,
-    varm_mapping = NULL,
-    obsp_mapping = NULL,
-    varp_mapping = NULL,
-    uns_mapping = NULL,
-    ...) {
-
-  check_requires("Converting SingleCellExperiment to AnnData", "SingleCellExperiment", "Bioc")
+  # nolint end: object_name_linter
+  sce,
+  output_class = c("InMemory", "HDF5AnnData"),
+  x_mapping = NULL,
+  layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
+  obsm_mapping = NULL,
+  varm_mapping = NULL,
+  obsp_mapping = NULL,
+  varp_mapping = NULL,
+  uns_mapping = NULL,
+  ...
+) {
+  check_requires(
+    "Converting SingleCellExperiment to AnnData",
+    "SingleCellExperiment",
+    "Bioc"
+  )
 
   output_class <- match.arg(output_class)
 
@@ -372,10 +403,16 @@ from_SingleCellExperiment <- function(
     varm_mapping <- .from_SCE_guess_varm(sce)
   }
   if (is.null(obsp_mapping)) {
-    obsp_mapping <- .from_SCE_guess_obspvarp(sce, SingleCellExperiment::colPairs)
+    obsp_mapping <- .from_SCE_guess_obspvarp(
+      sce,
+      SingleCellExperiment::colPairs
+    )
   }
   if (is.null(varp_mapping)) {
-    varp_mapping <- .from_SCE_guess_obspvarp(sce, SingleCellExperiment::rowPairs)
+    varp_mapping <- .from_SCE_guess_obspvarp(
+      sce,
+      SingleCellExperiment::rowPairs
+    )
   }
   if (is.null(uns_mapping)) {
     uns_mapping <- .from_SCE_guess_all(sce, S4Vectors::metadata)
@@ -388,11 +425,19 @@ from_SingleCellExperiment <- function(
     {
       # get obs
       # trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
-      obs <- .from_SCE_process_obsvar(sce, obs_mapping, SingleCellExperiment::colData)
+      obs <- .from_SCE_process_obsvar(
+        sce,
+        obs_mapping,
+        SingleCellExperiment::colData
+      )
 
       # get var
       # trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
-      var <- .from_SCE_process_obsvar(sce, var_mapping, SingleCellExperiment::rowData)
+      var <- .from_SCE_process_obsvar(
+        sce,
+        var_mapping,
+        SingleCellExperiment::rowData
+      )
 
       adata <- generator$new(
         obs = obs,
@@ -403,13 +448,21 @@ from_SingleCellExperiment <- function(
       # fetch X
       # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
       if (!is.null(x_mapping)) {
-        adata$X <- .from_SCE_convert(SummarizedExperiment::assay(sce, x_mapping, withDimnames = FALSE))
+        adata$X <- .from_SCE_convert(SummarizedExperiment::assay(
+          sce,
+          x_mapping,
+          withDimnames = FALSE
+        ))
       }
 
       # fetch layers
       # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
 
-      adata$layers <- .from_SCE_process_simple_mapping(sce, layers_mapping, SummarizedExperiment::assays)
+      adata$layers <- .from_SCE_process_simple_mapping(
+        sce,
+        layers_mapping,
+        SummarizedExperiment::assays
+      )
 
       # trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
       for (i in seq_along(obsm_mapping)) {
@@ -423,7 +476,11 @@ from_SingleCellExperiment <- function(
         obsm_slot <- obsm[[1]]
         obsm_key <- obsm[[2]]
 
-        adata$obsm[[obsm_name]] <- .from_SCE_process_obsm_reduction(sce, obsm_slot, obsm_key)
+        adata$obsm[[obsm_name]] <- .from_SCE_process_obsm_reduction(
+          sce,
+          obsm_slot,
+          obsm_key
+        )
       }
 
       # fetch varm
@@ -443,27 +500,46 @@ from_SingleCellExperiment <- function(
           stop("varm_slot must be 'reducedDims'")
         }
 
-        if (! inherits(SingleCellExperiment::reducedDims(sce)[[varm_key]], "LinearEmbeddingMatrix")) {
+        if (
+          !inherits(
+            SingleCellExperiment::reducedDims(sce)[[varm_key]],
+            "LinearEmbeddingMatrix"
+          )
+        ) {
           stop("reducedDim must be a LinearEmbeddingMatrix")
         }
 
         adata$varm[[varm_name]] <- SingleCellExperiment::featureLoadings(
           SingleCellExperiment::reducedDim(sce, varm_key)
         )
-
       }
 
       # fetch obsp
       # trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
-      adata$obsp <- .from_SCE_process_pairs(sce, obsp_mapping, SingleCellExperiment::colPairs, asSparse = TRUE)
+      adata$obsp <- .from_SCE_process_pairs(
+        sce,
+        obsp_mapping,
+        SingleCellExperiment::colPairs,
+        asSparse = TRUE
+      )
 
       # fetch varp
       # trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
-      adata$varp <- .from_SCE_process_pairs(sce, varp_mapping, SingleCellExperiment::rowPairs, asSparse = TRUE)
+      adata$varp <- .from_SCE_process_pairs(
+        sce,
+        varp_mapping,
+        SingleCellExperiment::rowPairs,
+        asSparse = TRUE
+      )
 
       # fetch uns
       # trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
-      adata$uns <- .from_SCE_process_simple_mapping(sce, uns_mapping, S4Vectors::metadata, convert = FALSE)
+      adata$uns <- .from_SCE_process_simple_mapping(
+        sce,
+        uns_mapping,
+        S4Vectors::metadata,
+        convert = FALSE
+      )
 
       adata
     },
@@ -476,14 +552,18 @@ from_SingleCellExperiment <- function(
   )
 }
 
-.from_SCE_guess_all <- function(sce, slot) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_guess_all <- function(sce, slot) {
+  # nolint end: object_length_linter object_name_linter
   mapping <- names(slot(sce))
   names(mapping) <- names(slot(sce))
 
   mapping
 }
 
-.from_SCE_guess_layers <- function(sce, x_mapping) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_guess_layers <- function(sce, x_mapping) {
+  # nolint end: object_length_linter object_name_linter
   layers_mapping <- list()
 
   for (assay_name in names(SummarizedExperiment::assays(sce))) {
@@ -495,7 +575,9 @@ from_SingleCellExperiment <- function(
   layers_mapping
 }
 
-.from_SCE_guess_obsm <- function(sce) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_guess_obsm <- function(sce) {
+  # nolint end: object_length_linter object_name_linter
   if (!inherits(sce, "SingleCellExperiment")) {
     return(list())
   }
@@ -509,7 +591,9 @@ from_SingleCellExperiment <- function(
   obsm_mapping
 }
 
-.from_SCE_guess_varm <- function(sce) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_guess_varm <- function(sce) {
+  # nolint end: object_length_linter object_name_linter
   varm_mapping <- list()
 
   for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
@@ -524,7 +608,9 @@ from_SingleCellExperiment <- function(
 }
 
 # If sce is a SummarizedExperiment, return an empty mapping
-.from_SCE_guess_obspvarp <- function(sce, slot) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_guess_obspvarp <- function(sce, slot) {
+  # nolint end: object_length_linter object_name_linter
   if (!inherits(sce, "SingleCellExperiment")) {
     return(list())
   }
@@ -533,7 +619,9 @@ from_SingleCellExperiment <- function(
 
 # Convert BioConductor-specific objects to base R objects
 # Convert matrices
-.from_SCE_convert <- function(object) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_convert <- function(object) {
+  # nolint end: object_length_linter object_name_linter
   if (inherits(object, "DataFrame")) {
     as.data.frame(object)
   } else if (inherits(object, "SimpleList")) {
@@ -549,7 +637,9 @@ from_SingleCellExperiment <- function(
   }
 }
 
-.from_SCE_process_obsvar <- function(sce, mapping, slot, convert = TRUE){ # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_process_obsvar <- function(sce, mapping, slot, convert = TRUE) {
+  # nolint end: object_length_linter object_name_linter
   mapped <- .from_SCE_process_simple_mapping(sce, mapping, slot, convert)
 
   # Ensure that the obs & var retain rownames, even if there are no columns
@@ -566,7 +656,6 @@ from_SingleCellExperiment <- function(
       rownames(mapped) <- inferred_rownames
       mapped[, 1] <- NULL
     }
-
   } else {
     mapped <- as.data.frame(mapped)
     rownames(mapped) <- rownames(slot(sce))
@@ -574,8 +663,14 @@ from_SingleCellExperiment <- function(
 
   mapped
 }
-
-.from_SCE_process_simple_mapping <- function(sce, mapping, slot, convert = TRUE) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_process_simple_mapping <- function(
+  # nolint end: object_length_linter object_name_linter
+  sce,
+  mapping,
+  slot,
+  convert = TRUE
+) {
   mapped <- NULL
   mapped <- lapply(seq_along(mapping), function(i) {
     element <- slot(sce)[[mapping[[i]]]]
@@ -589,7 +684,9 @@ from_SingleCellExperiment <- function(
   .from_SCE_convert(mapped)
 }
 
-.from_SCE_process_pairs <- function(sce, mapping, slot, asSparse = TRUE) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_process_pairs <- function(sce, mapping, slot, asSparse = TRUE) {
+  # nolint end: object_length_linter object_name_linter
   pairs <- NULL
   # check if mapping contains all columns of slot
   if (length(setdiff(names(slot(sce)), names(mapping))) == 0) {
@@ -604,7 +701,9 @@ from_SingleCellExperiment <- function(
   .from_SCE_convert(pairs)
 }
 
-.from_SCE_process_obsm_reduction <- function(sce, slot, key) { # nolint
+# nolint start: object_length_linter object_name_linter
+.from_SCE_process_obsm_reduction <- function(sce, slot, key) {
+  # nolint end: object_length_linter object_name_linter
   if (slot != "reducedDim") {
     stop("slot must be 'reducedDim'")
   }
