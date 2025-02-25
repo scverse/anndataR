@@ -170,7 +170,6 @@ test_that("from_SCE retains observatoins and features", {
   expect_equal(colnames(sce), rownames(ad$obs))
   # trackstatus: class=SingleCellExperiment, feature=test_set_var_names, status=done
   expect_equal(rownames(sce), rownames(ad$var))
-
 })
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
@@ -241,7 +240,8 @@ for (obsp_key in names(colPairs(sce))) {
 
     expect_true(obsp_key %in% names(ad$obsp))
     expect_equal(
-      ad$obsp[[obsp_key]], colPairs(sce, asSparse = TRUE)[[obsp_key]], ignore_attr = TRUE,
+      ad$obsp[[obsp_key]], colPairs(sce, asSparse = TRUE)[[obsp_key]],
+      ignore_attr = TRUE,
       info = paste0("obsp_key: ", obsp_key)
     )
   })
