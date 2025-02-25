@@ -23,8 +23,12 @@ read_h5ad_encoding <- function(file, name) {
     error = function(e) {
       path <- if (is.character(file)) file else file$get_filename()
       stop(
-        "Encoding attributes not found for element '", name, "' ",
-        "in '", path, "'"
+        "Encoding attributes not found for element '",
+        name,
+        "' ",
+        "in '",
+        path,
+        "'"
       )
     }
   )
@@ -48,7 +52,14 @@ read_h5ad_encoding <- function(file, name) {
 #' @return Value depending on the encoding
 #'
 #' @noRd
-read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
+read_h5ad_element <- function(
+  file,
+  name,
+  type = NULL,
+  version = NULL,
+  stop_on_error = FALSE,
+  ...
+) {
   if (!hdf5_path_exists(file, name)) {
     return(NULL)
   }
@@ -59,7 +70,8 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
     version <- encoding_list$version
   }
 
-  read_fun <- switch(type,
+  read_fun <- switch(
+    type,
     "array" = read_h5ad_dense_array,
     "rec-array" = read_h5ad_rec_array,
     "csr_matrix" = read_h5ad_csr_matrix,
@@ -73,8 +85,11 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
     "nullable-integer" = read_h5ad_nullable_integer,
     "nullable-boolean" = read_h5ad_nullable_boolean,
     stop(
-      "No function for reading H5AD encoding '", type,
-      "' for element '", name, "'"
+      "No function for reading H5AD encoding '",
+      type,
+      "' for element '",
+      name,
+      "'"
     )
   )
 
@@ -84,14 +99,18 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
     },
     error = function(e) {
       message <- paste0(
-        "Error reading element '", name, "' of type '", type, "':\n",
+        "Error reading element '",
+        name,
+        "' of type '",
+        type,
+        "':\n",
         conditionMessage(e)
       )
       if (stop_on_error) {
         stop(message)
       } else {
         warning(message)
-        return(NULL) # nolint
+        NULL
       }
     }
   )
@@ -160,8 +179,12 @@ read_h5ad_csc_matrix <- function(file, name, version) {
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
-read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
-                                   type = c("csr_matrix", "csc_matrix")) {
+read_h5ad_sparse_array <- function(
+  file,
+  name,
+  version = "0.1.0",
+  type = c("csr_matrix", "csc_matrix")
+) {
   version <- match.arg(version)
   type <- match.arg(type)
 

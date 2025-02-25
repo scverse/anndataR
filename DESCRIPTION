@@ -57,7 +57,7 @@ Description: Bring the power and flexibility of AnnData to the R
     files, directly access various slots (e.g. X, obs, var), or convert
     the data into SingleCellExperiment and Seurat objects.
 License: MIT + file LICENSE
-URL: https://scverse.org/anndataR, https://github.com/scverse/anndataR
+URL: https://anndatar.data-intuitive.com/, https://github.com/scverse/anndataR
 BugReports: https://github.com/scverse/anndataR/issues
 Depends: 
     R (>= 4.0.0)
