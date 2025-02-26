@@ -21,7 +21,7 @@ read_h5ad_encoding <- function(file, name) {
       )
     },
     error = function(e) {
-      path <- if (is.character(file)) file else file$get_filename()
+      path <- if (is.character(file)) file else file$get_filename() # nolint object_usage_linter
       cli_abort(
         "Encoding attributes not found for element {.val {name}} in {.path {path}}"
       )

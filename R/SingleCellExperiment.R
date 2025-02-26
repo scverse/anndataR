@@ -398,7 +398,7 @@ from_SingleCellExperiment <- function(
 
   output_class <- match.arg(output_class)
 
-  if (!(inherits(adata, "SingleCellExperiment"))) {
+  if (!(inherits(sce, "SingleCellExperiment"))) {
     cli_abort(
       "{.arg sce} must be a {.cls SingleCellExperiment} but has class {.cls {class(sce)}}"
     )

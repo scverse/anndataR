@@ -78,7 +78,7 @@ Access them by using the \code{$} operator. Example: \code{adata$to_Seurat()}.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://scverse.org/anndataR}
+  \item \url{https://anndatar.data-intuitive.com/}
   \item \url{https://github.com/scverse/anndataR}
   \item Report bugs at \url{https://github.com/scverse/anndataR/issues}
 }

@@ -208,14 +208,16 @@ to_Seurat <- function(
       }
 
       if (
-          is.null(names(reduction)) ||
-            !all(names(reduction) %in% c("key", "obsm", "varm")) ||
-            !all(c("key", "obsm") %in% names(reduction))
+        is.null(names(reduction)) ||
+          !all(names(reduction) %in% c("key", "obsm", "varm")) ||
+          !all(c("key", "obsm") %in% names(reduction))
       ) {
+        # nolint start object_usage_linter
         keys_str <- cli::cli_vec(
-          c('key', 'obsm', 'varm'),
+          c("key", "obsm", "varm"),
           list("vec-last" = " and (optionally) ")
         )
+        # nolint end
         cli_abort(c(
           reduction_fmt_msg,
           "i" = "Item {.val {i}} has names: {.val {names(reduction)}}"
@@ -292,7 +294,7 @@ to_Seurat <- function(
     misc_data <- adata[[misc_slot]]
     if (length(misc) == 2) {
       if (!misc_key %in% names(misc_data)) {
-        misc_str <- cli::cli_vec(misc, list("vec-last" = ", "))
+        misc_str <- cli::cli_vec(misc, list("vec-last" = ", ")) # nolint object_usage_linter
         cli_abort(paste(
           "The requested item {.code adata${misc_slot}[[{misc_key}]]}",
           "does not exist for {.code misc_mapping[[{i}]]}:",

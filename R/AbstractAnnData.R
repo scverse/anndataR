@@ -329,9 +329,9 @@ AbstractAnnData <- R6::R6Class(
             "Unexpectd shape for {.field {label}}",
             "i" = paste0(
               "Expected [",
-              paste(shape, collapse = ', '),
+              paste(shape, collapse = ", "),
               "] got [",
-              paste(mat_dims, collapse = ', '),
+              paste(mat_dims, collapse = ", "),
               "]"
             ),
           ),
@@ -341,32 +341,42 @@ AbstractAnnData <- R6::R6Class(
       if (!is.null(expected_rownames) & !has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
           expected_str <- cli::cli_vec(
-            head(expected_rownames, 12), list("vec-last" = ", ")
+            head(expected_rownames, 12),
+            list("vec-last" = ", ")
           )
           provided_str <- cli::cli_vec(
-            head(rownames(mat), 12), list("vec-last" = ", ")
+            head(rownames(mat), 12),
+            list("vec-last" = ", ")
           )
-          cli_abort(c(
-            "{.code rownames({label})} is not as expected",
-            "i" = "Expected row names: {.val {expected_str}}, ...",
-            "i" = "Provided row names: {.val {provided_str}}, ..."
-          ), call = rlang::caller_env())
+          cli_abort(
+            c(
+              "{.code rownames({label})} is not as expected",
+              "i" = "Expected row names: {.val {expected_str}}, ...",
+              "i" = "Provided row names: {.val {provided_str}}, ..."
+            ),
+            call = rlang::caller_env()
+          )
         }
         rownames(mat) <- NULL
       }
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
           expected_str <- cli::cli_vec(
-            head(expected_colnames, 12), list("vec-last" = ", ")
+            head(expected_colnames, 12),
+            list("vec-last" = ", ")
           )
           provided_str <- cli::cli_vec(
-            head(colnames(mat), 12), list("vec-last" = ", ")
+            head(colnames(mat), 12),
+            list("vec-last" = ", ")
           )
-          cli_abort(c(
-            "{.code colnames({label})} is not as expected",
-            "i" = "Expected column names: {.val {expected_str}}, ...",
-            "i" = "Provided column names: {.val {provided_str}}, ..."
-          ), call = rlang::caller_env())
+          cli_abort(
+            c(
+              "{.code colnames({label})} is not as expected",
+              "i" = "Expected column names: {.val {expected_str}}, ...",
+              "i" = "Provided column names: {.val {provided_str}}, ..."
+            ),
+            call = rlang::caller_env()
+          )
         }
         colnames(mat) <- NULL
       }
@@ -393,6 +403,7 @@ AbstractAnnData <- R6::R6Class(
       }
 
       collection <- private$.validate_named_list(collection, label)
+      collection_names <- names(collection)
 
       for (mtx_name in collection_names) {
         collection_name <- paste0(label, "[['", mtx_name, "']]")

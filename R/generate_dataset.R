@@ -383,7 +383,7 @@ generate_dataset <- function(
     } else if (grepl("mat_", uns_type)) {
       generate_matrix(10L, 10L, gsub("mat_", "", uns_type))
     } else {
-      cli_about("Unknown {.field uns} type: {.val {uns_type}}")
+      cli_abort("Unknown {.field uns} type: {.val {uns_type}}")
     }
   })
   names(uns) <- uns_types
