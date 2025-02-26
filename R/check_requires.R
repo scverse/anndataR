@@ -26,7 +26,8 @@ check_requires <- function(what, requires, where = c("CRAN", "Bioc")) {
     if (length(missing) > 1) {
       missing_str <- paste0("c(", missing_str, ")")
     }
-    fun <- switch(where,
+    fun <- switch(
+      where,
       CRAN = "install.packages",
       Bioc = "install.packages(\"BiocManager\"); BiocManager::install"
     )

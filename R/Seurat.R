@@ -119,7 +119,8 @@ to_Seurat <- function(
     names(layers_mapping) <- layers_mapping
   }
   if (
-    !("counts" %in% names(layers_mapping)) && !("data" %in% names(layers_mapping))
+    !("counts" %in% names(layers_mapping)) &&
+      !("data" %in% names(layers_mapping))
   ) {
     stop(paste0(
       "layers_mapping must contain at least an item named \"counts\" or \"data\". Found names: ",
