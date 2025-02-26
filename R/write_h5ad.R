@@ -105,7 +105,7 @@ write_h5ad <- function(
         mode = mode
       )
     } else {
-      stop("Unable to write object of class: ", class(object))
+      cli_abort("Unable to write object of class {.cls {class(object)}}")
     }
   adata$close()
   rm(adata)

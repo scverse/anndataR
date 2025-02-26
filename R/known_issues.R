@@ -24,12 +24,11 @@ read_known_issues <- function() {
         "to_fix"
       )
       if (!all(expected_names %in% names(row))) {
-        stop(
-          "Expected columns ",
-          paste0("'", expected_names, "'", collapse = ", "),
-          " in known_issues.yaml, but got ",
-          paste0("'", names(row), "'", collapse = ", ")
-        )
+        cli_abort(c(
+          "Unexpected columns in {.file known_issues.yaml}",
+          "i" = "Expected columns: {.val {expected_names}}",
+          "i" = "Actual columns: {.val {names(row)}}"
+        ))
       }
 
       expand.grid(row)

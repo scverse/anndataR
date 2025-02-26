@@ -264,10 +264,10 @@ InMemoryAnnData <- R6::R6Class(
 
       # set obs and var first
       if (!is.data.frame(obs)) {
-        stop("obs must be a data.frame")
+        cli_abort("{.arg obs} must be a {.cls data.frame}")
       }
       if (!is.data.frame(var)) {
-        stop("var must be a data.frame")
+        cli_abort("{.arg var} must be a {.cls data.frame}")
       }
       private$.obs <- obs
       private$.var <- var
@@ -310,9 +310,12 @@ InMemoryAnnData <- R6::R6Class(
 # nolint start object_name_linter
 to_InMemoryAnnData <- function(adata) {
   # nolint end object_name_linter
-  stopifnot(
-    inherits(adata, "AbstractAnnData")
-  )
+  if (!(inherits(adata, "AbstractAnnData"))) {
+    cli_abort(
+      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+    )
+  }
+
   InMemoryAnnData$new(
     X = adata$X,
     obs = adata$obs,

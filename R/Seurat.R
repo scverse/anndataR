@@ -91,7 +91,11 @@ to_Seurat <- function(
   # nolint end: object_name_linter
   check_requires("Converting AnnData to Seurat", "SeuratObject")
 
-  stopifnot(inherits(adata, "AbstractAnnData"))
+  if (!(inherits(adata, "AbstractAnnData"))) {
+    cli_abort(
+      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+    )
+  }
 
   if (is.null(layers_mapping)) {
     layers_mapping <- to_Seurat_guess_layers(adata)
@@ -107,7 +111,9 @@ to_Seurat <- function(
   }
 
   if (length(adata$layers) == 0 && is.null(adata$X)) {
-    stop("to_Seurat: adata must have an $X slot or at least one layer")
+    cli_abort(
+      "{.arg adata} must have a valid {.field X} or at least one {.field layer}"
+    )
   }
 
   # store obs and var names
@@ -122,9 +128,9 @@ to_Seurat <- function(
     !("counts" %in% names(layers_mapping)) &&
       !("data" %in% names(layers_mapping))
   ) {
-    stop(paste0(
-      "layers_mapping must contain at least an item named \"counts\" or \"data\". Found names: ",
-      paste(names(layers_mapping), collapse = ", ")
+    cli_abort(c(
+      "{.arg layers_mapping} must contain an item named {.val counts} and/or {.val data}",
+      "i" = "Found names: {.val {names(layers_mapping)}}"
     ))
   }
 
@@ -181,22 +187,41 @@ to_Seurat <- function(
       !is.list(reduction_mapping) ||
         (length(reduction_mapping) > 0 && is.null(names(reduction_mapping)))
     ) {
-      stop("reduction_mapping must be a named list")
+      cli_abort(
+        "{.arg reduction_mapping} must be a named {.cls list}, got {.cls {class(reduction_mapping)}}"
+      )
     }
+
+    reduction_fmt_msg <- paste(
+      "Each item in {.arg reduction_mapping} must be a {.cls list}",
+      "with names {.val {keys_str}}"
+    )
     for (i in seq_along(reduction_mapping)) {
       reduction_name <- names(reduction_mapping)[[i]]
       reduction <- reduction_mapping[[i]]
 
-      if (
-        !is.list(reduction) ||
-          is.null(names(reduction)) ||
-          !all(names(reduction) %in% c("key", "obsm", "varm")) ||
-          !all(c("key", "obsm") %in% names(reduction))
-      ) {
-        stop(
-          "each reduction must be a list with keys 'key', 'obsm', and 'varm'"
-        )
+      if (!is.list(reduction)) {
+        cli_abort(c(
+          reduction_fmt_msg,
+          "i" = "Item {.val {i}} has class {.cls {class(reduction)}}"
+        ))
       }
+
+      if (
+          is.null(names(reduction)) ||
+            !all(names(reduction) %in% c("key", "obsm", "varm")) ||
+            !all(c("key", "obsm") %in% names(reduction))
+      ) {
+        keys_str <- cli::cli_vec(
+          c('key', 'obsm', 'varm'),
+          list("vec-last" = " and (optionally) ")
+        )
+        cli_abort(c(
+          reduction_fmt_msg,
+          "i" = "Item {.val {i}} has names: {.val {names(reduction)}}"
+        ))
+      }
+
       dr <- .to_seurat_process_reduction(
         adata = adata,
         key = reduction$key,
@@ -215,11 +240,10 @@ to_Seurat <- function(
     graph_name <- names(graph_mapping)[[i]]
     graph <- graph_mapping[[i]]
     if (!is.character(graph) || length(graph) != 1) {
-      stop(
-        "item ",
-        graph_name,
-        " in graph_mapping is not a character vector of length 1"
-      )
+      cli_abort(c(
+        "Each item in {.arg graph_mapping} must be a {.cls character} vector of length 1",
+        "i" = "{.code graph_mapping[[{i}]]} is {.obj_type_friendly {graph}}"
+      ))
     }
     obsp <- adata$obsp[[graph]]
     if (!is.null(obsp)) {
@@ -234,11 +258,17 @@ to_Seurat <- function(
   for (i in seq_along(misc_mapping)) {
     misc_name <- names(misc_mapping)[[i]]
     misc <- misc_mapping[[i]]
-    if (!is.character(misc) || length(misc) <= 0 || length(misc) > 2) {
-      stop("misc_mapping must be a named list with one or two elements")
+    if (!is.character(misc) || length(misc) <= 1 || length(misc) > 2) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg misc_mapping} must be a {.cls character} vector",
+          "with one or two elements"
+        ),
+        "i" = "{.code misc_mapping[[{i}]]} is {.obj_type_friendly {misc}}"
+      ))
     }
-    misc_slot <- misc[[1]]
-    misc_key <- misc[[2]]
+    misc_slot <- misc[1]
+    misc_key <- misc[2]
     expected_slots <- c(
       "X",
       "layers",
@@ -251,20 +281,22 @@ to_Seurat <- function(
       "uns"
     )
     if (!misc_slot %in% expected_slots) {
-      stop(paste0(
-        "The first element of each item in misc_mapping must be one of: ",
-        paste0("'", expected_slots, "'", collapse = ", ")
+      cli_abort(c(
+        paste(
+          "The first element in each item of {.arg misc_mapping}",
+          "must be one of: {.or {.val {expected_slots}}}"
+        ),
+        "i" = "{.code misc_mapping[[{i}]][1]}: {.val {misc_slot}}"
       ))
     }
     misc_data <- adata[[misc_slot]]
     if (length(misc) == 2) {
       if (!misc_key %in% names(misc_data)) {
-        stop(paste0(
-          "misc_mapping: adata$",
-          misc_slot,
-          "[[",
-          misc_key,
-          "]] does not exist"
+        misc_str <- cli::cli_vec(misc, list("vec-last" = ", "))
+        cli_abort(paste(
+          "The requested item {.code adata${misc_slot}[[{misc_key}]]}",
+          "does not exist for {.code misc_mapping[[{i}]]}:",
+          "{.val misc_name} = c({.val {misc_str}})"
         ))
       }
       misc_data <- misc_data[[misc_key]]
@@ -293,11 +325,17 @@ to_Seurat <- function(
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {
-    stop("layer_name must be character vector of length 1")
+    cli_abort(
+      "{.arg layer_name} must be a {.cls character} vector of length 1",
+      call = rlang::caller_env()
+    )
   }
 
   if (!layer_name %in% names(adata$layers)) {
-    stop("layer_name '", layer_name, "' is not an item in adata$layers")
+    cli_abort(
+      "layer name {.val {layer_name}} is not an item in {.code adata$layers}",
+      call = rlang::caller_env()
+    )
   }
 
   Matrix::t(adata$layers[[layer_name]])
@@ -309,11 +347,16 @@ to_Seurat <- function(
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {
-    stop("layer_name must be the name of one of the layers or NULL")
+    cli_abort(
+      "{.arg layer_name} must be a {.cls character} vector of length 1",
+      call = rlang::caller_env()
+    )
   }
 
   if (!layer_name %in% names(adata$layers)) {
-    stop("layer_name must be the name of one of the layers or NULL")
+    cli_abort(
+      "{.arg layer_name} must be the name of a layer or {.val NULL}",
+    )
   }
 
   Matrix::t(adata$layers[[layer_name]])
@@ -327,24 +370,35 @@ to_Seurat <- function(
   varm_loadings
 ) {
   if (!.to_seurat_is_atomic_character(key)) {
-    stop("key must be a character scalar")
+    cli_abort(
+      "{.arg key} must be a {.cls character} vector of length 1",
+      call = rlang::caller_env()
+    )
   }
   if (!.to_seurat_is_atomic_character(obsm_embedding)) {
-    stop("obsm_embedding must be a character scalar")
+    cli_abort(
+      "{.arg obsm_embedding} must be a {.cls character} vector of length 1",
+      call = rlang::caller_env()
+    )
   }
   if (
     !is.null(varm_loadings) && !.to_seurat_is_atomic_character(varm_loadings)
   ) {
-    stop("varm_loadings must be a character scalar or NULL")
+    cli_abort(
+      "{.arg varm_loadings} must be a {.cls character} vector of length 1 or {.val NULL}",
+      call = rlang::caller_env()
+    )
   }
   embed <- adata$obsm[[obsm_embedding]]
 
   if (is.null(embed)) {
-    stop(paste0(
-      "The reduction ",
-      obsm_embedding,
-      " is not present in adata$obsm"
-    ))
+    cli_abort(
+      c(
+        "The requested item {.val {obsm_embedding}} does not exist in {.code adata$obsm}",
+        "i" = "{.code names(adata$obsm)}: {.val {names(adata$obsm)}}"
+      ),
+      call = rlang::caller_env()
+    )
   }
 
   rownames(embed) <- adata$obs_names
@@ -353,11 +407,13 @@ to_Seurat <- function(
     if (is.null(varm_loadings)) {
       new(Class = "matrix")
     } else if (!varm_loadings %in% names(adata$varm)) {
-      stop(paste0(
-        "The loadings ",
-        varm_loadings,
-        " is not present in adata$varm"
-      ))
+      cli_abort(
+        c(
+          "The requested item {.val {varm_loadings}} does not exist in {.code adata$varm}",
+          "i" = "{.code names(adata$varm)}: {.val {names(adata$varm)}}"
+        ),
+        call = rlang::caller_env()
+      )
     } else {
       load <- adata$varm[[varm_loadings]]
       rownames(load) <- adata$var_names
@@ -377,7 +433,7 @@ to_Seurat <- function(
 to_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
+    "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
   }
 
   layers <- list()
@@ -405,7 +461,7 @@ to_Seurat_guess_layers <- function(adata) {
 to_Seurat_guess_reductions <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
+    "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
   }
 
   reductions <- list()
@@ -431,7 +487,7 @@ to_Seurat_guess_reductions <- function(adata) {
 to_Seurat_guess_graphs <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
+    "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
   }
 
   graphs <- list()
@@ -452,7 +508,7 @@ to_Seurat_guess_graphs <- function(adata) {
 to_Seurat_guess_misc <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
+    "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
   }
 
   misc_mapping <- list()
@@ -611,7 +667,11 @@ from_Seurat <- function(
 
   output_class <- match.arg(output_class)
 
-  stopifnot(inherits(seurat_obj, "Seurat"))
+  if (!inherits(seurat_obj, "Seurat")) {
+    cli_abort(
+      "{.arg seurat_obj} must be a {.cls Seurat} object but has class {.cls {class(seurat_obj)}}"
+    )
+  }
 
   if (is.null(assay_name)) {
     assay_name <- SeuratObject::DefaultAssay(seurat_obj)
@@ -620,19 +680,19 @@ from_Seurat <- function(
   seurat_assay <- seurat_obj@assays[[assay_name]]
 
   if (is.null(seurat_assay)) {
-    stop(paste0(
-      "The assay '",
-      assay_name,
-      "' does not exist in the Seurat object"
+    cli_abort(c(
+      "{.arg assay_name} is not an assay in {.arg seurat_obj}",
+      "i" = "{.code Assays(seurat_obj)}: {.val {SeuratObject::Assays(seurat_obj)}}"
     ))
   }
 
   if (!inherits(seurat_assay, "Assay5")) {
-    stop(paste0(
-      "Assay '",
-      assay_name,
-      "' is not a valid Seurat v5 assay.\n",
-      "Please use `SeuratObject::UpdateSeuratObject()` to upgrade the object to Seurat v5."
+    cli_abort(c(
+      "The selected assay {.val {assay_name}} is not a {.cls Assay5}",
+      "i" = paste(
+        "Please use {.code SeuratObject::UpdateSeuratObject()} to upgrade",
+        "{.arg seurat_obj} to Seurat v5"
+      )
     ))
   }
 
@@ -698,7 +758,13 @@ from_Seurat <- function(
         obsm_name <- names(obsm_mapping)[[i]]
 
         if (!is.character(obsm) || length(obsm) != 2) {
-          stop("each obsm_mapping must be a character vector of length 2")
+          cli_abort(c(
+            paste(
+              "Each item in {.arg obsm_mapping} must be a {.cls character}",
+              "vector of length 2"
+            ),
+            "i" = "{.code obsm_mapping[[{i}]]} is {.obj_type_friendly {obsm}}"
+          ))
         }
 
         obsm_slot <- obsm[[1]]
@@ -721,7 +787,13 @@ from_Seurat <- function(
         varm_name <- names(varm_mapping)[[i]]
 
         if (!is.character(varm) || length(varm) < 2 || length(varm) > 3) {
-          stop("each varm_mapping must be a character vector of length 2 or 3")
+          cli_abort(c(
+            paste(
+              "Each item in {.arg varm_mapping} must be a {.cls character}",
+              "vector of length 2 or 3"
+            ),
+            "i" = "{.code varm_mapping[[{i}]]} is {.obj_type_friendly {varm}}"
+          ))
         }
 
         varm_slot <- varm[[1]]
@@ -748,7 +820,13 @@ from_Seurat <- function(
         obsp_name <- names(obsp_mapping)[[i]]
 
         if (!is.character(obsp) || length(obsp) < 2 || length(obsp) > 3) {
-          stop("each obsp_mapping must be a character vector of length 2 or 3")
+          cli_abort(c(
+            paste(
+              "Each item in {.arg obsp_mapping} must be a {.cls character}",
+              "vector of length 2 or 3"
+            ),
+            "i" = "{.code obsp_mapping[[{i}]]} is {.obj_type_friendly {obsp}}"
+          ))
         }
 
         key1 <- obsp[[1]]
@@ -775,7 +853,13 @@ from_Seurat <- function(
         varp_name <- names(varp_mapping)[[i]]
 
         if (!is.character(varp) || length(varp) < 2 || length(varp) > 3) {
-          stop("each varp_mapping must be a character vector of length 2 or 3")
+          cli_abort(c(
+            paste(
+              "Each item in {.arg varp_mapping} must be a {.cls character}",
+              "vector of length 2 or 3"
+            ),
+            "i" = "{.code varp_mapping[[{i}]]} is {.obj_type_friendly {varp}}"
+          ))
         }
 
         key1 <- varp[[1]]
@@ -797,7 +881,13 @@ from_Seurat <- function(
         uns_name <- names(uns_mapping)[[i]]
 
         if (!is.character(uns) || length(uns) < 2 || length(uns) > 3) {
-          stop("each uns_mapping must be a character vector of length 2 or 3")
+          cli_abort(c(
+            paste(
+              "Each item in {.arg uns_mapping} must be a {.cls character}",
+              "vector of length 2 or 3"
+            ),
+            "i" = "{.code uns_mapping[[{i}]]} is {.obj_type_friendly {uns}}"
+          ))
         }
 
         key1 <- uns[[1]]
@@ -818,7 +908,7 @@ from_Seurat <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata))
       }
-      stop(e)
+      cli_abort(e)
     }
   )
 }
@@ -827,13 +917,17 @@ from_Seurat <- function(
 from_Seurat_guess_layers <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(seurat_obj, "Seurat")) {
-    stop("The provided object must be a Seurat object")
+    cli_abort(
+      "{.arg seurat_obj} must be a {.cls Seurat} object but has class {.cls {class(seurat_obj)}}"
+    )
   }
 
   seurat_assay <- seurat_obj@assays[[assay_name]]
 
   if (!inherits(seurat_assay, "Assay5")) {
-    stop("The provided object must be a Seurat v5 assay")
+    cli_abort(
+      "The selected assay must be a {.cls Assay5} object but has class {.cls {class(seurat_assay)}}"
+    )
   }
 
   layers_mapping <- list()
@@ -849,7 +943,9 @@ from_Seurat_guess_layers <- function(seurat_obj, assay_name) {
 from_Seurat_guess_obsms <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(seurat_obj, "Seurat")) {
-    stop("The provided object must be a Seurat object")
+    cli_abort(
+      "{.arg seurat_obj} must be a {.cls Seurat} object but has class {.cls {class(seurat_obj)}}"
+    )
   }
 
   obsm_mapping <- list()
@@ -874,7 +970,9 @@ from_Seurat_guess_obsms <- function(seurat_obj, assay_name) {
 from_Seurat_guess_varms <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(seurat_obj, "Seurat")) {
-    stop("The provided object must be a Seurat object")
+    cli_abort(
+      "{.arg seurat_obj} must be a {.cls Seurat} object but has class {.cls {class(seurat_obj)}}"
+    )
   }
 
   varm_mapping <- list()
@@ -894,7 +992,9 @@ from_Seurat_guess_varms <- function(seurat_obj, assay_name) {
 from_Seurat_guess_obsps <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(seurat_obj, "Seurat")) {
-    stop("The provided object must be a Seurat object")
+    cli_abort(
+      "{.arg seurat_obj} must be a {.cls Seurat} object but has class {.cls {class(seurat_obj)}}"
+    )
   }
 
   obsp_mapping <- list()
@@ -922,7 +1022,9 @@ from_Seurat_guess_obsps <- function(seurat_obj, assay_name) {
 from_Seurat_guess_varps <- function(seurat_obj) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(seurat_obj, "Seurat")) {
-    stop("The provided object must be a Seurat object")
+    cli_abort(
+      "{.arg seurat_obj} must be a {.cls Seurat} object but has class {.cls {class(seurat_obj)}}"
+    )
   }
 
   list()
@@ -932,7 +1034,9 @@ from_Seurat_guess_varps <- function(seurat_obj) {
 from_Seurat_guess_uns <- function(seurat_obj) {
   # nolint end: object_name_linter object_length_linter
   if (!inherits(seurat_obj, "Seurat")) {
-    stop("The provided object must be a Seurat object")
+    cli_abort(
+      "{.arg seurat_obj} must be a {.cls Seurat} object but has class {.cls {class(seurat_obj)}}"
+    )
   }
 
   uns_mapping <- list()

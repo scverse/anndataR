@@ -1,6 +1,13 @@
 .abstract_function <- function(fun_name = NA_character_) {
-  fun_name <- if (is.na(fun_name)) "This function" else fun_name
-  stop(fun_name, " is an abstract function.")
+  fun_str <- if (is.na(fun_name)) {
+    "This function"
+  } else {
+    "{.fun {fun_name}}"
+  }
+  cli_abort(
+    paste(fun_str, "is an abstract function."),
+    call = rlang::caller_env()
+  )
 }
 
 #' @title Abstract AnnData class
@@ -317,25 +324,49 @@ AbstractAnnData <- R6::R6Class(
         length(shape) > length(mat_dims) ||
           any(shape != mat_dims[seq_along(shape)])
       ) {
-        stop(paste0(
-          "Unexpected shape for ",
-          label,
-          ". Expected: [",
-          paste(shape, collapse = ", "),
-          "], found: [",
-          paste(mat_dims, collapse = ", "),
-          "]."
-        ))
+        cli_abort(
+          c(
+            "Unexpectd shape for {.field {label}}",
+            "i" = paste0(
+              "Expected [",
+              paste(shape, collapse = ', '),
+              "] got [",
+              paste(mat_dims, collapse = ', '),
+              "]"
+            ),
+          ),
+          call = rlang::caller_env()
+        )
       }
       if (!is.null(expected_rownames) & !has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
-          stop("rownames(", label, ") should be the same as expected_rownames")
+          expected_str <- cli::cli_vec(
+            head(expected_rownames, 12), list("vec-last" = ", ")
+          )
+          provided_str <- cli::cli_vec(
+            head(rownames(mat), 12), list("vec-last" = ", ")
+          )
+          cli_abort(c(
+            "{.code rownames({label})} is not as expected",
+            "i" = "Expected row names: {.val {expected_str}}, ...",
+            "i" = "Provided row names: {.val {provided_str}}, ..."
+          ), call = rlang::caller_env())
         }
         rownames(mat) <- NULL
       }
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
-          stop("colnames(", label, ") should be the same as expected_colnames")
+          expected_str <- cli::cli_vec(
+            head(expected_colnames, 12), list("vec-last" = ", ")
+          )
+          provided_str <- cli::cli_vec(
+            head(colnames(mat), 12), list("vec-last" = ", ")
+          )
+          cli_abort(c(
+            "{.code colnames({label})} is not as expected",
+            "i" = "Expected column names: {.val {expected_str}}, ...",
+            "i" = "Provided column names: {.val {provided_str}}, ..."
+          ), call = rlang::caller_env())
         }
         colnames(mat) <- NULL
       }
@@ -361,13 +392,7 @@ AbstractAnnData <- R6::R6Class(
         return(collection)
       }
 
-      collection_names <- names(collection)
-      if (
-        !is.list(collection) ||
-          ((length(collection) != 0) && is.null(collection_names))
-      ) {
-        stop(paste0(label, " must be a named list, was ", class(collection)))
-      }
+      collection <- private$.validate_named_list(collection, label)
 
       for (mtx_name in collection_names) {
         collection_name <- paste0(label, "[['", mtx_name, "']]")
@@ -395,7 +420,10 @@ AbstractAnnData <- R6::R6Class(
         !is.list(collection) ||
           ((length(collection) != 0) && is.null(collection_names))
       ) {
-        stop(paste0(label, " must be a named list, was ", class(collection)))
+        cli_abort(
+          "{.field {label}} must be a named {.cls list}, got {.cls {class(collection)}}",
+          call = rlang::caller_env()
+        )
       }
 
       collection
@@ -416,21 +444,20 @@ AbstractAnnData <- R6::R6Class(
       }
 
       if (!is.data.frame(df)) {
-        stop(label, " should be a data frame")
+        cli_abort(
+          "{.field label} must be a {.cls data.frame}, got {.cls {class(df)}}",
+          call = rlang::caller_env()
+        )
       }
 
       if (nrow(df) != expected_nrow) {
-        stop(wrap_message(
-          "nrow(df) should match the number of ",
-          label,
-          ". ",
-          "Expected nrow: ",
-          expected_nrow,
-          ". ",
-          "Observed nrow: ",
-          nrow(df),
-          "."
-        ))
+        cli_abort(
+          paste(
+            "{.code nrow({label})} should equal {.val {expected_nrow}},",
+            "got {.val {nrow(df)}}"
+          ),
+          call = rlang::caller_env()
+        )
       }
 
       df
@@ -448,7 +475,10 @@ AbstractAnnData <- R6::R6Class(
       label <- match.arg(label)
 
       if (is.null(names)) {
-        stop(wrap_message(label, "_names should be defined."))
+        cli_abort(
+          "{.field {label}_names} should be defined",
+          call = rlang::caller_env()
+        )
       }
 
       # only check whether sizes match if the obsvar names has already been defined
@@ -458,13 +488,13 @@ AbstractAnnData <- R6::R6Class(
 
         if (length(names) != expected_len) {
           size_check_label <- if (label == "obs") "n_obs" else "n_vars"
-          stop(wrap_message(
-            "length(",
-            label,
-            "_names) should be the same as ad$",
-            size_check_label,
-            "()"
-          ))
+          cli_abort(
+            paste(
+              "{.code length({label}_names)} should match",
+              "{.code ad${size_check_label}}"
+            ),
+            call = rlang::caller_env()
+          )
         }
       }
 
