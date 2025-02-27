@@ -166,11 +166,21 @@ to_SingleCellExperiment <- function(
 
   # construct colPairs
   # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
-  col_pairs <- .to_SCE_process_simple_mapping(adata, colPairs_mapping, "obsp")
+  col_pairs <- .to_SCE_process_simple_mapping(
+    adata,
+    colPairs_mapping,
+    "obsp"
+  ) |>
+    purrr::map(.to_SCE_make_SelfHits)
 
   # construct rowPairs
   # trackstatus: class=SingleCellExperiment, feature=get_varp, status=done
-  row_pairs <- .to_SCE_process_simple_mapping(adata, rowPairs_mapping, "varp")
+  row_pairs <- .to_SCE_process_simple_mapping(
+    adata,
+    rowPairs_mapping,
+    "varp"
+  ) |>
+    purrr::map(.to_SCE_make_SelfHits)
 
   # construct metadata
   # trackstatus: class=SingleCellExperiment, feature=get_uns, status=done
@@ -301,6 +311,22 @@ to_SCE_guess_reduction <- function(adata) {
   } else {
     embedding
   }
+}
+
+# nolint start object_name_linter
+.to_SCE_make_SelfHits <- function(mat) {
+  # nolint end object_name_linter
+
+  # SingleCellExperiment drops NAs when converting to SelfHits,
+  # this implementation keeps them
+  # See https://github.com/drisso/SingleCellExperiment/issues/80
+  nonzero_idx <- BiocGenerics::which(is.na(mat) | mat != 0, arr.ind = TRUE)
+  S4Vectors::SelfHits(
+    from = nonzero_idx[, 1],
+    to = nonzero_idx[, 2],
+    nnode = nrow(mat),
+    x = mat[nonzero_idx]
+  )
 }
 
 #' Convert a SingleCellExperiment object to an AnnData object
