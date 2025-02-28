@@ -84,7 +84,8 @@ Suggests:
     vctrs,
     withr,
     yaml,
-    processx
+    processx,
+    BiocGenerics
 VignetteBuilder: 
     knitr
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,

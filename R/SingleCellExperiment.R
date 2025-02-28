@@ -89,7 +89,7 @@ to_SingleCellExperiment <- function(
 ) {
   check_requires(
     "Converting AnnData to SingleCellExperiment",
-    "SingleCellExperiment",
+    c("SingleCellExperiment", "BiocGenerics", "S4Vectors"),
     "Bioc"
   )
 
