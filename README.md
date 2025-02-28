@@ -11,7 +11,7 @@ the R ecosystem, and to make it easy to work with AnnData files in R,
 either directly or by converting them to a SingleCellExperiment or Seurat
 object.
 
-**{anndataR}** is an scverse community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
+**{anndataR}** is an scverse® community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 
 
 ## Features of {anndataR}
