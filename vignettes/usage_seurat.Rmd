@@ -42,7 +42,7 @@ pak::pak("scverse/anndataR")
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `Seurat` object.
 
-```{r}
+```{r prep_file}
 library(anndataR)
 library(Seurat)
 
@@ -51,14 +51,14 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 Read the `.h5ad` file:
 
-```{r}
+```{r read_data}
 adata <- read_h5ad(h5ad_file)
 adata
 ```
 
 Convert to a `Seurat` object:
 
-```{r}
+```{r convert_seurat}
 seurat_obj <- adata$to_Seurat()
 seurat_obj
 ```
@@ -69,7 +69,7 @@ to ensure that all necessary information has been transferred.
 
 See `?to_Seurat` for more details on how to customize the conversion process. For instance:
 
-```{r}
+```{r customize_seurat_conversion}
 adata$to_Seurat(
   assay_name = "ADT",
   layers_mapping = c(counts = "dense_counts", data = "dense_X")
@@ -80,7 +80,7 @@ adata$to_Seurat(
 
 Here's an example demonstrating how to create a `Seurat` object from scratch, then convert it to `AnnData` and save it as `.h5ad`
 
-```{r}
+```{r create_seurat}
 counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
 seurat_obj <- CreateSeuratObject(counts = counts) |>
   NormalizeData() |>
@@ -94,7 +94,7 @@ seurat_obj
 
 You can convert the `Seurat` object to an `AnnData` object using the `from_Seurat` function:
 
-```{r}
+```{r convert_from_seurat}
 adata <- from_Seurat(seurat_obj)
 adata
 ```
@@ -105,7 +105,7 @@ to ensure that all necessary information has been transferred.
 
 See `?from_Seurat` for more details on how to customize the conversion process. Example:
 
-```{r}
+```{r customize_from_seurat}
 from_Seurat(
   seurat_obj,
   assay_name = "RNA",

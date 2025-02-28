@@ -9,6 +9,11 @@
 #' @param assay_name Name of the assay to be created (default: "RNA").
 #' @param layers_mapping A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
 #'   details.
+#' @param object_metadata_mapping A named list to map observation-level metadata to object-level metadata in the Seurat
+#'   object. See section "Metadata mapping" for more details.
+#' @param assay_metadata_mapping A named list to map variable-level metadata to assay-level metadata in the Seurat
+#'   object.
+#'   See section "Metadata mapping" for more details.
 #' @param reduction_mapping A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
 #'   named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for more details.
 #' @param graph_mapping A named list to map AnnData graphs to Seurat graphs. Each item in the list must be a character
@@ -28,10 +33,29 @@
 #'
 #' * All AnnData layers are copied to Seurat layers by name.
 #'
+#' @section Metadata mapping:
+#'
+#' A named list to map observation-level and feature-level metadata to object-level and assay-level metadata in the
+#' Seurat object.
+#'
+#' Each item in the `object_metadata_mapping` list must be a character vector of length 1, where the values
+#' correspond to the names of the `obs` slot in the AnnData object, and the names correspond to the names of the
+#' metadata in the resulting Seurat object.
+#'
+#' Example: `object_metadata_mapping = list(cellType = "cell_type")`.
+#'
+#' Each item in the `assay_metadata_mapping` list must be a character vector of length 1,
+#' where the values correspond to the names of the `var` slot in the AnnData object, and the names correspond to the
+#' names of the metadata in the resulting Seurat object.
+#'
+#' Example: `assay_metadata_mapping = list(geneInfo = "gene_info")`.
+#'
+#' By default, all metadata in the `obs` and `var` slots will be copied to the Seurat object.
+#'
 #' @section Reduction mapping:
 #'
 #' A named list to map AnnData `$obsm` and `$varm` to Seurat reductions. Each item in the list must be a named list
-#' with keys `'key'`, `'obsm'`, and `'varm'`.
+#' with keys `'key'`, `'obsm'`, and can contain the key `'varm'`.
 #
 #' Example: `reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
 #'
@@ -84,6 +108,8 @@ to_Seurat <- function(
   adata,
   assay_name = "RNA",
   layers_mapping = NULL,
+  object_metadata_mapping = NULL,
+  assay_metadata_mapping = NULL,
   reduction_mapping = NULL,
   graph_mapping = NULL,
   misc_mapping = NULL
@@ -93,8 +119,14 @@ to_Seurat <- function(
 
   stopifnot(inherits(adata, "AbstractAnnData"))
 
+  if (is.null(object_metadata_mapping)) {
+    object_metadata_mapping <- to_Seurat_guess_object_metadata(adata)
+  }
   if (is.null(layers_mapping)) {
     layers_mapping <- to_Seurat_guess_layers(adata)
+  }
+  if (is.null(assay_metadata_mapping)) {
+    assay_metadata_mapping <- to_Seurat_guess_assay_metadata(adata)
   }
   if (is.null(reduction_mapping)) {
     reduction_mapping <- to_Seurat_guess_reductions(adata)
@@ -139,18 +171,20 @@ to_Seurat <- function(
   if (!is.null(data)) {
     dimnames(data) <- list(adata$var_names, adata$obs_names)
   }
+  object_metadata <- to_Seurat_process_metadata(adata, object_metadata_mapping, "obs")
   obj <- SeuratObject::CreateSeuratObject(
-    meta.data = adata$obs,
+    meta.data = object_metadata,
     assay = assay_name,
     counts = counts,
     data = data
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
+  assay_metadata <- to_Seurat_process_metadata(adata, assay_metadata_mapping, "var")
   if (!is.null(adata$var)) {
     obj@assays[[assay_name]] <- SeuratObject::AddMetaData(
       obj@assays[[assay_name]],
-      metadata = adata$var
+      metadata = assay_metadata
     )
   }
 
@@ -169,7 +203,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- adata$layers[[from]]
+      ) <- t(adata$layers[[from]])
     }
   }
 
@@ -194,7 +228,7 @@ to_Seurat <- function(
           !all(c("key", "obsm") %in% names(reduction))
       ) {
         stop(
-          "each reduction must be a list with keys 'key', 'obsm', and 'varm'"
+          "each reduction must be a list with keys 'key', 'obsm', and may contain the key 'varm'"
         )
       }
       dr <- .to_seurat_process_reduction(
@@ -238,7 +272,7 @@ to_Seurat <- function(
       stop("misc_mapping must be a named list with one or two elements")
     }
     misc_slot <- misc[[1]]
-    misc_key <- misc[[2]]
+
     expected_slots <- c(
       "X",
       "layers",
@@ -258,6 +292,7 @@ to_Seurat <- function(
     }
     misc_data <- adata[[misc_slot]]
     if (length(misc) == 2) {
+      misc_key <- misc[[2]]
       if (!misc_key %in% names(misc_data)) {
         stop(paste0(
           "misc_mapping: adata$",
@@ -470,6 +505,51 @@ to_Seurat_guess_misc <- function(adata) {
   misc_mapping
 }
 
+to_Seurat_guess_object_metadata <- function(adata) { # nolint
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  object_metadata_mapping <- list()
+
+  if (!is.null(adata$obs)) {
+    for (key in names(adata$obs)) {
+      object_metadata_mapping[[key]] <- key
+    }
+  }
+
+  object_metadata_mapping
+}
+
+to_Seurat_guess_assay_metadata <- function(adata) { # nolint
+  if (!inherits(adata, "AbstractAnnData")) {
+    stop("adata must be an object inheriting from AbstractAnnData")
+  }
+
+  assay_metadata_mapping <- list()
+
+  if (!is.null(adata$var)) {
+    for (key in names(adata$var)) {
+      assay_metadata_mapping[[key]] <- key
+    }
+  }
+
+  assay_metadata_mapping
+}
+
+to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
+  # check if mapping contains all columns of slot
+  if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
+    adata[[slot]]
+  } else {
+    mapped <- lapply(seq_along(mapping), function(i) {
+      adata[[slot]][[mapping[[i]]]]
+    })
+    names(mapped) <- names(mapping)
+    as.data.frame(mapped)
+  }
+}
+
 #' Convert a Seurat object to an AnnData object
 #'
 #' `from_Seurat()` converts a Seurat object to an AnnData object.
@@ -486,6 +566,11 @@ to_Seurat_guess_misc <- function(adata) {
 #' `X` slot.
 #' @param layers_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in
 #' the list must be a character vector of length 1. See section "`$layers` mapping" for more details.
+#' @param obs_mapping A named list mapping obs names to the names of the object-level (cell level) metadata in the
+#' Seurat object. Each item in the list must be a character vector of length 1. See section "`$obs` mapping" for
+#' more details.
+#' @param var_mapping A named list mapping var names to the names of the feature-level metadata in the Seurat object.
+#' Each item in the list must be a character vector of length 1. See section "`$var` mapping" for more details.
 #' @param obsm_mapping A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
 #' the list must be a vector of length 2. See section "`$obsm` mapping" for more details.
 #' @param varm_mapping A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
@@ -516,6 +601,26 @@ to_Seurat_guess_misc <- function(adata) {
 #' * This means that the AnnData `X` slot will be `NULL` (empty). If you want to copy data to the `X` slot,
 #'   you must define the layer mapping explicitly.
 #'
+#' @section `$obs` mapping:
+#'
+#' A named list to map Seurat object-level metadata to AnnData `$obs`. Each item in the list must be a character vector
+#' of length 1, where the values correspond to the names of the metadata in the Seurat object, and the names correspond
+#' to the names of the metadata in the resulting `$obs` slot.
+#'
+#' If `NULL`, the internal function `from_Seurat_guess_obs` will be used to guess the obs mapping as follows:
+#'
+#' * All Seurat object-level metadata is copied to AnnData `$obs` by name.
+#'
+#' @section `$var` mapping:
+#'
+#' A named list to map Seurat feature-level metadata to AnnData `$var`. Each item in the list must be a character vector
+#' of length 1, where the values correspond to the names of the metadata of the assay in the Seurat object, and the
+#' names correspond to the names of the metadata in the resulting `$var` slot.
+#'
+#' If `NULL`, the internal function `from_Seurat_guess_vars` will be used to guess the var mapping as follows:
+#'
+#' * All Seurat feature-level metadata is copied to AnnData `$var` by name.
+#
 #' @section `$obsm` mapping:
 #'
 #' A named list to map Seurat reductions to AnnData `$obsm`.
@@ -547,7 +652,10 @@ to_Seurat_guess_misc <- function(adata) {
 #'
 #' A named list to map Seurat graphs to AnnData `$obsp`.
 #'
-#' Example: `obsp_mapping = list(nn = "connectivities")`.
+#' Each item in the list must be a character vector of length 2, where the name corresponds to the name of the resulting
+#' `$obsp` slot, and the value corresponds to the location of the data in the Seurat object.
+#'
+#' Example: `obsp_mapping = list(connectivities = c("graphs", "RNA_nn"))`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_obsps` will be used to guess the obsp mapping as follows:
 #'
@@ -600,6 +708,8 @@ from_Seurat <- function(
   assay_name = NULL,
   x_mapping = NULL,
   layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
   obsm_mapping = NULL,
   varm_mapping = NULL,
   obsp_mapping = NULL,
@@ -639,6 +749,12 @@ from_Seurat <- function(
   if (is.null(layers_mapping)) {
     layers_mapping <- from_Seurat_guess_layers(seurat_obj, assay_name)
   }
+  if (is.null(obs_mapping)) {
+    obs_mapping <- from_Seurat_guess_obs(seurat_obj, assay_name)
+  }
+  if (is.null(var_mapping)) {
+    var_mapping <- from_Seurat_guess_var(seurat_obj, assay_name)
+  }
   if (is.null(obsm_mapping)) {
     obsm_mapping <- from_Seurat_guess_obsms(seurat_obj, assay_name)
   }
@@ -658,12 +774,16 @@ from_Seurat <- function(
   # fetch obs
   # trackstatus: class=Seurat, feature=set_obs_names, status=done
   # trackstatus: class=Seurat, feature=set_obs, status=done
-  obs <- seurat_obj@meta.data
+  obs <- from_Seurat_process_obs(seurat_obj, assay_name, obs_mapping)
+
 
   # fetch var
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
-  var <- seurat_assay@meta.data
+  var <- from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
+
+  rownames(var) <- rownames(seurat_obj)
+
 
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
@@ -823,6 +943,85 @@ from_Seurat <- function(
   )
 }
 
+from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) { # nolint
+  obs <- list()
+
+  for (obs_name in names(obs_mapping)) {
+    obs[[obs_name]] <- seurat_obj@meta.data[[obs_mapping[[obs_name]]]]
+  }
+
+  if (inherits(obs, "list") && length(obs) == 0) {
+    obs <- as.data.frame(colnames(seurat_obj))
+    rownames(obs) <- colnames(seurat_obj)
+    obs[, 1] <- NULL
+  } else {
+    obs <- as.data.frame(obs)
+    rownames(obs) <- colnames(seurat_obj)
+  }
+
+  obs
+}
+
+from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) { # nolint
+  var <- list()
+
+  for (var_name in names(var_mapping)) {
+    var[[var_name]] <- seurat_obj@assays[[assay_name]]@meta.data[[var_mapping[[var_name]]]]
+  }
+
+  if (inherits(var, "list") && length(var) == 0) {
+    var <- as.data.frame(rownames(seurat_obj))
+    rownames(var) <- rownames(seurat_obj)
+    var[, 1] <- NULL
+  } else {
+    var <- as.data.frame(var)
+    rownames(var) <- rownames(seurat_obj)
+  }
+
+  var
+}
+
+
+from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) { # nolint
+  obs <- list()
+
+  for (obs_name in names(obs_mapping)) {
+    obs[[obs_name]] <- seurat_obj@meta.data[[obs_mapping[[obs_name]]]]
+  }
+
+  if (inherits(obs, "list") && length(obs) == 0) {
+    obs <- as.data.frame(colnames(seurat_obj))
+    rownames(obs) <- colnames(seurat_obj)
+    obs[, 1] <- NULL
+  } else {
+    obs <- as.data.frame(obs)
+    rownames(obs) <- colnames(seurat_obj)
+  }
+
+  obs
+}
+
+from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) { # nolint
+  var <- list()
+
+  for (var_name in names(var_mapping)) {
+    var[[var_name]] <- seurat_obj@assays[[assay_name]]@meta.data[[var_mapping[[var_name]]]]
+  }
+
+  if (inherits(var, "list") && length(var) == 0) {
+    var <- as.data.frame(rownames(seurat_obj))
+    rownames(var) <- rownames(seurat_obj)
+    var[, 1] <- NULL
+  } else {
+    var <- as.data.frame(var)
+    rownames(var) <- rownames(seurat_obj)
+  }
+
+  var
+}
+
+
+
 # nolint start: object_name_linter object_length_linter
 from_Seurat_guess_layers <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
@@ -843,6 +1042,66 @@ from_Seurat_guess_layers <- function(seurat_obj, assay_name) {
   }
 
   layers_mapping
+}
+
+from_Seurat_guess_obs <- function(seurat_obj, assay_name) { # nolint
+  if (!inherits(seurat_obj, "Seurat")) {
+    stop("The provided object must be a Seurat object")
+  }
+
+  obs_mapping <- list()
+
+  for (obs_name in names(seurat_obj@meta.data)) {
+    obs_mapping[[obs_name]] <- obs_name
+  }
+
+  obs_mapping
+}
+
+from_Seurat_guess_var <- function(seurat_obj, assay_name) { # nolint
+  if (!inherits(seurat_obj, "Seurat")) {
+    stop("The provided object must be a Seurat object")
+  }
+
+  var_mapping <- list()
+
+  if (!is.null(seurat_obj@assays[[assay_name]]@meta.data)) {
+    for (var_name in names(seurat_obj@assays[[assay_name]]@meta.data)) {
+      var_mapping[[var_name]] <- var_name
+    }
+  }
+
+  var_mapping
+}
+
+from_Seurat_guess_obs <- function(seurat_obj, assay_name) { # nolint
+  if (!inherits(seurat_obj, "Seurat")) {
+    stop("The provided object must be a Seurat object")
+  }
+
+  obs_mapping <- list()
+
+  for (obs_name in names(seurat_obj@meta.data)) {
+    obs_mapping[[obs_name]] <- obs_name
+  }
+
+  obs_mapping
+}
+
+from_Seurat_guess_var <- function(seurat_obj, assay_name) { # nolint
+  if (!inherits(seurat_obj, "Seurat")) {
+    stop("The provided object must be a Seurat object")
+  }
+
+  var_mapping <- list()
+
+  if (!is.null(seurat_obj@assays[[assay_name]]@meta.data)) {
+    for (var_name in names(seurat_obj@assays[[assay_name]]@meta.data)) {
+      var_mapping[[var_name]] <- var_name
+    }
+  }
+
+  var_mapping
 }
 
 # nolint start: object_name_linter object_length_linter
