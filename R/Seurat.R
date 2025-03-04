@@ -508,13 +508,8 @@ to_Seurat_guess_object_metadata <- function(adata) { # nolint
     stop("adata must be an object inheriting from AbstractAnnData")
   }
 
-  object_metadata_mapping <- list()
-
-  if (!is.null(adata$obs)) {
-    for (key in names(adata$obs)) {
-      object_metadata_mapping[[key]] <- key
-    }
-  }
+  object_metadata_mapping <- as.list(names(adata$obs))
+  names(object_metadata_mapping) <- names(adata$obs)
 
   object_metadata_mapping
 }
@@ -524,13 +519,8 @@ to_Seurat_guess_assay_metadata <- function(adata) { # nolint
     stop("adata must be an object inheriting from AbstractAnnData")
   }
 
-  assay_metadata_mapping <- list()
-
-  if (!is.null(adata$var)) {
-    for (key in names(adata$var)) {
-      assay_metadata_mapping[[key]] <- key
-    }
-  }
+  assay_metadata_mapping <- as.list(names(adata$var))
+  names(assay_metadata_mapping) <- names(adata$var)
 
   assay_metadata_mapping
 }
