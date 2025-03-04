@@ -591,9 +591,11 @@ to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
 #'
 #' @section `$obs` mapping:
 #'
-#' A named list to map Seurat object-level metadata to AnnData `$obs`. Each item in the list must be a character vector
-#' of length 1, where the values correspond to the names of the metadata in the Seurat object, and the names correspond
-#' to the names of the metadata in the resulting `$obs` slot.
+#' A named list or vector to map Seurat object-level metadata to AnnData `$obs`. The values of this list or vector
+#' correspond to the names of the metadata in the Seurat object, and the names correspond to the names of the
+#' metadata in the resulting `$obs` slot.
+#' 
+#' Example: `obs_mapping = list(cellType = "cell_type")`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_obs` will be used to guess the obs mapping as follows:
 #'
@@ -601,9 +603,11 @@ to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
 #'
 #' @section `$var` mapping:
 #'
-#' A named list to map Seurat feature-level metadata to AnnData `$var`. Each item in the list must be a character vector
-#' of length 1, where the values correspond to the names of the metadata of the assay in the Seurat object, and the
+#' A named list or vector to map Seurat feature-level metadata to AnnData `$var`. The values of this list or
+#' vector correspond to the names of the metadata of the assay in the Seurat object, and the
 #' names correspond to the names of the metadata in the resulting `$var` slot.
+#' 
+#' Example: `var_mapping = list(geneInfo = "gene_info")`.
 #'
 #' If `NULL`, the internal function `from_Seurat_guess_vars` will be used to guess the var mapping as follows:
 #'
@@ -639,9 +643,10 @@ to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
 #' @section `$obsp` mapping:
 #'
 #' A named list to map Seurat graphs to AnnData `$obsp`.
-#'
-#' Each item in the list must be a character vector of length 2, where the name corresponds to the name of the resulting
-#' `$obsp` slot, and the value corresponds to the location of the data in the Seurat object.
+#' 
+#' Each name in the list corresponds to the name of the resulting `$obsp` slot. Each value must be a character vector
+#' of length 2, where the first element of this vector must be `graphs` or `misc`, and the second element is the name
+#' of the data in the corresponding `graphs` or `misc` slot in the Seurat object.
 #'
 #' Example: `obsp_mapping = list(connectivities = c("graphs", "RNA_nn"))`.
 #'
