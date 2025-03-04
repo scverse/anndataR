@@ -34,16 +34,18 @@
 #'   seurat <- read_h5ad(h5ad_file, to = "Seurat")
 #' }
 read_h5ad <- function(
-    path,
-    to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
-    mode = c("r", "r+", "a", "w", "w-", "x"),
-    ...) {
+  path,
+  to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+  mode = c("r", "r+", "a", "w", "w-", "x"),
+  ...
+) {
   to <- match.arg(to)
   mode <- match.arg(mode)
 
   adata <- HDF5AnnData$new(path, mode = mode)
 
-  fun <- switch(to,
+  fun <- switch(
+    to,
     "SingleCellExperiment" = to_SingleCellExperiment,
     "Seurat" = to_Seurat,
     "InMemoryAnnData" = to_InMemoryAnnData,
