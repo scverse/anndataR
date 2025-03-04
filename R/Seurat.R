@@ -168,7 +168,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- t(adata$layers[[from]])
+      ) <- Matrix::t(adata$layers[[from]])
     }
   }
 

@@ -18,7 +18,7 @@ library(Seurat)
 
 seu <- ad$to_Seurat()
 
-test_that("to_Seurat retains nr of observations and features", {
+test_that("to_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)
   expect_equal(ncol(seu), 10)
 
@@ -59,7 +59,7 @@ for (var_key in colnames(ad$var)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    active_assay <- seu@assays[[seu@active.assay]]
+    active_assay <- Assays(seu, DefaultAssay(seu))
     expect_true(var_key %in% colnames(active_assay@meta.data))
     expect_equal(active_assay@meta.data[[var_key]], ad$var[[var_key]])
   })
@@ -160,7 +160,7 @@ active_assay <- obj@assays[[obj@active.assay]]
 
 ad <- from_Seurat(obj)
 
-test_that("from_SCE retains nr of observations and features", {
+test_that("from_SCE retains number of observations and features", {
   expect_equal(ad$n_obs(), 200L)
   expect_equal(ad$n_vars(), 100L)
 
