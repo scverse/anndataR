@@ -89,7 +89,7 @@ to_SingleCellExperiment <- function(
 ) {
   check_requires(
     "Converting AnnData to SingleCellExperiment",
-    c("SingleCellExperiment", "BiocGenerics", "S4Vectors"),
+    c("SingleCellExperiment", "DelayedArray", "S4Vectors"),
     "Bioc"
   )
 
@@ -320,7 +320,7 @@ to_SCE_guess_reduction <- function(adata) {
   # SingleCellExperiment drops NAs when converting to SelfHits,
   # this implementation keeps them
   # See https://github.com/drisso/SingleCellExperiment/issues/80
-  nonzero_idx <- BiocGenerics::which(is.na(mat) | mat != 0, arr.ind = TRUE)
+  nonzero_idx <- DelayedArray::nzwhich(mat, arr.ind = TRUE)
   S4Vectors::SelfHits(
     from = nonzero_idx[, 1],
     to = nonzero_idx[, 2],

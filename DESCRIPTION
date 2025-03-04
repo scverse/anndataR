@@ -85,7 +85,7 @@ Suggests:
     withr,
     yaml,
     processx,
-    BiocGenerics
+    DelayedArray
 VignetteBuilder: 
     knitr
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
