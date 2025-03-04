@@ -110,7 +110,7 @@ read_h5ad_element <- function(
         stop(message)
       } else {
         warning(message)
-        return(NULL)
+        NULL
       }
     }
   )
