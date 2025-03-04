@@ -35,18 +35,16 @@
 #'
 #' @section Metadata mapping:
 #'
-#' A named list to map observation-level and feature-level metadata to object-level and assay-level metadata in the
+#' A named list or vector to map observation-level and feature-level metadata to object-level and assay-level metadata in the
 #' Seurat object.
 #'
-#' Each item in the `object_metadata_mapping` list must be a character vector of length 1, where the values
-#' correspond to the names of the `obs` slot in the AnnData object, and the names correspond to the names of the
-#' metadata in the resulting Seurat object.
+#' Each value in the `object_metadata_mapping` list or vector corresponds to the names of the `obs` slot in the AnnData 
+#' object, and each of the names correspond to the names of the metadata in the resulting Seurat object.
 #'
-#' Example: `object_metadata_mapping = list(cellType = "cell_type")`.
+#' Example: `object_metadata_mapping = c(cellType = "cell_type")`.
 #'
-#' Each item in the `assay_metadata_mapping` list must be a character vector of length 1,
-#' where the values correspond to the names of the `var` slot in the AnnData object, and the names correspond to the
-#' names of the metadata in the resulting Seurat object.
+#' Each value in the `assay_metadata_mapping` list or vector corresponds to the names of the `var` slot in the AnnData
+#' object, and the names correspond to the names of the metadata in the resulting Seurat object.
 #'
 #' Example: `assay_metadata_mapping = list(geneInfo = "gene_info")`.
 #'
