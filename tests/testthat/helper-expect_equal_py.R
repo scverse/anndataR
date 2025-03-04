@@ -16,7 +16,9 @@ expect_equal_py <- function(a, b) {
         check_exact = FALSE
       )
     )
-  } else if (inherits(a, "np.ndarray") || inherits(a, "scipy.sparse.base.spmatrix")) {
+  } else if (
+    inherits(a, "np.ndarray") || inherits(a, "scipy.sparse.base.spmatrix")
+  ) {
     scipy <- reticulate::import("scipy")
     np <- reticulate::import("numpy")
 

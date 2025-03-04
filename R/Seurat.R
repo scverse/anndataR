@@ -151,7 +151,8 @@ to_Seurat <- function(
     names(layers_mapping) <- layers_mapping
   }
   if (
-    !("counts" %in% names(layers_mapping)) && !("data" %in% names(layers_mapping))
+    !("counts" %in% names(layers_mapping)) &&
+      !("data" %in% names(layers_mapping))
   ) {
     stop(paste0(
       "layers_mapping must contain at least an item named \"counts\" or \"data\". Found names: ",
@@ -202,7 +203,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- t(adata$layers[[from]])
+      ) <- Matrix::t(adata$layers[[from]])
     }
   }
 

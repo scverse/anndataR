@@ -1,5 +1,4 @@
-# {anndataR}: An R package for working with AnnData objects
-
+# {anndataR}: An R package for working with AnnData objects <img src="man/figures/logo.png" align="right" alt="anndataR logo" width=120 />
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/anndataR.png)](https://CRAN.R-project.org/package=anndataR)
@@ -11,7 +10,7 @@ the R ecosystem, and to make it easy to work with AnnData files in R,
 either directly or by converting them to a SingleCellExperiment or Seurat
 object.
 
-**{anndataR}** is an scverse community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
+**{anndataR}** is an scverse® community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 
 
 ## Features of {anndataR}

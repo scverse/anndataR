@@ -2,7 +2,10 @@ skip_if_not_installed("hdf5r")
 
 requireNamespace("vctrs")
 
-file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
+file <- hdf5r::H5File$new(
+  system.file("extdata", "example.h5ad", package = "anndataR"),
+  mode = "r"
+)
 on.exit(file$close())
 
 test_that("reading encoding works", {
@@ -34,7 +37,8 @@ test_that("reading sparse matrices works", {
 
 test_that("reading recarrays works", {
   array_list <- read_h5ad_rec_array(
-    file, "uns/rank_genes_groups/logfoldchanges"
+    file,
+    "uns/rank_genes_groups/logfoldchanges"
   )
   expect_true(is.list(array_list))
   expect_equal(names(array_list), c("0", "1", "2", "3", "4", "5"))
@@ -110,9 +114,17 @@ test_that("reading dataframes works", {
   expect_equal(
     colnames(df),
     c(
-      "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA",
-      "n_genes_by_counts", "log1p_n_genes_by_counts", "total_counts",
-      "log1p_total_counts", "leiden"
+      "Float",
+      "FloatNA",
+      "Int",
+      "IntNA",
+      "Bool",
+      "BoolNA",
+      "n_genes_by_counts",
+      "log1p_n_genes_by_counts",
+      "total_counts",
+      "log1p_total_counts",
+      "leiden"
     )
   )
 })

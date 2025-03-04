@@ -27,7 +27,14 @@ args2 <- formals(.generate_dataset_as_list)
 # If any of these tests are failing, the arguments of generate_dataset()
 # need to be updated to include the new generator types.
 for (arg in intersect(names(args1), names(args2))) {
-  test_that(paste0("generate_dataset(): argument '", arg, "' has correct default value"), {
-    expect_equal(eval(args1[[arg]]), eval(args2[[arg]]))
-  })
+  test_that(
+    paste0(
+      "generate_dataset(): argument '",
+      arg,
+      "' has correct default value"
+    ),
+    {
+      expect_equal(eval(args1[[arg]]), eval(args2[[arg]]))
+    }
+  )
 }

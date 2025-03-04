@@ -23,9 +23,12 @@ jobs:
         with:
           use-public-rspm: true
 
+      - name: Install air
+        run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::lintr, local::.
+          extra-packages: any::lintr, any::styler, local::.
           needs: lint
 
       - name: Lint
@@ -33,3 +36,10 @@ jobs:
         shell: Rscript {0}
         env:
           LINTR_ERROR_ON_LINT: true
+
+      - name: Check code style
+        run: air format --check .
+
+      - name: Check vignette style
+        run: styler::style_dir("vignettes", dry = "fail")
+        shell: Rscript {0}

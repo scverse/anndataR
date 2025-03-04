@@ -10,7 +10,15 @@ HDF5AnnData <- R6::R6Class(
   private = list(
     .h5obj = NULL,
     .close_on_finalize = FALSE,
-    .compression = NULL
+    .compression = NULL,
+
+    #' @description Close the HDF5 file when the object is garbage collected
+    finalize = function() {
+      if (private$.close_on_finalize) {
+        self$close()
+      }
+      invisible(self)
+    }
   ),
   active = list(
     #' @field X The X slot
@@ -360,14 +368,6 @@ HDF5AnnData <- R6::R6Class(
           stop("uns must be NULL when loading an existing .h5ad file")
         }
       }
-    },
-
-    #' @description Close the HDF5 file when the object is garbage collected
-    finalize = function() {
-      if (private$.close_on_finalize) {
-        self$close()
-      }
-      invisible(self)
     },
 
     #' @description Close the HDF5 file

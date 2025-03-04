@@ -18,7 +18,7 @@ library(Seurat)
 
 seu <- ad$to_Seurat()
 
-test_that("to_Seurat retains nr of observations and features", {
+test_that("to_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)
   expect_equal(ncol(seu), 10)
 
@@ -30,7 +30,6 @@ test_that("to_Seurat retains nr of observations and features", {
 
 # trackstatus: class=Seurat, feature=test_get_obs, status=done
 for (obs_key in colnames(ad$obs)) {
-
   test_that(paste0("to_Seurat retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
@@ -42,13 +41,16 @@ for (obs_key in colnames(ad$obs)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(obs_key %in% colnames(seu@meta.data))
-    expect_equal(seu@meta.data[[obs_key]], ad$obs[[obs_key]], info = paste0("obs_key: ", obs_key))
+    expect_equal(
+      seu@meta.data[[obs_key]],
+      ad$obs[[obs_key]],
+      info = paste0("obs_key: ", obs_key)
+    )
   })
 }
 
 # trackstatus: class=Seurat, feature=test_get_var, status=done
 for (var_key in colnames(ad$var)) {
-
   test_that(paste0("to_Seurat retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
@@ -59,7 +61,7 @@ for (var_key in colnames(ad$var)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    active_assay <- seu@assays[[seu@active.assay]]
+    active_assay <- Assays(seu, DefaultAssay(seu))
     expect_true(var_key %in% colnames(active_assay@meta.data))
     expect_equal(active_assay@meta.data[[var_key]], ad$var[[var_key]])
   })
@@ -68,7 +70,6 @@ for (var_key in colnames(ad$var)) {
 
 # trackstatus: class=Seurat, feature=test_get_layers, status=done
 for (layer_key in names(ad$layers)) {
-
   test_that(paste0("to_Seurat retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
@@ -95,7 +96,6 @@ for (layer_key in names(ad$layers)) {
 
 # trackstatus: class=Seurat, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {
-
   test_that(paste0("to_Seurat retains uns key: ", uns_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
@@ -160,7 +160,7 @@ active_assay <- obj@assays[[obj@active.assay]]
 
 ad <- from_Seurat(obj)
 
-test_that("from_SCE retains nr of observations and features", {
+test_that("from_SCE retains number of observations and features", {
   expect_equal(ad$n_obs(), 200L)
   expect_equal(ad$n_vars(), 100L)
 
@@ -172,7 +172,6 @@ test_that("from_SCE retains nr of observations and features", {
 
 # trackstatus: class=Seurat, feature=test_set_obs, status=done
 for (obs_key in colnames(obj@meta.data)) {
-
   test_that(paste0("from_Seurat retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -184,13 +183,16 @@ for (obs_key in colnames(obj@meta.data)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(obs_key %in% colnames(ad$obs))
-    expect_equal(ad$obs[[obs_key]], obj@meta.data[[obs_key]], info = paste0("obs_key: ", obs_key))
+    expect_equal(
+      ad$obs[[obs_key]],
+      obj@meta.data[[obs_key]],
+      info = paste0("obs_key: ", obs_key)
+    )
   })
 }
 
 # trackstatus: class=Seurat, feature=test_set_var, status=done
 for (var_key in colnames(active_assay@meta.data)) {
-
   test_that(paste0("from_Seurat retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -208,7 +210,6 @@ for (var_key in colnames(active_assay@meta.data)) {
 
 # trackstatus: class=Seurat, feature=test_set_layers, status=done
 for (layer_key in names(active_assay@layers)) {
-
   test_that(paste0("from_Seurat retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -233,7 +234,6 @@ for (layer_key in names(active_assay@layers)) {
 
 # trackstatus: class=Seurat, feature=test_set_uns
 for (uns_key in names(obj@misc)) {
-
   test_that(paste0("from_Seurat retains uns key: ", uns_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -261,9 +261,16 @@ test_that("from_Seurat retains pca", {
 
   skip_if(!is.null(msg), message = msg)
 
-  expect_equal(ad$obsm[["X_pca"]], Embeddings(obj, reduction = "pca"), ignore_attr = TRUE)
-  expect_equal(ad$varm[["PCs"]], Loadings(obj, reduction = "pca"), ignore_attr = TRUE)
-
+  expect_equal(
+    ad$obsm[["X_pca"]],
+    Embeddings(obj, reduction = "pca"),
+    ignore_attr = TRUE
+  )
+  expect_equal(
+    ad$varm[["PCs"]],
+    Loadings(obj, reduction = "pca"),
+    ignore_attr = TRUE
+  )
 })
 
 test_that("from_Seurat retains umap", {
@@ -277,7 +284,11 @@ test_that("from_Seurat retains umap", {
 
   skip_if(!is.null(msg), message = msg)
 
-  expect_equal(ad$obsm[["X_umap"]], Embeddings(obj, reduction = "umap"), ignore_attr = TRUE)
+  expect_equal(
+    ad$obsm[["X_umap"]],
+    Embeddings(obj, reduction = "umap"),
+    ignore_attr = TRUE
+  )
 })
 
 # trackstatus: class=Seurat, feature=test_set_graphs, status=done
@@ -292,6 +303,14 @@ test_that("from_Seurat retains connectivities", {
 
   skip_if(!is.null(msg), message = msg)
 
-  expect_equal(as.matrix(ad$obsp[["connectivities"]]), as.matrix(obj@graphs[["RNA_nn"]]), ignore_attr = TRUE)
-  expect_equal(as.matrix(ad$obsp[["snn"]]), as.matrix(obj@graphs[["RNA_snn"]]), ignore_attr = TRUE)
+  expect_equal(
+    as.matrix(ad$obsp[["connectivities"]]),
+    as.matrix(obj@graphs[["RNA_nn"]]),
+    ignore_attr = TRUE
+  )
+  expect_equal(
+    as.matrix(ad$obsp[["snn"]]),
+    as.matrix(obj@graphs[["RNA_snn"]]),
+    ignore_attr = TRUE
+  )
 })

@@ -38,7 +38,9 @@ check_arg <- function(args, name, falseval) {
 r_generate_dataset <- function(n_obs, n_vars, write = FALSE, ...) {
   args <- list(...)
 
-  data <- generate_dataset(n_obs, n_vars,
+  data <- generate_dataset(
+    n_obs,
+    n_vars,
     x_type = check_arg(args, "x_type", "numeric_matrix"),
     layer_types = check_arg(args, "layer_types", character()),
     obs_types = ifelse("obs_types" %in% names(args), args$obs_types, "integer"),
