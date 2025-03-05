@@ -57,7 +57,6 @@ ad$obsm[["X_umap"]] <- matrix(1:20, 10, 2)
 
 ad$obsp[["connectivities"]] <- ad$obsp[["numeric_matrix"]]
 ad$obsp[["connectivities_sparse"]] <- ad$obsp[["numeric_csparse"]]
-
 ```
 
 # Convert AnnData objects to Seurat objects
