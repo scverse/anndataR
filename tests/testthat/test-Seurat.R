@@ -61,7 +61,7 @@ for (var_key in colnames(ad$var)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    active_assay <- Assays(seu, DefaultAssay(seu))
+    active_assay <- seu[[DefaultAssay(seu)]]
     expect_true(var_key %in% colnames(active_assay@meta.data))
     expect_equal(active_assay@meta.data[[var_key]], ad$var[[var_key]])
   })
@@ -185,7 +185,7 @@ for (obs_key in colnames(obj@meta.data)) {
     expect_true(obs_key %in% colnames(ad$obs))
     expect_equal(
       ad$obs[[obs_key]],
-      obj@meta.data[[obs_key]],
+      obj[[obs_key]],
       info = paste0("obs_key: ", obs_key)
     )
   })
@@ -204,7 +204,7 @@ for (var_key in colnames(active_assay@meta.data)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(var_key %in% colnames(ad$var))
-    expect_equal(ad$var[[var_key]], active_assay@meta.data[[var_key]])
+    expect_equal(ad$var[[var_key]], active_assay[[var_key]])
   })
 }
 
@@ -267,7 +267,7 @@ test_that("from_Seurat retains pca", {
     ignore_attr = TRUE
   )
   expect_equal(
-    ad$varm[["PCs"]],
+    ad$varm[["pca"]],
     Loadings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
