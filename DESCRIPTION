@@ -2,53 +2,23 @@ Package: anndataR
 Title: AnnData interoperability in R
 Version: 0.99.0
 Authors@R: c(
-    person(
-        "Robrecht", "Cannoodt", 
-        email = "robrecht@data-intuitive.com",
-        role = c("aut", "cre"),
-        comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")
-    ),
-    person(
-        "Luke", "Zappia",
-        email = "luke@lazappi.id.au",
-        role = "aut",
-        comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")
-    ),
-    person(
-        "Martin", "Morgan",
-        email = "mtmorgan.bioc@gmail.com",
-        role = "aut",
-        comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")
-    ),
-    person(
-        "Louise", "Deconinck",
-        email = "louise.deconinck@gmail.com",
-        role = "aut",
-        comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")
-    ),
-    person(
-        "Danila", "Bredikhin",
-        email = "danila.bredikhin@embl.de",
-        role = "ctb",
-        comment = c(ORCID = "0000-0001-8089-6983", github = "gtca")
-    ),
-    person(
-        "Isaac", "Virshup",
-        role = "ctb",
-        comment = c(ORCID = "0000-0002-1710-8945", github = "ivirshup")
-    ),
-    person(
-        "Brian", "Schilder", 
-        role = "ctb",
-        email = "brian_schilder@alumni.brown.edu", 
-        comment = c(ORCID = "0000-0001-5949-2191", github = "bschilder")
-    ),
-    person(
-        "Chananchida", "Sang-aram",
-        role = "ctb",
-        comment = c(ORCID = "0000-0002-0922-0822", github = "csangara")
-    ),
-    person("Data Intuitive", email = "info@data-intuitive.com", role = c("fnd", "cph")),
+    person("Robrecht", "Cannoodt", , "robrecht@data-intuitive.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
+    person("Luke", "Zappia", , "luke@lazappi.id.au", role = "aut",
+           comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")),
+    person("Martin", "Morgan", , "mtmorgan.bioc@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0002-5874-8148", github = "mtmorgan")),
+    person("Louise", "Deconinck", , "louise.deconinck@gmail.com", role = "aut",
+           comment = c(ORCID = "0000-0001-8100-6823", github = "LouiseDck")),
+    person("Danila", "Bredikhin", , "danila.bredikhin@embl.de", role = "ctb",
+           comment = c(ORCID = "0000-0001-8089-6983", github = "gtca")),
+    person("Isaac", "Virshup", role = "ctb",
+           comment = c(ORCID = "0000-0002-1710-8945", github = "ivirshup")),
+    person("Brian", "Schilder", , "brian_schilder@alumni.brown.edu", role = "ctb",
+           comment = c(ORCID = "0000-0001-5949-2191", github = "bschilder")),
+    person("Chananchida", "Sang-aram", role = "ctb",
+           comment = c(ORCID = "0000-0002-0922-0822", github = "csangara")),
+    person("Data Intuitive", , , "info@data-intuitive.com", role = c("fnd", "cph")),
     person("Chan Zuckerberg Initiative", role = "fnd")
   )
 Description: Bring the power and flexibility of AnnData to the R
@@ -57,7 +27,8 @@ Description: Bring the power and flexibility of AnnData to the R
     files, directly access various slots (e.g. X, obs, var), or convert
     the data into SingleCellExperiment and Seurat objects.
 License: MIT + file LICENSE
-URL: https://anndatar.data-intuitive.com/, https://github.com/scverse/anndataR
+URL: https://anndatar.data-intuitive.com/,
+    https://github.com/scverse/anndataR
 BugReports: https://github.com/scverse/anndataR/issues
 Depends: 
     R (>= 4.0.0)
@@ -71,9 +42,10 @@ Imports:
 Suggests:
     anndata,
     BiocStyle,
-    knitr,
-    reticulate (>= 1.36.1),
     hdf5r (>= 1.3.11),
+    knitr,
+    processx,
+    reticulate (>= 1.36.1),
     rmarkdown,
     S4Vectors,
     Seurat,
@@ -83,14 +55,13 @@ Suggests:
     testthat (>= 3.0.0),
     vctrs,
     withr,
-    yaml,
-    processx
+    yaml
 VignetteBuilder: 
     knitr
+biocViews: SingleCell, DataImport, DataRepresentation
 Config/Needs/website: pkgdown, tibble, knitr, rprojroot, stringr, readr,
     purrr, dplyr, tidyr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 RoxygenNote: 7.3.2
-biocViews: SingleCell, DataImport, DataRepresentation
