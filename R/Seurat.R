@@ -169,7 +169,11 @@ to_Seurat <- function(
   if (!is.null(data)) {
     dimnames(data) <- list(adata$var_names, adata$obs_names)
   }
-  object_metadata <- .to_Seurat_process_metadata(adata, object_metadata_mapping, "obs")
+  object_metadata <- .to_Seurat_process_metadata(
+    adata,
+    object_metadata_mapping,
+    "obs"
+  )
   obj <- SeuratObject::CreateSeuratObject(
     meta.data = object_metadata,
     assay = assay_name,
@@ -178,7 +182,11 @@ to_Seurat <- function(
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
-  assay_metadata <- .to_Seurat_process_metadata(adata, assay_metadata_mapping, "var")
+  assay_metadata <- .to_Seurat_process_metadata(
+    adata,
+    assay_metadata_mapping,
+    "var"
+  )
   if (!is.null(adata$var)) {
     obj@assays[[assay_name]] <- SeuratObject::AddMetaData(
       obj@assays[[assay_name]],
@@ -503,21 +511,24 @@ to_Seurat <- function(
   misc_mapping
 }
 
-.to_Seurat_guess_object_metadata <- function(adata) { # nolint
+.to_Seurat_guess_object_metadata <- function(adata) {
+  # nolint
   object_metadata_mapping <- as.list(names(adata$obs))
   names(object_metadata_mapping) <- names(adata$obs)
 
   object_metadata_mapping
 }
 
-.to_Seurat_guess_assay_metadata <- function(adata) { # nolint
+.to_Seurat_guess_assay_metadata <- function(adata) {
+  # nolint
   assay_metadata_mapping <- as.list(names(adata$var))
   names(assay_metadata_mapping) <- names(adata$var)
 
   assay_metadata_mapping
 }
 
-.to_Seurat_process_metadata <- function(adata, mapping, slot) { # nolint
+.to_Seurat_process_metadata <- function(adata, mapping, slot) {
+  # nolint
   # check if mapping contains all columns of slot
   if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
     adata[[slot]]
@@ -761,14 +772,12 @@ from_Seurat <- function(
   # trackstatus: class=Seurat, feature=set_obs, status=done
   obs <- .from_Seurat_process_obs(seurat_obj, assay_name, obs_mapping)
 
-
   # fetch var
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
   var <- .from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
 
   rownames(var) <- rownames(seurat_obj)
-
 
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
@@ -928,7 +937,8 @@ from_Seurat <- function(
   )
 }
 
-.from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) { # nolint
+.from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) {
+  # nolint
   obs <- data.frame(row.names = colnames(seurat_obj))
 
   for (obs_name in names(obs_mapping)) {
@@ -938,7 +948,8 @@ from_Seurat <- function(
   obs
 }
 
-.from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) { # nolint
+.from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) {
+  # nolint
   assay <- seurat_obj[[assay_name]]
   var <- data.frame(row.names = rownames(seurat_obj))
 
@@ -967,14 +978,16 @@ from_Seurat <- function(
   layers_mapping
 }
 
-.from_Seurat_guess_obs <- function(seurat_obj, assay_name) { # nolint
+.from_Seurat_guess_obs <- function(seurat_obj, assay_name) {
+  # nolint
   obs_mapping <- as.list(names(seurat_obj[[]]))
   names(obs_mapping) <- names(seurat_obj[[]])
 
   obs_mapping
 }
 
-.from_Seurat_guess_var <- function(seurat_obj, assay_name) { # nolint
+.from_Seurat_guess_var <- function(seurat_obj, assay_name) {
+  # nolint
   assay <- seurat_obj[[assay_name]]
   var_mapping <- as.list(names(assay[[]]))
   names(var_mapping) <- names(assay[[]])
