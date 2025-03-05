@@ -56,7 +56,7 @@ to the names of the layers in the resulting Seurat object. A value of \code{NULL
 
 Example: \code{layers_mapping = list(counts = "counts", data = NULL, foo = "bar")}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
 \item All AnnData layers are copied to Seurat layers by name.
 }
@@ -65,18 +65,16 @@ If \code{NULL}, the internal function \code{to_Seurat_guess_layers} will be used
 \section{Metadata mapping}{
 
 
-A named list to map observation-level and feature-level metadata to object-level and assay-level metadata in the
-Seurat object.
+A named list or vector to map observation-level and feature-level metadata to object-level and assay-level metadata
+in the Seurat object.
 
-Each item in the \code{object_metadata_mapping} list must be a character vector of length 1, where the values
-correspond to the names of the \code{obs} slot in the AnnData object, and the names correspond to the names of the
-metadata in the resulting Seurat object.
+Each value in the \code{object_metadata_mapping} list or vector corresponds to the names of the \code{obs} slot in the AnnData
+object, and each of the names correspond to the names of the metadata in the resulting Seurat object.
 
-Example: \code{object_metadata_mapping = list(cellType = "cell_type")}.
+Example: \code{object_metadata_mapping = c(cellType = "cell_type")}.
 
-Each item in the \code{assay_metadata_mapping} list must be a character vector of length 1,
-where the values correspond to the names of the \code{var} slot in the AnnData object, and the names correspond to the
-names of the metadata in the resulting Seurat object.
+Each value in the \code{assay_metadata_mapping} list or vector corresponds to the names of the \code{var} slot in the AnnData
+object, and the names correspond to the names of the metadata in the resulting Seurat object.
 
 Example: \code{assay_metadata_mapping = list(geneInfo = "gene_info")}.
 
@@ -90,7 +88,7 @@ A named list to map AnnData \verb{$obsm} and \verb{$varm} to Seurat reductions. 
 with keys \code{'key'}, \code{'obsm'}, and can contain the key \code{'varm'}.
 Example: \code{reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
 \itemize{
 \item All \verb{$obsm} items starting with \code{X_} are copied by name.
 }
@@ -105,7 +103,7 @@ the names correspond to the names of the graphs in the AnnData object.
 
 Example: \code{graph_mapping = list(nn = "connectivities")}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_graphs} will be used to guess the graph mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_graphs} will be used to guess the graph mapping as follows:
 \itemize{
 \item An obsp named \code{connectivities} will be mapped to \code{nn}.
 \item Other graphs starting with \code{connectivities_} are stripped of the prefix and copied by name.
@@ -122,7 +120,7 @@ not present, the whole slot as specified by the first element will be used.
 
 Example: \code{misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
 \itemize{
 \item If \verb{$uns} is defined, all values in \verb{$uns} are copied to the Seurat misc.
 }

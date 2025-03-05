@@ -245,7 +245,7 @@ to_SCE_guess_all <- function(adata, slot) {
 # nolint start: object_length_linter object_name_linter
 to_SCE_guess_reduction <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  to_Seurat_guess_reductions(adata)
+  .to_Seurat_guess_reductions(adata)
 }
 
 # nolint start: object_length_linter object_name_linter
