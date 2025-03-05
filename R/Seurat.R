@@ -169,7 +169,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- adata$layers[[from]]
+      ) <- Matrix::t(adata$layers[[from]])
     }
   }
 
@@ -664,6 +664,7 @@ from_Seurat <- function(
   # trackstatus: class=Seurat, feature=set_var_names, status=done
   # trackstatus: class=Seurat, feature=set_var, status=done
   var <- seurat_assay@meta.data
+  rownames(var) <- rownames(seurat_obj)
 
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
