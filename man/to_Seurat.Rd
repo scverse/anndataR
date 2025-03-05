@@ -88,7 +88,8 @@ A named list to map AnnData \verb{$obsm} and \verb{$varm} to Seurat reductions. 
 with keys \code{'key'}, \code{'obsm'}, and can contain the key \code{'varm'}.
 Example: \code{reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
 
-If \code{NULL}, the internal function \code{.to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_reductions} will be used to guess the reduction mapping as
+follows:
 \itemize{
 \item All \verb{$obsm} items starting with \code{X_} are copied by name.
 }

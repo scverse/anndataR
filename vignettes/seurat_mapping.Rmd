@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 into the mapping between the two objects.
 The conversion can be done with or without extra user input as to which fields and slots of the respective objects should be
 converted and put into the other object.
-Please take into account that lossless conversion is not always possible between AnnData and Seurat objects. 
+Please take into account that lossless conversion is not always possible between AnnData and Seurat objects due to differences in the object structure.
 Have a look at our known issues section for more information and please inspect the object before and after conversion to make
 sure that the conversion was successful.
 
@@ -62,7 +62,6 @@ ad$obsp[["connectivities_sparse"]] <- ad$obsp[["numeric_csparse"]]
 
 # Convert AnnData objects to Seurat objects
 
-TODO: explain how the implicit mapping works
 
 By default, anndataR will try to guess a reasonable mapping. If you do not want this to happen, and you want 
 nothing of that specific slot to be converted, you can pass an empty list.
@@ -141,7 +140,7 @@ seurat_object <- to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
-seurat_object@assays$RNA@layers
+Layers(seurat_object[["RNA"]])
 ```
 
 
@@ -162,7 +161,7 @@ seurat_object <- to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
-seurat_object@assays$RNA@meta.data
+seurat_object[["RNA"]][[]]
 ```
 
 ### reduction_mapping
@@ -170,6 +169,7 @@ seurat_object@assays$RNA@meta.data
 Reductions are a bit more complicated. Some reductions have a standard way of being saved in an AnnData objecct, some don't.
 We assume that a PCA will always be stored as `X_pca` in the `obsm` slot, with the loadings as `PCs` in the `varm` slot.
 For other reductions, we will assume that they will start with `X_` in the `obsm` slot, with the characters after the `X_` being the name of the reduction.
+Elements in the `obsm` slot not starting with `X_` will not be converted.
 
 ```{r to_Seurat_implicit_reduction}
 seurat_object <- to_Seurat(
@@ -186,9 +186,10 @@ seurat_object@reductions
 
 ### graph_mapping
 
-Graphs are stored in the `obsp` slot in the AnnData object.
+Graphs of cells are stored in the `obsp` slot in the AnnData object.
 If a graph is stored with the name `connectivities`, we will store it as `nn` in the Seurat object.
-Other graphs, starting with `connectivities_{name}` will be stored as `{name}` in the Seurat object.
+Graphs starting with `connectivities_{name}` will be stored as `{name}` in the Seurat object.
+Other graphs will not be converted.
 
 ```{r to_Seurat_implicit_graph}
 seurat_object <- to_Seurat(
@@ -258,7 +259,7 @@ You can provide a mapping for object-level metadata in Seurat, which corresponds
 and thus with the `obs` slot in the AnnData object.
 
 The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what the 
-metadata is called in the `obs` slot of the anndata object.
+columns are called in the `obs` slot of the anndata object.
 
 ```{r to_Seurat explicit_object_metadata}
 seurat_obj <- to_Seurat(
@@ -286,7 +287,7 @@ seurat_obj@assays$RNA@meta.data
 
 ### reduction_mapping
 
-You can provide a mapping for the `reductions` slot. The names of the named list refer to what the reduction will be called
+You can provide a mapping for the `reductions` slot. The names of the named list refer to what the reduction will be called.
 The values must be a named list, containing the keys: `key`, `obsm` and maybe `varm`, if appropriate for the reduction.
 
 ```{r to_Seurat explicit_reduction}
@@ -301,9 +302,9 @@ seurat_obj@reductions
 ```
 
 ### graph_mapping
-
-You can provide a mapping for the `graph` slot. The names of the named list refer to what the graph will be called
-in the Seurat object. The values refer to what the graph is called in the anndata object. Graphs in an anndata object are
+You can provide a mapping for the `graph` slot.
+The names of the named list refer to what the graph will be called in the Seurat object.
+The values refer to names in the `obsp` slot of the anndata object.
 stored in the `obsp` slot.
 
 ```{r to_Seurat explicit_graph}
@@ -316,13 +317,12 @@ seurat_obj@graphs
 
 ### misc_mapping
 
-There are two ways to correctly specify a mapping for the `misc` slot. 
-You must provide a names list.
+You must provide a named list.
 
-In the first approach, each element of the named list consists of the name (what it will be called in the Seurat object)
-and a value, being a vector with two elements. The first element refers to the name anndata slot and can be `X`, `layers`,
- `obs`, `var`, `obsm`, `varm`, `obsp`, `varp` or `uns`.
-the second element points to the specific element in that slot.
+Names of the list correspond to the name the item will be assigned to in the `misc` of the Seurat object).
+Items can be a vector with two elements.
+The first is the name of a slot in the AnnData object (e.g. `X`, `layers`,
+ `obs`, `var`, `obsm`, `varm`, `obsp`, `varp`, `uns`) and the second is the name of the item to transfer from that slot.
 
 ```{r to_Seurat explicit_misc1}
 seurat_obj <- to_Seurat(
@@ -332,8 +332,7 @@ seurat_obj <- to_Seurat(
 seurat_obj@misc
 ```
 
-The second way you can specify a mapping for the `misc` slot is by providing a named list with the name 
-of the full anndata slot as a value. This will copy the whole slot to the misc slot in the Seurat object.
+Giving an item with one element can be used to copy the whole AnnData slot to `misc`.
 
 ```{r to_Seurat explicit_misc2}
 seurat_obj <- to_Seurat(
@@ -357,19 +356,19 @@ seurat_obj@misc
 
 ## Implicit mapping
 
-The reverse, converting Seurat objects to AnnData objects works in a similar way.
+The reverse, converting Seurat objects to AnnData objects, works in a similar way.
 There is an implicit conversion, where we attempt a standard conversion, but the user can always provide an explicit mapping.
 
 ```{r create_Seurat}
 suppressWarnings({
   counts <- matrix(rbinom(600, 20000, .001), nrow = 20)
-  obj <- CreateSeuratObject(counts = counts)
-  obj <- NormalizeData(obj)
-  obj <- FindVariableFeatures(obj)
-  obj <- ScaleData(obj)
-  obj <- RunPCA(obj, npcs = 10L)
-  obj <- FindNeighbors(obj)
-  obj <- RunUMAP(obj, dims = 1:10)
+  obj <- CreateSeuratObject(counts = counts) |>
+    NormalizeData() |>
+    FindVariableFeatures() |>
+    ScaleData() |>
+    RunPCA(npcs = 10L) |>
+    FindNeighbors() |>
+    RunUMAP(dims = 1:10)
   obj@misc[["data"]] <- "some data"
 })
 ```
@@ -416,8 +415,10 @@ ad <- from_Seurat(
   varp_mapping = list(),
   uns_mapping = list()
 )
-ad
+ad$X
 ```
+
+As you can see, by default, no information was copied to the `X` slot of the AnnData object.
 
 ### layers_mapping
 By default, all layers in the Seurat object will be copied to the AnnData object. This means that the `X` slot will be `NULL` (empty).
@@ -527,11 +528,11 @@ ad <- from_Seurat(
   varp_mapping = list(),
   uns_mapping = list()
 )
-ad
+ad$obsp
 ```
 
 ### varp_mapping
-The varp slot is used to store pairwise relations between features. This is not often used.
+The varp slot is used to store pairwise relations between features.
 By default, no information is copied to the `varp` slot of the AnnData object.
 
 ```{r fsi_varp_mapping}
@@ -566,26 +567,12 @@ ad <- from_Seurat(
 ad
 ```
 
-
-ad <- from_Seurat(
-  obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
-)
-ad
-
 ## Explicit mapping
 
 It's also possible to provide an explicit mapping for the conversion from Seurat to AnnData objects.
-For all the simpler mappings, such as `layers_mapping`, `obs_mapping` and `var_mapping`, you can 
-provide a named list with the names of the slots in the AnnData object as names 
-and the names of the slots in the Seurat object as values.
+For `layers_mapping`, `obs_mapping` and `var_mapping`, you can 
+provide a named list with the names of the items in the AnnData object as names 
+and the names of the items in the Seurat object as values.  
 
 ```{r fse_explicit}
 ad <- from_Seurat(
@@ -603,18 +590,18 @@ ad
 ```
 
 ### obsm_mapping, varm_mapping, obsp_mapping, varp_mapping, uns_mapping
-The mappings fro `obsm`, `varm` and `obsp` all work in the same way: you need to provide a named list,
-where the name of the list refers to the name of the slot in the AnnData object.
-The values of the list must themselves be vectors of length 2 (for `obsm`) or 2 or 3 (for `varm`, `obsp`, `varp` and `uns`).
-The first element of the vector refers to the name of the slot in the Seurat object, the second element refers 
-to the name of the slot in the Seurat object. The third element, if provided, refers to the name of the column of that data in that slot.
+The mappings for `obsm`, `varm` and `obsp` all work in the same way.  
+You need to provide a named list, where the name of the list refers to the name of the item in that slot of the AnnData object.  
+The values of the list must themselves be vectors of length 2 (for `obsm`) or 2 or 3 (for `varm`, `obsp`, `varp` and `uns`).  
+The first element of the vector refers to a slot in the the Seurat object and the second element refers to the name of the item in that slot.  
+The third element (if provided) refers to the name of a column in that item.  
 
 For `obsm`, the first element must be `reductions` or `misc`.
 For `varm`, the first element must be `reductions` or `misc`.
 For `obsp`, the first element must be `graphs` or `misc`.
 
 For `varp`, the first element must be `misc`.
-For `uns`, the first element must also be `misc`.
+For `uns`, the first element must be `misc`.
 
 ```{r fse_explicit_obsm}
 ad <- from_Seurat(
