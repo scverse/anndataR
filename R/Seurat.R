@@ -782,8 +782,6 @@ from_Seurat <- function(
   # trackstatus: class=Seurat, feature=set_var, status=done
   var <- .from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
 
-  rownames(var) <- rownames(seurat_obj)
-
   # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
 
