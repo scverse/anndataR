@@ -1031,7 +1031,10 @@ from_Seurat <- function(
   for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
     reduction <- seurat_obj@reductions[[reduction_name]]
     if (
-      !SeuratObject::IsMatrixEmpty(Loadings(seurat_obj, reduction_name)) &&
+      !SeuratObject::IsMatrixEmpty(SeuratObject::Loadings(
+        seurat_obj,
+        reduction_name
+      )) &&
         reduction@assay.used == assay_name
     ) {
       varm_mapping[[reduction_name]] <- c("reductions", reduction_name)
