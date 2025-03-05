@@ -1030,11 +1030,13 @@ from_Seurat <- function(
   # nolint end: object_name_linter object_length_linter
   varm_mapping <- list()
 
-  if ("pca" %in% SeuratObject::Reductions(seurat_obj)) {
-    # Check if the dimreduc was calculated by the selected assay
-    reduction <- seurat_obj@reductions[["pca"]]
-    if (reduction@assay.used == assay_name) {
-      varm_mapping[["PCs"]] <- c("reductions", "pca")
+  for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
+    reduction <- seurat_obj@reductions[[reduction_name]]
+    if (
+      !SeuratObject::IsMatrixEmpty(Loadings(seurat_obj, reduction_name)) &&
+        reduction@assay.used == assay_name
+    ) {
+      varm_mapping[[reduction_name]] <- c("reductions", reduction_name)
     }
   }
 

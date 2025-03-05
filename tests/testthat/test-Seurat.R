@@ -267,7 +267,7 @@ test_that("from_Seurat retains pca", {
     ignore_attr = TRUE
   )
   expect_equal(
-    ad$varm[["PCs"]],
+    ad$varm[["pca"]],
     Loadings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )

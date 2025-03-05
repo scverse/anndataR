@@ -495,8 +495,9 @@ ad
 ```
 
 ### varm_mapping
-The varm slot is used to store multidimensional feature-level annotations. This is mainly used to store the loadings of a PCA.
-By default, this is the only thing that will be copied to the `varm` slot of the AnnData object.
+The varm slot is used to store multidimensional feature-level annotations. This is mainly used to store the loadings of 
+dimensionality reductions.
+By default, all loadings of dimensionality reductions will be copied to the `varm` slot of the AnnData object.
 
 ```{r fsi_varm_mapping}
 ad <- from_Seurat(
