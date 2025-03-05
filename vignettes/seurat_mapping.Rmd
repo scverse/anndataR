@@ -26,9 +26,11 @@ Please take into account that lossless conversion is not always possible between
 Have a look at our known issues section for more information and please inspect the object before and after conversion to make
 sure that the conversion was successful.
 
-```{r deps, message=FALSE, warning=FALSE}
-library(anndataR)
-library(Seurat)
+```{r deps}
+suppressMessages({
+  library(anndataR)
+  library(Seurat)
+})
 ```
 
 We will first generate a sample dataset to work with:
@@ -118,13 +120,12 @@ seurat_object <- to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
-seurat_object@meta.data
+seurat_object[[]]
 ```
 
 ### layers_mapping
 
 Seurat allows for multiple layers to be stored in the object. This corresponds with the `layers` slot in the AnnData object.
-Seurat stores this data in the `counts`, `data`, `scale.data` and other slots.
 If no mapping is provided, we will try to guess which layer the `X` anndata slot corresponds to by checking whether another
 layer called `counts` or `data` exists in the AnnData object.
 The other layers of the AnnData object will be copied by name.
@@ -180,7 +181,7 @@ seurat_object <- to_Seurat(
   graph_mapping = list(),
   misc_mapping = list()
 )
-seurat_object@reductions
+Reductions(seurat_object)
 ```
 
 ### graph_mapping
@@ -201,7 +202,7 @@ seurat_object <- to_Seurat(
   misc_mapping = list()
 )
 
-seurat_object@graphs
+Graphs(seurat_object)
 ```
 
 ###  misc_mapping
@@ -219,7 +220,7 @@ seurat_object <- to_Seurat(
   reduction_mapping = list(),
   graph_mapping = list()
 )
-seurat_object@misc
+Misc(seurat_object)
 ```
 
 ## Explicit mapping
@@ -234,7 +235,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   assay_name = "Other_assay"
 )
-seurat_obj@assays
+Assays(seurat_obj)
 ```
 
 ### layers_mapping
@@ -249,7 +250,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   layers_mapping = list(counts = "integer_matrix", other_layer2 = "numeric_rsparse")
 )
-seurat_obj@assays$RNA@layers
+Layers(seurat_obj, assay = "RNA")
 ```
 
 ### object_metadata_mapping
@@ -265,7 +266,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   object_metadata_mapping = list(metadata1 = "integer", metadata2 = "numeric")
 )
-seurat_obj@meta.data
+seurat_obj[[]]
 ```
 
 ### assay_metadata_mapping
@@ -281,7 +282,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   assay_metadata_mapping = list(metadata1 = "numeric", metadata2 = "logical")
 )
-seurat_obj@assays$RNA@meta.data
+seurat_obj[["RNA"]][[]]
 ```
 
 ### reduction_mapping
@@ -297,7 +298,7 @@ seurat_obj <- to_Seurat(
     umap = list(key = "UMAP", obsm = "X_umap")
   )
 )
-seurat_obj@reductions
+Reductions(seurat_obj)
 ```
 
 ### graph_mapping
@@ -311,7 +312,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   graph_mapping = list(connectivities = "numeric_matrix", connectivities_sparse = "numeric_csparse")
 )
-seurat_obj@graphs
+Graphs(seurat_obj)
 ```
 
 ### misc_mapping
@@ -328,7 +329,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   misc_mapping = list(varp_neighbors = c("varp", "integer_matrix"), uns_vec = c("uns", "vec_integer"))
 )
-seurat_obj@misc
+Misc(seurat_obj)
 ```
 
 Giving an item with one element can be used to copy the whole AnnData slot to `misc`.
@@ -338,7 +339,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   misc_mapping = list(metadata_from_anndata = "uns", varp = "varp")
 )
-seurat_obj@misc
+Misc(seurat_obj)
 ```
 
 Of course you can also mix these approaches in a single mapping.
@@ -348,7 +349,7 @@ seurat_obj <- to_Seurat(
   adata = ad,
   misc_mapping = list(metadata_from_anndata = "uns", obs_num = c("obs", "numeric"))
 )
-seurat_obj@misc
+Misc(seurat_obj)
 ```
 
 # Convert Seurat objects to AnnData objects
@@ -509,7 +510,7 @@ ad <- from_Seurat(
   uns_mapping = list()
 )
 
-ad
+ad$varm
 ```
 
 ### obsp_mapping
@@ -545,7 +546,7 @@ ad <- from_Seurat(
   obsp_mapping = list(),
   uns_mapping = list()
 )
-ad
+ad$varp
 ```
 
 ### uns_mapping
@@ -563,7 +564,7 @@ ad <- from_Seurat(
   obsp_mapping = list(),
   varp_mapping = list(),
 )
-ad
+ad$uns
 ```
 
 ## Explicit mapping
