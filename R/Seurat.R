@@ -57,7 +57,8 @@
 #
 #' Example: `reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
 #'
-#' If `NULL`, the internal function `.to_Seurat_guess_reductions` will be used to guess the reduction mapping as follows:
+#' If `NULL`, the internal function `.to_Seurat_guess_reductions` will be used to guess the reduction mapping as
+#' follows:
 #'
 #' * All `$obsm` items starting with `X_` are copied by name.
 #'
@@ -511,24 +512,28 @@ to_Seurat <- function(
   misc_mapping
 }
 
+# nolint start: object_name_linter object_length_linter
 .to_Seurat_guess_object_metadata <- function(adata) {
-  # nolint
+  # nolint end: object_name_linter object_length_linter
+
   object_metadata_mapping <- as.list(names(adata$obs))
   names(object_metadata_mapping) <- names(adata$obs)
 
   object_metadata_mapping
 }
 
+# nolint start: object_name_linter object_length_linter
 .to_Seurat_guess_assay_metadata <- function(adata) {
-  # nolint
+  # nolint end: object_name_linter object_length_linter
   assay_metadata_mapping <- as.list(names(adata$var))
   names(assay_metadata_mapping) <- names(adata$var)
 
   assay_metadata_mapping
 }
 
+# nolint start: object_name_linter
 .to_Seurat_process_metadata <- function(adata, mapping, slot) {
-  # nolint
+  # nolint end: object_name_linter
   # check if mapping contains all columns of slot
   if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
     adata[[slot]]
@@ -937,8 +942,9 @@ from_Seurat <- function(
   )
 }
 
+# nolint start: object_name_linter
 .from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) {
-  # nolint
+  # nolint end: object_name_linter
   obs <- data.frame(row.names = colnames(seurat_obj))
 
   for (obs_name in names(obs_mapping)) {
@@ -948,8 +954,9 @@ from_Seurat <- function(
   obs
 }
 
+# nolint start: object_name_linter
 .from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) {
-  # nolint
+  # nolint end: object_name_linter
   assay <- seurat_obj[[assay_name]]
   var <- data.frame(row.names = rownames(seurat_obj))
 
@@ -978,16 +985,18 @@ from_Seurat <- function(
   layers_mapping
 }
 
+# nolint start: object_name_linter
 .from_Seurat_guess_obs <- function(seurat_obj, assay_name) {
-  # nolint
+  # nolint end: object_name_linter
   obs_mapping <- as.list(names(seurat_obj[[]]))
   names(obs_mapping) <- names(seurat_obj[[]])
 
   obs_mapping
 }
 
+# nolint start: object_name_linter
 .from_Seurat_guess_var <- function(seurat_obj, assay_name) {
-  # nolint
+  # nolint end: object_name_linter
   assay <- seurat_obj[[assay_name]]
   var_mapping <- as.list(names(assay[[]]))
   names(var_mapping) <- names(assay[[]])
