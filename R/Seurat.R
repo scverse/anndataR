@@ -301,7 +301,7 @@ to_Seurat <- function(
   for (i in seq_along(misc_mapping)) {
     misc_name <- names(misc_mapping)[[i]]
     misc <- misc_mapping[[i]]
-    if (!is.character(misc) || length(misc) <= 1 || length(misc) > 2) {
+    if (!is.character(misc) || length(misc) <= 0 || length(misc) > 2) {
       cli_abort(c(
         paste(
           "Each item in {.arg misc_mapping} must be a {.cls character} vector",
