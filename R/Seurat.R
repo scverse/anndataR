@@ -292,9 +292,6 @@ to_Seurat <- function(
     if (!is.null(obsp)) {
       dimnames(obsp) <- list(obs_names, obs_names)
       obsp_gr <- Seurat::as.Graph(obsp)
-      if (rlang::is_empty(obsp_gr@assay.used)) {
-        obsp_gr@assay.used <- assay_name
-      }
       obj[[paste0(assay_name, "_", graph_name)]] <- obsp_gr
     }
   }
