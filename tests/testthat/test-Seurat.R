@@ -1,6 +1,6 @@
 test_that("to_Seurat() fails gracefully", {
   expect_error(to_Seurat(), regexp = "adata.*is missing")
-  expect_error(to_Seurat("foo"), regexp = "AbstractAnnData.*not TRUE")
+  expect_error(to_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
 })
 
 known_issues <- read_known_issues()
