@@ -326,11 +326,11 @@ AbstractAnnData <- R6::R6Class(
       ) {
         cli_abort(
           c(
-            "Unexpectd shape for {.field {label}}",
+            "Unexpected shape for {.field {label}}",
             "i" = paste0(
               "Expected [",
               paste(shape, collapse = ", "),
-              "] got [",
+              "], got [",
               paste(mat_dims, collapse = ", "),
               "]"
             ),
