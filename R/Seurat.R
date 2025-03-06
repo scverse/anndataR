@@ -1150,7 +1150,7 @@ from_Seurat <- function(
   for (graph_name in SeuratObject::Graphs(seurat_obj)) {
     graph <- seurat_obj@graphs[[graph_name]]
 
-    if (graph@assay.used != assay_name) {
+    if (!rlang::is_empty(graph@assay.used) && graph@assay.used != assay_name) {
       next
     }
 
