@@ -310,7 +310,7 @@ to_Seurat <- function(
         "i" = "{.code misc_mapping[[{i}]]} is {.obj_type_friendly {misc}}"
       ))
     }
-    
+
     misc_slot <- misc[1]
     misc_key <- misc[2]
     expected_slots <- c(
@@ -1100,7 +1100,7 @@ from_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_obsms <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
-  
+
   obsm_mapping <- list()
 
   for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
