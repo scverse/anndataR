@@ -596,16 +596,11 @@ to_Seurat <- function(
 # nolint start: object_name_linter
 .to_Seurat_process_metadata <- function(adata, mapping, slot) {
   # nolint end: object_name_linter
-  # check if mapping contains all columns of slot
-  if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
-    adata[[slot]]
-  } else {
-    mapped <- lapply(seq_along(mapping), function(i) {
-      adata[[slot]][[mapping[[i]]]]
-    })
-    names(mapped) <- names(mapping)
-    as.data.frame(mapped)
-  }
+  mapped <- lapply(seq_along(mapping), function(i) {
+    adata[[slot]][[mapping[[i]]]]
+  })
+  names(mapped) <- names(mapping)
+  as.data.frame(mapped)
 }
 
 #' Convert a Seurat object to an AnnData object
