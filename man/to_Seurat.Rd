@@ -8,6 +8,8 @@ to_Seurat(
   adata,
   assay_name = "RNA",
   layers_mapping = NULL,
+  object_metadata_mapping = NULL,
+  assay_metadata_mapping = NULL,
   reduction_mapping = NULL,
   graph_mapping = NULL,
   misc_mapping = NULL
@@ -20,6 +22,13 @@ to_Seurat(
 
 \item{layers_mapping}{A named list to map AnnData layers to Seurat layers. See section "Layer mapping" for more
 details.}
+
+\item{object_metadata_mapping}{A named list to map observation-level metadata to object-level metadata in the Seurat
+object. See section "Metadata mapping" for more details.}
+
+\item{assay_metadata_mapping}{A named list to map variable-level metadata to assay-level metadata in the Seurat
+object.
+See section "Metadata mapping" for more details.}
 
 \item{reduction_mapping}{A named list to map AnnData reductions to Seurat reductions. Each item in the list must be a
 named list with keys 'key', 'obsm', and 'varm'. See section "Reduction mapping" for more details.}
@@ -47,20 +56,40 @@ to the names of the layers in the resulting Seurat object. A value of \code{NULL
 
 Example: \code{layers_mapping = list(counts = "counts", data = NULL, foo = "bar")}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
 \item All AnnData layers are copied to Seurat layers by name.
 }
+}
+
+\section{Metadata mapping}{
+
+
+A named list or vector to map observation-level and feature-level metadata to object-level and assay-level metadata
+in the Seurat object.
+
+Each value in the \code{object_metadata_mapping} list or vector corresponds to the names of the \code{obs} slot in the AnnData
+object, and each of the names correspond to the names of the metadata in the resulting Seurat object.
+
+Example: \code{object_metadata_mapping = c(cellType = "cell_type")}.
+
+Each value in the \code{assay_metadata_mapping} list or vector corresponds to the names of the \code{var} slot in the AnnData
+object, and the names correspond to the names of the metadata in the resulting Seurat object.
+
+Example: \code{assay_metadata_mapping = list(geneInfo = "gene_info")}.
+
+By default, all metadata in the \code{obs} and \code{var} slots will be copied to the Seurat object.
 }
 
 \section{Reduction mapping}{
 
 
 A named list to map AnnData \verb{$obsm} and \verb{$varm} to Seurat reductions. Each item in the list must be a named list
-with keys \code{'key'}, \code{'obsm'}, and \code{'varm'}.
+with keys \code{'key'}, \code{'obsm'}, and can contain the key \code{'varm'}.
 Example: \code{reduction_mapping = list(pca = list(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_reductions} will be used to guess the reduction mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_reductions} will be used to guess the reduction mapping as
+follows:
 \itemize{
 \item All \verb{$obsm} items starting with \code{X_} are copied by name.
 }
@@ -75,7 +104,7 @@ the names correspond to the names of the graphs in the AnnData object.
 
 Example: \code{graph_mapping = list(nn = "connectivities")}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_graphs} will be used to guess the graph mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_graphs} will be used to guess the graph mapping as follows:
 \itemize{
 \item An obsp named \code{connectivities} will be mapped to \code{nn}.
 \item Other graphs starting with \code{connectivities_} are stripped of the prefix and copied by name.
@@ -92,7 +121,7 @@ not present, the whole slot as specified by the first element will be used.
 
 Example: \code{misc_mapping = list(uns = "uns", varp_neighbors = c("varp", "neighbors"))}.
 
-If \code{NULL}, the internal function \code{to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
+If \code{NULL}, the internal function \code{.to_Seurat_guess_misc} will be used to guess the miscellaneous mapping as follows:
 \itemize{
 \item If \verb{$uns} is defined, all values in \verb{$uns} are copied to the Seurat misc.
 }

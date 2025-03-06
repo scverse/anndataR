@@ -21,14 +21,9 @@ read_h5ad_encoding <- function(file, name) {
       )
     },
     error = function(e) {
-      path <- if (is.character(file)) file else file$get_filename()
-      stop(
-        "Encoding attributes not found for element '",
-        name,
-        "' ",
-        "in '",
-        path,
-        "'"
+      path <- if (is.character(file)) file else file$get_filename() # nolint object_usage_linter
+      cli_abort(
+        "Encoding attributes not found for element {.val {name}} in {.path {path}}"
       )
     }
   )
@@ -84,12 +79,8 @@ read_h5ad_element <- function(
     "string-array" = read_h5ad_string_array,
     "nullable-integer" = read_h5ad_nullable_integer,
     "nullable-boolean" = read_h5ad_nullable_boolean,
-    stop(
-      "No function for reading H5AD encoding '",
-      type,
-      "' for element '",
-      name,
-      "'"
+    cli_abort(
+      "No function for reading H5AD encoding {.cls {type}} for element {.val {name}}"
     )
   )
 
@@ -98,18 +89,14 @@ read_h5ad_element <- function(
       read_fun(file = file, name = name, version = version, ...)
     },
     error = function(e) {
-      message <- paste0(
-        "Error reading element '",
-        name,
-        "' of type '",
-        type,
-        "':\n",
-        conditionMessage(e)
-      )
+      msg <- cli::cli_fmt(cli::cli_bullets(c(
+        paste0("Error reading element {.field {name}} of type {.cls {type}}"),
+        "i" = conditionMessage(e)
+      )))
       if (stop_on_error) {
-        stop(message)
+        cli_abort(msg)
       } else {
-        warning(message)
+        cli_warn(msg)
         NULL
       }
     }

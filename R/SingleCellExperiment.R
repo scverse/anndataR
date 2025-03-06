@@ -93,7 +93,11 @@ to_SingleCellExperiment <- function(
     "Bioc"
   )
 
-  stopifnot(inherits(adata, "AbstractAnnData"))
+  if (!(inherits(adata, "AbstractAnnData"))) {
+    cli_abort(
+      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+    )
+  }
 
   # guess mappings if not provided
   if (is.null(assays_mapping)) {
@@ -215,8 +219,10 @@ to_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 to_SCE_guess_assays <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
+  if (!(inherits(adata, "AbstractAnnData"))) {
+    cli_abort(
+      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+    )
   }
 
   layers <- list()
@@ -242,8 +248,10 @@ to_SCE_guess_assays <- function(adata) {
 # nolint start: object_length_linter object_name_linter
 to_SCE_guess_all <- function(adata, slot) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(adata, "AbstractAnnData")) {
-    stop("adata must be an object inheriting from AbstractAnnData")
+  if (!(inherits(adata, "AbstractAnnData"))) {
+    cli_abort(
+      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+    )
   }
 
   mapping <- names(adata[[slot]])
@@ -255,7 +263,7 @@ to_SCE_guess_all <- function(adata, slot) {
 # nolint start: object_length_linter object_name_linter
 to_SCE_guess_reduction <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  to_Seurat_guess_reductions(adata)
+  .to_Seurat_guess_reductions(adata) # nolint object_usage_linter
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -286,7 +294,12 @@ to_SCE_guess_reduction <- function(adata) {
   embedding <- adata$obsm[[obsm_key]]
 
   if (is.null(embedding)) {
-    stop(paste0("No embedding found for key '", obsm_key, "' in adata$obsm"))
+    cli_abort(
+      c(
+        "{.val {obsm_key}} is not an item in {.code adata$obsm}",
+        "i" = "{.code adata$obsm_keys()}: {.val {adata$obsm_keys()}}"
+      )
+    )
   }
 
   rownames(embedding) <- adata$obs_names
@@ -411,7 +424,11 @@ from_SingleCellExperiment <- function(
 
   output_class <- match.arg(output_class)
 
-  stopifnot(inherits(sce, "SummarizedExperiment"))
+  if (!(inherits(sce, "SingleCellExperiment"))) {
+    cli_abort(
+      "{.arg sce} must be a {.cls SingleCellExperiment} but has class {.cls {class(sce)}}"
+    )
+  }
 
   if (is.null(layers_mapping)) {
     layers_mapping <- .from_SCE_guess_layers(sce, x_mapping)
@@ -496,7 +513,10 @@ from_SingleCellExperiment <- function(
         obsm_name <- names(obsm_mapping)[[i]]
 
         if (!is.character(obsm) || length(obsm) != 2) {
-          stop("each obsm_mapping must be a character vector of length 2")
+          cli_abort(c(
+            "Each item in {.arg obsm_mapping} must be a {.cls character} vector of length 2",
+            "i" = "{.code obsm_mapping[[{i}]]} is {.obj_type_friendly {obsm}}"
+          ))
         }
 
         obsm_slot <- obsm[[1]]
@@ -516,14 +536,23 @@ from_SingleCellExperiment <- function(
         varm_name <- names(varm_mapping)[[i]]
 
         if (!is.character(varm) || length(varm) != 2) {
-          stop("each varm_mapping must be a character vector of length 2")
+          cli_abort(c(
+            "Each item in {.arg varm_mapping} must be a {.cls character} vector of length 2",
+            "i" = "{.code varm_mapping[[{i}]]} is {.obj_type_friendly {varm}}"
+          ))
         }
 
         varm_slot <- varm[[1]]
         varm_key <- varm[[2]]
 
         if (varm_slot != "reducedDim") {
-          stop("varm_slot must be 'reducedDims'")
+          cli_abort(c(
+            paste(
+              "The first element in each item of {.arg varm_mappings}",
+              "must be {.val reducedDims}"
+            ),
+            "i" = "{.code varm_mapping[[{i}]][1]}: {.val {varm_slot}}"
+          ))
         }
 
         if (
@@ -532,7 +561,10 @@ from_SingleCellExperiment <- function(
             "LinearEmbeddingMatrix"
           )
         ) {
-          stop("reducedDim must be a LinearEmbeddingMatrix")
+          cli_abort(paste(
+            "{.val {varm_mapping}} must be a {.cls LinearEmbeddingMatrix} but",
+            "has class {.cls {SingleCellExperiment::reducedDims(sce)[[varm_key]]}}"
+          ))
         }
 
         adata$varm[[varm_name]] <- SingleCellExperiment::featureLoadings(
@@ -573,7 +605,7 @@ from_SingleCellExperiment <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata))
       }
-      stop(e)
+      cli_abort(e)
     }
   )
 }
@@ -731,7 +763,9 @@ from_SingleCellExperiment <- function(
 .from_SCE_process_obsm_reduction <- function(sce, slot, key) {
   # nolint end: object_length_linter object_name_linter
   if (slot != "reducedDim") {
-    stop("slot must be 'reducedDim'")
+    cli_abort(
+      "{.arg slot} must be {.val reducedDim}"
+    )
   }
 
   reduction <- SingleCellExperiment::reducedDim(sce, key)

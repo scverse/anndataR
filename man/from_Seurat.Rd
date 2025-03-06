@@ -10,6 +10,8 @@ from_Seurat(
   assay_name = NULL,
   x_mapping = NULL,
   layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
   obsm_mapping = NULL,
   varm_mapping = NULL,
   obsp_mapping = NULL,
@@ -31,6 +33,13 @@ from_Seurat(
 
 \item{layers_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. Each item in
 the list must be a character vector of length 1. See section "\verb{$layers} mapping" for more details.}
+
+\item{obs_mapping}{A named list mapping obs names to the names of the object-level (cell level) metadata in the
+Seurat object. Each item in the list must be a character vector of length 1. See section "\verb{$obs} mapping" for
+more details.}
+
+\item{var_mapping}{A named list mapping var names to the names of the feature-level metadata in the Seurat object.
+Each item in the list must be a character vector of length 1. See section "\verb{$var} mapping" for more details.}
 
 \item{obsm_mapping}{A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
 the list must be a vector of length 2. See section "\verb{$obsm} mapping" for more details.}
@@ -55,7 +64,7 @@ An AnnData object
 \description{
 \code{from_Seurat()} converts a Seurat object to an AnnData object.
 Only one assay can be converted at a time. Arguments are used to configure the conversion.
-If \code{NULL}, the functions \verb{from_Seurat_guess_*} will be used to guess the mapping.
+If \code{NULL}, the functions \verb{.from_Seurat_guess_*} will be used to guess the mapping.
 }
 \details{
 For more information on the functionality of an AnnData object, see \link{anndataR-package}.
@@ -75,11 +84,41 @@ The \verb{$X} key maps to the \code{X} slot.
 
 Example: \code{layers_mapping = list(counts = "counts", foo = "bar")}.
 
-If \code{NULL}, the internal function \code{from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
+If \code{NULL}, the internal function \code{.from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
 \item All Seurat layers are copied to AnnData \code{layers} by name.
 \item This means that the AnnData \code{X} slot will be \code{NULL} (empty). If you want to copy data to the \code{X} slot,
 you must define the layer mapping explicitly.
+}
+}
+
+\section{\verb{$obs} mapping}{
+
+
+A named list or vector to map Seurat object-level metadata to AnnData \verb{$obs}. The values of this list or vector
+correspond to the names of the metadata in the Seurat object, and the names correspond to the names of the
+metadata in the resulting \verb{$obs} slot.
+
+Example: \code{obs_mapping = list(cellType = "cell_type")}.
+
+If \code{NULL}, the internal function \code{.from_Seurat_guess_obs} will be used to guess the obs mapping as follows:
+\itemize{
+\item All Seurat object-level metadata is copied to AnnData \verb{$obs} by name.
+}
+}
+
+\section{\verb{$var} mapping}{
+
+
+A named list or vector to map Seurat feature-level metadata to AnnData \verb{$var}. The values of this list or
+vector correspond to the names of the metadata of the assay in the Seurat object, and the
+names correspond to the names of the metadata in the resulting \verb{$var} slot.
+
+Example: \code{var_mapping = list(geneInfo = "gene_info")}.
+
+If \code{NULL}, the internal function \code{.from_Seurat_guess_vars} will be used to guess the var mapping as follows:
+\itemize{
+\item All Seurat feature-level metadata is copied to AnnData \verb{$var} by name.
 }
 }
 
@@ -94,7 +133,7 @@ the location of the data in the Seurat object.
 
 Example: \code{obsm_mapping = list(pca = c("reductions", "pca"), umap = c("reductions", "umap"))}.
 
-If \code{NULL}, the internal function \code{from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
+If \code{NULL}, the internal function \code{.from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
 \itemize{
 \item All Seurat reductions are prefixed with \code{X_} and copied to AnnData \verb{$obsm}.
 }
@@ -110,7 +149,7 @@ resulting \verb{$varm} slot, and the value corresponds to the location of the da
 
 Example: \verb{varm_mapping = list(PCs = c("reductions", "pca")}.
 
-If \code{NULL}, the internal function \code{from_Seurat_guess_varms} will be used to guess the varm mapping as follows:
+If \code{NULL}, the internal function \code{.from_Seurat_guess_varms} will be used to guess the varm mapping as follows:
 \itemize{
 \item The name of the PCA loadings is copied by name.
 }
@@ -121,9 +160,13 @@ If \code{NULL}, the internal function \code{from_Seurat_guess_varms} will be use
 
 A named list to map Seurat graphs to AnnData \verb{$obsp}.
 
-Example: \code{obsp_mapping = list(nn = "connectivities")}.
+Each name in the list corresponds to the name of the resulting \verb{$obsp} slot. Each value must be a character vector
+of length 2, where the first element of this vector must be \code{graphs} or \code{misc}, and the second element is the name
+of the data in the corresponding \code{graphs} or \code{misc} slot in the Seurat object.
 
-If \code{NULL}, the internal function \code{from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
+Example: \code{obsp_mapping = list(connectivities = c("graphs", "RNA_nn"))}.
+
+If \code{NULL}, the internal function \code{.from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
 \itemize{
 \item All Seurat graphs are copied to \verb{$obsp} by name.
 }
@@ -138,7 +181,7 @@ in the Seurat object.
 
 Example: \code{varp_mapping = list(foo = c("misc", "foo"))}.
 
-If \code{NULL}, the internal function \code{from_Seurat_guess_varps} will be used to guess the varp mapping as follows:
+If \code{NULL}, the internal function \code{.from_Seurat_guess_varps} will be used to guess the varp mapping as follows:
 \itemize{
 \item No data is mapped to \verb{$varp}.
 }
@@ -152,7 +195,7 @@ length 2. The first element must be \code{"misc"}. The second element is the nam
 
 Example: \code{uns_mapping = list(foo = c("misc", "foo"))}.
 
-If \code{NULL}, the internal function \code{from_Seurat_guess_uns} will be used to guess the uns mapping as follows:
+If \code{NULL}, the internal function \code{.from_Seurat_guess_uns} will be used to guess the uns mapping as follows:
 \itemize{
 \item All Seurat miscellaneous data is copied to \code{uns} by name.
 }

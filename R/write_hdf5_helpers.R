@@ -111,7 +111,7 @@ hdf5_create_attribute <- function(
   space = NULL
 ) {
   if (!inherits(file, "H5File")) {
-    stop("file must be an open H5AD handle")
+    cli_abort("{.arg file} must be an open H5AD handle")
   }
 
   if (is.null(dtype)) {

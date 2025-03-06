@@ -76,11 +76,10 @@ write_h5ad_element <- function(
       }
     } else {
       # Fail if unknown
-      stop(
-        "Writing '",
-        class(value),
-        "' objects to H5AD files is not supported"
-      )
+      cli_abort(c(
+        "Writing {.cls {class(value)}} objects to H5AD is not supported",
+        "i" = "Attempting to write to {.path {name}} in {.file {file}}"
+      ))
     }
 
   # Delete the path if it already exists
@@ -109,9 +108,9 @@ write_h5ad_element <- function(
         conditionMessage(e)
       )
       if (stop_on_error) {
-        stop(message)
+        cli_abort(message)
       } else {
-        warning(message)
+        cli_warn(message)
         NULL
       }
     }
@@ -233,7 +232,11 @@ write_h5ad_sparse_array <- function(
   version <- match.arg(version)
 
   # check types
-  stopifnot(inherits(value, "sparseMatrix"))
+  if (!(inherits(value, "sparseMatrix"))) {
+    cli_abort(
+      "{.arg value} must be a {.cls sparseMatrix} but has class {.cls {class(value)}}"
+    )
+  }
 
   if (inherits(value, "RsparseMatrix")) {
     type <- "csr_matrix"
@@ -242,13 +245,10 @@ write_h5ad_sparse_array <- function(
     type <- "csc_matrix"
     indices_attr <- "i"
   } else {
-    stop(
-      "Unsupported matrix format in ",
-      name,
-      ".",
-      "Supported formats are RsparseMatrix and CsparseMatrix",
-      "(and objects that inherit from those)."
-    )
+    cli_abort(c(
+      "Unsupported matrix format in {.path {name}}",
+      "i" = "Supported matrices inherit from {.cls RsparseMatrix} or {.cls CsparseMatrix}"
+    ))
   }
 
   # Write sparse matrix
@@ -582,10 +582,10 @@ write_h5ad_data_frame <- function(
     index_value <- value[[index_name]]
     value[[index_name]] <- NULL
   } else {
-    stop(
-      "index must be a vector with length `nrow(value)` or a single character",
-      "string giving the name of a column in `value`"
-    )
+    cli_abort(paste(
+      "{.arg index} must be a vector with length {.code nrow(value)} or",
+      "a single character vector giving the name of a column in {.arg value}"
+    ))
   }
   if (is.null(index_value)) {
     index_value <- seq_len(nrow(value)) - 1L
