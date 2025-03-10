@@ -86,8 +86,15 @@ write_h5ad <- function(
 
   if (file.exists(path) && !overwrite) {
     cli_abort(
-      "{.path {path}} already exists. Set {.arg overwrite} to {.val {TRUE}} to overwrite this file"
+      "{.path {path}} already exists. Set {.arg overwrite} to {.val {TRUE}} to overwrite this file."
     )
+  }
+
+  if (file.exists(path) && overwrite) {
+    cli::cli_alert_warning(
+      "{.path {path}} already exists. It will be overwritten."
+    )
+    file.remove(path)
   }
 
   adata <-
