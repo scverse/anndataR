@@ -912,16 +912,26 @@ from_Seurat <- function(
         varm_key <- varm[[2]]
 
         if (varm_slot == "reductions") {
-          adata$varm[[varm_name]] <- SeuratObject::Loadings(
-            seurat_obj,
-            varm_key
-          )
+          varm_data <- SeuratObject::Loadings(seurat_obj, varm_key)
         } else if (varm_slot == "misc") {
-          data <- seurat_obj@misc[[varm_key]]
+          varm_data <- seurat_obj@misc[[varm_key]]
           if (length(varm) == 3) {
-            data <- data[[varm[[3]]]]
+            varm_data <- varm_data[[varm[[3]]]]
           }
-          adata$varm[[varm_name]] <- data
+        } else {
+          cli_abort(
+            "{.arg varm_slot} must be one of: {.or {.val {c('reductions', 'misc')}}}"
+          )
+        }
+
+        if (nrow(varm_data) != nrow(seurat_obj)) {
+          varm_str <- cli::cli_vec(varm, list("vec-last" = ",, "))
+          cli_warn(paste(
+            "Skipping {.code varm_mapping[[{i}]]} (c({.val {varm_str}}))",
+            "because it does not contain data for every feature"
+          ))
+        } else {
+          adata$varm[[varm_name]] <- varm_data
         }
       }
 
@@ -1020,10 +1030,13 @@ from_Seurat <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata))
       }
-      cli_abort(c(
-        "Failed to convert from Seurat",
-        "i" = paste("Error message:", conditionMessage(e))
-      ))
+      cli_abort(
+        c(
+          "Failed to convert from Seurat",
+          "i" = paste("Error message:", conditionMessage(e))
+        ),
+        call = rlang::caller_env(4)
+      )
     }
   )
 }
@@ -1109,13 +1122,13 @@ from_Seurat <- function(
   varm_mapping <- list()
 
   for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
-    reduction <- seurat_obj@reductions[[reduction_name]]
+    reduction <- seurat_obj[[reduction_name]]
+    loadings <- SeuratObject::Loadings(seurat_obj, reduction_name)
+
     if (
-      !SeuratObject::IsMatrixEmpty(SeuratObject::Loadings(
-        seurat_obj,
-        reduction_name
-      )) &&
-        reduction@assay.used == assay_name
+      !SeuratObject::IsMatrixEmpty(loadings) &&
+        nrow(loadings) == nrow(seurat_obj) &&
+        SeuratObject::DefaultAssay(reduction) == assay_name
     ) {
       varm_mapping[[reduction_name]] <- c("reductions", reduction_name)
     }
