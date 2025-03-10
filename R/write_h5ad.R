@@ -14,6 +14,7 @@
 #'   * `r+` opens an existing file for read/write.
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms creating a file and failing if it already exists.
+#' @param overwrite Whether or not to overwrite `path` if it already exists
 #'
 #' @return `path` invisibly
 #' @export
@@ -78,9 +79,24 @@ write_h5ad <- function(
   object,
   path,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  overwrite = FALSE
 ) {
   mode <- match.arg(mode)
+
+  if (file.exists(path) && !overwrite) {
+    cli_abort(
+      "{.path {path}} already exists. Set {.arg overwrite} to {.val {TRUE}} to overwrite this file."
+    )
+  }
+
+  if (file.exists(path) && overwrite) {
+    cli::cli_alert_warning(
+      "{.path {path}} already exists. It will be overwritten."
+    )
+    file.remove(path)
+  }
+
   adata <-
     if (inherits(object, "SingleCellExperiment")) {
       from_SingleCellExperiment(
@@ -107,6 +123,7 @@ write_h5ad <- function(
     } else {
       cli_abort("Unable to write object of class {.cls {class(object)}}")
     }
+
   adata$close()
   rm(adata)
   gc()
