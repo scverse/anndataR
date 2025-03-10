@@ -791,22 +791,12 @@ from_Seurat <- function(
     assay_name <- SeuratObject::DefaultAssay(seurat_obj)
   }
 
-  seurat_assay <- seurat_obj@assays[[assay_name]]
+  seurat_assay <- Seurat::GetAssay(seurat_obj, assay = assay_name)
 
   if (is.null(seurat_assay)) {
     cli_abort(c(
       "{.arg assay_name} is not an assay in {.arg seurat_obj}",
       "i" = "{.code Assays(seurat_obj)}: {.val {SeuratObject::Assays(seurat_obj)}}"
-    ))
-  }
-
-  if (!inherits(seurat_assay, "Assay5")) {
-    cli_abort(c(
-      "The selected assay {.val {assay_name}} is not a {.cls Assay5}",
-      "i" = paste(
-        "Please use {.code SeuratObject::UpdateSeuratObject()} to upgrade",
-        "{.arg seurat_obj} to Seurat v5"
-      )
     ))
   }
 
@@ -859,7 +849,7 @@ from_Seurat <- function(
       # fetch X
       # trackstatus: class=Seurat, feature=set_X, status=done
       if (!is.null(x_mapping)) {
-        adata$X <- Matrix::t(seurat_assay@layers[[x_mapping]])
+        adata$X <- Matrix::t(SeuratObject::LayerData(seurat_assay, x_mapping))
       }
 
       # fetch layers
@@ -868,7 +858,9 @@ from_Seurat <- function(
         layer <- layers_mapping[[i]]
         layer_name <- names(layers_mapping)[[i]]
 
-        adata$layers[[layer_name]] <- Matrix::t(seurat_assay@layers[[layer]])
+        adata$layers[[layer_name]] <- Matrix::t(
+          SeuratObject::LayerData(seurat_assay, layer)
+        )
       }
 
       # fetch obsm
@@ -1028,7 +1020,10 @@ from_Seurat <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata))
       }
-      cli_abort(e)
+      cli_abort(c(
+        "Failed to convert from Seurat",
+        "i" = paste("Error message:", conditionMessage(e))
+      ))
     }
   )
 }
@@ -1061,21 +1056,9 @@ from_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_layers <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
-  seurat_assay <- seurat_obj@assays[[assay_name]]
-
-  if (!inherits(seurat_assay, "Assay5")) {
-    cli_abort(
-      "The selected assay must be a {.cls Assay5} object but has class {.cls {class(seurat_assay)}}"
-    )
-  }
-
-  layers_mapping <- list()
-
-  for (layer_name in SeuratObject::Layers(seurat_assay)) {
-    layers_mapping[[layer_name]] <- layer_name
-  }
-
-  layers_mapping
+  seurat_assay <- Seurat::GetAssay(seurat_obj, assay = assay_name)
+  layers <- SeuratObject::Layers(seurat_assay)
+  setNames(as.list(layers), layers)
 }
 
 # nolint start: object_name_linter
