@@ -83,6 +83,13 @@ write_h5ad <- function(
   overwrite = FALSE
 ) {
   mode <- match.arg(mode)
+
+  if (file.exists(path) && !overwrite) {
+    cli_abort(
+      "{.path {path}} already exists. Set {.arg overwrite} to {.val {TRUE}} to overwrite this file"
+    )
+  }
+
   adata <-
     if (inherits(object, "SingleCellExperiment")) {
       from_SingleCellExperiment(
@@ -109,6 +116,7 @@ write_h5ad <- function(
     } else {
       cli_abort("Unable to write object of class {.cls {class(object)}}")
     }
+
   adata$close()
   rm(adata)
   gc()
