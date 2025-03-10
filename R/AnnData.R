@@ -1,21 +1,7 @@
-#' An in-memory AnnData object
+#' Create an in-memory AnnData object.
 #'
-#' @description
-#' This class is used to represent an AnnData object in memory.
-#' AnnData stores a data matrix `X` together with annotations of
-#' observations `obs` (`obsm`, `obsp`), variables `var` (`varm`, `varp`), and
-#' unstructured annotations `uns`.
+#' For more information on the functionality of an AnnData object, see [anndataR-package].
 #'
-#' To read an AnnData file from disk, use [read_h5ad()] instead.
-#'
-#' @param obs_names A vector of unique identifiers
-#'   used to identify each row of `obs` and to act as an index into the
-#'   observation dimension of the AnnData object. The length of `obs_names`
-#'   defines the observation dimension of the AnnData object.
-#' @param var_names A vector of unique identifiers used to identify each row
-#'   of `var` and to act as an index into the variable dimension of the
-#'   AnnData object. The length of `var_names` defines the variable
-#'   dimension of the AnnData object.
 #' @param X Either `NULL` or a observation × variable matrix with
 #'   dimensions consistent with `obs` and `var`.
 #' @param layers Either `NULL` or a named list, where each element is an
@@ -41,39 +27,43 @@
 #'   element is a sparse matrix where each dimension has length `n_vars`.
 #' @param uns The uns slot is used to store unstructured annotation. It must
 #'   be either `NULL` or a named list.
+#' @param shape Shape tuple (#observations, #variables). Can be provided
+#'   if `X` or `obs` and `var` are not provided.
+#'
+#' @return An in-memory AnnData object.
 #'
 #' @export
 #'
 #' @examples
 #' adata <- AnnData(
-#'   obs_names = paste0("obs", 1:3),
-#'   var_names = paste0("var", 1:4),
 #'   X = matrix(1:12, nrow = 3, ncol = 4),
 #'   obs = data.frame(
+#'     row.names = paste0("obs", 1:3),
 #'     n_counts = c(1, 2, 3),
 #'     n_cells = c(1, 2, 3)
 #'   ),
 #'   var = data.frame(
+#'     row.names = paste0("var", 1:4),
 #'     n_cells = c(1, 2, 3, 4)
 #'   )
 #' )
 #'
 #' adata
+#'
+#' @seealso [anndataR-package]
 AnnData <- function(
-    obs_names = NULL,
-    var_names = NULL,
-    X = NULL,
-    obs = NULL,
-    var = NULL,
-    layers = NULL,
-    obsm = NULL,
-    varm = NULL,
-    obsp = NULL,
-    varp = NULL,
-    uns = NULL) {
+  X = NULL,
+  obs = NULL,
+  var = NULL,
+  layers = NULL,
+  obsm = NULL,
+  varm = NULL,
+  obsp = NULL,
+  varp = NULL,
+  uns = NULL,
+  shape = NULL
+) {
   InMemoryAnnData$new(
-    obs_names = obs_names,
-    var_names = var_names,
     X = X,
     obs = obs,
     var = var,
@@ -82,6 +72,7 @@ AnnData <- function(
     varm = varm,
     obsp = obsp,
     varp = varp,
-    uns = uns
+    uns = uns,
+    shape = shape
   )
 }

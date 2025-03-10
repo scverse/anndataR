@@ -2,22 +2,31 @@
 #'
 #' @description
 #' Implementation of an in memory AnnData object.
-HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
+#' @noRd
+HDF5AnnData <- R6::R6Class(
+  "HDF5AnnData", # nolint
   inherit = AbstractAnnData,
+  cloneable = FALSE,
   private = list(
     .h5obj = NULL,
-    .n_obs = NULL,
-    .n_vars = NULL,
-    .obs_names = NULL,
-    .var_names = NULL,
-    .compression = NULL
+    .close_on_finalize = FALSE,
+    .compression = NULL,
+
+    #' @description Close the HDF5 file when the object is garbage collected
+    finalize = function() {
+      if (private$.close_on_finalize) {
+        self$close()
+      }
+      invisible(self)
+    }
   ),
   active = list(
     #' @field X The X slot
     X = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.h5obj, "/X")
+        read_h5ad_element(private$.h5obj, "X")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_X, status=done
         value <- private$.validate_aligned_array(
@@ -27,13 +36,14 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/X", private$.compression)
+        write_h5ad_element(value, private$.h5obj, "X", private$.compression)
       }
     },
     #' @field layers The layers slot. Must be NULL or a named list
     #'   with with all elements having the dimensions consistent with
     #'   `obs` and `var`.
     layers = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
         read_h5ad_element(private$.h5obj, "layers")
@@ -46,12 +56,18 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/layers", private$.compression)
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "layers",
+          private$.compression
+        )
       }
     },
     #' @field obsm The obsm slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows as `obs`.
     obsm = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
         read_h5ad_element(private$.h5obj, "obsm")
@@ -63,12 +79,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           c(self$n_obs()),
           expected_rownames = rownames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/obsm")
+        write_h5ad_element(value, private$.h5obj, "obsm")
       }
     },
     #' @field varm The varm slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows as `var`.
     varm = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
         read_h5ad_element(private$.h5obj, "varm")
@@ -80,12 +97,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           c(self$n_vars()),
           expected_rownames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/varm")
+        write_h5ad_element(value, private$.h5obj, "varm")
       }
     },
     #' @field obsp The obsp slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows and columns as `obs`.
     obsp = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
         read_h5ad_element(private$.h5obj, "obsp")
@@ -98,12 +116,13 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           expected_rownames = rownames(self),
           expected_colnames = rownames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/obsp")
+        write_h5ad_element(value, private$.h5obj, "obsp")
       }
     },
     #' @field varp The varp slot. Must be `NULL` or a named list with
     #'   with all elements having the same number of rows and columns as `var`.
     varp = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
         read_h5ad_element(private$.h5obj, "varp")
@@ -116,87 +135,74 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
           expected_rownames = colnames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "/varp")
+        write_h5ad_element(value, private$.h5obj, "varp")
       }
     },
 
     #' @field obs The obs slot
     obs = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_h5ad_element(private$.h5obj, "/obs", include_index = FALSE)
+        read_h5ad_element(private$.h5obj, "obs")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
         write_h5ad_element(
           value,
           private$.h5obj,
-          "/obs",
-          private$.compression,
-          index = self$obs_names
+          "obs",
+          private$.compression
         )
       }
     },
     #' @field var The var slot
     var = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_h5ad_element(private$.h5obj, "/var", include_index = FALSE)
+        read_h5ad_element(private$.h5obj, "var")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
         write_h5ad_element(
           value,
           private$.h5obj,
-          "/var",
-          index = self$var_names
+          "var"
         )
       }
     },
     #' @field obs_names Names of observations
     obs_names = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-        # obs names are cached to avoid reading all of obs whenever they are
-        # accessed
-        if (is.null(private$.obs_names)) {
-          private$.obs_names <- read_h5ad_data_frame_index(private$.h5obj, "obs")
-        }
-        private$.obs_names
+        rownames(self$obs)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
-        value <- private$.validate_obsvar_names(value, "obs")
-        write_h5ad_data_frame_index(value, private$.h5obj, "obs", private$.compression, "_index")
-        private$.obs_names <- value
+        rownames(self$obs) <- value
       }
     },
     #' @field var_names Names of variables
     var_names = function(value) {
-      # TODO: directly write to and read from /var/_index
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        # var names are cached to avoid reading all of var whenever they are
-        # accessed
-        if (is.null(private$.var_names)) {
-          private$.var_names <- read_h5ad_data_frame_index(private$.h5obj, "var")
-        }
-        private$.var_names
+        rownames(self$var)
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
-        value <- private$.validate_obsvar_names(value, "var")
-        write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression, "_index")
-        private$.var_names <- value
+        rownames(self$var) <- value
       }
     },
     #' @field uns The uns slot. Must be `NULL` or a named list.
     uns = function(value) {
+      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
         read_h5ad_element(private$.h5obj, "uns")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
         value <- private$.validate_named_list(value, "uns")
-        write_h5ad_element(value, private$.h5obj, "/uns")
+        write_h5ad_element(value, private$.h5obj, "uns")
       }
     }
   ),
@@ -205,14 +211,6 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'
     #' @param file The filename (character) of the `.h5ad` file. If this
     #'   file does not exist yet, `obs_names` and `var_names` must be provided.
-    #' @param obs_names A vector of unique identifiers
-    #'   used to identify each row of `obs` and to act as an index into the
-    #'   observation dimension of the AnnData object. The length of `obs_names`
-    #'   defines the observation dimension of the AnnData object.
-    #' @param var_names A vector of unique identifiers used to identify each row
-    #'   of `var` and to act as an index into the variable dimension of the
-    #'   AnnData object. The length of `var_names` defines the variable
-    #'   dimension of the AnnData object.
     #' @param X Either `NULL` or a observation × variable matrix with
     #'   dimensions consistent with `obs` and `var`.
     #' @param layers Either `NULL` or a named list, where each element is an
@@ -238,9 +236,18 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #'   element is a sparse matrix where each dimension has length `n_vars`.
     #' @param uns The uns slot is used to store unstructured annotation. It must
     #'   be either `NULL` or a named list.
+    #' @param shape Shape tuple (#observations, #variables). Can be provided
+    #'   if `X` or `obs` and `var` are not provided.
     #' @param compression The compression algorithm to use when writing the
     #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
     #' `"none"`.
+    #' @param mode The mode to open the HDF5 file.
+    #'
+    #'   * `a` creates a new file or opens an existing one for read/write.
+    #'   * `r` opens an existing file for reading.
+    #'   * `r+` opens an existing file for read/write.
+    #'   * `w` creates a file, truncating any existing ones.
+    #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
     #'
     #' @details
     #' The constructor creates a new HDF5 AnnData interface object. This can
@@ -249,120 +256,158 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
     #' must be specified. In both cases, any additional slots provided will be
     #' set on the created object. This will cause data to be overwritten if the
     #' file already exists.
-    initialize = function(file,
-                          obs_names = NULL,
-                          var_names = NULL,
-                          X = NULL,
-                          obs = NULL,
-                          var = NULL,
-                          layers = NULL,
-                          obsm = NULL,
-                          varm = NULL,
-                          obsp = NULL,
-                          varp = NULL,
-                          uns = NULL,
-                          compression = c("none", "gzip", "lzf")) {
-      if (!requireNamespace("rhdf5", quietly = TRUE)) {
-        stop("The HDF5 interface requires the 'rhdf5' package to be installed")
-      }
+    initialize = function(
+      file,
+      X = NULL,
+      obs = NULL,
+      var = NULL,
+      layers = NULL,
+      obsm = NULL,
+      varm = NULL,
+      obsp = NULL,
+      varp = NULL,
+      uns = NULL,
+      shape = NULL,
+      mode = c("r", "r+", "a", "w", "w-", "x"),
+      compression = c("none", "gzip", "lzf")
+    ) {
+      check_requires("HDF5AnnData", "hdf5r")
 
+      # check arguments
       compression <- match.arg(compression)
+      mode <- match.arg(mode)
+
+      # store compression for later use
       private$.compression <- compression
 
-      if (!file.exists(file)) {
-        # Check obs_names and var_names have been provided
-        if (is.null(obs_names)) {
-          stop("When creating a new .h5ad file, `obs_names` must be defined.")
-        }
-        if (is.null(var_names)) {
-          stop("When creating a new .h5ad file, `var_names` must be defined.")
-        }
+      if (is.character(file) && !file.exists(file)) {
+        # store private values
+        private$.h5obj <- hdf5r::H5File$new(file, mode = "w-")
+        private$.close_on_finalize <- TRUE
 
-        # Create an empty H5AD using the provided obs/var names
-        write_empty_h5ad(file, obs_names, var_names, compression)
+        # Determine initial obs and var
+        shape <- get_shape(obs, var, X, shape)
+        obs <- get_initial_obs(obs, X, shape)
+        var <- get_initial_var(var, X, shape)
 
-        # Set private object slots
-        private$.h5obj <- file
-        private$.n_obs <- length(obs_names)
-        private$.n_vars <- length(var_names)
-        private$.obs_names <- obs_names
-        private$.var_names <- var_names
+        # Create an empty H5AD
+        write_empty_h5ad(private$.h5obj, obs, var, compression)
+
+        # set other slots
+        if (!is.null(X)) {
+          self$X <- X
+        }
+        if (!is.null(layers)) {
+          self$layers <- layers
+        }
+        if (!is.null(obsm)) {
+          self$obsm <- obsm
+        }
+        if (!is.null(varm)) {
+          self$varm <- varm
+        }
+        if (!is.null(obsp)) {
+          self$obsp <- obsp
+        }
+        if (!is.null(varp)) {
+          self$varp <- varp
+        }
+        if (!is.null(uns)) {
+          self$uns <- uns
+        }
       } else {
+        open_hdf5_file <- is.character(file)
+        if (open_hdf5_file) {
+          file <- hdf5r::H5File$new(file, mode = mode)
+        }
+
+        if (!inherits(file, "H5File")) {
+          cli_abort(
+            paste(
+              "{.arg file} must be a character string or a {.cls H5File} object,",
+              "but is a {.cls {class(file)}}"
+            )
+          )
+        }
+
         # Check the file is a valid H5AD
-        attrs <- rhdf5::h5readAttributes(file, "/")
+        attrs <- hdf5r::h5attributes(file)
 
         if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-          stop(
-            "H5AD encoding information is missing. ",
-            "This file may have been created with Python anndata<0.8.0."
-          )
+          cli_abort(c(
+            "H5AD encoding information is missing",
+            "i" = "This file may have been created with Python {.pkg anndata<0.8.0}"
+          ))
         }
 
         # Set the file path
         private$.h5obj <- file
+        private$.close_on_finalize <- open_hdf5_file
 
-        # If obs or var names have been provided update those
-        if (!is.null(obs_names)) {
-          self$obs_names <- obs_names
+        # assert other arguments are NULL
+        if (!is.null(obs)) {
+          cli_abort(
+            "{.arg obs} must be {.val NULL} when loading an existing .h5ad file"
+          )
         }
-
-        if (!is.null(var_names)) {
-          self$var_names <- var_names
+        if (!is.null(var)) {
+          cli_abort(
+            "{.arg var} must be {.val NULL} when loading an existing .h5ad file"
+          )
+        }
+        if (!is.null(X)) {
+          cli_abort(
+            "{.arg X} must be {.val NULL} when loading an existing .h5ad file"
+          )
+        }
+        if (!is.null(layers)) {
+          cli_abort(
+            "{.arg layers} must be {.val NULL} when loading an existing .h5ad file"
+          )
+        }
+        if (!is.null(obsm)) {
+          cli_abort(
+            "{.arg obsm} must be {.val NULL} when loading an existing .h5ad file"
+          )
+        }
+        if (!is.null(varm)) {
+          cli_abort(
+            "{.arg varm} must be {.val NULL} when loading an existing .h5ad file"
+          )
+        }
+        if (!is.null(obsp)) {
+          cli_abort(
+            "{.arg obsp} must be {.val NULL} when loading an existing .h5ad file"
+          )
+        }
+        if (!is.null(varp)) {
+          cli_abort(
+            "{.arg varp} must be {.val NULL} when loading an existing .h5ad file"
+          )
+        }
+        if (!is.null(uns)) {
+          cli_abort(
+            "{.arg uns} must be {.val NULL} when loading an existing .h5ad file"
+          )
         }
       }
+    },
 
-      # Update remaining slots
-      if (!is.null(X)) {
-        self$X <- X
-      }
-
-      if (!is.null(obs)) {
-        self$obs <- obs
-      }
-
-      if (!is.null(var)) {
-        self$var <- var
-      }
-
-      if (!is.null(layers)) {
-        self$layers <- layers
-      }
-
-      if (!is.null(obsm)) {
-        self$obsm <- obsm
-      }
-
-      if (!is.null(varm)) {
-        self$varm <- varm
-      }
-
-      if (!is.null(obsp)) {
-        self$obsp <- obsp
-      }
-
-      if (!is.null(varp)) {
-        self$varp <- varp
-      }
-
-      if (!is.null(uns)) {
-        self$uns <- uns
+    #' @description Close the HDF5 file
+    close = function() {
+      if (private$.h5obj$is_valid) {
+        private$.h5obj$close()
       }
     },
 
     #' @description Number of observations in the AnnData object
     n_obs = function() {
-      if (is.null(private$.n_obs)) {
-        private$.n_obs <- length(self$obs_names)
-      }
-      private$.n_obs
+      nrow(self$obs)
     },
 
     #' @description Number of variables in the AnnData object
     n_vars = function() {
-      if (is.null(private$.n_vars)) {
-        private$.n_vars <- length(self$var_names)
-      }
-      private$.n_vars
+      nrow(self$var)
     }
   )
 )
@@ -377,11 +422,18 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #' @param compression The compression algorithm to use when writing the
 #'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #' `"none"`.
+#' @param mode The mode to open the HDF5 file.
+#'
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r` opens an existing file for reading.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #'
 #' @return An HDF5AnnData object with the same data as the input AnnData
 #'   object.
 #'
-#' @export
+#' @noRd
 #'
 #' @examples
 #' ad <- AnnData(
@@ -390,17 +442,26 @@ HDF5AnnData <- R6::R6Class("HDF5AnnData", # nolint
 #'     A = matrix(5:1, 3L, 5L),
 #'     B = matrix(letters[1:5], 3L, 5L)
 #'   ),
-#'   obs = data.frame(cell = 1:3),
-#'   var = data.frame(gene = 1:5),
-#'   obs_names = LETTERS[1:3],
-#'   var_names = letters[1:5]
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5),
 #' )
 #' h5ad_file <- tempfile(fileext = ".h5ad")
 #' to_HDF5AnnData(ad, h5ad_file)
-to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) { # nolint
-  stopifnot(
-    inherits(adata, "AbstractAnnData")
-  )
+# nolint start: object_name_linter
+to_HDF5AnnData <- function(
+  # nolint end: object_name_linter
+  adata,
+  file,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+) {
+  if (!(inherits(adata, "AbstractAnnData"))) {
+    cli_abort(
+      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+    )
+  }
+
+  mode <- match.arg(mode)
   HDF5AnnData$new(
     file = file,
     X = adata$X,
@@ -408,12 +469,25 @@ to_HDF5AnnData <- function(adata, file, compression = c("none", "gzip", "lzf")) 
     var = adata$var,
     obsm = adata$obsm,
     varm = adata$varm,
-    obs_names = adata$obs_names,
-    var_names = adata$var_names,
     layers = adata$layers,
     obsp = adata$obsp,
     varp = adata$varp,
     uns = adata$uns,
-    compression = compression
+    compression = compression,
+    shape = adata$shape(),
+    mode = mode
   )
+}
+
+# nolint start: object_name_linter
+cleanup_HDF5AnnData <- function(...) {
+  # nolint end: object_name_linter
+  args <- list(...)
+
+  if (
+    !is.null(args$file) && is.character(args$file) && file.exists(args$file)
+  ) {
+    cli::cli_alert("Removing file: ", args$file)
+    unlink(args$file)
+  }
 }

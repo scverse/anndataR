@@ -2,10 +2,38 @@
 % Please edit documentation in R/AbstractAnnData.R
 \name{AbstractAnnData}
 \alias{AbstractAnnData}
-\title{AbstractAnnData}
+\title{Abstract AnnData class}
 \description{
-Abstract \link[R6:R6Class]{R6} class representing an AnnData
-object. Defines the interface.
+This class is an abstract representation of an AnnData object. It is
+intended to be used as a base class for concrete implementations of
+AnnData objects, such as \code{InMemoryAnnData} or \code{HDF5AnnData}.
+
+The following functions can be used to create an object that inherits
+from \code{AbstractAnnData}:
+\itemize{
+\item \code{\link[=AnnData]{AnnData()}}: Create an in-memory AnnData object.
+\item \code{\link[=read_h5ad]{read_h5ad()}}: Create an HDF5-backed AnnData object.
+\item \code{\link[=from_Seurat]{from_Seurat()}}: Create an in-memory AnnData object from a Seurat object.
+\item \code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}: Create an in-memory AnnData object from a SingleCellExperiment object.
+}
+}
+\examples{
+
+## ------------------------------------------------
+## Method `AbstractAnnData$write_h5ad`
+## ------------------------------------------------
+
+adata <- AnnData(
+  X = matrix(1:5, 3L, 5L),
+  layers = list(
+    A = matrix(5:1, 3L, 5L),
+    B = matrix(letters[1:5], 3L, 5L)
+  ),
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
+)
+h5ad_file <- tempfile(fileext = ".h5ad")
+adata$write_h5ad(h5ad_file)
 }
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
@@ -67,10 +95,12 @@ with all elements having the same number of rows and columns as \code{var}.}
 \item \href{#method-AbstractAnnData-varm_keys}{\code{AbstractAnnData$varm_keys()}}
 \item \href{#method-AbstractAnnData-obsp_keys}{\code{AbstractAnnData$obsp_keys()}}
 \item \href{#method-AbstractAnnData-varp_keys}{\code{AbstractAnnData$varp_keys()}}
+\item \href{#method-AbstractAnnData-uns_keys}{\code{AbstractAnnData$uns_keys()}}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
+\item \href{#method-AbstractAnnData-write_h5ad}{\code{AbstractAnnData$write_h5ad()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
 }
@@ -194,24 +224,98 @@ Keys (element names) of \code{varp}.
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-uns_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-uns_keys}{}}}
+\subsection{Method \code{uns_keys()}}{
+Keys (element names) of \code{uns}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$uns_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
 \subsection{Method \code{to_SingleCellExperiment()}}{
 Convert to SingleCellExperiment
+
+See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more details on the conversion.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
+  assays_mapping = NULL,
+  colData_mapping = NULL,
+  rowData_mapping = NULL,
+  reduction_mapping = NULL,
+  colPairs_mapping = NULL,
+  rowPairs_mapping = NULL,
+  metadata_mapping = NULL
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{assays_mapping}}{A named list mapping SingleCellExperiment assays to AnnData layers}
+
+\item{\code{colData_mapping}}{A named list mapping SingleCellExperiment colData to AnnData obs}
+
+\item{\code{rowData_mapping}}{A named list mapping SingleCellExperiment rowData to AnnData var}
+
+\item{\code{reduction_mapping}}{A named list mapping SingleCellExperiment reductions to AnnData obsm/varm}
+
+\item{\code{colPairs_mapping}}{A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp}
+
+\item{\code{rowPairs_mapping}}{A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp}
+
+\item{\code{metadata_mapping}}{A named list mapping SingleCellExperiment metadata to AnnData uns}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A SingleCellExperiment object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
 \subsection{Method \code{to_Seurat()}}{
 Convert to Seurat
+
+See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and each of the parameters.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
+  assay_name = "RNA",
+  layers_mapping = NULL,
+  object_metadata_mapping = NULL,
+  assay_metadata_mapping = NULL,
+  reduction_mapping = NULL,
+  graph_mapping = NULL,
+  misc_mapping = NULL
+)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{assay_name}}{The name of the assay to use as the main data}
+
+\item{\code{layers_mapping}}{A named list mapping Seurat layers to AnnData layers}
+
+\item{\code{object_metadata_mapping}}{A named list mapping Seurat object metadata to AnnData obs}
+
+\item{\code{assay_metadata_mapping}}{A named list mapping Seurat assay metadata to AnnData var}
+
+\item{\code{reduction_mapping}}{A named list mapping Seurat reductions to AnnData obsm/varm}
+
+\item{\code{graph_mapping}}{A named list mapping Seurat graphs to AnnData obsp/varp}
+
+\item{\code{misc_mapping}}{A named list mapping Seurat misc to AnnData uns}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A Seurat object
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
@@ -229,16 +333,85 @@ Convert to an InMemory AnnData
 \subsection{Method \code{to_HDF5AnnData()}}{
 Convert to an HDF5 Backed AnnData
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(
+  file,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{path}}{The path to the HDF5 file}
+\item{\code{file}}{The path to the HDF5 file}
+
+\item{\code{compression}}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\code{"none"}.}
+
+\item{\code{mode}}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+}}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Returns}{
+An HDF5AnnData object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-write_h5ad"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-write_h5ad}{}}}
+\subsection{Method \code{write_h5ad()}}{
+Write the AnnData object to an H5AD file.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$write_h5ad(path, compression = "gzip", mode = "w")}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{The path to the H5AD file}
+
+\item{\code{compression}}{The compression algorithm to use when writing the
+HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
+\code{"none"}.}
+
+\item{\code{mode}}{The mode to open the HDF5 file.
+\itemize{
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{path} invisibly
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{adata <- AnnData(
+  X = matrix(1:5, 3L, 5L),
+  layers = list(
+    A = matrix(5:1, 3L, 5L),
+    B = matrix(letters[1:5], 3L, 5L)
+  ),
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
+)
+h5ad_file <- tempfile(fileext = ".h5ad")
+adata$write_h5ad(h5ad_file)
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-clone"></a>}}

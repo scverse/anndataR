@@ -1,10 +1,13 @@
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("hdf5r")
+
+requireNamespace("vctrs")
 
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 test_that("opening H5AD works", {
   adata <- HDF5AnnData$new(file)
   expect_true(inherits(adata, "HDF5AnnData"))
+  adata$close()
 })
 
 adata <- HDF5AnnData$new(file)
@@ -57,8 +60,8 @@ test_that("obsm/ varm validation", {
 
   adata <- AnnData(
     X = mtx,
-    obs_names = as.character(1:N_OBS),
-    var_names = as.character(1:N_VAR)
+    obs = data.frame(row.names = as.character(1:N_OBS)),
+    var = data.frame(row.names = as.character(1:N_VAR))
   )
 
   adata$obsm <- list(PCA = matrix(0, N_OBS, 4))
@@ -73,8 +76,8 @@ test_that("obsp/ varp validation", {
   N_VAR <- 3
 
   adata <- AnnData(
-    obs_names = as.character(1:N_OBS),
-    var_names = as.character(1:N_VAR)
+    obs = data.frame(row.names = as.character(1:N_OBS)),
+    var = data.frame(row.names = as.character(1:N_VAR))
   )
 
   adata$obsp <- list(graph1 = matrix(0, N_OBS, N_OBS))
@@ -84,6 +87,7 @@ test_that("obsp/ varp validation", {
   expect_error(adata$varp <- list(graph1 = matrix(0, 4, 4)))
 })
 
+
 # trackstatus: class=HDF5AnnData, feature=test_get_obs, status=done
 test_that("reading obs works", {
   obs <- adata$obs
@@ -91,11 +95,21 @@ test_that("reading obs works", {
   expect_equal(
     colnames(obs),
     c(
-      "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA", "n_genes_by_counts",
-      "log1p_n_genes_by_counts", "total_counts", "log1p_total_counts", "leiden"
+      "Float",
+      "FloatNA",
+      "Int",
+      "IntNA",
+      "Bool",
+      "BoolNA",
+      "n_genes_by_counts",
+      "log1p_n_genes_by_counts",
+      "total_counts",
+      "log1p_total_counts",
+      "leiden"
     )
   )
 })
+
 
 # trackstatus: class=HDF5AnnData, feature=test_get_var, status=done
 test_that("reading var works", {
@@ -104,9 +118,17 @@ test_that("reading var works", {
   expect_equal(
     colnames(var),
     c(
-      "String", "n_cells_by_counts", "mean_counts", "log1p_mean_counts",
-      "pct_dropout_by_counts", "total_counts", "log1p_total_counts",
-      "highly_variable", "means", "dispersions", "dispersions_norm"
+      "String",
+      "n_cells_by_counts",
+      "mean_counts",
+      "log1p_mean_counts",
+      "pct_dropout_by_counts",
+      "total_counts",
+      "log1p_total_counts",
+      "highly_variable",
+      "means",
+      "dispersions",
+      "dispersions_norm"
     )
   )
 })
@@ -126,13 +148,15 @@ test_that("reading var names works", {
 # SETTERS ----------------------------------------------------------------
 test_that("creating empty H5AD works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  expect_silent(HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20))
+  expect_silent(HDF5AnnData$new(h5ad_file))
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_X, status=done
 test_that("writing X works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(h5ad$X <- X)
@@ -141,7 +165,9 @@ test_that("writing X works", {
 # trackstatus: class=HDF5AnnData, feature=test_set_layers, status=done
 test_that("writing layers works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(h5ad$layers <- list(layer1 = X, layer2 = X))
@@ -150,35 +176,41 @@ test_that("writing layers works", {
 # trackstatus: class=HDF5AnnData, feature=test_set_obs, status=done
 test_that("writing obs works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
 
   obs <- data.frame(
     Letters = LETTERS[1:10],
     Numbers = 1:10,
     row.names = paste0("Row", 1:10)
   )
-  expect_warning(h5ad$obs <- obs, "should not have any rownames")
-  expect_identical(h5ad$obs_names, 1:10)
+  h5ad$obs <- obs
+  expect_identical(h5ad$obs_names, paste0("Row", 1:10))
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_var, status=done
 test_that("writing var works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
 
   var <- data.frame(
     Letters = LETTERS[1:20],
     Numbers = 1:20,
     row.names = paste0("Row", 1:20)
   )
-  expect_warning(h5ad$var <- var, "should not have any rownames")
-  expect_identical(h5ad$var_names, 1:20)
+  h5ad$var <- var
+  expect_identical(h5ad$var_names, paste0("Row", 1:20))
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_obs_names, status=done
 test_that("writing obs names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
 
   h5ad$obs_names <- LETTERS[1:10]
   expect_identical(h5ad$obs_names, LETTERS[1:10])
@@ -187,7 +219,9 @@ test_that("writing obs names works", {
 # trackstatus: class=HDF5AnnData, feature=test_set_var_names, status=done
 test_that("writing var names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  h5ad <- HDF5AnnData$new(h5ad_file, obs_names = 1:10, var_names = 1:20)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
 
   h5ad$var_names <- LETTERS[1:20]
   expect_identical(h5ad$var_names, LETTERS[1:20])

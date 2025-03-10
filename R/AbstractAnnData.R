@@ -1,15 +1,33 @@
 .abstract_function <- function(fun_name = NA_character_) {
-  fun_name <- if (is.na(fun_name)) "This function" else fun_name
-  stop(fun_name, " is an abstract function.")
+  fun_str <- if (is.na(fun_name)) {
+    "This function"
+  } else {
+    "{.fun {fun_name}}"
+  }
+  cli_abort(
+    paste(fun_str, "is an abstract function."),
+    call = rlang::caller_env()
+  )
 }
 
-#' @title AbstractAnnData
+#' @title Abstract AnnData class
 #'
 #' @description
-#'   Abstract [R6][R6::R6Class] class representing an AnnData
-#'   object. Defines the interface.
+#' This class is an abstract representation of an AnnData object. It is
+#' intended to be used as a base class for concrete implementations of
+#' AnnData objects, such as `InMemoryAnnData` or `HDF5AnnData`.
+#'
+#' The following functions can be used to create an object that inherits
+#' from `AbstractAnnData`:
+#'
+#' * [AnnData()]: Create an in-memory AnnData object.
+#' * [read_h5ad()]: Create an HDF5-backed AnnData object.
+#' * [from_Seurat()]: Create an in-memory AnnData object from a Seurat object.
+#' * [from_SingleCellExperiment()]: Create an in-memory AnnData object from a SingleCellExperiment object.
+#'
 #' @importFrom R6 R6Class
-AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
+AbstractAnnData <- R6::R6Class(
+  "AbstractAnnData",
   active = list(
     #' @field X NULL or an observation x variable matrix (without
     #'   dimnames) consistent with the number of rows of `obs` and `var`.
@@ -81,12 +99,19 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #'   computationally expensive.
     #' @param ... Optional arguments to print method.
     print = function(...) {
-      cat("AnnData object with n_obs \u00D7 n_vars = ", self$n_obs(), " \u00D7 ", self$n_vars(), "\n", sep = "")
+      cat(
+        "AnnData object with n_obs \u00D7 n_vars = ",
+        self$n_obs(),
+        " \u00D7 ",
+        self$n_vars(),
+        "\n",
+        sep = ""
+      )
 
       for (attribute in c(
         "obs",
         "var",
-        # "uns", # TODO: remove this when uns is implemented
+        "uns",
         "obsm",
         "varm",
         "layers",
@@ -102,8 +127,10 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
           }
         if (length(keys) > 0) {
           cat(
-            "    ", attribute, ":",
-            paste("'", keys, "'", collapse = ", "),
+            "    ",
+            attribute,
+            ": ",
+            paste(paste0("'", keys, "'"), collapse = ", "),
             "\n",
             sep = ""
           )
@@ -120,11 +147,11 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     },
     #' @description Number of observations in the AnnData object.
     n_obs = function() {
-      length(self$obs_names)
+      nrow(self$obs)
     },
     #' @description Number of variables in the AnnData object.
     n_vars = function() {
-      length(self$var_names)
+      nrow(self$var)
     },
     #' @description Keys ('column names') of `obs`.
     obs_keys = function() {
@@ -154,22 +181,128 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     varp_keys = function() {
       names(self$varp)
     },
+    #' @description Keys (element names) of `uns`.
+    uns_keys = function() {
+      names(self$uns)
+    },
     #' @description Convert to SingleCellExperiment
-    to_SingleCellExperiment = function() {
-      to_SingleCellExperiment(self)
+    #'
+    #' See [to_SingleCellExperiment()] for more details on the conversion.
+    #'
+    #' @param assays_mapping A named list mapping SingleCellExperiment assays to AnnData layers
+    #' @param colData_mapping A named list mapping SingleCellExperiment colData to AnnData obs
+    #' @param rowData_mapping A named list mapping SingleCellExperiment rowData to AnnData var
+    #' @param reduction_mapping A named list mapping SingleCellExperiment reductions to AnnData obsm/varm
+    #' @param colPairs_mapping A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp
+    #' @param rowPairs_mapping A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp
+    #' @param metadata_mapping A named list mapping SingleCellExperiment metadata to AnnData uns
+    #'
+    #' @return A SingleCellExperiment object
+    to_SingleCellExperiment = function(
+      assays_mapping = NULL,
+      colData_mapping = NULL, # nolint
+      rowData_mapping = NULL, # nolint
+      reduction_mapping = NULL,
+      colPairs_mapping = NULL, # nolint
+      rowPairs_mapping = NULL, # nolint
+      metadata_mapping = NULL
+    ) {
+      to_SingleCellExperiment(
+        self,
+        assays_mapping = assays_mapping,
+        colData_mapping = colData_mapping,
+        rowData_mapping = rowData_mapping,
+        reduction_mapping = reduction_mapping,
+        colPairs_mapping = colPairs_mapping, # nolint
+        rowPairs_mapping = rowPairs_mapping, # nolint
+        metadata_mapping = metadata_mapping
+      )
     },
     #' @description Convert to Seurat
-    to_Seurat = function() {
-      to_Seurat(self)
+    #'
+    #' See [to_Seurat()] for more details on the conversion and each of the parameters.
+    #'
+    #' @param assay_name The name of the assay to use as the main data
+    #' @param layers_mapping A named list mapping Seurat layers to AnnData layers
+    #' @param object_metadata_mapping A named list mapping Seurat object metadata to AnnData obs
+    #' @param assay_metadata_mapping A named list mapping Seurat assay metadata to AnnData var
+    #' @param reduction_mapping A named list mapping Seurat reductions to AnnData obsm/varm
+    #' @param graph_mapping A named list mapping Seurat graphs to AnnData obsp/varp
+    #' @param misc_mapping A named list mapping Seurat misc to AnnData uns
+    #' @return A Seurat object
+    to_Seurat = function(
+      assay_name = "RNA",
+      layers_mapping = NULL,
+      object_metadata_mapping = NULL,
+      assay_metadata_mapping = NULL,
+      reduction_mapping = NULL,
+      graph_mapping = NULL,
+      misc_mapping = NULL
+    ) {
+      to_Seurat(
+        self,
+        assay_name = assay_name,
+        layers_mapping = layers_mapping,
+        object_metadata_mapping = object_metadata_mapping,
+        assay_metadata_mapping = assay_metadata_mapping,
+        reduction_mapping = reduction_mapping,
+        graph_mapping = graph_mapping,
+        misc_mapping = misc_mapping
+      )
     },
     #' @description Convert to an InMemory AnnData
     to_InMemoryAnnData = function() {
       to_InMemoryAnnData(self)
     },
     #' @description Convert to an HDF5 Backed AnnData
-    #' @param path The path to the HDF5 file
-    to_HDF5AnnData = function(path) {
-      to_HDF5AnnData(self, path)
+    #' @param file The path to the HDF5 file
+    #' @param compression The compression algorithm to use when writing the
+    #' HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+    #' `"none"`.
+    #' @param mode The mode to open the HDF5 file.
+    #'  * `a` creates a new file or opens an existing one for read/write.
+    #' * `r+` opens an existing file for read/write.
+    #' * `w` creates a file, truncating any existing ones
+    #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
+    #' @return An HDF5AnnData object
+    to_HDF5AnnData = function(
+      file,
+      compression = c("none", "gzip", "lzf"),
+      mode = c("w-", "r", "r+", "a", "w", "x")
+    ) {
+      to_HDF5AnnData(
+        adata = self,
+        file = file,
+        compression = compression,
+        mode = mode
+      )
+    },
+    #' @description Write the AnnData object to an H5AD file.
+    #' @param path The path to the H5AD file
+    #' @param compression The compression algorithm to use when writing the
+    #' HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+    #' `"none"`.
+    #' @param mode The mode to open the HDF5 file.
+    #' * `a` creates a new file or opens an existing one for read/write.
+    #' * `r+` opens an existing file for read/write.
+    #' * `w` creates a file, truncating any existing ones
+    #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
+    #' @return `path` invisibly
+    #' @examples
+    #' adata <- AnnData(
+    #'   X = matrix(1:5, 3L, 5L),
+    #'   layers = list(
+    #'     A = matrix(5:1, 3L, 5L),
+    #'     B = matrix(letters[1:5], 3L, 5L)
+    #'   ),
+    #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+    #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
+    #' )
+    #' h5ad_file <- tempfile(fileext = ".h5ad")
+    #' adata$write_h5ad(h5ad_file)
+    write_h5ad = function(path, compression = "gzip", mode = "w") {
+      self$to_HDF5AnnData(path, compression = compression, mode = mode)
+      path
     }
   ),
   private = list(
@@ -181,27 +314,75 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param shape Expected dimensions of matrix
     # @param expected_rownames
     # @param excepted_colnames
-    .validate_aligned_array = function(mat, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    .validate_aligned_array = function(
+      mat,
+      label,
+      shape,
+      expected_rownames = NULL,
+      expected_colnames = NULL
+    ) {
       if (is.null(mat)) {
         return(mat)
       }
       mat_dims <- dim(mat)
-      for (i in seq_along(shape)) {
-        expected_dim <- shape[i]
-        found_dim <- mat_dims[i]
-        if (found_dim != expected_dim) {
-          stop("dim(", label, ")[", i, "] should have shape: ", expected_dim, ", found: ", found_dim, ".")
-        }
+
+      if (
+        length(shape) > length(mat_dims) ||
+          any(shape != mat_dims[seq_along(shape)])
+      ) {
+        cli_abort(
+          c(
+            "Unexpected shape for {.field {label}}",
+            "i" = paste0(
+              "Expected [",
+              paste(shape, collapse = ", "),
+              "], got [",
+              paste(mat_dims, collapse = ", "),
+              "]"
+            ),
+          ),
+          call = rlang::caller_env()
+        )
       }
       if (!is.null(expected_rownames) & !has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
-          stop("rownames(", label, ") should be the same as expected_rownames")
+          expected_str <- cli::cli_vec(
+            head(expected_rownames, 12),
+            list("vec-last" = ", ")
+          )
+          provided_str <- cli::cli_vec(
+            head(rownames(mat), 12),
+            list("vec-last" = ", ")
+          )
+          cli_abort(
+            c(
+              "{.code rownames({label})} is not as expected",
+              "i" = "Expected row names: {.val {expected_str}}, ...",
+              "i" = "Provided row names: {.val {provided_str}}, ..."
+            ),
+            call = rlang::caller_env()
+          )
         }
         rownames(mat) <- NULL
       }
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
-          stop("colnames(", label, ") should be the same as expected_colnames")
+          expected_str <- cli::cli_vec(
+            head(expected_colnames, 12),
+            list("vec-last" = ", ")
+          )
+          provided_str <- cli::cli_vec(
+            head(colnames(mat), 12),
+            list("vec-last" = ", ")
+          )
+          cli_abort(
+            c(
+              "{.code colnames({label})} is not as expected",
+              "i" = "Expected column names: {.val {expected_str}}, ...",
+              "i" = "Provided column names: {.val {provided_str}}, ..."
+            ),
+            call = rlang::caller_env()
+          )
         }
         colnames(mat) <- NULL
       }
@@ -216,15 +397,19 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
     # @param expected_rownames Expected row names
     # @param expected_colnames Expected column names
-    .validate_aligned_mapping = function(collection, label, shape, expected_rownames = NULL, expected_colnames = NULL) {
+    .validate_aligned_mapping = function(
+      collection,
+      label,
+      shape,
+      expected_rownames = NULL,
+      expected_colnames = NULL
+    ) {
       if (is.null(collection)) {
         return(collection)
       }
 
+      collection <- private$.validate_named_list(collection, label)
       collection_names <- names(collection)
-      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
-        stop(paste0(label, " must be a named list, was ", class(collection)))
-      }
 
       for (mtx_name in collection_names) {
         collection_name <- paste0(label, "[['", mtx_name, "']]")
@@ -248,8 +433,14 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       }
 
       collection_names <- names(collection)
-      if (!is.list(collection) || ((length(collection) != 0) && is.null(collection_names))) {
-        stop(paste0(label, " must be a named list, was ", class(collection)))
+      if (
+        !is.list(collection) ||
+          ((length(collection) != 0) && is.null(collection_names))
+      ) {
+        cli_abort(
+          "{.field {label}} must be a named {.cls list}, got {.cls {class(collection)}}",
+          call = rlang::caller_env()
+        )
       }
 
       collection
@@ -262,10 +453,7 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     .validate_obsvar_dataframe = function(df, label = c("obs", "var")) {
       label <- match.arg(label)
 
-      expected_nrow <- switch(label,
-        obs = self$n_obs(),
-        var = self$n_vars()
-      )
+      expected_nrow <- switch(label, obs = self$n_obs(), var = self$n_vars())
 
       if (is.null(df)) {
         # create empty data frame
@@ -273,22 +461,20 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
       }
 
       if (!is.data.frame(df)) {
-        stop(label, " should be a data frame")
+        cli_abort(
+          "{.field label} must be a {.cls data.frame}, got {.cls {class(df)}}",
+          call = rlang::caller_env()
+        )
       }
 
       if (nrow(df) != expected_nrow) {
-        stop(wrap_message(
-          "nrow(df) should match the number of ", label, ". ",
-          "Expected nrow: ", expected_nrow, ". ",
-          "Observed nrow: ", nrow(df), "."
-        ))
-      }
-
-      if (has_row_names(df)) {
-        warning(wrap_message(
-          "'", label, "' should not have any rownames, removing them from the data frame."
-        ))
-        rownames(df) <- NULL
+        cli_abort(
+          paste(
+            "{.code nrow({label})} should equal {.val {expected_nrow}},",
+            "got {.val {nrow(df)}}"
+          ),
+          call = rlang::caller_env()
+        )
       }
 
       df
@@ -298,11 +484,18 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
     #   are NULL or consistent with the dimensions of `obs` or `var`.
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
-    .validate_obsvar_names = function(names, label = c("obs", "var"), check_length = TRUE) {
+    .validate_obsvar_names = function(
+      names,
+      label = c("obs", "var"),
+      check_length = TRUE
+    ) {
       label <- match.arg(label)
 
       if (is.null(names)) {
-        stop(wrap_message(label, "_names should be defined."))
+        cli_abort(
+          "{.field {label}_names} should be defined",
+          call = rlang::caller_env()
+        )
       }
 
       # only check whether sizes match if the obsvar names has already been defined
@@ -312,9 +505,13 @@ AbstractAnnData <- R6::R6Class("AbstractAnnData", # nolint
 
         if (length(names) != expected_len) {
           size_check_label <- if (label == "obs") "n_obs" else "n_vars"
-          stop(wrap_message(
-            "length(", label, "_names) should be the same as ad$", size_check_label, "()"
-          ))
+          cli_abort(
+            paste(
+              "{.code length({label}_names)} should match",
+              "{.code ad${size_check_label}}"
+            ),
+            call = rlang::caller_env()
+          )
         }
       }
 

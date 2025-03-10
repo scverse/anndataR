@@ -1,110 +1,152 @@
 skip_if_no_anndata()
-skip_if_not_installed("rhdf5")
+skip_if_not_installed("reticulate")
 
-data <- generate_dataset_as_list(10L, 20L)
+library(reticulate)
+testthat::skip_if_not(
+  reticulate::py_module_available("dummy_anndata"),
+  message = "Python dummy_anndata module not available for testing"
+)
 
-layer_names <- names(data$layers)
-# TODO: re-enable these tests
-layer_names <- layer_names[!grepl("_dense", layer_names)]
-# TODO: re-enable these tests
-layer_names <- layer_names[!grepl("_with_nas", layer_names)]
+ad <- reticulate::import("anndata", convert = FALSE)
+da <- reticulate::import("dummy_anndata", convert = FALSE)
+bi <- reticulate::import_builtins()
 
-for (layer_name in layer_names) {
-  test_that(paste0("roundtrip with layer '", layer_name, "'"), {
-    # create anndata
-    ad <- AnnData(
-      X = data$layers[[layer_name]],
-      obs_names = data$obs_names,
-      var_names = data$var_names
+known_issues <- read_known_issues()
+
+test_names <- names(da$matrix_generators)
+
+for (name in test_names) {
+  # first generate a python h5ad
+  adata_py <- da$generate_dataset(
+    x_type = name,
+    obs_types = list(),
+    var_types = list(),
+    layer_types = list(),
+    obsm_types = list(),
+    varm_types = list(),
+    obsp_types = list(),
+    varp_types = list(),
+    uns_types = list(),
+    nested_uns_types = list()
+  )
+
+  # create a couple of paths
+  file_py <- withr::local_file(
+    tempfile(paste0("anndata_py_", name), fileext = ".h5ad")
+  )
+  file_r <- withr::local_file(
+    tempfile(paste0("anndata_r_", name), fileext = ".h5ad")
+  )
+  file_r2 <- withr::local_file(
+    tempfile(paste0("anndata_r2_", name), fileext = ".h5ad")
+  )
+
+  # write to file
+  adata_py$write_h5ad(file_py)
+
+  test_that(paste0("Reading an AnnData with X '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("X"),
+      dtype = name,
+      process = "read",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+    expect_equal(
+      adata_r$shape(),
+      unlist(reticulate::py_to_r(adata_py$shape))
     )
 
-    # write to file
-    filename <- withr::local_file(paste0("roundtrip_layer_", layer_name, ".h5ad"))
-    write_h5ad(ad, filename)
+    # check that the print output is the same
+    str_r <- capture.output(print(adata_r))
+    str_py <- capture.output(print(adata_py))
+    expect_equal(str_r, str_py)
+  })
+
+  # maybe this test simply shouldn't be run if there is a known issue with reticulate
+  test_that(
+    paste0("Comparing an anndata with X '", name, "' with reticulate works"),
+    {
+      msg <- message_if_known(
+        backend = "HDF5AnnData",
+        slot = c("X"),
+        dtype = name,
+        process = c("read", "reticulate"),
+        known_issues = known_issues
+      )
+      skip_if(!is.null(msg), message = msg)
+
+      adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+
+      expect_equal(
+        adata_r$X,
+        py_to_r(adata_py$X),
+        tolerance = 1e-6
+      )
+    }
+  )
+
+  test_that(paste0("Writing an AnnData with X '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("X"),
+      dtype = name,
+      process = c("read", "write"),
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    adata_r <- read_h5ad(file_py, to = "InMemoryAnnData")
+    write_h5ad(adata_r, file_r)
 
     # read from file
-    ad_new <- read_h5ad(filename, to = "HDF5AnnData")
+    adata_py2 <- ad$read_h5ad(file_r)
 
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$X,
-      data$layers[[layer_name]],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
+    # expect that the objects are the same
+    expect_equal_py(
+      adata_py2$X,
+      adata_py$X
     )
   })
-}
 
-for (name in layer_names) {
-  test_that(paste0("reticulate->hdf5 with layer '", name, "'"), {
-    # add rownames
-    X <- data$layers[[name]]
-    rownames(X) <- data$obs_names
-    colnames(X) <- data$var_names
+  skip_if_no_h5diff()
+  # Get all R datatypes that are equivalent to the python datatype (name)
+  res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
+  r_datatypes <- sapply(res, function(x) x[[2]])
 
-    # create anndata
-    ad <- anndata::AnnData(
-      X = X,
-      obs = data.frame(row.names = data$obs_names),
-      var = data.frame(row.names = data$var_names)
+  for (r_name in r_datatypes) {
+    test_msg <- paste0(
+      "Comparing a python generated .h5ad with X '",
+      name,
+      "' with an R generated .h5ad '",
+      r_name,
+      "' works"
     )
+    test_that(test_msg, {
+      msg <- message_if_known(
+        backend = "HDF5AnnData",
+        slot = c("X"),
+        dtype = c(name, r_name),
+        process = c("h5diff"),
+        known_issues = known_issues
+      )
+      skip_if(!is.null(msg), message = msg)
 
-    # write to file
-    filename <- withr::local_file(paste0("reticulate_to_hdf5_layer_", name, ".h5ad"))
-    ad$write_h5ad(filename)
+      # generate an R h5ad
+      adata_r <- r_generate_dataset(10L, 20L, x_type = list(r_name))
+      write_h5ad(adata_r, file_r2)
 
-    # read from file
-    ad_new <- HDF5AnnData$new(filename)
+      # run h5diff
+      res <- processx::run(
+        "h5diff",
+        c("-v", file_py, file_r2, "/X"),
+        error_on_status = FALSE
+      )
 
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$X,
-      data$layers[[name]],
-      tolerance = 1e-6
-    )
-  })
-}
-
-r2py_names <- layer_names
-# TODO: re-enable -- rsparse gets converted to csparse by anndata
-r2py_names <- r2py_names[!grepl("rsparse", r2py_names)]
-
-for (layer_name in r2py_names) {
-  test_that(paste0("hdf5->reticulate with layer '", layer_name, "'"), {
-    # write to file
-    filename <- withr::local_file(paste0("hdf5_to_reticulate_layer_", layer_name, ".h5ad"))
-
-    # strip rownames
-    X <- data$layers[[layer_name]]
-    if (!is.null(X)) {
-      dimnames(X) <- list(NULL, NULL)
-    }
-
-    # make anndata
-    ad <- HDF5AnnData$new(
-      file = filename,
-      X = X,
-      obs_names = data$obs_names,
-      var_names = data$var_names
-    )
-
-    # read from file
-    ad_new <- anndata::read_h5ad(filename)
-
-    # expect slots are unchanged
-    layer_ <- ad_new$X
-    if (!is.null(layer_)) {
-      dimnames(layer_) <- list(NULL, NULL)
-    }
-    # anndata returns these layers as CsparseMatrix
-    if (grepl("rsparse", layer_name)) {
-      layer_ <- as(layer_, "RsparseMatrix")
-    }
-    expect_equal(
-      layer_,
-      data$layers[[layer_name]],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
-    )
-  })
+      expect_equal(res$status, 0, info = res$stdout)
+    })
+  }
 }

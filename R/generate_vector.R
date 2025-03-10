@@ -1,28 +1,30 @@
 vector_generators <- list(
-  character = function(n) paste0("value", seq_len(n)),
-  integer = function(n) seq_len(n),
-  factor = function(n) factor(paste0("value", seq_len(n))),
-  factor_ordered = function(n) factor(paste0("value", seq_len(n)), ordered = TRUE),
+  character = function(n) paste0("value_", seq(from = 0, to = n - 1)),
+  integer = function(n) seq(from = 0, to = n - 1),
+  factor = function(n) factor(rep(c("Value1", "Value2"), length.out = n)),
+  factor_ordered = function(n) {
+    factor(rep(c("Value1", "Value2"), length.out = n), ordered = TRUE)
+  },
   logical = function(n) sample(c(TRUE, FALSE), n, replace = TRUE),
-  numeric = function(n) runif(n),
+  numeric = function(n) seq(from = 0.5, to = n),
   character_with_nas = function(n) {
     x <- paste0("value", seq_len(n))
     x[seq(1, n, by = 2)] <- NA_character_
     x
   },
   integer_with_nas = function(n) {
-    x <- seq_len(n)
-    x[seq(1, n, by = 2)] <- NA_integer_
+    x <- seq(from = 0, to = n - 1)
+    x[1] <- NA_integer_
     x
   },
   factor_with_nas = function(n) {
-    x <- factor(paste0("value", seq_len(n)))
-    x[seq(1, n, by = 2)] <- NA_character_
+    x <- factor(rep(c("Value1", "Value2"), length.out = n))
+    x[1] <- NA_character_
     x
   },
   factor_ordered_with_nas = function(n) {
-    x <- factor(paste0("value", seq_len(n)), ordered = TRUE)
-    x[seq(1, n, by = 2)] <- NA_character_
+    x <- factor(rep(c("Value1", "Value2"), length.out = n), ordered = TRUE)
+    x[1] <- NA_character_
     x
   },
   logical_with_nas = function(n) {

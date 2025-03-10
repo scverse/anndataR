@@ -32,7 +32,7 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -48,7 +48,7 @@ jobs:
           needs: check
 
       - name: Cache miniconda
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: runner.os == 'Linux'
         # no need to cache on macOS or Windows, since it takes longer to unpack
         # the cache than to install miniconda and dependencies
@@ -61,8 +61,15 @@ jobs:
           if (!reticulate:::miniconda_exists()) {
             reticulate::install_miniconda()
           }
-          reticulate::py_install(c("anndata", "scanpy"), pip = TRUE)
+          reticulate::py_install(c("anndata", "scanpy", "dummy-anndata"), pip = TRUE)
         shell: Rscript {0}
+
+      - name: Install h5diff
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+                sudo apt-get install hdf5-tools
+          fi
+        shell: bash
 
       - uses: r-lib/actions/check-r-package@v2
         with:
