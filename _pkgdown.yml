@@ -1,4 +1,27 @@
-url: https://scverse.org/anndataR/
+url: https://anndataR.data-intuitive.com
+
 template:
   bootstrap: 5
 
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: Usage
+    - text: Read/write H5AD files
+      href: articles/usage_h5ad.html
+    - text: Read/write Seurat objects
+      href: articles/usage_seurat.html
+    - text: Read/write SingleCellExperiment objects
+      href: articles/usage_singlecellexperiment.html
+    - text: Mapping between SingleCellExperiment and AnnData
+      href: articles/singlecellexperiment_mapping.html
+    - text: -------
+    - text: Development
+    - text: Software design
+      href: articles/software_design.html
+    - text: Development status
+      href: articles/development_status.html
+    - text: Known issues
+      href: articles/known_issues.html

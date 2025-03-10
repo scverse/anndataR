@@ -1,6 +1,11 @@
 skip_if_not_installed("hdf5r")
 
-file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
+requireNamespace("vctrs")
+
+file <- hdf5r::H5File$new(
+  system.file("extdata", "example.h5ad", package = "anndataR"),
+  mode = "r"
+)
 on.exit(file$close())
 
 test_that("reading encoding works", {
@@ -32,7 +37,8 @@ test_that("reading sparse matrices works", {
 
 test_that("reading recarrays works", {
   array_list <- read_h5ad_rec_array(
-    file, "uns/rank_genes_groups/logfoldchanges"
+    file,
+    "uns/rank_genes_groups/logfoldchanges"
   )
   expect_true(is.list(array_list))
   expect_equal(names(array_list), c("0", "1", "2", "3", "4", "5"))
@@ -45,10 +51,10 @@ test_that("reading recarrays works", {
 
 test_that("reading 1D numeric arrays works", {
   array_1d <- read_h5ad_dense_array(file, "obs/Int")
-  expect_vector(array_1d, ptype = integer(), size = 50)
+  expect_equal(array_1d, array(0L:49L))
 
   array_1d <- read_h5ad_dense_array(file, "obs/Float")
-  expect_vector(array_1d, ptype = double(), size = 50)
+  expect_equal(array_1d, array(rep(42.42, 50)))
 })
 
 test_that("reading 1D sparse numeric arrays works", {
@@ -63,8 +69,9 @@ test_that("reading 1D nullable arrays works", {
   expect_true(any(is.na(array_1d)))
 
   array_1d <- read_h5ad_dense_array(file, "obs/FloatNA")
-  expect_vector(array_1d, ptype = double(), size = 50)
-  expect_true(any(is.na(array_1d)))
+  expected <- array(rep(42.42, 50))
+  expected[1] <- NA
+  expect_equal(array_1d, expected)
 
   array_1d <- read_h5ad_nullable_boolean(file, "obs/Bool")
   expect_vector(array_1d, ptype = logical(), size = 50)
@@ -87,8 +94,7 @@ test_that("reading numeric scalars works", {
 
 test_that("reading string arrays works", {
   array <- read_h5ad_string_array(file, "uns/String")
-  expect_vector(array, ptype = character(), size = 10)
-  expect_equal(array[3], "String 2")
+  expect_equal(array, array(paste0("String ", 0L:9L)))
 
   array <- read_h5ad_string_array(file, "uns/String2D")
   expect_true(is.matrix(array))
@@ -108,9 +114,17 @@ test_that("reading dataframes works", {
   expect_equal(
     colnames(df),
     c(
-      "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA",
-      "n_genes_by_counts", "log1p_n_genes_by_counts", "total_counts",
-      "log1p_total_counts", "leiden"
+      "Float",
+      "FloatNA",
+      "Int",
+      "IntNA",
+      "Bool",
+      "BoolNA",
+      "n_genes_by_counts",
+      "log1p_n_genes_by_counts",
+      "total_counts",
+      "log1p_total_counts",
+      "leiden"
     )
   )
 })

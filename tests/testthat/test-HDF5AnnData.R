@@ -1,5 +1,7 @@
 skip_if_not_installed("hdf5r")
 
+requireNamespace("vctrs")
+
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 test_that("opening H5AD works", {
@@ -86,11 +88,6 @@ test_that("obsp/ varp validation", {
 })
 
 
-
-
-
-
-
 # trackstatus: class=HDF5AnnData, feature=test_get_obs, status=done
 test_that("reading obs works", {
   obs <- adata$obs
@@ -98,15 +95,20 @@ test_that("reading obs works", {
   expect_equal(
     colnames(obs),
     c(
-      "Float", "FloatNA", "Int", "IntNA", "Bool", "BoolNA", "n_genes_by_counts",
-      "log1p_n_genes_by_counts", "total_counts", "log1p_total_counts", "leiden"
+      "Float",
+      "FloatNA",
+      "Int",
+      "IntNA",
+      "Bool",
+      "BoolNA",
+      "n_genes_by_counts",
+      "log1p_n_genes_by_counts",
+      "total_counts",
+      "log1p_total_counts",
+      "leiden"
     )
   )
 })
-
-
-
-
 
 
 # trackstatus: class=HDF5AnnData, feature=test_get_var, status=done
@@ -116,9 +118,17 @@ test_that("reading var works", {
   expect_equal(
     colnames(var),
     c(
-      "String", "n_cells_by_counts", "mean_counts", "log1p_mean_counts",
-      "pct_dropout_by_counts", "total_counts", "log1p_total_counts",
-      "highly_variable", "means", "dispersions", "dispersions_norm"
+      "String",
+      "n_cells_by_counts",
+      "mean_counts",
+      "log1p_mean_counts",
+      "pct_dropout_by_counts",
+      "total_counts",
+      "log1p_total_counts",
+      "highly_variable",
+      "means",
+      "dispersions",
+      "dispersions_norm"
     )
   )
 })

@@ -1,5 +1,7 @@
 skip_if_not_installed("hdf5r")
 
+requireNamespace("vctrs")
+
 file <- tempfile(pattern = "hdf5_write_", fileext = ".h5ad")
 if (file.exists(file)) {
   file.remove(file)
@@ -10,9 +12,23 @@ file <- hdf5r::H5File$new(file, mode = "w")
 test_that("Writing H5AD dense arrays works", {
   value <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
-  expect_silent(write_h5ad_element(value, file, "dense_array", compression = "none"))
+  expect_silent(
+    write_h5ad_element(value, file, "dense_array", compression = "none")
+  )
   expect_true(hdf5_path_exists(file, "/dense_array"))
   attrs <- hdf5r::h5attributes(file[["dense_array"]])
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_equal(attrs[["encoding-type"]], "array")
+})
+
+test_that("Writing H5AD dense 3D arrays works", {
+  value <- array(rnorm(60), dim = c(5, 4, 3))
+
+  expect_silent(
+    write_h5ad_element(value, file, "dense_3d_array", compression = "none")
+  )
+  expect_true(hdf5_path_exists(file, "/dense_3d_array"))
+  attrs <- hdf5r::h5attributes(file[["dense_3d_array"]])
   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
   expect_equal(attrs[["encoding-type"]], "array")
 })
@@ -33,7 +49,9 @@ test_that("Writing H5AD sparse arrays works", {
   expect_equal(attrs[["encoding-type"]], "csc_matrix")
 
   csr_array <- as(array, "RsparseMatrix")
-  expect_silent(write_h5ad_element(csr_array, file, "csr_array", compression = "none"))
+  expect_silent(
+    write_h5ad_element(csr_array, file, "csr_array", compression = "none")
+  )
   expect_true(hdf5_path_exists(file, "/csr_array"))
   expect_true(hdf5_path_exists(file, "/csr_array/data"))
   expect_true(hdf5_path_exists(file, "/csr_array/indices"))
@@ -41,6 +59,21 @@ test_that("Writing H5AD sparse arrays works", {
   attrs <- hdf5r::h5attributes(file[["csr_array"]])
   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
   expect_equal(attrs[["encoding-type"]], "csr_matrix")
+})
+
+test_that("Writing dgeMatrix", {
+  value <- matrix(rnorm(20), nrow = 5, ncol = 4) |>
+    as("dMatrix") |>
+    as("generalMatrix") |>
+    as("unpackedMatrix")
+
+  expect_silent(
+    write_h5ad_element(value, file, "dgematrix", compression = "none")
+  )
+  expect_true(hdf5_path_exists(file, "/dgematrix"))
+  attrs <- hdf5r::h5attributes(file[["dgematrix"]])
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_equal(attrs[["encoding-type"]], "array")
 })
 
 test_that("Writing H5AD nullable booleans works", {
@@ -124,7 +157,9 @@ test_that("Writing H5AD mappings works", {
     scalar = 2
   )
 
-  expect_silent(write_h5ad_element(mapping, file, "mapping", compression = "none"))
+  expect_silent(
+    write_h5ad_element(mapping, file, "mapping", compression = "none")
+  )
   expect_true(hdf5_path_exists(file, "/mapping"))
   expect_true(hdf5_path_exists(file, "/mapping/array"))
   expect_true(hdf5_path_exists(file, "/mapping/sparse"))

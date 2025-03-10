@@ -25,7 +25,8 @@
 #'   obs = data.frame(row.names = letters[1:10]),
 #'   var = data.frame(row.names = LETTERS[1:5])
 #' )
-InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
+InMemoryAnnData <- R6::R6Class(
+  "InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
     .X = NULL,
@@ -244,16 +245,18 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
     #'   It must be either `NULL` or a named list.
     #' @param shape Shape tuple (#observations, #variables). Can be provided
     #'   if `X` or `obs` and `var` are not provided.
-    initialize = function(X = NULL,
-                          obs = NULL,
-                          var = NULL,
-                          layers = NULL,
-                          obsm = NULL,
-                          varm = NULL,
-                          obsp = NULL,
-                          varp = NULL,
-                          uns = NULL,
-                          shape = NULL) {
+    initialize = function(
+      X = NULL,
+      obs = NULL,
+      var = NULL,
+      layers = NULL,
+      obsm = NULL,
+      varm = NULL,
+      obsp = NULL,
+      varp = NULL,
+      uns = NULL,
+      shape = NULL
+    ) {
       # Determine initial obs and var
       shape <- get_shape(obs, var, X, shape)
       obs <- get_initial_obs(obs, X, shape)
@@ -261,10 +264,10 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 
       # set obs and var first
       if (!is.data.frame(obs)) {
-        stop("obs must be a data.frame")
+        cli_abort("{.arg obs} must be a {.cls data.frame}")
       }
       if (!is.data.frame(var)) {
-        stop("var must be a data.frame")
+        cli_abort("{.arg var} must be a {.cls data.frame}")
       }
       private$.obs <- obs
       private$.var <- var
@@ -304,10 +307,15 @@ InMemoryAnnData <- R6::R6Class("InMemoryAnnData", # nolint
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' to_InMemoryAnnData(ad)
-to_InMemoryAnnData <- function(adata) { # nolint
-  stopifnot(
-    inherits(adata, "AbstractAnnData")
-  )
+# nolint start object_name_linter
+to_InMemoryAnnData <- function(adata) {
+  # nolint end object_name_linter
+  if (!(inherits(adata, "AbstractAnnData"))) {
+    cli_abort(
+      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+    )
+  }
+
   InMemoryAnnData$new(
     X = adata$X,
     obs = adata$obs,

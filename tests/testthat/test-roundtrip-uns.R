@@ -1,95 +1,120 @@
 skip_if_no_anndata()
-skip_if_not_installed("hdf5r")
+skip_if_not_installed("reticulate")
 
-data <- generate_dataset(10L, 20L)
+library(reticulate)
+testthat::skip_if_not(
+  reticulate::py_module_available("dummy_anndata"),
+  message = "Python dummy_anndata module not available for testing"
+)
 
-test_names <- names(data$uns)
-# TODO: re-enable these tests
-test_names <- test_names[!grepl("_with_nas", test_names)]
-# TODO: re-enable these tests
-test_names <- test_names[!grepl("_na$", test_names)]
-# TODO: re-enable these tests
-test_names <- test_names[!grepl("mat_", test_names)]
-# TODO: re-enable these tests
-test_names <- test_names[!test_names %in% c("vec_factor", "vec_factor_ordered", "vec_logical")]
-# TODO: re-enable these tests
-test_names <- test_names[test_names != "list"]
-# TODO: re-enable these tests
-test_names <- test_names[!test_names %in% c("scalar_factor", "scalar_factor_ordered", "scalar_logical")]
+ad <- reticulate::import("anndata", convert = FALSE)
+da <- reticulate::import("dummy_anndata", convert = FALSE)
+bi <- reticulate::import_builtins()
+
+known_issues <- read_known_issues()
+
+test_names <- c(
+  names(da$matrix_generators),
+  names(da$vector_generators),
+  names(da$scalar_generators)
+)
 
 for (name in test_names) {
-  test_that(paste0("roundtrip with uns '", name, "'"), {
-    # create anndata
-    ad <- AnnData(
-      obs = data$obs[, c(), drop = FALSE],
-      var = data$var[, c(), drop = FALSE],
-      uns = data$uns[name]
+  # first generate a python h5ad
+  adata_py <- da$generate_dataset(
+    x_type = NULL,
+    obs_types = list(),
+    var_types = list(),
+    layer_types = list(),
+    obsm_types = list(),
+    varm_types = list(),
+    obsp_types = list(),
+    varp_types = list(),
+    uns_types = list(name),
+    nested_uns_types = list()
+  )
+
+  # create a couple of paths
+  file_py <- withr::local_file(
+    tempfile(paste0("anndata_py_", name), fileext = ".h5ad")
+  )
+  file_r <- withr::local_file(
+    tempfile(paste0("anndata_r_", name), fileext = ".h5ad")
+  )
+
+  # write to file
+  adata_py$write_h5ad(file_py)
+
+  test_that(paste0("Reading an AnnData with uns '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("uns"),
+      dtype = name,
+      process = "read",
+      known_issues = known_issues
     )
+    skip_if(!is.null(msg), message = msg)
 
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    write_h5ad(ad, filename)
-
-    # read from file
-    ad_new <- read_h5ad(filename, to = "HDF5AnnData")
-
-    # expect slots are unchanged
+    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
     expect_equal(
-      ad_new$uns,
-      data$uns[name],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
+      names(adata_r$uns),
+      bi$list(adata_py$uns$keys())
     )
+
+    # check that the print output is the same
+    str_r <- capture.output(print(adata_r))
+    str_py <- capture.output(print(adata_py))
+    expect_equal(str_r, str_py)
   })
-}
 
-for (name in test_names) {
-  test_that(paste0("reticulate->hdf5 with uns '", name, "'"), {
-    # create anndata
-    ad <- anndata::AnnData(
-      obs = data$obs[, c(), drop = FALSE],
-      var = data$var[, c(), drop = FALSE],
-      uns = data$uns[name]
+  # maybe this test simply shouldn't be run if there is a known issue with reticulate
+  test_that(
+    paste0("Comparing an anndata with uns '", name, "' with reticulate works"),
+    {
+      msg <- message_if_known(
+        backend = "HDF5AnnData",
+        slot = c("uns"),
+        dtype = name,
+        process = c("read", "reticulate"),
+        known_issues = known_issues
+      )
+      skip_if(!is.null(msg), message = msg)
+
+      adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+
+      expect_equal(
+        adata_r$uns[[name]],
+        reticulate::py_to_r(adata_py$uns[[name]])
+      )
+    }
+  )
+
+  test_that(paste0("Writing an AnnData with uns '", name, "' works"), {
+    msg <- message_if_known(
+      backend = "HDF5AnnData",
+      slot = c("uns"),
+      dtype = name,
+      process = c("read", "write"),
+      known_issues = known_issues
     )
+    skip_if(!is.null(msg), message = msg)
 
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-    ad$write_h5ad(filename)
+    adata_r <- read_h5ad(file_py, to = "InMemoryAnnData")
+    write_h5ad(adata_r, file_r)
 
     # read from file
-    ad_new <- HDF5AnnData$new(filename)
+    adata_py2 <- ad$read_h5ad(file_r)
 
-    # expect slots are unchanged
-    expect_equal(
-      ad_new$uns,
-      data$uns[name],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
+    # expect name is one of the keys
+    expect_contains(
+      bi$list(adata_py2$uns$keys()),
+      name
     )
-  })
-}
 
-for (name in test_names) {
-  test_that(paste0("hdf5->reticulate with uns '", name, "'"), {
-    # write to file
-    filename <- withr::local_file(tempfile(fileext = ".h5ad"))
-
-    # make anndata
-    ad <- AnnData(
-      obs = data$obs[, c(), drop = FALSE],
-      var = data$var[, c(), drop = FALSE],
-      uns = data$uns[name]
-    )
-    write_h5ad(ad, filename)
-
-    # read from file
-    ad_new <- anndata::read_h5ad(filename)
-
-    expect_equal(
-      ad_new$uns,
-      data$uns[name],
-      ignore_attr = TRUE,
-      tolerance = 1e-6
+    # expect that the objects are the same
+    expect_equal_py(
+      py_get_item(adata_py2$uns, name),
+      py_get_item(adata_py$uns, name)
     )
   })
 }

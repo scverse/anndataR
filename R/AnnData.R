@@ -52,16 +52,17 @@
 #'
 #' @seealso [anndataR-package]
 AnnData <- function(
-    X = NULL,
-    obs = NULL,
-    var = NULL,
-    layers = NULL,
-    obsm = NULL,
-    varm = NULL,
-    obsp = NULL,
-    varp = NULL,
-    uns = NULL,
-    shape = shape) {
+  X = NULL,
+  obs = NULL,
+  var = NULL,
+  layers = NULL,
+  obsm = NULL,
+  varm = NULL,
+  obsp = NULL,
+  varp = NULL,
+  uns = NULL,
+  shape = NULL
+) {
   InMemoryAnnData$new(
     X = X,
     obs = obs,

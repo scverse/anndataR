@@ -40,6 +40,18 @@ test_that("with empty var", {
   expect_identical(ad$shape(), c(10L, 0L))
 })
 
+test_that("Creating AnnData works with only X, no obs or var", {
+  X <- dummy$X
+  dimnames(X) <- list(
+    rownames(dummy$obs),
+    rownames(dummy$var)
+  )
+  ad <- AnnData(X = X)
+  expect_identical(ad$shape(), c(10L, 20L))
+  expect_identical(ad$obs_names, rownames(dummy$obs))
+  expect_identical(ad$var_names, rownames(dummy$var))
+})
+
 # trackstatus: class=InMemoryAnnData, feature=test_get_layers, status=done
 test_that("'layers' works", {
   ## layers test helper function

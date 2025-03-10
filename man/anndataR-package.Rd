@@ -78,28 +78,30 @@ Access them by using the \code{$} operator. Example: \code{adata$to_Seurat()}.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://scverse.org/anndataR}
+  \item \url{https://anndatar.data-intuitive.com/}
   \item \url{https://github.com/scverse/anndataR}
   \item Report bugs at \url{https://github.com/scverse/anndataR/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
+\strong{Maintainer}: Robrecht Cannoodt \email{robrecht@data-intuitive.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
 
 Authors:
 \itemize{
   \item Luke Zappia \email{luke@lazappi.id.au} (\href{https://orcid.org/0000-0001-7744-8565}{ORCID}) (lazappi)
   \item Martin Morgan \email{mtmorgan.bioc@gmail.com} (\href{https://orcid.org/0000-0002-5874-8148}{ORCID}) (mtmorgan)
   \item Louise Deconinck \email{louise.deconinck@gmail.com} (\href{https://orcid.org/0000-0001-8100-6823}{ORCID}) (LouiseDck)
-  \item Brian Schilder \email{brian_schilder@alumni.brown.edu} (\href{https://orcid.org/0000-0001-5949-2191}{ORCID}) (bschilder)
 }
 
 Other contributors:
 \itemize{
   \item Danila Bredikhin \email{danila.bredikhin@embl.de} (\href{https://orcid.org/0000-0001-8089-6983}{ORCID}) (gtca) [contributor]
   \item Isaac Virshup (\href{https://orcid.org/0000-0002-1710-8945}{ORCID}) (ivirshup) [contributor]
+  \item Brian Schilder \email{brian_schilder@alumni.brown.edu} (\href{https://orcid.org/0000-0001-5949-2191}{ORCID}) (bschilder) [contributor]
   \item Chananchida Sang-aram (\href{https://orcid.org/0000-0002-0922-0822}{ORCID}) (csangara) [contributor]
+  \item Data Intuitive \email{info@data-intuitive.com} [funder, copyright holder]
+  \item Chan Zuckerberg Initiative [funder]
 }
 
 }

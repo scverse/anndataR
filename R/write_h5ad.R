@@ -29,7 +29,7 @@
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' h5ad_file <- tempfile(fileext = ".h5ad")
-#' write_h5ad(adata, h5ad_file)
+#' adata$write_h5ad(h5ad_file)
 #'
 #' # Write a SingleCellExperiment as an H5AD
 #' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
@@ -45,37 +45,41 @@
 #'     reducedDims = list(PCA = pca, tSNE = tsne)
 #'   )
 #'
+#'   adata <- from_SingleCellExperiment(sce)
 #'   h5ad_file <- tempfile(fileext = ".h5ad")
-#'   write_h5ad(sce, h5ad_file)
+#'   adata$write_h5ad(h5ad_file)
 #' }
 #'
 #' # Write a Seurat as a H5AD
-#' if (requireNamespace("SeuratObject", quietly = TRUE)) {
-#'   # TODO: uncomment this code when the seurat converter is fixed
-#'   # counts <- matrix(1:15, 3L, 5L)
-#'   # dimnames(counts) <- list(
-#'   #   letters[1:3],
-#'   #   LETTERS[1:5]
-#'   # )
-#'   # gene.metadata <- data.frame(
-#'   #   row.names = LETTERS[1:5],
-#'   #   gene = 1:5
-#'   # )
-#'   # obj <- SeuratObject::CreateSeuratObject(counts, meta.data = gene.metadata)
-#'   # cell.metadata <- data.frame(
-#'   #   row.names = letters[1:3],
-#'   #   cell = 1:3
-#'   # )
-#'   # obj <- SeuratObject::AddMetaData(obj, cell.metadata)
-#'   #
-#'   # h5ad_file <- tempfile(fileext = ".h5ad")
-#'   # write_h5ad(obj, h5ad_file)
+#' if (requireNamespace("Seurat", quietly = TRUE)) {
+#'   library(Seurat)
+#'
+#'   counts <- matrix(1:15, 5L, 3L)
+#'   dimnames(counts) <- list(
+#'     LETTERS[1:5],
+#'     letters[1:3]
+#'   )
+#'   cell.metadata <- data.frame(
+#'     row.names = letters[1:3],
+#'     cell = 1:3
+#'   )
+#'   obj <- CreateSeuratObject(counts, meta.data = cell.metadata)
+#'   gene.metadata <- data.frame(
+#'     row.names = LETTERS[1:5],
+#'     gene = 1:5
+#'   )
+#'   obj[["RNA"]] <- AddMetaData(GetAssay(obj), gene.metadata)
+#'
+#'   adata <- from_Seurat(obj)
+#'   h5ad_file <- tempfile(fileext = ".h5ad")
+#'   adata$write_h5ad(h5ad_file)
 #' }
 write_h5ad <- function(
-    object,
-    path,
-    compression = c("none", "gzip", "lzf"),
-    mode = c("w-", "r", "r+", "a", "w", "x")) {
+  object,
+  path,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+) {
   mode <- match.arg(mode)
   adata <-
     if (inherits(object, "SingleCellExperiment")) {
@@ -101,7 +105,7 @@ write_h5ad <- function(
         mode = mode
       )
     } else {
-      stop("Unable to write object of class: ", class(object))
+      cli_abort("Unable to write object of class {.cls {class(object)}}")
     }
   adata$close()
   rm(adata)
