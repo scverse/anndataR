@@ -925,7 +925,7 @@ from_Seurat <- function(
         }
 
         if (nrow(varm_data) != nrow(seurat_obj)) {
-          varm_str <- cli::cli_vec(varm, list("vec-last" = ",, "))
+          varm_str <- cli::cli_vec(varm, list("vec-last" = ",, ")) # nolint object_usage_linter
           cli_warn(paste(
             "Skipping {.code varm_mapping[[{i}]]} (c({.val {varm_str}}))",
             "because it does not contain data for every feature"
