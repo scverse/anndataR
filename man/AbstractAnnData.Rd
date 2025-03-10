@@ -286,6 +286,8 @@ See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
   assay_name = "RNA",
   layers_mapping = NULL,
+  object_metadata_mapping = NULL,
+  assay_metadata_mapping = NULL,
   reduction_mapping = NULL,
   graph_mapping = NULL,
   misc_mapping = NULL
@@ -298,6 +300,10 @@ See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and
 \item{\code{assay_name}}{The name of the assay to use as the main data}
 
 \item{\code{layers_mapping}}{A named list mapping Seurat layers to AnnData layers}
+
+\item{\code{object_metadata_mapping}}{A named list mapping Seurat object metadata to AnnData obs}
+
+\item{\code{assay_metadata_mapping}}{A named list mapping Seurat assay metadata to AnnData var}
 
 \item{\code{reduction_mapping}}{A named list mapping Seurat reductions to AnnData obsm/varm}
 

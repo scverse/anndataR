@@ -36,7 +36,11 @@ for (obs_key in colnames(ad$obs)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(obs_key %in% colnames(colData(sce)))
-    expect_equal(colData(sce)[[obs_key]], ad$obs[[obs_key]], info = paste0("obs_key: ", obs_key))
+    expect_equal(
+      colData(sce)[[obs_key]],
+      ad$obs[[obs_key]],
+      info = paste0("obs_key: ", obs_key)
+    )
   })
 }
 
@@ -53,7 +57,11 @@ for (var_key in colnames(ad$var)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(var_key %in% colnames(rowData(sce)))
-    expect_equal(rowData(sce)[[var_key]], ad$var[[var_key]], info = paste0("var_key: ", var_key))
+    expect_equal(
+      rowData(sce)[[var_key]],
+      ad$var[[var_key]],
+      info = paste0("var_key: ", var_key)
+    )
   })
 }
 
@@ -71,7 +79,11 @@ for (layer_key in names(ad$layers)) {
 
     expect_true(layer_key %in% names(assays(sce)))
     expect_true(
-      all.equal(as.matrix(t(assay(sce, layer_key))), as.matrix(ad$layers[[layer_key]]), check.attributes = FALSE),
+      all.equal(
+        as.matrix(t(assay(sce, layer_key))),
+        as.matrix(ad$layers[[layer_key]]),
+        check.attributes = FALSE
+      ),
       info = paste0("layer_key: ", layer_key)
     )
   })
@@ -132,7 +144,11 @@ for (uns_key in names(ad$uns)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(uns_key %in% names(metadata(sce)))
-    expect_equal(metadata(sce)[[uns_key]], ad$uns[[uns_key]], info = paste0("uns_key: ", uns_key))
+    expect_equal(
+      metadata(sce)[[uns_key]],
+      ad$uns[[uns_key]],
+      info = paste0("uns_key: ", uns_key)
+    )
   })
 }
 
@@ -170,7 +186,6 @@ test_that("from_SCE retains observatoins and features", {
   expect_equal(colnames(sce), rownames(ad$obs))
   # trackstatus: class=SingleCellExperiment, feature=test_set_var_names, status=done
   expect_equal(rownames(sce), rownames(ad$var))
-
 })
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
@@ -186,7 +201,11 @@ for (obs_key in colnames(colData(sce))) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(obs_key %in% colnames(ad$obs))
-    expect_equal(ad$obs[[obs_key]], colData(sce)[[obs_key]], info = paste0("obs_key: ", obs_key))
+    expect_equal(
+      ad$obs[[obs_key]],
+      colData(sce)[[obs_key]],
+      info = paste0("obs_key: ", obs_key)
+    )
   })
 }
 
@@ -203,7 +222,11 @@ for (var_key in colnames(rowData(sce))) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(var_key %in% colnames(ad$var))
-    expect_equal(ad$var[[var_key]], rowData(sce)[[var_key]], info = paste0("var_key: ", var_key))
+    expect_equal(
+      ad$var[[var_key]],
+      rowData(sce)[[var_key]],
+      info = paste0("var_key: ", var_key)
+    )
   })
 }
 
@@ -221,7 +244,11 @@ for (layer_key in names(assays(sce))) {
 
     expect_true(layer_key %in% names(ad$layers))
     expect_true(
-      all.equal(as.matrix(ad$layers[[layer_key]]), as.matrix(t(assay(sce, layer_key))), ignore_attr = TRUE),
+      all.equal(
+        as.matrix(ad$layers[[layer_key]]),
+        as.matrix(t(assay(sce, layer_key))),
+        ignore_attr = TRUE
+      ),
       info = paste0("layer_key: ", layer_key)
     )
   })
@@ -241,7 +268,9 @@ for (obsp_key in names(colPairs(sce))) {
 
     expect_true(obsp_key %in% names(ad$obsp))
     expect_equal(
-      ad$obsp[[obsp_key]], colPairs(sce, asSparse = TRUE)[[obsp_key]], ignore_attr = TRUE,
+      ad$obsp[[obsp_key]],
+      colPairs(sce, asSparse = TRUE)[[obsp_key]],
+      ignore_attr = TRUE,
       info = paste0("obsp_key: ", obsp_key)
     )
   })
@@ -260,7 +289,11 @@ for (varp_key in names(rowPairs(sce))) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(varp_key %in% names(ad$varp))
-    expect_equal(ad$varp[[varp_key]], rowPairs(sce, asSparse = TRUE)[[varp_key]], info = paste0("varp_key: ", varp_key))
+    expect_equal(
+      ad$varp[[varp_key]],
+      rowPairs(sce, asSparse = TRUE)[[varp_key]],
+      info = paste0("varp_key: ", varp_key)
+    )
   })
 }
 
@@ -277,7 +310,11 @@ for (uns_key in names(metadata(sce))) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(uns_key %in% names(ad$uns))
-    expect_equal(ad$uns[[uns_key]], metadata(sce)[[uns_key]], info = paste0("uns_key: ", uns_key))
+    expect_equal(
+      ad$uns[[uns_key]],
+      metadata(sce)[[uns_key]],
+      info = paste0("uns_key: ", uns_key)
+    )
   })
 }
 

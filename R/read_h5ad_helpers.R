@@ -21,10 +21,9 @@ read_h5ad_encoding <- function(file, name) {
       )
     },
     error = function(e) {
-      path <- if (is.character(file)) file else file$get_filename()
-      stop(
-        "Encoding attributes not found for element '", name, "' ",
-        "in '", path, "'"
+      path <- if (is.character(file)) file else file$get_filename() # nolint object_usage_linter
+      cli_abort(
+        "Encoding attributes not found for element {.val {name}} in {.path {path}}"
       )
     }
   )
@@ -48,7 +47,14 @@ read_h5ad_encoding <- function(file, name) {
 #' @return Value depending on the encoding
 #'
 #' @noRd
-read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_error = FALSE, ...) {
+read_h5ad_element <- function(
+  file,
+  name,
+  type = NULL,
+  version = NULL,
+  stop_on_error = FALSE,
+  ...
+) {
   if (!hdf5_path_exists(file, name)) {
     return(NULL)
   }
@@ -59,7 +65,8 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
     version <- encoding_list$version
   }
 
-  read_fun <- switch(type,
+  read_fun <- switch(
+    type,
     "array" = read_h5ad_dense_array,
     "rec-array" = read_h5ad_rec_array,
     "csr_matrix" = read_h5ad_csr_matrix,
@@ -72,9 +79,8 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
     "string-array" = read_h5ad_string_array,
     "nullable-integer" = read_h5ad_nullable_integer,
     "nullable-boolean" = read_h5ad_nullable_boolean,
-    stop(
-      "No function for reading H5AD encoding '", type,
-      "' for element '", name, "'"
+    cli_abort(
+      "No function for reading H5AD encoding {.cls {type}} for element {.val {name}}"
     )
   )
 
@@ -83,15 +89,15 @@ read_h5ad_element <- function(file, name, type = NULL, version = NULL, stop_on_e
       read_fun(file = file, name = name, version = version, ...)
     },
     error = function(e) {
-      message <- paste0(
-        "Error reading element '", name, "' of type '", type, "':\n",
-        conditionMessage(e)
-      )
+      msg <- cli::cli_fmt(cli::cli_bullets(c(
+        paste0("Error reading element {.field {name}} of type {.cls {type}}"),
+        "i" = conditionMessage(e)
+      )))
       if (stop_on_error) {
-        stop(message)
+        cli_abort(msg)
       } else {
-        warning(message)
-        return(NULL)
+        cli_warn(msg)
+        NULL
       }
     }
   )
@@ -160,8 +166,12 @@ read_h5ad_csc_matrix <- function(file, name, version) {
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
-read_h5ad_sparse_array <- function(file, name, version = "0.1.0",
-                                   type = c("csr_matrix", "csc_matrix")) {
+read_h5ad_sparse_array <- function(
+  file,
+  name,
+  version = "0.1.0",
+  type = c("csr_matrix", "csc_matrix")
+) {
   version <- match.arg(version)
   type <- match.arg(type)
 

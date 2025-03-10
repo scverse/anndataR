@@ -30,69 +30,209 @@
 #' dummy <- generate_dataset(format = "Seurat")
 #' }
 generate_dataset <- function(
-    n_obs = 10L,
-    n_vars = 20L,
-    x_type = "numeric_matrix",
-    layer_types = c(
-      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas", #
-      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
-      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
-      "integer_csparse_with_nas", "integer_rsparse_with_nas"
-    ),
-    obs_types = c(
-      "character", "integer", "factor", "factor_ordered", "logical", "numeric", "character_with_nas",
-      "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"
-    ),
-    var_types = c(
-      "character", "integer", "factor", "factor_ordered", "logical", "numeric", "character_with_nas",
-      "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"
-    ),
-    obsm_types = c(
-      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
-      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
-      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
-      "integer_csparse_with_nas", "integer_rsparse_with_nas", "character", "integer", "factor", "factor_ordered",
-      "logical", "numeric", "character_with_nas", "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas",
-      "logical_with_nas", "numeric_with_nas"
-    ),
-    varm_types = c(
-      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
-      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
-      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
-      "integer_csparse_with_nas", "integer_rsparse_with_nas", "character", "integer", "factor", "factor_ordered",
-      "logical", "numeric", "character_with_nas", "integer_with_nas", "factor_with_nas", "factor_ordered_with_nas",
-      "logical_with_nas", "numeric_with_nas"
-    ),
-    obsp_types = c(
-      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
-      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
-      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
-      "integer_csparse_with_nas", "integer_rsparse_with_nas"
-    ),
-    varp_types = c(
-      "numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse", "numeric_matrix_with_nas",
-      "numeric_dense_with_nas", "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
-      "integer_dense", "integer_csparse", "integer_rsparse", "integer_matrix_with_nas", "integer_dense_with_nas",
-      "integer_csparse_with_nas", "integer_rsparse_with_nas"
-    ),
-    uns_types = c(
-      "scalar_character", "scalar_integer", "scalar_factor", "scalar_factor_ordered", "scalar_logical",
-      "scalar_numeric", "scalar_character_with_nas", "scalar_integer_with_nas", "scalar_factor_with_nas",
-      "scalar_factor_ordered_with_nas", "scalar_logical_with_nas", "scalar_numeric_with_nas", "vec_character",
-      "vec_integer", "vec_factor", "vec_factor_ordered", "vec_logical", "vec_numeric",
-      "vec_character_with_nas", "vec_integer_with_nas", "vec_factor_with_nas",
-      "vec_factor_ordered_with_nas", "vec_logical_with_nas", "vec_numeric_with_nas",
-      "df_character", "df_integer", "df_factor", "df_factor_ordered",
-      "df_logical", "df_numeric", "df_character_with_nas", "df_integer_with_nas",
-      "df_factor_with_nas", "df_factor_ordered_with_nas", "df_logical_with_nas",
-      "df_numeric_with_nas", "mat_numeric_matrix", "mat_numeric_dense", "mat_numeric_csparse", "mat_numeric_rsparse",
-      "mat_numeric_matrix_with_nas", "mat_numeric_dense_with_nas", "mat_numeric_csparse_with_nas",
-      "mat_numeric_rsparse_with_nas", "mat_integer_matrix", "mat_integer_dense", "mat_integer_csparse",
-      "mat_integer_rsparse", "mat_integer_matrix_with_nas", "mat_integer_dense_with_nas",
-      "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas", "list"
-    ),
-    example = FALSE,
-    format = c("list", "AnnData", "SingleCellExperiment", "Seurat")) {
+  n_obs = 10L,
+  n_vars = 20L,
+  x_type = "numeric_matrix",
+  layer_types = c(
+    "numeric_matrix",
+    "numeric_dense",
+    "numeric_csparse",
+    "numeric_rsparse",
+    "numeric_matrix_with_nas", #
+    "numeric_dense_with_nas",
+    "numeric_csparse_with_nas",
+    "numeric_rsparse_with_nas",
+    "integer_matrix",
+    "integer_dense",
+    "integer_csparse",
+    "integer_rsparse",
+    "integer_matrix_with_nas",
+    "integer_dense_with_nas",
+    "integer_csparse_with_nas",
+    "integer_rsparse_with_nas"
+  ),
+  obs_types = c(
+    "character",
+    "integer",
+    "factor",
+    "factor_ordered",
+    "logical",
+    "numeric",
+    "character_with_nas",
+    "integer_with_nas",
+    "factor_with_nas",
+    "factor_ordered_with_nas",
+    "logical_with_nas",
+    "numeric_with_nas"
+  ),
+  var_types = c(
+    "character",
+    "integer",
+    "factor",
+    "factor_ordered",
+    "logical",
+    "numeric",
+    "character_with_nas",
+    "integer_with_nas",
+    "factor_with_nas",
+    "factor_ordered_with_nas",
+    "logical_with_nas",
+    "numeric_with_nas"
+  ),
+  obsm_types = c(
+    "numeric_matrix",
+    "numeric_dense",
+    "numeric_csparse",
+    "numeric_rsparse",
+    "numeric_matrix_with_nas",
+    "numeric_dense_with_nas",
+    "numeric_csparse_with_nas",
+    "numeric_rsparse_with_nas",
+    "integer_matrix",
+    "integer_dense",
+    "integer_csparse",
+    "integer_rsparse",
+    "integer_matrix_with_nas",
+    "integer_dense_with_nas",
+    "integer_csparse_with_nas",
+    "integer_rsparse_with_nas",
+    "character",
+    "integer",
+    "factor",
+    "factor_ordered",
+    "logical",
+    "numeric",
+    "character_with_nas",
+    "integer_with_nas",
+    "factor_with_nas",
+    "factor_ordered_with_nas",
+    "logical_with_nas",
+    "numeric_with_nas"
+  ),
+  varm_types = c(
+    "numeric_matrix",
+    "numeric_dense",
+    "numeric_csparse",
+    "numeric_rsparse",
+    "numeric_matrix_with_nas",
+    "numeric_dense_with_nas",
+    "numeric_csparse_with_nas",
+    "numeric_rsparse_with_nas",
+    "integer_matrix",
+    "integer_dense",
+    "integer_csparse",
+    "integer_rsparse",
+    "integer_matrix_with_nas",
+    "integer_dense_with_nas",
+    "integer_csparse_with_nas",
+    "integer_rsparse_with_nas",
+    "character",
+    "integer",
+    "factor",
+    "factor_ordered",
+    "logical",
+    "numeric",
+    "character_with_nas",
+    "integer_with_nas",
+    "factor_with_nas",
+    "factor_ordered_with_nas",
+    "logical_with_nas",
+    "numeric_with_nas"
+  ),
+  obsp_types = c(
+    "numeric_matrix",
+    "numeric_dense",
+    "numeric_csparse",
+    "numeric_rsparse",
+    "numeric_matrix_with_nas",
+    "numeric_dense_with_nas",
+    "numeric_csparse_with_nas",
+    "numeric_rsparse_with_nas",
+    "integer_matrix",
+    "integer_dense",
+    "integer_csparse",
+    "integer_rsparse",
+    "integer_matrix_with_nas",
+    "integer_dense_with_nas",
+    "integer_csparse_with_nas",
+    "integer_rsparse_with_nas"
+  ),
+  varp_types = c(
+    "numeric_matrix",
+    "numeric_dense",
+    "numeric_csparse",
+    "numeric_rsparse",
+    "numeric_matrix_with_nas",
+    "numeric_dense_with_nas",
+    "numeric_csparse_with_nas",
+    "numeric_rsparse_with_nas",
+    "integer_matrix",
+    "integer_dense",
+    "integer_csparse",
+    "integer_rsparse",
+    "integer_matrix_with_nas",
+    "integer_dense_with_nas",
+    "integer_csparse_with_nas",
+    "integer_rsparse_with_nas"
+  ),
+  uns_types = c(
+    "scalar_character",
+    "scalar_integer",
+    "scalar_factor",
+    "scalar_factor_ordered",
+    "scalar_logical",
+    "scalar_numeric",
+    "scalar_character_with_nas",
+    "scalar_integer_with_nas",
+    "scalar_factor_with_nas",
+    "scalar_factor_ordered_with_nas",
+    "scalar_logical_with_nas",
+    "scalar_numeric_with_nas",
+    "vec_character",
+    "vec_integer",
+    "vec_factor",
+    "vec_factor_ordered",
+    "vec_logical",
+    "vec_numeric",
+    "vec_character_with_nas",
+    "vec_integer_with_nas",
+    "vec_factor_with_nas",
+    "vec_factor_ordered_with_nas",
+    "vec_logical_with_nas",
+    "vec_numeric_with_nas",
+    "df_character",
+    "df_integer",
+    "df_factor",
+    "df_factor_ordered",
+    "df_logical",
+    "df_numeric",
+    "df_character_with_nas",
+    "df_integer_with_nas",
+    "df_factor_with_nas",
+    "df_factor_ordered_with_nas",
+    "df_logical_with_nas",
+    "df_numeric_with_nas",
+    "mat_numeric_matrix",
+    "mat_numeric_dense",
+    "mat_numeric_csparse",
+    "mat_numeric_rsparse",
+    "mat_numeric_matrix_with_nas",
+    "mat_numeric_dense_with_nas",
+    "mat_numeric_csparse_with_nas",
+    "mat_numeric_rsparse_with_nas",
+    "mat_integer_matrix",
+    "mat_integer_dense",
+    "mat_integer_csparse",
+    "mat_integer_rsparse",
+    "mat_integer_matrix_with_nas",
+    "mat_integer_dense_with_nas",
+    "mat_integer_csparse_with_nas",
+    "mat_integer_rsparse_with_nas",
+    "list"
+  ),
+  example = FALSE,
+  format = c("list", "AnnData", "SingleCellExperiment", "Seurat")
+) {
   format <- match.arg(format)
 
   if (example) {
@@ -104,7 +244,12 @@ generate_dataset <- function(
     varm_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
     obsp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
     varp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
-    uns_types <- c("scalar_character", "vec_integer", "df_logical", "mat_numeric_matrix")
+    uns_types <- c(
+      "scalar_character",
+      "vec_integer",
+      "df_logical",
+      "mat_numeric_matrix"
+    )
   }
 
   dataset_list <- .generate_dataset_as_list(
@@ -121,14 +266,15 @@ generate_dataset <- function(
     uns_types = uns_types
   )
 
-  conversion_fun <- switch(format,
+  conversion_fun <- switch(
+    format,
     "list" = identity,
     "SingleCellExperiment" = .generate_dataset_as_sce,
     "Seurat" = .generate_dataset_as_seurat,
     "AnnData" = .generate_dataset_as_anndata
   )
 
-  return(conversion_fun(dataset_list))
+  conversion_fun(dataset_list)
 }
 
 #' Generate a dummy dataset as a list
@@ -139,23 +285,24 @@ generate_dataset <- function(
 #'
 #' @noRd
 .generate_dataset_as_list <- function(
-    n_obs = 10L,
-    n_vars = 20L,
-    x_type = names(matrix_generators)[[1]],
-    layer_types = names(matrix_generators),
-    obs_types = names(vector_generators),
-    var_types = names(vector_generators),
-    obsm_types = c(names(matrix_generators), names(vector_generators)),
-    varm_types = c(names(matrix_generators), names(vector_generators)),
-    obsp_types = names(matrix_generators),
-    varp_types = names(matrix_generators),
-    uns_types = c(
-      paste0("scalar_", names(vector_generators)),
-      paste0("vec_", names(vector_generators)),
-      paste0("df_", names(vector_generators)),
-      paste0("mat_", names(matrix_generators)),
-      "list"
-    )) {
+  n_obs = 10L,
+  n_vars = 20L,
+  x_type = names(matrix_generators)[[1]],
+  layer_types = names(matrix_generators),
+  obs_types = names(vector_generators),
+  var_types = names(vector_generators),
+  obsm_types = c(names(matrix_generators), names(vector_generators)),
+  varm_types = c(names(matrix_generators), names(vector_generators)),
+  obsp_types = names(matrix_generators),
+  varp_types = names(matrix_generators),
+  uns_types = c(
+    paste0("scalar_", names(vector_generators)),
+    paste0("vec_", names(vector_generators)),
+    paste0("df_", names(vector_generators)),
+    paste0("mat_", names(matrix_generators)),
+    "list"
+  )
+) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
 
@@ -209,7 +356,14 @@ generate_dataset <- function(
   uns <- lapply(uns_types, function(uns_type) {
     if (uns_type == "list") {
       # TODO: add multiple data types here
-      list(1L, 1, "a", factor("a"), TRUE, list(nested = list(list = c(1, 2, 3))))
+      list(
+        1L,
+        1,
+        "a",
+        factor("a"),
+        TRUE,
+        list(nested = list(list = c(1, 2, 3)))
+      )
     } else if (uns_type == "scalar_character_with_nas") {
       NA_character_
     } else if (uns_type == "scalar_integer_with_nas") {
@@ -229,7 +383,7 @@ generate_dataset <- function(
     } else if (grepl("mat_", uns_type)) {
       generate_matrix(10L, 10L, gsub("mat_", "", uns_type))
     } else {
-      stop("Unknown uns type: '", uns_type, "'")
+      cli_abort("Unknown {.field uns} type: {.val {uns_type}}")
     }
   })
   names(uns) <- uns_types
@@ -256,7 +410,11 @@ generate_dataset <- function(
 #'
 #' @noRd
 .generate_dataset_as_sce <- function(dataset_list) {
-  check_requires("Creating a SingleCellExperiment", "SingleCellExperiment", "Bioc")
+  check_requires(
+    "Creating a SingleCellExperiment",
+    "SingleCellExperiment",
+    "Bioc"
+  )
 
   assays_list <- c(
     list(X = dataset_list$X),
@@ -274,7 +432,7 @@ generate_dataset <- function(
 
   # TODO: add obsm, varm, obsp, varp, uns?
 
-  return(sce)
+  sce
 }
 
 #' Convert a dummy dataset to a Seurat object
@@ -309,7 +467,7 @@ generate_dataset <- function(
 
   # TODO: add obsm, varm, obsp, varp, uns?
 
-  return(seurat)
+  seurat
 }
 
 #' Convert a dummy dataset to an AnnData object
@@ -319,7 +477,9 @@ generate_dataset <- function(
 #' @return SingleCellExperiment containing the generated data
 #'
 #' @noRd
-.generate_dataset_as_anndata <- function(dataset_list) { # nolint
+# nolint start: object_name_linter object_length_linter
+.generate_dataset_as_anndata <- function(dataset_list) {
+  # nolint end: object_name_linter object_length_linter
   AnnData(
     X = dataset_list$X,
     obs = dataset_list$obs,

@@ -38,17 +38,20 @@ check_arg <- function(args, name, falseval) {
 r_generate_dataset <- function(n_obs, n_vars, write = FALSE, ...) {
   args <- list(...)
 
-  data <- generate_dataset(n_obs, n_vars,
-                           x_type = check_arg(args, "x_type", "numeric_matrix"),
-                           layer_types = check_arg(args, "layer_types", character()),
-                           obs_types = ifelse("obs_types" %in% names(args), args$obs_types, "integer"),
-                           var_types = ifelse("var_types" %in% names(args), args$var_types, "integer"),
-                           obsm_types = check_arg(args, "obsm_types", character()),
-                           varm_types = check_arg(args, "varm_types", character()),
-                           obsp_types = check_arg(args, "obsp_types", character()),
-                           varp_types = check_arg(args, "varp_types", character()),
-                           uns_types = check_arg(args, "uns_types", character()),
-                           format = "AnnData")
+  data <- generate_dataset(
+    n_obs,
+    n_vars,
+    x_type = check_arg(args, "x_type", "numeric_matrix"),
+    layer_types = check_arg(args, "layer_types", character()),
+    obs_types = ifelse("obs_types" %in% names(args), args$obs_types, "integer"),
+    var_types = ifelse("var_types" %in% names(args), args$var_types, "integer"),
+    obsm_types = check_arg(args, "obsm_types", character()),
+    varm_types = check_arg(args, "varm_types", character()),
+    obsp_types = check_arg(args, "obsp_types", character()),
+    varp_types = check_arg(args, "varp_types", character()),
+    uns_types = check_arg(args, "uns_types", character()),
+    format = "AnnData"
+  )
   if (write) {
     r_write_dataset(data)
   }

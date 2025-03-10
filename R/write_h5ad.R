@@ -75,10 +75,11 @@
 #'   adata$write_h5ad(h5ad_file)
 #' }
 write_h5ad <- function(
-    object,
-    path,
-    compression = c("none", "gzip", "lzf"),
-    mode = c("w-", "r", "r+", "a", "w", "x")) {
+  object,
+  path,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+) {
   mode <- match.arg(mode)
   adata <-
     if (inherits(object, "SingleCellExperiment")) {
@@ -104,7 +105,7 @@ write_h5ad <- function(
         mode = mode
       )
     } else {
-      stop("Unable to write object of class: ", class(object))
+      cli_abort("Unable to write object of class {.cls {class(object)}}")
     }
   adata$close()
   rm(adata)

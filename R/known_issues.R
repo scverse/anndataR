@@ -4,21 +4,31 @@
 read_known_issues <- function() {
   check_requires("Reading known issues", "yaml")
 
-  data <- yaml::read_yaml(system.file("known_issues.yaml", package = "anndataR"))
+  data <- yaml::read_yaml(system.file(
+    "known_issues.yaml",
+    package = "anndataR"
+  ))
 
   map_dfr(
     data$known_issues,
     function(row) {
       expected_names <- c(
-        "backend", "slot", "dtype", "process", "error_message",
-        "description", "proposed_solution", "to_investigate",
+        "backend",
+        "slot",
+        "dtype",
+        "process",
+        "error_message",
+        "description",
+        "proposed_solution",
+        "to_investigate",
         "to_fix"
       )
       if (!all(expected_names %in% names(row))) {
-        stop(
-          "Expected columns ", paste0("'", expected_names, "'", collapse = ", "),
-          " in known_issues.yaml, but got ", paste0("'", names(row), "'", collapse = ", ")
-        )
+        cli_abort(c(
+          "Unexpected columns in {.file known_issues.yaml}",
+          "i" = "Expected columns: {.val {expected_names}}",
+          "i" = "Actual columns: {.val {names(row)}}"
+        ))
       }
 
       expand.grid(row)
@@ -49,7 +59,13 @@ is_known <- function(backend, slot, dtype, process, known_issues = NULL) {
   filt
 }
 
-message_if_known <- function(backend, slot, dtype, process, known_issues = NULL) {
+message_if_known <- function(
+  backend,
+  slot,
+  dtype,
+  process,
+  known_issues = NULL
+) {
   if (is.null(known_issues)) {
     known_issues <- read_known_issues()
   }
@@ -61,8 +77,15 @@ message_if_known <- function(backend, slot, dtype, process, known_issues = NULL)
     row <- known_issues[which(filt)[[1]], ]
 
     paste0(
-      "Known issue for backend '", row$backend, "', slot '", row$slot,
-      "', dtype '", row$dtype, "', process '", row$process, "': ",
+      "Known issue for backend '",
+      row$backend,
+      "', slot '",
+      row$slot,
+      "', dtype '",
+      row$dtype,
+      "', process '",
+      row$process,
+      "': ",
       row$description
     )
   } else {

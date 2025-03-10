@@ -42,23 +42,24 @@ pak::pak("scverse/anndataR")
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `Seurat` object.
 
-```{r}
+```{r prep_file}
 library(anndataR)
 library(Seurat)
 
 h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 ```
 
-Read the `.h5ad` file:
+Read the `.h5ad` file and convert it to a `Seurat` object:
 
-```{r}
-adata <- read_h5ad(h5ad_file)
-adata
+```{r read_data}
+seurat_obj <- read_h5ad(h5ad_file, to = "Seurat")
+seurat_obj
 ```
 
-Convert to a `Seurat` object:
+This is equivalent to reading in the `.h5ad` file and explicitly converting.
 
-```{r}
+```{r convert_seurat}
+adata <- read_h5ad(h5ad_file)
 seurat_obj <- adata$to_Seurat()
 seurat_obj
 ```
@@ -69,7 +70,7 @@ to ensure that all necessary information has been transferred.
 
 See `?to_Seurat` for more details on how to customize the conversion process. For instance:
 
-```{r}
+```{r customize_seurat_conversion}
 adata$to_Seurat(
   assay_name = "ADT",
   layers_mapping = c(counts = "dense_counts", data = "dense_X")
@@ -80,7 +81,7 @@ adata$to_Seurat(
 
 Here's an example demonstrating how to create a `Seurat` object from scratch, then convert it to `AnnData` and save it as `.h5ad`
 
-```{r}
+```{r create_seurat}
 counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
 seurat_obj <- CreateSeuratObject(counts = counts) |>
   NormalizeData() |>
@@ -92,20 +93,20 @@ seurat_obj <- CreateSeuratObject(counts = counts) |>
 seurat_obj
 ```
 
-You can convert the `Seurat` object to an `AnnData` object using the `from_Seurat` function:
+You can write out the `Seurat` object to an `.h5ad` file using the `write_h5ad` function:
 
-```{r}
-adata <- from_Seurat(seurat_obj)
-adata
+```r
+write_h5ad(seurat_obj, "seurat_obj.h5ad")
 ```
 
+If you need more customized conversion, you first need to convert the `Seurat` object to an `AnnData` object.
 Again note that there is no one-to-one mapping possible between the AnnData and SeuratObject data structures,
 so some information might be lost during conversion. It is recommended to carefully inspect the converted object
 to ensure that all necessary information has been transferred.
 
 See `?from_Seurat` for more details on how to customize the conversion process. Example:
 
-```{r}
+```{r customize_from_seurat}
 from_Seurat(
   seurat_obj,
   assay_name = "RNA",
