@@ -339,7 +339,7 @@ AbstractAnnData <- R6::R6Class(
               "], got [",
               paste(mat_dims, collapse = ", "),
               "]"
-            ),
+            )
           ),
           call = rlang::caller_env()
         )
