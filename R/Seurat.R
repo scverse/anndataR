@@ -194,7 +194,8 @@ to_Seurat <- function(
     assay_metadata_mapping,
     "var"
   )
-  if (!is.null(adata$var)) {
+
+  if (ncol(assay_metadata) != 0) {
     obj@assays[[assay_name]] <- SeuratObject::AddMetaData(
       obj@assays[[assay_name]],
       metadata = assay_metadata
@@ -292,6 +293,9 @@ to_Seurat <- function(
     if (!is.null(obsp)) {
       dimnames(obsp) <- list(obs_names, obs_names)
       obsp_gr <- Seurat::as.Graph(obsp)
+      if (rlang::is_empty(obsp_gr@assay.used)) {
+        obsp_gr@assay.used <- assay_name
+      }
       obj[[paste0(assay_name, "_", graph_name)]] <- obsp_gr
     }
   }
@@ -593,16 +597,9 @@ to_Seurat <- function(
 # nolint start: object_name_linter
 .to_Seurat_process_metadata <- function(adata, mapping, slot) {
   # nolint end: object_name_linter
-  # check if mapping contains all columns of slot
-  if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
-    adata[[slot]]
-  } else {
-    mapped <- lapply(seq_along(mapping), function(i) {
-      adata[[slot]][[mapping[[i]]]]
-    })
-    names(mapped) <- names(mapping)
-    as.data.frame(mapped)
-  }
+  mapped <- adata[[slot]][unlist(mapping)]
+  names(mapped) <- names(mapping)
+  mapped
 }
 
 #' Convert a Seurat object to an AnnData object
@@ -1036,26 +1033,29 @@ from_Seurat <- function(
 # nolint start: object_name_linter
 .from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) {
   # nolint end: object_name_linter
-  obs <- data.frame(row.names = colnames(seurat_obj))
-
-  for (obs_name in names(obs_mapping)) {
-    obs[[obs_name]] <- seurat_obj[[obs_mapping[[obs_name]]]]
+  if (rlang::is_empty(obs_mapping)) {
+    return(data.frame(row.names = colnames(seurat_obj)))
   }
 
-  obs
+  mapped <- seurat_obj[[unlist(obs_mapping)]]
+  names(mapped) <- names(obs_mapping)
+
+  mapped
 }
 
 # nolint start: object_name_linter
 .from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) {
   # nolint end: object_name_linter
   assay <- seurat_obj[[assay_name]]
-  var <- data.frame(row.names = rownames(seurat_obj))
 
-  for (var_name in names(var_mapping)) {
-    var[[var_name]] <- assay[[var_mapping[[var_name]]]]
+  if (rlang::is_empty(var_mapping)) {
+    return(data.frame(row.names = rownames(seurat_obj)))
   }
 
-  var
+  mapped <- assay[[unlist(var_mapping)]]
+  names(mapped) <- names(var_mapping)
+
+  mapped
 }
 
 # nolint start: object_name_linter object_length_linter
