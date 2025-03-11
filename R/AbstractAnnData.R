@@ -10,6 +10,18 @@
   )
 }
 
+.anndata_slots <- c(
+  "X",
+  "obs",
+  "var",
+  "uns",
+  "obsm",
+  "varm",
+  "layers",
+  "obsp",
+  "varp"
+)
+
 #' @title Abstract AnnData class
 #'
 #' @description
@@ -108,16 +120,7 @@ AbstractAnnData <- R6::R6Class(
         sep = ""
       )
 
-      for (attribute in c(
-        "obs",
-        "var",
-        "uns",
-        "obsm",
-        "varm",
-        "layers",
-        "obsp",
-        "varp"
-      )) {
+      for (attribute in .anndata_slots[-1]) {
         key_fun <- self[[paste0(attribute, "_keys")]]
         keys <-
           if (!is.null(key_fun)) {
