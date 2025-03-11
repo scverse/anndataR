@@ -579,7 +579,13 @@ from_SingleCellExperiment <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata_list$file))
       }
-      cli_abort(conditionMessage(e))
+      cli_abort(
+        c(
+          conditionMessage(e),
+          "i" = "Original call: {.code {capture.output(print(conditionCall(e)))}}"
+        ),
+        call = rlang::caller_env(4)
+      )
     }
   )
 }
