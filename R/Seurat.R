@@ -236,14 +236,8 @@ to_Seurat <- function(
 
     reduction_fmt_msg <- paste(
       "Each item in {.arg reduction_mapping} must be a {.cls list}",
-      "with names {.val {keys_str}}"
+      "with names {style_vec(c('key', 'obsm', 'varm'), last = ' and (optionally) ')}"
     )
-    # nolint start object_usage_linter
-    keys_str <- cli::cli_vec(
-      c("key", "obsm", "varm"),
-      list("vec-last" = " and (optionally) ")
-    )
-    # nolint end
     for (i in seq_along(reduction_mapping)) {
       reduction_name <- names(reduction_mapping)[[i]]
       reduction <- reduction_mapping[[i]]
@@ -341,11 +335,10 @@ to_Seurat <- function(
     if (length(misc) == 2) {
       misc_key <- misc[[2]]
       if (!misc_key %in% names(misc_data)) {
-        misc_str <- cli::cli_vec(misc, list("vec-last" = ", ")) # nolint object_usage_linter
         cli_abort(paste(
           "The requested item {.code adata${misc_slot}[[{misc_key}]]}",
           "does not exist for {.code misc_mapping[[{i}]]}:",
-          "{.val misc_name} = c({.val {misc_str}})"
+          "{.val misc_name} = c({style_vec(misc)})"
         ))
       }
       misc_data <- misc_data[[misc_key]]
