@@ -435,151 +435,151 @@ from_SingleCellExperiment <- function(
     uns_mapping <- .from_SCE_guess_all(sce, S4Vectors::metadata)
   }
 
+  # Create list to store converted objects
+  # Also contains additional arguments passed to the generator function
+  adata_list <- list(...)
+
+  # get obs
+  # trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
+  adata_list$obs <- .from_SCE_process_obsvar(
+    sce,
+    obs_mapping,
+    SingleCellExperiment::colData
+  )
+
+  # get var
+  # trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
+  adata_list$var <- .from_SCE_process_obsvar(
+    sce,
+    var_mapping,
+    SingleCellExperiment::rowData
+  )
+
+  # fetch X
+  # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
+  if (!is.null(x_mapping)) {
+    adata_list$X <- .from_SCE_convert(SummarizedExperiment::assay(
+      sce,
+      x_mapping,
+      withDimnames = FALSE
+    ))
+  }
+
+  # fetch layers
+  # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
+
+  adata_list$layers <- .from_SCE_process_simple_mapping(
+    sce,
+    layers_mapping,
+    SummarizedExperiment::assays
+  )
+
+  # trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
+  adata_list$obsm <- list()
+  for (i in seq_along(obsm_mapping)) {
+    obsm <- obsm_mapping[[i]]
+    obsm_name <- names(obsm_mapping)[[i]]
+
+    if (!is.character(obsm) || length(obsm) != 2) {
+      cli_abort(c(
+        "Each item in {.arg obsm_mapping} must be a {.cls character} vector of length 2",
+        "i" = "{.code obsm_mapping[[{i}]]} is {.obj_type_friendly {obsm}}"
+      ))
+    }
+
+    obsm_slot <- obsm[[1]]
+    obsm_key <- obsm[[2]]
+
+    adata_list$obsm[[obsm_name]] <- .from_SCE_process_obsm_reduction(
+      sce,
+      obsm_slot,
+      obsm_key
+    )
+  }
+
+  # fetch varm
+  # trackstatus: class=SingleCellExperiment, feature=set_varm, status=wip
+  adata_list$varm <- list()
+  for (i in seq_along(varm_mapping)) {
+    varm <- varm_mapping[[i]]
+    varm_name <- names(varm_mapping)[[i]]
+
+    if (!is.character(varm) || length(varm) != 2) {
+      cli_abort(c(
+        "Each item in {.arg varm_mapping} must be a {.cls character} vector of length 2",
+        "i" = "{.code varm_mapping[[{i}]]} is {.obj_type_friendly {varm}}"
+      ))
+    }
+
+    varm_slot <- varm[[1]]
+    varm_key <- varm[[2]]
+
+    if (varm_slot != "reducedDim") {
+      cli_abort(c(
+        paste(
+          "The first element in each item of {.arg varm_mappings}",
+          "must be {.val reducedDims}"
+        ),
+        "i" = "{.code varm_mapping[[{i}]][1]}: {.val {varm_slot}}"
+      ))
+    }
+
+    if (
+      !inherits(
+        SingleCellExperiment::reducedDims(sce)[[varm_key]],
+        "LinearEmbeddingMatrix"
+      )
+    ) {
+      cli_abort(paste(
+        "{.val {varm_mapping}} must be a {.cls LinearEmbeddingMatrix} but",
+        "has class {.cls {SingleCellExperiment::reducedDims(sce)[[varm_key]]}}"
+      ))
+    }
+
+    adata_list$varm[[varm_name]] <- SingleCellExperiment::featureLoadings(
+      SingleCellExperiment::reducedDim(sce, varm_key)
+    )
+  }
+
+  # fetch obsp
+  # trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
+  adata_list$obsp <- .from_SCE_process_pairs(
+    sce,
+    obsp_mapping,
+    SingleCellExperiment::colPairs,
+    asSparse = TRUE
+  )
+
+  # fetch varp
+  # trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
+  adata_list$varp <- .from_SCE_process_pairs(
+    sce,
+    varp_mapping,
+    SingleCellExperiment::rowPairs,
+    asSparse = TRUE
+  )
+
+  # fetch uns
+  # trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
+  adata_list$uns <- .from_SCE_process_simple_mapping(
+    sce,
+    uns_mapping,
+    S4Vectors::metadata,
+    convert = FALSE
+  )
+
   # fetch generator
   generator <- get_anndata_constructor(output_class)
 
   tryCatch(
     {
-      # get obs
-      # trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
-      obs <- .from_SCE_process_obsvar(
-        sce,
-        obs_mapping,
-        SingleCellExperiment::colData
-      )
-
-      # get var
-      # trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
-      var <- .from_SCE_process_obsvar(
-        sce,
-        var_mapping,
-        SingleCellExperiment::rowData
-      )
-
-      adata <- generator$new(
-        obs = obs,
-        var = var,
-        ...
-      )
-
-      # fetch X
-      # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
-      if (!is.null(x_mapping)) {
-        adata$X <- .from_SCE_convert(SummarizedExperiment::assay(
-          sce,
-          x_mapping,
-          withDimnames = FALSE
-        ))
-      }
-
-      # fetch layers
-      # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
-
-      adata$layers <- .from_SCE_process_simple_mapping(
-        sce,
-        layers_mapping,
-        SummarizedExperiment::assays
-      )
-
-      # trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
-      for (i in seq_along(obsm_mapping)) {
-        obsm <- obsm_mapping[[i]]
-        obsm_name <- names(obsm_mapping)[[i]]
-
-        if (!is.character(obsm) || length(obsm) != 2) {
-          cli_abort(c(
-            "Each item in {.arg obsm_mapping} must be a {.cls character} vector of length 2",
-            "i" = "{.code obsm_mapping[[{i}]]} is {.obj_type_friendly {obsm}}"
-          ))
-        }
-
-        obsm_slot <- obsm[[1]]
-        obsm_key <- obsm[[2]]
-
-        adata$obsm[[obsm_name]] <- .from_SCE_process_obsm_reduction(
-          sce,
-          obsm_slot,
-          obsm_key
-        )
-      }
-
-      # fetch varm
-      # trackstatus: class=SingleCellExperiment, feature=set_varm, status=wip
-      for (i in seq_along(varm_mapping)) {
-        varm <- varm_mapping[[i]]
-        varm_name <- names(varm_mapping)[[i]]
-
-        if (!is.character(varm) || length(varm) != 2) {
-          cli_abort(c(
-            "Each item in {.arg varm_mapping} must be a {.cls character} vector of length 2",
-            "i" = "{.code varm_mapping[[{i}]]} is {.obj_type_friendly {varm}}"
-          ))
-        }
-
-        varm_slot <- varm[[1]]
-        varm_key <- varm[[2]]
-
-        if (varm_slot != "reducedDim") {
-          cli_abort(c(
-            paste(
-              "The first element in each item of {.arg varm_mappings}",
-              "must be {.val reducedDims}"
-            ),
-            "i" = "{.code varm_mapping[[{i}]][1]}: {.val {varm_slot}}"
-          ))
-        }
-
-        if (
-          !inherits(
-            SingleCellExperiment::reducedDims(sce)[[varm_key]],
-            "LinearEmbeddingMatrix"
-          )
-        ) {
-          cli_abort(paste(
-            "{.val {varm_mapping}} must be a {.cls LinearEmbeddingMatrix} but",
-            "has class {.cls {SingleCellExperiment::reducedDims(sce)[[varm_key]]}}"
-          ))
-        }
-
-        adata$varm[[varm_name]] <- SingleCellExperiment::featureLoadings(
-          SingleCellExperiment::reducedDim(sce, varm_key)
-        )
-      }
-
-      # fetch obsp
-      # trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
-      adata$obsp <- .from_SCE_process_pairs(
-        sce,
-        obsp_mapping,
-        SingleCellExperiment::colPairs,
-        asSparse = TRUE
-      )
-
-      # fetch varp
-      # trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
-      adata$varp <- .from_SCE_process_pairs(
-        sce,
-        varp_mapping,
-        SingleCellExperiment::rowPairs,
-        asSparse = TRUE
-      )
-
-      # fetch uns
-      # trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
-      adata$uns <- .from_SCE_process_simple_mapping(
-        sce,
-        uns_mapping,
-        S4Vectors::metadata,
-        convert = FALSE
-      )
-
-      adata
+      do.call(generator$new, adata_list)
     },
     error = function(e) {
       if (output_class == "HDF5AnnData") {
-        on.exit(cleanup_HDF5AnnData(adata))
+        on.exit(cleanup_HDF5AnnData(adata_list$file))
       }
-      cli_abort(e)
+      cli_abort(conditionMessage(e))
     }
   )
 }
