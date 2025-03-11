@@ -13,7 +13,11 @@
 #' @returns A styled string that can be included directly using "{syle_vec(...)}"
 #' @noRd
 style_vec <- function(
-  x, last = ", ", trunc = 20L, trunc_style = c("both-ends", "head"), wrap = FALSE
+  x,
+  last = ", ",
+  trunc = 20L,
+  trunc_style = c("both-ends", "head"),
+  wrap = FALSE
 ) {
   trunc_style <- match.arg(trunc_style)
 
