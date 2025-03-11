@@ -280,117 +280,115 @@ HDF5AnnData <- R6::R6Class(
       # store compression for later use
       private$.compression <- compression
 
-      if (is.character(file) && !file.exists(file)) {
-        # store private values
-        private$.h5obj <- hdf5r::H5File$new(file, mode = "w-")
-        private$.close_on_finalize <- TRUE
+      # check whether file needs to be closed on finalize
+      private$.close_on_finalize <- is.character(file)
 
-        # Determine initial obs and var
+      # check whether file already exists
+      if (is.character(file)) {
+        if (!file.exists(file) && mode %in% c("r", "r+")) {
+          cli_abort(
+            paste(
+              "File {.arg {file}} does not exist but mode is set to {.arg {mode}}.",
+              "If you want to create a new file, use a different mode (e.g. 'w-').",
+              "See {.fun read_h5ad} or {.fun write_h5ad} for more information."
+            ),
+            call = rlang::caller_env()
+          )
+        }
+
+        if (file.exists(file) && mode %in% c("w-", "x")) {
+          cli_abort(
+            paste(
+              "File {.arg {file}} already exists but mode is set to {.arg {mode}}.",
+              "If you want to overwrite the file, use a different mode (e.g. 'w').",
+              "See {.fun read_h5ad} or {.fun write_h5ad} for more information."
+            ),
+            call = rlang::caller_env()
+          )
+        }
+
+        file <- hdf5r::H5File$new(file, mode = mode)
+      }
+
+      # type check
+      if (!inherits(file, "H5File")) {
+        cli_abort(
+          paste(
+            "{.arg file} must be a {.cls character} or a {.cls hdf5r::H5File} object,",
+            "but is a {.cls {class(file)}}"
+          )
+        )
+      }
+
+      # detect file mode
+      mode_mapper <- c(
+        # readonly, file must exist
+        "H5F_ACC_RDONLY" = "r",
+        # readwrite, file must exist
+        "H5F_ACC_RDWR" = "r+",
+        # create file, truncate if exists
+        "H5F_ACC_TRUNC" = "w",
+        # create file, fail if exists
+        "H5F_ACC_EXCL" = "w-"
+      )
+      intent <- as.character(file$get_intent())
+      if (!intent %in% names(mode_mapper)) {
+        cli_abort(
+          "Invalid intent detected: {.arg {intent}}."
+        )
+      }
+      detected_mode <- mode_mapper[[intent]]
+      if (detected_mode == "r+") {
+        cli_warn(
+          paste(
+            "File is opened in read/write mode.",
+            "Use with caution, as this can lead to data corruption."
+          )
+        )
+      }
+
+      # initialise AnnData
+      if (detected_mode %in% c("w", "w-")) {
         shape <- get_shape(obs, var, X, shape)
         obs <- get_initial_obs(obs, X, shape)
         var <- get_initial_var(var, X, shape)
+        write_empty_h5ad(file, obs, var, compression)
+      }
 
-        # Create an empty H5AD
-        write_empty_h5ad(private$.h5obj, obs, var, compression)
+      # File is supposed to exist by now. Check if it is a valid H5AD file
+      attrs <- hdf5r::h5attributes(file)
+      if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
+        cli_abort(c(
+          "File {.arg {file}} is not a valid H5AD file.",
+          i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
+        ))
+      }
 
-        # set other slots
-        if (!is.null(X)) {
-          self$X <- X
-        }
-        if (!is.null(layers)) {
-          self$layers <- layers
-        }
-        if (!is.null(obsm)) {
-          self$obsm <- obsm
-        }
-        if (!is.null(varm)) {
-          self$varm <- varm
-        }
-        if (!is.null(obsp)) {
-          self$obsp <- obsp
-        }
-        if (!is.null(varp)) {
-          self$varp <- varp
-        }
-        if (!is.null(uns)) {
-          self$uns <- uns
-        }
-      } else {
-        open_hdf5_file <- is.character(file)
-        if (open_hdf5_file) {
-          file <- hdf5r::H5File$new(file, mode = mode)
-        }
+      # Set the file path
+      private$.h5obj <- file
 
-        if (!inherits(file, "H5File")) {
+      if (detected_mode == "r") {
+        # if any of these variables are not NULL, throw an error
+        are_null <- sapply(.anndata_slots, function(x) is.null(get(x)))
+        if (!all(are_null)) {
           cli_abort(
-            paste(
-              "{.arg file} must be a character string or a {.cls H5File} object,",
-              "but is a {.cls {class(file)}}"
+            paste0(
+              "Error trying to write data (",
+              paste(.anndata_slots[!are_null], collapse = ", "),
+              ") to an h5ad file opened in read-only mode."
             )
           )
         }
-
-        # Check the file is a valid H5AD
-        attrs <- hdf5r::h5attributes(file)
-
-        if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-          cli_abort(c(
-            "H5AD encoding information is missing",
-            "i" = "This file may have been created with Python {.pkg anndata<0.8.0}"
-          ))
-        }
-
-        # Set the file path
-        private$.h5obj <- file
-        private$.close_on_finalize <- open_hdf5_file
-
-        # assert other arguments are NULL
-        if (!is.null(obs)) {
-          cli_abort(
-            "{.arg obs} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(var)) {
-          cli_abort(
-            "{.arg var} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(X)) {
-          cli_abort(
-            "{.arg X} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(layers)) {
-          cli_abort(
-            "{.arg layers} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(obsm)) {
-          cli_abort(
-            "{.arg obsm} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(varm)) {
-          cli_abort(
-            "{.arg varm} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(obsp)) {
-          cli_abort(
-            "{.arg obsp} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(varp)) {
-          cli_abort(
-            "{.arg varp} must be {.val NULL} when loading an existing .h5ad file"
-          )
-        }
-        if (!is.null(uns)) {
-          cli_abort(
-            "{.arg uns} must be {.val NULL} when loading an existing .h5ad file"
-          )
+      } else {
+        for (slot in .anndata_slots) {
+          value <- get(slot)
+          if (!is.null(value)) {
+            self[[slot]] <- value
+          }
         }
       }
+
+      self
     },
 
     #' @description Close the HDF5 file
