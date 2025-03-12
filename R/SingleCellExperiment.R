@@ -579,7 +579,7 @@ from_SingleCellExperiment <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata))
       }
-      cli_abort(e)
+      cli_abort(conditionMessage(e))
     }
   )
 }
@@ -626,6 +626,9 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_varm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
+  if (!inherits(sce, "SingleCellExperiment")) {
+    return(list())
+  }
   varm_mapping <- list()
 
   for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
@@ -719,6 +722,9 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_process_pairs <- function(sce, mapping, slot, asSparse = TRUE) {
   # nolint end: object_length_linter object_name_linter
+  if (!inherits(sce, "SingleCellExperiment")) {
+    return(list())
+  }
   pairs <- NULL
   # check if mapping contains all columns of slot
   if (length(setdiff(names(slot(sce)), names(mapping))) == 0) {
