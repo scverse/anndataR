@@ -58,7 +58,7 @@
 #' @export
 # nolint start: object_name_linter
 from_SingleCellExperiment <- function(
-    # nolint end: object_name_linter
+  # nolint end: object_name_linter
   sce,
   output_class = c("InMemory", "HDF5AnnData"),
   x_mapping = NULL,
@@ -88,22 +88,28 @@ from_SingleCellExperiment <- function(
 
   # For any mappings that are not set, using the guessing function
   layers_mapping <- layers_mapping %||% .from_SCE_guess_layers(sce, x_mapping)
-  obs_mapping <- obs_mapping %||% .from_SCE_guess_all(
-    sce, SingleCellExperiment::colData
-  )
-  var_mapping <- var_mapping %||% .from_SCE_guess_all(
-    sce, SingleCellExperiment::rowData
-  )
+  obs_mapping <- obs_mapping %||%
+    .from_SCE_guess_all(
+      sce,
+      SingleCellExperiment::colData
+    )
+  var_mapping <- var_mapping %||%
+    .from_SCE_guess_all(
+      sce,
+      SingleCellExperiment::rowData
+    )
   obsm_mapping <- obsm_mapping %||% .from_SCE_guess_obsm(sce)
   varm_mapping <- varm_mapping %||% .from_SCE_guess_varm(sce)
-  obsp_mapping <- obsmp_mapping %||% .from_SCE_guess_obspvarp(
-    sce,
-    SingleCellExperiment::colPairs
-  )
-  varp_mapping <- varp_mapping %||% .from_SCE_guess_obspvarp(
-    sce,
-    SingleCellExperiment::rowPairs
-  )
+  obsp_mapping <- obsp_mapping %||%
+    .from_SCE_guess_obspvarp(
+      sce,
+      SingleCellExperiment::colPairs
+    )
+  varp_mapping <- varp_mapping %||%
+    .from_SCE_guess_obspvarp(
+      sce,
+      SingleCellExperiment::rowPairs
+    )
   uns_mapping <- uns_mapping %||% .from_SCE_guess_all(sce, S4Vectors::metadata)
 
   # Create list to store converted objects
@@ -298,7 +304,7 @@ from_SingleCellExperiment <- function(
 }
 # nolint start: object_length_linter object_name_linter
 .from_SCE_process_simple_mapping <- function(
-    # nolint end: object_length_linter object_name_linter
+  # nolint end: object_length_linter object_name_linter
   sce,
   mapping,
   slot,
@@ -337,7 +343,9 @@ from_SingleCellExperiment <- function(
   .from_SCE_convert(pairs)
 }
 
+# nolint start: object_name_linter
 .from_SCE_process_obsm <- function(sce, obsm_mapping) {
+  # nolint end: object_name_linter
   purrr::imap(obsm_mapping, function(.mapping, .idx) {
     if (!is.character(.mapping) || length(.mapping) != 2) {
       cli_abort(c(
@@ -371,8 +379,10 @@ from_SingleCellExperiment <- function(
   })
 }
 
+# nolint start: object_name_linter
 .from_SCE_process_varm <- function(sce, varm_mapping) {
-  purrr::imap(obsm_mapping, function(.mapping, .idx) {
+  # nolint end: object_name_linter
+  purrr::imap(varm_mapping, function(.mapping, .idx) {
     if (!is.character(.mapping) || length(.mapping) != 2) {
       cli_abort(c(
         paste(
