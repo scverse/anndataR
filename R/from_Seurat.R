@@ -284,8 +284,8 @@ from_Seurat <- function(
       }
       cli_abort(
         c(
-          conditionMessage(e),
-          "i" = "Original call: {.code {capture.output(print(conditionCall(e)))}}"
+          "Failed to create a {.cls {output_class}} with error: {conditionMessage(e)}",
+          "i" = "Error call: {.code {capture.output(print(conditionCall(e)))}}"
         ),
         call = rlang::caller_env(4)
       )
