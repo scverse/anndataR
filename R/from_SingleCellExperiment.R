@@ -82,7 +82,7 @@ from_SingleCellExperiment <- function(
 
   if (!(inherits(sce, "SingleCellExperiment"))) {
     cli_abort(
-      "{.arg sce} must be a {.cls SingleCellExperiment} but has class {.cls {class(sce)}}"
+      "{.arg sce} must be a {.cls SingleCellExperiment} but has class {.cls {sce}}"
     )
   }
 
@@ -120,110 +120,35 @@ from_SingleCellExperiment <- function(
   # Create list to store converted objects
   # Also contains additional arguments passed to the generator function
   adata_list <- list(...)
-
-  # get obs
+  # Fill in slots in the list
   # trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
   adata_list$obs <- .from_SCE_process_obsvar(
     sce,
     obs_mapping,
     SingleCellExperiment::colData
   )
-
-  # get var
   # trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
   adata_list$var <- .from_SCE_process_obsvar(
     sce,
     var_mapping,
     SingleCellExperiment::rowData
   )
-
-  # fetch X
   # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
   if (!is.null(x_mapping)) {
-    adata_list$X <- .from_SCE_convert(SummarizedExperiment::assay(
-      sce,
-      x_mapping,
-      withDimnames = FALSE
-    ))
+    adata_list$X <- .from_SCE_convert(
+      SummarizedExperiment::assay(sce, x_mapping, withDimnames = FALSE)
+    )
   }
-
-  # fetch layers
   # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
-
   adata_list$layers <- .from_SCE_process_simple_mapping(
     sce,
     layers_mapping,
     SummarizedExperiment::assays
   )
-
   # trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
-  adata_list$obsm <- list()
-  for (i in seq_along(obsm_mapping)) {
-    obsm <- obsm_mapping[[i]]
-    obsm_name <- names(obsm_mapping)[[i]]
-
-    if (!is.character(obsm) || length(obsm) != 2) {
-      cli_abort(c(
-        "Each item in {.arg obsm_mapping} must be a {.cls character} vector of length 2",
-        "i" = "{.code obsm_mapping[[{i}]]} is {.obj_type_friendly {obsm}}"
-      ))
-    }
-
-    obsm_slot <- obsm[[1]]
-    obsm_key <- obsm[[2]]
-
-    adata_list$obsm[[obsm_name]] <- .from_SCE_process_obsm_reduction(
-      sce,
-      obsm_slot,
-      obsm_key
-    )
-  }
-
-  # fetch varm
+  adata_list$obsm <- .from_SCE_process_obsm(sce, obsm_mapping)
   # trackstatus: class=SingleCellExperiment, feature=set_varm, status=wip
-  adata_list$varm <- list()
-  for (i in seq_along(varm_mapping)) {
-    varm <- varm_mapping[[i]]
-    varm_name <- names(varm_mapping)[[i]]
-
-    if (!is.character(varm) || length(varm) != 2) {
-      cli_abort(c(
-        "Each item in {.arg varm_mapping} must be a {.cls character} vector of length 2",
-        "i" = "{.code varm_mapping[[{i}]]} is {.obj_type_friendly {varm}}"
-      ))
-    }
-
-    varm_slot <- varm[[1]]
-    varm_key <- varm[[2]]
-
-    if (varm_slot != "reducedDim") {
-      cli_abort(c(
-        paste(
-          "The first element in each item of {.arg varm_mappings}",
-          "must be {.val reducedDims}"
-        ),
-        "i" = "{.code varm_mapping[[{i}]][1]}: {.val {varm_slot}}"
-      ))
-    }
-
-    if (
-      !inherits(
-        SingleCellExperiment::reducedDims(sce)[[varm_key]],
-        "LinearEmbeddingMatrix"
-      )
-    ) {
-      cli_abort(paste(
-        "{.val {varm_mapping}} must be a {.cls LinearEmbeddingMatrix} but",
-        "has class {.cls {SingleCellExperiment::reducedDims(sce)[[varm_key]]}}"
-      ))
-    }
-
-    adata_list$varm[[varm_name]] <- SingleCellExperiment::featureLoadings(
-      SingleCellExperiment::reducedDim(sce, varm_key)
-    )
-  }
-
-  # fetch obsp
+  adata_list$varm <- .from_SCE_process_varm(sce, varm_mapping)
   # trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
   adata_list$obsp <- .from_SCE_process_pairs(
     sce,
@@ -231,8 +156,6 @@ from_SingleCellExperiment <- function(
     SingleCellExperiment::colPairs,
     asSparse = TRUE
   )
-
-  # fetch varp
   # trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
   adata_list$varp <- .from_SCE_process_pairs(
     sce,
@@ -240,8 +163,6 @@ from_SingleCellExperiment <- function(
     SingleCellExperiment::rowPairs,
     asSparse = TRUE
   )
-
-  # fetch uns
   # trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
   adata_list$uns <- .from_SCE_process_simple_mapping(
     sce,
@@ -250,7 +171,7 @@ from_SingleCellExperiment <- function(
     convert = FALSE
   )
 
-  # fetch generator
+  # Get a generator to create a new AnnData object
   generator <- get_anndata_constructor(output_class)
 
   tryCatch(
@@ -427,19 +348,73 @@ from_SingleCellExperiment <- function(
   .from_SCE_convert(pairs)
 }
 
-# nolint start: object_length_linter object_name_linter
-.from_SCE_process_obsm_reduction <- function(sce, slot, key) {
-  # nolint end: object_length_linter object_name_linter
-  if (slot != "reducedDim") {
-    cli_abort(
-      "{.arg slot} must be {.val reducedDim}"
-    )
-  }
+.from_SCE_process_obsm <- function(sce, obsm_mapping) {
+  purrr::imap(obsm_mapping, function(.mapping, .idx) {
+    if (!is.character(.mapping) || length(.mapping) != 2) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg obsm_mapping} must be a {.cls character}",
+          "vector of length 2"
+        ),
+        "i" = paste(
+          "{.code obsm_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
 
-  reduction <- SingleCellExperiment::reducedDim(sce, key)
-  if (inherits(reduction, "LinearEmbeddingMatrix")) {
-    SingleCellExperiment::sampleFactors(reduction)
-  } else {
-    reduction
-  }
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot != "reducedDim") {
+      cli_abort(c(
+        "The first item in each {.arg obsm_mapping} must be {.val reducedDim}",
+        "i" = "{.code obsm_mapping[[{.val { .idx }}]][1]}: {.val {slot}}"
+      ))
+    }
+
+    reduction <- SingleCellExperiment::reducedDim(sce, key)
+    if (inherits(reduction, "LinearEmbeddingMatrix")) {
+      SingleCellExperiment::sampleFactors(reduction)
+    } else {
+      reduction
+    }
+  })
+}
+
+.from_SCE_process_varm <- function(sce, varm_mapping) {
+  purrr::imap(obsm_mapping, function(.mapping, .idx) {
+    if (!is.character(.mapping) || length(.mapping) != 2) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg varm_mapping} must be a {.cls character}",
+          "vector of length 2"
+        ),
+        "i" = paste(
+          "{.code varm_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot != "reducedDim") {
+      cli_abort(c(
+        "The first item in each {.arg varm_mapping} must be {.val reducedDim}",
+        "i" = "{.code varm_mapping[[{.val { .idx }}]][1]}: {.val {slot}}"
+      ))
+    }
+
+    reduction <- SingleCellExperiment::reducedDim(sce, key)
+    if (!inherits(reduction, "LinearEmbeddingMatrix")) {
+      cli_abort(paste(
+        "{.code reducedDim(sce, {.val key}} must be a {.cls LinearEmbeddingMatrix}",
+        "but has class {.cls {reduction}}"
+      ))
+    }
+
+    SingleCellExperiment::featureLoadings(reduction)
+  })
 }
