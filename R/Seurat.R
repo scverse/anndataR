@@ -781,22 +781,12 @@ from_Seurat <- function(
     assay_name <- SeuratObject::DefaultAssay(seurat_obj)
   }
 
-  seurat_assay <- seurat_obj@assays[[assay_name]]
+  seurat_assay <- Seurat::GetAssay(seurat_obj, assay = assay_name)
 
   if (is.null(seurat_assay)) {
     cli_abort(c(
       "{.arg assay_name} is not an assay in {.arg seurat_obj}",
       "i" = "{.code Assays(seurat_obj)}: {.val {SeuratObject::Assays(seurat_obj)}}"
-    ))
-  }
-
-  if (!inherits(seurat_assay, "Assay5")) {
-    cli_abort(c(
-      "The selected assay {.val {assay_name}} is not a {.cls Assay5}",
-      "i" = paste(
-        "Please use {.code SeuratObject::UpdateSeuratObject()} to upgrade",
-        "{.arg seurat_obj} to Seurat v5"
-      )
     ))
   }
 
@@ -849,7 +839,7 @@ from_Seurat <- function(
       # fetch X
       # trackstatus: class=Seurat, feature=set_X, status=done
       if (!is.null(x_mapping)) {
-        adata$X <- Matrix::t(seurat_assay@layers[[x_mapping]])
+        adata$X <- Matrix::t(SeuratObject::LayerData(seurat_assay, x_mapping))
       }
 
       # fetch layers
@@ -858,7 +848,9 @@ from_Seurat <- function(
         layer <- layers_mapping[[i]]
         layer_name <- names(layers_mapping)[[i]]
 
-        adata$layers[[layer_name]] <- Matrix::t(seurat_assay@layers[[layer]])
+        adata$layers[[layer_name]] <- Matrix::t(
+          SeuratObject::LayerData(seurat_assay, layer)
+        )
       }
 
       # fetch obsm
@@ -910,16 +902,26 @@ from_Seurat <- function(
         varm_key <- varm[[2]]
 
         if (varm_slot == "reductions") {
-          adata$varm[[varm_name]] <- SeuratObject::Loadings(
-            seurat_obj,
-            varm_key
-          )
+          varm_data <- SeuratObject::Loadings(seurat_obj, varm_key)
         } else if (varm_slot == "misc") {
-          data <- seurat_obj@misc[[varm_key]]
+          varm_data <- seurat_obj@misc[[varm_key]]
           if (length(varm) == 3) {
-            data <- data[[varm[[3]]]]
+            varm_data <- varm_data[[varm[[3]]]]
           }
-          adata$varm[[varm_name]] <- data
+        } else {
+          cli_abort(
+            "{.arg varm_slot} must be one of: {.or {.val {c('reductions', 'misc')}}}"
+          )
+        }
+
+        if (nrow(varm_data) != nrow(seurat_obj)) {
+          varm_str <- cli::cli_vec(varm, list("vec-last" = ",, ")) # nolint object_usage_linter
+          cli_warn(paste(
+            "Skipping {.code varm_mapping[[{i}]]} (c({.val {varm_str}}))",
+            "because it does not contain data for every feature"
+          ))
+        } else {
+          adata$varm[[varm_name]] <- varm_data
         }
       }
 
@@ -1018,7 +1020,13 @@ from_Seurat <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata))
       }
-      cli_abort(conditionMessage(e))
+      cli_abort(
+        c(
+          "Failed to convert from Seurat",
+          "i" = paste("Error message:", conditionMessage(e))
+        ),
+        call = rlang::caller_env(4)
+      )
     }
   )
 }
@@ -1054,21 +1062,9 @@ from_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_layers <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
-  seurat_assay <- seurat_obj@assays[[assay_name]]
-
-  if (!inherits(seurat_assay, "Assay5")) {
-    cli_abort(
-      "The selected assay must be a {.cls Assay5} object but has class {.cls {class(seurat_assay)}}"
-    )
-  }
-
-  layers_mapping <- list()
-
-  for (layer_name in SeuratObject::Layers(seurat_assay)) {
-    layers_mapping[[layer_name]] <- layer_name
-  }
-
-  layers_mapping
+  seurat_assay <- Seurat::GetAssay(seurat_obj, assay = assay_name)
+  layers <- SeuratObject::Layers(seurat_assay)
+  setNames(as.list(layers), layers)
 }
 
 # nolint start: object_name_linter
@@ -1119,13 +1115,13 @@ from_Seurat <- function(
   varm_mapping <- list()
 
   for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
-    reduction <- seurat_obj@reductions[[reduction_name]]
+    reduction <- seurat_obj[[reduction_name]]
+    loadings <- SeuratObject::Loadings(seurat_obj, reduction_name)
+
     if (
-      !SeuratObject::IsMatrixEmpty(SeuratObject::Loadings(
-        seurat_obj,
-        reduction_name
-      )) &&
-        reduction@assay.used == assay_name
+      !SeuratObject::IsMatrixEmpty(loadings) &&
+        nrow(loadings) == nrow(seurat_obj) &&
+        SeuratObject::DefaultAssay(reduction) == assay_name
     ) {
       varm_mapping[[reduction_name]] <- c("reductions", reduction_name)
     }
