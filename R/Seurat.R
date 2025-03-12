@@ -807,32 +807,23 @@ from_Seurat <- function(
     ))
   }
 
-  if (is.null(layers_mapping)) {
-    layers_mapping <- .from_Seurat_guess_layers(seurat_obj, assay_name)
-  }
-  if (is.null(obs_mapping)) {
-    obs_mapping <- .from_Seurat_guess_obs(seurat_obj, assay_name)
-  }
-  if (is.null(var_mapping)) {
-    var_mapping <- .from_Seurat_guess_var(seurat_obj, assay_name)
-  }
-  if (is.null(obsm_mapping)) {
-    obsm_mapping <- .from_Seurat_guess_obsms(seurat_obj, assay_name)
-  }
-  if (is.null(varm_mapping)) {
-    varm_mapping <- .from_Seurat_guess_varms(seurat_obj, assay_name)
-  }
-  if (is.null(obsp_mapping)) {
-    obsp_mapping <- .from_Seurat_guess_obsps(seurat_obj, assay_name)
-  }
-  if (is.null(varp_mapping)) {
-    varp_mapping <- .from_Seurat_guess_varps(seurat_obj)
-  }
-  if (is.null(uns_mapping)) {
-    uns_mapping <- .from_Seurat_guess_uns(seurat_obj)
-  }
+  # For any mappings that are not set, using the guessing function
+  layers_mapping <- layers_mapping %||%
+    .from_Seurat_guess_layers(seurat_obj, assay_name)
+  obs_mapping <- obs_mapping %||%
+    .from_Seurat_guess_obs(seurat_obj, assay_name)
+  var_mapping <- var_mapping %||%
+    .from_Seurat_guess_var(seurat_obj, assay_name)
+  obsm_mapping <- obsm_mapping %||%
+    .from_Seurat_guess_obsms(seurat_obj, assay_name)
+  varm_mapping <- varm_mapping %||%
+    .from_Seurat_guess_varms(seurat_obj, assay_name)
+  obsp_mapping <- obsp_mapping %||%
+    .from_Seurat_guess_obsps(seurat_obj, assay_name)
+  varp_mapping <- varp_mapping %||% .from_Seurat_guess_varps(seurat_obj)
+  uns_mapping <- uns_mapping %||% .from_Seurat_guess_uns(seurat_obj)
 
-  # Create list to store converted objects
+  # Create a list to store converted objects
   # Also contains additional arguments passed to the generator function
   adata_list <- list(...)
 
