@@ -1018,7 +1018,7 @@ from_Seurat <- function(
       if (output_class == "HDF5AnnData") {
         on.exit(cleanup_HDF5AnnData(adata))
       }
-      cli_abort(e)
+      cli_abort(conditionMessage(e))
     }
   )
 }
