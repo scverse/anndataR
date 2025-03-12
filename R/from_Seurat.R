@@ -155,7 +155,7 @@
 #' from_Seurat(obj)
 # nolint start: object_name_linter
 from_Seurat <- function(
-    # nolint end: object_name_linter
+  # nolint end: object_name_linter
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
   assay_name = NULL,
@@ -224,31 +224,51 @@ from_Seurat <- function(
   adata_list <- list(...)
 
   # Fill in slots in the list
-  adata_list$obs <- .from_Seurat_process_obs(seurat_obj, assay_name, obs_mapping)
-  adata_list$var <- .from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
+  adata_list$obs <- .from_Seurat_process_obs(
+    seurat_obj,
+    assay_name,
+    obs_mapping
+  )
+  adata_list$var <- .from_Seurat_process_var(
+    seurat_obj,
+    assay_name,
+    var_mapping
+  )
 
   # trackstatus: class=Seurat, feature=set_X, status=done
   if (!is.null(x_mapping)) {
-    adata_list$X <- Matrix::t(SeuratObject::LayerData(seurat, x_mapping))
+    adata_list$X <- Matrix::t(SeuratObject::LayerData(seurat_obj, x_mapping))
   }
 
   adata_list$layers <- .from_Seurat_process_layers(
-    seurat_obj, assay_name, layers_mapping
+    seurat_obj,
+    assay_name,
+    layers_mapping
   )
   adata_list$obsm <- .from_Seurat_process_obsm(
-    seurat_obj, assay_name, obsm_mapping
+    seurat_obj,
+    assay_name,
+    obsm_mapping
   )
   adata_list$varm <- .from_Seurat_process_varm(
-    seurat_obj, assay_name, varm_mapping
+    seurat_obj,
+    assay_name,
+    varm_mapping
   )
   adata_list$obsp <- .from_Seurat_process_obsp(
-    seurat_obj, assay_name, obsp_mapping
+    seurat_obj,
+    assay_name,
+    obsp_mapping
   )
   adata_list$varp <- .from_Seurat_process_varp(
-    seurat_obj, assay_name, varp_mapping
+    seurat_obj,
+    assay_name,
+    varp_mapping
   )
   adata_list$uns <- .from_Seurat_process_uns(
-    seurat_obj, assay_name, uns_mapping
+    seurat_obj,
+    assay_name,
+    uns_mapping
   )
 
   # Get a generator to create a new AnnData object
@@ -306,7 +326,13 @@ from_Seurat <- function(
 }
 
 # trackstatus: class=Seurat, feature=set_layers, status=done
-.from_Seurat_process_layers <- function(seurat_obj, assay_name, layer_mapping) {
+# nolint start: object_name_linter
+.from_Seurat_process_layers <- function(
+  # nolint end: object_name_linter
+  seurat_obj,
+  assay_name,
+  layers_mapping
+) {
   assay <- seurat_obj[[assay_name]]
 
   purrr::map(layers_mapping, function(.layer) {
@@ -315,7 +341,9 @@ from_Seurat <- function(
 }
 
 # trackstatus: class=Seurat, feature=set_obsm, status=wip
+# nolint start: object_name_linter
 .from_Seurat_process_obsm <- function(seurat_obj, assay_name, obsm_mapping) {
+  # nolint end: object_name_linter
   purrr::imap(obsm_mapping, function(.mapping, .idx) {
     if (!is.character(.mapping) || length(.mapping) != 2) {
       cli_abort(c(
@@ -342,9 +370,13 @@ from_Seurat <- function(
 }
 
 # trackstatus: class=Seurat, feature=set_varm, status=wip
+# nolint start: object_name_linter
 .from_Seurat_process_varm <- function(seurat_obj, assay_name, varm_mapping) {
+  # nolint end: object_name_linter
   purrr::imap(varm_mapping, function(.mapping, .idx) {
-    if (!is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
       cli_abort(c(
         paste(
           "Each item in {.arg varm_mapping} must be a {.cls character}",
@@ -373,9 +405,13 @@ from_Seurat <- function(
 }
 
 # trackstatus: class=Seurat, feature=set_obsp, status=wip
+# nolint start: object_name_linter
 .from_Seurat_process_obsp <- function(seurat_obj, assay_name, obsp_mapping) {
+  # nolint end: object_name_linter
   purrr::imap(obsp_mapping, function(.mapping, .idx) {
-    if (!is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
       cli_abort(c(
         paste(
           "Each item in {.arg obsp_mapping} must be a {.cls character}",
@@ -404,9 +440,13 @@ from_Seurat <- function(
 }
 
 # trackstatus: class=Seurat, feature=set_varp, status=wip
+# nolint start: object_name_linter
 .from_Seurat_process_varp <- function(seurat_obj, assay_name, varp_mapping) {
+  # nolint end: object_name_linter
   purrr::imap(varp_mapping, function(.mapping, .idx) {
-    if (!is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
       cli_abort(c(
         paste(
           "Each item in {.arg varp_mapping} must be a {.cls character}",
@@ -433,9 +473,13 @@ from_Seurat <- function(
 }
 
 # trackstatus: class=Seurat, feature=set_uns, status=wip
+# nolint start: object_name_linter
 .from_Seurat_process_uns <- function(seurat_obj, assay_name, uns_mapping) {
+  # nolint end: object_name_linter
   purrr::imap(uns_mapping, function(.mapping, .idx) {
-    if (!is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
       cli_abort(c(
         paste(
           "Each item in {.arg uns_mapping} must be a {.cls character}",
@@ -535,7 +579,7 @@ from_Seurat <- function(
         seurat_obj,
         reduction_name
       )) &&
-      reduction@assay.used == assay_name
+        reduction@assay.used == assay_name
     ) {
       varm_mapping[[reduction_name]] <- c("reductions", reduction_name)
     }
