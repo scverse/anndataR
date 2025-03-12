@@ -86,36 +86,25 @@ from_SingleCellExperiment <- function(
     )
   }
 
-  if (is.null(layers_mapping)) {
-    layers_mapping <- .from_SCE_guess_layers(sce, x_mapping)
-  }
-  if (is.null(obs_mapping)) {
-    obs_mapping <- .from_SCE_guess_all(sce, SingleCellExperiment::colData)
-  }
-  if (is.null(var_mapping)) {
-    var_mapping <- .from_SCE_guess_all(sce, SingleCellExperiment::rowData)
-  }
-  if (is.null(obsm_mapping)) {
-    obsm_mapping <- .from_SCE_guess_obsm(sce)
-  }
-  if (is.null(varm_mapping)) {
-    varm_mapping <- .from_SCE_guess_varm(sce)
-  }
-  if (is.null(obsp_mapping)) {
-    obsp_mapping <- .from_SCE_guess_obspvarp(
-      sce,
-      SingleCellExperiment::colPairs
-    )
-  }
-  if (is.null(varp_mapping)) {
-    varp_mapping <- .from_SCE_guess_obspvarp(
-      sce,
-      SingleCellExperiment::rowPairs
-    )
-  }
-  if (is.null(uns_mapping)) {
-    uns_mapping <- .from_SCE_guess_all(sce, S4Vectors::metadata)
-  }
+  # For any mappings that are not set, using the guessing function
+  layers_mapping <- layers_mapping %||% .from_SCE_guess_layers(sce, x_mapping)
+  obs_mapping <- obs_mapping %||% .from_SCE_guess_all(
+    sce, SingleCellExperiment::colData
+  )
+  var_mapping <- var_mapping %||% .from_SCE_guess_all(
+    sce, SingleCellExperiment::rowData
+  )
+  obsm_mapping <- obsm_mapping %||% .from_SCE_guess_obsm(sce)
+  varm_mapping <- varm_mapping %||% .from_SCE_guess_varm(sce)
+  obsp_mapping <- obsmp_mapping %||% .from_SCE_guess_obspvarp(
+    sce,
+    SingleCellExperiment::colPairs
+  )
+  varp_mapping <- varp_mapping %||% .from_SCE_guess_obspvarp(
+    sce,
+    SingleCellExperiment::rowPairs
+  )
+  uns_mapping <- uns_mapping %||% .from_SCE_guess_all(sce, S4Vectors::metadata)
 
   # Create list to store converted objects
   # Also contains additional arguments passed to the generator function
