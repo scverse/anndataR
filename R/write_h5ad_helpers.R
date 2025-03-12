@@ -636,8 +636,8 @@ write_h5ad_data_frame <- function(
 write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
 
-  write_h5ad_element(obs, file, "/obs", compression)
-  write_h5ad_element(var, file, "/var", compression)
+  write_h5ad_element(obs[, integer(0)], file, "/obs", compression)
+  write_h5ad_element(var[, integer(0)], file, "/var", compression)
 
   file$create_group("layers")
   write_h5ad_encoding(file, "/layers", "dict", "0.1.0")
