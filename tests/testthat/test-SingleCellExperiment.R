@@ -348,4 +348,3 @@ test_that("from_SCE retains pca dimred", {
     ad$varm[["pcas"]]
   )
 })
-
