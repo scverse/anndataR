@@ -376,7 +376,7 @@ to_SCE_guess_reduction <- function(adata) {
 #' @export
 # nolint start: object_name_linter
 from_SingleCellExperiment <- function(
-    # nolint end: object_name_linter
+  # nolint end: object_name_linter
   sce,
   output_class = c("InMemory", "HDF5AnnData"),
   x_mapping = NULL,
@@ -622,7 +622,7 @@ from_SingleCellExperiment <- function(
 }
 # nolint start: object_length_linter object_name_linter
 .from_SCE_process_simple_mapping <- function(
-    # nolint end: object_length_linter object_name_linter
+  # nolint end: object_length_linter object_name_linter
   sce,
   mapping,
   slot,

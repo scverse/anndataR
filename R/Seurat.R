@@ -752,7 +752,7 @@ to_Seurat <- function(
 #' from_Seurat(obj)
 # nolint start: object_name_linter
 from_Seurat <- function(
-    # nolint end: object_name_linter
+  # nolint end: object_name_linter
   seurat_obj,
   output_class = c("InMemoryAnnData", "HDF5AnnData"),
   assay_name = NULL,
@@ -913,7 +913,7 @@ from_Seurat <- function(
 # trackstatus: class=Seurat, feature=set_layers, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_layers <- function(
-    # nolint end: object_name_linter
+  # nolint end: object_name_linter
   seurat_obj,
   assay_name,
   layers_mapping
