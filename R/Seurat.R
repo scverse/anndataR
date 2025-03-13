@@ -236,14 +236,8 @@ to_Seurat <- function(
 
     reduction_fmt_msg <- paste(
       "Each item in {.arg reduction_mapping} must be a {.cls list}",
-      "with names {.val {keys_str}}"
+      "with names {style_vec(c('key', 'obsm', 'varm'), last = ' and (optionally) ')}"
     )
-    # nolint start object_usage_linter
-    keys_str <- cli::cli_vec(
-      c("key", "obsm", "varm"),
-      list("vec-last" = " and (optionally) ")
-    )
-    # nolint end
     for (i in seq_along(reduction_mapping)) {
       reduction_name <- names(reduction_mapping)[[i]]
       reduction <- reduction_mapping[[i]]
@@ -341,11 +335,10 @@ to_Seurat <- function(
     if (length(misc) == 2) {
       misc_key <- misc[[2]]
       if (!misc_key %in% names(misc_data)) {
-        misc_str <- cli::cli_vec(misc, list("vec-last" = ", ")) # nolint object_usage_linter
         cli_abort(paste(
           "The requested item {.code adata${misc_slot}[[{misc_key}]]}",
           "does not exist for {.code misc_mapping[[{i}]]}:",
-          "{.val misc_name} = c({.val {misc_str}})"
+          "{.val misc_name} = c({style_vec(misc)})"
         ))
       }
       misc_data <- misc_data[[misc_key]]
@@ -795,18 +788,6 @@ from_Seurat <- function(
     ))
   }
 
-  seurat_assay <- Seurat::GetAssay(seurat_obj, assay_name)
-
-  if (!inherits(seurat_assay, "Assay5")) {
-    cli_abort(c(
-      "The selected assay {.val {assay_name}} is not a {.cls Assay5}",
-      "i" = paste(
-        "Please use {.code SeuratObject::UpdateSeuratObject()} to upgrade",
-        "{.arg seurat_obj} to Seurat v5"
-      )
-    ))
-  }
-
   # For any mappings that are not set, using the guessing function
   layers_mapping <- layers_mapping %||%
     .from_Seurat_guess_layers(seurat_obj, assay_name)
@@ -1112,21 +1093,9 @@ from_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_layers <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
-  seurat_assay <- seurat_obj@assays[[assay_name]]
-
-  if (!inherits(seurat_assay, "Assay5")) {
-    cli_abort(
-      "The selected assay must be a {.cls Assay5} object but has class {.cls {class(seurat_assay)}}"
-    )
-  }
-
-  layers_mapping <- list()
-
-  for (layer_name in SeuratObject::Layers(seurat_assay)) {
-    layers_mapping[[layer_name]] <- layer_name
-  }
-
-  layers_mapping
+  seurat_assay <- Seurat::GetAssay(seurat_obj, assay = assay_name)
+  layers <- SeuratObject::Layers(seurat_assay)
+  setNames(as.list(layers), layers)
 }
 
 # nolint start: object_name_linter
@@ -1177,13 +1146,13 @@ from_Seurat <- function(
   varm_mapping <- list()
 
   for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
-    reduction <- seurat_obj@reductions[[reduction_name]]
+    reduction <- seurat_obj[[reduction_name]]
+    loadings <- SeuratObject::Loadings(seurat_obj, reduction_name)
+
     if (
-      !SeuratObject::IsMatrixEmpty(SeuratObject::Loadings(
-        seurat_obj,
-        reduction_name
-      )) &&
-      reduction@assay.used == assay_name
+      !SeuratObject::IsMatrixEmpty(loadings) &&
+        nrow(loadings) == nrow(seurat_obj) &&
+        SeuratObject::DefaultAssay(reduction) == assay_name
     ) {
       varm_mapping[[reduction_name]] <- c("reductions", reduction_name)
     }

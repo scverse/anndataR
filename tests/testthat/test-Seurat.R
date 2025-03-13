@@ -307,3 +307,16 @@ test_that("from_Seurat retains connectivities", {
   )
 })
 
+test_that("from_Seurat works with v3 Assays", {
+  obj_v3_assay <- obj
+  expect_warning(
+    obj_v3_assay[["RNA"]] <- as(Seurat::GetAssay(obj, "RNA"), "Assay")
+  )
+
+  adata_v3_assay <- from_Seurat(obj_v3_assay)
+
+  expect_identical(
+    t(adata_v3_assay$layers$counts),
+    SeuratObject::GetAssayData(obj_v3_assay, layer = "counts")
+  )
+})
