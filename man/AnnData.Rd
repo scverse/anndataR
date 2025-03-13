@@ -59,7 +59,7 @@ if \code{X} or \code{obs} and \code{var} are not provided.}
 An in-memory AnnData object.
 }
 \description{
-For more information on the functionality of an AnnData object, see \link{anndataR-package}.
+For more information on the functionality of an AnnData object, see \link{AnnData-usage}.
 }
 \examples{
 adata <- AnnData(
@@ -79,5 +79,5 @@ adata
 
 }
 \seealso{
-\link{anndataR-package}
+\link{AnnData-usage}
 }

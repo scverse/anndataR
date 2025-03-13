@@ -67,7 +67,7 @@ Only one assay can be converted at a time. Arguments are used to configure the c
 If \code{NULL}, the functions \verb{.from_Seurat_guess_*} will be used to guess the mapping.
 }
 \details{
-For more information on the functionality of an AnnData object, see \link{anndataR-package}.
+For more information on the functionality of an AnnData object, see \link{AnnData-usage}.
 }
 \section{\verb{$X} mapping}{
 

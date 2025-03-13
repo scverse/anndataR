@@ -1,6 +1,6 @@
 #' Create an in-memory AnnData object.
 #'
-#' For more information on the functionality of an AnnData object, see [anndataR-package].
+#' For more information on the functionality of an AnnData object, see [AnnData-usage].
 #'
 #' @param X Either `NULL` or a observation × variable matrix with
 #'   dimensions consistent with `obs` and `var`.
@@ -50,7 +50,7 @@
 #'
 #' adata
 #'
-#' @seealso [anndataR-package]
+#' @seealso [AnnData-usage]
 AnnData <- function(
   X = NULL,
   obs = NULL,

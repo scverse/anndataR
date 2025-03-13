@@ -601,7 +601,7 @@ to_Seurat <- function(
 #' Only one assay can be converted at a time. Arguments are used to configure the conversion.
 #' If `NULL`, the functions `.from_Seurat_guess_*` will be used to guess the mapping.
 #'
-#' For more information on the functionality of an AnnData object, see [anndataR-package].
+#' For more information on the functionality of an AnnData object, see [AnnData-usage].
 #'
 #' @param seurat_obj A Seurat object to be converted.
 #' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
