@@ -1,11 +1,9 @@
 #' @title InMemoryAnnData
 #'
 #' @description
-#' Implementation of an in memory AnnData object.
+#' Implementation of an in-memory AnnData object.
 #'
-#' @importFrom Matrix as.matrix
-#'
-#' @noRd
+#' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
 #' @examples
 #' ## complete example
@@ -25,6 +23,13 @@
 #'   obs = data.frame(row.names = letters[1:10]),
 #'   var = data.frame(row.names = LETTERS[1:5])
 #' )
+#'
+#' @seealso
+#'
+#' - [AnnData-usage]: For details on creating and using  `AnnData` objects
+#' - [AbstractAnnData]: For the base abstract `AnnData` class
+#'
+#' @importFrom Matrix as.matrix
 InMemoryAnnData <- R6::R6Class(
   "InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
@@ -40,9 +45,8 @@ InMemoryAnnData <- R6::R6Class(
     .uns = NULL
   ),
   active = list(
-    #' @field X NULL or an observation x variable matrix (without
-    #'   dimnames) consistent with the number of rows of `obs` and
-    #'   `var`.
+    #' @field X `NULL` or an observation x variable matrix (without dimnames)
+    #'   consistent with the number of rows of `obs` and `var`.
     X = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_X, status=done
@@ -59,8 +63,8 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field layers NULL or a named list with all elements having the
-    #'   dimensions consistent with `obs` and `var`.
+    #' @field layers `NULL` or a named list with all elements having dimensions
+    #'   consistent with `obs` and `var`.
     layers = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_layers, status=done
@@ -77,9 +81,9 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field obs A `data.frame` with columns containing information
-    #'   about observations. The number of rows of `obs` defines the
-    #'   observation dimension of the AnnData object.
+    #' @field obs A `data.frame` with columns containing information about
+    #'   observations. The number of rows of `obs` defines the observation
+    #'   dimension of the `AnnData` object.
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obs, status=done
@@ -92,7 +96,7 @@ InMemoryAnnData <- R6::R6Class(
     },
     #' @field var A `data.frame` with columns containing information
     #'   about variables. The number of rows of `var` defines the variable
-    #'   dimension of the AnnData object.
+    #'   dimension of the `AnnData` object.
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_var, status=done
@@ -103,9 +107,9 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field obs_names Either NULL or a vector of unique identifiers
+    #' @field obs_names Either `NULL` or a vector of unique identifiers
     #'   used to identify each row of `obs` and to act as an index into
-    #'   the observation dimension of the AnnData object. For
+    #'   the observation dimension of the `AnnData` object. For
     #'   compatibility with *R* representations, `obs_names` should be a
     #'   character vector.
     obs_names = function(value) {
@@ -118,9 +122,9 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field var_names Either NULL or a vector of unique identifiers
+    #' @field var_names Either `NULL` or a vector of unique identifiers
     #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object. For compatibility
+    #'   the variable dimension of the `AnnData` object. For compatibility
     #'   with *R* representations, `var_names` should be a character
     #'   vector.
     var_names = function(value) {
@@ -133,8 +137,8 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field obsm The obsm slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows as `obs`.
+    #' @field obsm The `obsm` slot. Must be `NULL` or a named list with all
+    #'   elements having the same number of rows as `obs`.
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
@@ -150,8 +154,8 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field varm The varm slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows as `var`.
+    #' @field varm The `varm` slot. Must be `NULL` or a named list with all
+    #'   elements having the same number of rows as `var`.
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_varm, status=done
@@ -167,8 +171,8 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field obsp The obsp slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows and columns as `obs`.
+    #' @field obsp The `obsp` slot. Must be `NULL` or a named list with all
+    #'   elements having the same number of rows and columns as `obs`.
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obsp, status=done
@@ -185,8 +189,8 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field varp The varp slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows and columns as `var`.
+    #' @field varp The `varp` slot. Must be `NULL` or a named list with all
+    #'   elements having the same number of rows and columns as `var`.
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_varp, status=done
@@ -203,7 +207,7 @@ InMemoryAnnData <- R6::R6Class(
         self
       }
     },
-    #' @field uns The uns slot. Must be `NULL` or a named list.
+    #' @field uns The `uns` slot. Must be `NULL` or a named list.
     uns = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_uns, status=done
@@ -216,32 +220,32 @@ InMemoryAnnData <- R6::R6Class(
     }
   ),
   public = list(
-    #' @description Creates a new instance of an in memory AnnData object.
-    #'   Inherits from AbstractAnnData.
+    #' @description Creates a new instance of an in-memory AnnData object.
+    #'   Inherits from [AbstractAnnData].
     #' @param X Either `NULL` or a observation × variable matrix with
     #'   dimensions consistent with `obs` and `var`.
     #' @param layers Either `NULL` or a named list, where each element
     #'   is an observation × variable matrix with dimensions consistent
     #'   with `obs` and `var`.
-    #' @param obs Either `NULL` or a `data.frame` with columns containing information
-    #'   about observations. If `NULL`, an `n_obs`×0 data frame will automatically
-    #'   be generated.
-    #' @param var Either `NULL` or a `data.frame` with columns containing information
-    #'   about variables. If `NULL`, an `n_vars`×0 data frame will automatically
-    #'   be generated.
-    #' @param obsm The obsm slot is used to store multi-dimensional annotation
-    #'   arrays. It must be either `NULL` or a named list, where each element is a
-    #'   matrix with `n_obs` rows and an arbitrary number of columns.
-    #' @param varm The varm slot is used to store multi-dimensional annotation
-    #'   arrays. It must be either `NULL` or a named list, where each element is a
-    #'   matrix with `n_vars` rows and an arbitrary number of columns.
-    #' @param obsp The obsp slot is used to store sparse multi-dimensional
+    #' @param obs Either `NULL` or a `data.frame` with columns containing
+    #'   information about observations. If `NULL`, an `n_obs` × 0 data frame
+    #'   will automatically be generated.
+    #' @param var Either `NULL` or a `data.frame` with columns containing
+    #'   information about variables. If `NULL`, an `n_vars` × 0 data frame will
+    #'   automatically be generated.
+    #' @param obsm The `obsm` slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is
+    #'   a matrix with `n_obs` rows and an arbitrary number of columns.
+    #' @param varm The `varm` slot is used to store multi-dimensional annotation
+    #'   arrays. It must be either `NULL` or a named list, where each element is
+    #'   a matrix with `n_vars` rows and an arbitrary number of columns.
+    #' @param obsp The `obsp` slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_obs`.
-    #' @param varp The varp slot is used to store sparse multi-dimensional
+    #' @param varp The `varp` slot is used to store sparse multi-dimensional
     #'   annotation arrays. It must be either `NULL` or a named list, where each
     #'   element is a sparse matrix where each dimension has length `n_vars`.
-    #' @param uns The uns slot is used to store unstructured annotation.
+    #' @param uns The `uns` slot is used to store unstructured annotation.
     #'   It must be either `NULL` or a named list.
     #' @param shape Shape tuple (#observations, #variables). Can be provided
     #'   if `X` or `obs` and `var` are not provided.
@@ -286,12 +290,12 @@ InMemoryAnnData <- R6::R6Class(
 
 #' Convert an AnnData object to an InMemoryAnnData object
 #'
-#' This function takes an AnnData object and converts it to an InMemoryAnnData
-#' object, loading all fields into memory.
+#' This function takes an `AnnData` object and converts it to an
+#' [InMemoryAnnData] object, loading all fields into memory.
 #'
-#' @param adata An AnnData object to be converted to InMemoryAnnData.
+#' @param adata An `AnnData` object to be converted to [InMemoryAnnData].
 #'
-#' @return An InMemoryAnnData object with the same data as the input AnnData
+#' @return An [InMemoryAnnData] object with the same data as the input `AnnData`
 #'   object.
 #'
 #' @noRd
