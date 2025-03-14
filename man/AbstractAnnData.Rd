@@ -340,7 +340,7 @@ Convert to an in-memory \code{AnnData}
 }
 
 \subsection{Returns}{
-An \link{InMemoryAnnData}
+An \link{InMemoryAnnData} object
 }
 }
 \if{html}{\out{<hr>}}

@@ -24,8 +24,6 @@
 #' - [AnnData-usage]: For details on creating and using  `AnnData` objects
 #' - [InMemoryAnnData]: For the in-memory `AnnData` class
 #' - [HDF5AnnData]: For the HDF5-backed `AnnData` class
-#'
-#' @importFrom R6 R6Class
 AbstractAnnData <- R6::R6Class(
   "AbstractAnnData",
   active = list(
