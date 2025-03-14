@@ -557,8 +557,6 @@ to_Seurat <- function(
     }
   }
 
-  # TODO: copy obsm which were not used as embeddings?
-  # TODO: copy varm which were not used as loadings?
   # Then again, the user can do this manually if needed
 
   misc_mapping
@@ -903,20 +901,11 @@ from_Seurat <- function(
         }
 
         varm_slot <- varm[[1]]
-        varm_key <- varm[[2]]
 
-        if (varm_slot == "reductions") {
-          adata$varm[[varm_name]] <- SeuratObject::Loadings(
-            seurat_obj,
-            varm_key
-          )
-        } else if (varm_slot == "misc") {
-          data <- seurat_obj@misc[[varm_key]]
-          if (length(varm) == 3) {
-            data <- data[[varm[[3]]]]
-          }
-          adata$varm[[varm_name]] <- data
-        }
+        adata$varm[[varm_name]] <- SeuratObject::Loadings(
+          seurat_obj,
+          varm
+        )
       }
 
       # fetch obsp
