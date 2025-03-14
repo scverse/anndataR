@@ -1,4 +1,4 @@
-#' @title Convert a Seurat object to an AnnData object
+#' @title Convert an AnnData object to a Seurat object
 #'
 #' @description
 #' `to_Seurat()` converts an AnnData object to a Seurat object. Only one assay can be converted at a time.
