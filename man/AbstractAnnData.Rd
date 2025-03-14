@@ -6,16 +6,9 @@
 \description{
 This class is an abstract representation of an AnnData object. It is
 intended to be used as a base class for concrete implementations of
-AnnData objects, such as \code{InMemoryAnnData} or \code{HDF5AnnData}.
+AnnData objects, such as \link{InMemoryAnnData} or \link{HDF5AnnData}.
 
-The following functions can be used to create an object that inherits
-from \code{AbstractAnnData}:
-\itemize{
-\item \code{\link[=AnnData]{AnnData()}}: Create an in-memory AnnData object.
-\item \code{\link[=read_h5ad]{read_h5ad()}}: Create an HDF5-backed AnnData object.
-\item \code{\link[=from_Seurat]{from_Seurat()}}: Create an in-memory AnnData object from a Seurat object.
-\item \code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}: Create an in-memory AnnData object from a SingleCellExperiment object.
-}
+See \link{AnnData-usage} for details on creating and using \code{AnnData} objects.
 }
 \examples{
 
@@ -35,49 +28,56 @@ adata <- AnnData(
 h5ad_file <- tempfile(fileext = ".h5ad")
 adata$write_h5ad(h5ad_file)
 }
+\seealso{
+\itemize{
+\item \link{AnnData-usage}: For details on creating and using  \code{AnnData} objects
+\item \link{InMemoryAnnData}: For the in-memory \code{AnnData} class
+\item \link{HDF5AnnData}: For the HDF5-backed \code{AnnData} class
+}
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{NULL or an observation x variable matrix (without
+\item{\code{X}}{\code{NULL} or an observation x variable matrix (without
 dimnames) consistent with the number of rows of \code{obs} and \code{var}.}
 
-\item{\code{layers}}{The layers slot. Must be NULL or a named list
+\item{\code{layers}}{The \code{layers} slot. Must be \code{NULL} or a named list
 with with all elements having the dimensions consistent with
 \code{obs} and \code{var}.}
 
 \item{\code{obs}}{A \code{data.frame} with columns containing information
 about observations. The number of rows of \code{obs} defines the
-observation dimension of the AnnData object.}
+observation dimension of the \code{AnnData} object.}
 
 \item{\code{var}}{A \code{data.frame} with columns containing information
 about variables. The number of rows of \code{var} defines the variable
-dimension of the AnnData object.}
+dimension of the \code{AnnData} object.}
 
-\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
+\item{\code{obs_names}}{Either \code{NULL} or a vector of unique identifiers
 used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. For
+the observation dimension of the \code{AnnData} object. For
 compatibility with \emph{R} representations, \code{obs_names} should be a
 character vector.}
 
-\item{\code{var_names}}{Either NULL or a vector of unique identifiers
+\item{\code{var_names}}{Either \code{NULL} or a vector of unique identifiers
 used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. For compatibility
+the variable dimension of the \code{AnnData} object. For compatibility
 with \emph{R} representations, \code{var_names} should be a character
 vector.}
 
-\item{\code{obsm}}{The obsm slot. Must be \code{NULL} or a named list with
+\item{\code{obsm}}{The \code{obsm} slot. Must be \code{NULL} or a named list with
 with all elements having the same number of rows as \code{obs}.}
 
-\item{\code{varm}}{The varm slot. Must be \code{NULL} or a named list with
+\item{\code{varm}}{The \code{varm} slot. Must be \code{NULL} or a named list with
 with all elements having the same number of rows as \code{var}.}
 
-\item{\code{obsp}}{The obsp slot. Must be \code{NULL} or a named list with
+\item{\code{obsp}}{The \code{obsp} slot. Must be \code{NULL} or a named list with
 with all elements having the same number of rows and columns as \code{obs}.}
 
-\item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
+\item{\code{varp}}{The \code{varp} slot. Must be \code{NULL} or a named list with
 with all elements having the same number of rows and columns as \code{var}.}
 
-\item{\code{uns}}{The uns slot. Must be \code{NULL} or a named list.}
+\item{\code{uns}}{The \code{uns} slot. Must be \code{NULL} or a named list.}
 }
 \if{html}{\out{</div>}}
 }
@@ -108,9 +108,8 @@ with all elements having the same number of rows and columns as \code{var}.}
 \if{html}{\out{<a id="method-AbstractAnnData-print"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-print}{}}}
 \subsection{Method \code{print()}}{
-Print a summary of the AnnData object. \code{print()}
-methods should be implemented so that they are not
-computationally expensive.
+Print a summary of the AnnData object. \code{print()} methods should be
+implemented so that they are not computationally expensive.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$print(...)}\if{html}{\out{</div>}}
 }
@@ -127,7 +126,7 @@ computationally expensive.
 \if{html}{\out{<a id="method-AbstractAnnData-shape"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-shape}{}}}
 \subsection{Method \code{shape()}}{
-Dimensions (observations x variables) of the AnnData object.
+Dimensions (observations x variables) of the \code{AnnData} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$shape()}\if{html}{\out{</div>}}
 }
@@ -137,7 +136,7 @@ Dimensions (observations x variables) of the AnnData object.
 \if{html}{\out{<a id="method-AbstractAnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-n_obs}{}}}
 \subsection{Method \code{n_obs()}}{
-Number of observations in the AnnData object.
+Number of observations in the \code{AnnData} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_obs()}\if{html}{\out{</div>}}
 }
@@ -147,7 +146,7 @@ Number of observations in the AnnData object.
 \if{html}{\out{<a id="method-AbstractAnnData-n_vars"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-n_vars}{}}}
 \subsection{Method \code{n_vars()}}{
-Number of variables in the AnnData object.
+Number of variables in the \code{AnnData} object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_vars()}\if{html}{\out{</div>}}
 }
@@ -237,7 +236,7 @@ Keys (element names) of \code{uns}.
 \if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
 \subsection{Method \code{to_SingleCellExperiment()}}{
-Convert to SingleCellExperiment
+Convert to \code{SingleCellExperiment}
 
 See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more details on the conversion.
 \subsection{Usage}{
@@ -255,33 +254,41 @@ See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more d
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{assays_mapping}}{A named list mapping SingleCellExperiment assays to AnnData layers}
+\item{\code{assays_mapping}}{A named list mapping \code{AnnData} layers to
+\code{SingleCellExperiment} assays}
 
-\item{\code{colData_mapping}}{A named list mapping SingleCellExperiment colData to AnnData obs}
+\item{\code{colData_mapping}}{A named list mapping \code{AnnData} \code{obs} to
+\code{SingleCellExperiment} \code{colData}}
 
-\item{\code{rowData_mapping}}{A named list mapping SingleCellExperiment rowData to AnnData var}
+\item{\code{rowData_mapping}}{A named list mapping \code{AnnData} \code{var} to
+\code{SingleCellExperiment} \code{rowData}}
 
-\item{\code{reduction_mapping}}{A named list mapping SingleCellExperiment reductions to AnnData obsm/varm}
+\item{\code{reduction_mapping}}{A named list mapping \code{AnnData} \code{obsm}/\code{varm} to
+\code{SingleCellExperiment} reductions}
 
-\item{\code{colPairs_mapping}}{A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp}
+\item{\code{colPairs_mapping}}{A named list mapping \code{AnnData} \code{obsp}/\code{varp} to
+\code{SingleCellExperiment} \code{colPairs}}
 
-\item{\code{rowPairs_mapping}}{A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp}
+\item{\code{rowPairs_mapping}}{A named list mapping \code{AnnData} \code{obsp}/\code{varp} to
+\code{SingleCellExperiment} \code{rowPairs}}
 
-\item{\code{metadata_mapping}}{A named list mapping SingleCellExperiment metadata to AnnData uns}
+\item{\code{metadata_mapping}}{A named list mapping \code{AnnData} \code{uns} to
+\code{SingleCellExperiment} \code{metadata}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A SingleCellExperiment object
+A \code{SingleCellExperiment} object
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
 \subsection{Method \code{to_Seurat()}}{
-Convert to Seurat
+Convert to \code{Seurat}
 
-See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and each of the parameters.
+See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and each of the
+parameters.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
   assay_name = "RNA",
@@ -297,41 +304,50 @@ See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{assay_name}}{The name of the assay to use as the main data}
+\item{\code{assay_name}}{The name of the \code{assay} to store data in}
 
-\item{\code{layers_mapping}}{A named list mapping Seurat layers to AnnData layers}
+\item{\code{layers_mapping}}{A named list mapping \code{Seurat} layers to \code{AnnData}
+layers}
 
-\item{\code{object_metadata_mapping}}{A named list mapping Seurat object metadata to AnnData obs}
+\item{\code{object_metadata_mapping}}{A named list mapping \code{AnnData} \code{obs} to
+\code{Seurat} \code{metadata}}
 
-\item{\code{assay_metadata_mapping}}{A named list mapping Seurat assay metadata to AnnData var}
+\item{\code{assay_metadata_mapping}}{A named list mapping \code{AnnData} \code{var} to
+\code{Seurat} assay metadata}
 
-\item{\code{reduction_mapping}}{A named list mapping Seurat reductions to AnnData obsm/varm}
+\item{\code{reduction_mapping}}{A named list mapping \code{AnnData} \code{obsm}/\code{varm}
+to \code{Seurat} reductions}
 
-\item{\code{graph_mapping}}{A named list mapping Seurat graphs to AnnData obsp/varp}
+\item{\code{graph_mapping}}{A named list mapping \code{AnnData} \code{obsp}/\code{varp} to
+\code{Seurat} graphs}
 
-\item{\code{misc_mapping}}{A named list mapping Seurat misc to AnnData uns}
+\item{\code{misc_mapping}}{A named list mapping \code{AnnData} \code{uns} to \code{Seurat}
+\code{misc}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A Seurat object
+A \code{Seurat} object
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemoryAnnData}{}}}
 \subsection{Method \code{to_InMemoryAnnData()}}{
-Convert to an InMemory AnnData
+Convert to an in-memory \code{AnnData}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+An \link{InMemoryAnnData}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_HDF5AnnData"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_HDF5AnnData}{}}}
 \subsection{Method \code{to_HDF5AnnData()}}{
-Convert to an HDF5 Backed AnnData
+Convert to an HDF5-backed \code{AnnData}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(
   file,
@@ -354,20 +370,21 @@ HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults 
 \item \code{a} creates a new file or opens an existing one for read/write.
 \item \verb{r+} opens an existing file for read/write.
 \item \code{w} creates a file, truncating any existing ones
-\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already
+exists.
 }}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-An HDF5AnnData object
+An \link{HDF5AnnData} object
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-write_h5ad"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-write_h5ad}{}}}
 \subsection{Method \code{write_h5ad()}}{
-Write the AnnData object to an H5AD file.
+Write the \code{AnnData} object to an H5AD file.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$write_h5ad(path, compression = "gzip", mode = "w")}\if{html}{\out{</div>}}
 }
@@ -386,7 +403,8 @@ HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults 
 \item \code{a} creates a new file or opens an existing one for read/write.
 \item \verb{r+} opens an existing file for read/write.
 \item \code{w} creates a file, truncating any existing ones
-\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already
+exists.
 }}
 }
 \if{html}{\out{</div>}}
