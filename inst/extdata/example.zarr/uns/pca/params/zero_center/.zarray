@@ -1,1 +1,0 @@
-{"zarr_format":2,"shape":[1],"chunks":[1],"dtype":"|b1","compressor":{"id":"zstd","level":1},"fill_value":false,"order":"F","filters":null,"dimension_separator":"."}

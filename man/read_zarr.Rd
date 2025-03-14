@@ -29,7 +29,10 @@ The object specified by \code{to}
 Read data from a Zarr store
 }
 \examples{
-file <- system.file("extdata", "example.zarr", package = "anndataR")
+zarr_dir <- system.file("extdata", "example.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_dir, exdir = td)
+file <- file.path(td, "example.zarr")
 store <- pizzarr::DirectoryStore$new(file)
 
 # Read the Zarr store as a SingleCellExperiment object

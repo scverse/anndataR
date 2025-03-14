@@ -1,9 +1,14 @@
 skip_if_not_installed("rhdf5")
 skip_if_not_installed("pizzarr")
 
+# h5ad file
 file <- hdf5r::H5File$new(system.file("extdata", "example.h5ad", package = "anndataR"), mode = "r")
 
-zarr_dir <- system.file("extdata", "example.zarr", package = "anndataR")
+# zarr file
+zarr_dir <- system.file("extdata", "example.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_dir, exdir = td)
+zarr_dir <- file.path(td, "example.zarr")
 store <- pizzarr::DirectoryStore$new(zarr_dir)
 
 test_that("reading dense matrices is same for h5ad and zarr", {

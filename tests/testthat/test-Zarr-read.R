@@ -1,7 +1,11 @@
 skip_if_not_installed("pizzarr")
 
-file <- system.file("extdata", "example.zarr", package = "anndataR")
-store <- pizzarr::DirectoryStore$new(file)
+# zarr file
+zarr_dir <- system.file("extdata", "example.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_dir, exdir = td)
+zarr_dir <- file.path(td, "example.zarr")
+store <- pizzarr::DirectoryStore$new(zarr_dir)
 
 test_that("reading encoding works", {
   encoding <- read_zarr_encoding(store, "obs")
