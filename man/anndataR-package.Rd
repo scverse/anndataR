@@ -6,75 +6,10 @@
 \alias{anndataR-package}
 \title{anndataR: AnnData interoperability in R}
 \description{
-An AnnData object. This class can either be an in-memory
-AnnData (InMemoryAnnData) or an HDF5-backed AnnData (HDF5AnnData). The
-AnnData object stores a data matrix \code{X} together with annotations of
-observations \code{obs} (\code{obsm}, \code{obsp}) and variables \code{var} (\code{varm}, \code{varp}).
-Additional layers of data can be stored in \code{layers} and unstructured
-annotations in \code{uns}.
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
+Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyze your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.
 }
-\section{Functions that can be used to create AnnData objects}{
-
-\itemize{
-\item \code{\link[=AnnData]{AnnData()}}: Create an in-memory AnnData object.
-\item \code{\link[=read_h5ad]{read_h5ad()}}: Read an HDF5-backed AnnData file from disk.
-\item \code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}: Convert a SingleCellExperiment object to an AnnData object.
-\item \code{\link[=from_Seurat]{from_Seurat()}}: Convert a Seurat object to an AnnData object.
-}
-}
-
-\section{An AnnData object has the following slots}{
-
-
-Access them by using the \code{$} operator. Example: \code{adata$obs}.
-\itemize{
-\item \code{X}: A matrix of observations by variables.
-\item \code{obs}: A data frame of observations.
-\item \code{var}: A data frame of variables.
-\item \code{obs_names}: Names of observations (alias for \code{rownames(obs)}).
-\item \code{var_names}: Names of variables (alias for \code{rownames(var)}).
-\item \code{layers}: A named list of matrices with the same dimensions as \code{X}.
-\item \code{obsm}: A named list of matrices with the same number of rows as \code{obs}.
-\item \code{varm}: A named list of matrices with the same number of rows as \code{var}.
-\item \code{obsp}: A named list of sparse matrices with the same number of rows and columns as the number of observations.
-\item \code{varp}: A named list of sparse matrices with the same number of rows and columns as the number of variables.
-\item \code{uns}: A named list of unstructured annotations.
-}
-}
-
-\section{An AnnData object has the following methods}{
-
-
-Access them by using the \code{$} operator. Example: \code{adata$write_h5ad()}.
-\itemize{
-\item \code{print()}: Print a summary of the AnnData object.
-\item \code{shape()}: Dimensions (observations x variables) of the AnnData object.
-\item \code{n_obs()}: Number of observations in the AnnData object.
-\item \code{n_vars()}: Number of variables in the AnnData object.
-\item \code{obs_keys()}: Column names of \code{obs}.
-\item \code{var_keys()}: Column names of \code{var}.
-\item \code{layers_keys()}: Element names of \code{layers}.
-\item \code{obsm_keys()}: Element names of \code{obsm}.
-\item \code{varm_keys()}: Element names of \code{varm}.
-\item \code{obsp_keys()}: Element names of \code{obsp}.
-\item \code{varp_keys()}: Element names of \code{varp}.
-\item \code{uns_keys()}: Element names of \code{uns}.
-\item \code{write_h5ad()}: Write the AnnData object to an HDF5 file.
-}
-}
-
-\section{Conversion methods}{
-
-
-Access them by using the \code{$} operator. Example: \code{adata$to_Seurat()}.
-\itemize{
-\item \code{to_SingleCellExperiment()}: Convert to SingleCellExperiment.
-\item \code{to_Seurat()}: Convert to Seurat.
-\item \code{to_InMemoryAnnData()}: Convert to an InMemory AnnData.
-\item \code{to_HDF5AnnData()}: Convert to an HDF5 Backed AnnData.
-}
-}
-
 \seealso{
 Useful links:
 \itemize{
