@@ -6,7 +6,7 @@
 \usage{
 from_SingleCellExperiment(
   sce,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData"),
   x_mapping = NULL,
   layers_mapping = NULL,
   obs_mapping = NULL,
