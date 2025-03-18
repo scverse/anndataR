@@ -3,7 +3,7 @@ test_that("generating dummy data works", {
   expect_type(dataset, "list")
   expect_setequal(
     names(dataset),
-    c("X", "obs", "obsp", "obsm", "var", "varp", "varm", "layers", "uns")
+    .anndata_slots
   )
   expect_identical(dim(dataset$X), c(10L, 20L))
 })
