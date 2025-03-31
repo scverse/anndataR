@@ -15,8 +15,9 @@ library(Seurat)
 ##################
 # TEST TO_SEURAT #
 ##################
-
-seu <- ad$to_Seurat()
+layers_mapping <- c("X", names(ad$layers))
+names(layers_mapping) <- c("counts", names(ad$layers))
+seu <- ad$to_Seurat(layers_mapping = layers_mapping)
 
 test_that("to_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)

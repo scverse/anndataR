@@ -73,7 +73,21 @@ your own mappings.
 ## Implicit mapping
 
 Here, we showcase what happens if you do not provide any mapping information for the conversion.
-```{r to_Seurat_implicit}
+```{r to_Seurat_implicit, eval = FALSE}
+seurat_obj <- to_Seurat(ad)
+seurat_obj
+# Error in `to_Seurat()`:
+# ! `layers_mapping` must contain an item named "counts" and/or "data"
+# ℹ Found names: "X", "integer_matrix", and "numeric_rsparse"
+```
+
+Immediately, we run in the first error: one of the layers in the AnnData object is not named `counts` or `data`, so we cannot
+implicitly determine which layer should be copied to the `counts` or `data` slot of the Seurat object.
+We can either provide our own mapping, or rename the layer in the AnnData object. In this case we will rename the layer, so we can
+see the rest of the implicit mapping. We will go more into detail on how to provide your own mapping in the next section.
+
+```{r to_Seurat_implicit_rename}
+ad$layers[["counts"]] <- ad$layers[["integer_matrix"]]
 seurat_obj <- to_Seurat(ad)
 seurat_obj
 ```
@@ -248,7 +262,7 @@ You must provide at least a layer called `counts` or `data` in the mapping.
 ```{r to_Seurat explicit_layers}
 seurat_obj <- to_Seurat(
   adata = ad,
-  layers_mapping = list(counts = "integer_matrix", other_layer2 = "numeric_rsparse")
+  layers_mapping = list(counts = "X", layer1 = "integer_matrix", other_layer2 = "numeric_rsparse")
 )
 Layers(seurat_obj, assay = "RNA")
 ```

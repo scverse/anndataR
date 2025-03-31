@@ -101,7 +101,7 @@
 #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
-#' to_Seurat(ad)
+#' to_Seurat(ad, layers_mapping = list(counts = "X"))
 # nolint start: object_name_linter
 to_Seurat <- function(
   adata,
@@ -217,7 +217,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- Matrix::t(adata$layers[[from]])
+      ) <- .to_seurat_get_matrix_by_key(adata, layers_mapping, to)
     }
   }
 
@@ -366,7 +366,6 @@ to_Seurat <- function(
   if (!key %in% names(mapping)) {
     return(NULL)
   }
-
   layer_name <- mapping[[key]]
 
   if (is.null(layer_name)) {
@@ -380,11 +379,15 @@ to_Seurat <- function(
     )
   }
 
-  if (!layer_name %in% names(adata$layers)) {
+  if (!layer_name %in% names(adata$layers) && layer_name != "X") {
     cli_abort(
       "layer name {.val {layer_name}} is not an item in {.code adata$layers}",
       call = rlang::caller_env()
     )
+  }
+
+  if (layer_name == "X") {
+    return(Matrix::t(adata$X))
   }
 
   Matrix::t(adata$layers[[layer_name]])
@@ -489,14 +492,8 @@ to_Seurat <- function(
 
   if (!is.null(adata$X)) {
     # guess the name of the X slot
-    layer_name_for_x <-
-      if (!"counts" %in% names(adata$layers)) {
-        "counts"
-      } else {
-        "data"
-      }
-
-    layers[layer_name_for_x] <- list(NULL)
+    layer_name_for_x <- "X"
+    layers[layer_name_for_x] <- "X"
   }
 
   for (layer_name in names(adata$layers)) {
