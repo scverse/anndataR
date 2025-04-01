@@ -210,7 +210,6 @@ to_Seurat <- function(
 
   # copy other layers
   for (i in seq_along(layers_mapping)) {
-    from <- layers_mapping[[i]]
     to <- names(layers_mapping)[[i]]
     if (!to %in% c("counts", "data")) {
       SeuratObject::LayerData(
