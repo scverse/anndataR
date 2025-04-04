@@ -362,30 +362,12 @@ to_Seurat <- function(
 
   layer_name <- mapping[[key]]
 
-  if (is.null(layer_name)) {
-    return(Matrix::t(adata$X))
-  }
-
-  if (!.to_seurat_is_atomic_character(layer_name)) {
-    cli_abort(
-      "{.arg layer_name} must be a {.cls character} vector of length 1",
-      call = rlang::caller_env()
-    )
-  }
-
-  if (!layer_name %in% names(adata$layers)) {
-    cli_abort(
-      "layer name {.val {layer_name}} is not an item in {.code adata$layers}",
-      call = rlang::caller_env()
-    )
-  }
-
-  Matrix::t(adata$layers[[layer_name]])
+  .to_seurat_get_matrix(adata, layer_name)
 }
 
 .to_seurat_get_matrix <- function(adata, layer_name) {
   if (is.null(layer_name)) {
-    return(Matrix::t(adata$X))
+    return(.to_R_matrix(adata$X))
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {
@@ -401,7 +383,15 @@ to_Seurat <- function(
     )
   }
 
-  Matrix::t(adata$layers[[layer_name]])
+  # check if dgRMatrix and convert to dgCMatrix
+  .to_R_matrix(adata$layers[[layer_name]])
+}
+
+.to_R_matrix <- function(mat) { # nolint object_name_linter
+  if (inherits(mat, "dgRMatrix")) {
+    return(Matrix::t(as(mat, "CsparseMatrix")))
+  }
+  Matrix::t(mat)
 }
 
 .to_seurat_process_reduction <- function(

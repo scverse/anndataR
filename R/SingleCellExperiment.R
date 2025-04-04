@@ -130,9 +130,9 @@ to_SingleCellExperiment <- function(
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
     if (from != "X") {
-      sce_assays[[to]] <- t(adata$layers[[from]])
+      sce_assays[[to]] <- .to_R_matrix(adata$layers[[from]])
     } else {
-      sce_assays[[to]] <- t(adata$X)
+      sce_assays[[to]] <- .to_R_matrix(adata$X)
     }
   }
 
