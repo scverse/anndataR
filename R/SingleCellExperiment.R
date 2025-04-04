@@ -616,8 +616,7 @@ from_SingleCellExperiment <- function(
   obsm_mapping <- list()
 
   for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
-    dest_name <- paste0("X_", reduction_name)
-    obsm_mapping[[dest_name]] <- c("reducedDim", reduction_name)
+    obsm_mapping[[reduction_name]] <- c("reducedDim", reduction_name)
   }
 
   obsm_mapping
@@ -634,8 +633,7 @@ from_SingleCellExperiment <- function(
   for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
     reduction <- SingleCellExperiment::reducedDim(sce, reduction_name)
     if (inherits(reduction, "LinearEmbeddingMatrix")) {
-      dest_name <- paste0(reduction_name, "s") # this is for PCA, should this be generalized?
-      varm_mapping[[dest_name]] <- c("reducedDim", reduction_name)
+      varm_mapping[[reduction_name]] <- c("reducedDim", reduction_name)
     }
   }
 
