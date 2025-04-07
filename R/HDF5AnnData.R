@@ -288,9 +288,9 @@ HDF5AnnData <- R6::R6Class(
         if (!file.exists(file) && mode %in% c("r", "r+")) {
           cli_abort(
             paste(
-              "File {.arg {file}} does not exist but mode is set to {.arg {mode}}.",
+              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
               "If you want to create a new file, use a different mode (e.g. 'w-').",
-              "See {.fun read_h5ad} or {.fun write_h5ad} for more information."
+              "See {.help read_h5ad} or {.help write_h5ad} for more information."
             ),
             call = rlang::caller_env()
           )
@@ -299,9 +299,9 @@ HDF5AnnData <- R6::R6Class(
         if (file.exists(file) && mode %in% c("w-", "x")) {
           cli_abort(
             paste(
-              "File {.arg {file}} already exists but mode is set to {.arg {mode}}.",
+              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
               "If you want to overwrite the file, use a different mode (e.g. 'w').",
-              "See {.fun read_h5ad} or {.fun write_h5ad} for more information."
+              "See {.help read_h5ad} or {.help write_h5ad} for more information."
             ),
             call = rlang::caller_env()
           )
@@ -345,7 +345,7 @@ HDF5AnnData <- R6::R6Class(
       attrs <- hdf5r::h5attributes(file)
       if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
         cli_abort(c(
-          "File {.arg {file}} is not a valid H5AD file.",
+          "File {.file {file}} is not a valid H5AD file.",
           i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
         ))
       }
@@ -361,7 +361,7 @@ HDF5AnnData <- R6::R6Class(
             paste0(
               "Error trying to write data (",
               paste(.anndata_slots[!are_null], collapse = ", "),
-              ") to an h5ad file opened in read-only mode."
+              ") to an H5AD file opened in read-only mode."
             )
           )
         }
