@@ -336,18 +336,12 @@ HDF5AnnData <- R6::R6Class(
           varp = varp,
           uns = uns,
           shape = shape,
-          mode = mode,
-          compression = compression
         )
         for (arg_name in names(arg_list)) {
-          if (arg_name == "file") {
-            next
-          }
-
           arg_value <- arg_list[[arg_name]]
           if (!is.null(arg_value)) {
             cli_abort(c(
-              "All other arguments must be {.val NULL} when loading an existing {.var .h5ad} file",
+              "Most other arguments must be {.val NULL} when loading an existing {.var .h5ad} file",
               "i" = "{.arg {arg_name}} is {.obj_type_friendly arg_value}"
             ))
           }

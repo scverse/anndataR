@@ -2,7 +2,7 @@
 % Please edit documentation in R/Seurat.R
 \name{to_Seurat}
 \alias{to_Seurat}
-\title{Convert a Seurat object to an AnnData object}
+\title{Convert an AnnData object to a Seurat object}
 \usage{
 to_Seurat(
   adata,
