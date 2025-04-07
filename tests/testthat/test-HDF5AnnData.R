@@ -148,7 +148,7 @@ test_that("reading var names works", {
 # SETTERS ----------------------------------------------------------------
 test_that("creating empty H5AD works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
-  expect_silent(HDF5AnnData$new(h5ad_file))
+  expect_silent(HDF5AnnData$new(file = h5ad_file, mode = "w-"))
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_X, status=done
@@ -156,7 +156,7 @@ test_that("writing X works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var, mode = "w-")
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(h5ad$X <- X)
@@ -167,7 +167,7 @@ test_that("writing layers works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var, mode = "w-")
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(h5ad$layers <- list(layer1 = X, layer2 = X))
@@ -178,7 +178,7 @@ test_that("writing obs works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var, mode = "w-")
 
   obs <- data.frame(
     Letters = LETTERS[1:10],
@@ -194,7 +194,7 @@ test_that("writing var works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var, mode = "w-")
 
   var <- data.frame(
     Letters = LETTERS[1:20],
@@ -210,7 +210,7 @@ test_that("writing obs names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var, mode = "w-")
 
   h5ad$obs_names <- LETTERS[1:10]
   expect_identical(h5ad$obs_names, LETTERS[1:10])
@@ -221,7 +221,7 @@ test_that("writing var names works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var, mode = "w-")
 
   h5ad$var_names <- LETTERS[1:20]
   expect_identical(h5ad$var_names, LETTERS[1:20])

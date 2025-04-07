@@ -321,38 +321,24 @@ HDF5AnnData <- R6::R6Class(
       }
 
       # detect file mode
-      mode_mapper <- c(
-        # readonly, file must exist
-        "H5F_ACC_RDONLY" = "r",
-        # readwrite, file must exist
-        "H5F_ACC_RDWR" = "r+",
-        # create file, truncate if exists
-        "H5F_ACC_TRUNC" = "w",
-        # create file, fail if exists
-        "H5F_ACC_EXCL" = "w-"
-      )
-      intent <- as.character(file$get_intent())
-      if (!intent %in% names(mode_mapper)) {
-        cli_abort(
-          "Invalid intent detected: {.arg {intent}}."
-        )
-      }
-      detected_mode <- mode_mapper[[intent]]
-      if (detected_mode == "r+") {
-        cli_warn(
-          paste(
-            "File is opened in read/write mode.",
-            "Use with caution, as this can lead to data corruption."
-          )
-        )
-      }
+      is_readonly <- file$get_intent() == "H5F_ACC_RDONLY"
+      is_empty <- !"encoding-type" %in% hdf5r::h5attributes(file)
 
-      # initialise AnnData
-      if (detected_mode %in% c("w", "w-")) {
-        shape <- get_shape(obs, var, X, shape)
-        obs <- get_initial_obs(obs, X, shape)
-        var <- get_initial_var(var, X, shape)
-        write_empty_h5ad(file, obs, var, compression)
+      if (!is_readonly) {
+        if (!is_empty) {
+          cli_warn(
+            paste(
+              "File is opened in read/write mode.",
+              "Use with caution, as this can lead to data corruption."
+            )
+          )
+        } else {
+          # initialise AnnData
+          shape <- get_shape(obs, var, X, shape)
+          obs <- get_initial_obs(obs, X, shape)
+          var <- get_initial_var(var, X, shape)
+          write_empty_h5ad(file, obs, var, compression)
+        }
       }
 
       # File is supposed to exist by now. Check if it is a valid H5AD file
@@ -367,7 +353,7 @@ HDF5AnnData <- R6::R6Class(
       # Set the file path
       private$.h5obj <- file
 
-      if (detected_mode == "r") {
+      if (is_readonly) {
         # if any of these variables are not NULL, throw an error
         are_null <- sapply(.anndata_slots, function(x) is.null(get(x)))
         if (!all(are_null)) {
