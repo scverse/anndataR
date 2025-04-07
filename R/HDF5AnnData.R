@@ -335,7 +335,7 @@ HDF5AnnData <- R6::R6Class(
           obsp = obsp,
           varp = varp,
           uns = uns,
-          shape = shape,
+          shape = shape
         )
         for (arg_name in names(arg_list)) {
           arg_value <- arg_list[[arg_name]]
