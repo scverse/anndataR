@@ -54,3 +54,19 @@ get_initial_var <- function(var, X, shape) {
   }
   var
 }
+
+to_py_matrix <- function(mat) {
+  if (inherits(mat, "dgCMatrix")) {
+    return(Matrix::t(as(mat, "RsparseMatrix")))
+  }
+  Matrix::t(as.matrix(mat))
+}
+
+# nolint start: object_name_linter
+to_R_matrix <- function(mat) {
+  # nolint end: object_name_linter
+  if (inherits(mat, "dgRMatrix")) {
+    return(Matrix::t(as(mat, "CsparseMatrix")))
+  }
+  Matrix::t(as.matrix(mat))
+}

@@ -367,7 +367,7 @@ to_Seurat <- function(
 
 .to_seurat_get_matrix <- function(adata, layer_name) {
   if (is.null(layer_name)) {
-    return(.to_R_matrix(adata$X))
+    return(to_R_matrix(adata$X))
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {
@@ -384,15 +384,9 @@ to_Seurat <- function(
   }
 
   # check if dgRMatrix and convert to dgCMatrix
-  .to_R_matrix(adata$layers[[layer_name]])
+  to_R_matrix(adata$layers[[layer_name]])
 }
 
-.to_R_matrix <- function(mat) { # nolint object_name_linter
-  if (inherits(mat, "dgRMatrix")) {
-    return(Matrix::t(as(mat, "CsparseMatrix")))
-  }
-  Matrix::t(mat)
-}
 
 .to_seurat_process_reduction <- function(
   adata,
@@ -829,7 +823,9 @@ from_Seurat <- function(
       # fetch X
       # trackstatus: class=Seurat, feature=set_X, status=done
       if (!is.null(x_mapping)) {
-        adata$X <- Matrix::t(SeuratObject::LayerData(seurat_assay, x_mapping))
+        adata$X <- to_py_matrix(
+          (SeuratObject::LayerData(seurat_assay, x_mapping))
+        )
       }
 
       # fetch layers
@@ -838,9 +834,10 @@ from_Seurat <- function(
         layer <- layers_mapping[[i]]
         layer_name <- names(layers_mapping)[[i]]
 
-        adata$layers[[layer_name]] <- Matrix::t(
-          SeuratObject::LayerData(seurat_assay, layer)
-        )
+        adata$layers[[layer_name]] <- to_py_matrix(SeuratObject::LayerData(
+          seurat_assay,
+          layer
+        ))
       }
 
       # fetch obsm
