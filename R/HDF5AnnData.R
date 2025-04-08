@@ -322,7 +322,10 @@ HDF5AnnData <- R6::R6Class(
 
       # detect file mode
       is_readonly <- file$get_intent() == "H5F_ACC_RDONLY"
-      is_empty <- !"encoding-type" %in% hdf5r::h5attributes(file)
+      is_empty <- length(hdf5r::list.groups(file)) == 0L &&
+        length(hdf5r::list.datasets(file)) == 0L &&
+        length(hdf5r::list.attributes(file)) == 0L &&
+        length(hdf5r::list.objects(file)) == 0L
 
       if (!is_readonly) {
         if (!is_empty) {
