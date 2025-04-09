@@ -663,14 +663,11 @@ from_SingleCellExperiment <- function(
   } else if (inherits(object, "SimpleList")) {
     as.list(object)
   } else if (inherits(object, "matrix") || inherits(object, "Matrix")) {
-    m <- t(object)
-    if (inherits(m, "denseMatrix")) {
-      m <- as.matrix(m)
+    if (inherits(object, "denseMatrix")) {
+      object <- as.matrix(object)
     }
-    if (inherits(m, "dgCMatrix")) {
-      m <- as(m, "RsparseMatrix")
-    }
-    m
+    # takes care of dgCMatrices and transposing
+    to_py_matrix(object)
   } else {
     object
   }

@@ -824,7 +824,7 @@ from_Seurat <- function(
       # trackstatus: class=Seurat, feature=set_X, status=done
       if (!is.null(x_mapping)) {
         adata$X <- to_py_matrix(
-          (SeuratObject::LayerData(seurat_assay, x_mapping))
+          SeuratObject::LayerData(seurat_assay, x_mapping)
         )
       }
 
