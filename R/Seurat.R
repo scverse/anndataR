@@ -106,6 +106,7 @@
 to_Seurat <- function(
   adata,
   assay_name = "RNA",
+  x_mapping = NULL,
   layers_mapping = NULL,
   object_metadata_mapping = NULL,
   assay_metadata_mapping = NULL,
@@ -125,8 +126,12 @@ to_Seurat <- function(
   if (is.null(object_metadata_mapping)) {
     object_metadata_mapping <- .to_Seurat_guess_object_metadata(adata)
   }
+  if (is.null(x_mapping)) {
+    x_mapping <- list()
+  }
   if (is.null(layers_mapping)) {
     layers_mapping <- .to_Seurat_guess_layers(adata)
+    layers_mapping <- c(x_mapping, layers_mapping)
   }
   if (is.null(assay_metadata_mapping)) {
     assay_metadata_mapping <- .to_Seurat_guess_assay_metadata(adata)
@@ -160,7 +165,10 @@ to_Seurat <- function(
       !("data" %in% names(layers_mapping))
   ) {
     cli_abort(c(
-      "{.arg layers_mapping} must contain an item named {.val counts} and/or {.val data}",
+      paste(
+        "{.arg layers_mapping} must contain an item named {.val counts} and/or {.val data}",
+        "Provide this with {.arg x_mapping} or {.arg layers_mapping}."
+      ),
       "i" = "Found names: {.val {names(layers_mapping)}}"
     ))
   }
