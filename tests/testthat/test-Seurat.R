@@ -123,14 +123,14 @@ test_that("to_Seurat retains pca dimred", {
 
   skip_if(!is.null(msg), message = msg)
 
-  expect_true("pca" %in% names(seu@reductions))
+  expect_true("X_pca" %in% names(seu@reductions))
   expect_equal(
-    Embeddings(seu, reduction = "pca"),
+    Embeddings(seu, reduction = "X_pca"),
     ad$obsm[["X_pca"]],
     ignore_attr = TRUE
   )
   expect_equal(
-    Loadings(seu, reduction = "pca"),
+    Loadings(seu, reduction = "X_pca"),
     ad$varm[["PCs"]],
     ignore_attr = TRUE
   )
@@ -261,8 +261,11 @@ test_that("from_Seurat retains pca", {
 
   skip_if(!is.null(msg), message = msg)
 
+  print(ad)
+  print(obj)
+
   expect_equal(
-    ad$obsm[["X_pca"]],
+    ad$obsm[["pca"]],
     Embeddings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
@@ -285,7 +288,7 @@ test_that("from_Seurat retains umap", {
   skip_if(!is.null(msg), message = msg)
 
   expect_equal(
-    ad$obsm[["X_umap"]],
+    ad$obsm[["umap"]],
     Embeddings(obj, reduction = "umap"),
     ignore_attr = TRUE
   )
