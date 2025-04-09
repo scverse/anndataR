@@ -510,15 +510,13 @@ to_Seurat <- function(
 
   for (reduction_name in names(adata$obsm)) {
     if (grepl("^X_", reduction_name)) {
-      name <- gsub("^X_", "", reduction_name)
       out <-
-        if (reduction_name == "X_pca") {
-          list(key = "PC_", obsm = "X_pca", varm = "PCs")
+        if (reduction_name == "X_pca" && "PCs" %in% names(adata$varm)) {
+          list(key = "X_pca", obsm = "X_pca", varm = "PCs")
         } else {
-          list(key = paste0(name, "_"), obsm = reduction_name, varm = NULL)
+          list(key = reduction_name, obsm = reduction_name, varm = NULL)
         }
-
-      reductions[[name]] <- out
+      reductions[[reduction_name]] <- out
     }
   }
 
@@ -1130,7 +1128,7 @@ from_Seurat <- function(
       next
     }
 
-    obsm_mapping[[paste0("X_", reduction_name)]] <- c(
+    obsm_mapping[[reduction_name]] <- c(
       "reductions",
       reduction_name
     )
