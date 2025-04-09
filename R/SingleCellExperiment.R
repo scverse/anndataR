@@ -218,14 +218,7 @@ to_SCE_guess_assays <- function(adata) {
   layers <- list()
 
   if (!is.null(adata$X)) {
-    layer_name_for_x <-
-      if (!"counts" %in% names(adata$layers)) {
-        # could expand checks, to check if integers
-        "counts"
-      } else {
-        "data"
-      }
-    layers[[layer_name_for_x]] <- "X"
+    layers[["X"]] <- "X"
   }
 
   for (layer_name in names(adata$layers)) {

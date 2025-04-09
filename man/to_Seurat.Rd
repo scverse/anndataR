@@ -133,5 +133,5 @@ ad <- AnnData(
   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
   var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
-to_Seurat(ad)
+to_Seurat(ad, layers_mapping = list(counts = "X"))
 }
