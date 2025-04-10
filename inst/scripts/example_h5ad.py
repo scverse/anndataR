@@ -85,3 +85,4 @@ scanpy.tl.rank_genes_groups(adata, "leiden")
 
 # Write the H5AD file
 adata.write("example.h5ad")
+adata.write_zarr("example.zarr")
