@@ -876,11 +876,16 @@ from_Seurat <- function(
 # trackstatus: class=Seurat, feature=set_obs_names, status=done
 # trackstatus: class=Seurat, feature=set_obs, status=done
 # nolint start: object_name_linter
-.from_Seurat_process_obs <- function(adata, seurat_obj, assay_name, obs_mapping) {
+.from_Seurat_process_obs <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  obs_mapping
+) {
   # nolint end: object_name_linter
 
   if (!rlang::is_empty(obs_mapping)) {
-    adata$obs<- seurat_obj[[unlist(obs_mapping)]] |>
+    adata$obs <- seurat_obj[[unlist(obs_mapping)]] |>
       setNames(names(obs_mapping))
   } else {
     # Store an empty data.frame to keep the obs names
@@ -891,7 +896,12 @@ from_Seurat <- function(
 # trackstatus: class=Seurat, feature=set_var_names, status=done
 # trackstatus: class=Seurat, feature=set_var, status=done
 # nolint start: object_name_linter
-.from_Seurat_process_var <- function(adata, seurat_obj, assay_name, var_mapping) {
+.from_Seurat_process_var <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  var_mapping
+) {
   # nolint end: object_name_linter
   if (!rlang::is_empty(var_mapping)) {
     adata$var <- seurat_obj[[assay_name]][[unlist(var_mapping)]] |>
@@ -924,7 +934,12 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_obsm, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_obsm <- function(adata, seurat_obj, assay_name, obsm_mapping) {
+.from_Seurat_process_obsm <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  obsm_mapping
+) {
   # nolint end: object_name_linter
   if (rlang::is_empty(obsm_mapping)) {
     return(invisible())
@@ -957,7 +972,12 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_varm, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_varm <- function(adata, seurat_obj, assay_name, varm_mapping) {
+.from_Seurat_process_varm <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  varm_mapping
+) {
   # nolint end: object_name_linter
   if (rlang::is_empty(varm_mapping)) {
     return(invisible())
@@ -996,7 +1016,12 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_obsp, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_obsp <- function(adata, seurat_obj, assay_name, obsp_mapping) {
+.from_Seurat_process_obsp <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  obsp_mapping
+) {
   # nolint end: object_name_linter
   if (rlang::is_empty(obsp_mapping)) {
     return(invisible())
@@ -1035,7 +1060,12 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_varp, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_varp <- function(adata, seurat_obj, assay_name, varp_mapping) {
+.from_Seurat_process_varp <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  varp_mapping
+) {
   # nolint end: object_name_linter
   if (rlang::is_empty(varp_mapping)) {
     return(invisible())
@@ -1072,7 +1102,12 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_uns, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_uns <- function(adata, seurat_obj, assay_name, uns_mapping) {
+.from_Seurat_process_uns <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  uns_mapping
+) {
   # nolint end: object_name_linter
   if (rlang::is_empty(uns_mapping)) {
     return(invisible())
