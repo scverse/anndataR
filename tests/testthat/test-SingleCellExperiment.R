@@ -374,15 +374,18 @@ test_that("from_SCE retains pca dimred", {
   )
   skip_if(!is.null(msg), message = msg)
 
+  print(ad)
+  print(sce)
+
   expect_true("X_pca" %in% names(ad$obsm))
-  expect_true("pcas" %in% names(ad$varm))
+  expect_true("X_pca" %in% names(ad$varm))
   expect_equal(
-    sampleFactors(reducedDims(sce)$pca),
+    sampleFactors(reducedDims(sce)$X_pca),
     ad$obsm[["X_pca"]]
   )
   expect_equal(
-    featureLoadings(reducedDims(sce)$pca),
-    ad$varm[["pcas"]]
+    featureLoadings(reducedDims(sce)$X_pca),
+    ad$varm[["X_pca"]]
   )
 })
 
