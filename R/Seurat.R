@@ -786,6 +786,9 @@ from_Seurat <- function(
     ))
   }
 
+  # Set the default assay so we can easily get the dimensions etc.
+  SeuratObject::DefaultAssay(seurat_obj) <- assay_name
+
   # For any mappings that are not set, using the guessing function
   layers_mapping <- layers_mapping %||%
     .from_Seurat_guess_layers(seurat_obj, assay_name)
@@ -802,17 +805,19 @@ from_Seurat <- function(
   varp_mapping <- varp_mapping %||% .from_Seurat_guess_varps(seurat_obj)
   uns_mapping <- uns_mapping %||% .from_Seurat_guess_uns(seurat_obj)
 
-  # Create a list to store converted objects
-  # Also contains additional arguments passed to the generator function
-  adata_list <- list(...)
+  generator <- get_anndata_constructor(output_class)
+  adata <- generator$new(shape = rev(dim(seurat_obj)), ...)
 
-  # Fill in slots in the list
-  adata_list$obs <- .from_Seurat_process_obs(
+  # Fill in slots in the object
+  .from_Seurat_process_obs(
+    adata,
     seurat_obj,
     assay_name,
     obs_mapping
   )
-  adata_list$var <- .from_Seurat_process_var(
+
+  .from_Seurat_process_var(
+    adata,
     seurat_obj,
     assay_name,
     var_mapping
@@ -820,114 +825,112 @@ from_Seurat <- function(
 
   # trackstatus: class=Seurat, feature=set_X, status=done
   if (!is.null(x_mapping)) {
-    adata_list$X <- Matrix::t(SeuratObject::LayerData(seurat_obj, x_mapping))
+    adata$X <- Matrix::t(SeuratObject::LayerData(seurat_obj, x_mapping))
   }
 
-  adata_list$layers <- .from_Seurat_process_layers(
+  .from_Seurat_process_layers(
+    adata,
     seurat_obj,
     assay_name,
     layers_mapping
   )
-  adata_list$obsm <- .from_Seurat_process_obsm(
+
+  .from_Seurat_process_obsm(
+    adata,
     seurat_obj,
     assay_name,
     obsm_mapping
   )
-  adata_list$varm <- .from_Seurat_process_varm(
+
+  .from_Seurat_process_varm(
+    adata,
     seurat_obj,
     assay_name,
     varm_mapping
   )
-  adata_list$obsp <- .from_Seurat_process_obsp(
+
+  .from_Seurat_process_obsp(
+    adata,
     seurat_obj,
     assay_name,
     obsp_mapping
   )
-  adata_list$varp <- .from_Seurat_process_varp(
+
+  .from_Seurat_process_varp(
+    adata,
     seurat_obj,
     assay_name,
     varp_mapping
   )
-  adata_list$uns <- .from_Seurat_process_uns(
+
+  .from_Seurat_process_uns(
+    adata,
     seurat_obj,
     assay_name,
     uns_mapping
   )
 
-  # Get a generator to create a new AnnData object
-  generator <- get_anndata_constructor(output_class)
-
-  tryCatch(
-    {
-      do.call(generator$new, adata_list)
-    },
-    error = function(e) {
-      if (output_class == "HDF5AnnData") {
-        on.exit(cleanup_HDF5AnnData(adata_list$file))
-      }
-      cli_abort(
-        c(
-          "Failed to create a {.cls {output_class}} with error: {conditionMessage(e)}",
-          "i" = "Error call: {.code {capture.output(print(conditionCall(e)))}}"
-        ),
-        call = rlang::caller_env(4)
-      )
-    }
-  )
+  adata
 }
 
 # trackstatus: class=Seurat, feature=set_obs_names, status=done
 # trackstatus: class=Seurat, feature=set_obs, status=done
 # nolint start: object_name_linter
-.from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) {
+.from_Seurat_process_obs <- function(adata, seurat_obj, assay_name, obs_mapping) {
   # nolint end: object_name_linter
-  if (rlang::is_empty(obs_mapping)) {
-    return(data.frame(row.names = colnames(seurat_obj)))
+
+  if (!rlang::is_empty(obs_mapping)) {
+    adata$obs<- seurat_obj[[unlist(obs_mapping)]] |>
+      setNames(names(obs_mapping))
+  } else {
+    # Store an empty data.frame to keep the obs names
+    adata$obs <- data.frame(row.names = colnames(seurat_obj))
   }
-
-  mapped <- seurat_obj[[unlist(obs_mapping)]]
-  names(mapped) <- names(obs_mapping)
-
-  mapped
 }
 
 # trackstatus: class=Seurat, feature=set_var_names, status=done
 # trackstatus: class=Seurat, feature=set_var, status=done
 # nolint start: object_name_linter
-.from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) {
+.from_Seurat_process_var <- function(adata, seurat_obj, assay_name, var_mapping) {
   # nolint end: object_name_linter
-  assay <- seurat_obj[[assay_name]]
-
-  if (rlang::is_empty(var_mapping)) {
-    return(data.frame(row.names = rownames(seurat_obj)))
+  if (!rlang::is_empty(var_mapping)) {
+    adata$var <- seurat_obj[[assay_name]][[unlist(var_mapping)]] |>
+      setNames(names(var_mapping))
+  } else {
+    # Store an empty data.frame to keep the var names
+    adata$var <- data.frame(row.names = rownames(seurat_obj))
   }
-
-  mapped <- assay[[unlist(var_mapping)]]
-  names(mapped) <- names(var_mapping)
-
-  mapped
 }
 
 # trackstatus: class=Seurat, feature=set_layers, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_layers <- function(
   # nolint end: object_name_linter
+  adata,
   seurat_obj,
   assay_name,
   layers_mapping
 ) {
-  assay <- seurat_obj[[assay_name]]
+  if (rlang::is_empty(layers_mapping)) {
+    return(invisible())
+  }
 
-  purrr::map(layers_mapping, function(.layer) {
-    Matrix::t(SeuratObject::LayerData(assay, .layer))
+  adata$layers <- purrr::map(layers_mapping, function(.layer) {
+    Matrix::t(
+      SeuratObject::LayerData(seurat_obj, assay = assay_name, layer = .layer)
+    )
   })
 }
 
 # trackstatus: class=Seurat, feature=set_obsm, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_obsm <- function(seurat_obj, assay_name, obsm_mapping) {
+.from_Seurat_process_obsm <- function(adata, seurat_obj, assay_name, obsm_mapping) {
   # nolint end: object_name_linter
-  purrr::imap(obsm_mapping, function(.mapping, .idx) {
+  if (rlang::is_empty(obsm_mapping)) {
+    return(invisible())
+  }
+
+  adata$obsm <- purrr::imap(obsm_mapping, function(.mapping, .idx) {
     if (!is.character(.mapping) || length(.mapping) != 2) {
       cli_abort(c(
         paste(
@@ -954,9 +957,13 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_varm, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_varm <- function(seurat_obj, assay_name, varm_mapping) {
+.from_Seurat_process_varm <- function(adata, seurat_obj, assay_name, varm_mapping) {
   # nolint end: object_name_linter
-  purrr::imap(varm_mapping, function(.mapping, .idx) {
+  if (rlang::is_empty(varm_mapping)) {
+    return(invisible())
+  }
+
+  adata$varm <- purrr::imap(varm_mapping, function(.mapping, .idx) {
     if (
       !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
     ) {
@@ -989,9 +996,13 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_obsp, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_obsp <- function(seurat_obj, assay_name, obsp_mapping) {
+.from_Seurat_process_obsp <- function(adata, seurat_obj, assay_name, obsp_mapping) {
   # nolint end: object_name_linter
-  purrr::imap(obsp_mapping, function(.mapping, .idx) {
+  if (rlang::is_empty(obsp_mapping)) {
+    return(invisible())
+  }
+
+  adata$obsp <- purrr::imap(obsp_mapping, function(.mapping, .idx) {
     if (
       !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
     ) {
@@ -1024,9 +1035,13 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_varp, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_varp <- function(seurat_obj, assay_name, varp_mapping) {
+.from_Seurat_process_varp <- function(adata, seurat_obj, assay_name, varp_mapping) {
   # nolint end: object_name_linter
-  purrr::imap(varp_mapping, function(.mapping, .idx) {
+  if (rlang::is_empty(varp_mapping)) {
+    return(invisible())
+  }
+
+  adata$varp <- purrr::imap(varp_mapping, function(.mapping, .idx) {
     if (
       !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
     ) {
@@ -1057,9 +1072,13 @@ from_Seurat <- function(
 
 # trackstatus: class=Seurat, feature=set_uns, status=wip
 # nolint start: object_name_linter
-.from_Seurat_process_uns <- function(seurat_obj, assay_name, uns_mapping) {
+.from_Seurat_process_uns <- function(adata, seurat_obj, assay_name, uns_mapping) {
   # nolint end: object_name_linter
-  purrr::imap(uns_mapping, function(.mapping, .idx) {
+  if (rlang::is_empty(uns_mapping)) {
+    return(invisible())
+  }
+
+  adata$uns <- purrr::imap(uns_mapping, function(.mapping, .idx) {
     if (
       !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
     ) {

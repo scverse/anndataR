@@ -38,7 +38,8 @@ Imports:
     methods,
     purrr,
     R6 (>= 2.4.0),
-    rlang
+    rlang,
+    stats
 Suggests:
     anndata,
     BiocStyle,
