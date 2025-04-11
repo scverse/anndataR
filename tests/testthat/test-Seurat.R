@@ -3,18 +3,14 @@ test_that("to_Seurat() fails gracefully", {
   expect_error(to_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
 })
 
-known_issues <- read_known_issues()
-
-ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
-ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
-ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
-
 skip_if_not_installed("Seurat")
 library(Seurat)
 
-##################
-# TEST TO_SEURAT #
-##################
+known_issues <- read_known_issues()
+
+ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 seu <- ad$to_Seurat()
 
@@ -123,27 +119,23 @@ test_that("to_Seurat retains pca dimred", {
 
   skip_if(!is.null(msg), message = msg)
 
-  expect_true("pca" %in% names(seu@reductions))
+  expect_true("X_pca" %in% names(seu@reductions))
   expect_equal(
-    Embeddings(seu, reduction = "pca"),
+    Embeddings(seu, reduction = "X_pca"),
     ad$obsm[["X_pca"]],
     ignore_attr = TRUE
   )
   expect_equal(
-    Loadings(seu, reduction = "pca"),
+    Loadings(seu, reduction = "X_pca"),
     ad$varm[["PCs"]],
     ignore_attr = TRUE
   )
 })
 
-
-####################
-# TEST FROM_SEURAT #
-####################
-
 skip_if_not_installed("Seurat")
-
 library(Seurat)
+
+known_issues <- read_known_issues()
 
 suppressWarnings({
   counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
@@ -261,8 +253,11 @@ test_that("from_Seurat retains pca", {
 
   skip_if(!is.null(msg), message = msg)
 
+  print(ad)
+  print(obj)
+
   expect_equal(
-    ad$obsm[["X_pca"]],
+    ad$obsm[["pca"]],
     Embeddings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
@@ -285,7 +280,7 @@ test_that("from_Seurat retains umap", {
   skip_if(!is.null(msg), message = msg)
 
   expect_equal(
-    ad$obsm[["X_umap"]],
+    ad$obsm[["umap"]],
     Embeddings(obj, reduction = "umap"),
     ignore_attr = TRUE
   )

@@ -217,7 +217,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- Matrix::t(adata$layers[[from]])
+      ) <- to_R_matrix(adata$layers[[from]])
     }
   }
 
@@ -494,15 +494,13 @@ to_Seurat <- function(
 
   for (reduction_name in names(adata$obsm)) {
     if (grepl("^X_", reduction_name)) {
-      name <- gsub("^X_", "", reduction_name)
       out <-
-        if (reduction_name == "X_pca") {
-          list(key = "PC_", obsm = "X_pca", varm = "PCs")
+        if (reduction_name == "X_pca" && "PCs" %in% names(adata$varm)) {
+          list(key = "X_pca", obsm = "X_pca", varm = "PCs")
         } else {
-          list(key = paste0(name, "_"), obsm = reduction_name, varm = NULL)
+          list(key = reduction_name, obsm = reduction_name, varm = NULL)
         }
-
-      reductions[[name]] <- out
+      reductions[[reduction_name]] <- out
     }
   }
 
@@ -751,7 +749,7 @@ from_Seurat <- function(
   uns_mapping = NULL,
   ...
 ) {
-  check_requires("Converting Seurat to AnnData", "SeuratObject")
+  check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
 
   output_class <- match.arg(output_class)
 
@@ -765,285 +763,367 @@ from_Seurat <- function(
     assay_name <- SeuratObject::DefaultAssay(seurat_obj)
   }
 
-  seurat_assay <- Seurat::GetAssay(seurat_obj, assay = assay_name)
-
-  if (is.null(seurat_assay)) {
+  if (!(assay_name %in% SeuratObject::Assays(seurat_obj))) {
     cli_abort(c(
       "{.arg assay_name} is not an assay in {.arg seurat_obj}",
       "i" = "{.code Assays(seurat_obj)}: {.val {SeuratObject::Assays(seurat_obj)}}"
     ))
   }
 
-  if (is.null(layers_mapping)) {
-    layers_mapping <- .from_Seurat_guess_layers(seurat_obj, assay_name)
-  }
-  if (is.null(obs_mapping)) {
-    obs_mapping <- .from_Seurat_guess_obs(seurat_obj, assay_name)
-  }
-  if (is.null(var_mapping)) {
-    var_mapping <- .from_Seurat_guess_var(seurat_obj, assay_name)
-  }
-  if (is.null(obsm_mapping)) {
-    obsm_mapping <- .from_Seurat_guess_obsms(seurat_obj, assay_name)
-  }
-  if (is.null(varm_mapping)) {
-    varm_mapping <- .from_Seurat_guess_varms(seurat_obj, assay_name)
-  }
-  if (is.null(obsp_mapping)) {
-    obsp_mapping <- .from_Seurat_guess_obsps(seurat_obj, assay_name)
-  }
-  if (is.null(varp_mapping)) {
-    varp_mapping <- .from_Seurat_guess_varps(seurat_obj)
-  }
-  if (is.null(uns_mapping)) {
-    uns_mapping <- .from_Seurat_guess_uns(seurat_obj)
-  }
+  # Set the default assay so we can easily get the dimensions etc.
+  SeuratObject::DefaultAssay(seurat_obj) <- assay_name
 
-  # fetch obs
-  # trackstatus: class=Seurat, feature=set_obs_names, status=done
-  # trackstatus: class=Seurat, feature=set_obs, status=done
-  obs <- .from_Seurat_process_obs(seurat_obj, assay_name, obs_mapping)
+  # For any mappings that are not set, using the guessing function
+  layers_mapping <- layers_mapping %||%
+    .from_Seurat_guess_layers(seurat_obj, assay_name)
+  obs_mapping <- obs_mapping %||%
+    .from_Seurat_guess_obs(seurat_obj, assay_name)
+  var_mapping <- var_mapping %||%
+    .from_Seurat_guess_var(seurat_obj, assay_name)
+  obsm_mapping <- obsm_mapping %||%
+    .from_Seurat_guess_obsms(seurat_obj, assay_name)
+  varm_mapping <- varm_mapping %||%
+    .from_Seurat_guess_varms(seurat_obj, assay_name)
+  obsp_mapping <- obsp_mapping %||%
+    .from_Seurat_guess_obsps(seurat_obj, assay_name)
+  varp_mapping <- varp_mapping %||% .from_Seurat_guess_varps(seurat_obj)
+  uns_mapping <- uns_mapping %||% .from_Seurat_guess_uns(seurat_obj)
 
-  # fetch var
-  # trackstatus: class=Seurat, feature=set_var_names, status=done
-  # trackstatus: class=Seurat, feature=set_var, status=done
-  var <- .from_Seurat_process_var(seurat_obj, assay_name, var_mapping)
-
-  # use generator to create new AnnData object
   generator <- get_anndata_constructor(output_class)
+  adata <- generator$new(shape = rev(dim(seurat_obj)), ...)
 
-  tryCatch(
-    {
-      adata <- generator$new(
-        obs = obs,
-        var = var,
-        ...
-      )
-
-      # fetch X
-      # trackstatus: class=Seurat, feature=set_X, status=done
-      if (!is.null(x_mapping)) {
-        adata$X <- to_py_matrix(
-          SeuratObject::LayerData(seurat_assay, x_mapping)
-        )
-      }
-
-      # fetch layers
-      # trackstatus: class=Seurat, feature=set_layers, status=done
-      for (i in seq_along(layers_mapping)) {
-        layer <- layers_mapping[[i]]
-        layer_name <- names(layers_mapping)[[i]]
-
-        adata$layers[[layer_name]] <- to_py_matrix(SeuratObject::LayerData(
-          seurat_assay,
-          layer
-        ))
-      }
-
-      # fetch obsm
-      # trackstatus: class=Seurat, feature=set_obsm, status=wip
-      for (i in seq_along(obsm_mapping)) {
-        obsm <- obsm_mapping[[i]]
-        obsm_name <- names(obsm_mapping)[[i]]
-
-        if (!is.character(obsm) || length(obsm) != 2) {
-          cli_abort(c(
-            paste(
-              "Each item in {.arg obsm_mapping} must be a {.cls character}",
-              "vector of length 2"
-            ),
-            "i" = "{.code obsm_mapping[[{i}]]} is {.obj_type_friendly {obsm}}"
-          ))
-        }
-
-        obsm_slot <- obsm[[1]]
-        obsm_key <- obsm[[2]]
-
-        if (obsm_slot == "reductions") {
-          adata$obsm[[obsm_name]] <- SeuratObject::Embeddings(
-            seurat_obj,
-            obsm_key
-          )
-        } else if (obsm_slot == "misc") {
-          adata$obsm[[obsm_name]] <- seurat_obj@misc[[obsm_key]]
-        }
-      }
-
-      # fetch varm
-      # trackstatus: class=Seurat, feature=set_varm, status=wip
-      for (i in seq_along(varm_mapping)) {
-        varm <- varm_mapping[[i]]
-        varm_name <- names(varm_mapping)[[i]]
-
-        if (!is.character(varm) || length(varm) < 2 || length(varm) > 3) {
-          cli_abort(c(
-            paste(
-              "Each item in {.arg varm_mapping} must be a {.cls character}",
-              "vector of length 2 or 3"
-            ),
-            "i" = "{.code varm_mapping[[{i}]]} is {.obj_type_friendly {varm}}"
-          ))
-        }
-
-        varm_slot <- varm[[1]]
-        varm_key <- varm[[2]]
-
-        if (varm_slot == "reductions") {
-          varm_data <- SeuratObject::Loadings(seurat_obj, varm_key)
-        } else if (varm_slot == "misc") {
-          varm_data <- seurat_obj@misc[[varm_key]]
-          if (length(varm) == 3) {
-            varm_data <- varm_data[[varm[[3]]]]
-          }
-        } else {
-          cli_abort(
-            "{.arg varm_slot} must be one of: {.or {.val {c('reductions', 'misc')}}}"
-          )
-        }
-
-        if (nrow(varm_data) != nrow(seurat_obj)) {
-          varm_str <- cli::cli_vec(varm, list("vec-last" = ",, ")) # nolint object_usage_linter
-          cli_warn(paste(
-            "Skipping {.code varm_mapping[[{i}]]} (c({.val {varm_str}}))",
-            "because it does not contain data for every feature"
-          ))
-        } else {
-          adata$varm[[varm_name]] <- varm_data
-        }
-      }
-
-      # fetch obsp
-      # trackstatus: class=Seurat, feature=set_obsp, status=wip
-      for (i in seq_along(obsp_mapping)) {
-        obsp <- obsp_mapping[[i]]
-        obsp_name <- names(obsp_mapping)[[i]]
-
-        if (!is.character(obsp) || length(obsp) < 2 || length(obsp) > 3) {
-          cli_abort(c(
-            paste(
-              "Each item in {.arg obsp_mapping} must be a {.cls character}",
-              "vector of length 2 or 3"
-            ),
-            "i" = "{.code obsp_mapping[[{i}]]} is {.obj_type_friendly {obsp}}"
-          ))
-        }
-
-        key1 <- obsp[[1]]
-        key2 <- obsp[[2]]
-
-        if (key1 == "graphs") {
-          adata$obsp[[obsp_name]] <- as(
-            seurat_obj@graphs[[key2]],
-            "sparseMatrix"
-          )
-        } else if (key1 == "misc") {
-          data <- seurat_obj@misc[[key2]]
-          if (length(obsp) == 3) {
-            data <- data[[obsp[[3]]]]
-          }
-          adata$obsp[[obsp_name]] <- data
-        }
-      }
-
-      # fetch varp
-      # trackstatus: class=Seurat, feature=set_varp, status=wip
-      for (i in seq_along(varp_mapping)) {
-        varp <- varp_mapping[[i]]
-        varp_name <- names(varp_mapping)[[i]]
-
-        if (!is.character(varp) || length(varp) < 2 || length(varp) > 3) {
-          cli_abort(c(
-            paste(
-              "Each item in {.arg varp_mapping} must be a {.cls character}",
-              "vector of length 2 or 3"
-            ),
-            "i" = "{.code varp_mapping[[{i}]]} is {.obj_type_friendly {varp}}"
-          ))
-        }
-
-        key1 <- varp[[1]]
-        key2 <- varp[[2]]
-
-        if (key1 == "misc") {
-          data <- seurat_obj@misc[[key2]]
-          if (length(varp) == 3) {
-            data <- data[[varp[[3]]]]
-          }
-          adata$varp[[varp_name]] <- data
-        }
-      }
-
-      # fetch uns
-      # trackstatus: class=Seurat, feature=set_uns, status=wip
-      for (i in seq_along(uns_mapping)) {
-        uns <- uns_mapping[[i]]
-        uns_name <- names(uns_mapping)[[i]]
-
-        if (!is.character(uns) || length(uns) < 2 || length(uns) > 3) {
-          cli_abort(c(
-            paste(
-              "Each item in {.arg uns_mapping} must be a {.cls character}",
-              "vector of length 2 or 3"
-            ),
-            "i" = "{.code uns_mapping[[{i}]]} is {.obj_type_friendly {uns}}"
-          ))
-        }
-
-        key1 <- uns[[1]]
-        key2 <- uns[[2]]
-
-        if (key1 == "misc") {
-          data <- seurat_obj@misc[[key2]]
-          if (length(uns) == 3) {
-            data <- data[[uns[[3]]]]
-          }
-          adata$uns[[uns_name]] <- data
-        }
-      }
-
-      adata
-    },
-    error = function(e) {
-      if (output_class == "HDF5AnnData") {
-        on.exit(cleanup_HDF5AnnData(adata))
-      }
-      cli_abort(
-        c(
-          "Failed to convert from Seurat",
-          "i" = paste("Error message:", conditionMessage(e))
-        ),
-        call = rlang::caller_env(4)
-      )
-    }
+  # Fill in slots in the object
+  .from_Seurat_process_obs(
+    adata,
+    seurat_obj,
+    assay_name,
+    obs_mapping
   )
-}
 
-# nolint start: object_name_linter
-.from_Seurat_process_obs <- function(seurat_obj, assay_name, obs_mapping) {
-  # nolint end: object_name_linter
-  if (rlang::is_empty(obs_mapping)) {
-    return(data.frame(row.names = colnames(seurat_obj)))
+  .from_Seurat_process_var(
+    adata,
+    seurat_obj,
+    assay_name,
+    var_mapping
+  )
+
+  # trackstatus: class=Seurat, feature=set_X, status=done
+  if (!is.null(x_mapping)) {
+    adata$X <- to_py_matrix(SeuratObject::LayerData(seurat_obj, x_mapping))
   }
 
-  mapped <- seurat_obj[[unlist(obs_mapping)]]
-  names(mapped) <- names(obs_mapping)
+  .from_Seurat_process_layers(
+    adata,
+    seurat_obj,
+    assay_name,
+    layers_mapping
+  )
 
-  mapped
+  .from_Seurat_process_obsm(
+    adata,
+    seurat_obj,
+    assay_name,
+    obsm_mapping
+  )
+
+  .from_Seurat_process_varm(
+    adata,
+    seurat_obj,
+    assay_name,
+    varm_mapping
+  )
+
+  .from_Seurat_process_obsp(
+    adata,
+    seurat_obj,
+    assay_name,
+    obsp_mapping
+  )
+
+  .from_Seurat_process_varp(
+    adata,
+    seurat_obj,
+    assay_name,
+    varp_mapping
+  )
+
+  .from_Seurat_process_uns(
+    adata,
+    seurat_obj,
+    assay_name,
+    uns_mapping
+  )
+
+  adata
 }
 
+# trackstatus: class=Seurat, feature=set_obs_names, status=done
+# trackstatus: class=Seurat, feature=set_obs, status=done
 # nolint start: object_name_linter
-.from_Seurat_process_var <- function(seurat_obj, assay_name, var_mapping) {
+.from_Seurat_process_obs <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  obs_mapping
+) {
   # nolint end: object_name_linter
-  assay <- seurat_obj[[assay_name]]
 
-  if (rlang::is_empty(var_mapping)) {
-    return(data.frame(row.names = rownames(seurat_obj)))
+  if (!rlang::is_empty(obs_mapping)) {
+    adata$obs <- seurat_obj[[unlist(obs_mapping)]] |>
+      setNames(names(obs_mapping))
+  } else {
+    # Store an empty data.frame to keep the obs names
+    adata$obs <- data.frame(row.names = colnames(seurat_obj))
+  }
+}
+
+# trackstatus: class=Seurat, feature=set_var_names, status=done
+# trackstatus: class=Seurat, feature=set_var, status=done
+# nolint start: object_name_linter
+.from_Seurat_process_var <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  var_mapping
+) {
+  # nolint end: object_name_linter
+  if (!rlang::is_empty(var_mapping)) {
+    adata$var <- seurat_obj[[assay_name]][[unlist(var_mapping)]] |>
+      setNames(names(var_mapping))
+  } else {
+    # Store an empty data.frame to keep the var names
+    adata$var <- data.frame(row.names = rownames(seurat_obj))
+  }
+}
+
+# trackstatus: class=Seurat, feature=set_layers, status=done
+# nolint start: object_name_linter
+.from_Seurat_process_layers <- function(
+  # nolint end: object_name_linter
+  adata,
+  seurat_obj,
+  assay_name,
+  layers_mapping
+) {
+  if (rlang::is_empty(layers_mapping)) {
+    return(invisible())
   }
 
-  mapped <- assay[[unlist(var_mapping)]]
-  names(mapped) <- names(var_mapping)
+  adata$layers <- purrr::map(layers_mapping, function(.layer) {
+    to_py_matrix(
+      SeuratObject::LayerData(seurat_obj, assay = assay_name, layer = .layer)
+    )
+  })
+}
 
-  mapped
+# trackstatus: class=Seurat, feature=set_obsm, status=wip
+# nolint start: object_name_linter
+.from_Seurat_process_obsm <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  obsm_mapping
+) {
+  # nolint end: object_name_linter
+  if (rlang::is_empty(obsm_mapping)) {
+    return(invisible())
+  }
+
+  adata$obsm <- purrr::imap(obsm_mapping, function(.mapping, .idx) {
+    if (!is.character(.mapping) || length(.mapping) != 2) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg obsm_mapping} must be a {.cls character}",
+          "vector of length 2"
+        ),
+        "i" = paste(
+          "{.code obsm_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot == "reductions") {
+      SeuratObject::Embeddings(seurat_obj, key)
+    } else if (slot == "misc") {
+      SeuratObject::Misc(seurat_obj, key)
+    }
+  })
+}
+
+# trackstatus: class=Seurat, feature=set_varm, status=wip
+# nolint start: object_name_linter
+.from_Seurat_process_varm <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  varm_mapping
+) {
+  # nolint end: object_name_linter
+  if (rlang::is_empty(varm_mapping)) {
+    return(invisible())
+  }
+
+  adata$varm <- purrr::imap(varm_mapping, function(.mapping, .idx) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg varm_mapping} must be a {.cls character}",
+          "vector of length 2 or 3"
+        ),
+        "i" = paste(
+          "{.code varm_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot == "reductions") {
+      SeuratObject::Loadings(seurat_obj, key)
+    } else if (slot == "misc") {
+      varm_data <- SeuratObject::Misc(seurat_obj, key)
+      if (length(.mapping) == 3) {
+        varm_data <- varm_data[[.mapping[3]]]
+      }
+      varm_data
+    }
+  })
+}
+
+# trackstatus: class=Seurat, feature=set_obsp, status=wip
+# nolint start: object_name_linter
+.from_Seurat_process_obsp <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  obsp_mapping
+) {
+  # nolint end: object_name_linter
+  if (rlang::is_empty(obsp_mapping)) {
+    return(invisible())
+  }
+
+  adata$obsp <- purrr::imap(obsp_mapping, function(.mapping, .idx) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg obsp_mapping} must be a {.cls character}",
+          "vector of length 2 or 3"
+        ),
+        "i" = paste(
+          "{.code obsp_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot == "graphs") {
+      as(seurat_obj[[key]], "sparseMatrix")
+    } else if (slot == "misc") {
+      obsp_data <- SeuratObject::Misc(seurat_obj, key)
+      if (length(.mapping) == 3) {
+        obsp_data <- obsp_data[[.mapping[3]]]
+      }
+      obsp_data
+    }
+  })
+}
+
+# trackstatus: class=Seurat, feature=set_varp, status=wip
+# nolint start: object_name_linter
+.from_Seurat_process_varp <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  varp_mapping
+) {
+  # nolint end: object_name_linter
+  if (rlang::is_empty(varp_mapping)) {
+    return(invisible())
+  }
+
+  adata$varp <- purrr::imap(varp_mapping, function(.mapping, .idx) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg varp_mapping} must be a {.cls character}",
+          "vector of length 2 or 3"
+        ),
+        "i" = paste(
+          "{.code varp_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot == "misc") {
+      varp_data <- SeuratObject::Misc(seurat_obj, key)
+      if (length(.mapping) == 3) {
+        varp_data <- varp_data[[.mapping[3]]]
+      }
+      varp_data
+    }
+  })
+}
+
+# trackstatus: class=Seurat, feature=set_uns, status=wip
+# nolint start: object_name_linter
+.from_Seurat_process_uns <- function(
+  adata,
+  seurat_obj,
+  assay_name,
+  uns_mapping
+) {
+  # nolint end: object_name_linter
+  if (rlang::is_empty(uns_mapping)) {
+    return(invisible())
+  }
+
+  adata$uns <- purrr::imap(uns_mapping, function(.mapping, .idx) {
+    if (
+      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
+    ) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg uns_mapping} must be a {.cls character}",
+          "vector of length 2 or 3"
+        ),
+        "i" = paste(
+          "{.code uns_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot == "misc") {
+      uns_data <- SeuratObject::Misc(seurat_obj, key)
+      if (length(.mapping) == 3) {
+        uns_data <- uns_data[[.mapping[3]]]
+      }
+      uns_data
+    }
+  })
 }
 
 # nolint start: object_name_linter object_length_linter
@@ -1086,7 +1166,7 @@ from_Seurat <- function(
       next
     }
 
-    obsm_mapping[[paste0("X_", reduction_name)]] <- c(
+    obsm_mapping[[reduction_name]] <- c(
       "reductions",
       reduction_name
     )
