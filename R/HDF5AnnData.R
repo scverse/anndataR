@@ -288,93 +288,104 @@ HDF5AnnData <- R6::R6Class(
       # store compression for later use
       private$.compression <- compression
 
-      if (is.character(file) && !file.exists(file)) {
-        # store private values
-        private$.h5obj <- hdf5r::H5File$new(file, mode = "w-")
-        private$.close_on_finalize <- TRUE
+      # check whether file needs to be closed on finalize
+      private$.close_on_finalize <- is.character(file)
 
-        # Determine initial obs and var
-        shape <- get_shape(obs, var, X, shape)
-        obs <- get_initial_obs(obs, X, shape)
-        var <- get_initial_var(var, X, shape)
-
-        # Create an empty H5AD
-        write_empty_h5ad(private$.h5obj, obs, var, compression)
-
-        # set other slots
-        if (!is.null(X)) {
-          self$X <- X
-        }
-        if (!is.null(layers)) {
-          self$layers <- layers
-        }
-        if (!is.null(obsm)) {
-          self$obsm <- obsm
-        }
-        if (!is.null(varm)) {
-          self$varm <- varm
-        }
-        if (!is.null(obsp)) {
-          self$obsp <- obsp
-        }
-        if (!is.null(varp)) {
-          self$varp <- varp
-        }
-        if (!is.null(uns)) {
-          self$uns <- uns
-        }
-      } else {
-
-        arg_list <- list(
-          X = X,
-          obs = obs,
-          var = var,
-          layers = layers,
-          obsm = obsm,
-          varm = varm,
-          obsp = obsp,
-          varp = varp,
-          uns = uns,
-          shape = shape
-        )
-        for (arg_name in names(arg_list)) {
-          arg_value <- arg_list[[arg_name]]
-          if (!is.null(arg_value)) {
-            cli_abort(c(
-              "Most other arguments must be {.val NULL} when loading an existing {.var .h5ad} file",
-              "i" = "{.arg {arg_name}} is {.obj_type_friendly arg_value}"
-            ))
-          }
-        }
-
-        open_hdf5_file <- is.character(file)
-        if (open_hdf5_file) {
-          file <- hdf5r::H5File$new(file, mode = mode)
-        }
-
-        if (!inherits(file, "H5File")) {
+      # check whether file already exists
+      if (is.character(file)) {
+        if (!file.exists(file) && mode %in% c("r", "r+")) {
           cli_abort(
             paste(
-              "{.arg file} must be a character string or a {.cls H5File} object,",
-              "but is a {.cls {class(file)}}"
-            )
+              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
+              "If you want to create a new file, use a different mode (e.g. 'w-').",
+              "See {.help read_h5ad} or {.help write_h5ad} for more information."
+            ),
+            call = rlang::caller_env()
           )
         }
 
-        # Check the file is a valid H5AD
-        attrs <- hdf5r::h5attributes(file)
-
-        if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-          cli_abort(c(
-            "H5AD encoding information is missing",
-            "i" = "This file may have been created with Python {.pkg anndata<0.8.0}"
-          ))
+        if (file.exists(file) && mode %in% c("w-", "x")) {
+          cli_abort(
+            paste(
+              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
+              "If you want to overwrite the file, use a different mode (e.g. 'w').",
+              "See {.help read_h5ad} or {.help write_h5ad} for more information."
+            ),
+            call = rlang::caller_env()
+          )
         }
 
-        # Set the file path
-        private$.h5obj <- file
-        private$.close_on_finalize <- open_hdf5_file
+        file <- hdf5r::H5File$new(file, mode = mode)
       }
+
+      # type check
+      if (!inherits(file, "H5File")) {
+        cli_abort(
+          paste(
+            "{.arg file} must be a {.cls character} or a {.cls hdf5r::H5File} object,",
+            "but is a {.cls {class(file)}}"
+          )
+        )
+      }
+
+      # detect file mode
+      is_readonly <- file$get_intent() == "H5F_ACC_RDONLY"
+      is_empty <- length(hdf5r::list.groups(file)) == 0L &&
+        length(hdf5r::list.datasets(file)) == 0L &&
+        length(hdf5r::list.attributes(file)) == 0L &&
+        length(hdf5r::list.objects(file)) == 0L
+
+      if (!is_readonly) {
+        if (!is_empty) {
+          cli_warn(
+            paste(
+              "File is opened in read/write mode.",
+              "Use with caution, as this can lead to data corruption."
+            )
+          )
+        } else {
+          # initialise AnnData
+          shape <- get_shape(obs, var, X, shape)
+          obs <- get_initial_obs(obs, X, shape)
+          var <- get_initial_var(var, X, shape)
+          write_empty_h5ad(file, obs, var, compression)
+        }
+      }
+
+      # File is supposed to exist by now. Check if it is a valid H5AD file
+      attrs <- hdf5r::h5attributes(file)
+      if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
+        cli_abort(c(
+          "File {.file {file}} is not a valid H5AD file.",
+          i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
+        ))
+      }
+
+      # Set the file path
+      private$.h5obj <- file
+
+      if (is_readonly) {
+        # if any of these variables are not NULL, throw an error
+        are_null <- sapply(.anndata_slots, function(x) is.null(get(x)))
+        if (!all(are_null)) {
+          cli_abort(
+            paste0(
+              "Error trying to write data (",
+              paste(.anndata_slots[!are_null], collapse = ", "),
+              ") to an H5AD file opened in read-only mode."
+            )
+          )
+        }
+      } else {
+        for (slot in .anndata_slots) {
+          value <- get(slot)
+          if (!is.null(value)) {
+            self[[slot]] <- value
+          }
+        }
+      }
+
+      self
     },
 
     #' @description Close the HDF5 file

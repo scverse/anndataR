@@ -1,15 +1,11 @@
-known_issues <- read_known_issues()
-
-ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
-ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
-ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
-
 skip_if_not_installed("SingleCellExperiment")
 library(SingleCellExperiment)
 
-###############
-# TEST TO_SCE #
-###############
+known_issues <- read_known_issues()
+
+ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 sce <- ad$to_SingleCellExperiment()
 
@@ -175,7 +171,19 @@ test_that("to_SCE retains pca dimred", {
   )
 })
 
-# overwrite ad, maybe this should be tested differently
+# TODO gracefully failing
+
+skip_if_not_installed("SingleCellExperiment")
+library(SingleCellExperiment)
+
+known_issues <- read_known_issues()
+
+ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+
+# TODO: Build an SCE rather than converting
+sce <- ad$to_SingleCellExperiment()
 ad <- from_SingleCellExperiment(sce)
 
 test_that("from_SCE retains observatoins and features", {
@@ -329,16 +337,17 @@ test_that("from_SCE retains pca dimred", {
   )
   skip_if(!is.null(msg), message = msg)
 
+  print(ad)
+  print(sce)
+
   expect_true("X_pca" %in% names(ad$obsm))
-  expect_true("pcas" %in% names(ad$varm))
+  expect_true("X_pca" %in% names(ad$varm))
   expect_equal(
-    sampleFactors(reducedDims(sce)$pca),
+    sampleFactors(reducedDims(sce)$X_pca),
     ad$obsm[["X_pca"]]
   )
   expect_equal(
-    featureLoadings(reducedDims(sce)$pca),
-    ad$varm[["pcas"]]
+    featureLoadings(reducedDims(sce)$X_pca),
+    ad$varm[["X_pca"]]
   )
 })
-
-# TODO gracefully failing

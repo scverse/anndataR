@@ -85,8 +85,8 @@ SingleCellExperiment to an AnnData object.
 library(SingleCellExperiment)
 sce <- SingleCellExperiment(
   assays = list(counts = matrix(1:5, 5L, 3L)),
-  colData = DataFrame(cell = 1:3),
-  rowData = DataFrame(gene = 1:5)
+  colData = DataFrame(cell = 1:3, row.names = paste0("Cell", 1:3)),
+  rowData = DataFrame(gene = 1:5, row.names = paste0("Gene", 1:5))
 )
 from_SingleCellExperiment(sce, "InMemory")
 
