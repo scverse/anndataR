@@ -8,7 +8,8 @@ write_h5ad(
   object,
   path,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults 
 \item \code{w} creates a file, truncating any existing ones
 \item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
 }}
+
+\item{overwrite}{Whether or not to overwrite \code{path} if it already exists}
 }
 \value{
 \code{path} invisibly

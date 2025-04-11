@@ -432,9 +432,8 @@ HDF5AnnData <- R6::R6Class(
 #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5),
 #' )
-#' to_HDF5AnnData(ad, "test.h5ad")
-#' # remove file
-#' file.remove("test.h5ad")
+#' h5ad_file <- tempfile(fileext = ".h5ad")
+#' to_HDF5AnnData(ad, h5ad_file)
 # nolint start: object_name_linter
 to_HDF5AnnData <- function(
   # nolint end: object_name_linter
