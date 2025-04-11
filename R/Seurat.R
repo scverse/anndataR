@@ -311,22 +311,11 @@ to_Seurat <- function(
 
     misc_slot <- misc[1]
     misc_key <- misc[2]
-    expected_slots <- c(
-      "X",
-      "layers",
-      "obs",
-      "obsm",
-      "obsp",
-      "var",
-      "varm",
-      "varp",
-      "uns"
-    )
-    if (!misc_slot %in% expected_slots) {
+    if (!misc_slot %in% .anndata_slots) {
       cli_abort(c(
         paste(
           "The first element in each item of {.arg misc_mapping}",
-          "must be one of: {.or {.val {expected_slots}}}"
+          "must be one of: {.or {.val {anndata_slots}}}"
         ),
         "i" = "{.code misc_mapping[[{i}]][1]}: {.val {misc_slot}}"
       ))
