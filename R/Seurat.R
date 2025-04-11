@@ -217,7 +217,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- Matrix::t(adata$layers[[from]])
+      ) <- to_R_matrix(adata$layers[[from]])
     }
   }
 
@@ -351,30 +351,12 @@ to_Seurat <- function(
 
   layer_name <- mapping[[key]]
 
-  if (is.null(layer_name)) {
-    return(Matrix::t(adata$X))
-  }
-
-  if (!.to_seurat_is_atomic_character(layer_name)) {
-    cli_abort(
-      "{.arg layer_name} must be a {.cls character} vector of length 1",
-      call = rlang::caller_env()
-    )
-  }
-
-  if (!layer_name %in% names(adata$layers)) {
-    cli_abort(
-      "layer name {.val {layer_name}} is not an item in {.code adata$layers}",
-      call = rlang::caller_env()
-    )
-  }
-
-  Matrix::t(adata$layers[[layer_name]])
+  .to_seurat_get_matrix(adata, layer_name)
 }
 
 .to_seurat_get_matrix <- function(adata, layer_name) {
   if (is.null(layer_name)) {
-    return(Matrix::t(adata$X))
+    return(to_R_matrix(adata$X))
   }
 
   if (!.to_seurat_is_atomic_character(layer_name)) {
@@ -390,8 +372,10 @@ to_Seurat <- function(
     )
   }
 
-  Matrix::t(adata$layers[[layer_name]])
+  # check if dgRMatrix and convert to dgCMatrix
+  to_R_matrix(adata$layers[[layer_name]])
 }
+
 
 .to_seurat_process_reduction <- function(
   adata,
@@ -814,7 +798,7 @@ from_Seurat <- function(
 
   # trackstatus: class=Seurat, feature=set_X, status=done
   if (!is.null(x_mapping)) {
-    adata$X <- Matrix::t(SeuratObject::LayerData(seurat_obj, x_mapping))
+    adata$X <- to_py_matrix(SeuratObject::LayerData(seurat_obj, x_mapping))
   }
 
   .from_Seurat_process_layers(
@@ -915,7 +899,7 @@ from_Seurat <- function(
   }
 
   adata$layers <- purrr::map(layers_mapping, function(.layer) {
-    Matrix::t(
+    to_py_matrix(
       SeuratObject::LayerData(seurat_obj, assay = assay_name, layer = .layer)
     )
   })

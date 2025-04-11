@@ -319,7 +319,7 @@ test_that("from_Seurat works with v3 Assays", {
   adata_v3_assay <- from_Seurat(obj_v3_assay)
 
   expect_identical(
-    t(adata_v3_assay$layers$counts),
+    to_R_matrix(adata_v3_assay$layers$counts),
     SeuratObject::GetAssayData(obj_v3_assay, layer = "counts")
   )
 })

@@ -130,9 +130,9 @@ to_SingleCellExperiment <- function(
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
     if (from != "X") {
-      sce_assays[[to]] <- t(adata$layers[[from]])
+      sce_assays[[to]] <- to_R_matrix(adata$layers[[from]])
     } else {
-      sce_assays[[to]] <- t(adata$X)
+      sce_assays[[to]] <- to_R_matrix(adata$X)
     }
   }
 
@@ -528,6 +528,7 @@ from_SingleCellExperiment <- function(
 
 # Convert BioConductor-specific objects to base R objects
 # Convert matrices
+# Convert dgCMatrix to dgRMatrix
 # nolint start: object_length_linter object_name_linter
 .from_SCE_convert <- function(object, transpose = TRUE) {
   # nolint end: object_length_linter object_name_linter
@@ -536,15 +537,14 @@ from_SingleCellExperiment <- function(
   } else if (inherits(object, "SimpleList")) {
     as.list(object)
   } else if (inherits(object, "matrix") || inherits(object, "Matrix")) {
-    m <- if (transpose) {
-      t(object)
+    if (inherits(object, "denseMatrix")) {
+      object <- as.matrix(object)
+    }
+    if (transpose) {
+      to_py_matrix(object)
     } else {
       object
     }
-    if (inherits(m, "denseMatrix")) {
-      m <- as.matrix(m)
-    }
-    m
   } else {
     object
   }
