@@ -1,6 +1,10 @@
 skip_if_not_installed("pizzarr")
 
-file <- system.file("extdata", "example.zarr", package = "anndataR")
+# file <- system.file("extdata", "example.zarr", package = "anndataR")
+file <- system.file("extdata", "example.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(file, exdir = td)
+file <- file.path(td, "example.zarr")
 store <- pizzarr::DirectoryStore$new(file)
 
 test_that("opening H5AD works", {

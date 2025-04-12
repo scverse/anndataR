@@ -248,8 +248,9 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
       # store compression for later use
       private$.compression <- compression
 
-      root <- pizzarr::zarr_open_group(store, path = "/")
-      if (length(root$get_attrs()$to_list()) == 0) {
+      # root <- pizzarr::zarr_open_group(store, path = "/")
+      attrs <- read_zattrs(store)
+      if (length(attrs) == 0) {
 
         # store private values
         private$zarr_store <- store
@@ -286,22 +287,22 @@ ZarrAnnData <- R6::R6Class("ZarrAnnData", # nolint
         }
       } else {
 
-        # get root
-        root <- pizzarr::zarr_open_group(store, path = "/")
+        # # get root
+        # root <- pizzarr::zarr_open_group(store, path = "/")
 
         # Check the file is a valid AnnData format
-        attrs <- root$get_attrs()$to_list()
-
+        # attrs <- root$get_attrs()$to_list()
+        attrs <- read_zattrs(store)
         if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
           stop(
-            "H5AD encoding information is missing. ",
+            "Zarr encoding information is missing. ",
             "This file may have been created with Python anndata<0.8.0."
           )
         }
 
         # Set the file path
         private$zarr_store <- store
-        private$zarr_root <- root
+        # private$zarr_root <- root
 
         # assert other arguments are NULL
         if (!is.null(obs)) {

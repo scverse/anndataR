@@ -10,8 +10,9 @@
 #' @noRd
 read_zarr_encoding <- function(store, name, stop_on_error = TRUE) {
   # Path can be to array or group
-  g <- pizzarr::zarr_open(store, path = name)
-  attrs <- g$get_attrs()$to_list()
+  # g <- pizzarr::zarr_open(store, path = name)
+  # attrs <- g$get_attrs()$to_list()
+  attrs <- read_zattrs(file.path(store,name))
 
   if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
     if (stop_on_error) {
@@ -101,9 +102,11 @@ read_zarr_element <- function(store, name, type = NULL, version = NULL, stop_on_
 }
 
 read_zarr_array <- function(store, name) {
-  zarr_arr <- pizzarr::zarr_open_array(store, path = name)
-  nested_arr <- zarr_arr$get_item("...")
-  return(nested_arr$data)
+  # zarr_arr <- pizzarr::zarr_open_array(store, path = name)
+  # nested_arr <- zarr_arr$get_item("...")
+  # return(nested_arr$data)
+  zarr_arr <- Rarr::read_zarr_array(file.path(store, name))
+  return(zarr_arr)
 }
 
 #' Read Zarr dense array
@@ -169,12 +172,14 @@ read_zarr_sparse_array <- function(store, name, version = "0.1.0",
   version <- match.arg(version)
   type <- match.arg(type)
 
-  g <- pizzarr::zarr_open_group(store, path = name)
+  # g <- pizzarr::zarr_open_group(store, path = name)
+  attrs <- read_zattrs(file.path(store, name))
 
   data <- as.vector(read_zarr_array(store, paste0(name, "/data")))
   indices <- as.vector(read_zarr_array(store, paste0(name, "/indices")))
   indptr <- as.vector(read_zarr_array(store, paste0(name, "/indptr")))
-  shape <- as.vector(unlist(g$get_attrs()$to_list()$shape, use.names = FALSE))
+  # shape <- as.vector(unlist(g$get_attrs()$to_list()$shape, use.names = FALSE))
+  shape <- as.vector(unlist(attrs$shape, use.names = FALSE))
 
   if (type == "csc_matrix") {
     mtx <- Matrix::sparseMatrix(
@@ -331,9 +336,10 @@ read_zarr_categorical <- function(store, name, version = "0.2.0") {
 
   levels <- categories
 
-  g <- pizzarr::zarr_open_group(store, path = name)
+  # g <- pizzarr::zarr_open_group(store, path = name)
 
-  attributes <- g$get_attrs()$to_list()
+  # attributes <- g$get_attrs()$to_list()
+  attributes <- read_zattrs(file.path(store, name))
   ordered <- attributes[["ordered"]]
   if (is.null(ordered) || is.na(ordered)) {
     # This version of {rhdf5} doesn't yet support ENUM type attributes so we
@@ -398,8 +404,9 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
 read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  g <- pizzarr::zarr_open(store)
-  columns <- g$get_store()$listdir(name)
+  # g <- pizzarr::zarr_open(store)
+  # columns <- g$get_store()$listdir(name)
+  columns <- list.dirs(path = file.path(store, name), recursive = FALSE, full.names = FALSE)
 
   # Omit Zarr metadata files from the list of columns.
   columns <- columns[!columns %in% c(".zgroup", ".zattrs", ".zarray")]
@@ -429,9 +436,10 @@ read_zarr_data_frame <- function(store, name, include_index = TRUE,
                                  version = "0.2.0") {
   version <- match.arg(version)
 
-  g <- pizzarr::zarr_open_group(store, path = name)
+  # g <- pizzarr::zarr_open_group(store, path = name)
 
-  attributes <- g$get_attrs()$to_list()
+  # attributes <- g$get_attrs()$to_list()
+  attributes <- read_zattrs(file.path(store, name))
   index_name <- attributes$`_index`
   column_order <- attributes$`column-order`
 
@@ -471,9 +479,10 @@ read_zarr_data_frame <- function(store, name, include_index = TRUE,
 read_zarr_data_frame_index <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  g <- pizzarr::zarr_open_group(store, path = name)
+  # g <- pizzarr::zarr_open_group(store, path = name)
 
-  attributes <- g$get_attrs()$to_list()
+  # attributes <- g$get_attrs()$to_list()
+  attributes <- read_zattrs(file.path(store, name))
   index_name <- attributes$`_index`
 
   read_zarr_element(store, file.path(name, index_name))
