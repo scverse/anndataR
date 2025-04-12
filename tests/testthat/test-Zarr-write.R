@@ -1,6 +1,10 @@
-skip_if_not_installed("pizzarr")
+# skip_if_not_installed("pizzarr")
 
-store <- pizzarr::MemoryStore$new()
+# store <- pizzarr::MemoryStore$new()
+store <- tempfile(fileext = ".zarr")
+dir.create(store)
+create_zarr(gsub(basename(store), "", store),
+            prefix = gsub(".zarr$", "", basename(store)))
 
 test_that("Writing Zarr dense arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)

@@ -153,3 +153,10 @@ write_zattrs <- function(path, new.zattrs = list(), overwrite = TRUE){
 
   return(path)
 }
+
+.format_json <- function(json) {
+  json <- gsub(x = json, pattern = "[", replacement = "[\n    ", fixed = TRUE)
+  json <- gsub(x = json, pattern = "],", replacement = "\n  ],", fixed = TRUE)
+  json <- gsub(x = json, pattern = ", ", replacement = ",\n    ", fixed = TRUE)
+  return(json)
+}
