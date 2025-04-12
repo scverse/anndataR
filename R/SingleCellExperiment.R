@@ -130,9 +130,9 @@ to_SingleCellExperiment <- function(
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
     if (from != "X") {
-      sce_assays[[to]] <- t(adata$layers[[from]])
+      sce_assays[[to]] <- to_R_matrix(adata$layers[[from]])
     } else {
-      sce_assays[[to]] <- t(adata$X)
+      sce_assays[[to]] <- to_R_matrix(adata$X)
     }
   }
 
@@ -368,8 +368,8 @@ to_SCE_guess_reduction <- function(adata) {
 #' library(SingleCellExperiment)
 #' sce <- SingleCellExperiment(
 #'   assays = list(counts = matrix(1:5, 5L, 3L)),
-#'   colData = DataFrame(cell = 1:3),
-#'   rowData = DataFrame(gene = 1:5)
+#'   colData = DataFrame(cell = 1:3, row.names = paste0("Cell", 1:3)),
+#'   rowData = DataFrame(gene = 1:5, row.names = paste0("Gene", 1:5))
 #' )
 #' from_SingleCellExperiment(sce, "InMemory")
 #'
@@ -400,188 +400,64 @@ from_SingleCellExperiment <- function(
 
   if (!(inherits(sce, "SingleCellExperiment"))) {
     cli_abort(
-      "{.arg sce} must be a {.cls SingleCellExperiment} but has class {.cls {class(sce)}}"
+      "{.arg sce} must be a {.cls SingleCellExperiment} but has class {.cls {sce}}"
     )
   }
 
-  if (is.null(layers_mapping)) {
-    layers_mapping <- .from_SCE_guess_layers(sce, x_mapping)
-  }
-  if (is.null(obs_mapping)) {
-    obs_mapping <- .from_SCE_guess_all(sce, SingleCellExperiment::colData)
-  }
-  if (is.null(var_mapping)) {
-    var_mapping <- .from_SCE_guess_all(sce, SingleCellExperiment::rowData)
-  }
-  if (is.null(obsm_mapping)) {
-    obsm_mapping <- .from_SCE_guess_obsm(sce)
-  }
-  if (is.null(varm_mapping)) {
-    varm_mapping <- .from_SCE_guess_varm(sce)
-  }
-  if (is.null(obsp_mapping)) {
-    obsp_mapping <- .from_SCE_guess_obspvarp(
+  # For any mappings that are not set, using the guessing function
+  layers_mapping <- layers_mapping %||% .from_SCE_guess_layers(sce, x_mapping)
+  obs_mapping <- obs_mapping %||%
+    .from_SCE_guess_all(
+      sce,
+      SingleCellExperiment::colData
+    )
+  var_mapping <- var_mapping %||%
+    .from_SCE_guess_all(
+      sce,
+      SingleCellExperiment::rowData
+    )
+  obsm_mapping <- obsm_mapping %||% .from_SCE_guess_obsm(sce)
+  varm_mapping <- varm_mapping %||% .from_SCE_guess_varm(sce)
+  obsp_mapping <- obsp_mapping %||%
+    .from_SCE_guess_obspvarp(
       sce,
       SingleCellExperiment::colPairs
     )
-  }
-  if (is.null(varp_mapping)) {
-    varp_mapping <- .from_SCE_guess_obspvarp(
+  varp_mapping <- varp_mapping %||%
+    .from_SCE_guess_obspvarp(
       sce,
       SingleCellExperiment::rowPairs
     )
-  }
-  if (is.null(uns_mapping)) {
-    uns_mapping <- .from_SCE_guess_all(sce, S4Vectors::metadata)
-  }
+  uns_mapping <- uns_mapping %||% .from_SCE_guess_all(sce, S4Vectors::metadata)
 
-  # fetch generator
   generator <- get_anndata_constructor(output_class)
+  adata <- generator$new(shape = rev(dim(sce)), ...)
 
-  tryCatch(
-    {
-      # get obs
-      # trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
-      obs <- .from_SCE_process_obsvar(
-        sce,
-        obs_mapping,
-        SingleCellExperiment::colData
-      )
+  # Fill in slots in the object
+  .from_SCE_process_obs(adata, sce, obs_mapping)
 
-      # get var
-      # trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
-      var <- .from_SCE_process_obsvar(
-        sce,
-        var_mapping,
-        SingleCellExperiment::rowData
-      )
+  .from_SCE_process_var(adata, sce, var_mapping)
 
-      adata <- generator$new(
-        obs = obs,
-        var = var,
-        ...
-      )
+  # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
+  if (!is.null(x_mapping)) {
+    adata$X <- .from_SCE_convert(
+      SummarizedExperiment::assay(sce, x_mapping, withDimnames = FALSE)
+    )
+  }
 
-      # fetch X
-      # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
-      if (!is.null(x_mapping)) {
-        adata$X <- .from_SCE_convert(SummarizedExperiment::assay(
-          sce,
-          x_mapping,
-          withDimnames = FALSE
-        ))
-      }
+  .from_SCE_process_layers(adata, sce, layers_mapping)
 
-      # fetch layers
-      # trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
+  .from_SCE_process_obsm(adata, sce, obsm_mapping)
 
-      adata$layers <- .from_SCE_process_simple_mapping(
-        sce,
-        layers_mapping,
-        SummarizedExperiment::assays
-      )
+  .from_SCE_process_varm(adata, sce, varm_mapping)
 
-      # trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
-      for (i in seq_along(obsm_mapping)) {
-        obsm <- obsm_mapping[[i]]
-        obsm_name <- names(obsm_mapping)[[i]]
+  .from_SCE_process_obsp(adata, sce, obsp_mapping)
 
-        if (!is.character(obsm) || length(obsm) != 2) {
-          cli_abort(c(
-            "Each item in {.arg obsm_mapping} must be a {.cls character} vector of length 2",
-            "i" = "{.code obsm_mapping[[{i}]]} is {.obj_type_friendly {obsm}}"
-          ))
-        }
+  .from_SCE_process_varp(adata, sce, varp_mapping)
 
-        obsm_slot <- obsm[[1]]
-        obsm_key <- obsm[[2]]
+  .from_SCE_process_uns(adata, sce, uns_mapping)
 
-        adata$obsm[[obsm_name]] <- .from_SCE_process_obsm_reduction(
-          sce,
-          obsm_slot,
-          obsm_key
-        )
-      }
-
-      # fetch varm
-      # trackstatus: class=SingleCellExperiment, feature=set_varm, status=wip
-      for (i in seq_along(varm_mapping)) {
-        varm <- varm_mapping[[i]]
-        varm_name <- names(varm_mapping)[[i]]
-
-        if (!is.character(varm) || length(varm) != 2) {
-          cli_abort(c(
-            "Each item in {.arg varm_mapping} must be a {.cls character} vector of length 2",
-            "i" = "{.code varm_mapping[[{i}]]} is {.obj_type_friendly {varm}}"
-          ))
-        }
-
-        varm_slot <- varm[[1]]
-        varm_key <- varm[[2]]
-
-        if (varm_slot != "reducedDim") {
-          cli_abort(c(
-            paste(
-              "The first element in each item of {.arg varm_mappings}",
-              "must be {.val reducedDims}"
-            ),
-            "i" = "{.code varm_mapping[[{i}]][1]}: {.val {varm_slot}}"
-          ))
-        }
-
-        if (
-          !inherits(
-            SingleCellExperiment::reducedDims(sce)[[varm_key]],
-            "LinearEmbeddingMatrix"
-          )
-        ) {
-          cli_abort(paste(
-            "{.val {varm_mapping}} must be a {.cls LinearEmbeddingMatrix} but",
-            "has class {.cls {SingleCellExperiment::reducedDims(sce)[[varm_key]]}}"
-          ))
-        }
-
-        adata$varm[[varm_name]] <- SingleCellExperiment::featureLoadings(
-          SingleCellExperiment::reducedDim(sce, varm_key)
-        )
-      }
-
-      # fetch obsp
-      # trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
-      adata$obsp <- .from_SCE_process_pairs(
-        sce,
-        obsp_mapping,
-        SingleCellExperiment::colPairs,
-        asSparse = TRUE
-      )
-
-      # fetch varp
-      # trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
-      adata$varp <- .from_SCE_process_pairs(
-        sce,
-        varp_mapping,
-        SingleCellExperiment::rowPairs,
-        asSparse = TRUE
-      )
-
-      # fetch uns
-      # trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
-      adata$uns <- .from_SCE_process_simple_mapping(
-        sce,
-        uns_mapping,
-        S4Vectors::metadata,
-        convert = FALSE
-      )
-
-      adata
-    },
-    error = function(e) {
-      if (output_class == "HDF5AnnData") {
-        on.exit(cleanup_HDF5AnnData(adata))
-      }
-      cli_abort(conditionMessage(e))
-    }
-  )
+  adata
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -652,104 +528,207 @@ from_SingleCellExperiment <- function(
 
 # Convert BioConductor-specific objects to base R objects
 # Convert matrices
+# Convert dgCMatrix to dgRMatrix
 # nolint start: object_length_linter object_name_linter
-.from_SCE_convert <- function(object) {
+.from_SCE_convert <- function(object, transpose = TRUE) {
   # nolint end: object_length_linter object_name_linter
   if (inherits(object, "DataFrame")) {
     as.data.frame(object)
   } else if (inherits(object, "SimpleList")) {
     as.list(object)
   } else if (inherits(object, "matrix") || inherits(object, "Matrix")) {
-    m <- t(object)
-    if (inherits(m, "denseMatrix")) {
-      m <- as.matrix(m)
+    if (inherits(object, "denseMatrix")) {
+      object <- as.matrix(object)
     }
-    m
+    if (transpose) {
+      to_py_matrix(object)
+    } else {
+      object
+    }
   } else {
     object
   }
 }
 
-# nolint start: object_length_linter object_name_linter
-.from_SCE_process_obsvar <- function(sce, mapping, slot, convert = TRUE) {
-  # nolint end: object_length_linter object_name_linter
-  mapped <- .from_SCE_process_simple_mapping(sce, mapping, slot, convert)
+# trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
+# nolint start: object_name_linter
+.from_SCE_process_obs <- function(adata, sce, obs_mapping) {
+  # nolint end: object_name_linter
 
-  # Ensure that the obs & var retain rownames, even if there are no columns
-  # in the DataFrame.
-  if (inherits(mapped, "list") && length(mapped) == 0) {
-    if (!is.null(rownames(slot(sce)))) {
-      mapped <- as.data.frame(rownames(slot(sce)))
-      rownames(mapped) <- rownames(slot(sce))
-      mapped[, 1] <- NULL
+  if (!rlang::is_empty(obs_mapping)) {
+    adata$obs <- SummarizedExperiment::colData(sce) |>
+      as.data.frame() |>
+      setNames(names(obs_mapping))
+  } else {
+    # Store an empty data.frame to keep the obs names
+    if (is.null(colnames(sce))) {
+      adata$obs <- data.frame(matrix(nrow = ncol(sce), ncol = 0))
     } else {
-      # We will infer rownames
-      inferred_rownames <- paste0("", seq_len(nrow(slot(sce))))
-      mapped <- as.data.frame(inferred_rownames)
-      rownames(mapped) <- inferred_rownames
-      mapped[, 1] <- NULL
+      adata$obs <- data.frame(row.names = colnames(sce))
     }
+  }
+}
+
+# trackstatus: class=SingleCellExperiment, feature=set_var_names, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
+# nolint start: object_name_linter
+.from_SCE_process_var <- function(adata, sce, var_mapping) {
+  # nolint end: object_name_linter
+
+  if (!rlang::is_empty(var_mapping)) {
+    adata$var <- SummarizedExperiment::rowData(sce) |>
+      as.data.frame() |>
+      setNames(names(var_mapping))
   } else {
-    mapped <- as.data.frame(mapped)
-    rownames(mapped) <- rownames(slot(sce))
+    # Store an empty data.frame to keep the var names
+    if (is.null(rownames(sce))) {
+      adata$var <- data.frame(matrix(nrow = nrow(sce), ncol = 0))
+    } else {
+      adata$var <- data.frame(row.names = rownames(sce))
+    }
+  }
+}
+
+# trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
+# nolint start: object_length_linter object_name_linter
+.from_SCE_process_layers <- function(adata, sce, layers_mapping) {
+  # nolint end: object_length_linter object_name_linter
+  if (rlang::is_empty(layers_mapping)) {
+    return(invisible())
   }
 
-  mapped
-}
-# nolint start: object_length_linter object_name_linter
-.from_SCE_process_simple_mapping <- function(
-  # nolint end: object_length_linter object_name_linter
-  sce,
-  mapping,
-  slot,
-  convert = TRUE
-) {
-  mapped <- NULL
-  mapped <- lapply(seq_along(mapping), function(i) {
-    element <- slot(sce)[[mapping[[i]]]]
-    if (convert) {
-      element <- .from_SCE_convert(element)
-    }
-    element
+  adata$layers <- purrr::map(layers_mapping, function(.layer) {
+    .from_SCE_convert(SummarizedExperiment::assay(sce, .layer))
   })
-  names(mapped) <- names(mapping)
-
-  .from_SCE_convert(mapped)
 }
 
-# nolint start: object_length_linter object_name_linter
-.from_SCE_process_pairs <- function(sce, mapping, slot, asSparse = TRUE) {
-  # nolint end: object_length_linter object_name_linter
-  if (!inherits(sce, "SingleCellExperiment")) {
-    return(list())
-  }
-  pairs <- NULL
-  # check if mapping contains all columns of slot
-  if (length(setdiff(names(slot(sce)), names(mapping))) == 0) {
-    pairs <- slot(sce, asSparse = asSparse)
-  } else {
-    pairs <- lapply(seq_along(mapping), function(i) {
-      .from_SCE_convert(slot(sce, asSparse = asSparse)[[mapping[[i]]]])
-    })
-    names(pairs) <- names(mapping)
+# trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
+# nolint start: object_name_linter
+.from_SCE_process_obsm <- function(adata, sce, obsm_mapping) {
+  # nolint end: object_name_linter
+  if (rlang::is_empty(obsm_mapping)) {
+    return(invisible())
   }
 
-  .from_SCE_convert(pairs)
+  adata$obsm <- purrr::imap(obsm_mapping, function(.mapping, .idx) {
+    if (!is.character(.mapping) || length(.mapping) != 2) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg obsm_mapping} must be a {.cls character}",
+          "vector of length 2"
+        ),
+        "i" = paste(
+          "{.code obsm_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot != "reducedDim") {
+      cli_abort(c(
+        "The first item in each {.arg obsm_mapping} must be {.val reducedDim}",
+        "i" = "{.code obsm_mapping[[{.val { .idx }}]][1]}: {.val {slot}}"
+      ))
+    }
+
+    reduction <- SingleCellExperiment::reducedDim(sce, key)
+    if (inherits(reduction, "LinearEmbeddingMatrix")) {
+      SingleCellExperiment::sampleFactors(reduction)
+    } else {
+      reduction
+    }
+  })
 }
 
+# trackstatus: class=SingleCellExperiment, feature=set_varm, status=wip
+# nolint start: object_name_linter
+.from_SCE_process_varm <- function(adata, sce, varm_mapping) {
+  # nolint end: object_name_linter
+  if (rlang::is_empty(varm_mapping)) {
+    return(invisible())
+  }
+
+  adata$varm <- purrr::imap(varm_mapping, function(.mapping, .idx) {
+    if (!is.character(.mapping) || length(.mapping) != 2) {
+      cli_abort(c(
+        paste(
+          "Each item in {.arg varm_mapping} must be a {.cls character}",
+          "vector of length 2"
+        ),
+        "i" = paste(
+          "{.code varm_mapping[[{.val { .idx }}]]} is",
+          "{.obj_type_friendly { .mapping }}"
+        )
+      ))
+    }
+
+    slot <- .mapping[1]
+    key <- .mapping[2]
+
+    if (slot != "reducedDim") {
+      cli_abort(c(
+        "The first item in each {.arg varm_mapping} must be {.val reducedDim}",
+        "i" = "{.code varm_mapping[[{.val { .idx }}]][1]}: {.val {slot}}"
+      ))
+    }
+
+    reduction <- SingleCellExperiment::reducedDim(sce, key)
+    if (!inherits(reduction, "LinearEmbeddingMatrix")) {
+      cli_abort(paste(
+        "{.code reducedDim(sce, {.val key}} must be a {.cls LinearEmbeddingMatrix}",
+        "but has class {.cls {reduction}}"
+      ))
+    }
+
+    SingleCellExperiment::featureLoadings(reduction)
+  })
+}
+
+# trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
 # nolint start: object_length_linter object_name_linter
-.from_SCE_process_obsm_reduction <- function(sce, slot, key) {
+.from_SCE_process_obsp <- function(adata, sce, obsp_mapping) {
   # nolint end: object_length_linter object_name_linter
-  if (slot != "reducedDim") {
-    cli_abort(
-      "{.arg slot} must be {.val reducedDim}"
+  if (rlang::is_empty(obsp_mapping)) {
+    return(invisible())
+  }
+
+  adata$obsp <- purrr::map(obsp_mapping, function(.obsp) {
+    .from_SCE_convert(
+      SingleCellExperiment::colPair(sce, .obsp, asSparse = TRUE),
+      transpose = FALSE
     )
+  })
+}
+
+# trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
+# nolint start: object_length_linter object_name_linter
+.from_SCE_process_varp <- function(adata, sce, varp_mapping) {
+  # nolint end: object_length_linter object_name_linter
+  if (rlang::is_empty(varp_mapping)) {
+    return(invisible())
   }
 
-  reduction <- SingleCellExperiment::reducedDim(sce, key)
-  if (inherits(reduction, "LinearEmbeddingMatrix")) {
-    SingleCellExperiment::sampleFactors(reduction)
-  } else {
-    reduction
+  adata$varp <- purrr::map(varp_mapping, function(.varp) {
+    .from_SCE_convert(
+      SingleCellExperiment::rowPair(sce, .varp, asSparse = TRUE),
+      transpose = FALSE
+    )
+  })
+}
+
+# trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
+# nolint start: object_length_linter object_name_linter
+.from_SCE_process_uns <- function(adata, sce, uns_mapping) {
+  # nolint end: object_length_linter object_name_linter
+  if (rlang::is_empty(uns_mapping)) {
+    return(invisible())
   }
+
+  adata$uns <- purrr::map(uns_mapping, function(.uns) {
+    S4Vectors::metadata(sce)[[.uns]]
+  })
 }

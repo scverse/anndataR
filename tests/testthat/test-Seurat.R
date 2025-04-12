@@ -3,18 +3,14 @@ test_that("to_Seurat() fails gracefully", {
   expect_error(to_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
 })
 
-known_issues <- read_known_issues()
-
-ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
-ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
-ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
-
 skip_if_not_installed("Seurat")
 library(Seurat)
 
-##################
-# TEST TO_SEURAT #
-##################
+known_issues <- read_known_issues()
+
+ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 seu <- ad$to_Seurat()
 
@@ -136,14 +132,10 @@ test_that("to_Seurat retains pca dimred", {
   )
 })
 
-
-####################
-# TEST FROM_SEURAT #
-####################
-
 skip_if_not_installed("Seurat")
-
 library(Seurat)
+
+known_issues <- read_known_issues()
 
 suppressWarnings({
   counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
@@ -327,7 +319,7 @@ test_that("from_Seurat works with v3 Assays", {
   adata_v3_assay <- from_Seurat(obj_v3_assay)
 
   expect_identical(
-    t(adata_v3_assay$layers$counts),
+    to_R_matrix(adata_v3_assay$layers$counts),
     SeuratObject::GetAssayData(obj_v3_assay, layer = "counts")
   )
 })
