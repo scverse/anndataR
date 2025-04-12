@@ -6,7 +6,7 @@
 \usage{
 from_Seurat(
   seurat_obj,
-  output_class = c("InMemoryAnnData", "HDF5AnnData"),
+  output_class = c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData"),
   assay_name = NULL,
   x_mapping = NULL,
   layers_mapping = NULL,

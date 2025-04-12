@@ -725,7 +725,7 @@ to_Seurat <- function(
 from_Seurat <- function(
   # nolint end: object_name_linter
   seurat_obj,
-  output_class = c("InMemoryAnnData", "HDF5AnnData"),
+  output_class = c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData"),
   assay_name = NULL,
   x_mapping = NULL,
   layers_mapping = NULL,
