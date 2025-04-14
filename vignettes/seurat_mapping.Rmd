@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 ```
 
 
-**{anndataR}** provides a way to convert between `AnnData` and `Seurat` objects. This vignette will provide a detailed look 
+**{anndataR}** provides a way to convert between `AnnData` and `Seurat` objects. This vignette will provide a detailed look
 into the mapping between the two objects.
 The conversion can be done with or without extra user input as to which fields and slots of the respective objects should be
 converted and put into the other object.
@@ -64,7 +64,7 @@ ad$obsp[["connectivities_sparse"]] <- ad$obsp[["numeric_csparse"]]
 # Convert AnnData objects to Seurat objects
 
 
-By default, anndataR will try to guess a reasonable mapping. If you do not want this to happen, and you want 
+By default, anndataR will try to guess a reasonable mapping. If you do not want this to happen, and you want
 nothing of that specific slot to be converted, you can pass an empty list.
 
 We will first detail how anndataR guesses a reasonable mapping. In the section after that, we will detail how you can provide
@@ -166,7 +166,7 @@ seurat_object[["RNA"]][[]]
 
 ### reduction_mapping
 
-Reductions are a bit more complicated. Some reductions have a standard way of being saved in an AnnData objecct, some don't.
+Reductions are a bit more complicated. Some reductions have a standard way of being saved in an AnnData object, some don't.
 We assume that a PCA will always be stored as `X_pca` in the `obsm` slot, with the loadings as `PCs` in the `varm` slot.
 For other reductions, we will assume that they will start with `X_` in the `obsm` slot, with the characters after the `X_` being the name of the reduction.
 Elements in the `obsm` slot not starting with `X_` will not be converted.
@@ -258,7 +258,7 @@ Layers(seurat_obj, assay = "RNA")
 You can provide a mapping for object-level metadata in Seurat, which corresponds to cell-level metadata,
 and thus with the `obs` slot in the AnnData object.
 
-The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what the 
+The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what the
 columns are called in the `obs` slot of the anndata object.
 
 ```{r to_Seurat explicit_object_metadata}
@@ -274,7 +274,7 @@ seurat_obj[[]]
 You can provide a mapping for assay-level metadata, which corresponds to gene-level metadata, and with the
 `var` slot in the AnnData object.
 
-The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what 
+The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what
 the metadata is called in the `var` slot of the anndata object.
 
 ```{r to_Seurat explicit_assay_metadata}
@@ -386,34 +386,34 @@ By default it's the `DefaultAssay`.
 ad <- from_Seurat(
   obj,
   assay_name = NULL,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 ad
 ```
 
 ### x_mapping
-By default, no data will be put into the `X` slot of the AnnData object. If you want to put the data from a Seurat layer, such as 
+By default, no data will be put into the `X` slot of the AnnData object. If you want to put the data from a Seurat layer, such as
 `counts` or `data` into the `X` slot, you need to provide a mapping.
 
 ```{r fsi_x_mapping}
 ad <- from_Seurat(
   obj,
   assay_name = "RNA",
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 ad$X
 ```
@@ -426,13 +426,13 @@ By default, all layers in the Seurat object will be copied to the AnnData object
 ```{r fsi_layers_mapping}
 ad <- from_Seurat(
   obj,
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 
 names(ad$layers)
@@ -446,13 +446,13 @@ By default, all information in the `meta.data` slot of the Seurat object is copi
 ```{r fsi_obs_mapping}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 names(ad$obs)
 ```
@@ -464,13 +464,13 @@ By default, all information in the `meta.data` slot of the specified assay of th
 ```{r fsi_var_mapping}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 names(ad$var)
 ```
@@ -482,33 +482,33 @@ By default, it will prefix the name of all Seurat reductions with `X_`.
 ```{r fsi_obsm_mapping}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  var_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 
 ad
 ```
 
 ### varm_mapping
-The varm slot is used to store multidimensional feature-level annotations. This is mainly used to store the loadings of 
+The varm slot is used to store multidimensional feature-level annotations. This is mainly used to store the loadings of
 dimensionality reductions.
 By default, all loadings of dimensionality reductions will be copied to the `varm` slot of the AnnData object.
 
 ```{r fsi_varm_mapping}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 
 ad$varm
@@ -521,13 +521,13 @@ By default, all Seurat graphs are copied to the `obsp` slot of the AnnData objec
 ```{r fsi_obsp_mapping}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 ad$obsp
 ```
@@ -539,13 +539,13 @@ By default, no information is copied to the `varp` slot of the AnnData object.
 ```{r fsi_varp_mapping}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  uns_mapping = c()
 )
 ad$varp
 ```
@@ -557,13 +557,13 @@ By default all information in the `misc` slot of the Seurat object is copied to 
 ```{r fsi_uns_mapping}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
+  layers_mapping = c(),
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c()
 )
 ad$uns
 ```
@@ -571,50 +571,20 @@ ad$uns
 ## Explicit mapping
 
 It's also possible to provide an explicit mapping for the conversion from Seurat to AnnData objects.
-For `layers_mapping`, `obs_mapping` and `var_mapping`, you can 
-provide a named list with the names of the items in the AnnData object as names 
-and the names of the items in the Seurat object as values.  
+For all of the mappings (`layers_mapping`, `obs_mapping`, `var_mapping`, `obsm_mapping`, `varm_mapping`, `obsp_mapping`, `varp_mapping`, and `uns_mapping`),
+you can provide a named vector where the names are the names in the AnnData object and the values are the names in the Seurat object.
 
 ```{r fse_explicit}
 ad <- from_Seurat(
   obj,
-  layers_mapping = list(counts = "counts", data = "data"),
-  obs_mapping = list(metadata1 = "orig.ident", metadata2 = "nCount_RNA"),
-  var_mapping = list(metadata_mean = "vf_vst_counts_mean", metadata_variance = "vf_vst_counts_variance"),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
-)
-ad
-```
-
-### obsm_mapping, varm_mapping, obsp_mapping, varp_mapping, uns_mapping
-The mappings for `obsm`, `varm` and `obsp` all work in the same way.  
-You need to provide a named list, where the name of the list refers to the name of the item in that slot of the AnnData object.  
-The values of the list must themselves be vectors of length 2 (for `obsm`) or 2 or 3 (for `varm`, `obsp`, `varp` and `uns`).  
-The first element of the vector refers to a slot in the the Seurat object and the second element refers to the name of the item in that slot.  
-The third element (if provided) refers to the name of a column in that item.  
-
-For `obsm`, the first element must be `reductions` or `misc`.
-For `varm`, the first element must be `reductions` or `misc`.
-For `obsp`, the first element must be `graphs` or `misc`.
-
-For `varp`, the first element must be `misc`.
-For `uns`, the first element must be `misc`.
-
-```{r fse_explicit_obsm}
-ad <- from_Seurat(
-  obj,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(X_pca = c("reductions", "pca"), X_umap = c("reductions", "umap")),
-  varm_mapping = list(PCs = c("reductions", "pca")),
-  obsp_mapping = list(connectivities = c("graphs", "RNA_nn")),
-  varp_mapping = list(),
-  uns_mapping = list(extra_data = c("misc", "data"))
+  x_mapping = "counts",
+  layers_mapping = c(data = "data"),
+  obs_mapping = c(metadata1 = "orig.ident", metadata2 = "nCount_RNA"),
+  var_mapping = c(metadata_mean = "vf_vst_counts_mean", metadata_variance = "vf_vst_counts_variance"),
+  obsm_mapping = c(X_pca = "pca", X_umap = "umap"),
+  varm_mapping = c(PCs = "pca"),
+  obsp_mapping = c(connectivities = "RNA_nn"),
+  uns_mapping = c(extra_data = "data")
 )
 ad
 ```
