@@ -580,23 +580,31 @@ to_Seurat <- function(
 #' ([SeuratObject::DefaultAssay()]).
 #' @param x_mapping A mapping of a Seurat layer to the AnnData `X` slot. If `NULL`, no data will be copied to the
 #' `X` slot.
-#' @param layers_mapping A named list mapping layer names to the names of the layers in the Seurat object. Each item in
-#' the list must be a character vector of length 1. See section "`$layers` mapping" for more details.
-#' @param obs_mapping A named list mapping obs names to the names of the object-level (cell level) metadata in the
-#' Seurat object. Each item in the list must be a character vector of length 1. See section "`$obs` mapping" for
-#' more details.
-#' @param var_mapping A named list mapping var names to the names of the feature-level metadata in the Seurat object.
-#' Each item in the list must be a character vector of length 1. See section "`$var` mapping" for more details.
-#' @param obsm_mapping A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
-#' the list must be a vector of length 2. See section "`$obsm` mapping" for more details.
-#' @param varm_mapping A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
-#' Each item in the list must be a character vector of length 1. See section "`$varm` mapping" for more details.
-#' @param obsp_mapping A named list mapping graph names to the names of the graphs in the Seurat object.
-#' Each item in the list must be a character vector of length 1. See section "`$obsp` mapping" for more details.
-#' @param varp_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object.
-#' Each item in the list must be a named list with one or two elements. See section "`$varp` mapping" for more details.
-#' @param uns_mapping A named list mapping miscellaneous data to the names of the data in the Seurat object.
-#' Each item in the list must be a named list with one or two elements. See section "`$uns` mapping" for more details.
+#' @param layers_mapping A named vector mapping layer names in AnnData to the names of the layers in the Seurat object.
+#' Each name corresponds to the layer name in AnnData, and each value to the layer name in Seurat.
+#' See section "`$layers` mapping" for more details.
+#' @param obs_mapping A named vector or list mapping obs names in AnnData to the names of the object-level (cell level) metadata in the
+#' Seurat object. Each name corresponds to a column name in AnnData's obs, and each value to a column name in Seurat's cell metadata.
+#' See section "`$obs` mapping" for more details.
+#' @param var_mapping A named vector or list mapping var names in AnnData to the names of the feature-level metadata in the Seurat object.
+#' Each name corresponds to a column name in AnnData's var, and each value to a column name in Seurat's feature metadata.
+#' See section "`$var` mapping" for more details.
+#' @param obsm_mapping A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
+#' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
+#' Example: `obsm_mapping = c(X_pca = "pca", X_umap = "umap")`.
+#' @param varm_mapping A named vector mapping varm keys in AnnData to reduction names in the Seurat object.
+#' Each name corresponds to a key in AnnData's varm, and each value to the name of a reduction in Seurat.
+#' Example: `varm_mapping = c(PCs = "pca")`.
+#' @param obsp_mapping A named vector mapping obsp keys in AnnData to graph names in the Seurat object.
+#' Each name corresponds to a key in AnnData's obsp, and each value to the name of a graph in Seurat.
+#' Example: `obsp_mapping = c(connectivities = "RNA_nn")`.
+#' @param varp_mapping A named vector mapping varp keys in AnnData to misc data names in the Seurat object.
+#' Each name corresponds to a key in AnnData's varp, and each value to the name of misc data in Seurat.
+#' Example: `varp_mapping = c(foo = "foo_data")`.
+#' @param uns_mapping A named vector mapping uns keys in AnnData to misc data names in the Seurat object.
+#' Each name corresponds to a key in AnnData's uns, and each value to the name of misc data in Seurat.
+#' Example: `uns_mapping = c(metadata = "project_meta")`.
+#'
 #' @param ... Additional arguments passed to the generator function.
 #'
 #' @section `$X` mapping:
@@ -643,13 +651,11 @@ to_Seurat <- function(
 #
 #' @section `$obsm` mapping:
 #'
-#' A named list to map Seurat reductions to AnnData `$obsm`.
+#' A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
 #'
-#' Each item in the list must be a vector of length 2,
-#' where the name corresponds to the name of the resulting `$obsm` slot, and the values correspond to the
-#' the location of the data in the Seurat object.
+#' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
 #'
-#' Example: `obsm_mapping = list(pca = c("reductions", "pca"), umap = c("reductions", "umap"))`.
+#' Example: `obsm_mapping = c(pca = "pca", umap = "umap")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_obsms` will be used to guess the obsm mapping as follows:
 #'
@@ -657,12 +663,11 @@ to_Seurat <- function(
 #'
 #' @section `$varm` mapping:
 #'
-#' A named list to map Seurat reduction loadings to AnnData `$varm`.
+#' A named vector mapping varm keys in AnnData to reduction names in the Seurat object.
 #'
-#' Each item in the list must be a character vector of length 2, where the name corresponds to the name of the
-#' resulting `$varm` slot, and the value corresponds to the location of the data in the Seurat object.
+#' Each name corresponds to a key in AnnData's varm, and each value to the name of a reduction in Seurat.
 #'
-#' Example: `varm_mapping = list(PCs = c("reductions", "pca")`.
+#' Example: `varm_mapping = c(PCs = "pca")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_varms` will be used to guess the varm mapping as follows:
 #'
@@ -670,13 +675,11 @@ to_Seurat <- function(
 #'
 #' @section `$obsp` mapping:
 #'
-#' A named list to map Seurat graphs to AnnData `$obsp`.
+#' A named vector mapping obsp keys in AnnData to graph names in the Seurat object.
 #'
-#' Each name in the list corresponds to the name of the resulting `$obsp` slot. Each value must be a character vector
-#' of length 2, where the first element of this vector must be `graphs` or `misc`, and the second element is the name
-#' of the data in the corresponding `graphs` or `misc` slot in the Seurat object.
+#' Each name corresponds to a key in AnnData's obsp, and each value to the name of a graph in Seurat.
 #'
-#' Example: `obsp_mapping = list(connectivities = c("graphs", "RNA_nn"))`.
+#' Example: `obsp_mapping = c(connectivities = "RNA_nn")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_obsps` will be used to guess the obsp mapping as follows:
 #'
@@ -684,11 +687,11 @@ to_Seurat <- function(
 #'
 #' @section `$varp` mapping:
 #'
-#' A named list to map Seurat miscellaneous data to AnnData `$varp`. The name of each item corresponds to the
-#' resulting `$varp` slot, while the value of each item must be a fector which corresponds to the location of the data
-#' in the Seurat object.
+#' A named vector mapping varp keys in AnnData to misc data names in the Seurat object.
 #'
-#' Example: `varp_mapping = list(foo = c("misc", "foo"))`.
+#' Each name corresponds to a key in AnnData's varp, and each value to the name of misc data in Seurat.
+#'
+#' Example: `varp_mapping = c(foo = "foo_data")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_varps` will be used to guess the varp mapping as follows:
 #'
@@ -696,10 +699,11 @@ to_Seurat <- function(
 #'
 #' @section `$uns` mapping:
 #'
-#' A named list to map Seurat miscellaneous data to AnnData `uns`. Each item in the list must be a character of
-#' length 2. The first element must be `"misc"`. The second element is the name of the data in the corresponding slot.
+#' A named vector mapping uns keys in AnnData to misc data names in the Seurat object.
 #'
-#' Example: `uns_mapping = list(foo = c("misc", "foo"))`.
+#' Each name corresponds to a key in AnnData's uns, and each value to the name of misc data in Seurat.
+#'
+#' Example: `uns_mapping = c(metadata = "project_meta")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_uns` will be used to guess the uns mapping as follows:
 #'
@@ -858,6 +862,13 @@ from_Seurat <- function(
   # nolint end: object_name_linter
 
   if (!rlang::is_empty(obs_mapping)) {
+    if (!all(obs_mapping %in% names(seurat_obj[[]]))) {
+      missing <- setdiff(obs_mapping, names(seurat_obj[[]]))
+      cli_abort(paste(
+        "The requested obs item(s) {.val {missing}} do not exist in the Seurat",
+        "object ({.code names(seurat_obj[[]])})"
+      ))
+    }
     adata$obs <- seurat_obj[[unlist(obs_mapping)]] |>
       setNames(names(obs_mapping))
   } else {
@@ -877,6 +888,13 @@ from_Seurat <- function(
 ) {
   # nolint end: object_name_linter
   if (!rlang::is_empty(var_mapping)) {
+    if (!all(var_mapping %in% names(seurat_obj[[assay_name]][[]]))) {
+      missing <- setdiff(var_mapping, names(seurat_obj[[assay_name]][[]]))
+      cli_abort(paste(
+        "The requested var item(s) {.val {missing}} do not exist in the Seurat",
+        "object ({.code names(seurat_obj[[{.val {assay_name}}]][[]])})"
+      ))
+    }
     adata$var <- seurat_obj[[assay_name]][[unlist(var_mapping)]] |>
       setNames(names(var_mapping))
   } else {
@@ -918,28 +936,14 @@ from_Seurat <- function(
     return(invisible())
   }
 
-  adata$obsm <- purrr::imap(obsm_mapping, function(.mapping, .idx) {
-    if (!is.character(.mapping) || length(.mapping) != 2) {
+  adata$obsm <- purrr::map(obsm_mapping, function(.reduction) {
+    if (!(.reduction %in% SeuratObject::Reductions(seurat_obj))) {
       cli_abort(c(
-        paste(
-          "Each item in {.arg obsm_mapping} must be a {.cls character}",
-          "vector of length 2"
-        ),
-        "i" = paste(
-          "{.code obsm_mapping[[{.val { .idx }}]]} is",
-          "{.obj_type_friendly { .mapping }}"
-        )
+        "Reduction {.val {.reduction}} not found in Seurat object.",
+        "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
-
-    slot <- .mapping[1]
-    key <- .mapping[2]
-
-    if (slot == "reductions") {
-      SeuratObject::Embeddings(seurat_obj, key)
-    } else if (slot == "misc") {
-      SeuratObject::Misc(seurat_obj, key)
-    }
+    SeuratObject::Embeddings(seurat_obj, .reduction)
   })
 }
 
@@ -956,34 +960,14 @@ from_Seurat <- function(
     return(invisible())
   }
 
-  adata$varm <- purrr::imap(varm_mapping, function(.mapping, .idx) {
-    if (
-      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
-    ) {
+  adata$varm <- purrr::map(varm_mapping, function(.reduction) {
+    if (!(.reduction %in% SeuratObject::Reductions(seurat_obj))) {
       cli_abort(c(
-        paste(
-          "Each item in {.arg varm_mapping} must be a {.cls character}",
-          "vector of length 2 or 3"
-        ),
-        "i" = paste(
-          "{.code varm_mapping[[{.val { .idx }}]]} is",
-          "{.obj_type_friendly { .mapping }}"
-        )
+        "Reduction {.val {.reduction}} not found in Seurat object.",
+        "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
-
-    slot <- .mapping[1]
-    key <- .mapping[2]
-
-    if (slot == "reductions") {
-      SeuratObject::Loadings(seurat_obj, key)
-    } else if (slot == "misc") {
-      varm_data <- SeuratObject::Misc(seurat_obj, key)
-      if (length(.mapping) == 3) {
-        varm_data <- varm_data[[.mapping[3]]]
-      }
-      varm_data
-    }
+    SeuratObject::Loadings(seurat_obj, .reduction)
   })
 }
 
@@ -1000,34 +984,14 @@ from_Seurat <- function(
     return(invisible())
   }
 
-  adata$obsp <- purrr::imap(obsp_mapping, function(.mapping, .idx) {
-    if (
-      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
-    ) {
+  adata$obsp <- purrr::map(obsp_mapping, function(.graph) {
+    if (!(.graph %in% SeuratObject::Graphs(seurat_obj))) {
       cli_abort(c(
-        paste(
-          "Each item in {.arg obsp_mapping} must be a {.cls character}",
-          "vector of length 2 or 3"
-        ),
-        "i" = paste(
-          "{.code obsp_mapping[[{.val { .idx }}]]} is",
-          "{.obj_type_friendly { .mapping }}"
-        )
+        "Graph {.val {graph_name}} not found in Seurat object.",
+        "i" = "Available graphs: {.val {SeuratObject::Graphs(seurat_obj)}}"
       ))
     }
-
-    slot <- .mapping[1]
-    key <- .mapping[2]
-
-    if (slot == "graphs") {
-      as(seurat_obj[[key]], "sparseMatrix")
-    } else if (slot == "misc") {
-      obsp_data <- SeuratObject::Misc(seurat_obj, key)
-      if (length(.mapping) == 3) {
-        obsp_data <- obsp_data[[.mapping[3]]]
-      }
-      obsp_data
-    }
+    as(seurat_obj[[.graph]], "sparseMatrix")
   })
 }
 
@@ -1044,32 +1008,15 @@ from_Seurat <- function(
     return(invisible())
   }
 
-  adata$varp <- purrr::imap(varp_mapping, function(.mapping, .idx) {
-    if (
-      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
-    ) {
+  adata$varp <- purrr::map(varp_mapping, function(.varp) {
+    # Check if the misc data exists
+    if (!(.varp %in% names(SeuratObject::Misc(seurat_obj)))) {
       cli_abort(c(
-        paste(
-          "Each item in {.arg varp_mapping} must be a {.cls character}",
-          "vector of length 2 or 3"
-        ),
-        "i" = paste(
-          "{.code varp_mapping[[{.val { .idx }}]]} is",
-          "{.obj_type_friendly { .mapping }}"
-        )
+        "Misc data {.val {.varp}} not found in Seurat object.",
+        "i" = "Available misc data: {.val {names(SeuratObject::Misc(seurat_obj))}}"
       ))
     }
-
-    slot <- .mapping[1]
-    key <- .mapping[2]
-
-    if (slot == "misc") {
-      varp_data <- SeuratObject::Misc(seurat_obj, key)
-      if (length(.mapping) == 3) {
-        varp_data <- varp_data[[.mapping[3]]]
-      }
-      varp_data
-    }
+    SeuratObject::Misc(seurat_obj, .varp)
   })
 }
 
@@ -1086,32 +1033,14 @@ from_Seurat <- function(
     return(invisible())
   }
 
-  adata$uns <- purrr::imap(uns_mapping, function(.mapping, .idx) {
-    if (
-      !is.character(.mapping) || length(.mapping) < 2 || length(.mapping) > 3
-    ) {
+  adata$uns <- purrr::map(uns_mapping, function(.misc) {
+    if (!(.misc %in% names(SeuratObject::Misc(seurat_obj)))) {
       cli_abort(c(
-        paste(
-          "Each item in {.arg uns_mapping} must be a {.cls character}",
-          "vector of length 2 or 3"
-        ),
-        "i" = paste(
-          "{.code uns_mapping[[{.val { .idx }}]]} is",
-          "{.obj_type_friendly { .mapping }}"
-        )
+        "Misc data {.val {.misc}} not found in Seurat object.",
+        "i" = "Available misc data: {.val {names(SeuratObject::Misc(seurat_obj))}}"
       ))
     }
-
-    slot <- .mapping[1]
-    key <- .mapping[2]
-
-    if (slot == "misc") {
-      uns_data <- SeuratObject::Misc(seurat_obj, key)
-      if (length(.mapping) == 3) {
-        uns_data <- uns_data[[.mapping[3]]]
-      }
-      uns_data
-    }
+    SeuratObject::Misc(seurat_obj, .misc)
   })
 }
 
@@ -1120,45 +1049,36 @@ from_Seurat <- function(
   # nolint end: object_name_linter object_length_linter
   seurat_assay <- Seurat::GetAssay(seurat_obj, assay = assay_name)
   layers <- SeuratObject::Layers(seurat_assay)
-  setNames(as.list(layers), layers)
+  setNames(layers, layers)
 }
 
 # nolint start: object_name_linter
 .from_Seurat_guess_obs <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter
-  obs_mapping <- as.list(names(seurat_obj[[]]))
-  names(obs_mapping) <- names(seurat_obj[[]])
-
-  obs_mapping
+  setNames(names(seurat_obj[[]]), names(seurat_obj[[]]))
 }
 
 # nolint start: object_name_linter
 .from_Seurat_guess_var <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter
   assay <- seurat_obj[[assay_name]]
-  var_mapping <- as.list(names(assay[[]]))
-  names(var_mapping) <- names(assay[[]])
-
-  var_mapping
+  setNames(names(assay[[]]), names(assay[[]]))
 }
 
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_obsms <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
 
-  obsm_mapping <- list()
+  obsm_mapping <- c()
 
   for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
     # Check if the dimreduc was calculated by the selected assay
-    reduction <- seurat_obj@reductions[[reduction_name]]
-    if (reduction@assay.used != assay_name) {
+    reduction <- seurat_obj[[reduction_name]]
+    if (SeuratObject::DefaultAssay(reduction) != assay_name) {
       next
     }
 
-    obsm_mapping[[reduction_name]] <- c(
-      "reductions",
-      reduction_name
-    )
+    obsm_mapping[reduction_name] <- reduction_name
   }
 
   obsm_mapping
@@ -1168,7 +1088,7 @@ from_Seurat <- function(
 .from_Seurat_guess_varms <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
 
-  varm_mapping <- list()
+  varm_mapping <- c()
 
   for (reduction_name in SeuratObject::Reductions(seurat_obj)) {
     reduction <- seurat_obj[[reduction_name]]
@@ -1179,7 +1099,7 @@ from_Seurat <- function(
         nrow(loadings) == nrow(seurat_obj) &&
         SeuratObject::DefaultAssay(reduction) == assay_name
     ) {
-      varm_mapping[[reduction_name]] <- c("reductions", reduction_name)
+      varm_mapping[reduction_name] <- reduction_name
     }
   }
 
@@ -1190,22 +1110,18 @@ from_Seurat <- function(
 .from_Seurat_guess_obsps <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
 
-  obsp_mapping <- list()
+  obsp_mapping <- c()
 
   for (graph_name in SeuratObject::Graphs(seurat_obj)) {
-    graph <- seurat_obj@graphs[[graph_name]]
+    graph <- seurat_obj[[graph_name]]
 
-    if (!rlang::is_empty(graph@assay.used) && graph@assay.used != assay_name) {
+    if (SeuratObject::DefaultAssay(graph) != assay_name) {
       next
     }
 
     dest_name <- gsub(paste0(assay_name, "_"), "", graph_name)
 
-    if (dest_name == "nn") {
-      dest_name <- "connectivities"
-    }
-
-    obsp_mapping[[dest_name]] <- c("graphs", graph_name)
+    obsp_mapping[dest_name] <- graph_name
   }
 
   obsp_mapping
@@ -1214,17 +1130,12 @@ from_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_varps <- function(seurat_obj) {
   # nolint end: object_name_linter object_length_linter
-  list()
+  c()
 }
 
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_uns <- function(seurat_obj) {
   # nolint end: object_name_linter object_length_linter
-  uns_mapping <- list()
-
-  for (uns_name in names(seurat_obj@misc)) {
-    uns_mapping[[uns_name]] <- c("misc", uns_name)
-  }
-
-  uns_mapping
+  uns_names <- names(SeuratObject::Misc(seurat_obj))
+  setNames(uns_names, uns_names)
 }
