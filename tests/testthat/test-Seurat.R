@@ -299,7 +299,7 @@ test_that("from_Seurat retains connectivities", {
   skip_if(!is.null(msg), message = msg)
 
   expect_equal(
-    as.matrix(ad$obsp[["connectivities"]]),
+    as.matrix(ad$obsp[["nn"]]),
     as.matrix(obj@graphs[["RNA_nn"]]),
     ignore_attr = TRUE
   )
