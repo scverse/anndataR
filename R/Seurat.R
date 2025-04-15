@@ -583,12 +583,12 @@ to_Seurat <- function(
 #' @param layers_mapping A named vector mapping layer names in AnnData to the names of the layers in the Seurat object.
 #' Each name corresponds to the layer name in AnnData, and each value to the layer name in Seurat.
 #' See section "`$layers` mapping" for more details.
-#' @param obs_mapping A named vector or list mapping obs names in AnnData to the names of the object-level (cell level) metadata in the
-#' Seurat object. Each name corresponds to a column name in AnnData's obs, and each value to a column name in Seurat's cell metadata.
-#' See section "`$obs` mapping" for more details.
-#' @param var_mapping A named vector or list mapping var names in AnnData to the names of the feature-level metadata in the Seurat object.
-#' Each name corresponds to a column name in AnnData's var, and each value to a column name in Seurat's feature metadata.
-#' See section "`$var` mapping" for more details.
+#' @param obs_mapping A named vector or list mapping obs names in AnnData to the names of the object-level (cell level)
+#' metadata in the Seurat object. Each name corresponds to a column name in AnnData's obs, and each value to a column
+#' name in Seurat's cell metadata. See section "`$obs` mapping" for more details.
+#' @param var_mapping A named vector or list mapping var names in AnnData to the names of the feature-level metadata in
+#' the Seurat object. Each name corresponds to a column name in AnnData's var, and each value to a column name in
+#' Seurat's feature metadata. See section "`$var` mapping" for more details.
 #' @param obsm_mapping A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
 #' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
 #' Example: `obsm_mapping = c(X_pca = "pca", X_umap = "umap")`.
@@ -863,7 +863,7 @@ from_Seurat <- function(
 
   if (!rlang::is_empty(obs_mapping)) {
     if (!all(obs_mapping %in% names(seurat_obj[[]]))) {
-      missing <- setdiff(obs_mapping, names(seurat_obj[[]]))
+      missing <- setdiff(obs_mapping, names(seurat_obj[[]])) # nolint object_usage_linter
       cli_abort(paste(
         "The requested obs item(s) {.val {missing}} do not exist in the Seurat",
         "object ({.code names(seurat_obj[[]])})"
@@ -889,7 +889,7 @@ from_Seurat <- function(
   # nolint end: object_name_linter
   if (!rlang::is_empty(var_mapping)) {
     if (!all(var_mapping %in% names(seurat_obj[[assay_name]][[]]))) {
-      missing <- setdiff(var_mapping, names(seurat_obj[[assay_name]][[]]))
+      missing <- setdiff(var_mapping, names(seurat_obj[[assay_name]][[]])) # nolint object_usage_linter
       cli_abort(paste(
         "The requested var item(s) {.val {missing}} do not exist in the Seurat",
         "object ({.code names(seurat_obj[[{.val {assay_name}}]][[]])})"

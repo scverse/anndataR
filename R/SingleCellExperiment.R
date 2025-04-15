@@ -327,8 +327,9 @@ to_SCE_guess_reduction <- function(adata) {
 #' or `"InMemoryAnnData"`.
 #'
 #' @param x_mapping Name of the assay in `sce` to use as the `X` matrix in the AnnData object.
-#' @param layers_mapping A named vector or list mapping layer names in AnnData to assay names in the SingleCellExperiment object.
-#' Each name corresponds to the layer name in AnnData, and each value to the assay name in SCE.
+#' @param layers_mapping A named vector or list mapping layer names in AnnData to assay names in the
+#' SingleCellExperiment object. Each name corresponds to the layer name in AnnData, and each value to the
+#' assay name in SCE.
 #' @param obs_mapping A named vector or list mapping column names in AnnData's obs to column names in SCE's colData.
 #' Each name corresponds to a column name in AnnData's obs, and each value to a column name in SCE's colData.
 #' @param var_mapping A named vector or list mapping column names in AnnData's var to column names in SCE's rowData.
@@ -339,12 +340,15 @@ to_SCE_guess_reduction <- function(adata) {
 #' @param varm_mapping A named vector mapping varm keys in AnnData to reducedDims names in SCE.
 #' Each name corresponds to a key in AnnData's varm, and each value to the name of a reducedDim in SCE.
 #' Example: `varm_mapping = c(PCs = "pca")`.
-#' @param obsp_mapping A named vector or list mapping obsp keys in AnnData to colPairs in the SingleCellExperiment object.
-#' Each name corresponds to a key in AnnData's obsp, and each value to a name in SCE's colPairs.
-#' @param varp_mapping A named vector or list mapping varp keys in AnnData to rowPairs in the SingleCellExperiment object.
-#' Each name corresponds to a key in AnnData's varp, and each value to a name in SCE's rowPairs.
-#' @param uns_mapping A named vector or list mapping uns keys in AnnData to metadata in the SingleCellExperiment object.
-#' Each name corresponds to a key in AnnData's uns, and each value to a name in SCE's metadata.
+#' @param obsp_mapping A named vector or list mapping obsp keys in AnnData to colPairs in the
+#' SingleCellExperiment object. Each name corresponds to a key in AnnData's obsp, and each value to a name in
+#' SCE's colPairs.
+#' @param varp_mapping A named vector or list mapping varp keys in AnnData to rowPairs in the
+#' SingleCellExperiment object. Each name corresponds to a key in AnnData's varp, and each value to a
+#' name in SCE's rowPairs.
+#' @param uns_mapping A named vector or list mapping uns keys in AnnData to metadata in the
+#' SingleCellExperiment object. Each name corresponds to a key in AnnData's uns, and each value to a
+#' name in SCE's metadata.
 #' @param ... Additional arguments to pass to the generator function.
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
