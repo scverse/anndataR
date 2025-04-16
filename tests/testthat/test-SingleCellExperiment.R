@@ -378,9 +378,6 @@ test_that("from_SCE retains pca dimred", {
   )
   skip_if(!is.null(msg), message = msg)
 
-  print(ad)
-  print(sce)
-
   expect_true("X_pca" %in% names(ad$obsm))
   expect_true("X_pca" %in% names(ad$varm))
   expect_equal(
@@ -390,5 +387,37 @@ test_that("from_SCE retains pca dimred", {
   expect_equal(
     featureLoadings(reducedDims(sce)$X_pca),
     ad$varm[["X_pca"]]
+  )
+})
+
+test_that("from_SCE works with list mappings", {
+  expect_no_error(
+    from_SingleCellExperiment(
+      sce,
+      layers_mapping = as.list(.from_SCE_guess_layers(sce, NULL)),
+      obs_mapping = as.list(.from_SCE_guess_all(sce, colData)),
+      var_mapping = as.list(.from_SCE_guess_all(sce, rowData)),
+      obsm_mapping = as.list(.from_SCE_guess_obsm(sce)),
+      varm_mapping = as.list(.from_SCE_guess_varm(sce)),
+      obsp_mapping = as.list(.from_SCE_guess_obspvarp(sce, colPairs)),
+      varp_mapping = as.list(.from_SCE_guess_obspvarp(sce, rowPairs)),
+      uns_mapping = as.list(.from_SCE_guess_all(sce, S4Vectors::metadata))
+    )
+  )
+})
+
+test_that("from_SCE works with unnamed mappings", {
+  expect_no_error(
+    from_SingleCellExperiment(
+      sce,
+      layers_mapping = unname(.from_SCE_guess_layers(sce, NULL)),
+      obs_mapping = unname(.from_SCE_guess_all(sce, colData)),
+      var_mapping = unname(.from_SCE_guess_all(sce, rowData)),
+      obsm_mapping = unname(.from_SCE_guess_obsm(sce)),
+      varm_mapping = unname(.from_SCE_guess_varm(sce)),
+      obsp_mapping = unname(.from_SCE_guess_obspvarp(sce, colPairs)),
+      varp_mapping = unname(.from_SCE_guess_obspvarp(sce, rowPairs)),
+      uns_mapping = unname(.from_SCE_guess_all(sce, S4Vectors::metadata))
+    )
   )
 })

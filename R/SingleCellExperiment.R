@@ -436,30 +436,30 @@ from_SingleCellExperiment <- function(
   }
 
   # For any mappings that are not set, using the guessing function
-  layers_mapping <- layers_mapping %||% .from_SCE_guess_layers(sce, x_mapping)
-  obs_mapping <- obs_mapping %||%
+  layers_mapping <- self_name(layers_mapping) %||% .from_SCE_guess_layers(sce, x_mapping)
+  obs_mapping <- self_name(obs_mapping) %||%
     .from_SCE_guess_all(
       sce,
       SingleCellExperiment::colData
     )
-  var_mapping <- var_mapping %||%
+  var_mapping <- self_name(var_mapping) %||%
     .from_SCE_guess_all(
       sce,
       SingleCellExperiment::rowData
     )
-  obsm_mapping <- obsm_mapping %||% .from_SCE_guess_obsm(sce)
-  varm_mapping <- varm_mapping %||% .from_SCE_guess_varm(sce)
-  obsp_mapping <- obsp_mapping %||%
+  obsm_mapping <- self_name(obsm_mapping) %||% .from_SCE_guess_obsm(sce)
+  varm_mapping <- self_name(varm_mapping) %||% .from_SCE_guess_varm(sce)
+  obsp_mapping <- self_name(obsp_mapping) %||%
     .from_SCE_guess_obspvarp(
       sce,
       SingleCellExperiment::colPairs
     )
-  varp_mapping <- varp_mapping %||%
+  varp_mapping <- self_name(varp_mapping) %||%
     .from_SCE_guess_obspvarp(
       sce,
       SingleCellExperiment::rowPairs
     )
-  uns_mapping <- uns_mapping %||% .from_SCE_guess_all(sce, S4Vectors::metadata)
+  uns_mapping <- self_name(uns_mapping) %||% .from_SCE_guess_all(sce, S4Vectors::metadata)
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(sce)), ...)
@@ -494,47 +494,40 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_all <- function(sce, slot) {
   # nolint end: object_length_linter object_name_linter
-  mapping <- names(slot(sce))
-  names(mapping) <- names(slot(sce))
-
-  mapping
+  self_name(names(slot(sce)))
 }
 
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_layers <- function(sce, x_mapping) {
   # nolint end: object_length_linter object_name_linter
-  layers_mapping <- list()
+  layers_mapping <- self_name(SummarizedExperiment::assayNames(sce))
 
-  for (assay_name in names(SummarizedExperiment::assays(sce))) {
-    if (is.null(x_mapping) || assay_name != x_mapping) {
-      layers_mapping[[assay_name]] <- assay_name
-    }
+  if (!is.null(x_mapping)) {
+    layers_mapping <- layers_mapping[layers_mapping != x_mapping]
   }
 
-  layers_mapping
+  if (rlang::is_empty(layers_mapping)) {
+    c()
+  } else {
+    layers_mapping
+  }
 }
 
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_obsm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(sce, "SingleCellExperiment")) {
-    return(c())
-  }
-  obsm_mapping <- c()
+  obsm_mapping <- self_name(SingleCellExperiment::reducedDimNames(sce))
 
-  for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
-    obsm_mapping[reduction_name] <- reduction_name
+  if (rlang::is_empty(obsm_mapping)) {
+    c()
+  } else {
+    obsm_mapping
   }
-
-  obsm_mapping
 }
 
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_varm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(sce, "SingleCellExperiment")) {
-    return(c())
-  }
   varm_mapping <- c()
 
   for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
@@ -551,9 +544,6 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_obspvarp <- function(sce, slot) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(sce, "SingleCellExperiment")) {
-    return(list())
-  }
   .from_SCE_guess_all(sce, slot)
 }
 
