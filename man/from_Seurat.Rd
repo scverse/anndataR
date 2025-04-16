@@ -89,7 +89,7 @@ layer name to copy. If \code{NULL}, no data will be copied to the \code{X} slot.
 A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
 The \verb{$X} key maps to the \code{X} slot.
 
-Example: \code{layers_mapping = list(counts = "counts", foo = "bar")}.
+Example: \code{layers_mapping = c(counts = "counts", foo = "bar")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
@@ -106,7 +106,7 @@ A named list or vector to map Seurat object-level metadata to AnnData \verb{$obs
 correspond to the names of the metadata in the Seurat object, and the names correspond to the names of the
 metadata in the resulting \verb{$obs} slot.
 
-Example: \code{obs_mapping = list(cellType = "cell_type")}.
+Example: \code{obs_mapping = c(cellType = "cell_type")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_obs} will be used to guess the obs mapping as follows:
 \itemize{
@@ -121,7 +121,7 @@ A named list or vector to map Seurat feature-level metadata to AnnData \verb{$va
 vector correspond to the names of the metadata of the assay in the Seurat object, and the
 names correspond to the names of the metadata in the resulting \verb{$var} slot.
 
-Example: \code{var_mapping = list(geneInfo = "gene_info")}.
+Example: \code{var_mapping = c(geneInfo = "gene_info")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_vars} will be used to guess the var mapping as follows:
 \itemize{
@@ -140,7 +140,7 @@ Example: \code{obsm_mapping = c(pca = "pca", umap = "umap")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
 \itemize{
-\item All Seurat reductions are prefixed with \code{X_} and copied to AnnData \verb{$obsm}.
+\item All Seurat reductions are copied to AnnData \verb{$obsm}.
 }
 }
 
@@ -202,6 +202,13 @@ If \code{NULL}, the internal function \code{.from_Seurat_guess_uns} will be used
 \itemize{
 \item All Seurat miscellaneous data is copied to \code{uns} by name.
 }
+}
+
+\section{Mapping details}{
+
+
+If an unnamed vector is provided to a mapping argument the values will be
+used as names
 }
 
 \examples{

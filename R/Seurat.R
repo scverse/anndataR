@@ -612,7 +612,7 @@ to_Seurat <- function(
 #' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
 #' The `$X` key maps to the `X` slot.
 #'
-#' Example: `layers_mapping = list(counts = "counts", foo = "bar")`.
+#' Example: `layers_mapping = c(counts = "counts", foo = "bar")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_layers` will be used to guess the layer mapping as follows:
 #'
@@ -626,7 +626,7 @@ to_Seurat <- function(
 #' correspond to the names of the metadata in the Seurat object, and the names correspond to the names of the
 #' metadata in the resulting `$obs` slot.
 #'
-#' Example: `obs_mapping = list(cellType = "cell_type")`.
+#' Example: `obs_mapping = c(cellType = "cell_type")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_obs` will be used to guess the obs mapping as follows:
 #'
@@ -638,7 +638,7 @@ to_Seurat <- function(
 #' vector correspond to the names of the metadata of the assay in the Seurat object, and the
 #' names correspond to the names of the metadata in the resulting `$var` slot.
 #'
-#' Example: `var_mapping = list(geneInfo = "gene_info")`.
+#' Example: `var_mapping = c(geneInfo = "gene_info")`.
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_vars` will be used to guess the var mapping as follows:
 #'
@@ -654,7 +654,7 @@ to_Seurat <- function(
 #'
 #' If `NULL`, the internal function `.from_Seurat_guess_obsms` will be used to guess the obsm mapping as follows:
 #'
-#' * All Seurat reductions are prefixed with `X_` and copied to AnnData `$obsm`.
+#' * All Seurat reductions are copied to AnnData `$obsm`.
 #'
 #' @section `$varm` mapping:
 #'
@@ -703,6 +703,11 @@ to_Seurat <- function(
 #' If `NULL`, the internal function `.from_Seurat_guess_uns` will be used to guess the uns mapping as follows:
 #'
 #' * All Seurat miscellaneous data is copied to `uns` by name.
+#'
+#' @section Mapping details:
+#'
+#' If an unnamed vector is provided to a mapping argument the values will be
+#' used as names
 #'
 #' @return An AnnData object
 #'
@@ -762,20 +767,20 @@ from_Seurat <- function(
   SeuratObject::DefaultAssay(seurat_obj) <- assay_name
 
   # For any mappings that are not set, using the guessing function
-  layers_mapping <- layers_mapping %||%
+  layers_mapping <- self_name(layers_mapping) %||%
     .from_Seurat_guess_layers(seurat_obj, assay_name)
-  obs_mapping <- obs_mapping %||%
+  obs_mapping <- self_name(obs_mapping) %||%
     .from_Seurat_guess_obs(seurat_obj, assay_name)
-  var_mapping <- var_mapping %||%
+  var_mapping <- self_name(var_mapping) %||%
     .from_Seurat_guess_var(seurat_obj, assay_name)
-  obsm_mapping <- obsm_mapping %||%
+  obsm_mapping <- self_name(obsm_mapping) %||%
     .from_Seurat_guess_obsms(seurat_obj, assay_name)
-  varm_mapping <- varm_mapping %||%
+  varm_mapping <- self_name(varm_mapping) %||%
     .from_Seurat_guess_varms(seurat_obj, assay_name)
-  obsp_mapping <- obsp_mapping %||%
+  obsp_mapping <- self_name(obsp_mapping) %||%
     .from_Seurat_guess_obsps(seurat_obj, assay_name)
-  varp_mapping <- varp_mapping %||% .from_Seurat_guess_varps(seurat_obj)
-  uns_mapping <- uns_mapping %||% .from_Seurat_guess_uns(seurat_obj)
+  varp_mapping <- self_name(varp_mapping) %||% .from_Seurat_guess_varps(seurat_obj)
+  uns_mapping <- self_name(uns_mapping) %||% .from_Seurat_guess_uns(seurat_obj)
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(seurat_obj)), ...)

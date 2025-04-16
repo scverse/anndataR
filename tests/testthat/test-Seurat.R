@@ -365,3 +365,37 @@ test_that("from_Seurat works with v3 Assays", {
     SeuratObject::GetAssayData(obj_v3_assay, layer = "counts")
   )
 })
+
+test_that("from_Seurat works with list mappings", {
+  active_assay <- SeuratObject::DefaultAssay(obj)
+  expect_no_error(
+    from_Seurat(
+      obj,
+      layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
+      obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
+      var_mapping = as.list(.from_Seurat_guess_var(obj, active_assay)),
+      obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
+      varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
+      obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
+      varp_mapping = as.list(.from_Seurat_guess_varps(obj)),
+      uns_mapping = as.list(.from_Seurat_guess_uns(obj))
+    )
+  )
+})
+
+test_that("from_Seurat works with unnamed mappings", {
+  active_assay <- SeuratObject::DefaultAssay(obj)
+  expect_no_error(
+    from_Seurat(
+      obj,
+      layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
+      obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),
+      var_mapping = unname(.from_Seurat_guess_var(obj, active_assay)),
+      obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
+      varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
+      obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
+      varp_mapping = unname(.from_Seurat_guess_varps(obj)),
+      uns_mapping = unname(.from_Seurat_guess_uns(obj))
+    )
+  )
+})
