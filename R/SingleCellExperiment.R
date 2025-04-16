@@ -113,19 +113,21 @@ to_SingleCellExperiment <- function(
   }
 
   # guess mappings if not provided
+  # nolint start object_name_linter
   assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
   colData_mapping <- self_name(colData_mapping) %||%
-    .to_SCE_guess_all(adata, "obs") # nolint
+    .to_SCE_guess_all(adata, "obs")
   rowData_mapping <- self_name(rowData_mapping) %||%
-    .to_SCE_guess_all(adata, "var") # nolint
+    .to_SCE_guess_all(adata, "var")
   reduction_mapping <- self_name(reduction_mapping) %||%
     .to_SCE_guess_reduction(adata)
   colPairs_mapping <- self_name(colPairs_mapping) %||%
-    .to_SCE_guess_all(adata, "obsp") # nolint
+    .to_SCE_guess_all(adata, "obsp")
   rowPairs_mapping <- self_name(rowPairs_mapping) %||%
-    .to_SCE_guess_all(adata, "varp") # nolint
+    .to_SCE_guess_all(adata, "varp")
   metadata_mapping <- self_name(metadata_mapping) %||%
     .to_SCE_guess_all(adata, "uns")
+  # nolint end object_name_linter
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
