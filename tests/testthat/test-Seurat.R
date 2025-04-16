@@ -132,6 +132,48 @@ test_that("to_Seurat retains pca dimred", {
   )
 })
 
+test_that("to_Seurat works with list mappings", {
+  expect_no_error(
+    ad$to_Seurat(
+      object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
+      layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
+      assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
+      reduction_mapping = as.list(.to_Seurat_guess_reductions(ad)),
+      graph_mapping = as.list(.to_Seurat_guess_graphs(ad)),
+      misc_mapping = as.list(.to_Seurat_guess_misc(ad))
+    )
+  )
+
+  expect_error(
+    ad$to_Seurat(
+      reduction_mapping = list(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_Seurat works with a vector reduction_mapping", {
+  expect_no_error(
+    ad$to_Seurat(
+      reduction_mapping = c(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_Seurat works with unnamed mappings", {
+  expect_no_error(
+    ad$to_Seurat(
+      object_metadata_mapping = unname(.to_Seurat_guess_object_metadata(ad)),
+      layers_mapping = c(
+        na.omit(unname(.to_Seurat_guess_layers(ad))),
+        counts = NA
+      ),
+      assay_metadata_mapping = unname(.to_Seurat_guess_assay_metadata(ad)),
+      graph_mapping = unname(.to_Seurat_guess_graphs(ad)),
+      misc_mapping = unname(.to_Seurat_guess_misc(ad))
+    )
+  )
+})
+
 skip_if_not_installed("Seurat")
 library(Seurat)
 
