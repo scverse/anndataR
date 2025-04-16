@@ -157,10 +157,14 @@ to_Seurat <- function(
     )
   }
 
-  object_metadata_mapping <- self_name(object_metadata_mapping) %||% .to_Seurat_guess_object_metadata(adata)
-  layers_mapping <- self_name(layers_mapping) %||% .to_Seurat_guess_layers(adata)
-  assay_metadata_mapping <- self_name(assay_metadata_mapping) %||% .to_Seurat_guess_assay_metadata(adata)
-  reduction_mapping <- self_name(reduction_mapping) %||% .to_Seurat_guess_reductions(adata)
+  object_metadata_mapping <- self_name(object_metadata_mapping) %||%
+    .to_Seurat_guess_object_metadata(adata)
+  layers_mapping <- self_name(layers_mapping) %||%
+    .to_Seurat_guess_layers(adata)
+  assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
+    .to_Seurat_guess_assay_metadata(adata)
+  reduction_mapping <- self_name(reduction_mapping) %||%
+    .to_Seurat_guess_reductions(adata)
   graph_mapping <- self_name(graph_mapping) %||% .to_Seurat_guess_graphs(adata)
   misc_mapping <- self_name(misc_mapping) %||% .to_Seurat_guess_misc(adata)
 
@@ -246,7 +250,9 @@ to_Seurat <- function(
 
   if (!rlang::is_empty(reduction_mapping)) {
     reductions <- .to_Seurat_process_reduction_mapping(
-      adata, reduction_mapping, assay_name
+      adata,
+      reduction_mapping,
+      assay_name
     )
     for (.red in names(reductions)) {
       obj[[.red]] <- reductions[[.red]]
@@ -431,7 +437,11 @@ to_Seurat <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_Seurat_process_reduction_mapping <- function(adata, reduction_mapping, assay_name) {
+.to_Seurat_process_reduction_mapping <- function(
+  adata,
+  reduction_mapping,
+  assay_name
+) {
   # nolint end: object_length_linter object_name_linter
 
   # If reduction_mapping is a vector convert it to the list format
@@ -779,7 +789,8 @@ from_Seurat <- function(
     .from_Seurat_guess_varms(seurat_obj, assay_name)
   obsp_mapping <- self_name(obsp_mapping) %||%
     .from_Seurat_guess_obsps(seurat_obj, assay_name)
-  varp_mapping <- self_name(varp_mapping) %||% .from_Seurat_guess_varps(seurat_obj)
+  varp_mapping <- self_name(varp_mapping) %||%
+    .from_Seurat_guess_varps(seurat_obj)
   uns_mapping <- self_name(uns_mapping) %||% .from_Seurat_guess_uns(seurat_obj)
 
   generator <- get_anndata_constructor(output_class)

@@ -114,12 +114,18 @@ to_SingleCellExperiment <- function(
 
   # guess mappings if not provided
   assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
-  colData_mapping <- self_name(colData_mapping) %||% .to_SCE_guess_all(adata, "obs") # nolint
-  rowData_mapping <- self_name(rowData_mapping) %||% .to_SCE_guess_all(adata, "var") # nolint
-  reduction_mapping <- self_name(reduction_mapping) %||% .to_SCE_guess_reduction(adata)
-  colPairs_mapping <- self_name(colPairs_mapping) %||% .to_SCE_guess_all(adata, "obsp") # nolint
-  rowPairs_mapping <- self_name(rowPairs_mapping) %||% .to_SCE_guess_all(adata, "varp") # nolint
-  metadata_mapping <- self_name(metadata_mapping) %||% .to_SCE_guess_all(adata, "uns")
+  colData_mapping <- self_name(colData_mapping) %||%
+    .to_SCE_guess_all(adata, "obs") # nolint
+  rowData_mapping <- self_name(rowData_mapping) %||%
+    .to_SCE_guess_all(adata, "var") # nolint
+  reduction_mapping <- self_name(reduction_mapping) %||%
+    .to_SCE_guess_reduction(adata)
+  colPairs_mapping <- self_name(colPairs_mapping) %||%
+    .to_SCE_guess_all(adata, "obsp") # nolint
+  rowPairs_mapping <- self_name(rowPairs_mapping) %||%
+    .to_SCE_guess_all(adata, "varp") # nolint
+  metadata_mapping <- self_name(metadata_mapping) %||%
+    .to_SCE_guess_all(adata, "uns")
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
@@ -255,7 +261,6 @@ to_SingleCellExperiment <- function(
   varm_key,
   uns_key
 ) {
-
   if (!(obsm_key %in% adata$obsm_keys())) {
     cli_abort(
       c(
@@ -436,7 +441,8 @@ from_SingleCellExperiment <- function(
   }
 
   # For any mappings that are not set, using the guessing function
-  layers_mapping <- self_name(layers_mapping) %||% .from_SCE_guess_layers(sce, x_mapping)
+  layers_mapping <- self_name(layers_mapping) %||%
+    .from_SCE_guess_layers(sce, x_mapping)
   obs_mapping <- self_name(obs_mapping) %||%
     .from_SCE_guess_all(
       sce,
@@ -459,7 +465,8 @@ from_SingleCellExperiment <- function(
       sce,
       SingleCellExperiment::rowPairs
     )
-  uns_mapping <- self_name(uns_mapping) %||% .from_SCE_guess_all(sce, S4Vectors::metadata)
+  uns_mapping <- self_name(uns_mapping) %||%
+    .from_SCE_guess_all(sce, S4Vectors::metadata)
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(sce)), ...)
