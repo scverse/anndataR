@@ -93,12 +93,12 @@ The `assay_name` parameter will only determine what the name of the assay in the
 to_Seurat(
   adata = ad,
   assay_name = "Other_assay",
-  object_metadata_mapping = list(),
-  layers_mapping = list(counts = NULL),
-  assay_metadata_mapping = list(),
-  reduction_mapping = list(),
-  graph_mapping = list(),
-  misc_mapping = list()
+  object_metadata_mapping = c(),
+  layers_mapping = c(counts = NA),
+  assay_metadata_mapping = c(),
+  reduction_mapping = c(),
+  graph_mapping = c(),
+  misc_mapping = c()
 )
 ```
 
@@ -114,11 +114,11 @@ You can see that Seurat adds some columns by default (`orig.ident`, `nCount_RNA`
 seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
-  layers_mapping = list(counts = NULL),
-  assay_metadata_mapping = list(),
-  reduction_mapping = list(),
-  graph_mapping = list(),
-  misc_mapping = list()
+  layers_mapping = c(counts = NA),
+  assay_metadata_mapping = c(),
+  reduction_mapping = c(),
+  graph_mapping = c(),
+  misc_mapping = c()
 )
 seurat_object[[]]
 ```
@@ -134,11 +134,11 @@ The other layers of the AnnData object will be copied by name.
 seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
-  object_metadata_mapping = list(),
-  assay_metadata_mapping = list(),
-  reduction_mapping = list(),
-  graph_mapping = list(),
-  misc_mapping = list()
+  object_metadata_mapping = c(),
+  assay_metadata_mapping = c(),
+  reduction_mapping = c(),
+  graph_mapping = c(),
+  misc_mapping = c()
 )
 Layers(seurat_object[["RNA"]])
 ```
@@ -155,11 +155,11 @@ If no information is provided, anndataR will try to convert the whole `var` slot
 seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
-  object_metadata_mapping = list(),
-  layers_mapping = list(counts = NULL),
-  reduction_mapping = list(),
-  graph_mapping = list(),
-  misc_mapping = list()
+  object_metadata_mapping = c(),
+  layers_mapping = c(counts = NA),
+  reduction_mapping = c(),
+  graph_mapping = c(),
+  misc_mapping = c()
 )
 seurat_object[["RNA"]][[]]
 ```
@@ -175,11 +175,11 @@ Elements in the `obsm` slot not starting with `X_` will not be converted.
 seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
-  object_metadata_mapping = list(),
-  layers_mapping = list(counts = NULL),
-  assay_metadata_mapping = list(),
-  graph_mapping = list(),
-  misc_mapping = list()
+  object_metadata_mapping = c(),
+  layers_mapping = c(counts = NA),
+  assay_metadata_mapping = c(),
+  graph_mapping = c(),
+  misc_mapping = c()
 )
 Reductions(seurat_object)
 ```
@@ -195,11 +195,11 @@ Other graphs will not be converted.
 seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
-  object_metadata_mapping = list(),
-  layers_mapping = list(counts = NULL),
-  assay_metadata_mapping = list(),
-  reduction_mapping = list(),
-  misc_mapping = list()
+  object_metadata_mapping = c(),
+  layers_mapping = c(counts = NA),
+  assay_metadata_mapping = c(),
+  reduction_mapping = c(),
+  misc_mapping = c()
 )
 
 Graphs(seurat_object)
@@ -214,11 +214,11 @@ By default, it will copy the `uns` slot from the AnnData object.
 seurat_object <- to_Seurat(
   adata = ad,
   assay_name = "RNA",
-  object_metadata_mapping = list(),
-  layers_mapping = list(counts = NULL),
-  assay_metadata_mapping = list(),
-  reduction_mapping = list(),
-  graph_mapping = list()
+  object_metadata_mapping = c(),
+  layers_mapping = c(counts = NA),
+  assay_metadata_mapping = c(),
+  reduction_mapping = c(),
+  graph_mapping = c()
 )
 Misc(seurat_object)
 ```
@@ -248,7 +248,7 @@ You must provide at least a layer called `counts` or `data` in the mapping.
 ```{r to_Seurat explicit_layers}
 seurat_obj <- to_Seurat(
   adata = ad,
-  layers_mapping = list(counts = "integer_matrix", other_layer2 = "numeric_rsparse")
+  layers_mapping = c(counts = "integer_matrix", other_layer2 = "numeric_rsparse")
 )
 Layers(seurat_obj, assay = "RNA")
 ```
@@ -264,7 +264,7 @@ columns are called in the `obs` slot of the anndata object.
 ```{r to_Seurat explicit_object_metadata}
 seurat_obj <- to_Seurat(
   adata = ad,
-  object_metadata_mapping = list(metadata1 = "integer", metadata2 = "numeric")
+  object_metadata_mapping = c(metadata1 = "integer", metadata2 = "numeric")
 )
 seurat_obj[[]]
 ```
@@ -280,7 +280,7 @@ the metadata is called in the `var` slot of the anndata object.
 ```{r to_Seurat explicit_assay_metadata}
 seurat_obj <- to_Seurat(
   adata = ad,
-  assay_metadata_mapping = list(metadata1 = "numeric", metadata2 = "logical")
+  assay_metadata_mapping = c(metadata1 = "numeric", metadata2 = "logical")
 )
 seurat_obj[["RNA"]][[]]
 ```
@@ -294,8 +294,8 @@ The values must be a named list, containing the keys: `key`, `obsm` and maybe `v
 seurat_obj <- to_Seurat(
   adata = ad,
   reduction_mapping = list(
-    pca = list(key = "PC", obsm = "X_pca", varm = "PCs"),
-    umap = list(key = "UMAP", obsm = "X_umap")
+    pca = c(key = "PC", obsm = "X_pca", varm = "PCs"),
+    umap = c(key = "UMAP", obsm = "X_umap")
   )
 )
 Reductions(seurat_obj)
@@ -310,7 +310,7 @@ stored in the `obsp` slot.
 ```{r to_Seurat explicit_graph}
 seurat_obj <- to_Seurat(
   adata = ad,
-  graph_mapping = list(connectivities = "numeric_matrix", connectivities_sparse = "numeric_csparse")
+  graph_mapping = c(connectivities = "numeric_matrix", connectivities_sparse = "numeric_csparse")
 )
 Graphs(seurat_obj)
 ```
@@ -319,7 +319,7 @@ Graphs(seurat_obj)
 
 You must provide a named list.
 
-Names of the list correspond to the name the item will be assigned to in the `misc` of the Seurat object).
+Names of the list correspond to the name the item will be assigned to in the `misc` of the Seurat object.
 Items can be a vector with two elements.
 The first is the name of a slot in the AnnData object (e.g. `X`, `layers`,
  `obs`, `var`, `obsm`, `varm`, `obsp`, `varp`, `uns`) and the second is the name of the item to transfer from that slot.
@@ -327,27 +327,7 @@ The first is the name of a slot in the AnnData object (e.g. `X`, `layers`,
 ```{r to_Seurat explicit_misc1}
 seurat_obj <- to_Seurat(
   adata = ad,
-  misc_mapping = list(varp_neighbors = c("varp", "integer_matrix"), uns_vec = c("uns", "vec_integer"))
-)
-Misc(seurat_obj)
-```
-
-Giving an item with one element can be used to copy the whole AnnData slot to `misc`.
-
-```{r to_Seurat explicit_misc2}
-seurat_obj <- to_Seurat(
-  adata = ad,
-  misc_mapping = list(metadata_from_anndata = "uns", varp = "varp")
-)
-Misc(seurat_obj)
-```
-
-Of course you can also mix these approaches in a single mapping.
-
-```{r to_Seurat explicit_misc3}
-seurat_obj <- to_Seurat(
-  adata = ad,
-  misc_mapping = list(metadata_from_anndata = "uns", obs_num = c("obs", "numeric"))
+  misc_mapping = c(uns_vec = "vec_integer")
 )
 Misc(seurat_obj)
 ```

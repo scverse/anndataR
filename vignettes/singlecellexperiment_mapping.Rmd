@@ -90,12 +90,12 @@ We explicitly pass empty lists to the other mapping arguments for clarity in the
 ```{r implicit_layers}
 sce_layers <- to_SingleCellExperiment(
   ad,
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  reduction_mapping = list(),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reduction_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 
 sce_layers
@@ -118,11 +118,11 @@ We guess the mapping of the reductions the same way as we do for the Seurat conv
 ```{r implicit_pca}
 sce_dimred <- to_SingleCellExperiment(
   ad,
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 
 reducedDims(sce_dimred)
@@ -139,8 +139,8 @@ and all `metadata` is stored in the `uns` slot.
 ```{r implicit_easy}
 sce_implicit <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(),
-  reduction_mapping = list()
+  assays_mapping = c(),
+  reduction_mapping = c()
 )
 
 sce_implicit
@@ -157,13 +157,13 @@ We will give an example for each of the mappings.
 ```{r explicit_assays}
 sce_assays <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  reduction_mapping = list(),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  assays_mapping = c(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reduction_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 sce_assays
 ```
@@ -175,13 +175,23 @@ You can see that the `X` slot got stored as `counts`, and the `layers` got store
 ```{r explicit col_data}
 sce <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(),
-  colData_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
-  rowData_mapping = list(rowdata1 = "character", rowdata2 = "logical"),
-  reduction_mapping = list(),
-  colPairs_mapping = list(colPairs_dense = "numeric_matrix", colPairs_sparse = "numeric_csparse"),
-  rowPairs_mapping = list(rowPairs1 = "integer_matrix", rowPairs2 = "numeric_matrix"),
-  metadata_mapping = list(vector1 = "vec_integer", vector2 = "vec_character", df = "df_integer")
+  assays_mapping = c(),
+  colData_mapping = c(coldata1 = "integer", coldata2 = "numeric"),
+  rowData_mapping = c(rowdata1 = "character", rowdata2 = "logical"),
+  reduction_mapping = c(),
+  colPairs_mapping = c(
+    colPairs_dense = "numeric_matrix",
+    colPairs_sparse = "numeric_csparse"
+  ),
+  rowPairs_mapping = c(
+    rowPairs1 = "integer_matrix",
+    rowPairs2 = "numeric_matrix"
+  ),
+  metadata_mapping = c(
+    vector1 = "vec_integer",
+    vector2 = "vec_character",
+    df = "df_integer"
+  )
 )
 
 sce
@@ -197,13 +207,16 @@ the SingleCellExperiment object.
 ```{r explicit_reductions}
 sce <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(counts = "X"),
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  reduction_mapping = list("pca" = list("obsm" = "X_pca", "varm" = "PCs"), "umap" = list("obsm" = "X_umap")),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  assays_mapping = c(counts = "X"),
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reduction_mapping = list(
+    "pca" = c("obsm" = "X_pca", "varm" = "PCs"),
+    "umap" = c("obsm" = "X_umap")
+  ),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 sce
 ```
