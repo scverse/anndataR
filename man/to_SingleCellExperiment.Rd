@@ -18,52 +18,60 @@ to_SingleCellExperiment(
 \arguments{
 \item{adata}{an AnnData object, e.g., InMemoryAnnData}
 
-\item{assays_mapping}{A named list mapping \code{layers} in \code{adata} to
-\code{assay} names in the created SingleCellExperiment object.
-The names of the list should be the names of the \code{assays} in the
-resulting SingleCellExperiment object, and the values should be the names
-of the \code{layers} in \code{adata}, and should include the \code{X} matrix as well.
-If \code{X} is not in the list, it will be added as \code{counts} or \code{data}.}
+\item{assays_mapping}{A named vector mapping \code{layers} in \code{adata} to \code{assay}
+names in the created SingleCellExperiment object. The names of the vector
+should be the names of the \code{assays} in the resulting SingleCellExperiment
+object, and the values should be the names of the \code{layers} in \code{adata}, and
+can include the \code{X} matrix as well. If \code{X} is not in the list, it will be
+added as \code{counts} or \code{data}.}
 
-\item{colData_mapping}{a named list mapping \code{obs} in \code{adata} to
-\code{colData} in the created SingleCellExperiment object.
-The names of the list should be the names of the \code{colData} columns in the
-resulting SingleCellExperiment object. The values of the list should be the
-names of the \code{obs} columns in \code{adata}.}
+\item{colData_mapping}{A named vector mapping \code{obs} in \code{adata} to \code{colData}
+in the created SingleCellExperiment object. The names of the vector should
+be the names of the \code{colData} columns in the resulting SingleCellExperiment
+object. The values should be the names of the \code{obs} columns in \code{adata}.}
 
-\item{rowData_mapping}{a named list mapping \code{var} names in \code{adata} to
-\code{rowData} in the created SingleCellExperiment object. The names of the list
-should be the names of the \code{rowData} columns in the resulting SingleCellExperiment
-object. The values of the list should be the names of the \code{var} columns in \code{adata}.}
+\item{rowData_mapping}{A named vector mapping \code{var} names in \code{adata} to
+\code{rowData} in the created SingleCellExperiment object. The names of the
+vector should be the names of the \code{rowData} columns in the resulting
+SingleCellExperiment object. The values should be the names of the \code{var}
+columns in \code{adata}.}
 
-\item{reduction_mapping}{a named list mapping reduction names in \code{adata} to
-reduction names in the created SingleCellExperiment object.
-The names of the list should be the names of the \code{reducedDims} in the resulting
-SingleCellExperiment object.
-The values of the list should also be a named list with the following keys:
+\item{reduction_mapping}{A named vector or list mapping reduction names in
+\code{adata} to reduction names in the created SingleCellExperiment object. For
+the simpler named vector format, the names should be the names of the
+\code{reducedDims} in the resulting SingleCellExperiment object, and the values
+should be the names of the \code{obsm} in \code{adata}.
+
+For more advanced mapping, use the list format where each item has the
+following keys:
 \itemize{
 \item \code{obsm}: the name of the \code{obsm} slot in \code{adata}
-\item \code{varm}: the name of the \code{varm} slot in \code{adata}
-\item \code{uns}: the name of the \code{uns} slot in \code{adata}
-}}
+\item \code{varm}: the name of the \code{varm} slot in \code{adata} (optional)
+\item \code{uns}: the name of the \code{uns} slot in \code{adata} (optional)
+}
 
-\item{colPairs_mapping}{a named list mapping obsp names in \code{adata} to
-colPairs names in the created SingleCellExperiment object.
-The names of the list should be the names of the \code{colPairs} in the resulting
-SingleCellExperiment object. The values of the list should be the names of the
-\code{obsp} in \code{adata}.}
+If \code{'varm'} or \code{'uns'} is given, a
+\link[SingleCellExperiment:LinearEmbeddingMatrix]{SingleCellExperiment::LinearEmbeddingMatrix} will be created for that item
+with \code{adata$varm[[varm]]} passed to the \code{featureLoadings} argument and
+\code{adata$uns[[uns]]} passed as \code{metadata}}
 
-\item{rowPairs_mapping}{a named list mapping varp names in \code{adata} to
-rowPairs names in the created SingleCellExperiment object.
-The names of the list should be the names of the \code{rowPairs} in the resulting
-SingleCellExperiment object. The values of the list should be the names of the
-\code{varp} in \code{adata}.}
+\item{colPairs_mapping}{A named vector mapping obsp names in \code{adata} to
+colPairs names in the created SingleCellExperiment object. The names of the
+vector should be the names of the \code{colPairs} in the resulting
+SingleCellExperiment object. The values should be the names of the \code{obsp}
+in \code{adata}.}
 
-\item{metadata_mapping}{a named list mapping uns names in \code{adata} to
-metadata names in the created SingleCellExperiment object.
-The names of the list should be the names of the \code{metadata} in the resulting
-SingleCellExperiment object. The values of the list should be the names of the
-\code{uns} in \code{adata}.}
+\item{rowPairs_mapping}{A named vector mapping varp names in \code{adata} to
+rowPairs names in the created SingleCellExperiment object. The names of the
+vector should be the names of the \code{rowPairs} in the resulting
+SingleCellExperiment object. The values should be the names of the \code{varp}
+in \code{adata}.}
+
+\item{metadata_mapping}{A named vector mapping uns names in \code{adata} to
+metadata names in the created SingleCellExperiment object. The names of the
+vector should be the names of the \code{metadata} in the resulting
+SingleCellExperiment object. The values should be the names of the \code{uns} in
+\code{adata}.}
 }
 \value{
 \code{to_SingleCellExperiment()} returns a SingleCellExperiment
@@ -72,6 +80,10 @@ representing the content of \code{adata}.
 \description{
 \code{to_SingleCellExperiment()} converts an AnnData object
 to a SingleCellExperiment object.
+}
+\details{
+If an unnamed vector is provided to a mapping argument the values will be
+used as names
 }
 \examples{
 if (interactive()) {

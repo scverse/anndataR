@@ -74,3 +74,14 @@ to_R_matrix <- function(mat) {
   }
   Matrix::t(mat)
 }
+
+self_name <- function(x) {
+  if (is.null(names(x))) {
+    x <- setNames(x, x)
+  } else if (any(names(x) == "")) {
+    is_missing <- names(x) == ""
+    names(x)[is_missing] <- x[is_missing]
+  }
+
+  x
+}
