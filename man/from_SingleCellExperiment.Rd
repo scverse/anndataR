@@ -27,8 +27,9 @@ or \code{"InMemoryAnnData"}.}
 
 \item{x_mapping}{Name of the assay in \code{sce} to use as the \code{X} matrix in the AnnData object.}
 
-\item{layers_mapping}{A named vector or list mapping layer names in AnnData to assay names in the SingleCellExperiment object.
-Each name corresponds to the layer name in AnnData, and each value to the assay name in SCE.}
+\item{layers_mapping}{A named vector or list mapping layer names in AnnData to assay names in the
+SingleCellExperiment object. Each name corresponds to the layer name in AnnData, and each value to the
+assay name in SCE.}
 
 \item{obs_mapping}{A named vector or list mapping column names in AnnData's obs to column names in SCE's colData.
 Each name corresponds to a column name in AnnData's obs, and each value to a column name in SCE's colData.}
@@ -44,14 +45,17 @@ Example: \code{obsm_mapping = c(X_pca = "pca", X_umap = "umap")}.}
 Each name corresponds to a key in AnnData's varm, and each value to the name of a reducedDim in SCE.
 Example: \code{varm_mapping = c(PCs = "pca")}.}
 
-\item{obsp_mapping}{A named vector or list mapping obsp keys in AnnData to colPairs in the SingleCellExperiment object.
-Each name corresponds to a key in AnnData's obsp, and each value to a name in SCE's colPairs.}
+\item{obsp_mapping}{A named vector or list mapping obsp keys in AnnData to colPairs in the
+SingleCellExperiment object. Each name corresponds to a key in AnnData's obsp, and each value to a name in
+SCE's colPairs.}
 
-\item{varp_mapping}{A named vector or list mapping varp keys in AnnData to rowPairs in the SingleCellExperiment object.
-Each name corresponds to a key in AnnData's varp, and each value to a name in SCE's rowPairs.}
+\item{varp_mapping}{A named vector or list mapping varp keys in AnnData to rowPairs in the
+SingleCellExperiment object. Each name corresponds to a key in AnnData's varp, and each value to a
+name in SCE's rowPairs.}
 
-\item{uns_mapping}{A named vector or list mapping uns keys in AnnData to metadata in the SingleCellExperiment object.
-Each name corresponds to a key in AnnData's uns, and each value to a name in SCE's metadata.}
+\item{uns_mapping}{A named vector or list mapping uns keys in AnnData to metadata in the
+SingleCellExperiment object. Each name corresponds to a key in AnnData's uns, and each value to a
+name in SCE's metadata.}
 
 \item{...}{Additional arguments to pass to the generator function.}
 }

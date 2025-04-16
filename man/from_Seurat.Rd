@@ -35,13 +35,13 @@ from_Seurat(
 Each name corresponds to the layer name in AnnData, and each value to the layer name in Seurat.
 See section "\verb{$layers} mapping" for more details.}
 
-\item{obs_mapping}{A named vector or list mapping obs names in AnnData to the names of the object-level (cell level) metadata in the
-Seurat object. Each name corresponds to a column name in AnnData's obs, and each value to a column name in Seurat's cell metadata.
-See section "\verb{$obs} mapping" for more details.}
+\item{obs_mapping}{A named vector or list mapping obs names in AnnData to the names of the object-level (cell level)
+metadata in the Seurat object. Each name corresponds to a column name in AnnData's obs, and each value to a column
+name in Seurat's cell metadata. See section "\verb{$obs} mapping" for more details.}
 
-\item{var_mapping}{A named vector or list mapping var names in AnnData to the names of the feature-level metadata in the Seurat object.
-Each name corresponds to a column name in AnnData's var, and each value to a column name in Seurat's feature metadata.
-See section "\verb{$var} mapping" for more details.}
+\item{var_mapping}{A named vector or list mapping var names in AnnData to the names of the feature-level metadata in
+the Seurat object. Each name corresponds to a column name in AnnData's var, and each value to a column name in
+Seurat's feature metadata. See section "\verb{$var} mapping" for more details.}
 
 \item{obsm_mapping}{A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
 Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
