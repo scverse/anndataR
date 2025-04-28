@@ -74,7 +74,7 @@ status_lines_required <- crossing(
     "var_names",
     "obsm",
     "varm",
-    "obsp", 
+    "obsp",
     "varp",
     "uns",
     "raw"
@@ -120,7 +120,7 @@ status_formatted <- status |>
       status == "missing",
       "",
       paste0(
-        "[", c("done" = "✓", "wip" = "~", "missing" = "")[status],
+        "[", c("done" = "✅", "wip" = "🚧", "missing" = "")[status],
         "](https://github.com/scverse/anndataR/blob/main/", source_file,
         "#L", line_number, ")"
       )
@@ -130,16 +130,44 @@ status_formatted <- status |>
   spread(prefix_formatted, status_formatted)
 ```
 
+## Objects
+
 ```{r echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as markdown
-for (class in unique(status_formatted$class)) {
-  cat("### ", class, "\n\n\n", sep = "")
+all_classes <- unique(status_formatted$class)
+object_classes <- all_classes[!all_classes %in% c("Seurat", "SingleCellExperiment")]
+
+for (class_name in object_classes) {
+  cat("### ", class_name, "\n\n", sep = "")
 
   df <- status_formatted |>
-    filter(class == !!class) |>
+    filter(class == class_name) |>
     select(-class) |>
-    knitr::kable(escape = FALSE)
-  
+    knitr::kable(escape = FALSE, align = "lcccc")
+
+  cat(paste(as.character(df), collapse = "\n"))
+  cat("\n\n")
+}
+```
+
+## Conversion
+
+```{r echo=FALSE, results="asis"}
+# loop over each of the classes and print the table as markdown
+for (class_name in c("SingleCellExperiment", "Seurat")) {
+  cat("### ", class_name, "\n\n", sep = "")
+
+  df <- status_formatted |>
+    filter(class == class_name) |>
+    select(
+      Slot,
+      From = Setter,
+      `From test` = `Setter test`,
+      To = Getter,
+      `To test` = `Getter test`
+    ) |>
+    knitr::kable(escape = FALSE, align = "lcccc")
+
   cat(paste(as.character(df), collapse = "\n"))
   cat("\n\n")
 }
