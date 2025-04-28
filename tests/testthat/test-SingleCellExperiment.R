@@ -1,15 +1,11 @@
-known_issues <- read_known_issues()
-
-ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
-ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
-ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
-
 skip_if_not_installed("SingleCellExperiment")
 library(SingleCellExperiment)
 
-###############
-# TEST TO_SCE #
-###############
+known_issues <- read_known_issues()
+
+ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 sce <- ad$to_SingleCellExperiment()
 
@@ -175,10 +171,63 @@ test_that("to_SCE retains pca dimred", {
   )
 })
 
-# overwrite ad, maybe this should be tested differently
+test_that("to_SCE works with list mappings", {
+  expect_no_error(
+    ad$to_SingleCellExperiment(
+      assays_mapping = as.list(.to_SCE_guess_assays(ad)),
+      colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
+      rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
+      reduction_mapping = as.list(.to_SCE_guess_reduction(ad)),
+      colPairs_mapping = as.list(.to_SCE_guess_all(ad, "obsp")),
+      rowPairs_mapping = as.list(.to_SCE_guess_all(ad, "varp")),
+      metadata_mapping = as.list(.to_SCE_guess_all(ad, "uns"))
+    )
+  )
+
+  expect_error(
+    ad$to_SingleCellExperiment(
+      reduction_mapping = list(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_SCE works with a vector reduction_mapping", {
+  expect_no_error(
+    ad$to_SingleCellExperiment(
+      reduction_mapping = c(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_SCE works with unnamed mappings", {
+  expect_no_error(
+    ad$to_SingleCellExperiment(
+      assays_mapping = unname(.to_SCE_guess_assays(ad)),
+      colData_mapping = unname(.to_SCE_guess_all(ad, "obs")),
+      rowData_mapping = unname(.to_SCE_guess_all(ad, "var")),
+      colPairs_mapping = unname(.to_SCE_guess_all(ad, "obsp")),
+      rowPairs_mapping = unname(.to_SCE_guess_all(ad, "varp")),
+      metadata_mapping = unname(.to_SCE_guess_all(ad, "uns"))
+    )
+  )
+})
+
+# TODO gracefully failing
+
+skip_if_not_installed("SingleCellExperiment")
+library(SingleCellExperiment)
+
+known_issues <- read_known_issues()
+
+ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
+ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
+ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+
+# TODO: Build an SCE rather than converting
+sce <- ad$to_SingleCellExperiment()
 ad <- from_SingleCellExperiment(sce)
 
-test_that("from_SCE retains observatoins and features", {
+test_that("from_SCE retains observations and features", {
   expect_equal(nrow(sce), 20)
   expect_equal(ncol(sce), 10)
 
@@ -330,15 +379,45 @@ test_that("from_SCE retains pca dimred", {
   skip_if(!is.null(msg), message = msg)
 
   expect_true("X_pca" %in% names(ad$obsm))
-  expect_true("pcas" %in% names(ad$varm))
+  expect_true("X_pca" %in% names(ad$varm))
   expect_equal(
-    sampleFactors(reducedDims(sce)$pca),
+    sampleFactors(reducedDims(sce)$X_pca),
     ad$obsm[["X_pca"]]
   )
   expect_equal(
-    featureLoadings(reducedDims(sce)$pca),
-    ad$varm[["pcas"]]
+    featureLoadings(reducedDims(sce)$X_pca),
+    ad$varm[["X_pca"]]
   )
 })
 
-# TODO gracefully failing
+test_that("from_SCE works with list mappings", {
+  expect_no_error(
+    from_SingleCellExperiment(
+      sce,
+      layers_mapping = as.list(.from_SCE_guess_layers(sce, NULL)),
+      obs_mapping = as.list(.from_SCE_guess_all(sce, colData)),
+      var_mapping = as.list(.from_SCE_guess_all(sce, rowData)),
+      obsm_mapping = as.list(.from_SCE_guess_obsm(sce)),
+      varm_mapping = as.list(.from_SCE_guess_varm(sce)),
+      obsp_mapping = as.list(.from_SCE_guess_obspvarp(sce, colPairs)),
+      varp_mapping = as.list(.from_SCE_guess_obspvarp(sce, rowPairs)),
+      uns_mapping = as.list(.from_SCE_guess_all(sce, S4Vectors::metadata))
+    )
+  )
+})
+
+test_that("from_SCE works with unnamed mappings", {
+  expect_no_error(
+    from_SingleCellExperiment(
+      sce,
+      layers_mapping = unname(.from_SCE_guess_layers(sce, NULL)),
+      obs_mapping = unname(.from_SCE_guess_all(sce, colData)),
+      var_mapping = unname(.from_SCE_guess_all(sce, rowData)),
+      obsm_mapping = unname(.from_SCE_guess_obsm(sce)),
+      varm_mapping = unname(.from_SCE_guess_varm(sce)),
+      obsp_mapping = unname(.from_SCE_guess_obspvarp(sce, colPairs)),
+      varp_mapping = unname(.from_SCE_guess_obspvarp(sce, rowPairs)),
+      uns_mapping = unname(.from_SCE_guess_all(sce, S4Vectors::metadata))
+    )
+  )
+})

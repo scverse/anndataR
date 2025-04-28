@@ -3,9 +3,12 @@ test_that("to_Seurat() fails gracefully", {
   expect_error(to_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
 })
 
+skip_if_not_installed("Seurat")
+library(Seurat)
+
 known_issues <- read_known_issues()
 
-ad <- generate_dataset(n_obs = 10L, n_var = 20L, format = "AnnData")
+ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
@@ -124,27 +127,65 @@ test_that("to_Seurat retains pca dimred", {
 
   skip_if(!is.null(msg), message = msg)
 
-  expect_true("pca" %in% names(seu@reductions))
+  expect_true("X_pca" %in% names(seu@reductions))
   expect_equal(
-    Embeddings(seu, reduction = "pca"),
+    Embeddings(seu, reduction = "X_pca"),
     ad$obsm[["X_pca"]],
     ignore_attr = TRUE
   )
   expect_equal(
-    Loadings(seu, reduction = "pca"),
+    Loadings(seu, reduction = "X_pca"),
     ad$varm[["PCs"]],
     ignore_attr = TRUE
   )
 })
 
+test_that("to_Seurat works with list mappings", {
+  expect_no_error(
+    ad$to_Seurat(
+      object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
+      layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
+      assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
+      reduction_mapping = as.list(.to_Seurat_guess_reductions(ad)),
+      graph_mapping = as.list(.to_Seurat_guess_graphs(ad)),
+      misc_mapping = as.list(.to_Seurat_guess_misc(ad))
+    )
+  )
 
-####################
-# TEST FROM_SEURAT #
-####################
+  expect_error(
+    ad$to_Seurat(
+      reduction_mapping = list(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_Seurat works with a vector reduction_mapping", {
+  expect_no_error(
+    ad$to_Seurat(
+      reduction_mapping = c(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_Seurat works with unnamed mappings", {
+  expect_no_error(
+    ad$to_Seurat(
+      object_metadata_mapping = unname(.to_Seurat_guess_object_metadata(ad)),
+      layers_mapping = c(
+        na.omit(unname(.to_Seurat_guess_layers(ad))),
+        counts = NA
+      ),
+      assay_metadata_mapping = unname(.to_Seurat_guess_assay_metadata(ad)),
+      graph_mapping = unname(.to_Seurat_guess_graphs(ad)),
+      misc_mapping = unname(.to_Seurat_guess_misc(ad))
+    )
+  )
+})
 
 skip_if_not_installed("Seurat")
-
 library(Seurat)
+
+known_issues <- read_known_issues()
 
 suppressWarnings({
   counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
@@ -262,8 +303,11 @@ test_that("from_Seurat retains pca", {
 
   skip_if(!is.null(msg), message = msg)
 
+  print(ad)
+  print(obj)
+
   expect_equal(
-    ad$obsm[["X_pca"]],
+    ad$obsm[["pca"]],
     Embeddings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
@@ -286,7 +330,7 @@ test_that("from_Seurat retains umap", {
   skip_if(!is.null(msg), message = msg)
 
   expect_equal(
-    ad$obsm[["X_umap"]],
+    ad$obsm[["umap"]],
     Embeddings(obj, reduction = "umap"),
     ignore_attr = TRUE
   )
@@ -305,7 +349,7 @@ test_that("from_Seurat retains connectivities", {
   skip_if(!is.null(msg), message = msg)
 
   expect_equal(
-    as.matrix(ad$obsp[["connectivities"]]),
+    as.matrix(ad$obsp[["nn"]]),
     as.matrix(obj@graphs[["RNA_nn"]]),
     ignore_attr = TRUE
   )
@@ -313,5 +357,53 @@ test_that("from_Seurat retains connectivities", {
     as.matrix(ad$obsp[["snn"]]),
     as.matrix(obj@graphs[["RNA_snn"]]),
     ignore_attr = TRUE
+  )
+})
+
+test_that("from_Seurat works with v3 Assays", {
+  obj_v3_assay <- obj
+  expect_warning(
+    obj_v3_assay[["RNA"]] <- as(Seurat::GetAssay(obj, "RNA"), "Assay")
+  )
+
+  adata_v3_assay <- from_Seurat(obj_v3_assay)
+
+  expect_identical(
+    to_R_matrix(adata_v3_assay$layers$counts),
+    SeuratObject::GetAssayData(obj_v3_assay, layer = "counts")
+  )
+})
+
+test_that("from_Seurat works with list mappings", {
+  active_assay <- SeuratObject::DefaultAssay(obj)
+  expect_no_error(
+    from_Seurat(
+      obj,
+      layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
+      obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
+      var_mapping = as.list(.from_Seurat_guess_var(obj, active_assay)),
+      obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
+      varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
+      obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
+      varp_mapping = as.list(.from_Seurat_guess_varps(obj)),
+      uns_mapping = as.list(.from_Seurat_guess_uns(obj))
+    )
+  )
+})
+
+test_that("from_Seurat works with unnamed mappings", {
+  active_assay <- SeuratObject::DefaultAssay(obj)
+  expect_no_error(
+    from_Seurat(
+      obj,
+      layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
+      obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),
+      var_mapping = unname(.from_Seurat_guess_var(obj, active_assay)),
+      obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
+      varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
+      obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
+      varp_mapping = unname(.from_Seurat_guess_varps(obj)),
+      uns_mapping = unname(.from_Seurat_guess_uns(obj))
+    )
   )
 })

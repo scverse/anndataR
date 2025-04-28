@@ -27,48 +27,35 @@ or \code{"InMemoryAnnData"}.}
 
 \item{x_mapping}{Name of the assay in \code{sce} to use as the \code{X} matrix in the AnnData object.}
 
-\item{layers_mapping}{A named list mapping \code{assay} names in \code{sce} to \code{layers} in the created AnnData object.
-The names of the list should be the names of the \code{layers} in the resulting AnnData object, and the values should be
-the names of the \code{assays} in the \code{sce} object.}
+\item{layers_mapping}{A named vector or list mapping layer names in AnnData to assay names in the
+SingleCellExperiment object. Each name corresponds to the layer name in AnnData, and each value to the
+assay name in SCE.}
 
-\item{obs_mapping}{A named list mapping \code{colData} in \code{sce} to \code{obs} in the created AnnData object.
-The names of the list should be the names of the \code{obs} columns in the resulting AnnData object. The values of the
-list should be the names of the \code{colData} columns in \code{sce}.}
+\item{obs_mapping}{A named vector or list mapping column names in AnnData's obs to column names in SCE's colData.
+Each name corresponds to a column name in AnnData's obs, and each value to a column name in SCE's colData.}
 
-\item{var_mapping}{A named list mapping \code{rowData} in \code{sce} to \code{var} in the created AnnData object.
-The names of the list should be the names of the \code{var} columns in the resulting AnnData object. The values of the
-list should be the names of the \code{rowData} columns in \code{sce}.}
+\item{var_mapping}{A named vector or list mapping column names in AnnData's var to column names in SCE's rowData.
+Each name corresponds to a column name in AnnData's var, and each value to a column name in SCE's rowData.}
 
-\item{obsm_mapping}{A named list mapping \code{reducedDim} in \code{sce} to \code{obsm} in the created AnnData object.
-The names of the list should be the names of the \code{obsm} in the resulting AnnData object. The values of the list
-should be a named list with as key the name of the \code{obsm} slot in the resulting AnnData object, and as value a list
-with the following elements
-\itemize{
-\item \code{reducedDim}
-\item the name of the \code{reducedDim} in \code{sce}
-}}
+\item{obsm_mapping}{A named vector mapping obsm keys in AnnData to reducedDims names in SCE.
+Each name corresponds to a key in AnnData's obsm, and each value to the name of a reducedDim in SCE.
+Example: \code{obsm_mapping = c(X_pca = "pca", X_umap = "umap")}.}
 
-\item{varm_mapping}{A named list mapping \code{reducedDim} in \code{sce} to \code{varm} in the created AnnData object.
-The names of the list should be the names of the \code{varm} in the resulting AnnData object. The values of the list
-should be a named list with as key the name of the \code{varm} slot in the resulting AnnData object, and as value a
-list with the following elements
-\itemize{
-\item \code{reducedDim}
-\item the name of the \code{reducedDim} in \code{sce}, that is \code{LinearEmbeddingMatrix} of which you want the featureLoadings to
-end up in the \code{varm} slot
-}}
+\item{varm_mapping}{A named vector mapping varm keys in AnnData to reducedDims names in SCE.
+Each name corresponds to a key in AnnData's varm, and each value to the name of a reducedDim in SCE.
+Example: \code{varm_mapping = c(PCs = "pca")}.}
 
-\item{obsp_mapping}{A named list mapping \code{colPairs} in \code{sce} to \code{obsp} in the created AnnData object.
-The names of the list should be the names of the \code{obsp} in the resulting AnnData object. The values of the list
-should be the names of the \code{colPairs} in \code{sce}.}
+\item{obsp_mapping}{A named vector or list mapping obsp keys in AnnData to colPairs in the
+SingleCellExperiment object. Each name corresponds to a key in AnnData's obsp, and each value to a name in
+SCE's colPairs.}
 
-\item{varp_mapping}{A named list mapping \code{rowPairs} in \code{sce} to \code{varp} in the created AnnData object.
-The names of the list should be the names of the \code{varp} in the resulting AnnData object. The values of the list
-should be the names of the \code{rowPairs} in \code{sce}.}
+\item{varp_mapping}{A named vector or list mapping varp keys in AnnData to rowPairs in the
+SingleCellExperiment object. Each name corresponds to a key in AnnData's varp, and each value to a
+name in SCE's rowPairs.}
 
-\item{uns_mapping}{A named list mapping \code{metadata} in \code{sce} to \code{uns} in the created AnnData object.
-The names of the list should be the names of the \code{uns} in the resulting AnnData object. The values of the list
-should be the names of the \code{metadata} in \code{sce}.}
+\item{uns_mapping}{A named vector or list mapping uns keys in AnnData to metadata in the
+SingleCellExperiment object. Each name corresponds to a key in AnnData's uns, and each value to a
+name in SCE's metadata.}
 
 \item{...}{Additional arguments to pass to the generator function.}
 }
@@ -85,8 +72,8 @@ SingleCellExperiment to an AnnData object.
 library(SingleCellExperiment)
 sce <- SingleCellExperiment(
   assays = list(counts = matrix(1:5, 5L, 3L)),
-  colData = DataFrame(cell = 1:3),
-  rowData = DataFrame(gene = 1:5)
+  colData = DataFrame(cell = 1:3, row.names = paste0("Cell", 1:3)),
+  rowData = DataFrame(gene = 1:5, row.names = paste0("Gene", 1:5))
 )
 from_SingleCellExperiment(sce, "InMemory")
 

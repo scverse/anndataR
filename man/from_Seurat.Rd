@@ -31,30 +31,37 @@ from_Seurat(
 \item{x_mapping}{A mapping of a Seurat layer to the AnnData \code{X} slot. If \code{NULL}, no data will be copied to the
 \code{X} slot.}
 
-\item{layers_mapping}{A named list mapping layer names to the names of the layers in the Seurat object. Each item in
-the list must be a character vector of length 1. See section "\verb{$layers} mapping" for more details.}
+\item{layers_mapping}{A named vector mapping layer names in AnnData to the names of the layers in the Seurat object.
+Each name corresponds to the layer name in AnnData, and each value to the layer name in Seurat.
+See section "\verb{$layers} mapping" for more details.}
 
-\item{obs_mapping}{A named list mapping obs names to the names of the object-level (cell level) metadata in the
-Seurat object. Each item in the list must be a character vector of length 1. See section "\verb{$obs} mapping" for
-more details.}
+\item{obs_mapping}{A named vector or list mapping obs names in AnnData to the names of the object-level (cell level)
+metadata in the Seurat object. Each name corresponds to a column name in AnnData's obs, and each value to a column
+name in Seurat's cell metadata. See section "\verb{$obs} mapping" for more details.}
 
-\item{var_mapping}{A named list mapping var names to the names of the feature-level metadata in the Seurat object.
-Each item in the list must be a character vector of length 1. See section "\verb{$var} mapping" for more details.}
+\item{var_mapping}{A named vector or list mapping var names in AnnData to the names of the feature-level metadata in
+the Seurat object. Each name corresponds to a column name in AnnData's var, and each value to a column name in
+Seurat's feature metadata. See section "\verb{$var} mapping" for more details.}
 
-\item{obsm_mapping}{A named list mapping reductions to the names of the reductions in the Seurat object. Each item in
-the list must be a vector of length 2. See section "\verb{$obsm} mapping" for more details.}
+\item{obsm_mapping}{A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
+Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
+Example: \code{obsm_mapping = c(X_pca = "pca", X_umap = "umap")}.}
 
-\item{varm_mapping}{A named list mapping PCA loadings to the names of the PCA loadings in the Seurat object.
-Each item in the list must be a character vector of length 1. See section "\verb{$varm} mapping" for more details.}
+\item{varm_mapping}{A named vector mapping varm keys in AnnData to reduction names in the Seurat object.
+Each name corresponds to a key in AnnData's varm, and each value to the name of a reduction in Seurat.
+Example: \code{varm_mapping = c(PCs = "pca")}.}
 
-\item{obsp_mapping}{A named list mapping graph names to the names of the graphs in the Seurat object.
-Each item in the list must be a character vector of length 1. See section "\verb{$obsp} mapping" for more details.}
+\item{obsp_mapping}{A named vector mapping obsp keys in AnnData to graph names in the Seurat object.
+Each name corresponds to a key in AnnData's obsp, and each value to the name of a graph in Seurat.
+Example: \code{obsp_mapping = c(connectivities = "RNA_nn")}.}
 
-\item{varp_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object.
-Each item in the list must be a named list with one or two elements. See section "\verb{$varp} mapping" for more details.}
+\item{varp_mapping}{A named vector mapping varp keys in AnnData to misc data names in the Seurat object.
+Each name corresponds to a key in AnnData's varp, and each value to the name of misc data in Seurat.
+Example: \code{varp_mapping = c(foo = "foo_data")}.}
 
-\item{uns_mapping}{A named list mapping miscellaneous data to the names of the data in the Seurat object.
-Each item in the list must be a named list with one or two elements. See section "\verb{$uns} mapping" for more details.}
+\item{uns_mapping}{A named vector mapping uns keys in AnnData to misc data names in the Seurat object.
+Each name corresponds to a key in AnnData's uns, and each value to the name of misc data in Seurat.
+Example: \code{uns_mapping = c(metadata = "project_meta")}.}
 
 \item{...}{Additional arguments passed to the generator function.}
 }
@@ -82,7 +89,7 @@ layer name to copy. If \code{NULL}, no data will be copied to the \code{X} slot.
 A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
 The \verb{$X} key maps to the \code{X} slot.
 
-Example: \code{layers_mapping = list(counts = "counts", foo = "bar")}.
+Example: \code{layers_mapping = c(counts = "counts", foo = "bar")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_layers} will be used to guess the layer mapping as follows:
 \itemize{
@@ -99,7 +106,7 @@ A named list or vector to map Seurat object-level metadata to AnnData \verb{$obs
 correspond to the names of the metadata in the Seurat object, and the names correspond to the names of the
 metadata in the resulting \verb{$obs} slot.
 
-Example: \code{obs_mapping = list(cellType = "cell_type")}.
+Example: \code{obs_mapping = c(cellType = "cell_type")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_obs} will be used to guess the obs mapping as follows:
 \itemize{
@@ -114,7 +121,7 @@ A named list or vector to map Seurat feature-level metadata to AnnData \verb{$va
 vector correspond to the names of the metadata of the assay in the Seurat object, and the
 names correspond to the names of the metadata in the resulting \verb{$var} slot.
 
-Example: \code{var_mapping = list(geneInfo = "gene_info")}.
+Example: \code{var_mapping = c(geneInfo = "gene_info")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_vars} will be used to guess the var mapping as follows:
 \itemize{
@@ -125,29 +132,26 @@ If \code{NULL}, the internal function \code{.from_Seurat_guess_vars} will be use
 \section{\verb{$obsm} mapping}{
 
 
-A named list to map Seurat reductions to AnnData \verb{$obsm}.
+A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
 
-Each item in the list must be a vector of length 2,
-where the name corresponds to the name of the resulting \verb{$obsm} slot, and the values correspond to the
-the location of the data in the Seurat object.
+Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
 
-Example: \code{obsm_mapping = list(pca = c("reductions", "pca"), umap = c("reductions", "umap"))}.
+Example: \code{obsm_mapping = c(pca = "pca", umap = "umap")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_obsms} will be used to guess the obsm mapping as follows:
 \itemize{
-\item All Seurat reductions are prefixed with \code{X_} and copied to AnnData \verb{$obsm}.
+\item All Seurat reductions are copied to AnnData \verb{$obsm}.
 }
 }
 
 \section{\verb{$varm} mapping}{
 
 
-A named list to map Seurat reduction loadings to AnnData \verb{$varm}.
+A named vector mapping varm keys in AnnData to reduction names in the Seurat object.
 
-Each item in the list must be a character vector of length 2, where the name corresponds to the name of the
-resulting \verb{$varm} slot, and the value corresponds to the location of the data in the Seurat object.
+Each name corresponds to a key in AnnData's varm, and each value to the name of a reduction in Seurat.
 
-Example: \verb{varm_mapping = list(PCs = c("reductions", "pca")}.
+Example: \code{varm_mapping = c(PCs = "pca")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_varms} will be used to guess the varm mapping as follows:
 \itemize{
@@ -158,13 +162,11 @@ If \code{NULL}, the internal function \code{.from_Seurat_guess_varms} will be us
 \section{\verb{$obsp} mapping}{
 
 
-A named list to map Seurat graphs to AnnData \verb{$obsp}.
+A named vector mapping obsp keys in AnnData to graph names in the Seurat object.
 
-Each name in the list corresponds to the name of the resulting \verb{$obsp} slot. Each value must be a character vector
-of length 2, where the first element of this vector must be \code{graphs} or \code{misc}, and the second element is the name
-of the data in the corresponding \code{graphs} or \code{misc} slot in the Seurat object.
+Each name corresponds to a key in AnnData's obsp, and each value to the name of a graph in Seurat.
 
-Example: \code{obsp_mapping = list(connectivities = c("graphs", "RNA_nn"))}.
+Example: \code{obsp_mapping = c(connectivities = "RNA_nn")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_obsps} will be used to guess the obsp mapping as follows:
 \itemize{
@@ -175,11 +177,11 @@ If \code{NULL}, the internal function \code{.from_Seurat_guess_obsps} will be us
 \section{\verb{$varp} mapping}{
 
 
-A named list to map Seurat miscellaneous data to AnnData \verb{$varp}. The name of each item corresponds to the
-resulting \verb{$varp} slot, while the value of each item must be a fector which corresponds to the location of the data
-in the Seurat object.
+A named vector mapping varp keys in AnnData to misc data names in the Seurat object.
 
-Example: \code{varp_mapping = list(foo = c("misc", "foo"))}.
+Each name corresponds to a key in AnnData's varp, and each value to the name of misc data in Seurat.
+
+Example: \code{varp_mapping = c(foo = "foo_data")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_varps} will be used to guess the varp mapping as follows:
 \itemize{
@@ -190,15 +192,23 @@ If \code{NULL}, the internal function \code{.from_Seurat_guess_varps} will be us
 \section{\verb{$uns} mapping}{
 
 
-A named list to map Seurat miscellaneous data to AnnData \code{uns}. Each item in the list must be a character of
-length 2. The first element must be \code{"misc"}. The second element is the name of the data in the corresponding slot.
+A named vector mapping uns keys in AnnData to misc data names in the Seurat object.
 
-Example: \code{uns_mapping = list(foo = c("misc", "foo"))}.
+Each name corresponds to a key in AnnData's uns, and each value to the name of misc data in Seurat.
+
+Example: \code{uns_mapping = c(metadata = "project_meta")}.
 
 If \code{NULL}, the internal function \code{.from_Seurat_guess_uns} will be used to guess the uns mapping as follows:
 \itemize{
 \item All Seurat miscellaneous data is copied to \code{uns} by name.
 }
+}
+
+\section{Mapping details}{
+
+
+If an unnamed vector is provided to a mapping argument the values will be
+used as names
 }
 
 \examples{

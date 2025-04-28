@@ -10,6 +10,18 @@
   )
 }
 
+.anndata_slots <- c(
+  "X",
+  "obs",
+  "var",
+  "uns",
+  "obsm",
+  "varm",
+  "layers",
+  "obsp",
+  "varp"
+)
+
 #' @title Abstract AnnData class
 #'
 #' @description
@@ -108,16 +120,7 @@ AbstractAnnData <- R6::R6Class(
         sep = ""
       )
 
-      for (attribute in c(
-        "obs",
-        "var",
-        "uns",
-        "obsm",
-        "varm",
-        "layers",
-        "obsp",
-        "varp"
-      )) {
+      for (attribute in .anndata_slots[-1]) {
         key_fun <- self[[paste0(attribute, "_keys")]]
         keys <-
           if (!is.null(key_fun)) {
@@ -313,7 +316,7 @@ AbstractAnnData <- R6::R6Class(
     #   the name of a layer.
     # @param shape Expected dimensions of matrix
     # @param expected_rownames
-    # @param excepted_colnames
+    # @param expected_colnames
     .validate_aligned_array = function(
       mat,
       label,
@@ -339,47 +342,33 @@ AbstractAnnData <- R6::R6Class(
               "], got [",
               paste(mat_dims, collapse = ", "),
               "]"
-            ),
+            )
           ),
           call = rlang::caller_env()
         )
       }
-      if (!is.null(expected_rownames) & !has_row_names(mat)) {
+
+      if (!is.null(expected_rownames) & has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
-          expected_str <- cli::cli_vec(
-            head(expected_rownames, 12),
-            list("vec-last" = ", ")
-          )
-          provided_str <- cli::cli_vec(
-            head(rownames(mat), 12),
-            list("vec-last" = ", ")
-          )
           cli_abort(
             c(
               "{.code rownames({label})} is not as expected",
-              "i" = "Expected row names: {.val {expected_str}}, ...",
-              "i" = "Provided row names: {.val {provided_str}}, ..."
+              "i" = "Expected row names: {style_vec(expected_colnames)}",
+              "i" = "Provided row names: {style_vec(rownames(mat))}"
             ),
             call = rlang::caller_env()
           )
         }
         rownames(mat) <- NULL
       }
+
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
-          expected_str <- cli::cli_vec(
-            head(expected_colnames, 12),
-            list("vec-last" = ", ")
-          )
-          provided_str <- cli::cli_vec(
-            head(colnames(mat), 12),
-            list("vec-last" = ", ")
-          )
           cli_abort(
             c(
               "{.code colnames({label})} is not as expected",
-              "i" = "Expected column names: {.val {expected_str}}, ...",
-              "i" = "Provided column names: {.val {provided_str}}, ..."
+              "i" = "Expected column names: {style_vec(expected_colnames)}",
+              "i" = "Provided column names: {style_vec(colnames(mat))}"
             ),
             call = rlang::caller_env()
           )

@@ -101,7 +101,7 @@ known_issues:
       Warning: different storage datatype
       <shape> has file datatype H5T_STD_I64LE
       <shape> has file datatype H5T_STD_I32LE
-      attribute: <shape of </X>> and <shape of </X>>  
+      attribute: <shape of </X>> and <shape of </X>>
     description: hdf5py writes the <shape> attribute as a H5T_STD_I64LE, hdf5r writes it as H5T_STD_I32LE.
     proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
     to_investigate: True
@@ -165,9 +165,9 @@ known_issues:
       </var/nullable_integer_array/values> has file datatype H5T_STD_I64LE
       </var/integer_with_nas/values> has file datatype H5T_STD_I32LE
       size:           [20]           [20]
-      position        values          values          difference          
+      position        values          values          difference
       ------------------------------------------------------------
-      [ 0 ]          0               1               1              
+      [ 0 ]          0               1               1
       1 differences found
     description: hdf5py writes a nullable integer array with type H5T_STD_I64LE, hdf5r writes with type H5T_STD_I32LE
     proposed_solution: We should investigate if we can specify the type with which an attribute should be written.
@@ -186,9 +186,9 @@ known_issues:
       </var/nullable_integer_array/values> has file datatype H5T_STD_I64LE
       </var/integer_with_nas/values> has file datatype H5T_STD_I32LE
       size:           [20]           [20]
-      position        values          values          difference          
+      position        values          values          difference
       ------------------------------------------------------------
-      [ 0 ]          0               1               1              
+      [ 0 ]          0               1               1
       1 differences found
     description: On position 0, hdf5py writes a 0 in the values array, hdf5r writes a 1.
     proposed_solution: We should investigate why this difference happens.
@@ -251,7 +251,7 @@ known_issues:
       - actual[4, ]     0.48    NA    NA    NA    NA    NA  0.66    NA    NA    NA
       + expected[4, ]   0.48     0     0     0   0.0     0  0.66     0     0     0
     description: After conversion of a sparse matrix, also containing NAs to a SelfHits object, the distinction between NA and 0 is lost.
-    proposed_solution: Upstream the issue, is this intentional?
+    proposed_solution: This has been addressed in SingleCellExperiment and will be fixed by the Bioconductor 3.12 release in April 2025
     to_investigate: True
     to_fix: False
   - backend: to_SCE
@@ -275,7 +275,7 @@ known_issues:
       - actual[3, ]    0.00000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.00000000 0.0000000 0.0000000 0.0000000
       + expected[3, ]          NA        NA        NA        NA        NA        NA         NA        NA        NA        NA
     description: After conversion of a sparse matrix, also containing NAs to a SelfHits object, the distinction between NA and 0 is lost.
-    proposed_solution: Upstream the issue, is this intentional?
+    proposed_solution: This has been addressed in SingleCellExperiment and will be fixed by the Bioconductor 3.12 release in April 2025
     to_investigate: True
     to_fix: False
   - backend: to_SCE
@@ -285,7 +285,7 @@ known_issues:
     dtype:
       - pca
     process: [convert]
-    error_message: 
+    error_message:
       sampleFactors(reducedDims(sce)$pca) (`actual`) not equal to ad$obsm[["X_pca"]] (`expected`).
 
         `dimnames(actual)` is a list
