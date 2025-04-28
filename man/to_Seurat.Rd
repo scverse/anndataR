@@ -7,6 +7,7 @@
 to_Seurat(
   adata,
   assay_name = "RNA",
+  x_mapping = NULL,
   layers_mapping = NULL,
   object_metadata_mapping = NULL,
   assay_metadata_mapping = NULL,

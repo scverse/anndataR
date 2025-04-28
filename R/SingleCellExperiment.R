@@ -397,8 +397,17 @@ from_SingleCellExperiment <- function(
     )
   }
 
+  if (is.null(x_mapping)) {
+    x_mapping <- list()
+  }
   if (is.null(layers_mapping)) {
     layers_mapping <- .from_SCE_guess_layers(sce, x_mapping)
+    layers_mapping <- c(x_mapping, layers_mapping)
+    if (any(duplicated(names(layers_mapping)))) {
+      cli_abort(
+        "Duplicate names in {.arg layers_mapping}: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
+      )
+    }
   }
   if (is.null(obs_mapping)) {
     obs_mapping <- .from_SCE_guess_all(sce, SingleCellExperiment::colData)

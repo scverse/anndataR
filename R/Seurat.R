@@ -132,6 +132,12 @@ to_Seurat <- function(
   if (is.null(layers_mapping)) {
     layers_mapping <- .to_Seurat_guess_layers(adata)
     layers_mapping <- c(x_mapping, layers_mapping)
+    # check that there are no duplicates
+    if (any(duplicated(names(layers_mapping)))) {
+      cli_abort(
+        "Duplicate names in {.arg layers_mapping}: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
+      )
+    }
   }
   if (is.null(assay_metadata_mapping)) {
     assay_metadata_mapping <- .to_Seurat_guess_assay_metadata(adata)
@@ -156,7 +162,7 @@ to_Seurat <- function(
   obs_names <- adata$obs_names[]
   var_names <- adata$var_names[]
 
-  # check seurat layers
+  # check seurat layers (which includes the X mapping)
   if (is.null(names(layers_mapping))) {
     names(layers_mapping) <- layers_mapping
   }
