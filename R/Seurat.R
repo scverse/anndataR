@@ -169,6 +169,7 @@ to_Seurat <- function(
       "Duplicate names in {.arg layers_mapping}: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
     )
   }
+  
   assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
     .to_Seurat_guess_assay_metadata(adata)
   reduction_mapping <- self_name(reduction_mapping) %||%
