@@ -68,10 +68,16 @@ status_lines_required <- crossing(
   slot = c("X", "layers", "obs", "var", "obs_names", "var_names", "obsm", "varm", "obsp", "varp", "uns"),
   status = "missing"
 )
-status <- bind_rows(
+status_required <- bind_rows(
   status_lines_proc,
   status_lines_required %>% anti_join(status_lines_proc, by = c("class", "prefix", "slot"))
 )
+
+# Fill in non-required slots
+status <- status_required |>
+  group_by(class) |>
+  complete(prefix, slot, fill = list(status = "missing")) |>
+  ungroup()
 
 # check duplicated status
 status_dup <- status %>%
