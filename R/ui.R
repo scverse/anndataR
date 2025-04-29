@@ -19,11 +19,12 @@ style_vec <- function(
   trunc_style = c("both-ends", "head"),
   wrap = FALSE
 ) {
-  trunc_style = match.arg(  trunc_style)
+  trunc_style = match.arg(trunc_style)
 
   style <- list(
-    "vec-last"=last,
-    "vec-trunc" = trunc, "vec-trunc-style" = trunc_style
+    "vec-last" = last,
+    "vec-trunc" = trunc,
+    "vec-trunc-style" = trunc_style
   )
 
   x <- cli::cli_vec(x, style)
@@ -34,6 +35,5 @@ style_vec <- function(
     x_str <- "{.val {x}}"
   }
 
-  cli::cli_fmt(cli::cli_text(x_str)
-               )
+  cli::cli_fmt(cli::cli_text(x_str))
 }
