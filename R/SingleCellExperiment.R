@@ -14,47 +14,60 @@
 #'
 #' @param adata an AnnData object, e.g., InMemoryAnnData
 #'
-#' @param assays_mapping A named list mapping `layers` in `adata` to
-#' `assay` names in the created SingleCellExperiment object.
-#' The names of the list should be the names of the `assays` in the
-#' resulting SingleCellExperiment object, and the values should be the names
-#' of the `layers` in `adata`, and should include the `X` matrix as well.
-#' If `X` is not in the list, it will be added as `counts` or `data`.
-#' @param colData_mapping a named list mapping `obs` in `adata` to
-#' `colData` in the created SingleCellExperiment object.
-#' The names of the list should be the names of the `colData` columns in the
-#' resulting SingleCellExperiment object. The values of the list should be the
-#' names of the `obs` columns in `adata`.
-#' @param rowData_mapping a named list mapping `var` names in `adata` to
-#' `rowData` in the created SingleCellExperiment object. The names of the list
-#' should be the names of the `rowData` columns in the resulting SingleCellExperiment
-#' object. The values of the list should be the names of the `var` columns in `adata`.
-#' @param reduction_mapping a named list mapping reduction names in `adata` to
-#' reduction names in the created SingleCellExperiment object.
-#' The names of the list should be the names of the `reducedDims` in the resulting
-#' SingleCellExperiment object.
-#' The values of the list should also be a named list with the following keys:
-#' - `obsm`: the name of the `obsm` slot in `adata`
-#' - `varm`: the name of the `varm` slot in `adata`
-#' - `uns`: the name of the `uns` slot in `adata`
-#' @param colPairs_mapping a named list mapping obsp names in `adata` to
-#' colPairs names in the created SingleCellExperiment object.
-#' The names of the list should be the names of the `colPairs` in the resulting
-#' SingleCellExperiment object. The values of the list should be the names of the
-#' `obsp` in `adata`.
-#' @param rowPairs_mapping a named list mapping varp names in `adata` to
-#' rowPairs names in the created SingleCellExperiment object.
-#' The names of the list should be the names of the `rowPairs` in the resulting
-#' SingleCellExperiment object. The values of the list should be the names of the
-#' `varp` in `adata`.
-#' @param metadata_mapping a named list mapping uns names in `adata` to
-#' metadata names in the created SingleCellExperiment object.
-#' The names of the list should be the names of the `metadata` in the resulting
-#' SingleCellExperiment object. The values of the list should be the names of the
-#' `uns` in `adata`.
+#' @param assays_mapping A named vector mapping `layers` in `adata` to `assay`
+#'   names in the created SingleCellExperiment object. The names of the vector
+#'   should be the names of the `assays` in the resulting SingleCellExperiment
+#'   object, and the values should be the names of the `layers` in `adata`, and
+#'   can include the `X` matrix as well. If `X` is not in the list, it will be
+#'   added as `counts` or `data`.
+#' @param colData_mapping A named vector mapping `obs` in `adata` to `colData`
+#'   in the created SingleCellExperiment object. The names of the vector should
+#'   be the names of the `colData` columns in the resulting SingleCellExperiment
+#'   object. The values should be the names of the `obs` columns in `adata`.
+#' @param rowData_mapping A named vector mapping `var` names in `adata` to
+#'   `rowData` in the created SingleCellExperiment object. The names of the
+#'   vector should be the names of the `rowData` columns in the resulting
+#'   SingleCellExperiment object. The values should be the names of the `var`
+#'   columns in `adata`.
+#' @param reduction_mapping A named vector or list mapping reduction names in
+#'   `adata` to reduction names in the created SingleCellExperiment object. For
+#'   the simpler named vector format, the names should be the names of the
+#'   `reducedDims` in the resulting SingleCellExperiment object, and the values
+#'   should be the names of the `obsm` in `adata`.
+#'
+#'   For more advanced mapping, use the list format where each item has the
+#'   following keys:
+#'
+#'   - `obsm`: the name of the `obsm` slot in `adata`
+#'   - `varm`: the name of the `varm` slot in `adata` (optional)
+#'   - `uns`: the name of the `uns` slot in `adata` (optional)
+#'
+#'   If `'varm'` or `'uns'` is given, a
+#'   [SingleCellExperiment::LinearEmbeddingMatrix] will be created for that item
+#'   with `adata$varm[[varm]]` passed to the `featureLoadings` argument and
+#'   `adata$uns[[uns]]` passed as `metadata`
+#' @param colPairs_mapping A named vector mapping obsp names in `adata` to
+#'   colPairs names in the created SingleCellExperiment object. The names of the
+#'   vector should be the names of the `colPairs` in the resulting
+#'   SingleCellExperiment object. The values should be the names of the `obsp`
+#'   in `adata`.
+#' @param rowPairs_mapping A named vector mapping varp names in `adata` to
+#'   rowPairs names in the created SingleCellExperiment object. The names of the
+#'   vector should be the names of the `rowPairs` in the resulting
+#'   SingleCellExperiment object. The values should be the names of the `varp`
+#'   in `adata`.
+#' @param metadata_mapping A named vector mapping uns names in `adata` to
+#'   metadata names in the created SingleCellExperiment object. The names of the
+#'   vector should be the names of the `metadata` in the resulting
+#'   SingleCellExperiment object. The values should be the names of the `uns` in
+#'   `adata`.
 #'
 #' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
 #'   representing the content of `adata`.
+#'
+#' @details
+#' If an unnamed vector is provided to a mapping argument the values will be
+#' used as names
 #'
 #' @examples
 #' if (interactive()) {
@@ -100,27 +113,21 @@ to_SingleCellExperiment <- function(
   }
 
   # guess mappings if not provided
-  if (is.null(assays_mapping)) {
-    assays_mapping <- to_SCE_guess_assays(adata)
-  }
-  if (is.null(colData_mapping)) {
-    colData_mapping <- to_SCE_guess_all(adata, "obs") # nolint
-  }
-  if (is.null(rowData_mapping)) {
-    rowData_mapping <- to_SCE_guess_all(adata, "var") # nolint
-  }
-  if (is.null(reduction_mapping)) {
-    reduction_mapping <- to_SCE_guess_reduction(adata)
-  }
-  if (is.null(colPairs_mapping)) {
-    colPairs_mapping <- to_SCE_guess_all(adata, "obsp") # nolint
-  }
-  if (is.null(rowPairs_mapping)) {
-    rowPairs_mapping <- to_SCE_guess_all(adata, "varp") # nolint
-  }
-  if (is.null(metadata_mapping)) {
-    metadata_mapping <- to_SCE_guess_all(adata, "uns")
-  }
+  # nolint start object_name_linter
+  assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
+  colData_mapping <- self_name(colData_mapping) %||%
+    .to_SCE_guess_all(adata, "obs")
+  rowData_mapping <- self_name(rowData_mapping) %||%
+    .to_SCE_guess_all(adata, "var")
+  reduction_mapping <- self_name(reduction_mapping) %||%
+    .to_SCE_guess_reduction(adata)
+  colPairs_mapping <- self_name(colPairs_mapping) %||%
+    .to_SCE_guess_all(adata, "obsp")
+  rowPairs_mapping <- self_name(rowPairs_mapping) %||%
+    .to_SCE_guess_all(adata, "varp")
+  metadata_mapping <- self_name(metadata_mapping) %||%
+    .to_SCE_guess_all(adata, "uns")
+  # nolint end object_name_linter
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
@@ -147,26 +154,6 @@ to_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
   row_data <- .to_SCE_process_simple_mapping(adata, rowData_mapping, "var")
 
-  # construct reducedDims
-  reduceddims <- vector("list", length(reduction_mapping))
-  names(reduceddims) <- names(reduction_mapping)
-  for (i in seq_along(reduction_mapping)) {
-    name <- names(reduction_mapping)[[i]]
-    reduction <- reduction_mapping[[i]]
-
-    obsm_key <- reduction$obsm
-    varm_key <- reduction$varm
-    uns_key <- reduction$uns
-
-    reduceddims[[name]] <- .to_SingleCellExperiment_process_reduction(
-      adata,
-      name,
-      obsm_key,
-      varm_key,
-      uns_key
-    )
-  }
-
   # construct colPairs
   # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
   col_pairs <- .to_SCE_process_simple_mapping(adata, colPairs_mapping, "obsp")
@@ -178,6 +165,9 @@ to_SingleCellExperiment <- function(
   # construct metadata
   # trackstatus: class=SingleCellExperiment, feature=get_uns, status=done
   metadata <- .to_SCE_process_simple_mapping(adata, metadata_mapping, "uns")
+
+  # construct reducedDims
+  reduceddims <- .to_SCE_process_reduction_mapping(adata, reduction_mapping)
 
   arguments <- list(
     assays = sce_assays,
@@ -206,7 +196,7 @@ to_SingleCellExperiment <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-to_SCE_guess_assays <- function(adata) {
+.to_SCE_guess_assays <- function(adata) {
   # nolint end: object_length_linter object_name_linter
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -235,7 +225,7 @@ to_SCE_guess_assays <- function(adata) {
 }
 
 # nolint start: object_length_linter object_name_linter
-to_SCE_guess_all <- function(adata, slot) {
+.to_SCE_guess_all <- function(adata, slot) {
   # nolint end: object_length_linter object_name_linter
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -243,14 +233,11 @@ to_SCE_guess_all <- function(adata, slot) {
     )
   }
 
-  mapping <- names(adata[[slot]])
-  names(mapping) <- names(adata[[slot]])
-
-  mapping
+  self_name(names(adata[[slot]]))
 }
 
 # nolint start: object_length_linter object_name_linter
-to_SCE_guess_reduction <- function(adata) {
+.to_SCE_guess_reduction <- function(adata) {
   # nolint end: object_length_linter object_name_linter
   .to_Seurat_guess_reductions(adata) # nolint object_usage_linter
 }
@@ -258,33 +245,27 @@ to_SCE_guess_reduction <- function(adata) {
 # nolint start: object_length_linter object_name_linter
 .to_SCE_process_simple_mapping <- function(adata, mapping, slot) {
   # nolint end: object_length_linter object_name_linter
-  # check if mapping contains all columns of slot
-  if (length(setdiff(names(adata[[slot]]), names(mapping))) == 0) {
-    adata[[slot]]
-  } else {
-    mapped <- lapply(seq_along(mapping), function(i) {
-      adata[[slot]][[mapping[[i]]]]
-    })
-    names(mapped) <- names(mapping)
-    mapped
+
+  if (rlang::is_empty(mapping)) {
+    return(list())
   }
+
+  purrr::map(mapping, function(.item) {
+    adata[[slot]][[.item]]
+  })
 }
 
 # trackstatus: class=SingleCellExperiment, feature=get_obsm, status=done
 # trackstatus: class=SingleCellExperiment, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
-.to_SingleCellExperiment_process_reduction <- function(
+.to_SCE_process_reduction <- function(
   # nolint end: object_length_linter object_name_linter
   adata,
-  key,
   obsm_key,
   varm_key,
   uns_key
 ) {
-  # nolint
-  embedding <- adata$obsm[[obsm_key]]
-
-  if (is.null(embedding)) {
+  if (!(obsm_key %in% adata$obsm_keys())) {
     cli_abort(
       c(
         "{.val {obsm_key}} is not an item in {.code adata$obsm}",
@@ -293,28 +274,95 @@ to_SCE_guess_reduction <- function(adata) {
     )
   }
 
+  embedding <- adata$obsm[[obsm_key]]
   rownames(embedding) <- adata$obs_names
 
-  if (!is.null(varm_key) && varm_key %in% names(adata$varm)) {
-    loadings <- adata$varm[[varm_key]]
-    rownames(loadings) <- colnames(embedding)
+  # If there is no extra info to add, return the embedding matrix
+  if (is.null(varm_key) && is.null(uns_key)) {
+    return(embedding)
+  }
 
-    metadata <- list()
-    if (!is.null(uns_key) && uns_key %in% names(adata$uns)) {
-      metadata <- adata$uns[[uns_key]]
+  if (!is.null(varm_key)) {
+    if (!(varm_key %in% adata$varm_keys())) {
+      cli_abort(
+        c(
+          "{.val {varm_key}} is not an item in {.code adata$varm}",
+          "i" = "{.code adata$varm_keys()}: {.val {adata$varm_keys()}}"
+        )
+      )
     }
 
-    lem <- SingleCellExperiment::LinearEmbeddingMatrix(
-      sampleFactors = embedding,
-      featureLoadings = loadings,
-      metadata = metadata
-    )
-    rownames(lem) <- rownames(embedding)
-    colnames(lem) <- colnames(loadings)
-    lem
+    loadings <- adata$varm[[varm_key]]
+    rownames(loadings) <- colnames(embedding)
   } else {
-    embedding
+    loadings <- matrix(nrow = 0, ncol = ncol(embedding))
   }
+
+  if (!is.null(uns_key)) {
+    if (!(uns_key %in% adata$uns_keys())) {
+      cli_abort(
+        c(
+          "{.val {uns_key}} is not an item in {.code adata$uns}",
+          "i" = "{.code adata$uns_keys()}: {.val {adata$uns_keys()}}"
+        )
+      )
+    }
+
+    metadata <- adata$uns[[uns_key]]
+  } else {
+    metadata <- list()
+  }
+
+  lem <- SingleCellExperiment::LinearEmbeddingMatrix(
+    sampleFactors = embedding,
+    featureLoadings = loadings,
+    metadata = metadata
+  )
+  rownames(lem) <- rownames(embedding)
+  colnames(lem) <- colnames(loadings)
+
+  lem
+}
+
+# nolint start: object_length_linter object_name_linter
+.to_SCE_process_reduction_mapping <- function(adata, reduction_mapping) {
+  # nolint end: object_length_linter object_name_linter
+
+  # If the mapping is a vector expand it to the list format
+  if (is.atomic(reduction_mapping)) {
+    reduction_mapping <- purrr::map(reduction_mapping, function(.obsm) {
+      c(obsm = .obsm)
+    })
+  } else {
+    purrr::walk(names(reduction_mapping), function(.name) {
+      mapping <- reduction_mapping[[.name]]
+      if (!(is.character(mapping) && ("obsm" %in% names(mapping)))) {
+        cli_abort(c(
+          paste(
+            "If it is a list, each item in {.arg reduction_mapping} must be a
+            {.cls character} vector with the name {.val obsm} and optional",
+            "names {.val varm} and {.val uns}"
+          ),
+          "i" = paste(
+            "{.code reduction_mapping[[{.val { .name }}]]}:",
+            "{style_vec(mapping, wrap = TRUE)}"
+          )
+        ))
+      }
+    })
+  }
+
+  purrr::map(reduction_mapping, function(.map) {
+    varm <- if ("varm" %in% names(.map)) .map[["varm"]] else NULL
+    uns <- if ("uns" %in% names(.map)) .map[["uns"]] else NULL
+
+    .to_SCE_process_reduction(
+      adata,
+      obsm_key = .map[["obsm"]],
+      varm_key = varm,
+      uns_key = uns
+    )
+  })
 }
 
 #' Convert a SingleCellExperiment object to an AnnData object
@@ -328,37 +376,28 @@ to_SCE_guess_reduction <- function(adata) {
 #' or `"InMemoryAnnData"`.
 #'
 #' @param x_mapping Name of the assay in `sce` to use as the `X` matrix in the AnnData object.
-#' @param layers_mapping A named list mapping `assay` names in `sce` to `layers` in the created AnnData object.
-#' The names of the list should be the names of the `layers` in the resulting AnnData object, and the values should be
-#' the names of the `assays` in the `sce` object.
-#' @param obs_mapping A named list mapping `colData` in `sce` to `obs` in the created AnnData object.
-#' The names of the list should be the names of the `obs` columns in the resulting AnnData object. The values of the
-#' list should be the names of the `colData` columns in `sce`.
-#' @param var_mapping A named list mapping `rowData` in `sce` to `var` in the created AnnData object.
-#' The names of the list should be the names of the `var` columns in the resulting AnnData object. The values of the
-#' list should be the names of the `rowData` columns in `sce`.
-#' @param obsm_mapping A named list mapping `reducedDim` in `sce` to `obsm` in the created AnnData object.
-#' The names of the list should be the names of the `obsm` in the resulting AnnData object. The values of the list
-#' should be a named list with as key the name of the `obsm` slot in the resulting AnnData object, and as value a list
-#' with the following elements
-#' - `reducedDim`
-#' - the name of the `reducedDim` in `sce`
-#' @param varm_mapping A named list mapping `reducedDim` in `sce` to `varm` in the created AnnData object.
-#' The names of the list should be the names of the `varm` in the resulting AnnData object. The values of the list
-#' should be a named list with as key the name of the `varm` slot in the resulting AnnData object, and as value a
-#' list with the following elements
-#' - `reducedDim`
-#' - the name of the `reducedDim` in `sce`, that is `LinearEmbeddingMatrix` of which you want the featureLoadings to
-#' end up in the `varm` slot
-#' @param obsp_mapping A named list mapping `colPairs` in `sce` to `obsp` in the created AnnData object.
-#' The names of the list should be the names of the `obsp` in the resulting AnnData object. The values of the list
-#' should be the names of the `colPairs` in `sce`.
-#' @param varp_mapping A named list mapping `rowPairs` in `sce` to `varp` in the created AnnData object.
-#' The names of the list should be the names of the `varp` in the resulting AnnData object. The values of the list
-#' should be the names of the `rowPairs` in `sce`.
-#' @param uns_mapping A named list mapping `metadata` in `sce` to `uns` in the created AnnData object.
-#' The names of the list should be the names of the `uns` in the resulting AnnData object. The values of the list
-#' should be the names of the `metadata` in `sce`.
+#' @param layers_mapping A named vector or list mapping layer names in AnnData to assay names in the
+#' SingleCellExperiment object. Each name corresponds to the layer name in AnnData, and each value to the
+#' assay name in SCE.
+#' @param obs_mapping A named vector or list mapping column names in AnnData's obs to column names in SCE's colData.
+#' Each name corresponds to a column name in AnnData's obs, and each value to a column name in SCE's colData.
+#' @param var_mapping A named vector or list mapping column names in AnnData's var to column names in SCE's rowData.
+#' Each name corresponds to a column name in AnnData's var, and each value to a column name in SCE's rowData.
+#' @param obsm_mapping A named vector mapping obsm keys in AnnData to reducedDims names in SCE.
+#' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reducedDim in SCE.
+#' Example: `obsm_mapping = c(X_pca = "pca", X_umap = "umap")`.
+#' @param varm_mapping A named vector mapping varm keys in AnnData to reducedDims names in SCE.
+#' Each name corresponds to a key in AnnData's varm, and each value to the name of a reducedDim in SCE.
+#' Example: `varm_mapping = c(PCs = "pca")`.
+#' @param obsp_mapping A named vector or list mapping obsp keys in AnnData to colPairs in the
+#' SingleCellExperiment object. Each name corresponds to a key in AnnData's obsp, and each value to a name in
+#' SCE's colPairs.
+#' @param varp_mapping A named vector or list mapping varp keys in AnnData to rowPairs in the
+#' SingleCellExperiment object. Each name corresponds to a key in AnnData's varp, and each value to a
+#' name in SCE's rowPairs.
+#' @param uns_mapping A named vector or list mapping uns keys in AnnData to metadata in the
+#' SingleCellExperiment object. Each name corresponds to a key in AnnData's uns, and each value to a
+#' name in SCE's metadata.
 #' @param ... Additional arguments to pass to the generator function.
 #'
 #' @return `from_SingleCellExperiment()` returns an AnnData object
@@ -406,30 +445,32 @@ from_SingleCellExperiment <- function(
   }
 
   # For any mappings that are not set, using the guessing function
-  layers_mapping <- layers_mapping %||% .from_SCE_guess_layers(sce, x_mapping)
-  obs_mapping <- obs_mapping %||%
+  layers_mapping <- self_name(layers_mapping) %||%
+    .from_SCE_guess_layers(sce, x_mapping)
+  obs_mapping <- self_name(obs_mapping) %||%
     .from_SCE_guess_all(
       sce,
       SingleCellExperiment::colData
     )
-  var_mapping <- var_mapping %||%
+  var_mapping <- self_name(var_mapping) %||%
     .from_SCE_guess_all(
       sce,
       SingleCellExperiment::rowData
     )
-  obsm_mapping <- obsm_mapping %||% .from_SCE_guess_obsm(sce)
-  varm_mapping <- varm_mapping %||% .from_SCE_guess_varm(sce)
-  obsp_mapping <- obsp_mapping %||%
+  obsm_mapping <- self_name(obsm_mapping) %||% .from_SCE_guess_obsm(sce)
+  varm_mapping <- self_name(varm_mapping) %||% .from_SCE_guess_varm(sce)
+  obsp_mapping <- self_name(obsp_mapping) %||%
     .from_SCE_guess_obspvarp(
       sce,
       SingleCellExperiment::colPairs
     )
-  varp_mapping <- varp_mapping %||%
+  varp_mapping <- self_name(varp_mapping) %||%
     .from_SCE_guess_obspvarp(
       sce,
       SingleCellExperiment::rowPairs
     )
-  uns_mapping <- uns_mapping %||% .from_SCE_guess_all(sce, S4Vectors::metadata)
+  uns_mapping <- self_name(uns_mapping) %||%
+    .from_SCE_guess_all(sce, S4Vectors::metadata)
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(sce)), ...)
@@ -464,53 +505,46 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_all <- function(sce, slot) {
   # nolint end: object_length_linter object_name_linter
-  mapping <- names(slot(sce))
-  names(mapping) <- names(slot(sce))
-
-  mapping
+  self_name(names(slot(sce)))
 }
 
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_layers <- function(sce, x_mapping) {
   # nolint end: object_length_linter object_name_linter
-  layers_mapping <- list()
+  layers_mapping <- self_name(SummarizedExperiment::assayNames(sce))
 
-  for (assay_name in names(SummarizedExperiment::assays(sce))) {
-    if (is.null(x_mapping) || assay_name != x_mapping) {
-      layers_mapping[[assay_name]] <- assay_name
-    }
+  if (!is.null(x_mapping)) {
+    layers_mapping <- layers_mapping[layers_mapping != x_mapping]
   }
 
-  layers_mapping
+  if (rlang::is_empty(layers_mapping)) {
+    c()
+  } else {
+    layers_mapping
+  }
 }
 
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_obsm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(sce, "SingleCellExperiment")) {
-    return(list())
-  }
-  obsm_mapping <- list()
+  obsm_mapping <- self_name(SingleCellExperiment::reducedDimNames(sce))
 
-  for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
-    obsm_mapping[[reduction_name]] <- c("reducedDim", reduction_name)
+  if (rlang::is_empty(obsm_mapping)) {
+    c()
+  } else {
+    obsm_mapping
   }
-
-  obsm_mapping
 }
 
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_varm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(sce, "SingleCellExperiment")) {
-    return(list())
-  }
-  varm_mapping <- list()
+  varm_mapping <- c()
 
   for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
     reduction <- SingleCellExperiment::reducedDim(sce, reduction_name)
     if (inherits(reduction, "LinearEmbeddingMatrix")) {
-      varm_mapping[[reduction_name]] <- c("reducedDim", reduction_name)
+      varm_mapping[reduction_name] <- reduction_name
     }
   }
 
@@ -521,9 +555,6 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_obspvarp <- function(sce, slot) {
   # nolint end: object_length_linter object_name_linter
-  if (!inherits(sce, "SingleCellExperiment")) {
-    return(list())
-  }
   .from_SCE_guess_all(sce, slot)
 }
 
@@ -612,31 +643,16 @@ from_SingleCellExperiment <- function(
     return(invisible())
   }
 
-  adata$obsm <- purrr::imap(obsm_mapping, function(.mapping, .idx) {
-    if (!is.character(.mapping) || length(.mapping) != 2) {
+  adata$obsm <- purrr::imap(obsm_mapping, function(reduction_name, obsm_key) {
+    # Check if the reduction exists
+    if (!reduction_name %in% names(SingleCellExperiment::reducedDims(sce))) {
       cli_abort(c(
-        paste(
-          "Each item in {.arg obsm_mapping} must be a {.cls character}",
-          "vector of length 2"
-        ),
-        "i" = paste(
-          "{.code obsm_mapping[[{.val { .idx }}]]} is",
-          "{.obj_type_friendly { .mapping }}"
-        )
+        "Reduction {.val {reduction_name}} not found in SCE object.",
+        "i" = "Available reductions: {.val {names(SingleCellExperiment::reducedDims(sce))}}"
       ))
     }
 
-    slot <- .mapping[1]
-    key <- .mapping[2]
-
-    if (slot != "reducedDim") {
-      cli_abort(c(
-        "The first item in each {.arg obsm_mapping} must be {.val reducedDim}",
-        "i" = "{.code obsm_mapping[[{.val { .idx }}]][1]}: {.val {slot}}"
-      ))
-    }
-
-    reduction <- SingleCellExperiment::reducedDim(sce, key)
+    reduction <- SingleCellExperiment::reducedDim(sce, reduction_name)
     if (inherits(reduction, "LinearEmbeddingMatrix")) {
       SingleCellExperiment::sampleFactors(reduction)
     } else {
@@ -653,39 +669,33 @@ from_SingleCellExperiment <- function(
     return(invisible())
   }
 
-  adata$varm <- purrr::imap(varm_mapping, function(.mapping, .idx) {
-    if (!is.character(.mapping) || length(.mapping) != 2) {
+  adata$varm <- purrr::map(varm_mapping, function(reduction_name) {
+    # Check if the reduction exists
+    if (!reduction_name %in% names(SingleCellExperiment::reducedDims(sce))) {
       cli_abort(c(
-        paste(
-          "Each item in {.arg varm_mapping} must be a {.cls character}",
-          "vector of length 2"
-        ),
-        "i" = paste(
-          "{.code varm_mapping[[{.val { .idx }}]]} is",
-          "{.obj_type_friendly { .mapping }}"
-        )
+        "Reduction {.val {reduction_name}} not found in SCE object.",
+        "i" = "Available reductions: {.val {names(SingleCellExperiment::reducedDims(sce))}}"
       ))
     }
 
-    slot <- .mapping[1]
-    key <- .mapping[2]
-
-    if (slot != "reducedDim") {
-      cli_abort(c(
-        "The first item in each {.arg varm_mapping} must be {.val reducedDim}",
-        "i" = "{.code varm_mapping[[{.val { .idx }}]][1]}: {.val {slot}}"
-      ))
-    }
-
-    reduction <- SingleCellExperiment::reducedDim(sce, key)
+    reduction <- SingleCellExperiment::reducedDim(sce, reduction_name)
     if (!inherits(reduction, "LinearEmbeddingMatrix")) {
       cli_abort(paste(
-        "{.code reducedDim(sce, {.val key}} must be a {.cls LinearEmbeddingMatrix}",
-        "but has class {.cls {reduction}}"
+        "{.code reducedDim(sce, {.val {reduction_name}}} must be a {.cls LinearEmbeddingMatrix}",
+        "but has class {.cls {class(reduction)[1]}}"
       ))
     }
 
-    SingleCellExperiment::featureLoadings(reduction)
+    loadings <- SingleCellExperiment::featureLoadings(reduction)
+    if (nrow(loadings) != adata$n_vars()) {
+      cli_abort(paste(
+        "The number of rows ({.val {nrow(loadings)}}) in the loadings for ",
+        "reduction {.val {reduction_name}} does not match {.code adata$n_vars()}",
+        "({.val {adata$n_vars()}})"
+      ))
+    }
+
+    loadings
   })
 }
 
@@ -697,9 +707,17 @@ from_SingleCellExperiment <- function(
     return(invisible())
   }
 
-  adata$obsp <- purrr::map(obsp_mapping, function(.obsp) {
+  adata$obsp <- purrr::map(obsp_mapping, function(colpair_name) {
+    # Check if the colPair exists
+    if (!(colpair_name %in% SingleCellExperiment::colPairNames(sce))) {
+      cli_abort(c(
+        "colPair {.val {colpair_name}} not found in SCE object.",
+        "i" = "Available colPairs: {.val {names(SingleCellExperiment::colPairs(sce))}}"
+      ))
+    }
+
     .from_SCE_convert(
-      SingleCellExperiment::colPair(sce, .obsp, asSparse = TRUE),
+      SingleCellExperiment::colPair(sce, colpair_name, asSparse = TRUE),
       transpose = FALSE
     )
   })
@@ -713,9 +731,17 @@ from_SingleCellExperiment <- function(
     return(invisible())
   }
 
-  adata$varp <- purrr::map(varp_mapping, function(.varp) {
+  adata$varp <- purrr::map(varp_mapping, function(rowpair_name) {
+    # Check if the rowPair exists
+    if (!(rowpair_name %in% SingleCellExperiment::rowPairNames(sce))) {
+      cli_abort(c(
+        "rowPair {.val {rowpair_name}} not found in SCE object.",
+        "i" = "Available rowPairs: {.val {names(SingleCellExperiment::rowPairs(sce))}}"
+      ))
+    }
+
     .from_SCE_convert(
-      SingleCellExperiment::rowPair(sce, .varp, asSparse = TRUE),
+      SingleCellExperiment::rowPair(sce, rowpair_name, asSparse = TRUE),
       transpose = FALSE
     )
   })
@@ -729,7 +755,15 @@ from_SingleCellExperiment <- function(
     return(invisible())
   }
 
-  adata$uns <- purrr::map(uns_mapping, function(.uns) {
-    S4Vectors::metadata(sce)[[.uns]]
+  adata$uns <- purrr::map(uns_mapping, function(meta_name) {
+    # Check if the metadata exists
+    if (!(meta_name %in% names(S4Vectors::metadata(sce)))) {
+      cli_abort(c(
+        "Metadata {.val {meta_name}} not found in SCE object.",
+        "i" = "Available metadata: {.val {names(S4Vectors::metadata(sce))}}"
+      ))
+    }
+
+    S4Vectors::metadata(sce)[[meta_name]]
   })
 }
