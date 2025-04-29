@@ -547,13 +547,7 @@ to_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .to_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-   layers <- self_name(adata$layers_keys())
-
-  for (layer_name in names(adata$layers)) {
-    layers[[layer_name]] <- layer_name
-  }
-
-  layers
+  self_name(adata$layers_keys())
 }
 
 # nolint start: object_name_linter object_length_linter
@@ -588,17 +582,6 @@ to_Seurat <- function(
   mapped
 }
 
-# nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_layers <- function(adata, x_mapping) {
-  # nolint end: object_name_linter object_length_linter
-  layers <- self_name(adata$layers_keys())
-
-  for (layer_name in names(adata$layers)) {
-    layers[[layer_name]] <- layer_name
-  }
-
-  layers
-}
 
 # nolint start: object_name_linter object_length_linter
 .to_Seurat_guess_reductions <- function(adata) {

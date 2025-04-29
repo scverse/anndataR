@@ -191,7 +191,7 @@ AbstractAnnData <- R6::R6Class(
     #' @description Convert to SingleCellExperiment
     #'
     #' See [to_SingleCellExperiment()] for more details on the conversion.
-    #'
+    #' @param x_mapping A character specifying how to map the AnnData X slot.
     #' @param assays_mapping A named list mapping SingleCellExperiment assays to AnnData layers
     #' @param colData_mapping A named list mapping SingleCellExperiment colData to AnnData obs
     #' @param rowData_mapping A named list mapping SingleCellExperiment rowData to AnnData var
@@ -228,6 +228,7 @@ AbstractAnnData <- R6::R6Class(
     #' See [to_Seurat()] for more details on the conversion and each of the parameters.
     #'
     #' @param assay_name The name of the assay to use as the main data
+    #' @param x_mapping A character specifying how to map the AnnData X slot.
     #' @param layers_mapping A named list mapping Seurat layers to AnnData layers
     #' @param object_metadata_mapping A named list mapping Seurat object metadata to AnnData obs
     #' @param assay_metadata_mapping A named list mapping Seurat assay metadata to AnnData var
