@@ -30,6 +30,7 @@ test_that("reading layers works", {
   )
 })
 
+# trackstatus: class=HDF5AnnData, feature=test_get_obsm, status=done
 test_that("reading obsm works", {
   obsm <- adata$obsm
   expect_true(is.list(obsm), "list")
@@ -39,6 +40,7 @@ test_that("reading obsm works", {
   )
 })
 
+# trackstatus: class=HDF5AnnData, feature=test_get_varm, status=done
 test_that("reading varm works", {
   varm <- adata$varm
   expect_true(is.list(varm), "list")
@@ -48,7 +50,7 @@ test_that("reading varm works", {
   )
 })
 
-test_that("obsm/ varm validation", {
+test_that("obsm/varm validation works", {
   N_OBS <- 5
   N_VAR <- 3
 
@@ -71,7 +73,7 @@ test_that("obsm/ varm validation", {
   expect_error(adata$varm <- list(PCs = matrix(0, 4, 4)))
 })
 
-test_that("obsp/ varp validation", {
+test_that("obsp/varp validation works", {
   N_OBS <- 5
   N_VAR <- 3
 
