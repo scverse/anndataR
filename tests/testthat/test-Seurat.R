@@ -18,7 +18,7 @@ library(Seurat)
 ##################
 # TEST TO_SEURAT #
 ##################
-layers_mapping <- c("X", names(ad$layers))
+layers_mapping <- c(NA, names(ad$layers))
 names(layers_mapping) <- c("counts", names(ad$layers))
 seu <- ad$to_Seurat(layers_mapping = layers_mapping)
 
@@ -97,6 +97,21 @@ for (layer_key in names(ad$layers)) {
     )
   })
 }
+
+test_that("to_Seurat works with layers_mapping and x_mapping", {
+  seu <- ad$to_Seurat(x_mapping = "counts", layers_mapping = c(data = "numeric_matrix", integer = "integer_matrix"))
+  layer_names <- names(seu@assays[[seu@active_assay]]@layers)
+  expect_true("counts" %in% layer_names)
+  expect_true("data" %in% layer_names)
+  expect_true("integer" %in% layer_names)
+})
+
+test_that("to_Seurat fails when providing duplicate layer names", {
+  expect_error(
+    ad$to_Seurat(x_mapping = "counts", layers_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")),
+    regexp = "duplicate names"
+  )
+})
 
 # trackstatus: class=Seurat, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {
