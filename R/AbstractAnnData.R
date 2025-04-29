@@ -39,71 +39,53 @@
 AbstractAnnData <- R6::R6Class(
   "AbstractAnnData",
   active = list(
-    #' @field X `NULL` or an observation x variable matrix (without
-    #'   dimnames) with dimensions consistent to `n_obs` and `n_vars`
+    #' @field X See [AnnData-usage]
     X = function(value) {
       .abstract_function("ad$X")
     },
-    #' @field layers The `layers` slot. Must be `NULL` or a named list
-    #'   with with all elements having dimensions consistent with `n_obs` and
-    #'   `n_vars`.
+    #' @field layers See [AnnData-usage]
     layers = function(value) {
       .abstract_function("ad$layers")
     },
-    #' @field obs A `data.frame` with columns containing information about
-    #'   observations. The number of rows of `obs` defines the observation
-    #'   dimension of the `AnnData` object (`n_obs`).
+    #' @field obs See [AnnData-usage]
     obs = function(value) {
       .abstract_function("ad$obs")
     },
-    #' @field var A `data.frame` with columns containing information about
-    #'   variables. The number of rows of `var` defines the variable dimension
-    #'   of the `AnnData` object (`n_vars`).
+    #' @field var See [AnnData-usage]
     var = function(value) {
       .abstract_function("ad$var")
     },
-    #' @field obs_names Either `NULL` or a vector of unique identifiers used to
-    #'   identify each row of `obs` and to act as an index into the observation
-    #'   dimension of the `AnnData` object. For compatibility with *R*
-    #'   representations, `obs_names` should be a unique character vector.
+    #' @field obs_names See [AnnData-usage]
     obs_names = function(value) {
       .abstract_function("ad$obs_names")
     },
-    #' @field var_names Either `NULL` or a vector of unique identifiers used to
-    #'   identify each row of `var` and to act as an index into the variable
-    #'   dimension of the `AnnData` object. For compatibility with *R*
-    #'   representations, `var_names` should be a unique character vector.
+    #' @field var_names See [AnnData-usage]
     var_names = function(value) {
       .abstract_function("ad$var_names")
     },
-    #' @field obsm The `obsm` slot. Must be `NULL` or a named list of array-like
-    #'   elements having the same number of rows as `n_obs`.
+    #' @field obsm See [AnnData-usage]
     obsm = function(value) {
       .abstract_function("ad$obsm")
     },
-    #' @field varm The `varm` slot. Must be `NULL` or a named list of array-like
-    #'   elements having the same number of rows as `n_vars`.
+    #' @field varm See [AnnData-usage]
     varm = function(value) {
       .abstract_function("ad$varm")
     },
-    #' @field obsp The `obsp` slot. Must be `NULL` or a named list of array-like
-    #'   elements having the same number of rows and columns as `n_obs`.
+    #' @field obsp See [AnnData-usage]
     obsp = function(value) {
       .abstract_function("ad$obsp")
     },
-    #' @field varp The `varp` slot. Must be `NULL` or a named list of array-like
-    #' elements having the same number of rows and columns as `n_vars`.
+    #' @field varp See [AnnData-usage]
     varp = function(value) {
       .abstract_function("ad$varp")
     },
-    #' @field uns The `uns` slot. Must be `NULL` or a named list.
+    #' @field uns See [AnnData-usage]
     uns = function(value) {
       .abstract_function("ad$uns")
     }
   ),
   public = list(
-    #' @description
-    #' Print a summary of the `AnnData` object
+    #' @description See [AnnData-usage]
     #'
     #' @param ... Optional arguments to print method
     print = function(...) {
@@ -137,51 +119,50 @@ AbstractAnnData <- R6::R6Class(
       }
     },
 
-    #' @description Dimensions (observations x variables) of the `AnnData`
-    #'   object
+    #' @description See [AnnData-usage]
     shape = function() {
       c(
         self$n_obs(),
         self$n_vars()
       )
     },
-    #' @description Number of observations in the `AnnData` object
+    #' @description See [AnnData-usage]
     n_obs = function() {
       nrow(self$obs)
     },
-    #' @description Number of variables in the `AnnData` object
+    #' @description See [AnnData-usage]
     n_vars = function() {
       nrow(self$var)
     },
-    #' @description Keys (column names) of `obs`
+    #' @description See [AnnData-usage]
     obs_keys = function() {
       names(self$obs)
     },
-    #' @description Keys (column names) of `var`
+    #' @description See [AnnData-usage]
     var_keys = function() {
       names(self$var)
     },
-    #' @description Keys (element names) of `layers`
+    #' @description See [AnnData-usage]
     layers_keys = function() {
       names(self$layers)
     },
-    #' @description Keys (element names) of `obsm`
+    #' @description See [AnnData-usage]
     obsm_keys = function() {
       names(self$obsm)
     },
-    #' @description Keys (element names) of `varm`
+    #' @description See [AnnData-usage]
     varm_keys = function() {
       names(self$varm)
     },
-    #' @description Keys (element names) of `obsp`
+    #' @description See [AnnData-usage]
     obsp_keys = function() {
       names(self$obsp)
     },
-    #' @description Keys (element names) of `varp`
+    #' @description See [AnnData-usage]
     varp_keys = function() {
       names(self$varp)
     },
-    #' @description Keys (element names) of `uns`
+    #' @description See [AnnData-usage]
     uns_keys = function() {
       names(self$uns)
     },

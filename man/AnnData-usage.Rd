@@ -8,73 +8,144 @@ The \code{AnnData} object stores a data matrix \code{X} together with annotation
 observations \code{obs} (\code{obsm}, \code{obsp}) and variables \code{var} (\code{varm}, \code{varp}).
 Additional layers of data can be stored in \code{layers} and unstructured
 annotations in \code{uns}.
+\subsection{Back ends}{
 
 There are different back ends for \code{AnnData} objects that inherit from the
 abstract \link{AbstractAnnData} class. For example, the \link{InMemoryAnnData} stores
 data in memory or the \link{HDF5AnnData} is backed by a H5AD file.
 }
+
+\subsection{Usage}{
+
+The items listed as \strong{"Slots"} are elements of the \code{AnnData} object that
+contain data and can be accessed or set. \strong{"Fields"} return information
+about the \code{AnnData} object but cannot be set directly. Both, as well as
+methods, can be accessed using the \code{$} operator
+
+For example:
+\itemize{
+\item \code{adata$X} returns the \code{X} matrix
+\item \code{adata$X <- x} sets the \code{X} matrix
+\item \code{adata$method()} calls a method
+}
+}
+}
+\section{Fields}{
+
+\describe{
+\item{\code{shape}}{Dimensions (observations x variables) of the \code{AnnData} object}
+
+\item{\code{n_obs}}{Number of observations}
+
+\item{\code{n_vars}}{Number of variables}
+
+\item{\code{obs_keys}}{Keys (column names) of \code{obs}}
+
+\item{\code{var_keys}}{Keys (column names) of \code{var}}
+
+\item{\code{layers_keys}}{Keys (element names) of \code{layers}}
+
+\item{\code{obsm_keys}}{Keys (element names) of \code{obsm}}
+
+\item{\code{varm_keys}}{Keys (element names) of \code{varm}}
+
+\item{\code{obsp_keys}}{Keys (element names) of \code{obsp}}
+
+\item{\code{varp_keys}}{Keys (element names) of \code{varp}}
+
+\item{\code{uns_keys}}{Keys (element names) of \code{uns}}
+}}
+
+\section{Slots}{
+
+\describe{
+\item{\code{X}}{The main data matrix. Either \code{NULL} or an observation x variable
+matrix (without dimnames) with dimensions consistent with \code{n_obs} and
+\code{n_vars}.}
+
+\item{\code{layers}}{Additional data layers. Must be \code{NULL} or a named list of
+matrices having dimensions consistent with \code{n_obs} and \code{n_vars}.}
+
+\item{\code{obs}}{Observation annotations. A \code{data.frame} with columns containing
+information about observations. The number of rows of \code{obs} defines the
+observation dimension of the \code{AnnData} object (\code{n_obs}).}
+
+\item{\code{var}}{Variable annotations. A \code{data.frame} with columns containing
+information about variables. The number of rows of \code{var} defines the
+variable dimension of the \code{AnnData} object (\code{n_vars}).}
+
+\item{\code{obs_names}}{Observation names. Either \code{NULL} or a vector of unique
+identifiers used to identify each row of \code{obs} and to act as an index into
+the observation dimension of the \code{AnnData} object. For compatibility with
+\emph{R} representations, \code{obs_names} should be a unique character vector.}
+
+\item{\code{var_names}}{Variable names. Either \code{NULL} or a vector of unique
+identifiers used to identify each row of \code{var} and to act as an index into
+the variable dimension of the \code{AnnData} object. For compatibility with \emph{R}
+representations, \code{var_names} should be a unique character vector.}
+
+\item{\code{obsm}}{Multi-dimensional observation annotation. Must be \code{NULL} or a
+named list of array-like elements with number of rows equal to \code{n_obs}.}
+
+\item{\code{varm}}{Multi-dimensional variable annotations. Must be \code{NULL} or a named
+list of array-like elements with number of rows equal to \code{n_vars}.}
+
+\item{\code{obsp}}{Observation pairs. Must be \code{NULL} or a named list of array-like
+elements with number of rows and columns equal to \code{n_obs}.}
+
+\item{\code{varp}}{Variable pairs. Must be \code{NULL} or a named list of array-like
+elements with number of rows and columns equal to \code{n_vars}.}
+
+\item{\code{uns}}{Unstructured annotations. Must be \code{NULL} or a named list.}
+}}
+
+\section{Methods}{
+
+\subsection{Conversion methods:}{
+
+\describe{
+\item{
+\code{to_SingleCellExperiment()}
+}{
+Convert to \code{SingleCellExperiment}, see \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}}
+}
+\item{\code{to_Seurat()}}{Convert to \code{Seurat}, see \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{to_InMemoryAnnData()}}{Convert to \link{InMemoryAnnData}}
+\item{\code{to_HDF5AnnData()}}{Convert to \link{HDF5AnnData}, see \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}}}
+}
+}
+
+\subsection{Output methods:}{
+
+\describe{
+\item{
+\code{write_h5ad()}
+}{
+Write the \code{AnnData} object to an HDF5 file, see \code{\link[=write_h5ad]{write_h5ad()}}
+}
+}
+}
+
+\subsection{General methods:}{
+
+\describe{
+\item{\code{print()}}{Print a summary of the \code{AnnData} object}
+}
+}
+}
+
 \section{Functions that can be used to create AnnData objects}{
 
-\itemize{
-\item \code{\link[=AnnData]{AnnData()}}: Create an \link{InMemoryAnnData} object.
-\item \code{\link[=read_h5ad]{read_h5ad()}}: Read an \code{AnnData} from a H5AD file.
-\item \code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}: Convert a \code{SingleCellExperiment} object to
-an \code{AnnData} object.
-\item \code{\link[=from_Seurat]{from_Seurat()}}: Convert a \code{Seurat} object to an \code{AnnData} object.
+
+\describe{
+\item{\code{\link[=AnnData]{AnnData()}}}{Create an \link{InMemoryAnnData} object}
+\item{\code{\link[=read_h5ad]{read_h5ad()}}}{Read an \code{AnnData} from a H5AD file}
+\item{
+\code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}
+}{
+Convert a \code{SingleCellExperiment} object to an \code{AnnData} object
 }
-}
-
-\section{An \code{AnnData} object has the following slots}{
-
-
-Access them by using the \code{$} operator. Example: \code{adata$obs}.
-\itemize{
-\item \code{X}: A matrix of observations by variables.
-\item \code{obs}: A data frame of observations.
-\item \code{var}: A data frame of variables.
-\item \code{obs_names}: Names of observations (alias for \code{rownames(obs)}).
-\item \code{var_names}: Names of variables (alias for \code{rownames(var)}).
-\item \code{layers}: A named list of matrices with the same dimensions as \code{X}.
-\item \code{obsm}: A named list of matrices with the same number of rows as \code{obs}.
-\item \code{varm}: A named list of matrices with the same number of rows as \code{var}.
-\item \code{obsp}: A named list of sparse matrices with the same number of rows and
-columns as the number of observations.
-\item \code{varp}: A named list of sparse matrices with the same number of rows and
-columns as the number of variables.
-\item \code{uns}: A named list of unstructured annotations.
-}
-}
-
-\section{An \code{AnnData} object has the following methods}{
-
-
-Access them by using the \code{$} operator. Example: \code{adata$write_h5ad()}.
-\itemize{
-\item \code{print()}: Print a summary of the AnnData object.
-\item \code{shape()}: Dimensions (observations x variables) of the AnnData object.
-\item \code{n_obs()}: Number of observations in the AnnData object.
-\item \code{n_vars()}: Number of variables in the AnnData object.
-\item \code{obs_keys()}: Column names of \code{obs}.
-\item \code{var_keys()}: Column names of \code{var}.
-\item \code{layers_keys()}: Element names of \code{layers}.
-\item \code{obsm_keys()}: Element names of \code{obsm}.
-\item \code{varm_keys()}: Element names of \code{varm}.
-\item \code{obsp_keys()}: Element names of \code{obsp}.
-\item \code{varp_keys()}: Element names of \code{varp}.
-\item \code{uns_keys()}: Element names of \code{uns}.
-\item \code{write_h5ad()}: Write the AnnData object to an HDF5 file.
-}
-}
-
-\section{Conversion methods}{
-
-
-Access them by using the \code{$} operator. Example: \code{adata$to_Seurat()}.
-\itemize{
-\item \code{to_SingleCellExperiment()}: Convert to \code{SingleCellExperiment}.
-\item \code{to_Seurat()}: Convert to \code{Seurat}.
-\item \code{to_InMemoryAnnData()}: Convert to an \link{InMemoryAnnData}.
-\item \code{to_HDF5AnnData()}: Convert to an \link{HDF5AnnData}.
+\item{\code{\link[=from_Seurat]{from_Seurat()}}}{Convert a \code{Seurat} object to an \code{AnnData} object}
 }
 }
 
