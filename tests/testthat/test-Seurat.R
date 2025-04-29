@@ -20,7 +20,7 @@ test_that("to_Seurat retains number of observations and features", {
 
   # trackstatus: class=Seurat, feature=test_get_var_names, status=done
   expect_equal(rownames(seu), rownames(ad$var))
-  # tracksstatus: class=Seurat, feature=test_get_obs_names, status=done
+  # trackstatus: class=Seurat, feature=test_get_obs_names, status=done
   expect_equal(colnames(seu), rownames(ad$obs))
 })
 
@@ -107,7 +107,6 @@ for (uns_key in names(ad$uns)) {
   })
 }
 
-# trackstatus: class=Seurat, feature=test_get_pca, status=done
 test_that("to_Seurat retains pca dimred", {
   msg <- message_if_known(
     backend = "to_Seurat",
@@ -119,12 +118,15 @@ test_that("to_Seurat retains pca dimred", {
 
   skip_if(!is.null(msg), message = msg)
 
+  # trackstatus: class=Seurat, feature=test_get_obsm, status=wip
   expect_true("X_pca" %in% names(seu@reductions))
   expect_equal(
     Embeddings(seu, reduction = "X_pca"),
     ad$obsm[["X_pca"]],
     ignore_attr = TRUE
   )
+
+  # trackstatus: class=Seurat, feature=test_get_varm, status=wip
   expect_equal(
     Loadings(seu, reduction = "X_pca"),
     ad$varm[["PCs"]],
@@ -224,7 +226,7 @@ for (layer_key in names(active_assay@layers)) {
   })
 }
 
-# trackstatus: class=Seurat, feature=test_set_uns
+# trackstatus: class=Seurat, feature=test_set_uns, status=done
 for (uns_key in names(obj@misc)) {
   test_that(paste0("from_Seurat retains uns key: ", uns_key), {
     msg <- message_if_known(
@@ -241,7 +243,6 @@ for (uns_key in names(obj@misc)) {
   })
 }
 
-# trackstatus: class=Seurat, feature=test_set_pca, status=done
 test_that("from_Seurat retains pca", {
   msg <- message_if_known(
     backend = "from_Seurat",
@@ -250,17 +251,16 @@ test_that("from_Seurat retains pca", {
     process = "convert",
     known_issues = known_issues
   )
-
   skip_if(!is.null(msg), message = msg)
 
-  print(ad)
-  print(obj)
-
+  # trackstatus: class=Seurat, feature=test_set_obsm, status=wip
   expect_equal(
     ad$obsm[["pca"]],
     Embeddings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
+
+  # trackstatus: class=Seurat, feature=test_set_varm, status=wip
   expect_equal(
     ad$varm[["pca"]],
     Loadings(obj, reduction = "pca"),
@@ -286,7 +286,7 @@ test_that("from_Seurat retains umap", {
   )
 })
 
-# trackstatus: class=Seurat, feature=test_set_graphs, status=done
+# trackstatus: class=Seurat, feature=test_set_obsp, status=done
 test_that("from_Seurat retains connectivities", {
   msg <- message_if_known(
     backend = "from_Seurat",
