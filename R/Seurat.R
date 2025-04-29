@@ -7,6 +7,8 @@
 #'
 #' @param adata An AnnData object to be converted
 #' @param assay_name Name of the assay to be created (default: "RNA").
+#' @param x_mapping Name of the layer used for the `X` slot. See section "Layer
+#'   mapping" for more details.
 #' @param layers_mapping A named vector to map AnnData layers to Seurat layers.
 #'   See section "Layer mapping" for more details.
 #' @param object_metadata_mapping A named vector mapping observation-level
@@ -31,6 +33,7 @@
 #' to the layer name in the Seurat object, and each value corresponds to the
 #' layer name in the AnnData object. A value of `NA` corresponds to the
 #' AnnData `X` slot.
+#' If `x_mapping` is provided, it will be used as the value for the `X` slot.
 #'
 #' Example: layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
 #'
@@ -38,8 +41,7 @@
 #' guess the layer mapping as follows:
 #'
 #' * All AnnData layers are copied to Seurat layers by name
-#' * If there is layer named "counts", `adata$X` is stored a "data" otherwise
-#'   it is stored as "counts"
+#' * adata$X will not be copied to Seurat layers, unless an `x_mapping` is provided
 #'
 #' @section Metadata mapping:
 #'
@@ -162,10 +164,6 @@ to_Seurat <- function(
     .to_Seurat_guess_object_metadata(adata)
   layers_mapping <- self_name(layers_mapping) %||%
     .to_Seurat_guess_layers(adata)
-  if (!is.null(x_mapping)) {
-    layers_mapping[x_mapping] <- NA
-  }
-
   assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
     .to_Seurat_guess_assay_metadata(adata)
   reduction_mapping <- self_name(reduction_mapping) %||%
@@ -184,8 +182,19 @@ to_Seurat <- function(
   var_names <- adata$var_names
 
   # check seurat layers (which includes the X mapping)
-  if (is.null(names(layers_mapping))) {
-    names(layers_mapping) <- layers_mapping
+  if (!is.null(x_mapping)) {
+    if (any(is.na(layers_mapping))) {
+      cli_abort(
+        "{.arg layers_mapping} must not contain any {.val NA} values when {.arg x_mapping} is provided"
+      )
+    }
+    layers_mapping <- setNames(c(NA, layers_mapping), c(x_mapping, names(layers_mapping)))
+  }
+  if (any(duplicated(names(layers_mapping)))) {
+    cli_abort(
+      "{.arg layers_mapping} or {.arg x_mapping} must not contain any duplicate names",
+      "i" = "Found duplicate names: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
+    )
   }
   if (
     !("counts" %in% names(layers_mapping)) &&
