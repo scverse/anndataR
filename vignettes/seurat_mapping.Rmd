@@ -262,7 +262,7 @@ You must provide at least a layer called `counts` or `data` in the mapping.
 ```{r to_Seurat explicit_layers}
 seurat_obj <- to_Seurat(
   adata = ad,
-  layers_mapping = c(counts = "X", layer1 = "integer_matrix", other_layer2 = "numeric_rsparse")
+  layers_mapping = c(counts = "integer_matrix", other_layer2 = "numeric_rsparse")
 )
 Layers(seurat_obj, assay = "RNA")
 ```

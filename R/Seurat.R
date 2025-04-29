@@ -7,7 +7,7 @@
 #'
 #' @param adata An AnnData object to be converted
 #' @param assay_name Name of the assay to be created (default: "RNA").
-#' @param x_mapping Name of the layer used for the `X` slot. See section "Layer
+#' #' @param x_mapping Name of the layer used for the `X` slot. See section "Layer
 #'   mapping" for more details.
 #' @param layers_mapping A named vector to map AnnData layers to Seurat layers.
 #'   See section "Layer mapping" for more details.
@@ -33,15 +33,14 @@
 #' to the layer name in the Seurat object, and each value corresponds to the
 #' layer name in the AnnData object. A value of `NA` corresponds to the
 #' AnnData `X` slot.
-#' If `x_mapping` is provided, it will be used as the value for the `X` slot.
 #'
-#' Example: layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
+#' Example: `layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
 #'
 #' If `NULL`, the internal function `.to_Seurat_guess_layers` will be used to
 #' guess the layer mapping as follows:
 #'
-#' * All AnnData layers are copied to Seurat layers by name
-#' * adata$X will not be copied to Seurat layers, unless an `x_mapping` is provided
+#' * All AnnData layers are copied to Seurat layers by name.
+#' * adata$X will not be copied to Seurat layers, unless an `x_mapping` is provided.
 #'
 #' @section Metadata mapping:
 #'
@@ -56,7 +55,8 @@
 #'
 #' Each value in the `assay_metadata_mapping` named vector corresponds to the
 #' names of the `var` slot in the AnnData object, and the names correspond to
-#' the names of the metadata in the resulting Seurat object.
+#' the names of the metadata in the specified assay of the resulting Seurat
+#' object.
 #'
 #' Example: `assay_metadata_mapping = c(geneInfo = "gene_info")`.
 #'
@@ -295,8 +295,23 @@ to_Seurat <- function(
       }
 
       obsp <- adata$obsp[[graph]]
+  # trackstatus: class=Seurat, feature=get_obsp, status=done
+  if (!rlang::is_empty(graph_mapping)) {
+    for (i in seq_along(graph_mapping)) {
+      graph_name <- names(graph_mapping)[[i]]
+      graph <- graph_mapping[[i]]
+
+      if (!(graph %in% adata$obsp_keys())) {
+        cli_abort(c(
+          "The requested item {.val {graph}} does not exist in {.code adata$obsp}",
+          "i" = "{.code adata$obsp_keys()}: {.val {adata$obsp_keys()}}"
+        ))
+      }
+
+      obsp <- adata$obsp[[graph]]
       dimnames(obsp) <- list(obs_names, obs_names)
       obsp_gr <- Seurat::as.Graph(obsp)
+      SeuratObject::DefaultAssay(obsp_gr) <- assay_name
       SeuratObject::DefaultAssay(obsp_gr) <- assay_name
       obj[[paste0(assay_name, "_", graph_name)]] <- obsp_gr
     }
@@ -457,6 +472,8 @@ to_Seurat <- function(
   )
 }
 
+# trackstatus: class=Seurat, feature=get_obsm, status=done
+# trackstatus: class=Seurat, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
 .to_Seurat_process_reduction_mapping <- function(
   adata,
@@ -526,19 +543,56 @@ to_Seurat <- function(
 }
 
 # nolint start: object_name_linter object_length_linter
+.to_Seurat_guess_layers <- function(adata) {
+  # nolint end: object_name_linter object_length_linter
+   layers <- self_name(adata$layers_keys())
+
+  for (layer_name in names(adata$layers)) {
+    layers[[layer_name]] <- layer_name
+  }
+
+  layers
+}
+
+# nolint start: object_name_linter object_length_linter
+.to_Seurat_guess_reductions <- function(adata) {
+  # nolint end: object_name_linter object_length_linter
+  if (!inherits(adata, "AbstractAnnData")) {
+    "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+  }
+
+  reductions <- list()
+
+  for (reduction_name in names(adata$obsm)) {
+    if (grepl("^X_", reduction_name)) {
+      out <-
+        if (reduction_name == "X_pca" && "PCs" %in% names(adata$varm)) {
+          list(key = "X_pca", obsm = "X_pca", varm = "PCs")
+        } else {
+          list(key = reduction_name, obsm = reduction_name, varm = NULL)
+        }
+      reductions[[reduction_name]] <- out
+    }
+  }
+
+  reductions
+}
+
+# nolint start: object_name_linter
+.to_Seurat_process_metadata <- function(adata, mapping, slot) {
+  # nolint end: object_name_linter
+  mapped <- adata[[slot]][unlist(mapping)]
+  names(mapped) <- names(mapping)
+  mapped
+}
+
+# nolint start: object_name_linter object_length_linter
 .to_Seurat_guess_layers <- function(adata, x_mapping) {
   # nolint end: object_name_linter object_length_linter
   layers <- self_name(adata$layers_keys())
 
   for (layer_name in names(adata$layers)) {
     layers[[layer_name]] <- layer_name
-  }
-
-  # TODO check if this is necessary
-  if (any(duplicated(names(layers)))) {
-    cli_abort(
-      "Duplicate names in {.arg layers}: {.val {names(layers)[duplicated(names(layers))]}}"
-    )
   }
 
   layers
@@ -954,7 +1008,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_obsm, status=wip
+# trackstatus: class=Seurat, feature=set_obsm, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_obsm <- function(
   adata,
@@ -978,7 +1032,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_varm, status=wip
+# trackstatus: class=Seurat, feature=set_varm, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_varm <- function(
   adata,
@@ -1002,7 +1056,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_obsp, status=wip
+# trackstatus: class=Seurat, feature=set_obsp, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_obsp <- function(
   adata,
@@ -1026,7 +1080,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_varp, status=wip
+# trackstatus: class=Seurat, feature=set_varp, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_varp <- function(
   adata,
@@ -1051,7 +1105,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_uns, status=wip
+# trackstatus: class=Seurat, feature=set_uns, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_uns <- function(
   adata,

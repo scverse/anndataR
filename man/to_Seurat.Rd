@@ -60,7 +60,7 @@ to the layer name in the Seurat object, and each value corresponds to the
 layer name in the AnnData object. A value of \code{NA} corresponds to the
 AnnData \code{X} slot.
 
-Example: layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
+Example: \code{layers_mapping = c(counts = "counts", data = NA, foo = "bar")}
 
 If \code{NULL}, the internal function \code{.to_Seurat_guess_layers} will be used to
 guess the layer mapping as follows:
@@ -85,7 +85,8 @@ Example: \code{object_metadata_mapping = c(cellType = "cell_type")}.
 
 Each value in the \code{assay_metadata_mapping} named vector corresponds to the
 names of the \code{var} slot in the AnnData object, and the names correspond to
-the names of the metadata in the resulting Seurat object.
+the names of the metadata in the specified assay of the resulting Seurat
+object.
 
 Example: \code{assay_metadata_mapping = c(geneInfo = "gene_info")}.
 

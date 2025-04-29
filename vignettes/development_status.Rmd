@@ -58,59 +58,116 @@ status_lines_proc <- status_lines %>%
   mutate(
     prefix = str_extract(feature, "^(test_)?[gs]et_"),
     slot = str_replace(feature, "^(test_)?[gs]et_", "")
-  ) %>%
+  ) |>
   select(-feature)
 
 # combine with missing fields
 status_lines_required <- crossing(
   class = c("InMemoryAnnData", "HDF5AnnData", "Seurat", "SingleCellExperiment"),
   prefix = c("get_", "test_get_", "set_", "test_set_"),
-  slot = c("X", "layers", "obs", "var", "obs_names", "var_names", "obsm", "varm", "obsp", "varp", "uns"),
+  slot = c(
+    "X",
+    "layers",
+    "obs",
+    "var",
+    "obs_names",
+    "var_names",
+    "obsm",
+    "varm",
+    "obsp",
+    "varp",
+    "uns",
+    "raw"
+  ),
   status = "missing"
 )
-status <- bind_rows(
+status_required <- bind_rows(
   status_lines_proc,
-  status_lines_required %>% anti_join(status_lines_proc, by = c("class", "prefix", "slot"))
+  anti_join(
+    status_lines_required,
+    status_lines_proc,
+    by = c("class", "prefix", "slot")
+  )
 )
 
+# Fill in non-required slots
+status <- status_required |>
+  group_by(class) |>
+  complete(prefix, slot, fill = list(status = "missing")) |>
+  ungroup()
+
 # check duplicated status
-status_dup <- status %>%
-  group_by(class, prefix, slot) %>%
-  filter(n() > 1) %>%
-  ungroup() %>%
-  mutate(str = paste0(source_file, "#", line_number, " -- ", class, " ", prefix, slot))
+status_dup <- status |>
+  group_by(class, prefix, slot) |>
+  filter(n() > 1) |>
+  ungroup() |>
+  mutate(
+    str = paste0(
+      source_file, "#", line_number, " -- ", class, " ", prefix, slot
+    )
+  )
 if (nrow(status_dup) > 0) {
-  stop("Duplicated status lines found:\n", paste(status_dup$str, collapse = "\n"))
+  stop(
+    "Duplicated status lines found:\n", paste(status_dup$str, collapse = "\n")
+  )
 }
 
 # create formatted data frame for printing
-status_formatted <-
-  status %>%
+status_formatted <- status |>
   mutate(
     prefix_formatted = strip_prefix[prefix],
     status_formatted = ifelse(
       status == "missing",
       "",
       paste0(
-        "[", c("done" = "✓", "wip" = "~", "missing" = "")[status],
+        "[", c("done" = "✅", "wip" = "🚧", "missing" = "")[status],
         "](https://github.com/scverse/anndataR/blob/main/", source_file,
         "#L", line_number, ")"
       )
     )
-  ) %>%
-  select(class, Slot = slot, prefix_formatted, status_formatted) %>%
+  ) |>
+  select(class, Slot = slot, prefix_formatted, status_formatted) |>
   spread(prefix_formatted, status_formatted)
 ```
 
-```{r echo=FALSE, results="asis"}
-# loop over each of the classes and print the table as a markdown
-for (class in unique(status_formatted$class)) {
-  cat("### ", class, "\n\n\n", sep = "")
+## Objects
 
-  df <- status_formatted %>%
-    filter(class == !!class) %>%
-    select(-class) %>%
-    knitr::kable(escape = FALSE)
+```{r echo=FALSE, results="asis"}
+# loop over each of the classes and print the table as markdown
+all_classes <- unique(status_formatted$class)
+object_classes <- all_classes[!all_classes %in% c("Seurat", "SingleCellExperiment")]
+
+for (class_name in object_classes) {
+  cat("### ", class_name, "\n\n", sep = "")
+
+  df <- status_formatted |>
+    filter(class == class_name) |>
+    select(-class) |>
+    knitr::kable(escape = FALSE, align = "lcccc")
+
+  cat(paste(as.character(df), collapse = "\n"))
+  cat("\n\n")
+}
+```
+
+## Conversion
+
+```{r echo=FALSE, results="asis"}
+# loop over each of the classes and print the table as markdown
+for (class_name in c("SingleCellExperiment", "Seurat")) {
+  cat("### ", class_name, "\n\n", sep = "")
+
+  df <- status_formatted |>
+    filter(class == class_name) |>
+    select(
+      Slot,
+      From = Setter,
+      `From test` = `Setter test`,
+      To = Getter,
+      `To test` = `Getter test`
+    ) |>
+    knitr::kable(escape = FALSE, align = "lcccc")
+
   cat(paste(as.character(df), collapse = "\n"))
   cat("\n\n")
 }

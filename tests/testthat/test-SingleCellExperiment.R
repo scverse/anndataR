@@ -15,7 +15,7 @@ test_that("to_SCE retains nr of observations and features", {
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_var_names, status=done
   expect_equal(rownames(sce), rownames(ad$var))
-  # tracksstatus: class=SingleCellExperiment, feature=test_get_obs_names, status=done
+  # trackstatus: class=SingleCellExperiment, feature=test_get_obs_names, status=done
   expect_equal(colnames(sce), rownames(ad$obs))
 })
 
@@ -148,7 +148,6 @@ for (uns_key in names(ad$uns)) {
   })
 }
 
-# trackstatus: class=SingleCellExperiment, feature=test_get_pca, status=done
 test_that("to_SCE retains pca dimred", {
   msg <- message_if_known(
     backend = "to_SCE",
@@ -159,12 +158,15 @@ test_that("to_SCE retains pca dimred", {
   )
   skip_if(!is.null(msg), message = msg)
 
+  # trackstatus: class=SingleCellExperiment, feature=test_get_obsm, status=wip
   expect_true("pca" %in% names(reducedDims(sce)))
   expect_equal(
     sampleFactors(reducedDims(sce)$pca),
     ad$obsm[["X_pca"]],
     ignore.attributes = TRUE
   )
+
+  # trackstatus: class=SingleCellExperiment, feature=test_get_varm, status=wip
   expect_equal(
     featureLoadings(reducedDims(sce)$pca),
     ad$varm[["PCs"]]
@@ -367,7 +369,6 @@ for (uns_key in names(metadata(sce))) {
   })
 }
 
-# trackstatus: class=SingleCellExperiment, feature=test_set_pca, status=done
 test_that("from_SCE retains pca dimred", {
   msg <- message_if_known(
     backend = "from_SCE",
@@ -378,12 +379,15 @@ test_that("from_SCE retains pca dimred", {
   )
   skip_if(!is.null(msg), message = msg)
 
+  # trackstatus: class=SingleCellExperiment, feature=test_set_obsm, status=wip
   expect_true("X_pca" %in% names(ad$obsm))
-  expect_true("X_pca" %in% names(ad$varm))
   expect_equal(
     sampleFactors(reducedDims(sce)$X_pca),
     ad$obsm[["X_pca"]]
   )
+
+  # trackstatus: class=SingleCellExperiment, feature=test_set_varm, status=wip
+  expect_true("X_pca" %in% names(ad$varm))
   expect_equal(
     featureLoadings(reducedDims(sce)$X_pca),
     ad$varm[["X_pca"]]

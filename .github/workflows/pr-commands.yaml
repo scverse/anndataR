@@ -43,8 +43,8 @@ jobs:
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git add man/\* NAMESPACE
-          git commit -m 'Document (GHA)'
+          git add man/\* NAMESPACE DESCRIPTION
+          git commit -m 'Document (GHA)' || echo "No changes to commit"
 
       - uses: r-lib/actions/pr-push@v2
         with:
@@ -72,11 +72,10 @@ jobs:
       - name: Install air
         run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh
 
-      - name: Install dependencies
+      - name: Install styler
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::styler, any::knitr
-          needs: styler
+          packages: styler, roxygen2
 
       - name: Style code
         run: air format .

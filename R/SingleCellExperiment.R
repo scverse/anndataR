@@ -252,6 +252,8 @@ to_SingleCellExperiment <- function(
   })
 }
 
+# trackstatus: class=SingleCellExperiment, feature=get_obsm, status=done
+# trackstatus: class=SingleCellExperiment, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
 .to_SCE_process_reduction <- function(
   # nolint end: object_length_linter object_name_linter
@@ -443,12 +445,6 @@ from_SingleCellExperiment <- function(
   # For any mappings that are not set, using the guessing function
   layers_mapping <- self_name(layers_mapping) %||%
     .from_SCE_guess_layers(sce, x_mapping)
-  layers_mapping <- c(x_mapping, layers_mapping)
-  if (any(duplicated(names(layers_mapping)))) {
-    cli_abort(
-      "Duplicate names in {.arg layers_mapping}: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
-    )
-  }
   obs_mapping <- self_name(obs_mapping) %||%
     .from_SCE_guess_all(
       sce,
@@ -482,7 +478,7 @@ from_SingleCellExperiment <- function(
 
   .from_SCE_process_var(adata, sce, var_mapping)
 
-  # trackstatus: class=SingleCellExperiment, feature=set_X, status=wip
+  # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
   if (!is.null(x_mapping)) {
     adata$X <- .from_SCE_convert(
       SummarizedExperiment::assay(sce, x_mapping, withDimnames = FALSE)
@@ -584,8 +580,8 @@ from_SingleCellExperiment <- function(
   }
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=wip
-# trackstatus: class=SingleCellExperiment, feature=set_obs, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_obs_names, status=done
+# trackstatus: class=SingleCellExperiment, feature=set_obs, status=done
 # nolint start: object_name_linter
 .from_SCE_process_obs <- function(adata, sce, obs_mapping) {
   # nolint end: object_name_linter
@@ -604,8 +600,8 @@ from_SingleCellExperiment <- function(
   }
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_var_names, status=wip
-# trackstatus: class=SingleCellExperiment, feature=set_var, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_var_names, status=done
+# trackstatus: class=SingleCellExperiment, feature=set_var, status=done
 # nolint start: object_name_linter
 .from_SCE_process_var <- function(adata, sce, var_mapping) {
   # nolint end: object_name_linter
@@ -624,7 +620,7 @@ from_SingleCellExperiment <- function(
   }
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_layers, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_layers, status=done
 # nolint start: object_length_linter object_name_linter
 .from_SCE_process_layers <- function(adata, sce, layers_mapping) {
   # nolint end: object_length_linter object_name_linter
@@ -637,7 +633,7 @@ from_SingleCellExperiment <- function(
   })
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_obsm, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_obsm, status=done
 # nolint start: object_name_linter
 .from_SCE_process_obsm <- function(adata, sce, obsm_mapping) {
   # nolint end: object_name_linter
@@ -663,7 +659,7 @@ from_SingleCellExperiment <- function(
   })
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_varm, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_varm, status=done
 # nolint start: object_name_linter
 .from_SCE_process_varm <- function(adata, sce, varm_mapping) {
   # nolint end: object_name_linter
@@ -701,7 +697,7 @@ from_SingleCellExperiment <- function(
   })
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_obsp, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_obsp, status=done
 # nolint start: object_length_linter object_name_linter
 .from_SCE_process_obsp <- function(adata, sce, obsp_mapping) {
   # nolint end: object_length_linter object_name_linter
@@ -725,7 +721,7 @@ from_SingleCellExperiment <- function(
   })
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_varp, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_varp, status=done
 # nolint start: object_length_linter object_name_linter
 .from_SCE_process_varp <- function(adata, sce, varp_mapping) {
   # nolint end: object_length_linter object_name_linter
@@ -749,7 +745,7 @@ from_SingleCellExperiment <- function(
   })
 }
 
-# trackstatus: class=SingleCellExperiment, feature=set_uns, status=wip
+# trackstatus: class=SingleCellExperiment, feature=set_uns, status=done
 # nolint start: object_length_linter object_name_linter
 .from_SCE_process_uns <- function(adata, sce, uns_mapping) {
   # nolint end: object_length_linter object_name_linter
