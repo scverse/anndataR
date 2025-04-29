@@ -379,7 +379,7 @@ to_SCE_guess_reduction <- function(adata) {
 from_SingleCellExperiment <- function(
   # nolint end: object_name_linter
   sce,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData"),
   x_mapping = NULL,
   layers_mapping = NULL,
   obs_mapping = NULL,
