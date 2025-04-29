@@ -26,10 +26,10 @@ jobs:
       - name: Install air
         run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      - name: Install lintr and styler
+        uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::lintr, any::styler, local::.
-          needs: lint
+          packages: lintr, styler
 
       - name: Lint
         run: lintr::lint_package()

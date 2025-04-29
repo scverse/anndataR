@@ -72,11 +72,10 @@ jobs:
       - name: Install air
         run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh
 
-      - name: Install dependencies
+      - name: Install styler
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::styler, any::knitr
-          needs: styler
+          packages: styler, roxygen2
 
       - name: Style code
         run: air format .
