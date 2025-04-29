@@ -117,7 +117,7 @@ to_SingleCellExperiment <- function(
   # guess mappings if not provided
   # nolint start object_name_linter
   assays_mapping <- self_name(assays_mapping) %||% 
-    .to_SCE_guess_all(adata)
+    .to_SCE_guess_all(adata, "layers")
   colData_mapping <- self_name(colData_mapping) %||%
     .to_SCE_guess_all(adata, "obs")
   rowData_mapping <- self_name(rowData_mapping) %||%
@@ -143,19 +143,20 @@ to_SingleCellExperiment <- function(
     }
     assays_mapping <- setNames(c(NA, assays_mapping), c(x_mapping, names(assays_mapping)))
   }
-  if (any(duplicated(assays_mapping))) {
+  if (any(duplicated(names(assays_mapping)))) {
     cli_abort(  
       "{.arg assays_mapping} or {.arg x_mapping} must not contain any duplicate names",
       "i" = "Found duplicate names: {.val {names(assays_mapping)[duplicated(names(assays_mapping))]}}"
     )
   }
-  
+  print(assays_mapping)
   sce_assays <- vector("list", length(assays_mapping))
   names(sce_assays) <- names(assays_mapping)
+  print("HERE")
   for (i in seq_along(assays_mapping)) {
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
-
+    print(from)
     sce_assays[[to]] <-
       if (is.na(from)) {
         to_R_matrix(adata$X)
@@ -163,6 +164,8 @@ to_SingleCellExperiment <- function(
         to_R_matrix(adata$layers[[from]])
       }
   }
+
+  print(sce_assays)
 
   # construct colData
   # FIXME: probably better way to make a dataframe from a list of vectors
