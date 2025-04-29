@@ -427,8 +427,7 @@ HDF5AnnData <- R6::R6Class(
 #'
 #' @return An [HDF5AnnData] object with the same data as the input `AnnData`
 #'   object.
-#'
-#' @noRd
+#' @keywords internal
 #'
 #' @examples
 #' ad <- AnnData(
