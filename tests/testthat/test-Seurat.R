@@ -20,7 +20,7 @@ test_that("to_Seurat retains number of observations and features", {
 
   # trackstatus: class=Seurat, feature=test_get_var_names, status=done
   expect_equal(rownames(seu), rownames(ad$var))
-  # tracksstatus: class=Seurat, feature=test_get_obs_names, status=done
+  # trackstatus: class=Seurat, feature=test_get_obs_names, status=done
   expect_equal(colnames(seu), rownames(ad$obs))
 })
 
@@ -107,7 +107,6 @@ for (uns_key in names(ad$uns)) {
   })
 }
 
-# trackstatus: class=Seurat, feature=test_get_pca, status=done
 test_that("to_Seurat retains pca dimred", {
   msg <- message_if_known(
     backend = "to_Seurat",
@@ -119,16 +118,61 @@ test_that("to_Seurat retains pca dimred", {
 
   skip_if(!is.null(msg), message = msg)
 
+  # trackstatus: class=Seurat, feature=test_get_obsm, status=wip
   expect_true("X_pca" %in% names(seu@reductions))
   expect_equal(
     Embeddings(seu, reduction = "X_pca"),
     ad$obsm[["X_pca"]],
     ignore_attr = TRUE
   )
+
+  # trackstatus: class=Seurat, feature=test_get_varm, status=wip
   expect_equal(
     Loadings(seu, reduction = "X_pca"),
     ad$varm[["PCs"]],
     ignore_attr = TRUE
+  )
+})
+
+test_that("to_Seurat works with list mappings", {
+  expect_no_error(
+    ad$to_Seurat(
+      object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
+      layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
+      assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
+      reduction_mapping = as.list(.to_Seurat_guess_reductions(ad)),
+      graph_mapping = as.list(.to_Seurat_guess_graphs(ad)),
+      misc_mapping = as.list(.to_Seurat_guess_misc(ad))
+    )
+  )
+
+  expect_error(
+    ad$to_Seurat(
+      reduction_mapping = list(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_Seurat works with a vector reduction_mapping", {
+  expect_no_error(
+    ad$to_Seurat(
+      reduction_mapping = c(numeric = "numeric_matrix")
+    )
+  )
+})
+
+test_that("to_Seurat works with unnamed mappings", {
+  expect_no_error(
+    ad$to_Seurat(
+      object_metadata_mapping = unname(.to_Seurat_guess_object_metadata(ad)),
+      layers_mapping = c(
+        na.omit(unname(.to_Seurat_guess_layers(ad))),
+        counts = NA
+      ),
+      assay_metadata_mapping = unname(.to_Seurat_guess_assay_metadata(ad)),
+      graph_mapping = unname(.to_Seurat_guess_graphs(ad)),
+      misc_mapping = unname(.to_Seurat_guess_misc(ad))
+    )
   )
 })
 
@@ -224,7 +268,7 @@ for (layer_key in names(active_assay@layers)) {
   })
 }
 
-# trackstatus: class=Seurat, feature=test_set_uns
+# trackstatus: class=Seurat, feature=test_set_uns, status=done
 for (uns_key in names(obj@misc)) {
   test_that(paste0("from_Seurat retains uns key: ", uns_key), {
     msg <- message_if_known(
@@ -241,7 +285,6 @@ for (uns_key in names(obj@misc)) {
   })
 }
 
-# trackstatus: class=Seurat, feature=test_set_pca, status=done
 test_that("from_Seurat retains pca", {
   msg <- message_if_known(
     backend = "from_Seurat",
@@ -250,17 +293,16 @@ test_that("from_Seurat retains pca", {
     process = "convert",
     known_issues = known_issues
   )
-
   skip_if(!is.null(msg), message = msg)
 
-  print(ad)
-  print(obj)
-
+  # trackstatus: class=Seurat, feature=test_set_obsm, status=wip
   expect_equal(
     ad$obsm[["pca"]],
     Embeddings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
+
+  # trackstatus: class=Seurat, feature=test_set_varm, status=wip
   expect_equal(
     ad$varm[["pca"]],
     Loadings(obj, reduction = "pca"),
@@ -286,7 +328,7 @@ test_that("from_Seurat retains umap", {
   )
 })
 
-# trackstatus: class=Seurat, feature=test_set_graphs, status=done
+# trackstatus: class=Seurat, feature=test_set_obsp, status=done
 test_that("from_Seurat retains connectivities", {
   msg <- message_if_known(
     backend = "from_Seurat",
@@ -299,7 +341,7 @@ test_that("from_Seurat retains connectivities", {
   skip_if(!is.null(msg), message = msg)
 
   expect_equal(
-    as.matrix(ad$obsp[["connectivities"]]),
+    as.matrix(ad$obsp[["nn"]]),
     as.matrix(obj@graphs[["RNA_nn"]]),
     ignore_attr = TRUE
   )
@@ -321,5 +363,39 @@ test_that("from_Seurat works with v3 Assays", {
   expect_identical(
     to_R_matrix(adata_v3_assay$layers$counts),
     SeuratObject::GetAssayData(obj_v3_assay, layer = "counts")
+  )
+})
+
+test_that("from_Seurat works with list mappings", {
+  active_assay <- SeuratObject::DefaultAssay(obj)
+  expect_no_error(
+    from_Seurat(
+      obj,
+      layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
+      obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
+      var_mapping = as.list(.from_Seurat_guess_var(obj, active_assay)),
+      obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
+      varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
+      obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
+      varp_mapping = as.list(.from_Seurat_guess_varps(obj)),
+      uns_mapping = as.list(.from_Seurat_guess_uns(obj))
+    )
+  )
+})
+
+test_that("from_Seurat works with unnamed mappings", {
+  active_assay <- SeuratObject::DefaultAssay(obj)
+  expect_no_error(
+    from_Seurat(
+      obj,
+      layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
+      obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),
+      var_mapping = unname(.from_Seurat_guess_var(obj, active_assay)),
+      obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
+      varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
+      obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
+      varp_mapping = unname(.from_Seurat_guess_varps(obj)),
+      uns_mapping = unname(.from_Seurat_guess_uns(obj))
+    )
   )
 })

@@ -90,12 +90,12 @@ We explicitly pass empty lists to the other mapping arguments for clarity in the
 ```{r implicit_layers}
 sce_layers <- to_SingleCellExperiment(
   ad,
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  reduction_mapping = list(),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reduction_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 
 sce_layers
@@ -118,11 +118,11 @@ We guess the mapping of the reductions the same way as we do for the Seurat conv
 ```{r implicit_pca}
 sce_dimred <- to_SingleCellExperiment(
   ad,
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 
 reducedDims(sce_dimred)
@@ -139,8 +139,8 @@ and all `metadata` is stored in the `uns` slot.
 ```{r implicit_easy}
 sce_implicit <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(),
-  reduction_mapping = list()
+  assays_mapping = c(),
+  reduction_mapping = c()
 )
 
 sce_implicit
@@ -157,13 +157,13 @@ We will give an example for each of the mappings.
 ```{r explicit_assays}
 sce_assays <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  reduction_mapping = list(),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  assays_mapping = c(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reduction_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 sce_assays
 ```
@@ -175,13 +175,23 @@ You can see that the `X` slot got stored as `counts`, and the `layers` got store
 ```{r explicit col_data}
 sce <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(),
-  colData_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
-  rowData_mapping = list(rowdata1 = "character", rowdata2 = "logical"),
-  reduction_mapping = list(),
-  colPairs_mapping = list(colPairs_dense = "numeric_matrix", colPairs_sparse = "numeric_csparse"),
-  rowPairs_mapping = list(rowPairs1 = "integer_matrix", rowPairs2 = "numeric_matrix"),
-  metadata_mapping = list(vector1 = "vec_integer", vector2 = "vec_character", df = "df_integer")
+  assays_mapping = c(),
+  colData_mapping = c(coldata1 = "integer", coldata2 = "numeric"),
+  rowData_mapping = c(rowdata1 = "character", rowdata2 = "logical"),
+  reduction_mapping = c(),
+  colPairs_mapping = c(
+    colPairs_dense = "numeric_matrix",
+    colPairs_sparse = "numeric_csparse"
+  ),
+  rowPairs_mapping = c(
+    rowPairs1 = "integer_matrix",
+    rowPairs2 = "numeric_matrix"
+  ),
+  metadata_mapping = c(
+    vector1 = "vec_integer",
+    vector2 = "vec_character",
+    df = "df_integer"
+  )
 )
 
 sce
@@ -197,13 +207,16 @@ the SingleCellExperiment object.
 ```{r explicit_reductions}
 sce <- to_SingleCellExperiment(
   ad,
-  assays_mapping = list(counts = "X"),
-  colData_mapping = list(),
-  rowData_mapping = list(),
-  reduction_mapping = list("pca" = list("obsm" = "X_pca", "varm" = "PCs"), "umap" = list("obsm" = "X_umap")),
-  colPairs_mapping = list(),
-  rowPairs_mapping = list(),
-  metadata_mapping = list()
+  assays_mapping = c(counts = "X"),
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reduction_mapping = list(
+    "pca" = c("obsm" = "X_pca", "varm" = "PCs"),
+    "umap" = c("obsm" = "X_umap")
+  ),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
 )
 sce
 ```
@@ -234,13 +247,13 @@ and it will remain empty.
 ```{r to_ad_implicit_assays}
 ad_assays <- from_SingleCellExperiment(
   sce,
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsm_mapping = c(),
+  varm_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 ad_assays
 ```
@@ -257,11 +270,11 @@ We will store the reduced dimensions in the `obsm` slot, with the name of the `r
 ```{r to_ad_implicit_reductions}
 ad_reductions <- from_SingleCellExperiment(
   sce,
-  obs_mapping = list(),
-  var_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  obs_mapping = c(),
+  var_mapping = c(),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 ad_reductions
 ```
@@ -283,25 +296,22 @@ ad
 ## Explicit conversion
 
 It's also possible to provide an explicit mapping for the conversion from SingleCellExperiment to AnnData.
-For all of the simpler mappings, such as `layers_mapping`, `obs_mapping`, `var_mapping`, `obsp_mapping`, `varp_mapping` and `uns_mapping`,
-you can provide a named list where the names are the names of the AnnData columns and the values are the names of the SingleCellExperiment columns
-in their respective slots.
+For all of the mappings (`layers_mapping`, `obs_mapping`, `var_mapping`, `obsp_mapping`, `varp_mapping`, and `uns_mapping`),
+you can provide a named vector where the names are the names in the AnnData object and the values are the names in the SingleCellExperiment object.
 
-The `obsm_mapping` and `varm_mapping` are a bit more complex, as they can contain multiple elements.
-Each of the `obsm_mapping` and `varm_mapping` elements should be a named list, where the names are the names of the AnnData columns 
-where the values are stored. The values should be a named list as well, containing as a first element the name of the SingleCellExperiment slot
-where the data is stored, and as a second element the name of the slot in the SingleCellExperiment slot where the data is stored.
+The `obsm_mapping` and `varm_mapping` work in the same way - they're named vectors where each name corresponds to a key 
+in AnnData's obsm/varm, and each value corresponds to the name of a reducedDim in SCE.
 
 ```{r to_ad_explicit_obsm}
 ad_obsm <- from_SingleCellExperiment(
   sce,
-  layers_mapping = list(),
-  obs_mapping = list(),
-  obsm_mapping = list(X_pca = c("reducedDim", "pca"), X_umap = c("reducedDim", "umap")),
-  varm_mapping = list(PCs = c("reducedDim", "pca")),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  layers_mapping = c(),
+  obs_mapping = c(),
+  obsm_mapping = c(X_pca = "pca", X_umap = "umap"),
+  varm_mapping = c(PCs = "pca"),
+  obsp_mapping = c(),
+  varp_mapping = c(),
+  uns_mapping = c()
 )
 
 ad_obsm

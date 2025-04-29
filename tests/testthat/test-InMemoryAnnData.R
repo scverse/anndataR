@@ -4,7 +4,7 @@ file <- system.file("extdata", "example.h5ad", package = "anndataR")
 adata <- read_h5ad(file, to = "InMemoryAnnData")
 
 # GETTERS ----------------------------------------------------------------
-test_that("create inmemory anndata", {
+test_that("Creating InMemoryAnnData works", {
   ad <- AnnData(
     X = dummy$X,
     obs = dummy$obs,
@@ -24,7 +24,7 @@ test_that("create inmemory anndata", {
   expect_identical(ad$shape(), c(10L, 20L))
 })
 
-test_that("with empty obs", {
+test_that("Creating InMemoryAnnData works with empty obs", {
   ad <- AnnData(
     obs = data.frame(),
     var = dummy$var
@@ -32,7 +32,7 @@ test_that("with empty obs", {
   expect_identical(ad$shape(), c(0L, 20L))
 })
 
-test_that("with empty var", {
+test_that("Creating InMemoryAnnData works with empty var", {
   ad <- AnnData(
     obs = dummy$obs,
     var = data.frame()
@@ -85,6 +85,7 @@ test_that("'layers' works", {
   expect_error(AnnData(obs = obs, var = var, layers = layers))
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_get_obsm, status=done
 test_that("reading obsm works", {
   obsm <- adata$obsm
   expect_true(is.list(obsm), "list")
@@ -94,6 +95,7 @@ test_that("reading obsm works", {
   )
 })
 
+# trackstatus: class=InMemoryAnnData, feature=test_get_varm, status=done
 test_that("reading varm works", {
   varm <- adata$varm
   expect_true(is.list(varm), "list")
