@@ -68,11 +68,13 @@ matrices having dimensions consistent with \code{n_obs} and \code{n_vars}.}
 
 \item{\code{obs}}{Observation annotations. A \code{data.frame} with columns containing
 information about observations. The number of rows of \code{obs} defines the
-observation dimension of the \code{AnnData} object (\code{n_obs}).}
+observation dimension of the \code{AnnData} object (\code{n_obs}). If \code{NULL}, an
+\code{n_obs} × 0 \code{data.frame} will automatically be generated.}
 
 \item{\code{var}}{Variable annotations. A \code{data.frame} with columns containing
 information about variables. The number of rows of \code{var} defines the
-variable dimension of the \code{AnnData} object (\code{n_vars}).}
+variable dimension of the \code{AnnData} object (\code{n_vars}). If \code{NULL}, an
+\code{n_vars} × 0 \code{data.frame} will automatically be generated.}
 
 \item{\code{obs_names}}{Observation names. Either \code{NULL} or a vector of unique
 identifiers used to identify each row of \code{obs} and to act as an index into

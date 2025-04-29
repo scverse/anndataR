@@ -20,34 +20,27 @@ See \link{AnnData-usage} for details on creating and using \code{AnnData} object
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{The \code{X} slot}
+\item{\code{X}}{See \link{AnnData-usage}}
 
-\item{\code{layers}}{The \code{layers} slot. Must be \code{NULL} or a named list with all
-elements having the dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{layers}}{See \link{AnnData-usage}}
 
-\item{\code{obsm}}{The \code{obsm} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows as \code{obs}.}
+\item{\code{obsm}}{See \link{AnnData-usage}}
 
-\item{\code{varm}}{The \code{varm} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows as \code{var}.}
+\item{\code{varm}}{See \link{AnnData-usage}}
 
-\item{\code{obsp}}{The \code{obsp} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows and columns as \code{obs}.}
+\item{\code{obsp}}{See \link{AnnData-usage}}
 
-\item{\code{varp}}{The \code{varp} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows and columns as \code{var}.}
+\item{\code{varp}}{See \link{AnnData-usage}}
 
-\item{\code{obs}}{The \code{obs} slot. Must be a \code{data.frame} with the number of rows
-giving the number of observations.}
+\item{\code{obs}}{See \link{AnnData-usage}}
 
-\item{\code{var}}{The \code{var} slot, Must be a \code{data.frame} with the number of rows
-giving the number of variables.}
+\item{\code{var}}{See \link{AnnData-usage}}
 
-\item{\code{obs_names}}{Names of observations}
+\item{\code{obs_names}}{See \link{AnnData-usage}}
 
-\item{\code{var_names}}{Names of variables}
+\item{\code{var_names}}{See \link{AnnData-usage}}
 
-\item{\code{uns}}{The \code{uns} slot. Must be \code{NULL} or a named list.}
+\item{\code{uns}}{See \link{AnnData-usage}}
 }
 \if{html}{\out{</div>}}
 }
@@ -110,64 +103,40 @@ Close the HDF5 file when the object is garbage collected
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{The filename (character) of the \code{.h5ad} file. If this file
+\item{\code{file}}{The file name (character) of the \code{.h5ad} file. If this file
 already exits, other arguments must be \code{NULL}.}
 
-\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
-dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{X}}{See the \code{X} slot in \link{AnnData-usage}}
 
-\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about observations. If \code{NULL}, an \code{n_obs} × 0 data frame
-will
-automatically be generated.}
+\item{\code{obs}}{See the \code{obs} slot in \link{AnnData-usage}}
 
-\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about variables. If \code{NULL}, an \code{n_vars}×0 data frame will
-automatically be generated.}
+\item{\code{var}}{See the \code{var} slot in \link{AnnData-usage}}
 
-\item{\code{layers}}{Either \code{NULL} or a named list, where each element is an
-observation × variable matrix with dimensions consistent with \code{obs} and
-\code{var}.}
+\item{\code{layers}}{See the \code{layers} slot in \link{AnnData-usage}}
 
-\item{\code{obsm}}{The obsm slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is a
-matrix with \code{n_obs} rows and an arbitrary number of columns.}
+\item{\code{obsm}}{See the \code{obsm} slot in \link{AnnData-usage}}
 
-\item{\code{varm}}{The varm slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is a
-matrix with \code{n_vars} rows and an arbitrary number of columns.}
+\item{\code{varm}}{See the \code{varm} slot in \link{AnnData-usage}}
 
-\item{\code{obsp}}{The obsp slot is used to store sparse multi-dimensional
-annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_obs}.}
+\item{\code{obsp}}{See the \code{obsp} slot in \link{AnnData-usage}}
 
-\item{\code{varp}}{The varp slot is used to store sparse multi-dimensional
-annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_vars}.}
+\item{\code{varp}}{See the \code{varp} slot in \link{AnnData-usage}}
 
-\item{\code{uns}}{The uns slot is used to store unstructured annotation. It must
-be either \code{NULL} or a named list.}
+\item{\code{uns}}{See the \code{uns} slot in \link{AnnData-usage}}
 
-\item{\code{shape}}{Shape tuple (#observations, #variables). Can be provided
-if \code{X} or \code{obs} and \code{var} are not provided.}
+\item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
+both \code{X} or \code{obs} and \code{var} are not provided.}
 
-\item{\code{mode}}{The mode to open the HDF5 file.
-\itemize{
-\item \code{a} creates a new file or opens an existing one for read/write.
-\item \code{r} opens an existing file for reading.
-\item \verb{r+} opens an existing file for read/write.
-\item \code{w} creates a file, truncating any existing ones.
-\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
-}}
+\item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}} for
+details}
 
-\item{\code{compression}}{The compression algorithm to use when writing the
-HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
-\code{"none"}.}
+\item{\code{compression}}{The compression algorithm to use. See
+\code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}} for details}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Details}{
-The constructor creates a new HDF5 AnnData interface object. This can
+The constructor creates a new HDF5 \code{AnnData} interface object. This can
 either be used to either connect to an existing \code{.h5ad} file or to
 create a new one. To create a new file both \code{obs_names} and \code{var_names}
 must be specified. In both cases, any additional slots provided will be
@@ -190,7 +159,7 @@ Close the HDF5 file
 \if{html}{\out{<a id="method-HDF5AnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-n_obs}{}}}
 \subsection{Method \code{n_obs()}}{
-Number of observations in the AnnData object
+See the \code{n_obs} field in \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_obs()}\if{html}{\out{</div>}}
 }
@@ -200,7 +169,7 @@ Number of observations in the AnnData object
 \if{html}{\out{<a id="method-HDF5AnnData-n_vars"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-n_vars}{}}}
 \subsection{Method \code{n_vars()}}{
-Number of variables in the AnnData object
+See the \code{n_vars} field in \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_vars()}\if{html}{\out{</div>}}
 }

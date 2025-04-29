@@ -32,10 +32,12 @@
 #'   matrices having dimensions consistent with `n_obs` and `n_vars`.
 #' @slot obs Observation annotations. A `data.frame` with columns containing
 #'   information about observations. The number of rows of `obs` defines the
-#'   observation dimension of the `AnnData` object (`n_obs`).
+#'   observation dimension of the `AnnData` object (`n_obs`). If `NULL`, an
+#'   `n_obs` × 0 `data.frame` will automatically be generated.
 #' @slot var Variable annotations. A `data.frame` with columns containing
 #'   information about variables. The number of rows of `var` defines the
-#'   variable dimension of the `AnnData` object (`n_vars`).
+#'   variable dimension of the `AnnData` object (`n_vars`). If `NULL`, an
+#'   `n_vars` × 0 `data.frame` will automatically be generated.
 #' @slot obs_names Observation names. Either `NULL` or a vector of unique
 #'   identifiers used to identify each row of `obs` and to act as an index into
 #'   the observation dimension of the `AnnData` object. For compatibility with
