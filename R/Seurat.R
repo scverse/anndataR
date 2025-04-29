@@ -32,7 +32,7 @@
 #' layer name in the AnnData object. A value of `NA` corresponds to the
 #' AnnData `X` slot.
 #'
-#' Example: layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
+#' Example: `layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
 #'
 #' If `NULL`, the internal function `.to_Seurat_guess_layers` will be used to
 #' guess the layer mapping as follows:
