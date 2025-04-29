@@ -259,7 +259,7 @@ to_Seurat <- function(
     }
   }
 
-  # trackstatus: class=Seurat, feature=get_obsp, status=wip
+  # trackstatus: class=Seurat, feature=get_obsp, status=done
   if (!rlang::is_empty(graph_mapping)) {
     for (i in seq_along(graph_mapping)) {
       graph_name <- names(graph_mapping)[[i]]
@@ -436,6 +436,8 @@ to_Seurat <- function(
   )
 }
 
+# trackstatus: class=Seurat, feature=get_obsm, status=done
+# trackstatus: class=Seurat, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
 .to_Seurat_process_reduction_mapping <- function(
   adata,
@@ -934,7 +936,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_obsm, status=wip
+# trackstatus: class=Seurat, feature=set_obsm, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_obsm <- function(
   adata,
@@ -958,7 +960,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_varm, status=wip
+# trackstatus: class=Seurat, feature=set_varm, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_varm <- function(
   adata,
@@ -982,7 +984,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_obsp, status=wip
+# trackstatus: class=Seurat, feature=set_obsp, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_obsp <- function(
   adata,
@@ -1006,7 +1008,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_varp, status=wip
+# trackstatus: class=Seurat, feature=set_varp, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_varp <- function(
   adata,
@@ -1031,7 +1033,7 @@ from_Seurat <- function(
   })
 }
 
-# trackstatus: class=Seurat, feature=set_uns, status=wip
+# trackstatus: class=Seurat, feature=set_uns, status=done
 # nolint start: object_name_linter
 .from_Seurat_process_uns <- function(
   adata,
