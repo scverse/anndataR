@@ -54,7 +54,8 @@
 #'
 #' Each value in the `assay_metadata_mapping` named vector corresponds to the
 #' names of the `var` slot in the AnnData object, and the names correspond to
-#' the names of the metadata in the resulting Seurat object.
+#' the names of the metadata in the specified assay of the resulting Seurat
+#' object.
 #'
 #' Example: `assay_metadata_mapping = c(geneInfo = "gene_info")`.
 #'
