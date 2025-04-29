@@ -40,45 +40,27 @@ AnnData(
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{\code{NULL} or an observation x variable matrix (without dimnames)
-consistent with the number of rows of \code{obs} and \code{var}.}
+\item{\code{X}}{See \link{AnnData-usage}}
 
-\item{\code{layers}}{\code{NULL} or a named list with all elements having dimensions
-consistent with \code{obs} and \code{var}.}
+\item{\code{layers}}{See \link{AnnData-usage}}
 
-\item{\code{obs}}{A \code{data.frame} with columns containing information about
-observations. The number of rows of \code{obs} defines the observation
-dimension of the \code{AnnData} object.}
+\item{\code{obs}}{See \link{AnnData-usage}}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information
-about variables. The number of rows of \code{var} defines the variable
-dimension of the \code{AnnData} object.}
+\item{\code{var}}{See \link{AnnData-usage}}
 
-\item{\code{obs_names}}{Either \code{NULL} or a vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the \code{AnnData} object. For
-compatibility with \emph{R} representations, \code{obs_names} should be a
-character vector.}
+\item{\code{obs_names}}{See \link{AnnData-usage}}
 
-\item{\code{var_names}}{Either \code{NULL} or a vector of unique identifiers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the \code{AnnData} object. For compatibility
-with \emph{R} representations, \code{var_names} should be a character
-vector.}
+\item{\code{var_names}}{See \link{AnnData-usage}}
 
-\item{\code{obsm}}{The \code{obsm} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows as \code{obs}.}
+\item{\code{obsm}}{See \link{AnnData-usage}}
 
-\item{\code{varm}}{The \code{varm} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows as \code{var}.}
+\item{\code{varm}}{See \link{AnnData-usage}}
 
-\item{\code{obsp}}{The \code{obsp} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows and columns as \code{obs}.}
+\item{\code{obsp}}{See \link{AnnData-usage}}
 
-\item{\code{varp}}{The \code{varp} slot. Must be \code{NULL} or a named list with all
-elements having the same number of rows and columns as \code{var}.}
+\item{\code{varp}}{See \link{AnnData-usage}}
 
-\item{\code{uns}}{The \code{uns} slot. Must be \code{NULL} or a named list.}
+\item{\code{uns}}{See \link{AnnData-usage}}
 }
 \if{html}{\out{</div>}}
 }
@@ -116,7 +98,7 @@ elements having the same number of rows and columns as \code{var}.}
 \if{html}{\out{<a id="method-InMemoryAnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-InMemoryAnnData-new}{}}}
 \subsection{Method \code{new()}}{
-Creates a new instance of an in-memory AnnData object.
+Creates a new instance of an in-memory \code{AnnData} object.
 Inherits from \link{AbstractAnnData}.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{InMemoryAnnData$new(
@@ -136,42 +118,26 @@ Inherits from \link{AbstractAnnData}.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{X}}{Either \code{NULL} or a observation × variable matrix with
-dimensions consistent with \code{obs} and \code{var}.}
+\item{\code{X}}{See the \code{X} slot in \link{AnnData-usage}}
 
-\item{\code{obs}}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about observations. If \code{NULL}, an \code{n_obs} × 0 data frame
-will automatically be generated.}
+\item{\code{obs}}{See the \code{obs} slot in \link{AnnData-usage}}
 
-\item{\code{var}}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about variables. If \code{NULL}, an \code{n_vars} × 0 data frame will
-automatically be generated.}
+\item{\code{var}}{See the \code{var} slot in \link{AnnData-usage}}
 
-\item{\code{layers}}{Either \code{NULL} or a named list, where each element
-is an observation × variable matrix with dimensions consistent
-with \code{obs} and \code{var}.}
+\item{\code{layers}}{See the \code{layers} slot in \link{AnnData-usage}}
 
-\item{\code{obsm}}{The \code{obsm} slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is
-a matrix with \code{n_obs} rows and an arbitrary number of columns.}
+\item{\code{obsm}}{See the \code{obsm} slot in \link{AnnData-usage}}
 
-\item{\code{varm}}{The \code{varm} slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is
-a matrix with \code{n_vars} rows and an arbitrary number of columns.}
+\item{\code{varm}}{See the \code{varm} slot in \link{AnnData-usage}}
 
-\item{\code{obsp}}{The \code{obsp} slot is used to store sparse multi-dimensional
-annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_obs}.}
+\item{\code{obsp}}{See the \code{obsp} slot in \link{AnnData-usage}}
 
-\item{\code{varp}}{The \code{varp} slot is used to store sparse multi-dimensional
-annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_vars}.}
+\item{\code{varp}}{See the \code{varp} slot in \link{AnnData-usage}}
 
-\item{\code{uns}}{The \code{uns} slot is used to store unstructured annotation.
-It must be either \code{NULL} or a named list.}
+\item{\code{uns}}{See the \code{uns} slot in \link{AnnData-usage}}
 
-\item{\code{shape}}{Shape tuple (#observations, #variables). Can be provided
-if \code{X} or \code{obs} and \code{var} are not provided.}
+\item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
+both \code{X} or \code{obs} and \code{var} are not provided.}
 }
 \if{html}{\out{</div>}}
 }
