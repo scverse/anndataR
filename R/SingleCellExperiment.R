@@ -92,6 +92,7 @@
 to_SingleCellExperiment <- function(
   # nolint end: cyclocomp_linter
   adata,
+  x_mapping = NULL,
   assays_mapping = NULL,
   colData_mapping = NULL, # nolint
   rowData_mapping = NULL, # nolint
@@ -114,7 +115,10 @@ to_SingleCellExperiment <- function(
 
   # guess mappings if not provided
   # nolint start object_name_linter
-  assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
+  assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata, x_mapping)
+  if (!is.null(x_mapping)) {
+    assays_mapping[x_mapping] <- "X"
+  }
   colData_mapping <- self_name(colData_mapping) %||%
     .to_SCE_guess_all(adata, "obs")
   rowData_mapping <- self_name(rowData_mapping) %||%
@@ -196,7 +200,7 @@ to_SingleCellExperiment <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_guess_assays <- function(adata) {
+.to_SCE_guess_assays <- function(adata, x_mapping) {
   # nolint end: object_length_linter object_name_linter
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -206,7 +210,7 @@ to_SingleCellExperiment <- function(
 
   layers <- list()
 
-  if (!is.null(adata$X)) {
+  if (!is.null(adata$X) && is.null(x_mapping)) {
     layers[["X"]] <- "X"
   }
 

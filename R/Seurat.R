@@ -160,16 +160,12 @@ to_Seurat <- function(
 
   object_metadata_mapping <- self_name(object_metadata_mapping) %||%
     .to_Seurat_guess_object_metadata(adata)
-  x_mapping <- self_name(x_mapping)
   layers_mapping <- self_name(layers_mapping) %||%
     .to_Seurat_guess_layers(adata)
-  layers_mapping <- c(x_mapping, layers_mapping)
-  if (any(duplicated(names(layers_mapping)))) {
-    cli_abort(
-      "Duplicate names in {.arg layers_mapping}: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
-    )
+  if (!is.null(x_mapping)) {
+    layers_mapping[x_mapping] <- NA
   }
-  
+
   assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
     .to_Seurat_guess_assay_metadata(adata)
   reduction_mapping <- self_name(reduction_mapping) %||%
@@ -215,16 +211,22 @@ to_Seurat <- function(
   if (!is.null(data)) {
     dimnames(data) <- list(adata$var_names, adata$obs_names)
   }
+
   object_metadata <- .to_Seurat_process_metadata(
     adata,
     object_metadata_mapping,
     "obs"
   )
-  obj <- SeuratObject::CreateSeuratObject(
-    meta.data = object_metadata,
-    assay = assay_name,
+
+  assay <- SeuratObject::CreateAssay5Object(
     counts = counts,
-    data = data
+    data = data,
+  )
+
+  obj <- SeuratObject::CreateSeuratObject(
+    assay,
+    meta.data = object_metadata,
+    assay = assay_name
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
@@ -255,7 +257,7 @@ to_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- to_R_matrix(adata$layers[[from]])
+      ) <- .to_seurat_get_matrix_by_key(adata, layers_mapping, to)
     }
   }
 
@@ -515,18 +517,19 @@ to_Seurat <- function(
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_layers <- function(adata) {
+.to_Seurat_guess_layers <- function(adata, x_mapping) {
   # nolint end: object_name_linter object_length_linter
   layers <- self_name(adata$layers_keys())
 
-  if (!is.null(adata$X)) {
-    # guess the name of the X slot
-    layer_name_for_x <- "X"
-    layers[layer_name_for_x] <- "X"
-  }
-
   for (layer_name in names(adata$layers)) {
     layers[[layer_name]] <- layer_name
+  }
+
+  # TODO check if this is necessary
+  if (any(duplicated(names(layers)))) {
+    cli_abort(
+      "Duplicate names in {.arg layers}: {.val {names(layers)[duplicated(names(layers))]}}"
+    )
   }
 
   layers
