@@ -29,7 +29,8 @@ jobs:
       - name: Install lintr and styler
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          packages: lintr, styler
+          extra-packages: any::lintr, any::styler, local::.
+          needs: lint
 
       - name: Lint
         run: lintr::lint_package()
