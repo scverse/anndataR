@@ -149,14 +149,11 @@ to_SingleCellExperiment <- function(
       "i" = "Found duplicate names: {.val {names(assays_mapping)[duplicated(names(assays_mapping))]}}"
     )
   }
-  print(assays_mapping)
   sce_assays <- vector("list", length(assays_mapping))
   names(sce_assays) <- names(assays_mapping)
-  print("HERE")
   for (i in seq_along(assays_mapping)) {
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
-    print(from)
     sce_assays[[to]] <-
       if (is.na(from)) {
         to_R_matrix(adata$X)
@@ -164,8 +161,6 @@ to_SingleCellExperiment <- function(
         to_R_matrix(adata$layers[[from]])
       }
   }
-
-  print(sce_assays)
 
   # construct colData
   # FIXME: probably better way to make a dataframe from a list of vectors
