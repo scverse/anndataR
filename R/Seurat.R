@@ -295,6 +295,8 @@ to_Seurat <- function(
       }
 
       obsp <- adata$obsp[[graph]]
+    }
+  }
   # trackstatus: class=Seurat, feature=get_obsp, status=done
   if (!rlang::is_empty(graph_mapping)) {
     for (i in seq_along(graph_mapping)) {
