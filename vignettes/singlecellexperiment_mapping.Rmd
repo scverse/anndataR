@@ -288,7 +288,7 @@ and all `metadata` is stored in the `uns` slot.
 ```{r implicit_all}
 ad <- from_SingleCellExperiment(
   sce,
-  x_mapping = "counts"
+  x_mapping = "integer_matrix"
 )
 ad
 ```
@@ -307,8 +307,8 @@ ad_obsm <- from_SingleCellExperiment(
   sce,
   layers_mapping = c(),
   obs_mapping = c(),
-  obsm_mapping = c(X_pca = "pca", X_umap = "umap"),
-  varm_mapping = c(PCs = "pca"),
+  obsm_mapping = c(X_pca = "X_pca", X_umap = "X_umap"),
+  varm_mapping = c(PCs = "X_pca"),
   obsp_mapping = c(),
   varp_mapping = c(),
   uns_mapping = c()

@@ -281,22 +281,7 @@ to_Seurat <- function(
     }
   }
 
-  # trackstatus: class=Seurat, feature=get_obsp, status=wip
-  if (!rlang::is_empty(graph_mapping)) {
-    for (i in seq_along(graph_mapping)) {
-      graph_name <- names(graph_mapping)[[i]]
-      graph <- graph_mapping[[i]]
 
-      if (!(graph %in% adata$obsp_keys())) {
-        cli_abort(c(
-          "The requested item {.val {graph}} does not exist in {.code adata$obsp}",
-          "i" = "{.code adata$obsp_keys()}: {.val {adata$obsp_keys()}}"
-        ))
-      }
-
-      obsp <- adata$obsp[[graph]]
-    }
-  }
   # trackstatus: class=Seurat, feature=get_obsp, status=done
   if (!rlang::is_empty(graph_mapping)) {
     for (i in seq_along(graph_mapping)) {
