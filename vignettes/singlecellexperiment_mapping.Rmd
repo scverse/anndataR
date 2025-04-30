@@ -74,18 +74,16 @@ sce
 
 In the following subsections, we detail how each of these implicit conversions work.
 
-### assays
+### assays and x_mapping
 
 In an AnnData object, count matrices can be present in the `X` slot or in the `layers` slot.
 In a SingleCellExperiment object, count matrices are stored in the `assays` slot, as a named list.
 
-By default, the `X` slot and all the elements of the `layers` slot will be stored in the `assays` slot of the SingleCellExperiment object.
-We try to guess the name of the `X` slot: if there is no `counts` layer present, we will use the `X` slot as the `counts` assay.
-If there is a `counts` layer present, we will name the `X` slot the `data` assay.
-All other layers are stored as assays with their layer name.
+By default, the `X` slot and all the elements of the `layers` slot will be stored in the `assays` slot of the SingleCellExperiment object, 
+with the same names as in the AnnData object.
 
 In the below example, we will convert an AnnData object with a `counts` layer and two other layers to a SingleCellExperiment object.
-In order for the implicit conversion to work, we will not provide a `layers_mapping`.
+In order for the implicit conversion to work, we will not provide a `layers_mapping` or `x_mapping` argument.
 We explicitly pass empty lists to the other mapping arguments for clarity in the resulting object. They ensure that nothing gets converted to the respective slots.
 ```{r implicit_layers}
 sce_layers <- to_SingleCellExperiment(
@@ -169,6 +167,22 @@ sce_assays
 ```
 
 You can see that the `X` slot got stored as `counts`, and the `layers` got stored as assays with the names `layer1` and `layer2`.
+We can also provide the `x_mapping` argument, which will dictate where the `X` slot gets stored, but then we should omit it from the `assays_mapping` argument.
+
+```{r explicit_x}
+sce_assays_x <- to_SingleCellExperiment(
+  ad,
+  x_mapping = "counts",
+  assays_mapping = c(layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reduction_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
+)
+sce_assays_x
+```
 
 ### colData, rowData, colPairs, rowPairs, metadata
 
@@ -207,7 +221,8 @@ the SingleCellExperiment object.
 ```{r explicit_reductions}
 sce <- to_SingleCellExperiment(
   ad,
-  assays_mapping = c(counts = NA),
+  x_mapping = "counts",
+  assays_mapping = c(),
   colData_mapping = c(),
   rowData_mapping = c(),
   reduction_mapping = list(
