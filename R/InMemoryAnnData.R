@@ -5,10 +5,9 @@
 #'
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
-#' @seealso
+#' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'
-#' - [AnnData-usage]: For details on creating and using  `AnnData` objects
-#' - [AbstractAnnData]: For the base abstract `AnnData` class
+#' @family AnnData classes
 #'
 #' @examples
 #' ## complete example

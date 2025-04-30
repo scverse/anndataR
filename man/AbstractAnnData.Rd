@@ -11,12 +11,13 @@ intended to be used as a base class for concrete implementations of
 See \link{AnnData-usage} for details on creating and using \code{AnnData} objects.
 }
 \seealso{
-\itemize{
-\item \link{AnnData-usage}: For details on creating and using  \code{AnnData} objects
-\item \link{InMemoryAnnData}: For the in-memory \code{AnnData} class
-\item \link{HDF5AnnData}: For the HDF5-backed \code{AnnData} class
+\link{AnnData-usage} for details on creating and using \code{AnnData} objects
+
+Other AnnData classes: 
+\code{\link{HDF5AnnData}},
+\code{\link{InMemoryAnnData}}
 }
-}
+\concept{AnnData classes}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{

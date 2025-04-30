@@ -114,6 +114,10 @@
 #'
 #' @seealso The documentation for the Python `anndata` package
 #'   <https://anndata.readthedocs.io/en/stable/>
+#' @seealso [AbstractAnnData] for the abstract class that all `AnnData` objects
+#'   inherit from
+#' @seealso [InMemoryAnnData] for the in-memory implementation of `AnnData`
+#' @seealso [HDF5AnnData] for the HDF5-backed implementation of `AnnData`
 #'
 #' @name AnnData-usage
 NULL

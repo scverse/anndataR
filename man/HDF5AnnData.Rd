@@ -9,11 +9,13 @@ Implementation of an HDF5-backed \code{AnnData} object.
 See \link{AnnData-usage} for details on creating and using \code{AnnData} objects.
 }
 \seealso{
-\itemize{
-\item \link{AnnData-usage}: For details on creating and using  \code{AnnData} objects
-\item \link{AbstractAnnData}: For the base abstract \code{AnnData} class
+\link{AnnData-usage} for details on creating and using \code{AnnData} objects
+
+Other AnnData classes: 
+\code{\link{AbstractAnnData}},
+\code{\link{InMemoryAnnData}}
 }
-}
+\concept{AnnData classes}
 \section{Super class}{
 \code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{HDF5AnnData}
 }

@@ -5,10 +5,9 @@
 #'
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
-#' @seealso
+#' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'
-#' - [AnnData-usage]: For details on creating and using  `AnnData` objects
-#' - [AbstractAnnData]: For the base abstract `AnnData` class
+#' @family AnnData classes
 HDF5AnnData <- R6::R6Class(
   "HDF5AnnData", # nolint
   inherit = AbstractAnnData,

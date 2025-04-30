@@ -154,4 +154,11 @@ Convert a \code{SingleCellExperiment} object to an \code{AnnData} object
 \seealso{
 The documentation for the Python \code{anndata} package
 \url{https://anndata.readthedocs.io/en/stable/}
+
+\link{AbstractAnnData} for the abstract class that all \code{AnnData} objects
+inherit from
+
+\link{InMemoryAnnData} for the in-memory implementation of \code{AnnData}
+
+\link{HDF5AnnData} for the HDF5-backed implementation of \code{AnnData}
 }
