@@ -19,8 +19,9 @@ to_Seurat(
 \arguments{
 \item{adata}{An AnnData object to be converted}
 
-\item{assay_name}{Name of the assay to be created (default: "RNA").
-#' @param x_mapping Name of the layer used for the \code{X} slot. See section "Layer
+\item{assay_name}{Name of the assay to be created (default: "RNA").}
+
+\item{x_mapping}{Name of the layer used for the \code{X} slot. See section "Layer
 mapping" for more details.}
 
 \item{layers_mapping}{A named vector to map AnnData layers to Seurat layers.

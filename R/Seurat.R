@@ -7,7 +7,7 @@
 #'
 #' @param adata An AnnData object to be converted
 #' @param assay_name Name of the assay to be created (default: "RNA").
-#' #' @param x_mapping Name of the layer used for the `X` slot. See section "Layer
+#' @param x_mapping Name of the layer used for the `X` slot. See section "Layer
 #'   mapping" for more details.
 #' @param layers_mapping A named vector to map AnnData layers to Seurat layers.
 #'   See section "Layer mapping" for more details.
