@@ -45,7 +45,7 @@
 #'     reducedDims = list(PCA = pca, tSNE = tsne)
 #'   )
 #'
-#'   adata <- from_SingleCellExperiment(sce)
+#'   adata <- as_AnnData(sce)
 #'   h5ad_file <- tempfile(fileext = ".h5ad")
 #'   adata$write_h5ad(h5ad_file)
 #' }

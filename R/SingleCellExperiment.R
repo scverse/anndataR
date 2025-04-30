@@ -365,70 +365,21 @@ to_SingleCellExperiment <- function(
   })
 }
 
-#' Convert a SingleCellExperiment object to an AnnData object
-#'
-#' `from_SingleCellExperiment()` converts a
-#'   SingleCellExperiment to an AnnData object.
-#'
-#' @param sce An object inheriting from SingleCellExperiment.
-#'
-#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
-#' or `"InMemoryAnnData"`.
-#'
-#' @param x_mapping Name of the assay in `sce` to use as the `X` matrix in the AnnData object.
-#' @param layers_mapping A named vector or list mapping layer names in AnnData to assay names in the
-#' SingleCellExperiment object. Each name corresponds to the layer name in AnnData, and each value to the
-#' assay name in SCE.
-#' @param obs_mapping A named vector or list mapping column names in AnnData's obs to column names in SCE's colData.
-#' Each name corresponds to a column name in AnnData's obs, and each value to a column name in SCE's colData.
-#' @param var_mapping A named vector or list mapping column names in AnnData's var to column names in SCE's rowData.
-#' Each name corresponds to a column name in AnnData's var, and each value to a column name in SCE's rowData.
-#' @param obsm_mapping A named vector mapping obsm keys in AnnData to reducedDims names in SCE.
-#' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reducedDim in SCE.
-#' Example: `obsm_mapping = c(X_pca = "pca", X_umap = "umap")`.
-#' @param varm_mapping A named vector mapping varm keys in AnnData to reducedDims names in SCE.
-#' Each name corresponds to a key in AnnData's varm, and each value to the name of a reducedDim in SCE.
-#' Example: `varm_mapping = c(PCs = "pca")`.
-#' @param obsp_mapping A named vector or list mapping obsp keys in AnnData to colPairs in the
-#' SingleCellExperiment object. Each name corresponds to a key in AnnData's obsp, and each value to a name in
-#' SCE's colPairs.
-#' @param varp_mapping A named vector or list mapping varp keys in AnnData to rowPairs in the
-#' SingleCellExperiment object. Each name corresponds to a key in AnnData's varp, and each value to a
-#' name in SCE's rowPairs.
-#' @param uns_mapping A named vector or list mapping uns keys in AnnData to metadata in the
-#' SingleCellExperiment object. Each name corresponds to a key in AnnData's uns, and each value to a
-#' name in SCE's metadata.
-#' @param ... Additional arguments to pass to the generator function.
-#'
-#' @return `from_SingleCellExperiment()` returns an AnnData object
-#'   (e.g., InMemoryAnnData) representing the content of `sce`.
-#'
-#' @examples
-#' ## construct an AnnData object from a SingleCellExperiment
-#' library(SingleCellExperiment)
-#' sce <- SingleCellExperiment(
-#'   assays = list(counts = matrix(1:5, 5L, 3L)),
-#'   colData = DataFrame(cell = 1:3, row.names = paste0("Cell", 1:3)),
-#'   rowData = DataFrame(gene = 1:5, row.names = paste0("Gene", 1:5))
-#' )
-#' from_SingleCellExperiment(sce, "InMemory")
-#'
+#' @rdname as_AnnData
 #' @export
-# nolint start: object_name_linter
-from_SingleCellExperiment <- function(
-  # nolint end: object_name_linter
-  sce,
-  output_class = c("InMemory", "HDF5AnnData"),
-  x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
-  ...
+as_AnnData.SingleCellExperiment <- function(
+    x,
+    x_mapping = NULL,
+    layers_mapping = NULL,
+    obs_mapping = NULL,
+    var_mapping = NULL,
+    obsm_mapping = NULL,
+    varm_mapping = NULL,
+    obsp_mapping = NULL,
+    varp_mapping = NULL,
+    uns_mapping = NULL,
+    output_class = c("InMemory", "HDF5AnnData"),
+    ...
 ) {
   check_requires(
     "Converting SingleCellExperiment to AnnData",

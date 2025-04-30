@@ -85,10 +85,10 @@ sce_obj <- SingleCellExperiment(list(counts = counts))
 sce_obj
 ```
 
-You can convert the `SingleCellExperiment` object to an `AnnData` object using the `from_SingleCellExperiment` function:
+You can convert the `SingleCellExperiment` object to an `AnnData` object using the `as_AnnData` function:
 
 ```{r from_SCE}
-adata <- from_SingleCellExperiment(sce_obj)
+adata <- as_AnnData(sce_obj)
 adata
 ```
 
@@ -97,7 +97,7 @@ Again note that there is no one-to-one mapping possible between the AnnData and 
 See the [in-depth vignette on conversion to and from SingleCellExperiment objects](singlecellexperiment.html) for more details on how to customize the conversion process. Example:
 
 ```{r from_SCE_ex}
-from_SingleCellExperiment(
+as_AnnData(
   sce_obj,
   x_mapping = "counts",
   layers_mapping = list()

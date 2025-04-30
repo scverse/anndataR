@@ -232,7 +232,7 @@ The reverse, converting SingleCellExperiment objects to AnnData objects works in
 There's an implicit conversion, where we attempt a standard conversion, but the user can always provide an explicit mapping as well.
 
 ```{r construct sce}
-ad <- from_SingleCellExperiment(sce)
+ad <- as_AnnData(sce)
 ```
 
 ## Implicit conversion
@@ -245,7 +245,7 @@ Watch out: if there is no `x_mapping` provided, none of the `assays` will be sto
 and it will remain empty.
 
 ```{r to_ad_implicit_assays}
-ad_assays <- from_SingleCellExperiment(
+ad_assays <- as_AnnData(
   sce,
   obs_mapping = c(),
   var_mapping = c(),
@@ -268,7 +268,7 @@ However, if the `reducedDims` slot contains a `LinearEmbeddingMatrix`, we will s
 We will store the reduced dimensions in the `obsm` slot, with the name of the `reducedDims` prepended by an `X_` as the name of the `obsm` slot.
 
 ```{r to_ad_implicit_reductions}
-ad_reductions <- from_SingleCellExperiment(
+ad_reductions <- as_AnnData(
   sce,
   obs_mapping = c(),
   var_mapping = c(),
@@ -286,7 +286,7 @@ all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in th
 and all `metadata` is stored in the `uns` slot.
 
 ```{r implicit_all}
-ad <- from_SingleCellExperiment(
+ad <- as_AnnData(
   sce,
   x_mapping = "counts"
 )
@@ -303,7 +303,7 @@ The `obsm_mapping` and `varm_mapping` work in the same way - they're named vecto
 in AnnData's obsm/varm, and each value corresponds to the name of a reducedDim in SCE.
 
 ```{r to_ad_explicit_obsm}
-ad_obsm <- from_SingleCellExperiment(
+ad_obsm <- as_AnnData(
   sce,
   layers_mapping = c(),
   obs_mapping = c(),

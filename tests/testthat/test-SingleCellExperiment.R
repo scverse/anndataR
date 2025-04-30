@@ -227,7 +227,7 @@ ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 # TODO: Build an SCE rather than converting
 sce <- ad$to_SingleCellExperiment()
-ad <- from_SingleCellExperiment(sce)
+ad <- as_AnnData(sce)
 
 test_that("from_SCE retains observations and features", {
   expect_equal(nrow(sce), 20)
@@ -396,7 +396,7 @@ test_that("from_SCE retains pca dimred", {
 
 test_that("from_SCE works with list mappings", {
   expect_no_error(
-    from_SingleCellExperiment(
+    as_AnnData(
       sce,
       layers_mapping = as.list(.from_SCE_guess_layers(sce, NULL)),
       obs_mapping = as.list(.from_SCE_guess_all(sce, colData)),
@@ -412,7 +412,7 @@ test_that("from_SCE works with list mappings", {
 
 test_that("from_SCE works with unnamed mappings", {
   expect_no_error(
-    from_SingleCellExperiment(
+    as_AnnData(
       sce,
       layers_mapping = unname(.from_SCE_guess_layers(sce, NULL)),
       obs_mapping = unname(.from_SCE_guess_all(sce, colData)),
