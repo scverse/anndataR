@@ -104,12 +104,7 @@
 #' \describe{
 #'   \item{[AnnData()]}{Create an [InMemoryAnnData] object}
 #'   \item{[read_h5ad()]}{Read an `AnnData` from a H5AD file}
-#'   \item{
-#'     [from_SingleCellExperiment()]
-#'   }{
-#'     Convert a `SingleCellExperiment` object to an `AnnData` object
-#'   }
-#'   \item{[from_Seurat()]}{Convert a `Seurat` object to an `AnnData` object}
+#'   \item{[as_AnnData()]}{Convert other objects to an `AnnData` object}
 #' }
 #'
 #' @seealso The documentation for the Python `anndata` package

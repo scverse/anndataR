@@ -70,7 +70,7 @@
 #'   )
 #'   obj[["RNA"]] <- AddMetaData(GetAssay(obj), gene.metadata)
 #'
-#'   adata <- from_Seurat(obj)
+#'   adata <- as_AnnData(obj)
 #'   h5ad_file <- tempfile(fileext = ".h5ad")
 #'   adata$write_h5ad(h5ad_file)
 #' }
@@ -81,32 +81,22 @@ write_h5ad <- function(
   mode = c("w-", "r", "r+", "a", "w", "x")
 ) {
   mode <- match.arg(mode)
-  adata <-
-    if (inherits(object, "SingleCellExperiment")) {
-      from_SingleCellExperiment(
-        object,
-        output_class = "HDF5AnnData",
-        file = path,
-        compression = compression,
-        mode = mode
-      )
-    } else if (inherits(object, "Seurat")) {
-      from_Seurat(
-        object,
-        output_class = "HDF5AnnData",
-        file = path,
-        compression = compression,
-        mode = mode
-      )
-    } else if (inherits(object, "AbstractAnnData")) {
-      object$to_HDF5AnnData(
-        path,
-        compression = compression,
-        mode = mode
-      )
-    } else {
-      cli_abort("Unable to write object of class {.cls {class(object)}}")
-    }
+  adata <- if (inherits(object, "AbstractAnnData")) {
+    object$to_HDF5AnnData(
+      path,
+      compression = compression,
+      mode = mode
+    )
+  } else {
+    as_AnnData(
+      object,
+      output_class = "HDF5AnnData",
+      file = path,
+      compression = compression,
+      mode = mode
+    )
+  }
+
   adata$close()
   rm(adata)
   gc()

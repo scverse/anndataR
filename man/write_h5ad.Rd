@@ -87,7 +87,7 @@ if (requireNamespace("Seurat", quietly = TRUE)) {
   )
   obj[["RNA"]] <- AddMetaData(GetAssay(obj), gene.metadata)
 
-  adata <- from_Seurat(obj)
+  adata <- as_AnnData(obj)
   h5ad_file <- tempfile(fileext = ".h5ad")
   adata$write_h5ad(h5ad_file)
 }

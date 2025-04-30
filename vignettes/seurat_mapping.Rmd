@@ -353,8 +353,8 @@ suppressWarnings({
 })
 ```
 
-```{r from_Seurat_implicit}
-ad <- from_Seurat(obj)
+```{r as_AnnData_implicit}
+ad <- as_AnnData(obj)
 ad
 ```
 
@@ -363,7 +363,7 @@ The `assay_name` argument determines which assay in the Seurat object will be co
 By default it's the `DefaultAssay`.
 
 ```{r fsi_assay_name}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   assay_name = NULL,
   layers_mapping = c(),
@@ -383,7 +383,7 @@ By default, no data will be put into the `X` slot of the AnnData object. If you 
 `counts` or `data` into the `X` slot, you need to provide a mapping.
 
 ```{r fsi_x_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   assay_name = "RNA",
   layers_mapping = c(),
@@ -404,7 +404,7 @@ As you can see, by default, no information was copied to the `X` slot of the Ann
 By default, all layers in the Seurat object will be copied to the AnnData object. This means that the `X` slot will be `NULL` (empty).
 
 ```{r fsi_layers_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   obs_mapping = c(),
   var_mapping = c(),
@@ -424,7 +424,7 @@ The obs slot is used to store observation-level annotations, such as cell-level 
 By default, all information in the `meta.data` slot of the Seurat object is copied to the `obs` slot of the AnnData object.
 
 ```{r fsi_obs_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   var_mapping = c(),
@@ -442,7 +442,7 @@ The var slot is used to store feature-level annotations, such as gene-level meta
 By default, all information in the `meta.data` slot of the specified assay of the Seurat object is copied to the `var` slot of the AnnData object.
 
 ```{r fsi_var_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -460,7 +460,7 @@ The obsm slot is used to store multidimensional observation-level annotations, s
 By default, it will prefix the name of all Seurat reductions with `X_`.
 
 ```{r fsi_obsm_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -480,7 +480,7 @@ dimensionality reductions.
 By default, all loadings of dimensionality reductions will be copied to the `varm` slot of the AnnData object.
 
 ```{r fsi_varm_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -499,7 +499,7 @@ The obsp slot is used to store pairwise relations between observations. This is 
 By default, all Seurat graphs are copied to the `obsp` slot of the AnnData object.
 
 ```{r fsi_obsp_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -517,7 +517,7 @@ The varp slot is used to store pairwise relations between features.
 By default, no information is copied to the `varp` slot of the AnnData object.
 
 ```{r fsi_varp_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -535,7 +535,7 @@ The uns slot is used for any non-structured miscellaneous data.
 By default all information in the `misc` slot of the Seurat object is copied to the `uns` slot of the AnnData object.
 
 ```{r fsi_uns_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -555,7 +555,7 @@ For all of the mappings (`layers_mapping`, `obs_mapping`, `var_mapping`, `obsm_m
 you can provide a named vector where the names are the names in the AnnData object and the values are the names in the Seurat object.
 
 ```{r fse_explicit}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   x_mapping = "counts",
   layers_mapping = c(data = "data"),

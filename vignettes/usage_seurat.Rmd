@@ -104,10 +104,10 @@ Again note that there is no one-to-one mapping possible between the AnnData and 
 so some information might be lost during conversion. It is recommended to carefully inspect the converted object
 to ensure that all necessary information has been transferred.
 
-See `?from_Seurat` for more details on how to customize the conversion process. Example:
+See `?as_AnnData` for more details on how to customize the conversion process. Example:
 
-```{r customize_from_seurat}
-from_Seurat(
+```{r customize_as_AnnData}
+as_AnnData(
   seurat_obj,
   assay_name = "RNA",
   x_mapping = "data",

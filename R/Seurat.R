@@ -574,186 +574,26 @@ to_Seurat <- function(
   self_name(adata$var_keys())
 }
 
-#' Convert a Seurat object to an AnnData object
+#' @param assay_name For [`SeuratObject::Seurat`] objects, the name of the assay
+#'   to be converted. If `NULL`, the default assay will be used
+#'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
 #'
-#' `from_Seurat()` converts a Seurat object to an AnnData object.
-#' Only one assay can be converted at a time. Arguments are used to configure the conversion.
-#' If `NULL`, the functions `.from_Seurat_guess_*` will be used to guess the mapping.
-#'
-#' For more information on the functionality of an AnnData object, see [AnnData-usage].
-#'
-#' @param seurat_obj A Seurat object to be converted.
-#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"` or `"InMemoryAnnData"`.
-#' @param assay_name The name of the assay to be converted. If `NULL`, the default assay will be used
-#' ([SeuratObject::DefaultAssay()]).
-#' @param x_mapping A mapping of a Seurat layer to the AnnData `X` slot. If `NULL`, no data will be copied to the
-#' `X` slot.
-#' @param layers_mapping A named vector mapping layer names in AnnData to the names of the layers in the Seurat object.
-#' Each name corresponds to the layer name in AnnData, and each value to the layer name in Seurat.
-#' See section "`$layers` mapping" for more details.
-#' @param obs_mapping A named vector or list mapping obs names in AnnData to the names of the object-level (cell level)
-#' metadata in the Seurat object. Each name corresponds to a column name in AnnData's obs, and each value to a column
-#' name in Seurat's cell metadata. See section "`$obs` mapping" for more details.
-#' @param var_mapping A named vector or list mapping var names in AnnData to the names of the feature-level metadata in
-#' the Seurat object. Each name corresponds to a column name in AnnData's var, and each value to a column name in
-#' Seurat's feature metadata. See section "`$var` mapping" for more details.
-#' @param obsm_mapping A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
-#' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
-#' Example: `obsm_mapping = c(X_pca = "pca", X_umap = "umap")`.
-#' @param varm_mapping A named vector mapping varm keys in AnnData to reduction names in the Seurat object.
-#' Each name corresponds to a key in AnnData's varm, and each value to the name of a reduction in Seurat.
-#' Example: `varm_mapping = c(PCs = "pca")`.
-#' @param obsp_mapping A named vector mapping obsp keys in AnnData to graph names in the Seurat object.
-#' Each name corresponds to a key in AnnData's obsp, and each value to the name of a graph in Seurat.
-#' Example: `obsp_mapping = c(connectivities = "RNA_nn")`.
-#' @param varp_mapping A named vector mapping varp keys in AnnData to misc data names in the Seurat object.
-#' Each name corresponds to a key in AnnData's varp, and each value to the name of misc data in Seurat.
-#' Example: `varp_mapping = c(foo = "foo_data")`.
-#' @param uns_mapping A named vector mapping uns keys in AnnData to misc data names in the Seurat object.
-#' Each name corresponds to a key in AnnData's uns, and each value to the name of misc data in Seurat.
-#' Example: `uns_mapping = c(metadata = "project_meta")`.
-#'
-#' @param ... Additional arguments passed to the generator function.
-#'
-#' @section `$X` mapping:
-#'
-#' A mapping of a Seurat layer to the AnnData `X` slot. Its value must be `NULL` or a character vector of the Seurat
-#' layer name to copy. If `NULL`, no data will be copied to the `X` slot.
-#'
-#' @section `$layers` mapping:
-#'
-#' A named list to map AnnData layers to Seurat layers. Each item in the list must be a character vector of length 1.
-#' The `$X` key maps to the `X` slot.
-#'
-#' Example: `layers_mapping = c(counts = "counts", foo = "bar")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_layers` will be used to guess the layer mapping as follows:
-#'
-#' * All Seurat layers are copied to AnnData `layers` by name.
-#' * This means that the AnnData `X` slot will be `NULL` (empty). If you want to copy data to the `X` slot,
-#'   you must define the layer mapping explicitly.
-#'
-#' @section `$obs` mapping:
-#'
-#' A named list or vector to map Seurat object-level metadata to AnnData `$obs`. The values of this list or vector
-#' correspond to the names of the metadata in the Seurat object, and the names correspond to the names of the
-#' metadata in the resulting `$obs` slot.
-#'
-#' Example: `obs_mapping = c(cellType = "cell_type")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_obs` will be used to guess the obs mapping as follows:
-#'
-#' * All Seurat object-level metadata is copied to AnnData `$obs` by name.
-#'
-#' @section `$var` mapping:
-#'
-#' A named list or vector to map Seurat feature-level metadata to AnnData `$var`. The values of this list or
-#' vector correspond to the names of the metadata of the assay in the Seurat object, and the
-#' names correspond to the names of the metadata in the resulting `$var` slot.
-#'
-#' Example: `var_mapping = c(geneInfo = "gene_info")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_vars` will be used to guess the var mapping as follows:
-#'
-#' * All Seurat feature-level metadata is copied to AnnData `$var` by name.
-#
-#' @section `$obsm` mapping:
-#'
-#' A named vector mapping obsm keys in AnnData to reduction names in the Seurat object.
-#'
-#' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reduction in Seurat.
-#'
-#' Example: `obsm_mapping = c(pca = "pca", umap = "umap")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_obsms` will be used to guess the obsm mapping as follows:
-#'
-#' * All Seurat reductions are copied to AnnData `$obsm`.
-#'
-#' @section `$varm` mapping:
-#'
-#' A named vector mapping varm keys in AnnData to reduction names in the Seurat object.
-#'
-#' Each name corresponds to a key in AnnData's varm, and each value to the name of a reduction in Seurat.
-#'
-#' Example: `varm_mapping = c(PCs = "pca")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_varms` will be used to guess the varm mapping as follows:
-#'
-#' * The name of the PCA loadings is copied by name.
-#'
-#' @section `$obsp` mapping:
-#'
-#' A named vector mapping obsp keys in AnnData to graph names in the Seurat object.
-#'
-#' Each name corresponds to a key in AnnData's obsp, and each value to the name of a graph in Seurat.
-#'
-#' Example: `obsp_mapping = c(connectivities = "RNA_nn")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_obsps` will be used to guess the obsp mapping as follows:
-#'
-#' * All Seurat graphs are copied to `$obsp` by name.
-#'
-#' @section `$varp` mapping:
-#'
-#' A named vector mapping varp keys in AnnData to misc data names in the Seurat object.
-#'
-#' Each name corresponds to a key in AnnData's varp, and each value to the name of misc data in Seurat.
-#'
-#' Example: `varp_mapping = c(foo = "foo_data")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_varps` will be used to guess the varp mapping as follows:
-#'
-#' * No data is mapped to `$varp`.
-#'
-#' @section `$uns` mapping:
-#'
-#' A named vector mapping uns keys in AnnData to misc data names in the Seurat object.
-#'
-#' Each name corresponds to a key in AnnData's uns, and each value to the name of misc data in Seurat.
-#'
-#' Example: `uns_mapping = c(metadata = "project_meta")`.
-#'
-#' If `NULL`, the internal function `.from_Seurat_guess_uns` will be used to guess the uns mapping as follows:
-#'
-#' * All Seurat miscellaneous data is copied to `uns` by name.
-#'
-#' @section Mapping details:
-#'
-#' If an unnamed vector is provided to a mapping argument the values will be
-#' used as names
-#'
-#' @return An AnnData object
-#'
+#' @rdname as_AnnData
 #' @export
-#'
-#' @examples
-#' library(Seurat)
-#'
-#' counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
-#' obj <- CreateSeuratObject(counts = counts)
-#' obj <- NormalizeData(obj)
-#' obj <- FindVariableFeatures(obj)
-#' obj <- ScaleData(obj)
-#' obj <- RunPCA(obj, npcs = 10L)
-#' obj <- FindNeighbors(obj)
-#' obj <- RunUMAP(obj, dims = 1:10)
-#' from_Seurat(obj)
-# nolint start: object_name_linter
-from_Seurat <- function(
-  # nolint end: object_name_linter
-  seurat_obj,
-  output_class = c("InMemoryAnnData", "HDF5AnnData"),
-  assay_name = NULL,
-  x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
-  ...
+as_AnnData.Seurat <- function(
+    x,
+    assay_name = NULL,
+    x_mapping = NULL,
+    layers_mapping = NULL,
+    obs_mapping = NULL,
+    var_mapping = NULL,
+    obsm_mapping = NULL,
+    varm_mapping = NULL,
+    obsp_mapping = NULL,
+    varp_mapping = NULL,
+    uns_mapping = NULL,
+    output_class = c("InMemory", "HDF5AnnData"),
+    ...
 ) {
   check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
 

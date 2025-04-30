@@ -142,12 +142,7 @@ Write the \code{AnnData} object to an HDF5 file, see \code{\link[=write_h5ad]{wr
 \describe{
 \item{\code{\link[=AnnData]{AnnData()}}}{Create an \link{InMemoryAnnData} object}
 \item{\code{\link[=read_h5ad]{read_h5ad()}}}{Read an \code{AnnData} from a H5AD file}
-\item{
-\code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}
-}{
-Convert a \code{SingleCellExperiment} object to an \code{AnnData} object
-}
-\item{\code{\link[=from_Seurat]{from_Seurat()}}}{Convert a \code{Seurat} object to an \code{AnnData} object}
+\item{\code{\link[=as_AnnData]{as_AnnData()}}}{Convert other objects to an \code{AnnData} object}
 }
 }
 
