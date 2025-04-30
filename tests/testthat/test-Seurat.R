@@ -99,8 +99,11 @@ for (layer_key in names(ad$layers)) {
 }
 
 test_that("to_Seurat works with layers_mapping and x_mapping", {
-  seu <- ad$to_Seurat(x_mapping = "counts", layers_mapping = c(data = "numeric_matrix", integer = "integer_matrix"))
-  layer_names <- names(seu@assays[[seu@active_assay]]@layers)
+  seu <- ad$to_Seurat(
+    x_mapping = "counts",
+    layers_mapping = c(data = "numeric_matrix", integer = "integer_matrix")
+  )
+  layer_names <- names(seu@assays[[seu@active.assay]]@layers)
   expect_true("counts" %in% layer_names)
   expect_true("data" %in% layer_names)
   expect_true("integer" %in% layer_names)
@@ -108,7 +111,10 @@ test_that("to_Seurat works with layers_mapping and x_mapping", {
 
 test_that("to_Seurat fails when providing duplicate layer names", {
   expect_error(
-    ad$to_Seurat(x_mapping = "counts", layers_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")),
+    ad$to_Seurat(
+      x_mapping = "counts",
+      layers_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
+    ),
     regexp = "duplicate names"
   )
 })
@@ -160,8 +166,9 @@ test_that("to_Seurat retains pca dimred", {
 test_that("to_Seurat works with list mappings", {
   expect_no_error(
     ad$to_Seurat(
+      x_mapping = "counts",
       object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
-      layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
+      layers_mapping = as.list(.to_Seurat_guess_layers(ad, "counts")),
       assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
       reduction_mapping = as.list(.to_Seurat_guess_reductions(ad)),
       graph_mapping = as.list(.to_Seurat_guess_graphs(ad)),
@@ -179,6 +186,7 @@ test_that("to_Seurat works with list mappings", {
 test_that("to_Seurat works with a vector reduction_mapping", {
   expect_no_error(
     ad$to_Seurat(
+      x_mapping = "counts",
       reduction_mapping = c(numeric = "numeric_matrix")
     )
   )
@@ -189,7 +197,7 @@ test_that("to_Seurat works with unnamed mappings", {
     ad$to_Seurat(
       object_metadata_mapping = unname(.to_Seurat_guess_object_metadata(ad)),
       layers_mapping = c(
-        na.omit(unname(.to_Seurat_guess_layers(ad))),
+        na.omit(unname(.to_Seurat_guess_layers(ad, NULL))),
         counts = NA
       ),
       assay_metadata_mapping = unname(.to_Seurat_guess_assay_metadata(ad)),

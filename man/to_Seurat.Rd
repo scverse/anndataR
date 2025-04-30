@@ -19,7 +19,9 @@ to_Seurat(
 \arguments{
 \item{adata}{An AnnData object to be converted}
 
-\item{assay_name}{Name of the assay to be created (default: "RNA").}
+\item{assay_name}{Name of the assay to be created (default: "RNA").
+#' @param x_mapping Name of the layer used for the \code{X} slot. See section "Layer
+mapping" for more details.}
 
 \item{layers_mapping}{A named vector to map AnnData layers to Seurat layers.
 See section "Layer mapping" for more details.}
@@ -65,9 +67,8 @@ Example: \code{layers_mapping = c(counts = "counts", data = NA, foo = "bar")}
 If \code{NULL}, the internal function \code{.to_Seurat_guess_layers} will be used to
 guess the layer mapping as follows:
 \itemize{
-\item All AnnData layers are copied to Seurat layers by name
-\item If there is layer named "counts", \code{adata$X} is stored a "data" otherwise
-it is stored as "counts"
+\item All AnnData layers are copied to Seurat layers by name.
+\item adata$X will not be copied to Seurat layers, unless an \code{x_mapping} is provided.
 }
 }
 
@@ -173,5 +174,5 @@ ad <- AnnData(
   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
   var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
-to_Seurat(ad, layers_mapping = list(counts = "X"))
+to_Seurat(ad, x_mapping = "counts")
 }

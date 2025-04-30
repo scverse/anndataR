@@ -138,7 +138,7 @@
 #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
-#' to_Seurat(ad, layers_mapping = list(counts = "X"))
+#' to_Seurat(ad, x_mapping = "counts")
 # nolint start: object_name_linter
 to_Seurat <- function(
   adata,
@@ -163,7 +163,7 @@ to_Seurat <- function(
   object_metadata_mapping <- self_name(object_metadata_mapping) %||%
     .to_Seurat_guess_object_metadata(adata)
   layers_mapping <- self_name(layers_mapping) %||%
-    .to_Seurat_guess_layers(adata)
+    .to_Seurat_guess_layers(adata, x_mapping)
   assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
     .to_Seurat_guess_assay_metadata(adata)
   reduction_mapping <- self_name(reduction_mapping) %||%
@@ -188,7 +188,10 @@ to_Seurat <- function(
         "{.arg layers_mapping} must not contain any {.val NA} values when {.arg x_mapping} is provided"
       )
     }
-    layers_mapping <- setNames(c(NA, layers_mapping), c(x_mapping, names(layers_mapping)))
+    layers_mapping <- setNames(
+      c(NA, layers_mapping),
+      c(x_mapping, names(layers_mapping))
+    )
   }
   if (any(duplicated(names(layers_mapping)))) {
     cli_abort(
@@ -280,7 +283,6 @@ to_Seurat <- function(
       obj[[.red]] <- reductions[[.red]]
     }
   }
-
 
   # trackstatus: class=Seurat, feature=get_obsp, status=done
   if (!rlang::is_empty(graph_mapping)) {
@@ -530,9 +532,13 @@ to_Seurat <- function(
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_layers <- function(adata) {
+.to_Seurat_guess_layers <- function(adata, x_mapping) {
   # nolint end: object_name_linter object_length_linter
-  self_name(adata$layers_keys())
+  layers <- self_name(adata$layers_keys())
+  if (!is.null(adata$X) && is.null(x_mapping)) {
+    layers[["X"]] <- NA
+  }
+  layers
 }
 
 # nolint start: object_name_linter object_length_linter

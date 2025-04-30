@@ -242,6 +242,7 @@ Convert to SingleCellExperiment
 See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more details on the conversion.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
+  x_mapping = NULL,
   assays_mapping = NULL,
   colData_mapping = NULL,
   rowData_mapping = NULL,
@@ -255,6 +256,8 @@ See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more d
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{x_mapping}}{A character specifying how to map the AnnData X slot.}
+
 \item{\code{assays_mapping}}{A named list mapping SingleCellExperiment assays to AnnData layers}
 
 \item{\code{colData_mapping}}{A named list mapping SingleCellExperiment colData to AnnData obs}
@@ -285,6 +288,7 @@ See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
   assay_name = "RNA",
+  x_mapping = NULL,
   layers_mapping = NULL,
   object_metadata_mapping = NULL,
   assay_metadata_mapping = NULL,
@@ -298,6 +302,8 @@ See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{assay_name}}{The name of the assay to use as the main data}
+
+\item{\code{x_mapping}}{A character specifying how to map the AnnData X slot.}
 
 \item{\code{layers_mapping}}{A named list mapping Seurat layers to AnnData layers}
 

@@ -86,7 +86,7 @@
 #' )
 #'
 #' ## construct a SingleCellExperiment from an AnnData object
-#' sce <- to_SingleCellExperiment(ad)
+#' sce <- to_SingleCellExperiment(ad, x_mapping = "counts")
 #' sce
 #' @export
 # nolint start: cyclocomp_linter
@@ -116,7 +116,7 @@ to_SingleCellExperiment <- function(
 
   # guess mappings if not provided
   # nolint start object_name_linter
-  assays_mapping <- self_name(assays_mapping) %||% 
+  assays_mapping <- self_name(assays_mapping) %||%
     .to_SCE_guess_all(adata, "layers")
   colData_mapping <- self_name(colData_mapping) %||%
     .to_SCE_guess_all(adata, "obs")
@@ -135,16 +135,19 @@ to_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
 
-  if(!is.null(x_mapping)) {
+  if (!is.null(x_mapping)) {
     if (any(is.na(assays_mapping))) {
       cli_abort(
         "{.arg assays_mapping} must not contain any {.val NA} values when {.arg x_mapping} is provided"
       )
     }
-    assays_mapping <- setNames(c(NA, assays_mapping), c(x_mapping, names(assays_mapping)))
+    assays_mapping <- setNames(
+      c(NA, assays_mapping),
+      c(x_mapping, names(assays_mapping))
+    )
   }
   if (any(duplicated(names(assays_mapping)))) {
-    cli_abort(  
+    cli_abort(
       "{.arg assays_mapping} or {.arg x_mapping} must not contain any duplicate names",
       "i" = "Found duplicate names: {.val {names(assays_mapping)[duplicated(names(assays_mapping))]}}"
     )
@@ -226,7 +229,7 @@ to_SingleCellExperiment <- function(
   layers <- list()
 
   if (!is.null(adata$X) && is.null(x_mapping)) {
-    layers[["X"]] <- "X"
+    layers[["X"]] <- NA
   }
 
   for (layer_name in names(adata$layers)) {
