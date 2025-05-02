@@ -17,6 +17,7 @@ as_AnnData(
   obsp_mapping = NULL,
   varp_mapping = NULL,
   uns_mapping = NULL,
+  assay_name = NULL,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 )
@@ -32,13 +33,13 @@ as_AnnData(
   obsp_mapping = NULL,
   varp_mapping = NULL,
   uns_mapping = NULL,
+  assay_name = NULL,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 )
 
 \method{as_AnnData}{Seurat}(
   x,
-  assay_name = NULL,
   x_mapping = NULL,
   layers_mapping = NULL,
   obs_mapping = NULL,
@@ -48,6 +49,7 @@ as_AnnData(
   obsp_mapping = NULL,
   varp_mapping = NULL,
   uns_mapping = NULL,
+  assay_name = NULL,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 )
@@ -98,15 +100,15 @@ in the new \code{AnnData} object and values are the names of items in the
 corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
 class of \code{x}.}
 
+\item{assay_name}{For \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} objects, the name of the assay
+to be converted. If \code{NULL}, the default assay will be used
+(\code{\link[SeuratObject:DefaultAssay]{SeuratObject::DefaultAssay()}}). This is ignored for other objects.}
+
 \item{output_class}{The \code{AnnData} class to convert to. Must be one of
 \code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
 
 \item{...}{Additional arguments passed to the generator function for
 \code{output_class}}
-
-\item{assay_name}{For \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} objects, the name of the assay
-to be converted. If \code{NULL}, the default assay will be used
-(\code{\link[SeuratObject:DefaultAssay]{SeuratObject::DefaultAssay()}}). This is ignored for other objects.}
 }
 \value{
 An \code{AnnData} object of the class requested by \code{output_class}

@@ -101,6 +101,9 @@ AnnData <- function(
 #'   in the new `AnnData` object and values are the names of items in the
 #'   corresponding slot of `x`. See below for default if `NULL` depending on the
 #'   class of `x`.
+#' @param assay_name For [`SeuratObject::Seurat`] objects, the name of the assay
+#'   to be converted. If `NULL`, the default assay will be used
+#'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
 #' @param output_class The `AnnData` class to convert to. Must be one of
 #'   `"HDF5AnnData"` or `"InMemoryAnnData"`.
 #' @param ... Additional arguments passed to the generator function for
@@ -207,6 +210,7 @@ as_AnnData <- function(
   obsp_mapping = NULL,
   varp_mapping = NULL,
   uns_mapping = NULL,
+  assay_name = NULL,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
@@ -226,6 +230,7 @@ as_AnnData.SingleCellExperiment <- function(
     obsp_mapping = NULL,
     varp_mapping = NULL,
     uns_mapping = NULL,
+    assay_name = NULL,
     output_class = c("InMemory", "HDF5AnnData"),
     ...
 ) {
@@ -245,15 +250,10 @@ as_AnnData.SingleCellExperiment <- function(
   )
 }
 
-#' @param assay_name For [`SeuratObject::Seurat`] objects, the name of the assay
-#'   to be converted. If `NULL`, the default assay will be used
-#'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
-#'
 #' @rdname as_AnnData
 #' @export
 as_AnnData.Seurat <- function(
     x,
-    assay_name = NULL,
     x_mapping = NULL,
     layers_mapping = NULL,
     obs_mapping = NULL,
@@ -263,11 +263,12 @@ as_AnnData.Seurat <- function(
     obsp_mapping = NULL,
     varp_mapping = NULL,
     uns_mapping = NULL,
+    assay_name = NULL,
     output_class = c("InMemory", "HDF5AnnData"),
     ...
 ) {
   from_Seurat(
-    seurat_object = x,
+    seurat_obj = x,
     assay_name = assay_name,
     x_mapping = x_mapping,
     layers_mapping = layers_mapping,
