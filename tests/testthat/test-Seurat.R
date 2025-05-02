@@ -1,6 +1,6 @@
-test_that("to_Seurat() fails gracefully", {
-  expect_error(to_Seurat(), regexp = "adata.*is missing")
-  expect_error(to_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
+test_that("as_Seurat() fails gracefully", {
+  expect_error(as_Seurat(), regexp = "adata.*is missing")
+  expect_error(as_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
 })
 
 skip_if_not_installed("Seurat")
@@ -12,9 +12,9 @@ ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-seu <- ad$to_Seurat()
+seu <- ad$as_Seurat()
 
-test_that("to_Seurat retains number of observations and features", {
+test_that("as_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)
   expect_equal(ncol(seu), 10)
 
@@ -26,7 +26,7 @@ test_that("to_Seurat retains number of observations and features", {
 
 # trackstatus: class=Seurat, feature=test_get_obs, status=done
 for (obs_key in colnames(ad$obs)) {
-  test_that(paste0("to_Seurat retains obs key: ", obs_key), {
+  test_that(paste0("as_Seurat retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
       slot = c("obs"),
@@ -47,7 +47,7 @@ for (obs_key in colnames(ad$obs)) {
 
 # trackstatus: class=Seurat, feature=test_get_var, status=done
 for (var_key in colnames(ad$var)) {
-  test_that(paste0("to_Seurat retains var key: ", var_key), {
+  test_that(paste0("as_Seurat retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
       slot = c("var"),
@@ -66,7 +66,7 @@ for (var_key in colnames(ad$var)) {
 
 # trackstatus: class=Seurat, feature=test_get_layers, status=done
 for (layer_key in names(ad$layers)) {
-  test_that(paste0("to_Seurat retains layer: ", layer_key), {
+  test_that(paste0("as_Seurat retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
       slot = c("layers"),
@@ -92,7 +92,7 @@ for (layer_key in names(ad$layers)) {
 
 # trackstatus: class=Seurat, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {
-  test_that(paste0("to_Seurat retains uns key: ", uns_key), {
+  test_that(paste0("as_Seurat retains uns key: ", uns_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
       slot = c("uns"),
@@ -107,7 +107,7 @@ for (uns_key in names(ad$uns)) {
   })
 }
 
-test_that("to_Seurat retains pca dimred", {
+test_that("as_Seurat retains pca dimred", {
   msg <- message_if_known(
     backend = "to_Seurat",
     slot = c("obsm"),
@@ -134,9 +134,9 @@ test_that("to_Seurat retains pca dimred", {
   )
 })
 
-test_that("to_Seurat works with list mappings", {
+test_that("as_Seurat works with list mappings", {
   expect_no_error(
-    ad$to_Seurat(
+    ad$as_Seurat(
       object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
       layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
       assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
@@ -147,23 +147,23 @@ test_that("to_Seurat works with list mappings", {
   )
 
   expect_error(
-    ad$to_Seurat(
+    ad$as_Seurat(
       reduction_mapping = list(numeric = "numeric_matrix")
     )
   )
 })
 
-test_that("to_Seurat works with a vector reduction_mapping", {
+test_that("as_Seurat works with a vector reduction_mapping", {
   expect_no_error(
-    ad$to_Seurat(
+    ad$as_Seurat(
       reduction_mapping = c(numeric = "numeric_matrix")
     )
   )
 })
 
-test_that("to_Seurat works with unnamed mappings", {
+test_that("as_Seurat works with unnamed mappings", {
   expect_no_error(
-    ad$to_Seurat(
+    ad$as_Seurat(
       object_metadata_mapping = unname(.to_Seurat_guess_object_metadata(ad)),
       layers_mapping = c(
         na.omit(unname(.to_Seurat_guess_layers(ad))),

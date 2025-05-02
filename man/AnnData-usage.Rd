@@ -111,7 +111,7 @@ elements with number of rows and columns equal to \code{n_vars}.}
 }{
 Convert to \code{SingleCellExperiment}, see \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
 }
-\item{\code{to_Seurat()}}{Convert to \code{Seurat}, see \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{as_Seurat()}}{Convert to \code{Seurat}, see \code{\link[=as_Seurat]{as_Seurat()}}}
 \item{\code{to_InMemoryAnnData()}}{Convert to \link{InMemoryAnnData}}
 \item{\code{to_HDF5AnnData()}}{Convert to \link{HDF5AnnData}, see \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}}}
 }

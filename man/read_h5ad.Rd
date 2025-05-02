@@ -27,7 +27,7 @@ read_h5ad(
 }}
 
 \item{...}{Extra arguments provided to \code{adata$as_SingleCellExperiment()} or
-\code{adata$to_Seurat()}. See \code{\link[=AnnData]{AnnData()}} for more information on the arguments of
+\code{adata$as_Seurat()}. See \code{\link[=AnnData]{AnnData()}} for more information on the arguments of
 these functions. Note: update this documentation when
 \href{https://github.com/r-lib/roxygen2/issues/955}{\code{r-lib/roxygen2#955}} is resolved.}
 }

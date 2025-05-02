@@ -60,7 +60,7 @@ This is equivalent to reading in the `.h5ad` file and explicitly converting.
 
 ```{r convert_seurat}
 adata <- read_h5ad(h5ad_file)
-seurat_obj <- adata$to_Seurat()
+seurat_obj <- adata$as_Seurat()
 seurat_obj
 ```
 
@@ -68,10 +68,10 @@ Note that there is no one-to-one mapping possible between the AnnData and Seurat
 so some information might be lost during conversion. It is recommended to carefully inspect the converted object
 to ensure that all necessary information has been transferred.
 
-See `?to_Seurat` for more details on how to customize the conversion process. For instance:
+See `?as_Seurat` for more details on how to customize the conversion process. For instance:
 
 ```{r customize_seurat_conversion}
-adata$to_Seurat(
+adata$as_Seurat(
   assay_name = "ADT",
   layers_mapping = c(counts = "dense_counts", data = "dense_X")
 )

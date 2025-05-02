@@ -78,7 +78,7 @@
 #'   }{
 #'     Convert to `SingleCellExperiment`, see [as_SingleCellExperiment()]
 #'   }
-#'   \item{`to_Seurat()`}{Convert to `Seurat`, see [to_Seurat()]}
+#'   \item{`as_Seurat()`}{Convert to `Seurat`, see [as_Seurat()]}
 #'   \item{`to_InMemoryAnnData()`}{Convert to [InMemoryAnnData]}
 #'   \item{`to_HDF5AnnData()`}{Convert to [HDF5AnnData], see [to_HDF5AnnData()]}
 #' }

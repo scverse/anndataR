@@ -89,7 +89,7 @@ sce
 Convert the AnnData object to a Seurat object:
 
 ```{r}
-obj <- adata$to_Seurat()
+obj <- adata$as_Seurat()
 obj
 ```
 

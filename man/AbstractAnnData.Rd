@@ -60,8 +60,9 @@ Other AnnData classes:
 \item \href{#method-AbstractAnnData-obsp_keys}{\code{AbstractAnnData$obsp_keys()}}
 \item \href{#method-AbstractAnnData-varp_keys}{\code{AbstractAnnData$varp_keys()}}
 \item \href{#method-AbstractAnnData-uns_keys}{\code{AbstractAnnData$uns_keys()}}
-\item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-as_SingleCellExperiment}{\code{AbstractAnnData$as_SingleCellExperiment()}}
+\item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
+\item \href{#method-AbstractAnnData-as_Seurat}{\code{AbstractAnnData$as_Seurat()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
@@ -197,48 +198,6 @@ See \link{AnnData-usage}
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
-\subsection{Method \code{to_SingleCellExperiment()}}{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-Deprecated, use \code{as_SingleCellExperiment()} instead
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
-  assays_mapping = NULL,
-  colData_mapping = NULL,
-  rowData_mapping = NULL,
-  reduction_mapping = NULL,
-  colPairs_mapping = NULL,
-  rowPairs_mapping = NULL,
-  metadata_mapping = NULL
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{assays_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{colData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{rowData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{reduction_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{colPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{rowPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{metadata_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{SingleCellExperiment} object
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-as_SingleCellExperiment"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-as_SingleCellExperiment}{}}}
 \subsection{Method \code{as_SingleCellExperiment()}}{
@@ -281,12 +240,96 @@ A \code{SingleCellExperiment} object
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
+\subsection{Method \code{to_SingleCellExperiment()}}{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+Deprecated, use \code{as_SingleCellExperiment()} instead
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
+  assays_mapping = NULL,
+  colData_mapping = NULL,
+  rowData_mapping = NULL,
+  reduction_mapping = NULL,
+  colPairs_mapping = NULL,
+  rowPairs_mapping = NULL,
+  metadata_mapping = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{assays_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+
+\item{\code{colData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+
+\item{\code{rowData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+
+\item{\code{reduction_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+
+\item{\code{colPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+
+\item{\code{rowPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+
+\item{\code{metadata_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{SingleCellExperiment} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-as_Seurat"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_Seurat}{}}}
+\subsection{Method \code{as_Seurat()}}{
+Convert to \code{Seurat}
+
+See \code{\link[=as_Seurat]{as_Seurat()}} for more details on the conversion
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_Seurat(
+  assay_name = "RNA",
+  layers_mapping = NULL,
+  object_metadata_mapping = NULL,
+  assay_metadata_mapping = NULL,
+  reduction_mapping = NULL,
+  graph_mapping = NULL,
+  misc_mapping = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{assay_name}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+
+\item{\code{layers_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+
+\item{\code{object_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+
+\item{\code{assay_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+
+\item{\code{reduction_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+
+\item{\code{graph_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+
+\item{\code{misc_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{Seurat} object
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
 \subsection{Method \code{to_Seurat()}}{
-Convert to \code{Seurat}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion
+Deprecated, use \code{as_Seurat()} instead
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
   assay_name = "RNA",
@@ -302,19 +345,19 @@ See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{assay_name}}{See \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{assay_name}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{layers_mapping}}{See \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{layers_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{object_metadata_mapping}}{See \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{object_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{assay_metadata_mapping}}{See \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{assay_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{reduction_mapping}}{See \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{reduction_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{graph_mapping}}{See \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{graph_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{misc_mapping}}{See \code{\link[=to_Seurat]{to_Seurat()}}}
+\item{\code{misc_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 }
 \if{html}{\out{</div>}}
 }

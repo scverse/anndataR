@@ -165,6 +165,40 @@ AbstractAnnData <- R6::R6Class(
       names(self$uns)
     },
     #' @description
+    #' Convert to `SingleCellExperiment`
+    #'
+    #' See [as_SingleCellExperiment()] for more details on the conversion
+    #'
+    #' @param assays_mapping See [as_SingleCellExperiment()]
+    #' @param colData_mapping See [as_SingleCellExperiment()]
+    #' @param rowData_mapping See [as_SingleCellExperiment()]
+    #' @param reduction_mapping See [as_SingleCellExperiment()]
+    #' @param colPairs_mapping See [as_SingleCellExperiment()]
+    #' @param rowPairs_mapping See [as_SingleCellExperiment()]
+    #' @param metadata_mapping See [as_SingleCellExperiment()]
+    #'
+    #' @return A `SingleCellExperiment` object
+    as_SingleCellExperiment = function(
+    assays_mapping = NULL,
+    colData_mapping = NULL, # nolint
+    rowData_mapping = NULL, # nolint
+    reduction_mapping = NULL,
+    colPairs_mapping = NULL, # nolint
+    rowPairs_mapping = NULL, # nolint
+    metadata_mapping = NULL
+    ) {
+      as_SingleCellExperiment(
+        self,
+        assays_mapping = assays_mapping,
+        colData_mapping = colData_mapping,
+        rowData_mapping = rowData_mapping,
+        reduction_mapping = reduction_mapping,
+        colPairs_mapping = colPairs_mapping, # nolint
+        rowPairs_mapping = rowPairs_mapping, # nolint
+        metadata_mapping = metadata_mapping
+      )
+    },
+    #' @description
     #' `r lifecycle::badge('deprecated')`
     #'
     #' Deprecated, use `as_SingleCellExperiment()` instead
@@ -204,51 +238,51 @@ AbstractAnnData <- R6::R6Class(
       )
     },
     #' @description
-    #' Convert to `SingleCellExperiment`
+    #' Convert to `Seurat`
     #'
-    #' See [as_SingleCellExperiment()] for more details on the conversion
+    #' See [as_Seurat()] for more details on the conversion
     #'
-    #' @param assays_mapping See [as_SingleCellExperiment()]
-    #' @param colData_mapping See [as_SingleCellExperiment()]
-    #' @param rowData_mapping See [as_SingleCellExperiment()]
-    #' @param reduction_mapping See [as_SingleCellExperiment()]
-    #' @param colPairs_mapping See [as_SingleCellExperiment()]
-    #' @param rowPairs_mapping See [as_SingleCellExperiment()]
-    #' @param metadata_mapping See [as_SingleCellExperiment()]
+    #' @param assay_name See [as_Seurat()]
+    #' @param layers_mapping See [as_Seurat()]
+    #' @param object_metadata_mapping See [as_Seurat()]
+    #' @param assay_metadata_mapping See [as_Seurat()]
+    #' @param reduction_mapping See [as_Seurat()]
+    #' @param graph_mapping See [as_Seurat()]
+    #' @param misc_mapping See [as_Seurat()]
     #'
-    #' @return A `SingleCellExperiment` object
-    as_SingleCellExperiment = function(
-    assays_mapping = NULL,
-    colData_mapping = NULL, # nolint
-    rowData_mapping = NULL, # nolint
+    #' @return A `Seurat` object
+    as_Seurat = function(
+    assay_name = "RNA",
+    layers_mapping = NULL,
+    object_metadata_mapping = NULL,
+    assay_metadata_mapping = NULL,
     reduction_mapping = NULL,
-    colPairs_mapping = NULL, # nolint
-    rowPairs_mapping = NULL, # nolint
-    metadata_mapping = NULL
+    graph_mapping = NULL,
+    misc_mapping = NULL
     ) {
-      as_SingleCellExperiment(
+      as_Seurat(
         self,
-        assays_mapping = assays_mapping,
-        colData_mapping = colData_mapping,
-        rowData_mapping = rowData_mapping,
+        assay_name = assay_name,
+        layers_mapping = layers_mapping,
+        object_metadata_mapping = object_metadata_mapping,
+        assay_metadata_mapping = assay_metadata_mapping,
         reduction_mapping = reduction_mapping,
-        colPairs_mapping = colPairs_mapping, # nolint
-        rowPairs_mapping = rowPairs_mapping, # nolint
-        metadata_mapping = metadata_mapping
+        graph_mapping = graph_mapping,
+        misc_mapping = misc_mapping
       )
     },
     #' @description
-    #' Convert to `Seurat`
+    #' `r lifecycle::badge('deprecated')`
     #'
-    #' See [to_Seurat()] for more details on the conversion
+    #' Deprecated, use `as_Seurat()` instead
     #'
-    #' @param assay_name See [to_Seurat()]
-    #' @param layers_mapping See [to_Seurat()]
-    #' @param object_metadata_mapping See [to_Seurat()]
-    #' @param assay_metadata_mapping See [to_Seurat()]
-    #' @param reduction_mapping See [to_Seurat()]
-    #' @param graph_mapping See [to_Seurat()]
-    #' @param misc_mapping See [to_Seurat()]
+    #' @param assay_name See [as_Seurat()]
+    #' @param layers_mapping See [as_Seurat()]
+    #' @param object_metadata_mapping See [as_Seurat()]
+    #' @param assay_metadata_mapping See [as_Seurat()]
+    #' @param reduction_mapping See [as_Seurat()]
+    #' @param graph_mapping See [as_Seurat()]
+    #' @param misc_mapping See [as_Seurat()]
     #'
     #' @return A `Seurat` object
     to_Seurat = function(
@@ -260,8 +294,13 @@ AbstractAnnData <- R6::R6Class(
       graph_mapping = NULL,
       misc_mapping = NULL
     ) {
-      to_Seurat(
-        self,
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "$to_Seurat()",
+        details = "Use `$as_Seurat()` instead."
+      )
+
+      self$as_Seurat(
         assay_name = assay_name,
         layers_mapping = layers_mapping,
         object_metadata_mapping = object_metadata_mapping,

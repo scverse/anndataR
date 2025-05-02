@@ -14,7 +14,7 @@
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #'
 #' @param ... Extra arguments provided to `adata$as_SingleCellExperiment()` or
-#'   `adata$to_Seurat()`. See [AnnData()] for more information on the arguments of
+#'   `adata$as_Seurat()`. See [AnnData()] for more information on the arguments of
 #'   these functions. Note: update this documentation when
 #'   [`r-lib/roxygen2#955`](https://github.com/r-lib/roxygen2/issues/955) is resolved.
 #'
@@ -47,7 +47,7 @@ read_h5ad <- function(
   fun <- switch(
     to,
     "SingleCellExperiment" = as_SingleCellExperiment,
-    "Seurat" = to_Seurat,
+    "Seurat" = as_Seurat,
     "InMemoryAnnData" = to_InMemoryAnnData,
     "HDF5AnnData" = NULL
   )

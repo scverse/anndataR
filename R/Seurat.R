@@ -1,8 +1,8 @@
 #' @title Convert an AnnData object to a Seurat object
 #'
 #' @description
-#' `to_Seurat()` converts an AnnData object to a Seurat object. Only one assay can be converted at a time.
-#' Arguments are used to configure the conversion. If `NULL`, the functions `to_Seurat_guess_*` will be used to guess
+#' `as_Seurat()` converts an AnnData object to a Seurat object. Only one assay can be converted at a time.
+#' Arguments are used to configure the conversion. If `NULL`, the functions `as_Seurat_guess_*` will be used to guess
 #' the mapping.
 #'
 #' @param adata An AnnData object to be converted
@@ -34,7 +34,7 @@
 #'
 #' Example: `layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
 #'
-#' If `NULL`, the internal function `.to_Seurat_guess_layers` will be used to
+#' If `NULL`, the internal function `.as_Seurat_guess_layers` will be used to
 #' guess the layer mapping as follows:
 #'
 #' * All AnnData layers are copied to Seurat layers by name
@@ -82,7 +82,7 @@
 #' If `'varm'` is provided, the matching matrix is given to the `loadings`
 #' argument of [SeuratObject::CreateDimReducObject()].
 #'
-#' If `NULL`, the internal function `.to_Seurat_guess_reductions` will be used
+#' If `NULL`, the internal function `.as_Seurat_guess_reductions` will be used
 #' to guess the reduction mapping as follows:
 #'
 #' * All `$obsm` items that can be coerced to a numeric matrix are copied by name
@@ -100,7 +100,7 @@
 #'
 #' Example: `graph_mapping = c(nn = "connectivities")`.
 #'
-#' If `NULL`, the internal function `.to_Seurat_guess_graphs` will be used to
+#' If `NULL`, the internal function `.as_Seurat_guess_graphs` will be used to
 #' guess the graph mapping as follows:
 #'
 #' * All `$obsp` items are copied by name
@@ -114,7 +114,7 @@
 #'
 #' Example: `misc_mapping = c(parameters = "params", cell_types = "annotations")`
 #'
-#' If `NULL`, the internal function `.to_Seurat_guess_misc` will be used to
+#' If `NULL`, the internal function `.as_Seurat_guess_misc` will be used to
 #' guess the miscellaneous mapping as follows:
 #'
 #' * If `$uns` is defined, all values in `$uns` are copied to the Seurat misc
@@ -130,16 +130,15 @@
 #'
 #' @export
 #'
-#' @rdname to_Seurat
 #' @examples
 #' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
 #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
-#' to_Seurat(ad)
+#' as_Seurat(ad)
 # nolint start: object_name_linter
-to_Seurat <- function(
+as_Seurat <- function(
   adata,
   assay_name = "RNA",
   layers_mapping = NULL,
