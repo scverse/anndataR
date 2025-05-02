@@ -74,9 +74,9 @@
 #'
 #' \describe{
 #'   \item{
-#'     `to_SingleCellExperiment()`
+#'     `as_SingleCellExperiment()`
 #'   }{
-#'     Convert to `SingleCellExperiment`, see [to_SingleCellExperiment()]
+#'     Convert to `SingleCellExperiment`, see [as_SingleCellExperiment()]
 #'   }
 #'   \item{`to_Seurat()`}{Convert to `Seurat`, see [to_Seurat()]}
 #'   \item{`to_InMemoryAnnData()`}{Convert to [InMemoryAnnData]}

@@ -82,7 +82,7 @@ adata$var[1:5, 1:6]
 Convert the AnnData object to a SingleCellExperiment object:
 
 ```{r}
-sce <- adata$to_SingleCellExperiment()
+sce <- adata$as_SingleCellExperiment()
 sce
 ```
 

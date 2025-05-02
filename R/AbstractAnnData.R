@@ -165,17 +165,17 @@ AbstractAnnData <- R6::R6Class(
       names(self$uns)
     },
     #' @description
-    #' Convert to `SingleCellExperiment`
+    #' `r lifecycle::badge('deprecated')`
     #'
-    #' See [to_SingleCellExperiment()] for more details on the conversion
+    #' Deprecated, use `as_SingleCellExperiment()` instead
     #'
-    #' @param assays_mapping See [to_SingleCellExperiment()]
-    #' @param colData_mapping See [to_SingleCellExperiment()]
-    #' @param rowData_mapping See [to_SingleCellExperiment()]
-    #' @param reduction_mapping See [to_SingleCellExperiment()]
-    #' @param colPairs_mapping See [to_SingleCellExperiment()]
-    #' @param rowPairs_mapping See [to_SingleCellExperiment()]
-    #' @param metadata_mapping See [to_SingleCellExperiment()]
+    #' @param assays_mapping See [as_SingleCellExperiment()]
+    #' @param colData_mapping See [as_SingleCellExperiment()]
+    #' @param rowData_mapping See [as_SingleCellExperiment()]
+    #' @param reduction_mapping See [as_SingleCellExperiment()]
+    #' @param colPairs_mapping See [as_SingleCellExperiment()]
+    #' @param rowPairs_mapping See [as_SingleCellExperiment()]
+    #' @param metadata_mapping See [as_SingleCellExperiment()]
     #'
     #' @return A `SingleCellExperiment` object
     to_SingleCellExperiment = function(
@@ -187,7 +187,46 @@ AbstractAnnData <- R6::R6Class(
       rowPairs_mapping = NULL, # nolint
       metadata_mapping = NULL
     ) {
-      to_SingleCellExperiment(
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "$to_SingleCellExperiment()",
+        details = "Use `$as_SingleCellExperiment()` instead."
+      )
+
+      self$as_SingleCellExperiment(
+        assays_mapping = assays_mapping,
+        colData_mapping = colData_mapping,
+        rowData_mapping = rowData_mapping,
+        reduction_mapping = reduction_mapping,
+        colPairs_mapping = colPairs_mapping, # nolint
+        rowPairs_mapping = rowPairs_mapping, # nolint
+        metadata_mapping = metadata_mapping
+      )
+    },
+    #' @description
+    #' Convert to `SingleCellExperiment`
+    #'
+    #' See [as_SingleCellExperiment()] for more details on the conversion
+    #'
+    #' @param assays_mapping See [as_SingleCellExperiment()]
+    #' @param colData_mapping See [as_SingleCellExperiment()]
+    #' @param rowData_mapping See [as_SingleCellExperiment()]
+    #' @param reduction_mapping See [as_SingleCellExperiment()]
+    #' @param colPairs_mapping See [as_SingleCellExperiment()]
+    #' @param rowPairs_mapping See [as_SingleCellExperiment()]
+    #' @param metadata_mapping See [as_SingleCellExperiment()]
+    #'
+    #' @return A `SingleCellExperiment` object
+    as_SingleCellExperiment = function(
+    assays_mapping = NULL,
+    colData_mapping = NULL, # nolint
+    rowData_mapping = NULL, # nolint
+    reduction_mapping = NULL,
+    colPairs_mapping = NULL, # nolint
+    rowPairs_mapping = NULL, # nolint
+    metadata_mapping = NULL
+    ) {
+      as_SingleCellExperiment(
         self,
         assays_mapping = assays_mapping,
         colData_mapping = colData_mapping,

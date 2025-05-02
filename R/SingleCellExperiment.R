@@ -9,7 +9,7 @@
 
 #' Convert an AnnData object to a SingleCellExperiment object
 #'
-#' `to_SingleCellExperiment()` converts an AnnData object
+#' `as_SingleCellExperiment()` converts an AnnData object
 #'   to a SingleCellExperiment object.
 #'
 #' @param adata an AnnData object, e.g., InMemoryAnnData
@@ -62,7 +62,7 @@
 #'   SingleCellExperiment object. The values should be the names of the `uns` in
 #'   `adata`.
 #'
-#' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
+#' @return `as_SingleCellExperiment()` returns a SingleCellExperiment
 #'   representing the content of `adata`.
 #'
 #' @details
@@ -85,11 +85,11 @@
 #' )
 #'
 #' ## construct a SingleCellExperiment from an AnnData object
-#' sce <- to_SingleCellExperiment(ad)
+#' sce <- as_SingleCellExperiment(ad)
 #' sce
 #' @export
 # nolint start: cyclocomp_linter
-to_SingleCellExperiment <- function(
+as_SingleCellExperiment <- function(
   # nolint end: cyclocomp_linter
   adata,
   assays_mapping = NULL,

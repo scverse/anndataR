@@ -7,7 +7,7 @@ ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-sce <- ad$to_SingleCellExperiment()
+sce <- ad$as_SingleCellExperiment()
 
 test_that("to_SCE retains nr of observations and features", {
   expect_equal(nrow(sce), 20)
@@ -175,7 +175,7 @@ test_that("to_SCE retains pca dimred", {
 
 test_that("to_SCE works with list mappings", {
   expect_no_error(
-    ad$to_SingleCellExperiment(
+    ad$as_SingleCellExperiment(
       assays_mapping = as.list(.to_SCE_guess_assays(ad)),
       colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
@@ -187,7 +187,7 @@ test_that("to_SCE works with list mappings", {
   )
 
   expect_error(
-    ad$to_SingleCellExperiment(
+    ad$as_SingleCellExperiment(
       reduction_mapping = list(numeric = "numeric_matrix")
     )
   )
@@ -195,7 +195,7 @@ test_that("to_SCE works with list mappings", {
 
 test_that("to_SCE works with a vector reduction_mapping", {
   expect_no_error(
-    ad$to_SingleCellExperiment(
+    ad$as_SingleCellExperiment(
       reduction_mapping = c(numeric = "numeric_matrix")
     )
   )
@@ -203,7 +203,7 @@ test_that("to_SCE works with a vector reduction_mapping", {
 
 test_that("to_SCE works with unnamed mappings", {
   expect_no_error(
-    ad$to_SingleCellExperiment(
+    ad$as_SingleCellExperiment(
       assays_mapping = unname(.to_SCE_guess_assays(ad)),
       colData_mapping = unname(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = unname(.to_SCE_guess_all(ad, "var")),
@@ -226,7 +226,7 @@ ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 # TODO: Build an SCE rather than converting
-sce <- ad$to_SingleCellExperiment()
+sce <- ad$as_SingleCellExperiment()
 ad <- as_AnnData(sce)
 
 test_that("from_SCE retains observations and features", {

@@ -68,7 +68,7 @@ you can pass an empty list.
 
 Here, we showcase what happens if you do not provide any mapping for the conversion.
 ```{r implicit}
-sce <- to_SingleCellExperiment(ad)
+sce <- as_SingleCellExperiment(ad)
 sce
 ```
 
@@ -88,7 +88,7 @@ In the below example, we will convert an AnnData object with a `counts` layer an
 In order for the implicit conversion to work, we will not provide a `layers_mapping`.
 We explicitly pass empty lists to the other mapping arguments for clarity in the resulting object. They ensure that nothing gets converted to the respective slots.
 ```{r implicit_layers}
-sce_layers <- to_SingleCellExperiment(
+sce_layers <- as_SingleCellExperiment(
   ad,
   colData_mapping = c(),
   rowData_mapping = c(),
@@ -116,7 +116,7 @@ We guess the mapping of the reductions the same way as we do for the Seurat conv
 - If the `obsm` slot contains a `X_pca` slot, we will also store the associated loadings (in `varm`) in a LinearEmbeddingMatrix.
 
 ```{r implicit_pca}
-sce_dimred <- to_SingleCellExperiment(
+sce_dimred <- as_SingleCellExperiment(
   ad,
   colData_mapping = c(),
   rowData_mapping = c(),
@@ -137,7 +137,7 @@ all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in th
 and all `metadata` is stored in the `uns` slot.
 
 ```{r implicit_easy}
-sce_implicit <- to_SingleCellExperiment(
+sce_implicit <- as_SingleCellExperiment(
   ad,
   assays_mapping = c(),
   reduction_mapping = c()
@@ -155,7 +155,7 @@ We will give an example for each of the mappings.
 ### assays_mapping
 
 ```{r explicit_assays}
-sce_assays <- to_SingleCellExperiment(
+sce_assays <- as_SingleCellExperiment(
   ad,
   assays_mapping = c(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
   colData_mapping = c(),
@@ -173,7 +173,7 @@ You can see that the `X` slot got stored as `counts`, and the `layers` got store
 ### colData, rowData, colPairs, rowPairs, metadata
 
 ```{r explicit col_data}
-sce <- to_SingleCellExperiment(
+sce <- as_SingleCellExperiment(
   ad,
   assays_mapping = c(),
   colData_mapping = c(coldata1 = "integer", coldata2 = "numeric"),
@@ -205,7 +205,7 @@ the SingleCellExperiment object.
 ### reductions_mapping
 
 ```{r explicit_reductions}
-sce <- to_SingleCellExperiment(
+sce <- as_SingleCellExperiment(
   ad,
   assays_mapping = c(counts = "X"),
   colData_mapping = c(),
@@ -244,7 +244,7 @@ We will simply map all the assays in the SingleCellExperiment object to the `lay
 Watch out: if there is no `x_mapping` provided, none of the `assays` will be stored in the `X` slot of the AnnData object, 
 and it will remain empty.
 
-```{r to_ad_implicit_assays}
+```{r as_ad_implicit_assays}
 ad_assays <- as_AnnData(
   sce,
   obs_mapping = c(),
@@ -267,7 +267,7 @@ However, if the `reducedDims` slot contains a `LinearEmbeddingMatrix`, we will s
 
 We will store the reduced dimensions in the `obsm` slot, with the name of the `reducedDims` prepended by an `X_` as the name of the `obsm` slot.
 
-```{r to_ad_implicit_reductions}
+```{r as_ad_implicit_reductions}
 ad_reductions <- as_AnnData(
   sce,
   obs_mapping = c(),
@@ -302,7 +302,7 @@ you can provide a named vector where the names are the names in the AnnData obje
 The `obsm_mapping` and `varm_mapping` work in the same way - they're named vectors where each name corresponds to a key 
 in AnnData's obsm/varm, and each value corresponds to the name of a reducedDim in SCE.
 
-```{r to_ad_explicit_obsm}
+```{r as_ad_explicit_obsm}
 ad_obsm <- as_AnnData(
   sce,
   layers_mapping = c(),
