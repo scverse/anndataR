@@ -2,7 +2,7 @@
 % Please edit documentation in R/SingleCellExperiment.R
 \name{as_SingleCellExperiment}
 \alias{as_SingleCellExperiment}
-\title{Convert an AnnData object to a SingleCellExperiment object}
+\title{Convert an \code{AnnData} to a \code{SingleCellExperiment}}
 \usage{
 as_SingleCellExperiment(
   adata,
@@ -18,78 +18,97 @@ as_SingleCellExperiment(
 \arguments{
 \item{adata}{an AnnData object, e.g., InMemoryAnnData}
 
-\item{assays_mapping}{A named vector mapping \code{layers} in \code{adata} to \code{assay}
-names in the created SingleCellExperiment object. The names of the vector
-should be the names of the \code{assays} in the resulting SingleCellExperiment
-object, and the values should be the names of the \code{layers} in \code{adata}, and
-can include the \code{X} matrix as well. If \code{X} is not in the list, it will be
-added as \code{counts} or \code{data}.}
+\item{assays_mapping}{A named vector where names are names of \code{assays} in the resulting
+\code{SingleCellExperiment} object and values are keys of \code{layers} in \code{adata}.
+See below for details.}
 
-\item{colData_mapping}{A named vector mapping \code{obs} in \code{adata} to \code{colData}
-in the created SingleCellExperiment object. The names of the vector should
-be the names of the \code{colData} columns in the resulting SingleCellExperiment
-object. The values should be the names of the \code{obs} columns in \code{adata}.}
+\item{colData_mapping}{A named vector where names are columns of \code{colData} in the resulting
+\code{SingleCellExperiment} object and values are columns of \code{obs} in \code{adata}.
+See below for details.}
 
-\item{rowData_mapping}{A named vector mapping \code{var} names in \code{adata} to
-\code{rowData} in the created SingleCellExperiment object. The names of the
-vector should be the names of the \code{rowData} columns in the resulting
-SingleCellExperiment object. The values should be the names of the \code{var}
-columns in \code{adata}.}
+\item{rowData_mapping}{A named vector where names are columns of \code{rowData} in the resulting
+\code{SingleCellExperiment} object and values are columns of \code{var} in \code{adata}.
+See below for details.}
 
-\item{reduction_mapping}{A named vector or list mapping reduction names in
-\code{adata} to reduction names in the created SingleCellExperiment object. For
-the simpler named vector format, the names should be the names of the
-\code{reducedDims} in the resulting SingleCellExperiment object, and the values
-should be the names of the \code{obsm} in \code{adata}.
+\item{reduction_mapping}{A named vector where names are names of \code{reducedDims} in the resulting
+\code{SingleCellExperiment} object and values are keys of \code{obsm} in \code{adata}. Alternatively, a named list where names are names of \code{reducedDims} in the resulting \code{SingleCellExperiment} object and values are vectors with the items \code{"obsm"} and \code{"varm"} and/or \code{"uns"}. See below for details.}
 
-For more advanced mapping, use the list format where each item has the
-following keys:
-\itemize{
-\item \code{obsm}: the name of the \code{obsm} slot in \code{adata}
-\item \code{varm}: the name of the \code{varm} slot in \code{adata} (optional)
-\item \code{uns}: the name of the \code{uns} slot in \code{adata} (optional)
-}
+\item{colPairs_mapping}{A named vector where names are names of \code{colPairs} in the resulting
+\code{SingleCellExperiment} object and values are keys of \code{obsp} in \code{adata}.
+See below for details.}
 
-If \code{'varm'} or \code{'uns'} is given, a
-\link[SingleCellExperiment:LinearEmbeddingMatrix]{SingleCellExperiment::LinearEmbeddingMatrix} will be created for that item
-with \code{adata$varm[[varm]]} passed to the \code{featureLoadings} argument and
-\code{adata$uns[[uns]]} passed as \code{metadata}}
+\item{rowPairs_mapping}{A named vector where names are names of \code{rowPairs} in the resulting
+\code{SingleCellExperiment} object and values are keys of \code{varp} in \code{adata}.
+See below for details.}
 
-\item{colPairs_mapping}{A named vector mapping obsp names in \code{adata} to
-colPairs names in the created SingleCellExperiment object. The names of the
-vector should be the names of the \code{colPairs} in the resulting
-SingleCellExperiment object. The values should be the names of the \code{obsp}
-in \code{adata}.}
-
-\item{rowPairs_mapping}{A named vector mapping varp names in \code{adata} to
-rowPairs names in the created SingleCellExperiment object. The names of the
-vector should be the names of the \code{rowPairs} in the resulting
-SingleCellExperiment object. The values should be the names of the \code{varp}
-in \code{adata}.}
-
-\item{metadata_mapping}{A named vector mapping uns names in \code{adata} to
-metadata names in the created SingleCellExperiment object. The names of the
-vector should be the names of the \code{metadata} in the resulting
-SingleCellExperiment object. The values should be the names of the \code{uns} in
-\code{adata}.}
+\item{metadata_mapping}{A named vector where names are names of \code{metadata} in the resulting
+\code{SingleCellExperiment} object and values are keys of \code{uns} in \code{adata}.
+See below for details.}
 }
 \value{
-\code{as_SingleCellExperiment()} returns a SingleCellExperiment
-representing the content of \code{adata}.
+A \code{SingleCellExperiment} object containing the requested data from \code{adata}
 }
 \description{
-\code{as_SingleCellExperiment()} converts an AnnData object
-to a SingleCellExperiment object.
+Convert an \code{AnnData} object to a \code{SingleCellExperiment} object
 }
 \details{
-If an unnamed vector is provided to a mapping argument the values will be
-used as names
+\subsection{Mapping arguments}{
+
+All mapping arguments expect a named character
+vector where names are the names of the slot in the \code{SingleCellExperiment} object and
+values are the keys of the corresponding slot of \code{adata}. If \code{NULL},
+the conversion function will guess which items to copy as described in the
+conversion tables conversion table below. In most cases, the default is to
+copy all items using the same names except where the correspondence between
+objects is unclear. The \code{reduction_mapping} argument can also accept a more complex list format, see below for details. To avoid copying anything to a slot, provide an empty
+vector. If an unnamed vector is provided, the values will be used as names
+\subsection{Examples:}{
+\itemize{
+\item \code{NULL} will guess which items to copy as described in the conversion
+tables
+\item \code{c(sce_item = "adata_item")} will copy \code{adata_item} from the slot in \code{adata} to
+\code{sce_item} in the corresponding slot of new \code{SingleCellExperiment} object
+\item \code{c()} will avoid copying anything to the slot
+\item \code{c("adata_item")} is equivalent to \code{c(adata_item = "adata_item")}
+}
+}
+
+}
+
+\subsection{Conversion table}{\tabular{llll}{
+   \strong{From \code{AnnData}} \tab \strong{To \code{SingleCellExperiment}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \code{adata$layers} \tab \code{assays(sce)} \tab \code{assays_mapping = c(counts = "counts")} \tab All items are copied by name \cr
+   \code{adata$obs} \tab \code{colData(sce)} \tab \code{colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
+   \code{adata$var} \tab \code{rowData(sce)} \tab \code{rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
+   \code{adata$obsm} \tab \code{reducedDims(sce)} \tab \code{reduction_mapping = c(pca = "X_pca")} \strong{OR} \code{reduction_mapping = list(pca = c(obsm = "X_pca", varm = "pca", uns = "pca_metadata"))} \tab All items are copied by name without loadings expect for \code{X_pca} for which loadings are added \cr
+   \code{adata$obsp} \tab \code{colPairs(sce)} \tab \code{colPairs_mapping = c(nn = "connectivities")} \tab All items are copied by name \cr
+   \code{adata$varp} \tab \code{rowPairs(sce)} \tab \code{rowPairs_mapping = c(gene_overlaps = "similarities")} \tab All items are copied by name \cr
+   \code{adata$uns} \tab \code{metadata(sce)} \tab \code{uns_mapping = c(project_metadata = "metadata")} \tab All items are copied by name \cr
+}
+
+}
+
+\subsection{The \code{reduction_mapping} argument}{
+
+For the simpler named vector format, the names should be the names of
+\code{reducedDims} in the resulting \code{SingleCellExperiment} object, and the values
+should be the keys of \code{obsm} in \code{adata}.
+
+For more advanced mapping, use the list format where each item has the
+following names:
+\itemize{
+\item \code{obsm}: a key of the \code{obsm} slot in \code{adata}
+\item \code{varm}: a key of the \code{varm} slot in \code{adata} (optional)
+\item \code{uns}: a key of the \code{uns} slot in \code{adata} (optional)
+}
+
+If \code{'varm'} or \code{'uns'} is given, a \link[SingleCellExperiment:LinearEmbeddingMatrix]{SingleCellExperiment::LinearEmbeddingMatrix}
+will be created for that item with \code{adata$varm[[varm]]} passed to the \code{featureLoadings} argument and
+\code{adata$uns[[uns]]} passed as \code{metadata}
+}
 }
 \examples{
-if (interactive()) {
-  ## useful when interacting with the SingleCellExperiment !
-  library(SingleCellExperiment)
-}
+\dontshow{if (rlang::is_installed("SingleCellExperiment")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ad <- AnnData(
   X = matrix(1:5, 3L, 5L),
   layers = list(
@@ -100,7 +119,7 @@ ad <- AnnData(
   var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
 
-## construct a SingleCellExperiment from an AnnData object
 sce <- as_SingleCellExperiment(ad)
-sce
+\dontshow{\}) # examplesIf}
 }
+\keyword{internal}

@@ -1,79 +1,85 @@
-# nolint start: line_length_linter
-# Sources used to understand how to convert between SingleCellExperiment and AnnData
-# https://bioconductor.org/packages/release/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html#2_Creating_SingleCellExperiment_instances
-# https://bioconductor.org/packages/3.20/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#column-sample-data
-# https://github.com/ivirshup/sc-interchange/issues
-# https://github.com/ivirshup/sc-interchange/issues/2
-# https://www.bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html#3_Adding_low-dimensional_representations
-# nolint end: line_length_linter
-
-#' Convert an AnnData object to a SingleCellExperiment object
+#' Convert an `AnnData` to a `SingleCellExperiment`
 #'
-#' `as_SingleCellExperiment()` converts an AnnData object
-#'   to a SingleCellExperiment object.
+#' Convert an `AnnData` object to a `SingleCellExperiment` object
 #'
 #' @param adata an AnnData object, e.g., InMemoryAnnData
-#'
-#' @param assays_mapping A named vector mapping `layers` in `adata` to `assay`
-#'   names in the created SingleCellExperiment object. The names of the vector
-#'   should be the names of the `assays` in the resulting SingleCellExperiment
-#'   object, and the values should be the names of the `layers` in `adata`, and
-#'   can include the `X` matrix as well. If `X` is not in the list, it will be
-#'   added as `counts` or `data`.
-#' @param colData_mapping A named vector mapping `obs` in `adata` to `colData`
-#'   in the created SingleCellExperiment object. The names of the vector should
-#'   be the names of the `colData` columns in the resulting SingleCellExperiment
-#'   object. The values should be the names of the `obs` columns in `adata`.
-#' @param rowData_mapping A named vector mapping `var` names in `adata` to
-#'   `rowData` in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `rowData` columns in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `var`
-#'   columns in `adata`.
-#' @param reduction_mapping A named vector or list mapping reduction names in
-#'   `adata` to reduction names in the created SingleCellExperiment object. For
-#'   the simpler named vector format, the names should be the names of the
-#'   `reducedDims` in the resulting SingleCellExperiment object, and the values
-#'   should be the names of the `obsm` in `adata`.
-#'
-#'   For more advanced mapping, use the list format where each item has the
-#'   following keys:
-#'
-#'   - `obsm`: the name of the `obsm` slot in `adata`
-#'   - `varm`: the name of the `varm` slot in `adata` (optional)
-#'   - `uns`: the name of the `uns` slot in `adata` (optional)
-#'
-#'   If `'varm'` or `'uns'` is given, a
-#'   [SingleCellExperiment::LinearEmbeddingMatrix] will be created for that item
-#'   with `adata$varm[[varm]]` passed to the `featureLoadings` argument and
-#'   `adata$uns[[uns]]` passed as `metadata`
-#' @param colPairs_mapping A named vector mapping obsp names in `adata` to
-#'   colPairs names in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `colPairs` in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `obsp`
-#'   in `adata`.
-#' @param rowPairs_mapping A named vector mapping varp names in `adata` to
-#'   rowPairs names in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `rowPairs` in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `varp`
-#'   in `adata`.
-#' @param metadata_mapping A named vector mapping uns names in `adata` to
-#'   metadata names in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `metadata` in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `uns` in
-#'   `adata`.
-#'
-#' @return `as_SingleCellExperiment()` returns a SingleCellExperiment
-#'   representing the content of `adata`.
+#' @param assays_mapping A named vector where names are names of `assays` in the resulting
+#'   `SingleCellExperiment` object and values are keys of `layers` in `adata`.
+#'   See below for details.
+#' @param colData_mapping A named vector where names are columns of `colData` in the resulting
+#'   `SingleCellExperiment` object and values are columns of `obs` in `adata`.
+#'   See below for details.
+#' @param rowData_mapping A named vector where names are columns of `rowData` in the resulting
+#'   `SingleCellExperiment` object and values are columns of `var` in `adata`.
+#'   See below for details.
+#' @param reduction_mapping A named vector where names are names of `reducedDims` in the resulting
+#'   `SingleCellExperiment` object and values are keys of `obsm` in `adata`. Alternatively, a named list where names are names of `reducedDims` in the resulting `SingleCellExperiment` object and values are vectors with the items `"obsm"` and `"varm"` and/or `"uns"`. See below for details.
+#' @param colPairs_mapping A named vector where names are names of `colPairs` in the resulting
+#'   `SingleCellExperiment` object and values are keys of `obsp` in `adata`.
+#'   See below for details.
+#' @param rowPairs_mapping A named vector where names are names of `rowPairs` in the resulting
+#'   `SingleCellExperiment` object and values are keys of `varp` in `adata`.
+#'   See below for details.
+#' @param metadata_mapping A named vector where names are names of `metadata` in the resulting
+#'   `SingleCellExperiment` object and values are keys of `uns` in `adata`.
+#'   See below for details.
 #'
 #' @details
-#' If an unnamed vector is provided to a mapping argument the values will be
-#' used as names
 #'
-#' @examples
-#' if (interactive()) {
-#'   ## useful when interacting with the SingleCellExperiment !
-#'   library(SingleCellExperiment)
-#' }
+#'   ## Mapping arguments
+#'
+#'   All mapping arguments expect a named character
+#'   vector where names are the names of the slot in the `SingleCellExperiment` object and
+#'   values are the keys of the corresponding slot of `adata`. If `NULL`,
+#'   the conversion function will guess which items to copy as described in the
+#'   conversion tables conversion table below. In most cases, the default is to
+#'   copy all items using the same names except where the correspondence between
+#'   objects is unclear. The `reduction_mapping` argument can also accept a more complex list format, see below for details. To avoid copying anything to a slot, provide an empty
+#'   vector. If an unnamed vector is provided, the values will be used as names
+#'
+#'   ### Examples:
+#'
+#'   - `NULL` will guess which items to copy as described in the conversion
+#'     tables
+#'   - `c(sce_item = "adata_item")` will copy `adata_item` from the slot in `adata` to
+#'     `sce_item` in the corresponding slot of new `SingleCellExperiment` object
+#'   - `c()` will avoid copying anything to the slot
+#'   - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
+#'
+#'   ## Conversion table
+#'
+#'   | **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default if `NULL`** |
+#'   |--------------------|-------------------------------|------------------------------|-----------------------|
+#'   | `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |
+#'   | `adata$obs` | `colData(sce)` | `colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+#'   | `adata$var` | `rowData(sce)` | `rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+#'   | `adata$obsm` | `reducedDims(sce)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(obsm = "X_pca", varm = "pca", uns = "pca_metadata"))`  | All items are copied by name without loadings expect for `X_pca` for which loadings are added |
+#'   | `adata$obsp` | `colPairs(sce)` | `colPairs_mapping = c(nn = "connectivities")` | All items are copied by name |
+#'   | `adata$varp` | `rowPairs(sce)` | `rowPairs_mapping = c(gene_overlaps = "similarities")` | All items are copied by name |
+#'   | `adata$uns` | `metadata(sce)` | `uns_mapping = c(project_metadata = "metadata")` | All items are copied by name |
+#'
+#'
+#' ## The `reduction_mapping` argument
+#'
+#' For the simpler named vector format, the names should be the names of
+#'   `reducedDims` in the resulting `SingleCellExperiment` object, and the values
+#'   should be the keys of `obsm` in `adata`.
+#'
+#'   For more advanced mapping, use the list format where each item has the
+#'   following names:
+#'
+#'   - `obsm`: a key of the `obsm` slot in `adata`
+#'   - `varm`: a key of the `varm` slot in `adata` (optional)
+#'   - `uns`: a key of the `uns` slot in `adata` (optional)
+#'
+#'   If `'varm'` or `'uns'` is given, a [SingleCellExperiment::LinearEmbeddingMatrix]
+#'   will be created for that item with `adata$varm[[varm]]` passed to the `featureLoadings` argument and
+#'   `adata$uns[[uns]]` passed as `metadata`
+#'
+#' @return A `SingleCellExperiment` object containing the requested data from `adata`
+#' @keywords internal
+#'
+#' @examplesIf rlang::is_installed("SingleCellExperiment")
 #' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
 #'   layers = list(
@@ -84,13 +90,8 @@
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #'
-#' ## construct a SingleCellExperiment from an AnnData object
 #' sce <- as_SingleCellExperiment(ad)
-#' sce
-#' @export
-# nolint start: cyclocomp_linter
 as_SingleCellExperiment <- function(
-  # nolint end: cyclocomp_linter
   adata,
   assays_mapping = NULL,
   colData_mapping = NULL, # nolint
