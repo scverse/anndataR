@@ -365,10 +365,9 @@ to_SingleCellExperiment <- function(
   })
 }
 
-#' @rdname as_AnnData
-#' @export
-as_AnnData.SingleCellExperiment <- function(
-    x,
+# See as_AnnData() for function documentation
+from_SingleCellExperiment <- function(
+    sce,
     x_mapping = NULL,
     layers_mapping = NULL,
     obs_mapping = NULL,

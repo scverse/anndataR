@@ -574,14 +574,9 @@ to_Seurat <- function(
   self_name(adata$var_keys())
 }
 
-#' @param assay_name For [`SeuratObject::Seurat`] objects, the name of the assay
-#'   to be converted. If `NULL`, the default assay will be used
-#'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
-#'
-#' @rdname as_AnnData
-#' @export
-as_AnnData.Seurat <- function(
-    x,
+# See as_AnnData() for function documentation
+from_Seurat <- function(
+    seurat_obj,
     assay_name = NULL,
     x_mapping = NULL,
     layers_mapping = NULL,

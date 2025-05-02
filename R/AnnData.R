@@ -212,3 +212,73 @@ as_AnnData <- function(
 ) {
   UseMethod("as_AnnData", x)
 }
+
+#' @rdname as_AnnData
+#' @export
+as_AnnData.SingleCellExperiment <- function(
+    x,
+    x_mapping = NULL,
+    layers_mapping = NULL,
+    obs_mapping = NULL,
+    var_mapping = NULL,
+    obsm_mapping = NULL,
+    varm_mapping = NULL,
+    obsp_mapping = NULL,
+    varp_mapping = NULL,
+    uns_mapping = NULL,
+    output_class = c("InMemory", "HDF5AnnData"),
+    ...
+) {
+  from_SingleCellExperiment(
+    sce = x,
+    x_mapping = x_mapping,
+    layers_mapping = layers_mapping,
+    obs_mapping = obs_mapping,
+    var_mapping = var_mapping,
+    obsm_mapping = obsm_mapping,
+    varm_mapping = varm_mapping,
+    obsp_mapping = obsp_mapping,
+    varp_mapping = varp_mapping,
+    uns_mapping = uns_mapping,
+    output_class = output_class,
+    ...
+  )
+}
+
+#' @param assay_name For [`SeuratObject::Seurat`] objects, the name of the assay
+#'   to be converted. If `NULL`, the default assay will be used
+#'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
+#'
+#' @rdname as_AnnData
+#' @export
+as_AnnData.Seurat <- function(
+    x,
+    assay_name = NULL,
+    x_mapping = NULL,
+    layers_mapping = NULL,
+    obs_mapping = NULL,
+    var_mapping = NULL,
+    obsm_mapping = NULL,
+    varm_mapping = NULL,
+    obsp_mapping = NULL,
+    varp_mapping = NULL,
+    uns_mapping = NULL,
+    output_class = c("InMemory", "HDF5AnnData"),
+    ...
+) {
+  from_Seurat(
+    seurat_object = x,
+    assay_name = assay_name,
+    x_mapping = x_mapping,
+    layers_mapping = layers_mapping,
+    obs_mapping = obs_mapping,
+    var_mapping = var_mapping,
+    obsm_mapping = obsm_mapping,
+    varm_mapping = varm_mapping,
+    obsp_mapping = obsp_mapping,
+    varp_mapping = varp_mapping,
+    uns_mapping = uns_mapping,
+    output_class = output_class,
+    ...
+  )
+}
