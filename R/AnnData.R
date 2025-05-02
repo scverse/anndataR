@@ -111,7 +111,7 @@ AnnData <- function(
 #'
 #' @section Details of mapping arguments:
 #'
-#'   All mapping arguments excepts for `x_mapping` expect a named character
+#'   All mapping arguments except for `x_mapping` expect a named character
 #'   vector where names are the keys of the slot in the `AnnData` object and
 #'   values are the names of items in the corresponding slot of `x`. If `NULL`,
 #'   the conversion function will guess which items to copy as described in the
@@ -160,8 +160,8 @@ AnnData <- function(
 #'   |-------------------|------------------|------------------------------|-----------------------|
 #'   | `Layers(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
 #'   | `Layers(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
-#'   | `Misc(x)` | `adata$obs` | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
-#'   | `Misc(x[[assay_name]])` | `adata$var` | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+#'   | `x[[]]` | `adata$obs` | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+#'   | `x[[assay_name]][[]]` | `adata$var` | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
 #'   | `Embeddings(x)` | `adata$obsm` | `obsm_mapping = c(X_pca = "pca")` | All embeddings matching `assay_name` are copied by name |
 #'   | `Loadings(x)` | `adata$varm` | `varm_mapping = c(PCs = "pca")` | All valid loadings are copied by name |
 #'   | `Graphs(x)` | `adata$obsp` | `obsp_mapping = c(connectivities = "RNA_nn")` | All graphs matching `assay_name` are copied by name |

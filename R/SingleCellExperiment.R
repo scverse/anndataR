@@ -2,7 +2,7 @@
 #'
 #' Convert an `AnnData` object to a `SingleCellExperiment` object
 #'
-#' @param adata an AnnData object, e.g., InMemoryAnnData
+#' @param adata The `AnnData` object to convert
 #' @param assays_mapping A named vector where names are names of `assays` in the resulting
 #'   `SingleCellExperiment` object and values are keys of `layers` in `adata`.
 #'   See below for details.
@@ -40,7 +40,7 @@
 #'   ### Examples:
 #'
 #'   - `NULL` will guess which items to copy as described in the conversion
-#'     tables
+#'     table
 #'   - `c(sce_item = "adata_item")` will copy `adata_item` from the slot in `adata` to
 #'     `sce_item` in the corresponding slot of new `SingleCellExperiment` object
 #'   - `c()` will avoid copying anything to the slot
@@ -53,11 +53,10 @@
 #'   | `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |
 #'   | `adata$obs` | `colData(sce)` | `colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #'   | `adata$var` | `rowData(sce)` | `rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
-#'   | `adata$obsm` | `reducedDims(sce)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(obsm = "X_pca", varm = "pca", uns = "pca_metadata"))`  | All items are copied by name without loadings expect for `X_pca` for which loadings are added |
+#'   | `adata$obsm` | `reducedDims(sce)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(obsm = "X_pca", varm = "PCs", uns = "pca_metadata"))`  | All items are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
 #'   | `adata$obsp` | `colPairs(sce)` | `colPairs_mapping = c(nn = "connectivities")` | All items are copied by name |
 #'   | `adata$varp` | `rowPairs(sce)` | `rowPairs_mapping = c(gene_overlaps = "similarities")` | All items are copied by name |
 #'   | `adata$uns` | `metadata(sce)` | `uns_mapping = c(project_metadata = "metadata")` | All items are copied by name |
-#'
 #'
 #' ## The `reduction_mapping` argument
 #'
@@ -65,7 +64,7 @@
 #'   `reducedDims` in the resulting `SingleCellExperiment` object, and the values
 #'   should be the keys of `obsm` in `adata`.
 #'
-#'   For more advanced mapping, use the list format where each item has the
+#'   For more advanced mapping, use the list format where each item is a vector with the
 #'   following names:
 #'
 #'   - `obsm`: a key of the `obsm` slot in `adata`

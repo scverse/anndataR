@@ -2,7 +2,7 @@
 % Please edit documentation in R/Seurat.R
 \name{as_Seurat}
 \alias{as_Seurat}
-\title{Convert an AnnData object to a Seurat object}
+\title{Convert an \code{AnnData} to a \code{Seurat}}
 \usage{
 as_Seurat(
   adata,
@@ -16,161 +16,102 @@ as_Seurat(
 )
 }
 \arguments{
-\item{adata}{An AnnData object to be converted}
+\item{adata}{The \code{AnnData} object to convert.}
 
-\item{assay_name}{Name of the assay to be created (default: "RNA").}
+\item{assay_name}{Name of the assay to be created in the new \code{Seurat} object}
 
-\item{layers_mapping}{A named vector to map AnnData layers to Seurat layers.
-See section "Layer mapping" for more details.}
+\item{layers_mapping}{A named vector where names are names of \code{Layers} in the resulting
+\code{Seurat} object and values are keys of \code{layers} in \code{adata}.
+See below for details.}
 
-\item{object_metadata_mapping}{A named vector mapping observation-level
-metadata to object-level metadata in the Seurat object. See section
-"Metadata mapping" for more details.}
+\item{object_metadata_mapping}{A named vector where names are cell
+metadata columns in the resulting \code{Seurat} object and values are columns of \code{obs} in \code{adata}.
+See below for details.}
 
-\item{assay_metadata_mapping}{A named vector mapping variable-level metadata
-to assay-level metadata in the Seurat object. See section
-"Metadata mapping" for more details.}
+\item{assay_metadata_mapping}{A named vector where names are variable
+metadata columns in the assay of the resulting \code{Seurat} object and values are columns of \code{var} in \code{adata}.
+See below for details.}
 
-\item{reduction_mapping}{A named vector or list to map AnnData reductions to
-Seurat reductions. The named vector format is simpler to use for common
-cases. The list format allows more advanced mapping with explicit keys. See
-section "Reduction mapping" for more details.}
+\item{reduction_mapping}{A named vector where names are names of \code{Embeddings} in the resulting
+in the resulting \code{Seurat} object and values are vectors with the items \code{"key"}, \code{"obsm"} and
+(optionally) \code{"varm"}. See below for details.}
 
-\item{graph_mapping}{A named vector mapping graph names to the names of the
-graphs in the AnnData object. See section "Graph mapping" for more details.}
+\item{graph_mapping}{A named vector where names are names of \code{Graphs} in the resulting
+\code{Seurat} object and values are keys of \code{obsp} in \code{adata}.
+See below for details.}
 
-\item{misc_mapping}{A named vector mapping miscellaneous data to the names of
-the data in the Seurat object. See section "Miscellaneous mapping" for more
-details.}
+\item{misc_mapping}{A named vector where names are names of \code{Misc} in the resulting
+\code{Seurat} object and values are keys of \code{uns} in \code{adata}.
+See below for details.}
 }
 \value{
-A Seurat object
+A \code{Seurat} object containing the requested data from \code{adata}
 }
 \description{
-\code{as_Seurat()} converts an AnnData object to a Seurat object. Only one assay can be converted at a time.
-Arguments are used to configure the conversion. If \code{NULL}, the functions \verb{as_Seurat_guess_*} will be used to guess
-the mapping.
+Convert an \code{AnnData} object to a \code{Seurat} object
 }
-\section{Layer mapping}{
+\details{
+\subsection{Mapping arguments}{
 
-
-A named vector to map AnnData layers to Seurat layers. Each name corresponds
-to the layer name in the Seurat object, and each value corresponds to the
-layer name in the AnnData object. A value of \code{NA} corresponds to the
-AnnData \code{X} slot.
-
-Example: \code{layers_mapping = c(counts = "counts", data = NA, foo = "bar")}
-
-If \code{NULL}, the internal function \code{.as_Seurat_guess_layers} will be used to
-guess the layer mapping as follows:
+All mapping arguments expect a named character
+vector where names are the names of the slot in the \code{Seurat} object and
+values are the keys of the corresponding slot of \code{adata}. If \code{NULL},
+the conversion function will guess which items to copy as described in the
+conversion tables conversion table below. In most cases, the default is to
+copy all items using the same names except where the correspondence between
+objects is unclear. The \code{reduction_mapping} argument can also accept a more complex list format, see below for details. To avoid copying anything to a slot, provide an empty
+vector. If an unnamed vector is provided, the values will be used as names
+\subsection{Examples:}{
 \itemize{
-\item All AnnData layers are copied to Seurat layers by name
-\item If there is layer named "counts", \code{adata$X} is stored a "data" otherwise
-it is stored as "counts"
+\item \code{NULL} will guess which items to copy as described in the conversion
+table
+\item \code{c(seurat_item = "adata_item")} will copy \code{adata_item} from the slot in \code{adata} to
+\code{seurat_item} in the corresponding slot of new \code{Seurat} object
+\item \code{c()} will avoid copying anything to the slot
+\item \code{c("adata_item")} is equivalent to \code{c(adata_item = "adata_item")}
 }
 }
 
-\section{Metadata mapping}{
-
-
-A named vector to map observation-level and feature-level metadata to
-object-level and assay-level metadata in the Seurat object.
-
-Each value in the \code{object_metadata_mapping} named vector corresponds to the
-names of the \code{obs} slot in the AnnData object, and each of the names
-correspond to the names of the metadata in the resulting Seurat object.
-
-Example: \code{object_metadata_mapping = c(cellType = "cell_type")}.
-
-Each value in the \code{assay_metadata_mapping} named vector corresponds to the
-names of the \code{var} slot in the AnnData object, and the names correspond to
-the names of the metadata in the specified assay of the resulting Seurat
-object.
-
-Example: \code{assay_metadata_mapping = c(geneInfo = "gene_info")}.
-
-By default, all metadata in the \code{obs} and \code{var} slots will be copied to the
-Seurat object.
 }
 
-\section{Reduction mapping}{
+\subsection{Conversion table}{\tabular{llll}{
+   \strong{From \code{AnnData}} \tab \strong{To \code{Seurat}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \code{adata$layers} \tab \code{Layers(seurat)} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
+   \code{adata$obs} \tab \code{seurat[[]]} \tab \code{object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
+   \code{adata$var} \tab \code{seurat[[assay_name]][[]]} \tab \code{assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
+   \code{adata$obsm} \tab \code{Embeddings(sce)} \tab \code{reduction_mapping = c(pca = "X_pca")} \strong{OR} \code{reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))} \tab All items that can be coerced to a numeric matrix are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
+   \code{adata$obsp} \tab \code{Graphs(seurat)} \tab \code{graph_mapping = c(nn = "connectivities")} \tab All items are copied by name \cr
+   \code{adata$varp} \tab \emph{NA} \tab \emph{NA} \tab There is no corresponding slot for \code{varp} \cr
+   \code{adata$uns} \tab \code{Misc(seurat)} \tab \code{misc_mapping = c(project_metadata = "metadata")} \tab All items are copied by name \cr
+}
 
+}
 
-A named vector or list to map AnnData \verb{$obsm} and \verb{$varm} to Seurat
-reductions.
+\subsection{The \code{reduction_mapping} argument}{
 
-When using a named vector, each name corresponds to the reduction name in the
-Seurat object, and each value corresponds to the key in AnnData's \verb{$obsm}
-slot. This is a simpler format for common use cases.
+For the simpler named vector format, the names should be the names of
+\code{Embeddings} in the resulting \code{Seurat} object, and the values
+should be the keys of \code{obsm} in \code{adata}.
 
-Example: \code{reduction_mapping = c(pca = "X_pca", umap = "X_umap")}
-
-For more advanced mapping with explicit keys and varm entries, use the list
-format. Each item in the list must be a named vector with keys \code{'key'},
-\code{'obsm'}, and can contain the key \code{'varm'}.
-
-Example: \code{reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))}.
-
-If \code{'varm'} is provided, the matching matrix is given to the \code{loadings}
-argument of \code{\link[SeuratObject:CreateDimReducObject]{SeuratObject::CreateDimReducObject()}}.
-
-If \code{NULL}, the internal function \code{.as_Seurat_guess_reductions} will be used
-to guess the reduction mapping as follows:
+For more advanced mapping, use the list format where each item is a vector with the
+following names:
 \itemize{
-\item All \verb{$obsm} items that can be coerced to a numeric matrix are copied by name
-\item If there is an \verb{$obsm} item named "PCA" and a \verb{$varm} item named "PCs" then
-\code{'varm'} will be set to "PCs"
+\item \code{key}: the key of the resulting \code{\link[SeuratObject:DimReduc-class]{SeuratObject::DimReduc}} object
+\item \code{obsm}: a key of the \code{obsm} slot in \code{adata}
+\item \code{varm}: a key of the \code{varm} slot in \code{adata} (optional)
 }
 
 All keys are processed by \code{\link[SeuratObject:Key]{SeuratObject::Key()}} to match requirements
 }
-
-\section{Graph mapping}{
-
-
-A named vector mapping graph names to the names of the graphs in the AnnData
-object. Each name corresponds to the graph name in the resulting Seurat
-object, and each value corresponds to the name of the graph in the AnnData
-object.
-
-Example: \code{graph_mapping = c(nn = "connectivities")}.
-
-If \code{NULL}, the internal function \code{.as_Seurat_guess_graphs} will be used to
-guess the graph mapping as follows:
-\itemize{
-\item All \verb{$obsp} items are copied by name
 }
-}
-
-\section{Miscellaneous mapping}{
-
-
-A named vector mapping miscellaneous data to the names of the data in the
-AnnData object. Each name corresponds to the name in the resulting Seurat
-object, and each value corresponds to the name of the data in the AnnData
-object's \code{uns} slot.
-
-Example: \code{misc_mapping = c(parameters = "params", cell_types = "annotations")}
-
-If \code{NULL}, the internal function \code{.as_Seurat_guess_misc} will be used to
-guess the miscellaneous mapping as follows:
-\itemize{
-\item If \verb{$uns} is defined, all values in \verb{$uns} are copied to the Seurat misc
-}
-}
-
-\section{Mapping details}{
-
-
-If an unnamed vector is provided to a mapping argument the values will be
-used as names
-}
-
 \examples{
+\dontshow{if (rlang::is_installed("Seurat")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 ad <- AnnData(
   X = matrix(1:5, 3L, 5L),
   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
   var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
 as_Seurat(ad)
+\dontshow{\}) # examplesIf}
 }
+\keyword{internal}

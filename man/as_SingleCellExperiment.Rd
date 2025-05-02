@@ -16,7 +16,7 @@ as_SingleCellExperiment(
 )
 }
 \arguments{
-\item{adata}{an AnnData object, e.g., InMemoryAnnData}
+\item{adata}{The \code{AnnData} object to convert}
 
 \item{assays_mapping}{A named vector where names are names of \code{assays} in the resulting
 \code{SingleCellExperiment} object and values are keys of \code{layers} in \code{adata}.
@@ -65,7 +65,7 @@ vector. If an unnamed vector is provided, the values will be used as names
 \subsection{Examples:}{
 \itemize{
 \item \code{NULL} will guess which items to copy as described in the conversion
-tables
+table
 \item \code{c(sce_item = "adata_item")} will copy \code{adata_item} from the slot in \code{adata} to
 \code{sce_item} in the corresponding slot of new \code{SingleCellExperiment} object
 \item \code{c()} will avoid copying anything to the slot
@@ -80,7 +80,7 @@ tables
    \code{adata$layers} \tab \code{assays(sce)} \tab \code{assays_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{colData(sce)} \tab \code{colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{adata$var} \tab \code{rowData(sce)} \tab \code{rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
-   \code{adata$obsm} \tab \code{reducedDims(sce)} \tab \code{reduction_mapping = c(pca = "X_pca")} \strong{OR} \code{reduction_mapping = list(pca = c(obsm = "X_pca", varm = "pca", uns = "pca_metadata"))} \tab All items are copied by name without loadings expect for \code{X_pca} for which loadings are added \cr
+   \code{adata$obsm} \tab \code{reducedDims(sce)} \tab \code{reduction_mapping = c(pca = "X_pca")} \strong{OR} \code{reduction_mapping = list(pca = c(obsm = "X_pca", varm = "PCs", uns = "pca_metadata"))} \tab All items are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
    \code{adata$obsp} \tab \code{colPairs(sce)} \tab \code{colPairs_mapping = c(nn = "connectivities")} \tab All items are copied by name \cr
    \code{adata$varp} \tab \code{rowPairs(sce)} \tab \code{rowPairs_mapping = c(gene_overlaps = "similarities")} \tab All items are copied by name \cr
    \code{adata$uns} \tab \code{metadata(sce)} \tab \code{uns_mapping = c(project_metadata = "metadata")} \tab All items are copied by name \cr
@@ -94,7 +94,7 @@ For the simpler named vector format, the names should be the names of
 \code{reducedDims} in the resulting \code{SingleCellExperiment} object, and the values
 should be the keys of \code{obsm} in \code{adata}.
 
-For more advanced mapping, use the list format where each item has the
+For more advanced mapping, use the list format where each item is a vector with the
 following names:
 \itemize{
 \item \code{obsm}: a key of the \code{obsm} slot in \code{adata}

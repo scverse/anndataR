@@ -1,142 +1,90 @@
-#' @title Convert an AnnData object to a Seurat object
+#' Convert an `AnnData` to a `Seurat`
 #'
-#' @description
-#' `as_Seurat()` converts an AnnData object to a Seurat object. Only one assay can be converted at a time.
-#' Arguments are used to configure the conversion. If `NULL`, the functions `as_Seurat_guess_*` will be used to guess
-#' the mapping.
+#' Convert an `AnnData` object to a `Seurat` object
 #'
-#' @param adata An AnnData object to be converted
-#' @param assay_name Name of the assay to be created (default: "RNA").
-#' @param layers_mapping A named vector to map AnnData layers to Seurat layers.
-#'   See section "Layer mapping" for more details.
-#' @param object_metadata_mapping A named vector mapping observation-level
-#'   metadata to object-level metadata in the Seurat object. See section
-#'   "Metadata mapping" for more details.
-#' @param assay_metadata_mapping A named vector mapping variable-level metadata
-#'   to assay-level metadata in the Seurat object. See section
-#'   "Metadata mapping" for more details.
-#' @param reduction_mapping A named vector or list to map AnnData reductions to
-#'   Seurat reductions. The named vector format is simpler to use for common
-#'   cases. The list format allows more advanced mapping with explicit keys. See
-#'   section "Reduction mapping" for more details.
-#' @param graph_mapping A named vector mapping graph names to the names of the
-#'   graphs in the AnnData object. See section "Graph mapping" for more details.
-#' @param misc_mapping A named vector mapping miscellaneous data to the names of
-#'   the data in the Seurat object. See section "Miscellaneous mapping" for more
-#'   details.
+#' @param adata The `AnnData` object to convert.
+#' @param assay_name Name of the assay to be created in the new `Seurat` object
+#' @param layers_mapping A named vector where names are names of `Layers` in the resulting
+#'   `Seurat` object and values are keys of `layers` in `adata`.
+#'   See below for details.
+#' @param object_metadata_mapping A named vector where names are cell
+#'   metadata columns in the resulting `Seurat` object and values are columns of `obs` in `adata`.
+#'   See below for details.
+#' @param assay_metadata_mapping A named vector where names are variable
+#'   metadata columns in the assay of the resulting `Seurat` object and values are columns of `var` in `adata`.
+#'   See below for details.
+#' @param reduction_mapping A named vector where names are names of `Embeddings` in the resulting
+# `Seurat` object and values are keys of `obsm` in `adata`. Alternatively, a named list where names are names of `Embeddings`
+#' in the resulting `Seurat` object and values are vectors with the items `"key"`, `"obsm"` and
+#' (optionally) `"varm"`. See below for details.
+#' @param graph_mapping  A named vector where names are names of `Graphs` in the resulting
+#'   `Seurat` object and values are keys of `obsp` in `adata`.
+#'   See below for details.
+#' @param misc_mapping A named vector where names are names of `Misc` in the resulting
+#'   `Seurat` object and values are keys of `uns` in `adata`.
+#'   See below for details.
 #'
-#' @section Layer mapping:
+#' @details
 #'
-#' A named vector to map AnnData layers to Seurat layers. Each name corresponds
-#' to the layer name in the Seurat object, and each value corresponds to the
-#' layer name in the AnnData object. A value of `NA` corresponds to the
-#' AnnData `X` slot.
+#'   ## Mapping arguments
 #'
-#' Example: `layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
+#'   All mapping arguments expect a named character
+#'   vector where names are the names of the slot in the `Seurat` object and
+#'   values are the keys of the corresponding slot of `adata`. If `NULL`,
+#'   the conversion function will guess which items to copy as described in the
+#'   conversion tables conversion table below. In most cases, the default is to
+#'   copy all items using the same names except where the correspondence between
+#'   objects is unclear. The `reduction_mapping` argument can also accept a more complex list format, see below for details. To avoid copying anything to a slot, provide an empty
+#'   vector. If an unnamed vector is provided, the values will be used as names
 #'
-#' If `NULL`, the internal function `.as_Seurat_guess_layers` will be used to
-#' guess the layer mapping as follows:
+#'   ### Examples:
 #'
-#' * All AnnData layers are copied to Seurat layers by name
-#' * If there is layer named "counts", `adata$X` is stored a "data" otherwise
-#'   it is stored as "counts"
+#'   - `NULL` will guess which items to copy as described in the conversion
+#'     table
+#'   - `c(seurat_item = "adata_item")` will copy `adata_item` from the slot in `adata` to
+#'     `seurat_item` in the corresponding slot of new `Seurat` object
+#'   - `c()` will avoid copying anything to the slot
+#'   - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
 #'
-#' @section Metadata mapping:
+#'   ## Conversion table
 #'
-#' A named vector to map observation-level and feature-level metadata to
-#' object-level and assay-level metadata in the Seurat object.
+#'   | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
+#'   |--------------------|-------------------------------|------------------------------|-----------------------|
+#'   | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
+#'   | `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+#'   | `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+#'   | `adata$obsm` | `Embeddings(sce)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))`  | All items that can be coerced to a numeric matrix are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
+#'   | `adata$obsp` | `Graphs(seurat)` | `graph_mapping = c(nn = "connectivities")` | All items are copied by name |
+#'   | `adata$varp` | _NA_  | _NA_ | There is no corresponding slot for `varp` |
+#'   | `adata$uns` | `Misc(seurat)` | `misc_mapping = c(project_metadata = "metadata")` | All items are copied by name |
 #'
-#' Each value in the `object_metadata_mapping` named vector corresponds to the
-#' names of the `obs` slot in the AnnData object, and each of the names
-#' correspond to the names of the metadata in the resulting Seurat object.
+#' ## The `reduction_mapping` argument
 #'
-#' Example: `object_metadata_mapping = c(cellType = "cell_type")`.
+#' For the simpler named vector format, the names should be the names of
+#'   `Embeddings` in the resulting `Seurat` object, and the values
+#'   should be the keys of `obsm` in `adata`.
 #'
-#' Each value in the `assay_metadata_mapping` named vector corresponds to the
-#' names of the `var` slot in the AnnData object, and the names correspond to
-#' the names of the metadata in the specified assay of the resulting Seurat
-#' object.
+#' For more advanced mapping, use the list format where each item is a vector with the
+#'   following names:
 #'
-#' Example: `assay_metadata_mapping = c(geneInfo = "gene_info")`.
-#'
-#' By default, all metadata in the `obs` and `var` slots will be copied to the
-#' Seurat object.
-#'
-#' @section Reduction mapping:
-#'
-#' A named vector or list to map AnnData `$obsm` and `$varm` to Seurat
-#' reductions.
-#'
-#' When using a named vector, each name corresponds to the reduction name in the
-#' Seurat object, and each value corresponds to the key in AnnData's `$obsm`
-#' slot. This is a simpler format for common use cases.
-#'
-#' Example: `reduction_mapping = c(pca = "X_pca", umap = "X_umap")`
-#'
-#' For more advanced mapping with explicit keys and varm entries, use the list
-#' format. Each item in the list must be a named vector with keys `'key'`,
-#' `'obsm'`, and can contain the key `'varm'`.
-#'
-#' Example: `reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))`.
-#'
-#' If `'varm'` is provided, the matching matrix is given to the `loadings`
-#' argument of [SeuratObject::CreateDimReducObject()].
-#'
-#' If `NULL`, the internal function `.as_Seurat_guess_reductions` will be used
-#' to guess the reduction mapping as follows:
-#'
-#' * All `$obsm` items that can be coerced to a numeric matrix are copied by name
-#' * If there is an `$obsm` item named "PCA" and a `$varm` item named "PCs" then
-#'   `'varm'` will be set to "PCs"
+#'   - `key`: the key of the resulting [`SeuratObject::DimReduc`] object
+#'   - `obsm`: a key of the `obsm` slot in `adata`
+#'   - `varm`: a key of the `varm` slot in `adata` (optional)
 #'
 #' All keys are processed by [SeuratObject::Key()] to match requirements
 #'
-#' @section Graph mapping:
+#' @return A `Seurat` object containing the requested data from `adata`
+#' @keywords internal
 #'
-#' A named vector mapping graph names to the names of the graphs in the AnnData
-#' object. Each name corresponds to the graph name in the resulting Seurat
-#' object, and each value corresponds to the name of the graph in the AnnData
-#' object.
-#'
-#' Example: `graph_mapping = c(nn = "connectivities")`.
-#'
-#' If `NULL`, the internal function `.as_Seurat_guess_graphs` will be used to
-#' guess the graph mapping as follows:
-#'
-#' * All `$obsp` items are copied by name
-#'
-#' @section Miscellaneous mapping:
-#'
-#' A named vector mapping miscellaneous data to the names of the data in the
-#' AnnData object. Each name corresponds to the name in the resulting Seurat
-#' object, and each value corresponds to the name of the data in the AnnData
-#' object's `uns` slot.
-#'
-#' Example: `misc_mapping = c(parameters = "params", cell_types = "annotations")`
-#'
-#' If `NULL`, the internal function `.as_Seurat_guess_misc` will be used to
-#' guess the miscellaneous mapping as follows:
-#'
-#' * If `$uns` is defined, all values in `$uns` are copied to the Seurat misc
-#'
-#' @section Mapping details:
-#'
-#' If an unnamed vector is provided to a mapping argument the values will be
-#' used as names
-#'
-#' @return A Seurat object
-#'
-#' @importFrom Matrix t
-#'
-#' @export
-#'
-#' @examples
+#' @examplesIf rlang::is_installed("Seurat")
 #' ad <- AnnData(
 #'   X = matrix(1:5, 3L, 5L),
 #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #' as_Seurat(ad)
+#'
+#' @importFrom Matrix t
 # nolint start: object_name_linter
 as_Seurat <- function(
   adata,
