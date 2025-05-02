@@ -3,8 +3,9 @@
 
 ## usethis namespace: start
 #' @importFrom cli cli_abort cli_warn cli_inform
-#' @importFrom purrr map_lgl map_dfr
+#' @importFrom lifecycle deprecated
 #' @importFrom methods as new
+#' @importFrom purrr map_lgl map_dfr
 #' @importFrom rlang `%||%`
 #' @importFrom stats setNames
 ## usethis namespace: end
