@@ -82,7 +82,7 @@ write_h5ad <- function(
 ) {
   mode <- match.arg(mode)
   adata <- if (inherits(object, "AbstractAnnData")) {
-    object$to_HDF5AnnData(
+    object$as_HDF5AnnData(
       path,
       compression = compression,
       mode = mode

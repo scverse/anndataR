@@ -64,7 +64,9 @@ Other AnnData classes:
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-as_Seurat}{\code{AbstractAnnData$as_Seurat()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
+\item \href{#method-AbstractAnnData-as_InMemoryAnnData}{\code{AbstractAnnData$as_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
+\item \href{#method-AbstractAnnData-as_HDF5AnnData}{\code{AbstractAnnData$as_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-write_h5ad}{\code{AbstractAnnData$write_h5ad()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
@@ -366,12 +368,14 @@ A \code{Seurat} object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemoryAnnData}{}}}
-\subsection{Method \code{to_InMemoryAnnData()}}{
-Convert to an in-memory \code{AnnData}
+\if{html}{\out{<a id="method-AbstractAnnData-as_InMemoryAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_InMemoryAnnData}{}}}
+\subsection{Method \code{as_InMemoryAnnData()}}{
+Convert to an \code{\link{InMemoryAnnData}}
+
+See \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}} for more details on the conversion
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_InMemoryAnnData()}\if{html}{\out{</div>}}
 }
 
 \subsection{Returns}{
@@ -379,12 +383,57 @@ An \link{InMemoryAnnData} object
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemoryAnnData}{}}}
+\subsection{Method \code{to_InMemoryAnnData()}}{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+Deprecated, use \code{as_InMemoryAnnData()} instead
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+An \code{\link{InMemoryAnnData}} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-as_HDF5AnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_HDF5AnnData}{}}}
+\subsection{Method \code{as_HDF5AnnData()}}{
+Convert to an \code{\link{HDF5AnnData}}
+
+See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for more details on the conversion
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_HDF5AnnData(
+  file,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{file}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+
+\item{\code{compression}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+
+\item{\code{mode}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An \code{\link{HDF5AnnData}} object
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_HDF5AnnData"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_HDF5AnnData}{}}}
 \subsection{Method \code{to_HDF5AnnData()}}{
-Convert to an HDF5-backed \code{AnnData}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-See \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}} for more details on the conversion
+Deprecated, use \code{as_HDF5AnnData()} instead
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(
   file,
@@ -396,16 +445,16 @@ See \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}} for more details on the conv
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{See \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}}}
+\item{\code{file}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
-\item{\code{compression}}{See \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}}}
+\item{\code{compression}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
-\item{\code{mode}}{See \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}}}
+\item{\code{mode}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-An \link{HDF5AnnData} object
+An \code{\link{HDF5AnnData}} object
 }
 }
 \if{html}{\out{<hr>}}

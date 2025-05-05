@@ -76,6 +76,8 @@ Other AnnData classes:
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>anndataR::AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>anndataR::AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>anndataR::AbstractAnnData$as_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>anndataR::AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>

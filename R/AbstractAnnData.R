@@ -252,13 +252,13 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' @return A `Seurat` object
     as_Seurat = function(
-    assay_name = "RNA",
-    layers_mapping = NULL,
-    object_metadata_mapping = NULL,
-    assay_metadata_mapping = NULL,
-    reduction_mapping = NULL,
-    graph_mapping = NULL,
-    misc_mapping = NULL
+      assay_name = "RNA",
+      layers_mapping = NULL,
+      object_metadata_mapping = NULL,
+      assay_metadata_mapping = NULL,
+      reduction_mapping = NULL,
+      graph_mapping = NULL,
+      misc_mapping = NULL
     ) {
       to_Seurat(
         self,
@@ -310,29 +310,74 @@ AbstractAnnData <- R6::R6Class(
         misc_mapping = misc_mapping
       )
     },
-    #' @description Convert to an in-memory `AnnData`
+    #' @description
+    #' Convert to an [`InMemoryAnnData`]
+    #'
+    #' See [as_InMemoryAnnData()] for more details on the conversion
     #'
     #' @return An [InMemoryAnnData] object
-    to_InMemoryAnnData = function() {
+    as_InMemoryAnnData = function() {
       to_InMemoryAnnData(self)
     },
     #' @description
-    #' Convert to an HDF5-backed `AnnData`
+    #' `r lifecycle::badge('deprecated')`
     #'
-    #' See [to_HDF5AnnData()] for more details on the conversion
+    #' Deprecated, use `as_InMemoryAnnData()` instead
     #'
-    #' @param file See [to_HDF5AnnData()]
-    #' @param compression See [to_HDF5AnnData()]
-    #' @param mode See [to_HDF5AnnData()]
+    #' @return An [`InMemoryAnnData`] object
+    to_InMemoryAnnData = function() {
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "$to_InMemoryAnnData()",
+        details = "Use `$as_InMemoryAnnData()` instead."
+      )
+
+      self$as_InMemoryAnnData(self)
+    },
+    #' @description
+    #' Convert to an [`HDF5AnnData`]
     #'
-    #' @return An [HDF5AnnData] object
-    to_HDF5AnnData = function(
+    #' See [as_HDF5AnnData()] for more details on the conversion
+    #'
+    #' @param file See [as_HDF5AnnData()]
+    #' @param compression See [as_HDF5AnnData()]
+    #' @param mode See [as_HDF5AnnData()]
+    #'
+    #' @return An [`HDF5AnnData`] object
+    as_HDF5AnnData = function(
       file,
       compression = c("none", "gzip", "lzf"),
       mode = c("w-", "r", "r+", "a", "w", "x")
     ) {
       to_HDF5AnnData(
         adata = self,
+        file = file,
+        compression = compression,
+        mode = mode
+      )
+    },
+    #' @description
+    #' `r lifecycle::badge('deprecated')`
+    #'
+    #' Deprecated, use `as_HDF5AnnData()` instead
+    #'
+    #' @param file See [as_HDF5AnnData()]
+    #' @param compression See [as_HDF5AnnData()]
+    #' @param mode See [as_HDF5AnnData()]
+    #'
+    #' @return An [`HDF5AnnData`] object
+    to_HDF5AnnData = function(
+      file,
+      compression = c("none", "gzip", "lzf"),
+      mode = c("w-", "r", "r+", "a", "w", "x")
+    ) {
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "$to_HDF5AnnDAta()",
+        details = "Use `$as_HDF5AnnData()` instead."
+      )
+
+      self$as_HDF5AnnData(
         file = file,
         compression = compression,
         mode = mode

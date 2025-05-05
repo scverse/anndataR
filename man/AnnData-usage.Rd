@@ -109,11 +109,12 @@ elements with number of rows and columns equal to \code{n_vars}.}
 \item{
 \code{as_SingleCellExperiment()}
 }{
-Convert to \code{SingleCellExperiment}, see \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
+Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}}, see
+\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
 }
-\item{\code{as_Seurat()}}{Convert to \code{Seurat}, see \code{\link[=as_Seurat]{as_Seurat()}}}
-\item{\code{to_InMemoryAnnData()}}{Convert to \link{InMemoryAnnData}}
-\item{\code{to_HDF5AnnData()}}{Convert to \link{HDF5AnnData}, see \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}}}
+\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
+\item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
+\item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 }
 }
 

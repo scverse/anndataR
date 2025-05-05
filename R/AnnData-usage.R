@@ -76,11 +76,12 @@
 #'   \item{
 #'     `as_SingleCellExperiment()`
 #'   }{
-#'     Convert to `SingleCellExperiment`, see [as_SingleCellExperiment()]
+#'     Convert to [`SingleCellExperiment::SingleCellExperiment`], see
+#'     [as_SingleCellExperiment()]
 #'   }
-#'   \item{`as_Seurat()`}{Convert to `Seurat`, see [as_Seurat()]}
-#'   \item{`to_InMemoryAnnData()`}{Convert to [InMemoryAnnData]}
-#'   \item{`to_HDF5AnnData()`}{Convert to [HDF5AnnData], see [to_HDF5AnnData()]}
+#'   \item{`as_Seurat()`}{Convert to [`SeuratObject::Seurat`], see [as_Seurat()]}
+#'   \item{`as_InMemoryAnnData()`}{Convert to [`InMemoryAnnData`], as [as_InMemoryAnnData()]}
+#'   \item{`as_HDF5AnnData()`}{Convert to [`HDF5AnnData`], see [as_HDF5AnnData()]}
 #' }
 #'
 #' ## Output methods:

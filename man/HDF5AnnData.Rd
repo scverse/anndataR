@@ -58,6 +58,8 @@ Other AnnData classes:
 \if{html}{\out{
 <details><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>anndataR::AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>anndataR::AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>anndataR::AbstractAnnData$as_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>anndataR::AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
@@ -131,11 +133,11 @@ already exits, other arguments must be \code{NULL}.}
 \item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
 both \code{X} or \code{obs} and \code{var} are not provided.}
 
-\item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}} for
+\item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for
 details}
 
 \item{\code{compression}}{The compression algorithm to use. See
-\code{\link[=to_HDF5AnnData]{to_HDF5AnnData()}} for details}
+\code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
 }
 \if{html}{\out{</div>}}
 }
