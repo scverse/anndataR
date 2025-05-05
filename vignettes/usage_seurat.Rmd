@@ -52,7 +52,7 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 Read the `.h5ad` file and convert it to a `Seurat` object:
 
 ```{r read_data}
-seurat_obj <- read_h5ad(h5ad_file, to = "Seurat")
+seurat_obj <- read_h5ad(h5ad_file, as = "Seurat")
 seurat_obj
 ```
 

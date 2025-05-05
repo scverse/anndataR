@@ -54,7 +54,7 @@ for (name in test_names) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+    adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
     expect_equal(
       adata_r$shape(),
       unlist(reticulate::py_to_r(adata_py$shape))
@@ -91,7 +91,7 @@ for (name in test_names) {
       )
       skip_if(!is.null(msg), message = msg)
 
-      adata_r <- read_h5ad(file_py, to = "HDF5AnnData")
+      adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
       expect_equal(
         adata_r$obs[[name]],
@@ -116,7 +116,7 @@ for (name in test_names) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    adata_r <- read_h5ad(file_py, to = "InMemoryAnnData")
+    adata_r <- read_h5ad(file_py, as = "InMemoryAnnData")
     write_h5ad(adata_r, file_r)
 
     # read from file

@@ -132,13 +132,13 @@ test_that("reading dataframes works", {
 test_that("reading H5AD as SingleCellExperiment works", {
   skip_if_not_installed("SingleCellExperiment")
 
-  sce <- read_h5ad(file, to = "SingleCellExperiment")
+  sce <- read_h5ad(file, as = "SingleCellExperiment")
   expect_s4_class(sce, "SingleCellExperiment")
 })
 
 test_that("reading H5AD as Seurat works", {
   skip_if_not_installed("Seurat")
 
-  seurat <- read_h5ad(file, to = "Seurat")
+  seurat <- read_h5ad(file, as = "Seurat")
   expect_s4_class(seurat, "Seurat")
 })

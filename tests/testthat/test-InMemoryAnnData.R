@@ -1,7 +1,7 @@
 dummy <- generate_dataset(10L, 20L)
 
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
-adata <- read_h5ad(file, to = "InMemoryAnnData")
+adata <- read_h5ad(file, as = "InMemoryAnnData")
 
 # GETTERS ----------------------------------------------------------------
 test_that("Creating InMemoryAnnData works", {
