@@ -254,7 +254,8 @@ to_SingleCellExperiment <- function(
 
   # If the mapping is a vector expand it to the list format
   if (is.atomic(reducedDims_mapping)) {
-    reducedDims_mapping <- purrr::map(reducedDims_mapping, function(.obsm) { # nolint: object_name_linter
+    reducedDims_mapping <- purrr::map(reducedDims_mapping, function(.obsm) {
+      # nolint: object_name_linter
       c(sampleFactors = .obsm)
     })
   } else {
