@@ -26,6 +26,8 @@
 #' @return The object specified by `as`
 #' @export
 #'
+#' @family AnnData creators
+#'
 #' @examples
 #' h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 #'

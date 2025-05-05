@@ -18,6 +18,7 @@
 #' @export
 #'
 #' @seealso [AnnData-usage] for details of `AnnData` structure and usage
+#' @family AnnData creators
 #'
 #' @examples
 #' adata <- AnnData(
@@ -170,8 +171,9 @@ AnnData <- function(
 #'
 #' @return An `AnnData` object of the class requested by `output_class`
 #'   containing the data specified in the mapping arguments.
-#'
 #' @export
+#'
+#' @family AnnData creators
 #'
 #' @examplesIf rlang::is_installed("Seurat")
 #' # Convert a Seurat object to an AnnData object

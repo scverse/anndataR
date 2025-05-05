@@ -59,3 +59,9 @@ if (requireNamespace("SeuratObject", quietly = TRUE)) {
   seurat <- read_h5ad(h5ad_file, as = "Seurat")
 }
 }
+\seealso{
+Other AnnData creators: 
+\code{\link{AnnData}()},
+\code{\link{as_AnnData}()}
+}
+\concept{AnnData creators}

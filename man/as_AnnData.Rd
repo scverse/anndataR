@@ -212,3 +212,9 @@ sce <- SingleCellExperiment(
 as_AnnData(sce)
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+Other AnnData creators: 
+\code{\link{AnnData}()},
+\code{\link{read_h5ad}()}
+}
+\concept{AnnData creators}
