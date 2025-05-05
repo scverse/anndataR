@@ -26,10 +26,8 @@ read_h5ad(
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
 }}
 
-\item{...}{Extra arguments provided to \code{adata$as_SingleCellExperiment()} or
-\code{adata$as_Seurat()}. See \code{\link[=AnnData]{AnnData()}} for more information on the arguments of
-these functions. Note: update this documentation when
-\href{https://github.com/r-lib/roxygen2/issues/955}{\code{r-lib/roxygen2#955}} is resolved.}
+\item{...}{Extra arguments provided to the conversion function for the object
+specified by \code{to}.}
 }
 \value{
 The object specified by \code{to}

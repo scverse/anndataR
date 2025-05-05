@@ -13,10 +13,8 @@
 #'   * `w` creates a file, truncating any existing ones.
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #'
-#' @param ... Extra arguments provided to `adata$as_SingleCellExperiment()` or
-#'   `adata$as_Seurat()`. See [AnnData()] for more information on the arguments of
-#'   these functions. Note: update this documentation when
-#'   [`r-lib/roxygen2#955`](https://github.com/r-lib/roxygen2/issues/955) is resolved.
+#' @param ... Extra arguments provided to the conversion function for the object
+#'   specified by `to`.
 #'
 #' @return The object specified by `to`
 #' @export
@@ -44,17 +42,10 @@ read_h5ad <- function(
 
   adata <- HDF5AnnData$new(path, mode = mode)
 
-  fun <- switch(
-    to,
-    "SingleCellExperiment" = as_SingleCellExperiment,
-    "Seurat" = as_Seurat,
-    "InMemoryAnnData" = to_InMemoryAnnData,
-    "HDF5AnnData" = NULL
+  switch (to,
+    "SingleCellExperiment" = adata$as_SingleCellExperiment(...),
+    "Seurat" = adata$as_Seurat(...),
+    "InMemoryAnnData" = adata$to_InMemoryAnnData(...),
+    "HDF5AnnData" = adata
   )
-
-  if (!is.null(fun)) {
-    fun(adata, ...)
-  } else {
-    adata
-  }
 }
