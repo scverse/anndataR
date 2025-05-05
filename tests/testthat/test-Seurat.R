@@ -176,6 +176,11 @@ test_that("as_Seurat works with unnamed mappings", {
   )
 })
 
+test_that("deprecated to_Seurat() works", {
+  expect_warning(seu <- ad$to_Seurat())
+  expect_s4_class(seu, "Seurat")
+})
+
 skip_if_not_installed("Seurat")
 library(Seurat)
 
@@ -196,7 +201,7 @@ active_assay <- obj@assays[[obj@active.assay]]
 
 ad <- as_AnnData(obj)
 
-test_that("from_SCE retains number of observations and features", {
+test_that("as_AnnData retains number of observations and features", {
   expect_equal(ad$n_obs(), 200L)
   expect_equal(ad$n_vars(), 100L)
 

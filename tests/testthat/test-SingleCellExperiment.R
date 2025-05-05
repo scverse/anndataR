@@ -9,7 +9,7 @@ ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 sce <- ad$as_SingleCellExperiment()
 
-test_that("to_SCE retains nr of observations and features", {
+test_that("as_SCE retains nr of observations and features", {
   expect_equal(nrow(sce), 20)
   expect_equal(ncol(sce), 10)
 
@@ -21,7 +21,7 @@ test_that("to_SCE retains nr of observations and features", {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_obs, status=done
 for (obs_key in colnames(ad$obs)) {
-  test_that(paste0("to_SCE retains obs key: ", obs_key), {
+  test_that(paste0("as_SCE retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("obs"),
@@ -42,7 +42,7 @@ for (obs_key in colnames(ad$obs)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_var, status=done
 for (var_key in colnames(ad$var)) {
-  test_that(paste0("to_SCE retains var key: ", var_key), {
+  test_that(paste0("as_SCE retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("var"),
@@ -63,7 +63,7 @@ for (var_key in colnames(ad$var)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_layers, status=done
 for (layer_key in names(ad$layers)) {
-  test_that(paste0("to_SCE retains layer: ", layer_key), {
+  test_that(paste0("as_SCE retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("layers"),
@@ -87,7 +87,7 @@ for (layer_key in names(ad$layers)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_obsp, status=done
 for (obsp_key in names(ad$obsp)) {
-  test_that(paste0("to_SCE retains obsp key: ", obsp_key), {
+  test_that(paste0("as_SCE retains obsp key: ", obsp_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("obsp"),
@@ -108,7 +108,7 @@ for (obsp_key in names(ad$obsp)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_varp, status=done
 for (varp_key in names(ad$varp)) {
-  test_that(paste0("to_SCE retains varp key: ", varp_key), {
+  test_that(paste0("as_SCE retains varp key: ", varp_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("obsp"),
@@ -129,7 +129,7 @@ for (varp_key in names(ad$varp)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {
-  test_that(paste0("to_SCE retains uns key: ", uns_key), {
+  test_that(paste0("as_SCE retains uns key: ", uns_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("uns"),
@@ -148,7 +148,7 @@ for (uns_key in names(ad$uns)) {
   })
 }
 
-test_that("to_SCE retains pca dimred", {
+test_that("as_SCE retains pca dimred", {
   msg <- message_if_known(
     backend = "to_SCE",
     slot = c("obsm", "varm"),
@@ -173,7 +173,7 @@ test_that("to_SCE retains pca dimred", {
   )
 })
 
-test_that("to_SCE works with list mappings", {
+test_that("as_SCE works with list mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
       assays_mapping = as.list(.to_SCE_guess_assays(ad)),
@@ -193,7 +193,7 @@ test_that("to_SCE works with list mappings", {
   )
 })
 
-test_that("to_SCE works with a vector reducedDims_mapping", {
+test_that("as_SCE works with a vector reducedDims_mapping", {
   expect_no_error(
     ad$as_SingleCellExperiment(
       reducedDims_mapping = c(numeric = "numeric_matrix")
@@ -201,7 +201,7 @@ test_that("to_SCE works with a vector reducedDims_mapping", {
   )
 })
 
-test_that("to_SCE works with unnamed mappings", {
+test_that("as_SCE works with unnamed mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
       assays_mapping = unname(.to_SCE_guess_assays(ad)),
@@ -212,6 +212,11 @@ test_that("to_SCE works with unnamed mappings", {
       metadata_mapping = unname(.to_SCE_guess_all(ad, "uns"))
     )
   )
+})
+
+test_that("deprecated to_SingleCellExperiment() works", {
+  expect_warning(sce <- ad$to_SingleCellExperiment())
+  expect_s4_class(sce, "SingleCellExperiment")
 })
 
 # TODO gracefully failing

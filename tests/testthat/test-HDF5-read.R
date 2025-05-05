@@ -142,3 +142,8 @@ test_that("reading H5AD as Seurat works", {
   seurat <- read_h5ad(file, as = "Seurat")
   expect_s4_class(seurat, "Seurat")
 })
+
+test_that("deprecated to argument in read_h5ad() works", {
+  expect_warning(mem_ad <- read_h5ad(file, to = "InMemoryAnnData"))
+  expect_true(inherits(mem_ad, "InMemoryAnnData"))
+})
