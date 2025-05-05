@@ -174,6 +174,7 @@ AnnData <- function(
 #' @export
 #'
 #' @family AnnData creators
+#' @family object converters
 #'
 #' @examplesIf rlang::is_installed("Seurat")
 #' # Convert a Seurat object to an AnnData object

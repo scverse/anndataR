@@ -42,3 +42,11 @@ ad$as_HDF5AnnData("test.h5ad")
 # remove file
 file.remove("test.h5ad")
 }
+\seealso{
+Other object converters: 
+\code{\link{as_AnnData}()},
+\code{\link{as_InMemoryAnnData}},
+\code{\link{as_Seurat}},
+\code{\link{as_SingleCellExperiment}}
+}
+\concept{object converters}

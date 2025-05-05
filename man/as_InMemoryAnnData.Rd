@@ -25,3 +25,11 @@ ad <- AnnData(
 )
 ad$as_InMemoryAnnData()
 }
+\seealso{
+Other object converters: 
+\code{\link{as_AnnData}()},
+\code{\link{as_HDF5AnnData}},
+\code{\link{as_Seurat}},
+\code{\link{as_SingleCellExperiment}}
+}
+\concept{object converters}

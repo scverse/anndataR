@@ -117,3 +117,11 @@ to the \code{key} argument after processing with \code{\link[SeuratObject:Key]{S
   )
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+Other object converters: 
+\code{\link{as_AnnData}()},
+\code{\link{as_HDF5AnnData}},
+\code{\link{as_InMemoryAnnData}},
+\code{\link{as_SingleCellExperiment}}
+}
+\concept{object converters}
