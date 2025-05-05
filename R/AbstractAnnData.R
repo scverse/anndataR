@@ -187,7 +187,7 @@ AbstractAnnData <- R6::R6Class(
     rowPairs_mapping = NULL, # nolint
     metadata_mapping = NULL
     ) {
-      as_SingleCellExperiment(
+      to_SingleCellExperiment(
         self,
         assays_mapping = assays_mapping,
         colData_mapping = colData_mapping,
@@ -260,7 +260,7 @@ AbstractAnnData <- R6::R6Class(
     graph_mapping = NULL,
     misc_mapping = NULL
     ) {
-      as_Seurat(
+      to_Seurat(
         self,
         assay_name = assay_name,
         layers_mapping = layers_mapping,

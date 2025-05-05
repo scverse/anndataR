@@ -1,92 +1,7 @@
-#' Convert an `AnnData` to a `Seurat`
-#'
-#' Convert an `AnnData` object to a `Seurat` object
-#'
-#' @param adata The `AnnData` object to convert.
-#' @param assay_name Name of the assay to be created in the new `Seurat` object
-#' @param layers_mapping A named vector where names are names of `Layers` in the resulting
-#'   `Seurat` object and values are keys of `layers` in `adata`.
-#'   See below for details.
-#' @param object_metadata_mapping A named vector where names are cell
-#'   metadata columns in the resulting `Seurat` object and values are columns of `obs` in `adata`.
-#'   See below for details.
-#' @param assay_metadata_mapping A named vector where names are variable
-#'   metadata columns in the assay of the resulting `Seurat` object and values are columns of `var` in `adata`.
-#'   See below for details.
-#' @param reduction_mapping A named vector where names are names of `Embeddings` in the resulting
-# `Seurat` object and values are keys of `obsm` in `adata`. Alternatively, a named list where names are names of `Embeddings`
-#' in the resulting `Seurat` object and values are vectors with the items `"key"`, `"obsm"` and
-#' (optionally) `"varm"`. See below for details.
-#' @param graph_mapping  A named vector where names are names of `Graphs` in the resulting
-#'   `Seurat` object and values are keys of `obsp` in `adata`.
-#'   See below for details.
-#' @param misc_mapping A named vector where names are names of `Misc` in the resulting
-#'   `Seurat` object and values are keys of `uns` in `adata`.
-#'   See below for details.
-#'
-#' @details
-#'
-#'   ## Mapping arguments
-#'
-#'   All mapping arguments expect a named character
-#'   vector where names are the names of the slot in the `Seurat` object and
-#'   values are the keys of the corresponding slot of `adata`. If `NULL`,
-#'   the conversion function will guess which items to copy as described in the
-#'   conversion tables conversion table below. In most cases, the default is to
-#'   copy all items using the same names except where the correspondence between
-#'   objects is unclear. The `reduction_mapping` argument can also accept a more complex list format, see below for details. To avoid copying anything to a slot, provide an empty
-#'   vector. If an unnamed vector is provided, the values will be used as names
-#'
-#'   ### Examples:
-#'
-#'   - `NULL` will guess which items to copy as described in the conversion
-#'     table
-#'   - `c(seurat_item = "adata_item")` will copy `adata_item` from the slot in `adata` to
-#'     `seurat_item` in the corresponding slot of new `Seurat` object
-#'   - `c()` will avoid copying anything to the slot
-#'   - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
-#'
-#'   ## Conversion table
-#'
-#'   | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
-#'   |--------------------|-------------------------------|------------------------------|-----------------------|
-#'   | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
-#'   | `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
-#'   | `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
-#'   | `adata$obsm` | `Embeddings(sce)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))`  | All items that can be coerced to a numeric matrix are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
-#'   | `adata$obsp` | `Graphs(seurat)` | `graph_mapping = c(nn = "connectivities")` | All items are copied by name |
-#'   | `adata$varp` | _NA_  | _NA_ | There is no corresponding slot for `varp` |
-#'   | `adata$uns` | `Misc(seurat)` | `misc_mapping = c(project_metadata = "metadata")` | All items are copied by name |
-#'
-#' ## The `reduction_mapping` argument
-#'
-#' For the simpler named vector format, the names should be the names of
-#'   `Embeddings` in the resulting `Seurat` object, and the values
-#'   should be the keys of `obsm` in `adata`.
-#'
-#' For more advanced mapping, use the list format where each item is a vector with the
-#'   following names:
-#'
-#'   - `key`: the key of the resulting [`SeuratObject::DimReduc`] object
-#'   - `obsm`: a key of the `obsm` slot in `adata`
-#'   - `varm`: a key of the `varm` slot in `adata` (optional)
-#'
-#' All keys are processed by [SeuratObject::Key()] to match requirements
-#'
-#' @return A `Seurat` object containing the requested data from `adata`
-#' @keywords internal
-#'
-#' @examplesIf rlang::is_installed("Seurat")
-#' ad <- AnnData(
-#'   X = matrix(1:5, 3L, 5L),
-#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
-#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
-#' )
-#' ad$as_Seurat()
-#'
+# See as_Seurat for function documentation
 #' @importFrom Matrix t
 # nolint start: object_name_linter
-as_Seurat <- function(
+to_Seurat <- function(
   adata,
   assay_name = "RNA",
   layers_mapping = NULL,
@@ -97,7 +12,7 @@ as_Seurat <- function(
   misc_mapping = NULL
 ) {
   # nolint end: object_name_linter
-  check_requires("Converting AnnData to Seurat", "SeuratObject")
+  check_requires("Converting AnnData to Seurat", c("Seurat", "SeuratObject"))
 
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
