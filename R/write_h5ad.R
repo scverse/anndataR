@@ -2,18 +2,19 @@
 #'
 #' Write an H5AD file
 #'
-#' @param object The object to write, either a "SingleCellExperiment" or a
-#' "Seurat" object
+#' @param object The object to write, either a
+#'   [`SingleCellExperiment::SingleCellExperiment`] or a
+#'   [`SeuratObject::Seurat`] object
 #' @param path Path of the file to write to
-#' @param compression The compression algorithm to use when writing the
-#'  HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
-#' `"none"`.
+#' @param compression The compression algorithm to use when writing the HDF5
+#'   file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param mode The mode to open the HDF5 file.
 #'
-#'   * `a` creates a new file or opens an existing one for read/write.
-#'   * `r+` opens an existing file for read/write.
+#'   * `a` creates a new file or opens an existing one for read/write
+#'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
-#'   * `w-`/`x` are synonyms creating a file and failing if it already exists.
+#'   * `w-`/`x` are synonyms creating a file and failing if it already exists
+#' @param ... Additional arguments passed to [as_AnnData()]
 #'
 #' @return `path` invisibly
 #' @export
@@ -78,7 +79,8 @@ write_h5ad <- function(
   object,
   path,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  ...
 ) {
   mode <- match.arg(mode)
   adata <- if (inherits(object, "AbstractAnnData")) {
@@ -93,7 +95,8 @@ write_h5ad <- function(
       output_class = "HDF5AnnData",
       file = path,
       compression = compression,
-      mode = mode
+      mode = mode,
+      ...
     )
   }
 

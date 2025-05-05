@@ -8,26 +8,29 @@ write_h5ad(
   object,
   path,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  ...
 )
 }
 \arguments{
-\item{object}{The object to write, either a "SingleCellExperiment" or a
-"Seurat" object}
+\item{object}{The object to write, either a
+\code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}} or a
+\code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object}
 
 \item{path}{Path of the file to write to}
 
-\item{compression}{The compression algorithm to use when writing the
-HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
-\code{"none"}.}
+\item{compression}{The compression algorithm to use when writing the HDF5
+file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to \code{"none"}.}
 
 \item{mode}{The mode to open the HDF5 file.
 \itemize{
-\item \code{a} creates a new file or opens an existing one for read/write.
-\item \verb{r+} opens an existing file for read/write.
+\item \code{a} creates a new file or opens an existing one for read/write
+\item \verb{r+} opens an existing file for read/write
 \item \code{w} creates a file, truncating any existing ones
-\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
+\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists
 }}
+
+\item{...}{Additional arguments passed to \code{\link[=as_AnnData]{as_AnnData()}}}
 }
 \value{
 \code{path} invisibly
