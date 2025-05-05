@@ -119,7 +119,7 @@ ad <- AnnData(
   var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
 
-sce <- as_SingleCellExperiment(ad)
+sce <- ad$as_SingleCellExperiment()
 \dontshow{\}) # examplesIf}
 }
 \keyword{internal}

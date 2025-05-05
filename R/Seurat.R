@@ -82,7 +82,7 @@
 #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
-#' as_Seurat(ad)
+#' ad$as_Seurat()
 #'
 #' @importFrom Matrix t
 # nolint start: object_name_linter

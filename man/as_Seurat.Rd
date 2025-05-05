@@ -111,7 +111,7 @@ ad <- AnnData(
   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
   var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
-as_Seurat(ad)
+ad$as_Seurat()
 \dontshow{\}) # examplesIf}
 }
 \keyword{internal}

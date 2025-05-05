@@ -58,7 +58,7 @@ adata
 Convert to a `SingleCellExperiment` object:
 
 ```{r convert_implicit}
-sce_obj <- adata$to_SingleCellExperiment()
+sce_obj <- adata$as_SingleCellExperiment()
 sce_obj
 ```
 

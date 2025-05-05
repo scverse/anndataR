@@ -68,7 +68,7 @@ you can pass an empty list.
 
 Here, we showcase what happens if you do not provide any mapping for the conversion.
 ```{r implicit}
-sce <- as_SingleCellExperiment(ad)
+sce <- ad$as_SingleCellExperiment()
 sce
 ```
 
@@ -88,8 +88,7 @@ In the below example, we will convert an AnnData object with a `counts` layer an
 In order for the implicit conversion to work, we will not provide a `layers_mapping`.
 We explicitly pass empty lists to the other mapping arguments for clarity in the resulting object. They ensure that nothing gets converted to the respective slots.
 ```{r implicit_layers}
-sce_layers <- as_SingleCellExperiment(
-  ad,
+sce_layers <- ad$as_SingleCellExperiment(
   colData_mapping = c(),
   rowData_mapping = c(),
   reduction_mapping = c(),
@@ -116,8 +115,7 @@ We guess the mapping of the reductions the same way as we do for the Seurat conv
 - If the `obsm` slot contains a `X_pca` slot, we will also store the associated loadings (in `varm`) in a LinearEmbeddingMatrix.
 
 ```{r implicit_pca}
-sce_dimred <- as_SingleCellExperiment(
-  ad,
+sce_dimred <- ad$as_SingleCellExperiment(
   colData_mapping = c(),
   rowData_mapping = c(),
   colPairs_mapping = c(),
@@ -137,8 +135,7 @@ all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in th
 and all `metadata` is stored in the `uns` slot.
 
 ```{r implicit_easy}
-sce_implicit <- as_SingleCellExperiment(
-  ad,
+sce_implicit <- ad$as_SingleCellExperiment(
   assays_mapping = c(),
   reduction_mapping = c()
 )
@@ -155,8 +152,7 @@ We will give an example for each of the mappings.
 ### assays_mapping
 
 ```{r explicit_assays}
-sce_assays <- as_SingleCellExperiment(
-  ad,
+sce_assays <- ad$as_SingleCellExperiment(
   assays_mapping = c(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
   colData_mapping = c(),
   rowData_mapping = c(),
@@ -173,8 +169,7 @@ You can see that the `X` slot got stored as `counts`, and the `layers` got store
 ### colData, rowData, colPairs, rowPairs, metadata
 
 ```{r explicit col_data}
-sce <- as_SingleCellExperiment(
-  ad,
+sce <- ad$as_SingleCellExperiment(
   assays_mapping = c(),
   colData_mapping = c(coldata1 = "integer", coldata2 = "numeric"),
   rowData_mapping = c(rowdata1 = "character", rowdata2 = "logical"),
@@ -205,8 +200,7 @@ the SingleCellExperiment object.
 ### reductions_mapping
 
 ```{r explicit_reductions}
-sce <- as_SingleCellExperiment(
-  ad,
+sce <- ad$as_SingleCellExperiment(
   assays_mapping = c(counts = "X"),
   colData_mapping = c(),
   rowData_mapping = c(),

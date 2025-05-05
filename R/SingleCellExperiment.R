@@ -89,7 +89,7 @@
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
 #' )
 #'
-#' sce <- as_SingleCellExperiment(ad)
+#' sce <- ad$as_SingleCellExperiment()
 as_SingleCellExperiment <- function(
   adata,
   assays_mapping = NULL,
