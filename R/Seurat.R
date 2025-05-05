@@ -314,7 +314,7 @@ to_Seurat <- function(
     reduction_mapping <- purrr::map(reduction_mapping, function(.obsm) {
       c(
         key = suppressWarnings(SeuratObject::Key(.obsm)),
-        obsm = .obsm
+        embeddings = .obsm
       )
     })
   }
@@ -328,19 +328,20 @@ to_Seurat <- function(
 
     if (
       is.null(names(reduction)) ||
-        !all(names(reduction) %in% c("key", "obsm", "varm")) ||
-        !all(c("key", "obsm") %in% names(reduction))
+        !all(names(reduction) %in% c("key", "embeddings", "loadings")) ||
+        !all(c("key", "embeddings") %in% names(reduction))
     ) {
       cli_abort(c(
         paste(
           "Each item in {.arg reduction_mapping} must be a {.cls character} vector",
-          "with names {style_vec(c('key', 'obsm', 'varm'), last = ' and (optionally) ')}"
+          "with names {style_vec(c('key', 'embeddings', 'loadings'),",
+          "last = ' and (optionally) ')}"
         ),
         "i" = "Item {.val {i}} has names: {.val {names(reduction)}}"
       ))
     }
 
-    varm_loadings <- reduction["varm"]
+    varm_loadings <- reduction["loadings"]
     if (is.na(varm_loadings)) {
       varm_loadings <- NULL
     }
@@ -349,7 +350,7 @@ to_Seurat <- function(
       adata = adata,
       assay_name = assay_name,
       key = reduction["key"],
-      obsm_embedding = reduction["obsm"],
+      obsm_embedding = reduction["embeddings"],
       varm_loadings = varm_loadings
     )
 
@@ -400,10 +401,10 @@ to_Seurat <- function(
     mapping <- c(
       # Make sure we have valid keys here to avoid warnings later
       key = suppressWarnings(SeuratObject::Key(.obsm)),
-      obsm = .obsm
+      embeddings = .obsm
     )
     if (.obsm == "X_pca" && "PCs" %in% names(adata$varm)) {
-      mapping["varm"] <- "PCs"
+      mapping["loadings"] <- "PCs"
     }
 
     mapping

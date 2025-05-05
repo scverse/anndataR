@@ -282,8 +282,8 @@ The values must be a named list, containing the keys: `key`, `obsm` and maybe `v
 ```{r as_Seurat explicit_reduction}
 seurat_obj <- ad$as_Seurat(
   reduction_mapping = list(
-    pca = c(key = "PC", obsm = "X_pca", varm = "PCs"),
-    umap = c(key = "UMAP", obsm = "X_umap")
+    pca = c(key = "PC", embeddings = "X_pca", loadings = "PCs"),
+    umap = c(key = "UMAP", embeddings = "X_umap")
   )
 )
 Reductions(seurat_obj)

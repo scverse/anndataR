@@ -24,7 +24,7 @@ are columns of \code{var} in \code{adata}. See below for details.}
 in the resulting \code{Seurat} object and values are keys of \code{obsm} in \code{adata}.
 Alternatively, a named list where names are names of \code{Embeddings} in the
 resulting \code{Seurat} object and values are vectors with the items \code{"key"},
-\code{"obsm"} and (optionally) \code{"varm"}. See below for details.}
+\code{"embeddings"} and (optionally) \code{"loadings"}. See below for details.}
 
 \item{graph_mapping}{A named vector where names are names of \code{Graphs} in the
 resulting \code{Seurat} object and values are keys of \code{obsp} in \code{adata}. See
@@ -81,17 +81,20 @@ vector. If an unnamed vector is provided, the values will be used as names
 
 For the simpler named vector format, the names should be the names of
 \code{Embeddings} in the resulting \code{Seurat} object, and the values
-should be the keys of \code{obsm} in \code{adata}.
+should be the keys of \code{obsm} in \code{adata}. A key will created from the \code{obsm}
+key.
 
 For more advanced mapping, use the list format where each item is a vector
-with the following names:
+with the following names defining arguments to
+\code{\link[SeuratObject:CreateDimReducObject]{SeuratObject::CreateDimReducObject()}}:
 \itemize{
-\item \code{key}: the key of the resulting \code{\link[SeuratObject:DimReduc-class]{SeuratObject::DimReduc}} object
-\item \code{obsm}: a key of the \code{obsm} slot in \code{adata}
-\item \code{varm}: a key of the \code{varm} slot in \code{adata} (optional)
+\item \code{key}: the key of the resulting \code{\link[SeuratObject:DimReduc-class]{SeuratObject::DimReduc}} object, passed
+to the \code{key} argument after processing with \code{\link[SeuratObject:Key]{SeuratObject::Key()}}
+\item \code{embeddings}: a key of the \code{obsm} slot in \code{adata},
+\code{adata$obsm[[embeddings]]} is passed to the \code{embeddings} argument
+\item \code{loadings}: a key of the \code{varm} slot in \code{adata} (optional),
+\code{adata$varm[[loadings]]} is passed to the \code{loadings} argument
 }
-
-All keys are processed by \code{\link[SeuratObject:Key]{SeuratObject::Key()}} to match requirements
 }
 }
 \examples{
