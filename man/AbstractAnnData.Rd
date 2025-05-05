@@ -249,33 +249,13 @@ A \code{SingleCellExperiment} object
 
 Deprecated, use \code{as_SingleCellExperiment()} instead
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
-  assays_mapping = NULL,
-  colData_mapping = NULL,
-  rowData_mapping = NULL,
-  reduction_mapping = NULL,
-  colPairs_mapping = NULL,
-  rowPairs_mapping = NULL,
-  metadata_mapping = NULL
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{assays_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{colData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{rowData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{reduction_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{colPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{rowPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
-
-\item{\code{metadata_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+\item{\code{...}}{Arguments passed to \code{adata$as_SingleCellExperiment()}}
 }
 \if{html}{\out{</div>}}
 }
@@ -333,33 +313,13 @@ A \code{Seurat} object
 
 Deprecated, use \code{as_Seurat()} instead
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
-  assay_name = "RNA",
-  layers_mapping = NULL,
-  object_metadata_mapping = NULL,
-  assay_metadata_mapping = NULL,
-  reduction_mapping = NULL,
-  graph_mapping = NULL,
-  misc_mapping = NULL
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{assay_name}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
-
-\item{\code{layers_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
-
-\item{\code{object_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
-
-\item{\code{assay_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
-
-\item{\code{reduction_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
-
-\item{\code{graph_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
-
-\item{\code{misc_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+\item{\code{...}}{Arguments passed to \code{adata$as_Seurat()}}
 }
 \if{html}{\out{</div>}}
 }
@@ -435,21 +395,13 @@ An \code{\link{HDF5AnnData}} object
 
 Deprecated, use \code{as_HDF5AnnData()} instead
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(
-  file,
-  compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
-
-\item{\code{compression}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
-
-\item{\code{mode}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+\item{\code{...}}{Arguments passed to \code{adata$as_HDF5AnnData()}}
 }
 \if{html}{\out{</div>}}
 }

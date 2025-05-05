@@ -203,39 +203,17 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' Deprecated, use `as_SingleCellExperiment()` instead
     #'
-    #' @param assays_mapping See [as_SingleCellExperiment()]
-    #' @param colData_mapping See [as_SingleCellExperiment()]
-    #' @param rowData_mapping See [as_SingleCellExperiment()]
-    #' @param reduction_mapping See [as_SingleCellExperiment()]
-    #' @param colPairs_mapping See [as_SingleCellExperiment()]
-    #' @param rowPairs_mapping See [as_SingleCellExperiment()]
-    #' @param metadata_mapping See [as_SingleCellExperiment()]
+    #' @param ... Arguments passed to `adata$as_SingleCellExperiment()`
     #'
     #' @return A `SingleCellExperiment` object
-    to_SingleCellExperiment = function(
-      assays_mapping = NULL,
-      colData_mapping = NULL, # nolint
-      rowData_mapping = NULL, # nolint
-      reduction_mapping = NULL,
-      colPairs_mapping = NULL, # nolint
-      rowPairs_mapping = NULL, # nolint
-      metadata_mapping = NULL
-    ) {
+    to_SingleCellExperiment = function(...) {
       lifecycle::deprecate_warn(
         "0.99.0",
         "$to_SingleCellExperiment()",
         details = "Use `$as_SingleCellExperiment()` instead."
       )
 
-      self$as_SingleCellExperiment(
-        assays_mapping = assays_mapping,
-        colData_mapping = colData_mapping,
-        rowData_mapping = rowData_mapping,
-        reduction_mapping = reduction_mapping,
-        colPairs_mapping = colPairs_mapping, # nolint
-        rowPairs_mapping = rowPairs_mapping, # nolint
-        metadata_mapping = metadata_mapping
-      )
+      self$as_SingleCellExperiment(...)
     },
     #' @description
     #' Convert to `Seurat`
@@ -276,39 +254,17 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' Deprecated, use `as_Seurat()` instead
     #'
-    #' @param assay_name See [as_Seurat()]
-    #' @param layers_mapping See [as_Seurat()]
-    #' @param object_metadata_mapping See [as_Seurat()]
-    #' @param assay_metadata_mapping See [as_Seurat()]
-    #' @param reduction_mapping See [as_Seurat()]
-    #' @param graph_mapping See [as_Seurat()]
-    #' @param misc_mapping See [as_Seurat()]
+    #' @param ... Arguments passed to `adata$as_Seurat()`
     #'
     #' @return A `Seurat` object
-    to_Seurat = function(
-      assay_name = "RNA",
-      layers_mapping = NULL,
-      object_metadata_mapping = NULL,
-      assay_metadata_mapping = NULL,
-      reduction_mapping = NULL,
-      graph_mapping = NULL,
-      misc_mapping = NULL
-    ) {
+    to_Seurat = function(...) {
       lifecycle::deprecate_warn(
         "0.99.0",
         "$to_Seurat()",
         details = "Use `$as_Seurat()` instead."
       )
 
-      self$as_Seurat(
-        assay_name = assay_name,
-        layers_mapping = layers_mapping,
-        object_metadata_mapping = object_metadata_mapping,
-        assay_metadata_mapping = assay_metadata_mapping,
-        reduction_mapping = reduction_mapping,
-        graph_mapping = graph_mapping,
-        misc_mapping = misc_mapping
-      )
+      self$as_Seurat(...)
     },
     #' @description
     #' Convert to an [`InMemoryAnnData`]
@@ -332,7 +288,7 @@ AbstractAnnData <- R6::R6Class(
         details = "Use `$as_InMemoryAnnData()` instead."
       )
 
-      self$as_InMemoryAnnData(self)
+      self$as_InMemoryAnnData()
     },
     #' @description
     #' Convert to an [`HDF5AnnData`]
@@ -361,27 +317,17 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' Deprecated, use `as_HDF5AnnData()` instead
     #'
-    #' @param file See [as_HDF5AnnData()]
-    #' @param compression See [as_HDF5AnnData()]
-    #' @param mode See [as_HDF5AnnData()]
+    #' @param ... Arguments passed to `adata$as_HDF5AnnData()`
     #'
     #' @return An [`HDF5AnnData`] object
-    to_HDF5AnnData = function(
-      file,
-      compression = c("none", "gzip", "lzf"),
-      mode = c("w-", "r", "r+", "a", "w", "x")
-    ) {
+    to_HDF5AnnData = function(...) {
       lifecycle::deprecate_warn(
         "0.99.0",
         "$to_HDF5AnnDAta()",
         details = "Use `$as_HDF5AnnData()` instead."
       )
 
-      self$as_HDF5AnnData(
-        file = file,
-        compression = compression,
-        mode = mode
-      )
+      self$as_HDF5AnnData(...)
     },
     #' @description
     #' Write the `AnnData` object to an H5AD file
