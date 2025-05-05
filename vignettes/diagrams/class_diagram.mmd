@@ -17,12 +17,12 @@ classDiagram
     *subset(...): AbstractAnnData
     *write_h5ad(): Unit
 
-    to_SingleCellExperiment(): SingleCellExperiment
-    to_Seurat(): Seurat
+    as_SingleCellExperiment(): SingleCellExperiment
+    as_Seurat(): Seurat
 
-    to_HDF5AnnData(): HDF5AnnData
-    to_ZarrAnnData(): ZarrAnnData
-    to_InMemoryAnnData(): InMemoryAnnData
+    as_HDF5AnnData(): HDF5AnnData
+    as_ZarrAnnData(): ZarrAnnData
+    as_InMemoryAnnData(): InMemoryAnnData
   }
 
   AbstractAnnData <|-- HDF5AnnData

@@ -6,7 +6,8 @@
 \usage{
 read_h5ad(
   path,
-  to = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+  as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+  to = deprecated(),
   mode = c("r", "r+", "a", "w", "w-", "x"),
   ...
 )
@@ -14,8 +15,18 @@ read_h5ad(
 \arguments{
 \item{path}{Path to the H5AD file to read}
 
-\item{to}{The type of object to return. Must be one of: "InMemoryAnnData",
-"HDF5AnnData", "SingleCellExperiment", "Seurat"}
+\item{as}{The type of object to return. One of:
+\itemize{
+\item \code{"InMemoryAnnData"}: Read the H5AD file into memory as an
+\code{\link{InMemoryAnnData}} object
+\item \code{"HDF5AnnData"}: Read the H5AD file as an \code{\link{HDF5AnnData}} object
+\item \code{"SingleCellExperiment"}: Read the H5AD file as a
+\code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}} object
+\item \code{"Seurat"}: Read the H5AD file as a
+\code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object
+}}
+
+\item{to}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated, use \code{as} instead}
 
 \item{mode}{The mode to open the HDF5 file.
 \itemize{
@@ -26,13 +37,11 @@ read_h5ad(
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
 }}
 
-\item{...}{Extra arguments provided to \code{adata$to_SingleCellExperiment()} or
-\code{adata$to_Seurat()}. See \code{\link[=AnnData]{AnnData()}} for more information on the arguments of
-these functions. Note: update this documentation when
-\href{https://github.com/r-lib/roxygen2/issues/955}{\code{r-lib/roxygen2#955}} is resolved.}
+\item{...}{Extra arguments provided to the \verb{as_*} conversion function for the
+object specified by \code{as}}
 }
 \value{
-The object specified by \code{to}
+The object specified by \code{as}
 }
 \description{
 Read data from a H5AD file
@@ -42,11 +51,17 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 # Read the H5AD as a SingleCellExperiment object
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-  sce <- read_h5ad(h5ad_file, to = "SingleCellExperiment")
+  sce <- read_h5ad(h5ad_file, as = "SingleCellExperiment")
 }
 
 # Read the H5AD as a Seurat object
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
-  seurat <- read_h5ad(h5ad_file, to = "Seurat")
+  seurat <- read_h5ad(h5ad_file, as = "Seurat")
 }
 }
+\seealso{
+Other AnnData creators: 
+\code{\link{AnnData}()},
+\code{\link{as_AnnData}()}
+}
+\concept{AnnData creators}

@@ -4,80 +4,44 @@
 \alias{AbstractAnnData}
 \title{Abstract AnnData class}
 \description{
-This class is an abstract representation of an AnnData object. It is
+This class is an abstract representation of an \code{AnnData} object. It is
 intended to be used as a base class for concrete implementations of
-AnnData objects, such as \code{InMemoryAnnData} or \code{HDF5AnnData}.
+\code{AnnData} objects, such as \link{InMemoryAnnData} or \link{HDF5AnnData}.
 
-The following functions can be used to create an object that inherits
-from \code{AbstractAnnData}:
-\itemize{
-\item \code{\link[=AnnData]{AnnData()}}: Create an in-memory AnnData object.
-\item \code{\link[=read_h5ad]{read_h5ad()}}: Create an HDF5-backed AnnData object.
-\item \code{\link[=from_Seurat]{from_Seurat()}}: Create an in-memory AnnData object from a Seurat object.
-\item \code{\link[=from_SingleCellExperiment]{from_SingleCellExperiment()}}: Create an in-memory AnnData object from a SingleCellExperiment object.
+See \link{AnnData-usage} for details on creating and using \code{AnnData} objects.
 }
-}
-\examples{
+\seealso{
+\link{AnnData-usage} for details on creating and using \code{AnnData} objects
 
-## ------------------------------------------------
-## Method `AbstractAnnData$write_h5ad`
-## ------------------------------------------------
-
-adata <- AnnData(
-  X = matrix(1:5, 3L, 5L),
-  layers = list(
-    A = matrix(5:1, 3L, 5L),
-    B = matrix(letters[1:5], 3L, 5L)
-  ),
-  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
-  var = data.frame(row.names = letters[1:5], gene = 1:5)
-)
-h5ad_file <- tempfile(fileext = ".h5ad")
-adata$write_h5ad(h5ad_file)
+Other AnnData classes: 
+\code{\link{HDF5AnnData}},
+\code{\link{InMemoryAnnData}}
 }
+\concept{AnnData classes}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{
-\item{\code{X}}{NULL or an observation x variable matrix (without
-dimnames) consistent with the number of rows of \code{obs} and \code{var}.}
+\item{\code{X}}{See \link{AnnData-usage}}
 
-\item{\code{layers}}{The layers slot. Must be NULL or a named list
-with with all elements having the dimensions consistent with
-\code{obs} and \code{var}.}
+\item{\code{layers}}{See \link{AnnData-usage}}
 
-\item{\code{obs}}{A \code{data.frame} with columns containing information
-about observations. The number of rows of \code{obs} defines the
-observation dimension of the AnnData object.}
+\item{\code{obs}}{See \link{AnnData-usage}}
 
-\item{\code{var}}{A \code{data.frame} with columns containing information
-about variables. The number of rows of \code{var} defines the variable
-dimension of the AnnData object.}
+\item{\code{var}}{See \link{AnnData-usage}}
 
-\item{\code{obs_names}}{Either NULL or a vector of unique identifiers
-used to identify each row of \code{obs} and to act as an index into
-the observation dimension of the AnnData object. For
-compatibility with \emph{R} representations, \code{obs_names} should be a
-character vector.}
+\item{\code{obs_names}}{See \link{AnnData-usage}}
 
-\item{\code{var_names}}{Either NULL or a vector of unique identifiers
-used to identify each row of \code{var} and to act as an index into
-the variable dimension of the AnnData object. For compatibility
-with \emph{R} representations, \code{var_names} should be a character
-vector.}
+\item{\code{var_names}}{See \link{AnnData-usage}}
 
-\item{\code{obsm}}{The obsm slot. Must be \code{NULL} or a named list with
-with all elements having the same number of rows as \code{obs}.}
+\item{\code{obsm}}{See \link{AnnData-usage}}
 
-\item{\code{varm}}{The varm slot. Must be \code{NULL} or a named list with
-with all elements having the same number of rows as \code{var}.}
+\item{\code{varm}}{See \link{AnnData-usage}}
 
-\item{\code{obsp}}{The obsp slot. Must be \code{NULL} or a named list with
-with all elements having the same number of rows and columns as \code{obs}.}
+\item{\code{obsp}}{See \link{AnnData-usage}}
 
-\item{\code{varp}}{The varp slot. Must be \code{NULL} or a named list with
-with all elements having the same number of rows and columns as \code{var}.}
+\item{\code{varp}}{See \link{AnnData-usage}}
 
-\item{\code{uns}}{The uns slot. Must be \code{NULL} or a named list.}
+\item{\code{uns}}{See \link{AnnData-usage}}
 }
 \if{html}{\out{</div>}}
 }
@@ -96,9 +60,13 @@ with all elements having the same number of rows and columns as \code{var}.}
 \item \href{#method-AbstractAnnData-obsp_keys}{\code{AbstractAnnData$obsp_keys()}}
 \item \href{#method-AbstractAnnData-varp_keys}{\code{AbstractAnnData$varp_keys()}}
 \item \href{#method-AbstractAnnData-uns_keys}{\code{AbstractAnnData$uns_keys()}}
+\item \href{#method-AbstractAnnData-as_SingleCellExperiment}{\code{AbstractAnnData$as_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
+\item \href{#method-AbstractAnnData-as_Seurat}{\code{AbstractAnnData$as_Seurat()}}
 \item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
+\item \href{#method-AbstractAnnData-as_InMemoryAnnData}{\code{AbstractAnnData$as_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
+\item \href{#method-AbstractAnnData-as_HDF5AnnData}{\code{AbstractAnnData$as_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-write_h5ad}{\code{AbstractAnnData$write_h5ad()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
@@ -108,9 +76,7 @@ with all elements having the same number of rows and columns as \code{var}.}
 \if{html}{\out{<a id="method-AbstractAnnData-print"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-print}{}}}
 \subsection{Method \code{print()}}{
-Print a summary of the AnnData object. \code{print()}
-methods should be implemented so that they are not
-computationally expensive.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$print(...)}\if{html}{\out{</div>}}
 }
@@ -118,7 +84,7 @@ computationally expensive.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{Optional arguments to print method.}
+\item{\code{...}}{Optional arguments to print method}
 }
 \if{html}{\out{</div>}}
 }
@@ -127,7 +93,7 @@ computationally expensive.
 \if{html}{\out{<a id="method-AbstractAnnData-shape"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-shape}{}}}
 \subsection{Method \code{shape()}}{
-Dimensions (observations x variables) of the AnnData object.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$shape()}\if{html}{\out{</div>}}
 }
@@ -137,7 +103,7 @@ Dimensions (observations x variables) of the AnnData object.
 \if{html}{\out{<a id="method-AbstractAnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-n_obs}{}}}
 \subsection{Method \code{n_obs()}}{
-Number of observations in the AnnData object.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_obs()}\if{html}{\out{</div>}}
 }
@@ -147,7 +113,7 @@ Number of observations in the AnnData object.
 \if{html}{\out{<a id="method-AbstractAnnData-n_vars"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-n_vars}{}}}
 \subsection{Method \code{n_vars()}}{
-Number of variables in the AnnData object.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$n_vars()}\if{html}{\out{</div>}}
 }
@@ -157,7 +123,7 @@ Number of variables in the AnnData object.
 \if{html}{\out{<a id="method-AbstractAnnData-obs_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-obs_keys}{}}}
 \subsection{Method \code{obs_keys()}}{
-Keys ('column names') of \code{obs}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obs_keys()}\if{html}{\out{</div>}}
 }
@@ -167,7 +133,7 @@ Keys ('column names') of \code{obs}.
 \if{html}{\out{<a id="method-AbstractAnnData-var_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-var_keys}{}}}
 \subsection{Method \code{var_keys()}}{
-Keys ('column names') of \code{var}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$var_keys()}\if{html}{\out{</div>}}
 }
@@ -177,7 +143,7 @@ Keys ('column names') of \code{var}.
 \if{html}{\out{<a id="method-AbstractAnnData-layers_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-layers_keys}{}}}
 \subsection{Method \code{layers_keys()}}{
-Keys (element names) of \code{layers}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$layers_keys()}\if{html}{\out{</div>}}
 }
@@ -187,7 +153,7 @@ Keys (element names) of \code{layers}.
 \if{html}{\out{<a id="method-AbstractAnnData-obsm_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-obsm_keys}{}}}
 \subsection{Method \code{obsm_keys()}}{
-Keys (element names) of \code{obsm}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsm_keys()}\if{html}{\out{</div>}}
 }
@@ -197,7 +163,7 @@ Keys (element names) of \code{obsm}.
 \if{html}{\out{<a id="method-AbstractAnnData-varm_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-varm_keys}{}}}
 \subsection{Method \code{varm_keys()}}{
-Keys (element names) of \code{varm}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varm_keys()}\if{html}{\out{</div>}}
 }
@@ -207,7 +173,7 @@ Keys (element names) of \code{varm}.
 \if{html}{\out{<a id="method-AbstractAnnData-obsp_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-obsp_keys}{}}}
 \subsection{Method \code{obsp_keys()}}{
-Keys (element names) of \code{obsp}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$obsp_keys()}\if{html}{\out{</div>}}
 }
@@ -217,7 +183,7 @@ Keys (element names) of \code{obsp}.
 \if{html}{\out{<a id="method-AbstractAnnData-varp_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-varp_keys}{}}}
 \subsection{Method \code{varp_keys()}}{
-Keys (element names) of \code{varp}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$varp_keys()}\if{html}{\out{</div>}}
 }
@@ -227,25 +193,25 @@ Keys (element names) of \code{varp}.
 \if{html}{\out{<a id="method-AbstractAnnData-uns_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-uns_keys}{}}}
 \subsection{Method \code{uns_keys()}}{
-Keys (element names) of \code{uns}.
+See \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$uns_keys()}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
-\subsection{Method \code{to_SingleCellExperiment()}}{
-Convert to SingleCellExperiment
+\if{html}{\out{<a id="method-AbstractAnnData-as_SingleCellExperiment"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_SingleCellExperiment}{}}}
+\subsection{Method \code{as_SingleCellExperiment()}}{
+Convert to \code{SingleCellExperiment}
 
-See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more details on the conversion.
+See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}} for more details on the conversion
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_SingleCellExperiment(
   assays_mapping = NULL,
   colData_mapping = NULL,
   rowData_mapping = NULL,
-  reduction_mapping = NULL,
+  reducedDims_mapping = NULL,
   colPairs_mapping = NULL,
   rowPairs_mapping = NULL,
   metadata_mapping = NULL
@@ -255,35 +221,57 @@ See \code{\link[=to_SingleCellExperiment]{to_SingleCellExperiment()}} for more d
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{assays_mapping}}{A named list mapping SingleCellExperiment assays to AnnData layers}
+\item{\code{assays_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
-\item{\code{colData_mapping}}{A named list mapping SingleCellExperiment colData to AnnData obs}
+\item{\code{colData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
-\item{\code{rowData_mapping}}{A named list mapping SingleCellExperiment rowData to AnnData var}
+\item{\code{rowData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
-\item{\code{reduction_mapping}}{A named list mapping SingleCellExperiment reductions to AnnData obsm/varm}
+\item{\code{reducedDims_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
-\item{\code{colPairs_mapping}}{A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp}
+\item{\code{colPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
-\item{\code{rowPairs_mapping}}{A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp}
+\item{\code{rowPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
-\item{\code{metadata_mapping}}{A named list mapping SingleCellExperiment metadata to AnnData uns}
+\item{\code{metadata_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A SingleCellExperiment object
+A \code{SingleCellExperiment} object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
-\subsection{Method \code{to_Seurat()}}{
-Convert to Seurat
+\if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
+\subsection{Method \code{to_SingleCellExperiment()}}{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
 
-See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and each of the parameters.
+Deprecated, use \code{as_SingleCellExperiment()} instead
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Arguments passed to \code{adata$as_SingleCellExperiment()}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{SingleCellExperiment} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-as_Seurat"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_Seurat}{}}}
+\subsection{Method \code{as_Seurat()}}{
+Convert to \code{Seurat}
+
+See \code{\link[=as_Seurat]{as_Seurat()}} for more details on the conversion
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_Seurat(
   assay_name = "RNA",
   layers_mapping = NULL,
   object_metadata_mapping = NULL,
@@ -297,43 +285,87 @@ See \code{\link[=to_Seurat]{to_Seurat()}} for more details on the conversion and
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{assay_name}}{The name of the assay to use as the main data}
+\item{\code{assay_name}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{layers_mapping}}{A named list mapping Seurat layers to AnnData layers}
+\item{\code{layers_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{object_metadata_mapping}}{A named list mapping Seurat object metadata to AnnData obs}
+\item{\code{object_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{assay_metadata_mapping}}{A named list mapping Seurat assay metadata to AnnData var}
+\item{\code{assay_metadata_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{reduction_mapping}}{A named list mapping Seurat reductions to AnnData obsm/varm}
+\item{\code{reduction_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{graph_mapping}}{A named list mapping Seurat graphs to AnnData obsp/varp}
+\item{\code{graph_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
-\item{\code{misc_mapping}}{A named list mapping Seurat misc to AnnData uns}
+\item{\code{misc_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A Seurat object
+A \code{Seurat} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
+\subsection{Method \code{to_Seurat()}}{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+Deprecated, use \code{as_Seurat()} instead
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Arguments passed to \code{adata$as_Seurat()}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{Seurat} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-as_InMemoryAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_InMemoryAnnData}{}}}
+\subsection{Method \code{as_InMemoryAnnData()}}{
+Convert to an \code{\link{InMemoryAnnData}}
+
+See \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}} for more details on the conversion
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_InMemoryAnnData()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+An \link{InMemoryAnnData} object
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemoryAnnData}{}}}
 \subsection{Method \code{to_InMemoryAnnData()}}{
-Convert to an InMemory AnnData
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+Deprecated, use \code{as_InMemoryAnnData()} instead
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+An \code{\link{InMemoryAnnData}} object
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_HDF5AnnData"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_HDF5AnnData}{}}}
-\subsection{Method \code{to_HDF5AnnData()}}{
-Convert to an HDF5 Backed AnnData
+\if{html}{\out{<a id="method-AbstractAnnData-as_HDF5AnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_HDF5AnnData}{}}}
+\subsection{Method \code{as_HDF5AnnData()}}{
+Convert to an \code{\link{HDF5AnnData}}
+
+See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for more details on the conversion
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_HDF5AnnData(
   file,
   compression = c("none", "gzip", "lzf"),
   mode = c("w-", "r", "r+", "a", "w", "x")
@@ -343,75 +375,69 @@ Convert to an HDF5 Backed AnnData
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{The path to the HDF5 file}
+\item{\code{file}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
-\item{\code{compression}}{The compression algorithm to use when writing the
-HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
-\code{"none"}.}
+\item{\code{compression}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
-\item{\code{mode}}{The mode to open the HDF5 file.
-\itemize{
-\item \code{a} creates a new file or opens an existing one for read/write.
-\item \verb{r+} opens an existing file for read/write.
-\item \code{w} creates a file, truncating any existing ones
-\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
-}}
+\item{\code{mode}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-An HDF5AnnData object
+An \code{\link{HDF5AnnData}} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-to_HDF5AnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_HDF5AnnData}{}}}
+\subsection{Method \code{to_HDF5AnnData()}}{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+Deprecated, use \code{as_HDF5AnnData()} instead
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{...}}{Arguments passed to \code{adata$as_HDF5AnnData()}}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An \code{\link{HDF5AnnData}} object
 }
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-write_h5ad"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-write_h5ad}{}}}
 \subsection{Method \code{write_h5ad()}}{
-Write the AnnData object to an H5AD file.
+Write the \code{AnnData} object to an H5AD file
+
+See \code{\link[=write_h5ad]{write_h5ad()}} for details
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$write_h5ad(path, compression = "gzip", mode = "w")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$write_h5ad(
+  path,
+  compression = c("none", "gzip", "lzf"),
+  mode = c("w-", "r", "r+", "a", "w", "x")
+)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{path}}{The path to the H5AD file}
+\item{\code{path}}{See \code{\link[=write_h5ad]{write_h5ad()}}}
 
-\item{\code{compression}}{The compression algorithm to use when writing the
-HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
-\code{"none"}.}
+\item{\code{compression}}{See \code{\link[=write_h5ad]{write_h5ad()}}}
 
-\item{\code{mode}}{The mode to open the HDF5 file.
-\itemize{
-\item \code{a} creates a new file or opens an existing one for read/write.
-\item \verb{r+} opens an existing file for read/write.
-\item \code{w} creates a file, truncating any existing ones
-\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists.
-}}
+\item{\code{mode}}{See \code{\link[=write_h5ad]{write_h5ad()}}}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
 \code{path} invisibly
 }
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{adata <- AnnData(
-  X = matrix(1:5, 3L, 5L),
-  layers = list(
-    A = matrix(5:1, 3L, 5L),
-    B = matrix(letters[1:5], 3L, 5L)
-  ),
-  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
-  var = data.frame(row.names = letters[1:5], gene = 1:5)
-)
-h5ad_file <- tempfile(fileext = ".h5ad")
-adata$write_h5ad(h5ad_file)
-}
-\if{html}{\out{</div>}}
-
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-clone"></a>}}

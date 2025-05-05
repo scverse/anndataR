@@ -52,7 +52,7 @@ For large datasets that do not fit into memory, you can read the h5ad file in a 
 To do this, set the `to` parameter in the `read_h5ad` to `HDF5AnnData`:
 
 ```{r}
-adata <- read_h5ad(h5ad_path, to = "HDF5AnnData")
+adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
 The structure of the object will look similar to the in-memory representation, but the data is stored on disk.
 

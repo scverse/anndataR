@@ -132,14 +132,18 @@ test_that("reading dataframes works", {
 test_that("reading H5AD as SingleCellExperiment works", {
   skip_if_not_installed("SingleCellExperiment")
 
-  sce <- read_h5ad(file, to = "SingleCellExperiment")
+  sce <- read_h5ad(file, as = "SingleCellExperiment")
   expect_s4_class(sce, "SingleCellExperiment")
 })
 
 test_that("reading H5AD as Seurat works", {
-  skip_if_not_installed("SeuratObject")
+  skip_if_not_installed("Seurat")
 
-  # TODO: remove this suppression when the to_seurat, from_seurat functions are updated.
-  seurat <- suppressWarnings(read_h5ad(file, to = "Seurat"))
+  seurat <- read_h5ad(file, as = "Seurat")
   expect_s4_class(seurat, "Seurat")
+})
+
+test_that("deprecated to argument in read_h5ad() works", {
+  expect_warning(mem_ad <- read_h5ad(file, to = "InMemoryAnnData"))
+  expect_true(inherits(mem_ad, "InMemoryAnnData"))
 })

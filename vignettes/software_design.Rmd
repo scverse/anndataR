@@ -41,5 +41,5 @@ Notation:
 
   - `X: Matrix` - variable `X` is of type `Matrix`
   - `*X: Matrix` - variable `X` is abstract
-  - `to_SingleCellExperiment(): SingleCellExperiment` - function `to_SingleCellExperiment` returns object of type `SingleCellExperiment`
-  - `*to_SingleCellExperiment()` - function `to_SingleCellExperiment` is abstract
+  - `as_SingleCellExperiment(): SingleCellExperiment` - function `as_SingleCellExperiment` returns object of type `SingleCellExperiment`
+  - `*as_SingleCellExperiment()` - function `as_SingleCellExperiment` is abstract
