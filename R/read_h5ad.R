@@ -62,7 +62,8 @@ read_h5ad <- function(
 
   adata <- HDF5AnnData$new(path, mode = mode)
 
-  switch (as,
+  switch(
+    as,
     "SingleCellExperiment" = adata$as_SingleCellExperiment(...),
     "Seurat" = adata$as_Seurat(...),
     "InMemoryAnnData" = adata$as_InMemoryAnnData(...),

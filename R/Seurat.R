@@ -438,20 +438,22 @@ to_Seurat <- function(
 }
 
 # See as_AnnData() for function documentation
+# nolint start: object_name_linter
 from_Seurat <- function(
-    seurat_obj,
-    assay_name = NULL,
-    x_mapping = NULL,
-    layers_mapping = NULL,
-    obs_mapping = NULL,
-    var_mapping = NULL,
-    obsm_mapping = NULL,
-    varm_mapping = NULL,
-    obsp_mapping = NULL,
-    varp_mapping = NULL,
-    uns_mapping = NULL,
-    output_class = c("InMemory", "HDF5AnnData"),
-    ...
+  # nolint end: object_name_linter
+  seurat_obj,
+  assay_name = NULL,
+  x_mapping = NULL,
+  layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
+  obsm_mapping = NULL,
+  varm_mapping = NULL,
+  obsp_mapping = NULL,
+  varp_mapping = NULL,
+  uns_mapping = NULL,
+  output_class = c("InMemory", "HDF5AnnData"),
+  ...
 ) {
   check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
 

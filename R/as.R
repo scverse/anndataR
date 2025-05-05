@@ -116,6 +116,8 @@ NULL
 #'
 #' ## Conversion table
 #'
+# nolint start: line_length_linter
+#'
 #' | **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
 #' | `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |
@@ -125,6 +127,8 @@ NULL
 #' | `adata$obsp` | `colPairs(sce)` | `colPairs_mapping = c(nn = "connectivities")` | All items are copied by name |
 #' | `adata$varp` | `rowPairs(sce)` | `rowPairs_mapping = c(gene_overlaps = "similarities")` | All items are copied by name |
 #' | `adata$uns` | `metadata(sce)` | `uns_mapping = c(project_metadata = "metadata")` | All items are copied by name |
+#'
+# nolint end: line_length_linter
 #'
 #' ## The `reducedDims_mapping` argument
 #'
@@ -221,6 +225,8 @@ NULL
 #'
 #' ## Conversion table
 #'
+# nolint start: line_length_linter
+#'
 #' | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
 #' | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
@@ -230,6 +236,8 @@ NULL
 #' | `adata$obsp` | `Graphs(seurat)` | `graph_mapping = c(nn = "connectivities")` | All items are copied by name |
 #' | `adata$varp` | _NA_  | _NA_ | There is no corresponding slot for `varp` |
 #' | `adata$uns` | `Misc(seurat)` | `misc_mapping = c(project_metadata = "metadata")` | All items are copied by name |
+#'
+# nolint end: line_length_linter
 #'
 #' ## The `reduction_mapping` argument
 #'

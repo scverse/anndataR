@@ -136,6 +136,8 @@ AnnData <- function(
 #'   [`SingleCellExperiment::SingleCellExperiment`] object to the new `AnnData`
 #'   object.
 #'
+# nolint start: line_length_linter
+#'
 #'   | **From `SingleCellExperiment`** | **To `AnnData`** | **Example mapping argument** | **Default if `NULL`** |
 #'   |---------------------------------|------------------|------------------------------|-----------------------|
 #'   | `assays(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
@@ -148,6 +150,9 @@ AnnData <- function(
 #'   | `rowPairs(x)` | `adata$varp` | `varp_mapping = c(similarities = "gene_overlaps")` | All items are copied by name |
 #'   | `metadata(x)` | `adata$uns` | `uns_mapping = c(metadata = "project_metadata")` | All items are copied by name |
 #'
+#'
+# nolint end: line_length_linter
+#'
 #' @section Converting from a `Seurat` object:
 #'
 #'   Only one assay can be converted from a [`SeuratObject::Seurat`] object to
@@ -156,6 +161,8 @@ AnnData <- function(
 #'
 #'   This table describes how slots in a [`SeuratObject::Seurat`] object to the
 #'   new `AnnData` object.
+#'
+# nolint start: line_length_linter
 #'
 #'   | **From `Seurat`** | **To `AnnData`** | **Example mapping argument** | **Default if `NULL`** |
 #'   |-------------------|------------------|------------------------------|-----------------------|
@@ -168,6 +175,8 @@ AnnData <- function(
 #'   | `Graphs(x)` | `adata$obsp` | `obsp_mapping = c(connectivities = "RNA_nn")` | All graphs matching `assay_name` are copied by name |
 #'   | `Misc(x)` | `adata$varp` | `varp_mapping = c(similarities = "gene_overlaps")` | No data is copied to `varp` |
 #'   | `Misc(x)` | `adata$uns` | `uns_mapping = c(metadata = "project_metadata")` | All items are copied by name |
+#'
+# nolint end: line_length_linter
 #'
 #' @return An `AnnData` object of the class requested by `output_class`
 #'   containing the data specified in the mapping arguments.
@@ -202,7 +211,9 @@ AnnData <- function(
 #' )
 #'
 #' as_AnnData(sce)
+# nolint start: object_name_linter
 as_AnnData <- function(
+  # nolint end: object_name_linter
   x,
   x_mapping = NULL,
   layers_mapping = NULL,
@@ -223,19 +234,19 @@ as_AnnData <- function(
 #' @rdname as_AnnData
 #' @export
 as_AnnData.SingleCellExperiment <- function(
-    x,
-    x_mapping = NULL,
-    layers_mapping = NULL,
-    obs_mapping = NULL,
-    var_mapping = NULL,
-    obsm_mapping = NULL,
-    varm_mapping = NULL,
-    obsp_mapping = NULL,
-    varp_mapping = NULL,
-    uns_mapping = NULL,
-    assay_name = NULL,
-    output_class = c("InMemory", "HDF5AnnData"),
-    ...
+  x,
+  x_mapping = NULL,
+  layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
+  obsm_mapping = NULL,
+  varm_mapping = NULL,
+  obsp_mapping = NULL,
+  varp_mapping = NULL,
+  uns_mapping = NULL,
+  assay_name = NULL,
+  output_class = c("InMemory", "HDF5AnnData"),
+  ...
 ) {
   from_SingleCellExperiment(
     sce = x,
@@ -256,19 +267,19 @@ as_AnnData.SingleCellExperiment <- function(
 #' @rdname as_AnnData
 #' @export
 as_AnnData.Seurat <- function(
-    x,
-    x_mapping = NULL,
-    layers_mapping = NULL,
-    obs_mapping = NULL,
-    var_mapping = NULL,
-    obsm_mapping = NULL,
-    varm_mapping = NULL,
-    obsp_mapping = NULL,
-    varp_mapping = NULL,
-    uns_mapping = NULL,
-    assay_name = NULL,
-    output_class = c("InMemory", "HDF5AnnData"),
-    ...
+  x,
+  x_mapping = NULL,
+  layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
+  obsm_mapping = NULL,
+  varm_mapping = NULL,
+  obsp_mapping = NULL,
+  varp_mapping = NULL,
+  uns_mapping = NULL,
+  assay_name = NULL,
+  output_class = c("InMemory", "HDF5AnnData"),
+  ...
 ) {
   from_Seurat(
     seurat_obj = x,

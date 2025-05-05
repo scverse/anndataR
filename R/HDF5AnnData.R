@@ -377,7 +377,9 @@ HDF5AnnData <- R6::R6Class(
 )
 
 # See as_HDF5AnnData() for function documentation
+# nolint start: object_name_linter
 to_HDF5AnnData <- function(
+  # nolint end: object_name_linter
   adata,
   file,
   compression = c("none", "gzip", "lzf"),

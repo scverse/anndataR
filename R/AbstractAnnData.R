@@ -178,15 +178,17 @@ AbstractAnnData <- R6::R6Class(
     #' @param metadata_mapping See [as_SingleCellExperiment()]
     #'
     #' @return A `SingleCellExperiment` object
+    # nolint start: object_name_linter
     as_SingleCellExperiment = function(
-    assays_mapping = NULL,
-    colData_mapping = NULL, # nolint
-    rowData_mapping = NULL, # nolint
-    reducedDims_mapping = NULL,
-    colPairs_mapping = NULL, # nolint
-    rowPairs_mapping = NULL, # nolint
-    metadata_mapping = NULL
+      assays_mapping = NULL,
+      colData_mapping = NULL,
+      rowData_mapping = NULL,
+      reducedDims_mapping = NULL,
+      colPairs_mapping = NULL,
+      rowPairs_mapping = NULL,
+      metadata_mapping = NULL
     ) {
+      # nolint end: object_name_linter
       to_SingleCellExperiment(
         self,
         assays_mapping = assays_mapping,

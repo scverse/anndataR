@@ -1,14 +1,16 @@
 # See as_SingleCellExperiment() for function documentation
+# nolint start: object_name_linter
 to_SingleCellExperiment <- function(
   adata,
   assays_mapping = NULL,
-  colData_mapping = NULL, # nolint
-  rowData_mapping = NULL, # nolint
+  colData_mapping = NULL,
+  rowData_mapping = NULL,
   reducedDims_mapping = NULL,
-  colPairs_mapping = NULL, # nolint
-  rowPairs_mapping = NULL, # nolint
+  colPairs_mapping = NULL,
+  rowPairs_mapping = NULL,
   metadata_mapping = NULL
 ) {
+  # nolint end: object_name_linter
   check_requires(
     "Converting AnnData to SingleCellExperiment",
     "SingleCellExperiment",
@@ -252,7 +254,7 @@ to_SingleCellExperiment <- function(
 
   # If the mapping is a vector expand it to the list format
   if (is.atomic(reducedDims_mapping)) {
-    reducedDims_mapping <- purrr::map(reducedDims_mapping, function(.obsm) {
+    reducedDims_mapping <- purrr::map(reducedDims_mapping, function(.obsm) { # nolint: object_name_linter
       c(sampleFactors = .obsm)
     })
   } else {
@@ -275,7 +277,8 @@ to_SingleCellExperiment <- function(
   }
 
   purrr::map(reducedDims_mapping, function(.map) {
-    varm <- if ("featureLoadings" %in% names(.map)) .map[["featureLoadings"]] else NULL
+    varm <- if ("featureLoadings" %in% names(.map))
+      .map[["featureLoadings"]] else NULL
     uns <- if ("metadata" %in% names(.map)) .map[["metadata"]] else NULL
 
     .to_SCE_process_reducedDim(
@@ -288,19 +291,21 @@ to_SingleCellExperiment <- function(
 }
 
 # See as_AnnData() for function documentation
+# nolint start: object_name_linter
 from_SingleCellExperiment <- function(
-    sce,
-    x_mapping = NULL,
-    layers_mapping = NULL,
-    obs_mapping = NULL,
-    var_mapping = NULL,
-    obsm_mapping = NULL,
-    varm_mapping = NULL,
-    obsp_mapping = NULL,
-    varp_mapping = NULL,
-    uns_mapping = NULL,
-    output_class = c("InMemory", "HDF5AnnData"),
-    ...
+  # nolint end: object_name_linter
+  sce,
+  x_mapping = NULL,
+  layers_mapping = NULL,
+  obs_mapping = NULL,
+  var_mapping = NULL,
+  obsm_mapping = NULL,
+  varm_mapping = NULL,
+  obsp_mapping = NULL,
+  varp_mapping = NULL,
+  uns_mapping = NULL,
+  output_class = c("InMemory", "HDF5AnnData"),
+  ...
 ) {
   check_requires(
     "Converting SingleCellExperiment to AnnData",

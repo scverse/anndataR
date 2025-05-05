@@ -255,7 +255,9 @@ InMemoryAnnData <- R6::R6Class(
 )
 
 # See as_InMemoryAnnData() for function documentation
+# nolint start: object_name_linter
 to_InMemoryAnnData <- function(adata) {
+  # nolint end: object_name_linter
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
       "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
