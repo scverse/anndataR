@@ -4,7 +4,7 @@ to_SingleCellExperiment <- function(
   assays_mapping = NULL,
   colData_mapping = NULL, # nolint
   rowData_mapping = NULL, # nolint
-  reduction_mapping = NULL,
+  reducedDims_mapping = NULL,
   colPairs_mapping = NULL, # nolint
   rowPairs_mapping = NULL, # nolint
   metadata_mapping = NULL
@@ -28,8 +28,8 @@ to_SingleCellExperiment <- function(
     .to_SCE_guess_all(adata, "obs")
   rowData_mapping <- self_name(rowData_mapping) %||%
     .to_SCE_guess_all(adata, "var")
-  reduction_mapping <- self_name(reduction_mapping) %||%
-    .to_SCE_guess_reduction(adata)
+  reducedDims_mapping <- self_name(reducedDims_mapping) %||%
+    .to_SCE_guess_reducedDims(adata)
   colPairs_mapping <- self_name(colPairs_mapping) %||%
     .to_SCE_guess_all(adata, "obsp")
   rowPairs_mapping <- self_name(rowPairs_mapping) %||%
@@ -76,7 +76,7 @@ to_SingleCellExperiment <- function(
   metadata <- .to_SCE_process_simple_mapping(adata, metadata_mapping, "uns")
 
   # construct reducedDims
-  reduceddims <- .to_SCE_process_reduction_mapping(adata, reduction_mapping)
+  reduceddims <- .to_SCE_process_reducedDims_mapping(adata, reducedDims_mapping)
 
   arguments <- list(
     assays = sce_assays,
@@ -146,9 +146,22 @@ to_SingleCellExperiment <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_guess_reduction <- function(adata) {
+.to_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  .to_Seurat_guess_reductions(adata) # nolint object_usage_linter
+  purrr::map(adata$obsm_keys(), function(.obsm) {
+    if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
+      return(NULL)
+    }
+
+    mapping <- c(sampleFactors = .obsm)
+    if (.obsm == "X_pca" && "PCs" %in% names(adata$varm)) {
+      mapping["featureLoadings"] <- "PCs"
+    }
+
+    mapping
+  }) |>
+    setNames(adata$obsm_keys()) |>
+    purrr::compact()
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -167,7 +180,7 @@ to_SingleCellExperiment <- function(
 # trackstatus: class=SingleCellExperiment, feature=get_obsm, status=done
 # trackstatus: class=SingleCellExperiment, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_reduction <- function(
+.to_SCE_process_reducedDim <- function(
   # nolint end: object_length_linter object_name_linter
   adata,
   obsm_key,
@@ -234,40 +247,40 @@ to_SingleCellExperiment <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_reduction_mapping <- function(adata, reduction_mapping) {
+.to_SCE_process_reducedDims_mapping <- function(adata, reducedDims_mapping) {
   # nolint end: object_length_linter object_name_linter
 
   # If the mapping is a vector expand it to the list format
-  if (is.atomic(reduction_mapping)) {
-    reduction_mapping <- purrr::map(reduction_mapping, function(.obsm) {
-      c(obsm = .obsm)
+  if (is.atomic(reducedDims_mapping)) {
+    reducedDims_mapping <- purrr::map(reducedDims_mapping, function(.obsm) {
+      c(sampleFactors = .obsm)
     })
   } else {
-    purrr::walk(names(reduction_mapping), function(.name) {
-      mapping <- reduction_mapping[[.name]]
-      if (!(is.character(mapping) && ("obsm" %in% names(mapping)))) {
+    purrr::walk(names(reducedDims_mapping), function(.name) {
+      mapping <- reducedDims_mapping[[.name]]
+      if (!(is.character(mapping) && ("sampleFactors" %in% names(mapping)))) {
         cli_abort(c(
           paste(
-            "If it is a list, each item in {.arg reduction_mapping} must be a
-            {.cls character} vector with the name {.val obsm} and optional",
-            "names {.val varm} and {.val uns}"
+            "If it is a list, each item in {.arg reducedDims_mapping} must be a
+            {.cls character} vector with the name {.val sampleFactors} and
+            optional names {.val featureLoadings} and {.val metadata}"
           ),
           "i" = paste(
-            "{.code reduction_mapping[[{.val { .name }}]]}:",
-            "{style_vec(mapping, wrap = TRUE)}"
+            "{.code names(reducedDims_mapping[[{.val { .name }}]])}:",
+            "{style_vec(names(mapping))}"
           )
         ))
       }
     })
   }
 
-  purrr::map(reduction_mapping, function(.map) {
-    varm <- if ("varm" %in% names(.map)) .map[["varm"]] else NULL
-    uns <- if ("uns" %in% names(.map)) .map[["uns"]] else NULL
+  purrr::map(reducedDims_mapping, function(.map) {
+    varm <- if ("featureLoadings" %in% names(.map)) .map[["featureLoadings"]] else NULL
+    uns <- if ("metadata" %in% names(.map)) .map[["metadata"]] else NULL
 
-    .to_SCE_process_reduction(
+    .to_SCE_process_reducedDim(
       adata,
-      obsm_key = .map[["obsm"]],
+      obsm_key = .map[["sampleFactors"]],
       varm_key = varm,
       uns_key = uns
     )

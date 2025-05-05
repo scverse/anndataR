@@ -18,12 +18,12 @@ in \code{adata}. See below for details.}
 the resulting \code{SingleCellExperiment} object and values are columns of \code{var}
 in \code{adata}. See below for details.}
 
-\item{reduction_mapping}{A named vector where names are names of
+\item{reducedDims_mapping}{A named vector where names are names of
 \code{reducedDims} in the resulting \code{SingleCellExperiment} object and values are
 keys of \code{obsm} in \code{adata}. Alternatively, a named list where names are
 names of \code{reducedDims} in the resulting \code{SingleCellExperiment} object and
-values are vectors with the items \code{"obsm"} and \code{"varm"} and/or \code{"uns"}. See
-below for details.}
+values are vectors with the items \code{"sampleFactors"} and \code{"featureLoadings"}
+and/or \code{"metadata"}. See below for details.}
 
 \item{colPairs_mapping}{A named vector where names are names of \code{colPairs} in
 the resulting \code{SingleCellExperiment} object and values are keys of \code{obsp}
@@ -53,7 +53,7 @@ keys of the corresponding slot of \code{adata}. If \code{NULL}, the conversion f
 will guess which items to copy as described in the conversion tables
 conversion table below. In most cases, the default is to copy all items using
 the same names except where the correspondence between objects is unclear.
-The \code{reduction_mapping} argument can also accept a more complex list format,
+The \code{reducedDims_mapping} argument can also accept a more complex list format,
 see below for details. To avoid copying anything to a slot, provide an empty
 vector. If an unnamed vector is provided, the values will be used as names
 \subsection{Examples:}{
@@ -74,7 +74,7 @@ table
    \code{adata$layers} \tab \code{assays(sce)} \tab \code{assays_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{colData(sce)} \tab \code{colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{adata$var} \tab \code{rowData(sce)} \tab \code{rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
-   \code{adata$obsm} \tab \code{reducedDims(sce)} \tab \code{reduction_mapping = c(pca = "X_pca")} \strong{OR} \code{reduction_mapping = list(pca = c(obsm = "X_pca", varm = "PCs", uns = "pca_metadata"))} \tab All items are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
+   \code{adata$obsm} \tab \code{reducedDims(sce)} \tab \code{reducedDims_mapping = c(pca = "X_pca")} \strong{OR} \code{reducedDims_mapping = list(pca = c(obsm = "X_pca", varm = "PCs", uns = "pca_metadata"))} \tab All items are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
    \code{adata$obsp} \tab \code{colPairs(sce)} \tab \code{colPairs_mapping = c(nn = "connectivities")} \tab All items are copied by name \cr
    \code{adata$varp} \tab \code{rowPairs(sce)} \tab \code{rowPairs_mapping = c(gene_overlaps = "similarities")} \tab All items are copied by name \cr
    \code{adata$uns} \tab \code{metadata(sce)} \tab \code{uns_mapping = c(project_metadata = "metadata")} \tab All items are copied by name \cr
@@ -82,24 +82,24 @@ table
 
 }
 
-\subsection{The \code{reduction_mapping} argument}{
+\subsection{The \code{reducedDims_mapping} argument}{
 
 For the simpler named vector format, the names should be the names of
 \code{reducedDims} in the resulting \code{SingleCellExperiment} object, and the values
 should be the keys of \code{obsm} in \code{adata}.
 
 For more advanced mapping, use the list format where each item is a vector
-with the following names:
+with the following names used to create a
+\code{\link[SingleCellExperiment:LinearEmbeddingMatrix]{SingleCellExperiment::LinearEmbeddingMatrix}} (if \code{featureLoadings} or
+\code{metadata} is provided):
 \itemize{
-\item \code{obsm}: a key of the \code{obsm} slot in \code{adata}
-\item \code{varm}: a key of the \code{varm} slot in \code{adata} (optional)
-\item \code{uns}: a key of the \code{uns} slot in \code{adata} (optional)
+\item \code{sampleFactors}: a key of the \code{obsm} slot in \code{adata},
+\code{adata$obsm[[sampleFactors]]} is passed to the \code{sampleFactors} argument
+\item \code{featureLoadings}: a key of the \code{varm} slot in \code{adata} (optional),
+\code{adata$varm[[featureLoadings]]} is passed to the \code{featureLoadings} argument
+\item \code{metadata}: a key of the \code{uns} slot in \code{adata} (optional),
+\code{adata$uns[[metadata]]} is passed to the \code{metadata} argument
 }
-
-If \code{'varm'} or \code{'uns'} is given, a
-\link[SingleCellExperiment:LinearEmbeddingMatrix]{SingleCellExperiment::LinearEmbeddingMatrix} will be created for that item
-with \code{adata$varm[[varm]]} passed to the \code{featureLoadings} argument and
-\code{adata$uns[[uns]]} passed as \code{metadata}
 }
 }
 \examples{
@@ -116,7 +116,7 @@ with \code{adata$varm[[varm]]} passed to the \code{featureLoadings} argument and
     assays_mapping = NULL,
     colData_mapping = NULL,
     rowData_mapping = NULL,
-    reduction_mapping = NULL,
+    reducedDims_mapping = NULL,
     colPairs_mapping = NULL,
     rowPairs_mapping = NULL,
     metadata_mapping = NULL

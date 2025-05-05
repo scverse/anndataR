@@ -211,7 +211,7 @@ See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}} for more d
   assays_mapping = NULL,
   colData_mapping = NULL,
   rowData_mapping = NULL,
-  reduction_mapping = NULL,
+  reducedDims_mapping = NULL,
   colPairs_mapping = NULL,
   rowPairs_mapping = NULL,
   metadata_mapping = NULL
@@ -227,7 +227,7 @@ See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}} for more d
 
 \item{\code{rowData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
-\item{\code{reduction_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+\item{\code{reducedDims_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
 \item{\code{colPairs_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 

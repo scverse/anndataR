@@ -179,7 +179,7 @@ test_that("to_SCE works with list mappings", {
       assays_mapping = as.list(.to_SCE_guess_assays(ad)),
       colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
-      reduction_mapping = as.list(.to_SCE_guess_reduction(ad)),
+      reducedDims_mapping = as.list(.to_SCE_guess_reducedDims(ad)),
       colPairs_mapping = as.list(.to_SCE_guess_all(ad, "obsp")),
       rowPairs_mapping = as.list(.to_SCE_guess_all(ad, "varp")),
       metadata_mapping = as.list(.to_SCE_guess_all(ad, "uns"))
@@ -188,15 +188,15 @@ test_that("to_SCE works with list mappings", {
 
   expect_error(
     ad$as_SingleCellExperiment(
-      reduction_mapping = list(numeric = "numeric_matrix")
+      reducedDims_mapping = list(numeric = "numeric_matrix")
     )
   )
 })
 
-test_that("to_SCE works with a vector reduction_mapping", {
+test_that("to_SCE works with a vector reducedDims_mapping", {
   expect_no_error(
     ad$as_SingleCellExperiment(
-      reduction_mapping = c(numeric = "numeric_matrix")
+      reducedDims_mapping = c(numeric = "numeric_matrix")
     )
   )
 })

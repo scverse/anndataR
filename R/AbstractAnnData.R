@@ -172,7 +172,7 @@ AbstractAnnData <- R6::R6Class(
     #' @param assays_mapping See [as_SingleCellExperiment()]
     #' @param colData_mapping See [as_SingleCellExperiment()]
     #' @param rowData_mapping See [as_SingleCellExperiment()]
-    #' @param reduction_mapping See [as_SingleCellExperiment()]
+    #' @param reducedDims_mapping See [as_SingleCellExperiment()]
     #' @param colPairs_mapping See [as_SingleCellExperiment()]
     #' @param rowPairs_mapping See [as_SingleCellExperiment()]
     #' @param metadata_mapping See [as_SingleCellExperiment()]
@@ -182,7 +182,7 @@ AbstractAnnData <- R6::R6Class(
     assays_mapping = NULL,
     colData_mapping = NULL, # nolint
     rowData_mapping = NULL, # nolint
-    reduction_mapping = NULL,
+    reducedDims_mapping = NULL,
     colPairs_mapping = NULL, # nolint
     rowPairs_mapping = NULL, # nolint
     metadata_mapping = NULL
@@ -192,7 +192,7 @@ AbstractAnnData <- R6::R6Class(
         assays_mapping = assays_mapping,
         colData_mapping = colData_mapping,
         rowData_mapping = rowData_mapping,
-        reduction_mapping = reduction_mapping,
+        reducedDims_mapping = reducedDims_mapping,
         colPairs_mapping = colPairs_mapping, # nolint
         rowPairs_mapping = rowPairs_mapping, # nolint
         metadata_mapping = metadata_mapping
