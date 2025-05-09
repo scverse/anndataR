@@ -142,7 +142,7 @@ seurat_object[[]]
 Seurat allows for multiple layers to be stored in the object. This corresponds with the `layers` slot in the AnnData object.
 If no mapping is provided, all layers of the AnnData object will be copied by name. The `X` slot will also be copied by name.
 
-There must be layer called `counts` or `data` in the final Seurat object. If no AnnData layers are named `counts` or `data`, you must
+There must be a layer called `counts` and/or `data` in the final Seurat object. If no AnnData layers are named `counts` or `data`, you must
 provide a mapping for either `counts` or `data` in the `layers_mapping` argument or provide a mapping for the `X` slot with the `x_mapping` argument.
 
 
