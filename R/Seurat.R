@@ -31,8 +31,11 @@
 #'
 #' A named vector to map AnnData layers to Seurat layers. Each name corresponds
 #' to the layer name in the Seurat object, and each value corresponds to the
-#' layer name in the AnnData object. A value of `NA` corresponds to the
-#' AnnData `X` slot.
+#' layer name in the AnnData object. 
+#' A value of `NA` corresponds to the AnnData `X` slot.
+#' The mapping of the `X` slot can also be handled by the `x_mapping` argument.
+#' The `X` slot will be copied to the Seurat object as the value of `x_mapping`.
+#' Take care that you can only provide one mapping for the `X` slot.
 #'
 #' Example: `layers_mapping = c(counts = "counts", data = NA, foo = "bar")`
 #'
@@ -40,7 +43,7 @@
 #' guess the layer mapping as follows:
 #'
 #' * All AnnData layers are copied to Seurat layers by name.
-#' * adata$X will not be copied to Seurat layers, unless an `x_mapping` is provided.
+#' * adata$X will be copied by name `X`.
 #'
 #' @section Metadata mapping:
 #'
