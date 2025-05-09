@@ -218,28 +218,6 @@ to_SingleCellExperiment <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_guess_assays <- function(adata, x_mapping) {
-  # nolint end: object_length_linter object_name_linter
-  if (!(inherits(adata, "AbstractAnnData"))) {
-    cli_abort(
-      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
-    )
-  }
-
-  layers <- list()
-
-  if (!is.null(adata$X) && is.null(x_mapping)) {
-    layers[["X"]] <- NA
-  }
-
-  for (layer_name in names(adata$layers)) {
-    layers[[layer_name]] <- layer_name
-  }
-
-  layers
-}
-
-# nolint start: object_length_linter object_name_linter
 .to_SCE_guess_all <- function(adata, slot) {
   # nolint end: object_length_linter object_name_linter
   if (!(inherits(adata, "AbstractAnnData"))) {
