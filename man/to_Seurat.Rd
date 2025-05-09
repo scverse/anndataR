@@ -7,6 +7,7 @@
 to_Seurat(
   adata,
   assay_name = "RNA",
+  x_mapping = NULL,
   layers_mapping = NULL,
   object_metadata_mapping = NULL,
   assay_metadata_mapping = NULL,
@@ -19,6 +20,9 @@ to_Seurat(
 \item{adata}{An AnnData object to be converted}
 
 \item{assay_name}{Name of the assay to be created (default: "RNA").}
+
+\item{x_mapping}{Name of the layer used for the \code{X} slot. See section "Layer
+mapping" for more details.}
 
 \item{layers_mapping}{A named vector to map AnnData layers to Seurat layers.
 See section "Layer mapping" for more details.}
@@ -56,17 +60,19 @@ the mapping.
 
 A named vector to map AnnData layers to Seurat layers. Each name corresponds
 to the layer name in the Seurat object, and each value corresponds to the
-layer name in the AnnData object. A value of \code{NA} corresponds to the
-AnnData \code{X} slot.
+layer name in the AnnData object.
+A value of \code{NA} corresponds to the AnnData \code{X} slot.
+The mapping of the \code{X} slot can also be handled by the \code{x_mapping} argument.
+The \code{X} slot will be copied to the Seurat object as the value of \code{x_mapping}.
+Take care that you can only provide one mapping for the \code{X} slot.
 
 Example: \code{layers_mapping = c(counts = "counts", data = NA, foo = "bar")}
 
 If \code{NULL}, the internal function \code{.to_Seurat_guess_layers} will be used to
 guess the layer mapping as follows:
 \itemize{
-\item All AnnData layers are copied to Seurat layers by name
-\item If there is layer named "counts", \code{adata$X} is stored a "data" otherwise
-it is stored as "counts"
+\item All AnnData layers are copied to Seurat layers by name.
+\item adata$X will be copied by name \code{X}.
 }
 }
 
@@ -172,5 +178,5 @@ ad <- AnnData(
   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
   var = data.frame(row.names = letters[1:5], gene = 1:5)
 )
-to_Seurat(ad)
+to_Seurat(ad, x_mapping = "counts")
 }

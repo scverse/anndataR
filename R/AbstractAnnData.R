@@ -191,7 +191,7 @@ AbstractAnnData <- R6::R6Class(
     #' @description Convert to SingleCellExperiment
     #'
     #' See [to_SingleCellExperiment()] for more details on the conversion.
-    #'
+    #' @param x_mapping A character specifying how to map the AnnData X slot.
     #' @param assays_mapping A named list mapping SingleCellExperiment assays to AnnData layers
     #' @param colData_mapping A named list mapping SingleCellExperiment colData to AnnData obs
     #' @param rowData_mapping A named list mapping SingleCellExperiment rowData to AnnData var
@@ -202,6 +202,7 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' @return A SingleCellExperiment object
     to_SingleCellExperiment = function(
+      x_mapping = NULL,
       assays_mapping = NULL,
       colData_mapping = NULL, # nolint
       rowData_mapping = NULL, # nolint
@@ -212,6 +213,7 @@ AbstractAnnData <- R6::R6Class(
     ) {
       to_SingleCellExperiment(
         self,
+        x_mapping = x_mapping,
         assays_mapping = assays_mapping,
         colData_mapping = colData_mapping,
         rowData_mapping = rowData_mapping,
@@ -226,6 +228,7 @@ AbstractAnnData <- R6::R6Class(
     #' See [to_Seurat()] for more details on the conversion and each of the parameters.
     #'
     #' @param assay_name The name of the assay to use as the main data
+    #' @param x_mapping A character specifying how to map the AnnData X slot.
     #' @param layers_mapping A named list mapping Seurat layers to AnnData layers
     #' @param object_metadata_mapping A named list mapping Seurat object metadata to AnnData obs
     #' @param assay_metadata_mapping A named list mapping Seurat assay metadata to AnnData var
@@ -235,6 +238,7 @@ AbstractAnnData <- R6::R6Class(
     #' @return A Seurat object
     to_Seurat = function(
       assay_name = "RNA",
+      x_mapping = NULL,
       layers_mapping = NULL,
       object_metadata_mapping = NULL,
       assay_metadata_mapping = NULL,
@@ -245,6 +249,7 @@ AbstractAnnData <- R6::R6Class(
       to_Seurat(
         self,
         assay_name = assay_name,
+        x_mapping = x_mapping,
         layers_mapping = layers_mapping,
         object_metadata_mapping = object_metadata_mapping,
         assay_metadata_mapping = assay_metadata_mapping,

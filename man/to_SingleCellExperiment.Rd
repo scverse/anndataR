@@ -6,6 +6,7 @@
 \usage{
 to_SingleCellExperiment(
   adata,
+  x_mapping = NULL,
   assays_mapping = NULL,
   colData_mapping = NULL,
   rowData_mapping = NULL,
@@ -18,12 +19,15 @@ to_SingleCellExperiment(
 \arguments{
 \item{adata}{an AnnData object, e.g., InMemoryAnnData}
 
+\item{x_mapping}{Name of the layer where the anndata \code{X} slot will be mapped
+to.}
+
 \item{assays_mapping}{A named vector mapping \code{layers} in \code{adata} to \code{assay}
 names in the created SingleCellExperiment object. The names of the vector
 should be the names of the \code{assays} in the resulting SingleCellExperiment
-object, and the values should be the names of the \code{layers} in \code{adata}, and
-can include the \code{X} matrix as well. If \code{X} is not in the list, it will be
-added as \code{counts} or \code{data}.}
+object, and the values should be the names of the \code{layers} in \code{adata}. A
+value of \code{NA} corresponds to the \code{X} slot in the AnnData object, but if this
+is provided, you must not specify a value for \code{x_mapping}.}
 
 \item{colData_mapping}{A named vector mapping \code{obs} in \code{adata} to \code{colData}
 in the created SingleCellExperiment object. The names of the vector should
@@ -101,6 +105,6 @@ ad <- AnnData(
 )
 
 ## construct a SingleCellExperiment from an AnnData object
-sce <- to_SingleCellExperiment(ad)
+sce <- to_SingleCellExperiment(ad, x_mapping = "counts")
 sce
 }
