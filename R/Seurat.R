@@ -31,7 +31,7 @@
 #'
 #' A named vector to map AnnData layers to Seurat layers. Each name corresponds
 #' to the layer name in the Seurat object, and each value corresponds to the
-#' layer name in the AnnData object. 
+#' layer name in the AnnData object.
 #' A value of `NA` corresponds to the AnnData `X` slot.
 #' The mapping of the `X` slot can also be handled by the `x_mapping` argument.
 #' The `X` slot will be copied to the Seurat object as the value of `x_mapping`.

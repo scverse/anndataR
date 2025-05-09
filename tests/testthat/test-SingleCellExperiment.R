@@ -197,7 +197,7 @@ test_that("to_SCE retains pca dimred", {
 test_that("to_SCE works with list mappings", {
   expect_no_error(
     ad$to_SingleCellExperiment(
-      assays_mapping = as.list(.to_SCE_guess_assays(ad, NULL)),
+      assays_mapping = as.list(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
       reduction_mapping = as.list(.to_SCE_guess_reduction(ad)),
@@ -225,7 +225,7 @@ test_that("to_SCE works with a vector reduction_mapping", {
 test_that("to_SCE works with unnamed mappings", {
   expect_no_error(
     ad$to_SingleCellExperiment(
-      assays_mapping = unname(.to_SCE_guess_assays(ad, NULL)),
+      assays_mapping = unname(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = unname(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = unname(.to_SCE_guess_all(ad, "var")),
       colPairs_mapping = unname(.to_SCE_guess_all(ad, "obsp")),

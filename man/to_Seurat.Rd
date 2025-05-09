@@ -60,8 +60,11 @@ the mapping.
 
 A named vector to map AnnData layers to Seurat layers. Each name corresponds
 to the layer name in the Seurat object, and each value corresponds to the
-layer name in the AnnData object. A value of \code{NA} corresponds to the
-AnnData \code{X} slot.
+layer name in the AnnData object.
+A value of \code{NA} corresponds to the AnnData \code{X} slot.
+The mapping of the \code{X} slot can also be handled by the \code{x_mapping} argument.
+The \code{X} slot will be copied to the Seurat object as the value of \code{x_mapping}.
+Take care that you can only provide one mapping for the \code{X} slot.
 
 Example: \code{layers_mapping = c(counts = "counts", data = NA, foo = "bar")}
 
@@ -69,7 +72,7 @@ If \code{NULL}, the internal function \code{.to_Seurat_guess_layers} will be use
 guess the layer mapping as follows:
 \itemize{
 \item All AnnData layers are copied to Seurat layers by name.
-\item adata$X will not be copied to Seurat layers, unless an \code{x_mapping} is provided.
+\item adata$X will be copied by name \code{X}.
 }
 }
 
