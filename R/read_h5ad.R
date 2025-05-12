@@ -53,7 +53,9 @@ read_h5ad <- function(
   )
 
   if (!is.null(fun)) {
-    fun(adata, ...)
+    res <- fun(adata, ...)
+    adata$close()
+    res
   } else {
     adata
   }
