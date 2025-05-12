@@ -1,7 +1,7 @@
 dummy <- generate_dataset(10L, 20L)
 
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
-adata <- read_h5ad(file, to = "InMemoryAnnData")
+adata <- read_h5ad(file, as = "InMemoryAnnData")
 
 # GETTERS ----------------------------------------------------------------
 test_that("Creating InMemoryAnnData works", {
@@ -269,4 +269,9 @@ test_that("write to layers", {
   ## add to NULL
   ad$layers <- dummy$layers
   expect_identical(ad$layers, dummy$layers)
+})
+
+test_that("deprecated to_HDF5AnnData() works", {
+  expect_warning(h5_ad <- adata$to_HDF5AnnData(file = tempfile()))
+  expect_true(inherits(h5_ad, "HDF5AnnData"))
 })

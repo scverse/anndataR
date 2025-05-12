@@ -1,105 +1,16 @@
-# nolint start: line_length_linter
-# Sources used to understand how to convert between SingleCellExperiment and AnnData
-# https://bioconductor.org/packages/release/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html#2_Creating_SingleCellExperiment_instances
-# https://bioconductor.org/packages/3.20/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#column-sample-data
-# https://github.com/ivirshup/sc-interchange/issues
-# https://github.com/ivirshup/sc-interchange/issues/2
-# https://www.bioconductor.org/packages/devel/bioc/vignettes/SingleCellExperiment/inst/doc/intro.html#3_Adding_low-dimensional_representations
-# nolint end: line_length_linter
-
-#' Convert an AnnData object to a SingleCellExperiment object
-#'
-#' `to_SingleCellExperiment()` converts an AnnData object
-#'   to a SingleCellExperiment object.
-#'
-#' @param adata an AnnData object, e.g., InMemoryAnnData
-#'
-#' @param assays_mapping A named vector mapping `layers` in `adata` to `assay`
-#'   names in the created SingleCellExperiment object. The names of the vector
-#'   should be the names of the `assays` in the resulting SingleCellExperiment
-#'   object, and the values should be the names of the `layers` in `adata`, and
-#'   can include the `X` matrix as well. If `X` is not in the list, it will be
-#'   added as `counts` or `data`.
-#' @param colData_mapping A named vector mapping `obs` in `adata` to `colData`
-#'   in the created SingleCellExperiment object. The names of the vector should
-#'   be the names of the `colData` columns in the resulting SingleCellExperiment
-#'   object. The values should be the names of the `obs` columns in `adata`.
-#' @param rowData_mapping A named vector mapping `var` names in `adata` to
-#'   `rowData` in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `rowData` columns in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `var`
-#'   columns in `adata`.
-#' @param reduction_mapping A named vector or list mapping reduction names in
-#'   `adata` to reduction names in the created SingleCellExperiment object. For
-#'   the simpler named vector format, the names should be the names of the
-#'   `reducedDims` in the resulting SingleCellExperiment object, and the values
-#'   should be the names of the `obsm` in `adata`.
-#'
-#'   For more advanced mapping, use the list format where each item has the
-#'   following keys:
-#'
-#'   - `obsm`: the name of the `obsm` slot in `adata`
-#'   - `varm`: the name of the `varm` slot in `adata` (optional)
-#'   - `uns`: the name of the `uns` slot in `adata` (optional)
-#'
-#'   If `'varm'` or `'uns'` is given, a
-#'   [SingleCellExperiment::LinearEmbeddingMatrix] will be created for that item
-#'   with `adata$varm[[varm]]` passed to the `featureLoadings` argument and
-#'   `adata$uns[[uns]]` passed as `metadata`
-#' @param colPairs_mapping A named vector mapping obsp names in `adata` to
-#'   colPairs names in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `colPairs` in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `obsp`
-#'   in `adata`.
-#' @param rowPairs_mapping A named vector mapping varp names in `adata` to
-#'   rowPairs names in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `rowPairs` in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `varp`
-#'   in `adata`.
-#' @param metadata_mapping A named vector mapping uns names in `adata` to
-#'   metadata names in the created SingleCellExperiment object. The names of the
-#'   vector should be the names of the `metadata` in the resulting
-#'   SingleCellExperiment object. The values should be the names of the `uns` in
-#'   `adata`.
-#'
-#' @return `to_SingleCellExperiment()` returns a SingleCellExperiment
-#'   representing the content of `adata`.
-#'
-#' @details
-#' If an unnamed vector is provided to a mapping argument the values will be
-#' used as names
-#'
-#' @examples
-#' if (interactive()) {
-#'   ## useful when interacting with the SingleCellExperiment !
-#'   library(SingleCellExperiment)
-#' }
-#' ad <- AnnData(
-#'   X = matrix(1:5, 3L, 5L),
-#'   layers = list(
-#'     A = matrix(5:1, 3L, 5L),
-#'     B = matrix(letters[1:5], 3L, 5L)
-#'   ),
-#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
-#'   var = data.frame(row.names = letters[1:5], gene = 1:5)
-#' )
-#'
-#' ## construct a SingleCellExperiment from an AnnData object
-#' sce <- to_SingleCellExperiment(ad)
-#' sce
-#' @export
-# nolint start: cyclocomp_linter
+# See as_SingleCellExperiment() for function documentation
+# nolint start: object_name_linter
 to_SingleCellExperiment <- function(
-  # nolint end: cyclocomp_linter
   adata,
   assays_mapping = NULL,
-  colData_mapping = NULL, # nolint
-  rowData_mapping = NULL, # nolint
-  reduction_mapping = NULL,
-  colPairs_mapping = NULL, # nolint
-  rowPairs_mapping = NULL, # nolint
+  colData_mapping = NULL,
+  rowData_mapping = NULL,
+  reducedDims_mapping = NULL,
+  colPairs_mapping = NULL,
+  rowPairs_mapping = NULL,
   metadata_mapping = NULL
 ) {
+  # nolint end: object_name_linter
   check_requires(
     "Converting AnnData to SingleCellExperiment",
     "SingleCellExperiment",
@@ -119,8 +30,8 @@ to_SingleCellExperiment <- function(
     .to_SCE_guess_all(adata, "obs")
   rowData_mapping <- self_name(rowData_mapping) %||%
     .to_SCE_guess_all(adata, "var")
-  reduction_mapping <- self_name(reduction_mapping) %||%
-    .to_SCE_guess_reduction(adata)
+  reducedDims_mapping <- self_name(reducedDims_mapping) %||%
+    .to_SCE_guess_reducedDims(adata)
   colPairs_mapping <- self_name(colPairs_mapping) %||%
     .to_SCE_guess_all(adata, "obsp")
   rowPairs_mapping <- self_name(rowPairs_mapping) %||%
@@ -167,7 +78,7 @@ to_SingleCellExperiment <- function(
   metadata <- .to_SCE_process_simple_mapping(adata, metadata_mapping, "uns")
 
   # construct reducedDims
-  reduceddims <- .to_SCE_process_reduction_mapping(adata, reduction_mapping)
+  reduceddims <- .to_SCE_process_reducedDims_mapping(adata, reducedDims_mapping)
 
   arguments <- list(
     assays = sce_assays,
@@ -237,9 +148,22 @@ to_SingleCellExperiment <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_guess_reduction <- function(adata) {
+.to_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  .to_Seurat_guess_reductions(adata) # nolint object_usage_linter
+  purrr::map(adata$obsm_keys(), function(.obsm) {
+    if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
+      return(NULL)
+    }
+
+    mapping <- c(sampleFactors = .obsm)
+    if (.obsm == "X_pca" && "PCs" %in% names(adata$varm)) {
+      mapping["featureLoadings"] <- "PCs"
+    }
+
+    mapping
+  }) |>
+    setNames(adata$obsm_keys()) |>
+    purrr::compact()
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -258,7 +182,7 @@ to_SingleCellExperiment <- function(
 # trackstatus: class=SingleCellExperiment, feature=get_obsm, status=done
 # trackstatus: class=SingleCellExperiment, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_reduction <- function(
+.to_SCE_process_reducedDim <- function(
   # nolint end: object_length_linter object_name_linter
   adata,
   obsm_key,
@@ -325,100 +249,54 @@ to_SingleCellExperiment <- function(
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_reduction_mapping <- function(adata, reduction_mapping) {
+.to_SCE_process_reducedDims_mapping <- function(adata, reducedDims_mapping) {
   # nolint end: object_length_linter object_name_linter
 
   # If the mapping is a vector expand it to the list format
-  if (is.atomic(reduction_mapping)) {
-    reduction_mapping <- purrr::map(reduction_mapping, function(.obsm) {
-      c(obsm = .obsm)
+  if (is.atomic(reducedDims_mapping)) {
+    # nolint start: object_name_linter
+    reducedDims_mapping <- purrr::map(reducedDims_mapping, function(.obsm) {
+      # nolint end: object_name_linter
+      c(sampleFactors = .obsm)
     })
   } else {
-    purrr::walk(names(reduction_mapping), function(.name) {
-      mapping <- reduction_mapping[[.name]]
-      if (!(is.character(mapping) && ("obsm" %in% names(mapping)))) {
+    purrr::walk(names(reducedDims_mapping), function(.name) {
+      mapping <- reducedDims_mapping[[.name]]
+      if (!(is.character(mapping) && ("sampleFactors" %in% names(mapping)))) {
         cli_abort(c(
           paste(
-            "If it is a list, each item in {.arg reduction_mapping} must be a
-            {.cls character} vector with the name {.val obsm} and optional",
-            "names {.val varm} and {.val uns}"
+            "If it is a list, each item in {.arg reducedDims_mapping} must be a
+            {.cls character} vector with the name {.val sampleFactors} and
+            optional names {.val featureLoadings} and {.val metadata}"
           ),
           "i" = paste(
-            "{.code reduction_mapping[[{.val { .name }}]]}:",
-            "{style_vec(mapping, wrap = TRUE)}"
+            "{.code names(reducedDims_mapping[[{.val { .name }}]])}:",
+            "{style_vec(names(mapping))}"
           )
         ))
       }
     })
   }
 
-  purrr::map(reduction_mapping, function(.map) {
-    varm <- if ("varm" %in% names(.map)) .map[["varm"]] else NULL
-    uns <- if ("uns" %in% names(.map)) .map[["uns"]] else NULL
+  purrr::map(reducedDims_mapping, function(.map) {
+    varm <- if ("featureLoadings" %in% names(.map))
+      .map[["featureLoadings"]] else NULL
+    uns <- if ("metadata" %in% names(.map)) .map[["metadata"]] else NULL
 
-    .to_SCE_process_reduction(
+    .to_SCE_process_reducedDim(
       adata,
-      obsm_key = .map[["obsm"]],
+      obsm_key = .map[["sampleFactors"]],
       varm_key = varm,
       uns_key = uns
     )
   })
 }
 
-#' Convert a SingleCellExperiment object to an AnnData object
-#'
-#' `from_SingleCellExperiment()` converts a
-#'   SingleCellExperiment to an AnnData object.
-#'
-#' @param sce An object inheriting from SingleCellExperiment.
-#'
-#' @param output_class Name of the AnnData class. Must be one of `"HDF5AnnData"`
-#' or `"InMemoryAnnData"`.
-#'
-#' @param x_mapping Name of the assay in `sce` to use as the `X` matrix in the AnnData object.
-#' @param layers_mapping A named vector or list mapping layer names in AnnData to assay names in the
-#' SingleCellExperiment object. Each name corresponds to the layer name in AnnData, and each value to the
-#' assay name in SCE.
-#' @param obs_mapping A named vector or list mapping column names in AnnData's obs to column names in SCE's colData.
-#' Each name corresponds to a column name in AnnData's obs, and each value to a column name in SCE's colData.
-#' @param var_mapping A named vector or list mapping column names in AnnData's var to column names in SCE's rowData.
-#' Each name corresponds to a column name in AnnData's var, and each value to a column name in SCE's rowData.
-#' @param obsm_mapping A named vector mapping obsm keys in AnnData to reducedDims names in SCE.
-#' Each name corresponds to a key in AnnData's obsm, and each value to the name of a reducedDim in SCE.
-#' Example: `obsm_mapping = c(X_pca = "pca", X_umap = "umap")`.
-#' @param varm_mapping A named vector mapping varm keys in AnnData to reducedDims names in SCE.
-#' Each name corresponds to a key in AnnData's varm, and each value to the name of a reducedDim in SCE.
-#' Example: `varm_mapping = c(PCs = "pca")`.
-#' @param obsp_mapping A named vector or list mapping obsp keys in AnnData to colPairs in the
-#' SingleCellExperiment object. Each name corresponds to a key in AnnData's obsp, and each value to a name in
-#' SCE's colPairs.
-#' @param varp_mapping A named vector or list mapping varp keys in AnnData to rowPairs in the
-#' SingleCellExperiment object. Each name corresponds to a key in AnnData's varp, and each value to a
-#' name in SCE's rowPairs.
-#' @param uns_mapping A named vector or list mapping uns keys in AnnData to metadata in the
-#' SingleCellExperiment object. Each name corresponds to a key in AnnData's uns, and each value to a
-#' name in SCE's metadata.
-#' @param ... Additional arguments to pass to the generator function.
-#'
-#' @return `from_SingleCellExperiment()` returns an AnnData object
-#'   (e.g., InMemoryAnnData) representing the content of `sce`.
-#'
-#' @examples
-#' ## construct an AnnData object from a SingleCellExperiment
-#' library(SingleCellExperiment)
-#' sce <- SingleCellExperiment(
-#'   assays = list(counts = matrix(1:5, 5L, 3L)),
-#'   colData = DataFrame(cell = 1:3, row.names = paste0("Cell", 1:3)),
-#'   rowData = DataFrame(gene = 1:5, row.names = paste0("Gene", 1:5))
-#' )
-#' from_SingleCellExperiment(sce, "InMemory")
-#'
-#' @export
+# See as_AnnData() for function documentation
 # nolint start: object_name_linter
 from_SingleCellExperiment <- function(
   # nolint end: object_name_linter
   sce,
-  output_class = c("InMemory", "HDF5AnnData"),
   x_mapping = NULL,
   layers_mapping = NULL,
   obs_mapping = NULL,
@@ -428,6 +306,7 @@ from_SingleCellExperiment <- function(
   obsp_mapping = NULL,
   varp_mapping = NULL,
   uns_mapping = NULL,
+  output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
   check_requires(

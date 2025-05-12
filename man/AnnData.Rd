@@ -18,48 +18,32 @@ AnnData(
 )
 }
 \arguments{
-\item{X}{Either \code{NULL} or a observation × variable matrix with
-dimensions consistent with \code{obs} and \code{var}.}
+\item{X}{See the \code{X} slot in \link{AnnData-usage}}
 
-\item{obs}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about observations. If \code{NULL}, an \code{n_obs}×0 data frame will
-automatically be generated.}
+\item{obs}{See the \code{obs} slot in \link{AnnData-usage}}
 
-\item{var}{Either \code{NULL} or a \code{data.frame} with columns containing
-information about variables. If \code{NULL}, an \code{n_vars}×0 data frame will
-automatically be generated.}
+\item{var}{See the \code{var} slot in \link{AnnData-usage}}
 
-\item{layers}{Either \code{NULL} or a named list, where each element is an
-observation × variable matrix with dimensions consistent with \code{obs} and
-\code{var}.}
+\item{layers}{See the \code{layers} slot in \link{AnnData-usage}}
 
-\item{obsm}{The obsm slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is a
-matrix with \code{n_obs} rows and an arbitrary number of columns.}
+\item{obsm}{See the \code{obsm} slot in \link{AnnData-usage}}
 
-\item{varm}{The varm slot is used to store multi-dimensional annotation
-arrays. It must be either \code{NULL} or a named list, where each element is a
-matrix with \code{n_vars} rows and an arbitrary number of columns.}
+\item{varm}{See the \code{varm} slot in \link{AnnData-usage}}
 
-\item{obsp}{The obsp slot is used to store sparse multi-dimensional
-annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_obs}.}
+\item{obsp}{See the \code{obsp} slot in \link{AnnData-usage}}
 
-\item{varp}{The varp slot is used to store sparse multi-dimensional
-annotation arrays. It must be either \code{NULL} or a named list, where each
-element is a sparse matrix where each dimension has length \code{n_vars}.}
+\item{varp}{See the \code{varp} slot in \link{AnnData-usage}}
 
-\item{uns}{The uns slot is used to store unstructured annotation. It must
-be either \code{NULL} or a named list.}
+\item{uns}{See the \code{uns} slot in \link{AnnData-usage}}
 
-\item{shape}{Shape tuple (#observations, #variables). Can be provided
-if \code{X} or \code{obs} and \code{var} are not provided.}
+\item{shape}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if both
+\code{X} or \code{obs} and \code{var} are not provided.}
 }
 \value{
-An in-memory AnnData object.
+An \link{InMemoryAnnData} object
 }
 \description{
-For more information on the functionality of an AnnData object, see \link{anndataR-package}.
+For more information on the functionality of an AnnData object, see \link{AnnData-usage}
 }
 \examples{
 adata <- AnnData(
@@ -76,8 +60,12 @@ adata <- AnnData(
 )
 
 adata
-
 }
 \seealso{
-\link{anndataR-package}
+\link{AnnData-usage} for details of \code{AnnData} structure and usage
+
+Other AnnData creators: 
+\code{\link{as_AnnData}()},
+\code{\link{read_h5ad}()}
 }
+\concept{AnnData creators}
