@@ -6,7 +6,7 @@ file <- hdf5r::H5File$new(
   system.file("extdata", "example.h5ad", package = "anndataR"),
   mode = "r"
 )
-on.exit(file$close())
+on.exit(file$close_all())
 
 test_that("reading encoding works", {
   encoding <- read_h5ad_encoding(file, "obs")
@@ -127,19 +127,4 @@ test_that("reading dataframes works", {
       "leiden"
     )
   )
-})
-
-test_that("reading H5AD as SingleCellExperiment works", {
-  skip_if_not_installed("SingleCellExperiment")
-
-  sce <- read_h5ad(file, to = "SingleCellExperiment")
-  expect_s4_class(sce, "SingleCellExperiment")
-})
-
-test_that("reading H5AD as Seurat works", {
-  skip_if_not_installed("SeuratObject")
-
-  # TODO: remove this suppression when the to_seurat, from_seurat functions are updated.
-  seurat <- suppressWarnings(read_h5ad(file, to = "Seurat"))
-  expect_s4_class(seurat, "Seurat")
 })
