@@ -128,6 +128,6 @@ Other object converters:
 \code{\link{as_AnnData}()},
 \code{\link{as_HDF5AnnData}},
 \code{\link{as_InMemoryAnnData}},
-\code{\link{as_Seurat}}
+\code{\link{as_Seurat}()}
 }
 \concept{object converters}

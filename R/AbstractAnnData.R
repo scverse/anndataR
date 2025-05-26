@@ -240,7 +240,7 @@ AbstractAnnData <- R6::R6Class(
       graph_mapping = NULL,
       misc_mapping = NULL
     ) {
-      to_Seurat(
+      as_Seurat(
         self,
         assay_name = assay_name,
         layers_mapping = layers_mapping,
