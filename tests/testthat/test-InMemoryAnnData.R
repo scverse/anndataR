@@ -1,8 +1,5 @@
 dummy <- generate_dataset(10L, 20L)
 
-# file <- system.file("extdata", "example.h5ad", package = "anndataR")
-# adata <- read_h5ad(file, to = "InMemoryAnnData", mode = "r")
-
 # GETTERS ----------------------------------------------------------------
 test_that("Creating InMemoryAnnData works", {
   ad <- AnnData(
@@ -84,27 +81,6 @@ test_that("'layers' works", {
   layers <- list(A = matrix(0, 3, 5), B = matrix(1, 5, 3))
   expect_error(AnnData(obs = obs, var = var, layers = layers))
 })
-
-# TODO: test in another way
-# # trackstatus: class=InMemoryAnnData, feature=test_get_obsm, status=done
-# test_that("reading obsm works", {
-#   obsm <- adata$obsm
-#   expect_true(is.list(obsm), "list")
-#   expect_equal(
-#     names(obsm),
-#     c("X_pca", "X_umap")
-#   )
-# })
-
-# # trackstatus: class=InMemoryAnnData, feature=test_get_varm, status=done
-# test_that("reading varm works", {
-#   varm <- adata$varm
-#   expect_true(is.list(varm), "list")
-#   expect_equal(
-#     names(varm),
-#     c("PCs")
-#   )
-# })
 
 test_that("*_keys() works", {
   obs <- var <- data.frame()
@@ -270,4 +246,9 @@ test_that("write to layers", {
   ## add to NULL
   ad$layers <- dummy$layers
   expect_identical(ad$layers, dummy$layers)
+})
+
+test_that("deprecated to_HDF5AnnData() works", {
+  expect_warning(h5_ad <- adata$to_HDF5AnnData(file = tempfile()))
+  expect_true(inherits(h5_ad, "HDF5AnnData"))
 })

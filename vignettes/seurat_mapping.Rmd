@@ -73,8 +73,8 @@ your own mappings.
 ## Implicit mapping
 
 Here, we showcase what happens if you do not provide any mapping information for the conversion.
-```{r to_Seurat_implicit}
-seurat_obj <- to_Seurat(ad)
+```{r as_Seurat_implicit}
+seurat_obj <- ad$as_Seurat()
 seurat_obj
 ```
 
@@ -89,9 +89,8 @@ with multiple assays, you can use (https://mudata.readthedocs.io/en/latest/)[MuD
 The `assay_name` parameter will only determine what the name of the assay in the Seurat object will be. By default, this will be
 "RNA".
 
-```{r to_Seurat explicit}
-to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit}
+ad$as_Seurat(
   assay_name = "Other_assay",
   object_metadata_mapping = c(),
   layers_mapping = c(counts = NA),
@@ -110,9 +109,8 @@ This corresponds with the `obs` slot in the AnnData object.
 If no information is provided, anndataR will try to convert the whole `obs` slot.
 You can see that Seurat adds some columns by default (`orig.ident`, `nCount_RNA`, `nFeature_RNA`).
 
-```{r to_Seurat_implicit_object_metadata}
-seurat_object <- to_Seurat(
-  adata = ad,
+```{r as_Seurat_implicit_object_metadata}
+seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   layers_mapping = c(counts = NA),
   assay_metadata_mapping = c(),
@@ -130,9 +128,8 @@ If no mapping is provided, we will try to guess which layer the `X` anndata slot
 layer called `counts` or `data` exists in the AnnData object.
 The other layers of the AnnData object will be copied by name.
 
-```{r to_Seurat_implicit_layers}
-seurat_object <- to_Seurat(
-  adata = ad,
+```{r as_Seurat_implicit_layers}
+seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   object_metadata_mapping = c(),
   assay_metadata_mapping = c(),
@@ -151,9 +148,8 @@ level metadata. This corresponds with the `var` slot in the AnnData object.
 
 If no information is provided, anndataR will try to convert the whole `var` slot.
 
-```{r to_Seurat_implicit_assay_metadata}
-seurat_object <- to_Seurat(
-  adata = ad,
+```{r as_Seurat_implicit_assay_metadata}
+seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   object_metadata_mapping = c(),
   layers_mapping = c(counts = NA),
@@ -171,9 +167,8 @@ We assume that a PCA will always be stored as `X_pca` in the `obsm` slot, with t
 For other reductions, we will assume that they will start with `X_` in the `obsm` slot, with the characters after the `X_` being the name of the reduction.
 Elements in the `obsm` slot not starting with `X_` will not be converted.
 
-```{r to_Seurat_implicit_reduction}
-seurat_object <- to_Seurat(
-  adata = ad,
+```{r as_Seurat_implicit_reduction}
+seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   object_metadata_mapping = c(),
   layers_mapping = c(counts = NA),
@@ -191,9 +186,8 @@ If a graph is stored with the name `connectivities`, we will store it as `nn` in
 Graphs starting with `connectivities_{name}` will be stored as `{name}` in the Seurat object.
 Other graphs will not be converted.
 
-```{r to_Seurat_implicit_graph}
-seurat_object <- to_Seurat(
-  adata = ad,
+```{r as_Seurat_implicit_graph}
+seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   object_metadata_mapping = c(),
   layers_mapping = c(counts = NA),
@@ -210,9 +204,8 @@ Graphs(seurat_object)
 The misc slot in the Seurat object is used to store any other information that does not fit in the other slots.
 By default, it will copy the `uns` slot from the AnnData object.
 
-```{r to_Seurat_implicit_misc}
-seurat_object <- to_Seurat(
-  adata = ad,
+```{r as_Seurat_implicit_misc}
+seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   object_metadata_mapping = c(),
   layers_mapping = c(counts = NA),
@@ -230,9 +223,8 @@ Misc(seurat_object)
 As stated in the section on implicit mapping, an anndata object can only have one assay, while a Seurat object can have multiple assays.
 The name you pass here will only determine what the assay is called in the Seurat object. By default, it is "RNA".
 
-```{r to_Seurat explicit_assay_name}
-seurat_obj <- to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit_assay_name}
+seurat_obj <- ad$as_Seurat(
   assay_name = "Other_assay"
 )
 Assays(seurat_obj)
@@ -245,9 +237,8 @@ in the Seurat object. The values refer to what the layers are called in the annd
 
 You must provide at least a layer called `counts` or `data` in the mapping.
 
-```{r to_Seurat explicit_layers}
-seurat_obj <- to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit_layers}
+seurat_obj <- ad$as_Seurat(
   layers_mapping = c(counts = "integer_matrix", other_layer2 = "numeric_rsparse")
 )
 Layers(seurat_obj, assay = "RNA")
@@ -261,9 +252,8 @@ and thus with the `obs` slot in the AnnData object.
 The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what the
 columns are called in the `obs` slot of the anndata object.
 
-```{r to_Seurat explicit_object_metadata}
-seurat_obj <- to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit_object_metadata}
+seurat_obj <- ad$as_Seurat(
   object_metadata_mapping = c(metadata1 = "integer", metadata2 = "numeric")
 )
 seurat_obj[[]]
@@ -277,9 +267,8 @@ You can provide a mapping for assay-level metadata, which corresponds to gene-le
 The names of the named list refer to what the metadata will be called in the Seurat object. The values refer to what
 the metadata is called in the `var` slot of the anndata object.
 
-```{r to_Seurat explicit_assay_metadata}
-seurat_obj <- to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit_assay_metadata}
+seurat_obj <- ad$as_Seurat(
   assay_metadata_mapping = c(metadata1 = "numeric", metadata2 = "logical")
 )
 seurat_obj[["RNA"]][[]]
@@ -290,12 +279,11 @@ seurat_obj[["RNA"]][[]]
 You can provide a mapping for the `reductions` slot. The names of the named list refer to what the reduction will be called.
 The values must be a named list, containing the keys: `key`, `obsm` and maybe `varm`, if appropriate for the reduction.
 
-```{r to_Seurat explicit_reduction}
-seurat_obj <- to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit_reduction}
+seurat_obj <- ad$as_Seurat(
   reduction_mapping = list(
-    pca = c(key = "PC", obsm = "X_pca", varm = "PCs"),
-    umap = c(key = "UMAP", obsm = "X_umap")
+    pca = c(key = "PC", embeddings = "X_pca", loadings = "PCs"),
+    umap = c(key = "UMAP", embeddings = "X_umap")
   )
 )
 Reductions(seurat_obj)
@@ -307,9 +295,8 @@ The names of the named list refer to what the graph will be called in the Seurat
 The values refer to names in the `obsp` slot of the anndata object.
 stored in the `obsp` slot.
 
-```{r to_Seurat explicit_graph}
-seurat_obj <- to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit_graph}
+seurat_obj <- ad$as_Seurat(
   graph_mapping = c(connectivities = "numeric_matrix", connectivities_sparse = "numeric_csparse")
 )
 Graphs(seurat_obj)
@@ -324,9 +311,8 @@ Items can be a vector with two elements.
 The first is the name of a slot in the AnnData object (e.g. `X`, `layers`,
  `obs`, `var`, `obsm`, `varm`, `obsp`, `varp`, `uns`) and the second is the name of the item to transfer from that slot.
 
-```{r to_Seurat explicit_misc1}
-seurat_obj <- to_Seurat(
-  adata = ad,
+```{r as_Seurat explicit_misc1}
+seurat_obj <- ad$as_Seurat(
   misc_mapping = c(uns_vec = "vec_integer")
 )
 Misc(seurat_obj)
@@ -353,8 +339,8 @@ suppressWarnings({
 })
 ```
 
-```{r from_Seurat_implicit}
-ad <- from_Seurat(obj)
+```{r as_AnnData_implicit}
+ad <- as_AnnData(obj)
 ad
 ```
 
@@ -363,7 +349,7 @@ The `assay_name` argument determines which assay in the Seurat object will be co
 By default it's the `DefaultAssay`.
 
 ```{r fsi_assay_name}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   assay_name = NULL,
   layers_mapping = c(),
@@ -383,7 +369,7 @@ By default, no data will be put into the `X` slot of the AnnData object. If you 
 `counts` or `data` into the `X` slot, you need to provide a mapping.
 
 ```{r fsi_x_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   assay_name = "RNA",
   layers_mapping = c(),
@@ -404,7 +390,7 @@ As you can see, by default, no information was copied to the `X` slot of the Ann
 By default, all layers in the Seurat object will be copied to the AnnData object. This means that the `X` slot will be `NULL` (empty).
 
 ```{r fsi_layers_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   obs_mapping = c(),
   var_mapping = c(),
@@ -424,7 +410,7 @@ The obs slot is used to store observation-level annotations, such as cell-level 
 By default, all information in the `meta.data` slot of the Seurat object is copied to the `obs` slot of the AnnData object.
 
 ```{r fsi_obs_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   var_mapping = c(),
@@ -442,7 +428,7 @@ The var slot is used to store feature-level annotations, such as gene-level meta
 By default, all information in the `meta.data` slot of the specified assay of the Seurat object is copied to the `var` slot of the AnnData object.
 
 ```{r fsi_var_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -460,7 +446,7 @@ The obsm slot is used to store multidimensional observation-level annotations, s
 By default, it will prefix the name of all Seurat reductions with `X_`.
 
 ```{r fsi_obsm_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -480,7 +466,7 @@ dimensionality reductions.
 By default, all loadings of dimensionality reductions will be copied to the `varm` slot of the AnnData object.
 
 ```{r fsi_varm_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -499,7 +485,7 @@ The obsp slot is used to store pairwise relations between observations. This is 
 By default, all Seurat graphs are copied to the `obsp` slot of the AnnData object.
 
 ```{r fsi_obsp_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -517,7 +503,7 @@ The varp slot is used to store pairwise relations between features.
 By default, no information is copied to the `varp` slot of the AnnData object.
 
 ```{r fsi_varp_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -535,7 +521,7 @@ The uns slot is used for any non-structured miscellaneous data.
 By default all information in the `misc` slot of the Seurat object is copied to the `uns` slot of the AnnData object.
 
 ```{r fsi_uns_mapping}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   layers_mapping = c(),
   obs_mapping = c(),
@@ -555,7 +541,7 @@ For all of the mappings (`layers_mapping`, `obs_mapping`, `var_mapping`, `obsm_m
 you can provide a named vector where the names are the names in the AnnData object and the values are the names in the Seurat object.
 
 ```{r fse_explicit}
-ad <- from_Seurat(
+ad <- as_AnnData(
   obj,
   x_mapping = "counts",
   layers_mapping = c(data = "data"),
