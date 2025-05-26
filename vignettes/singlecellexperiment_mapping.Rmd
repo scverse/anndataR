@@ -166,8 +166,7 @@ You can see that the `X` slot got stored as `counts`, and the `layers` got store
 We can also provide the `x_mapping` argument, which will dictate where the `X` slot gets stored, but then we should omit it from the `assays_mapping` argument.
 
 ```{r explicit_x}
-sce_assays_x <- to_SingleCellExperiment(
-  ad,
+sce_assays_x <- ad$as_SingleCellExperiment(
   x_mapping = "counts",
   assays_mapping = c(layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
   colData_mapping = c(),
