@@ -307,7 +307,7 @@ AbstractAnnData <- R6::R6Class(
       compression = c("none", "gzip", "lzf"),
       mode = c("w-", "r", "r+", "a", "w", "x")
     ) {
-      to_HDF5AnnData(
+      as_HDF5AnnData(
         adata = self,
         file = file,
         compression = compression,

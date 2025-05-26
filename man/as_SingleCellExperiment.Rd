@@ -138,8 +138,9 @@ with the following names used to create a
 \seealso{
 Other object converters: 
 \code{\link{as_AnnData}()},
-\code{\link{as_HDF5AnnData}},
+\code{\link{as_HDF5AnnData}()},
 \code{\link{as_InMemoryAnnData}},
 \code{\link{as_Seurat}()}
 }
 \concept{object converters}
+\keyword{internal}

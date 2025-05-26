@@ -87,7 +87,7 @@
 #'
 #' @return A `SingleCellExperiment` object containing the requested data from
 #'   `adata`
-#' @name as_SingleCellExperiment
+#' @keywords internal
 #'
 #' @family object converters
 #'

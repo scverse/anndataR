@@ -218,7 +218,7 @@ Other AnnData creators:
 \code{\link{read_h5ad}()}
 
 Other object converters: 
-\code{\link{as_HDF5AnnData}},
+\code{\link{as_HDF5AnnData}()},
 \code{\link{as_InMemoryAnnData}},
 \code{\link{as_Seurat}()},
 \code{\link{as_SingleCellExperiment}()}
