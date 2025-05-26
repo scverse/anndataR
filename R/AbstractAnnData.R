@@ -275,7 +275,7 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' @return An [InMemoryAnnData] object
     as_InMemoryAnnData = function() {
-      to_InMemoryAnnData(self)
+      as_InMemoryAnnData(self)
     },
     #' @description
     #' `r lifecycle::badge('deprecated')`
