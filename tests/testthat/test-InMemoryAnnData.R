@@ -249,6 +249,12 @@ test_that("write to layers", {
 })
 
 test_that("deprecated to_HDF5AnnData() works", {
-  expect_warning(h5_ad <- adata$to_HDF5AnnData(file = tempfile()))
+  ad <- AnnData(
+    X = dummy$X,
+    obs = dummy$obs,
+    var = dummy$var,
+    layers = dummy$layers
+  )
+  expect_warning(h5_ad <- ad$to_HDF5AnnData(file = tempfile()))
   expect_true(inherits(h5_ad, "HDF5AnnData"))
 })
