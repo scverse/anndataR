@@ -60,7 +60,7 @@ adata <- read_h5ad(h5ad_path)
 Read an h5ad file on disk:
 
 ```{r}
-adata <- read_h5ad(h5ad_path, to = "HDF5AnnData")
+adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
 
 View structure:
@@ -82,14 +82,14 @@ adata$var[1:5, 1:6]
 Convert the AnnData object to a SingleCellExperiment object:
 
 ```{r}
-sce <- adata$to_SingleCellExperiment()
+sce <- adata$as_SingleCellExperiment()
 sce
 ```
 
 Convert the AnnData object to a Seurat object:
 
-```{r to-Seurat}
-obj <- adata$to_Seurat()
+```{r as-Seurat}
+obj <- adata$as_Seurat()
 obj
 ```
 

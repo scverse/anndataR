@@ -7,9 +7,9 @@ ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-sce <- ad$to_SingleCellExperiment()
+sce <- ad$as_SingleCellExperiment()
 
-test_that("to_SCE retains nr of observations and features", {
+test_that("as_SCE retains nr of observations and features", {
   expect_equal(nrow(sce), 20)
   expect_equal(ncol(sce), 10)
 
@@ -21,7 +21,7 @@ test_that("to_SCE retains nr of observations and features", {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_obs, status=done
 for (obs_key in colnames(ad$obs)) {
-  test_that(paste0("to_SCE retains obs key: ", obs_key), {
+  test_that(paste0("as_SCE retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("obs"),
@@ -42,7 +42,7 @@ for (obs_key in colnames(ad$obs)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_var, status=done
 for (var_key in colnames(ad$var)) {
-  test_that(paste0("to_SCE retains var key: ", var_key), {
+  test_that(paste0("as_SCE retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("var"),
@@ -63,7 +63,7 @@ for (var_key in colnames(ad$var)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_layers, status=done
 for (layer_key in names(ad$layers)) {
-  test_that(paste0("to_SCE retains layer: ", layer_key), {
+  test_that(paste0("as_SCE retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("layers"),
@@ -108,7 +108,7 @@ test_that("to_SCE fails when providing duplicate assay names", {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_obsp, status=done
 for (obsp_key in names(ad$obsp)) {
-  test_that(paste0("to_SCE retains obsp key: ", obsp_key), {
+  test_that(paste0("as_SCE retains obsp key: ", obsp_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("obsp"),
@@ -129,7 +129,7 @@ for (obsp_key in names(ad$obsp)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_varp, status=done
 for (varp_key in names(ad$varp)) {
-  test_that(paste0("to_SCE retains varp key: ", varp_key), {
+  test_that(paste0("as_SCE retains varp key: ", varp_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("obsp"),
@@ -150,7 +150,7 @@ for (varp_key in names(ad$varp)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {
-  test_that(paste0("to_SCE retains uns key: ", uns_key), {
+  test_that(paste0("as_SCE retains uns key: ", uns_key), {
     msg <- message_if_known(
       backend = "to_SCE",
       slot = c("uns"),
@@ -169,7 +169,7 @@ for (uns_key in names(ad$uns)) {
   })
 }
 
-test_that("to_SCE retains pca dimred", {
+test_that("as_SCE retains pca dimred", {
   msg <- message_if_known(
     backend = "to_SCE",
     slot = c("obsm", "varm"),
@@ -194,13 +194,13 @@ test_that("to_SCE retains pca dimred", {
   )
 })
 
-test_that("to_SCE works with list mappings", {
+test_that("as_SCE works with list mappings", {
   expect_no_error(
-    ad$to_SingleCellExperiment(
+    ad$as_SingleCellExperiment(
       assays_mapping = as.list(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
-      reduction_mapping = as.list(.to_SCE_guess_reduction(ad)),
+      reducedDims_mapping = as.list(.to_SCE_guess_reducedDims(ad)),
       colPairs_mapping = as.list(.to_SCE_guess_all(ad, "obsp")),
       rowPairs_mapping = as.list(.to_SCE_guess_all(ad, "varp")),
       metadata_mapping = as.list(.to_SCE_guess_all(ad, "uns"))
@@ -208,23 +208,23 @@ test_that("to_SCE works with list mappings", {
   )
 
   expect_error(
-    ad$to_SingleCellExperiment(
-      reduction_mapping = list(numeric = "numeric_matrix")
+    ad$as_SingleCellExperiment(
+      reducedDims_mapping = list(numeric = "numeric_matrix")
     )
   )
 })
 
-test_that("to_SCE works with a vector reduction_mapping", {
+test_that("as_SCE works with a vector reducedDims_mapping", {
   expect_no_error(
-    ad$to_SingleCellExperiment(
-      reduction_mapping = c(numeric = "numeric_matrix")
+    ad$as_SingleCellExperiment(
+      reducedDims_mapping = c(numeric = "numeric_matrix")
     )
   )
 })
 
-test_that("to_SCE works with unnamed mappings", {
+test_that("as_SCE works with unnamed mappings", {
   expect_no_error(
-    ad$to_SingleCellExperiment(
+    ad$as_SingleCellExperiment(
       assays_mapping = unname(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = unname(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = unname(.to_SCE_guess_all(ad, "var")),
@@ -233,6 +233,11 @@ test_that("to_SCE works with unnamed mappings", {
       metadata_mapping = unname(.to_SCE_guess_all(ad, "uns"))
     )
   )
+})
+
+test_that("deprecated to_SingleCellExperiment() works", {
+  expect_warning(sce <- ad$to_SingleCellExperiment())
+  expect_s4_class(sce, "SingleCellExperiment")
 })
 
 # TODO gracefully failing
@@ -247,8 +252,8 @@ ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
 # TODO: Build an SCE rather than converting
-sce <- ad$to_SingleCellExperiment()
-ad <- from_SingleCellExperiment(sce)
+sce <- ad$as_SingleCellExperiment()
+ad <- as_AnnData(sce)
 
 test_that("from_SCE retains observations and features", {
   expect_equal(nrow(sce), 20)
@@ -417,7 +422,7 @@ test_that("from_SCE retains pca dimred", {
 
 test_that("from_SCE works with list mappings", {
   expect_no_error(
-    from_SingleCellExperiment(
+    as_AnnData(
       sce,
       layers_mapping = as.list(.from_SCE_guess_layers(sce, NULL)),
       obs_mapping = as.list(.from_SCE_guess_all(sce, colData)),
@@ -433,7 +438,7 @@ test_that("from_SCE works with list mappings", {
 
 test_that("from_SCE works with unnamed mappings", {
   expect_no_error(
-    from_SingleCellExperiment(
+    as_AnnData(
       sce,
       layers_mapping = unname(.from_SCE_guess_layers(sce, NULL)),
       obs_mapping = unname(.from_SCE_guess_all(sce, colData)),

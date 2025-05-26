@@ -25,91 +25,67 @@
 #' @title Abstract AnnData class
 #'
 #' @description
-#' This class is an abstract representation of an AnnData object. It is
+#' This class is an abstract representation of an `AnnData` object. It is
 #' intended to be used as a base class for concrete implementations of
-#' AnnData objects, such as `InMemoryAnnData` or `HDF5AnnData`.
+#' `AnnData` objects, such as [InMemoryAnnData] or [HDF5AnnData].
 #'
-#' The following functions can be used to create an object that inherits
-#' from `AbstractAnnData`:
+#' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
-#' * [AnnData()]: Create an in-memory AnnData object.
-#' * [read_h5ad()]: Create an HDF5-backed AnnData object.
-#' * [from_Seurat()]: Create an in-memory AnnData object from a Seurat object.
-#' * [from_SingleCellExperiment()]: Create an in-memory AnnData object from a SingleCellExperiment object.
+#' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'
-#' @importFrom R6 R6Class
+#' @family AnnData classes
 AbstractAnnData <- R6::R6Class(
   "AbstractAnnData",
   active = list(
-    #' @field X NULL or an observation x variable matrix (without
-    #'   dimnames) consistent with the number of rows of `obs` and `var`.
+    #' @field X See [AnnData-usage]
     X = function(value) {
       .abstract_function("ad$X")
     },
-    #' @field layers The layers slot. Must be NULL or a named list
-    #'   with with all elements having the dimensions consistent with
-    #'   `obs` and `var`.
+    #' @field layers See [AnnData-usage]
     layers = function(value) {
       .abstract_function("ad$layers")
     },
-    #' @field obs A `data.frame` with columns containing information
-    #'   about observations. The number of rows of `obs` defines the
-    #'   observation dimension of the AnnData object.
+    #' @field obs See [AnnData-usage]
     obs = function(value) {
       .abstract_function("ad$obs")
     },
-    #' @field var A `data.frame` with columns containing information
-    #'   about variables. The number of rows of `var` defines the variable
-    #'   dimension of the AnnData object.
+    #' @field var See [AnnData-usage]
     var = function(value) {
       .abstract_function("ad$var")
     },
-    #' @field obs_names Either NULL or a vector of unique identifiers
-    #'   used to identify each row of `obs` and to act as an index into
-    #'   the observation dimension of the AnnData object. For
-    #'   compatibility with *R* representations, `obs_names` should be a
-    #'   character vector.
+    #' @field obs_names See [AnnData-usage]
     obs_names = function(value) {
       .abstract_function("ad$obs_names")
     },
-    #' @field var_names Either NULL or a vector of unique identifiers
-    #'   used to identify each row of `var` and to act as an index into
-    #'   the variable dimension of the AnnData object. For compatibility
-    #'   with *R* representations, `var_names` should be a character
-    #'   vector.
+    #' @field var_names See [AnnData-usage]
     var_names = function(value) {
       .abstract_function("ad$var_names")
     },
-    #' @field obsm The obsm slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows as `obs`.
+    #' @field obsm See [AnnData-usage]
     obsm = function(value) {
       .abstract_function("ad$obsm")
     },
-    #' @field varm The varm slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows as `var`.
+    #' @field varm See [AnnData-usage]
     varm = function(value) {
       .abstract_function("ad$varm")
     },
-    #' @field obsp The obsp slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows and columns as `obs`.
+    #' @field obsp See [AnnData-usage]
     obsp = function(value) {
       .abstract_function("ad$obsp")
     },
-    #' @field varp The varp slot. Must be `NULL` or a named list with
-    #'   with all elements having the same number of rows and columns as `var`.
+    #' @field varp See [AnnData-usage]
     varp = function(value) {
       .abstract_function("ad$varp")
     },
-    #' @field uns The uns slot. Must be `NULL` or a named list.
+    #' @field uns See [AnnData-usage]
     uns = function(value) {
       .abstract_function("ad$uns")
     }
   ),
   public = list(
-    #' @description Print a summary of the AnnData object. `print()`
-    #'   methods should be implemented so that they are not
-    #'   computationally expensive.
-    #' @param ... Optional arguments to print method.
+    #' @description See [AnnData-usage]
+    #'
+    #' @param ... Optional arguments to print method
     print = function(...) {
       cat(
         "AnnData object with n_obs \u00D7 n_vars = ",
@@ -141,102 +117,125 @@ AbstractAnnData <- R6::R6Class(
       }
     },
 
-    #' @description Dimensions (observations x variables) of the AnnData object.
+    #' @description See [AnnData-usage]
     shape = function() {
       c(
         self$n_obs(),
         self$n_vars()
       )
     },
-    #' @description Number of observations in the AnnData object.
+    #' @description See [AnnData-usage]
     n_obs = function() {
       nrow(self$obs)
     },
-    #' @description Number of variables in the AnnData object.
+    #' @description See [AnnData-usage]
     n_vars = function() {
       nrow(self$var)
     },
-    #' @description Keys ('column names') of `obs`.
+    #' @description See [AnnData-usage]
     obs_keys = function() {
       names(self$obs)
     },
-    #' @description Keys ('column names') of `var`.
+    #' @description See [AnnData-usage]
     var_keys = function() {
       names(self$var)
     },
-    #' @description Keys (element names) of `layers`.
+    #' @description See [AnnData-usage]
     layers_keys = function() {
       names(self$layers)
     },
-    #' @description Keys (element names) of `obsm`.
+    #' @description See [AnnData-usage]
     obsm_keys = function() {
       names(self$obsm)
     },
-    #' @description Keys (element names) of `varm`.
+    #' @description See [AnnData-usage]
     varm_keys = function() {
       names(self$varm)
     },
-    #' @description Keys (element names) of `obsp`.
+    #' @description See [AnnData-usage]
     obsp_keys = function() {
       names(self$obsp)
     },
-    #' @description Keys (element names) of `varp`.
+    #' @description See [AnnData-usage]
     varp_keys = function() {
       names(self$varp)
     },
-    #' @description Keys (element names) of `uns`.
+    #' @description See [AnnData-usage]
     uns_keys = function() {
       names(self$uns)
     },
-    #' @description Convert to SingleCellExperiment
+    #' @description
+    #' Convert to `SingleCellExperiment`
     #'
-    #' See [to_SingleCellExperiment()] for more details on the conversion.
-    #' @param x_mapping A character specifying how to map the AnnData X slot.
-    #' @param assays_mapping A named list mapping SingleCellExperiment assays to AnnData layers
-    #' @param colData_mapping A named list mapping SingleCellExperiment colData to AnnData obs
-    #' @param rowData_mapping A named list mapping SingleCellExperiment rowData to AnnData var
-    #' @param reduction_mapping A named list mapping SingleCellExperiment reductions to AnnData obsm/varm
-    #' @param colPairs_mapping A named list mapping SingleCellExperiment colPairs to AnnData obsp/varp
-    #' @param rowPairs_mapping A named list mapping SingleCellExperiment rowPairs to AnnData obsp/varp
-    #' @param metadata_mapping A named list mapping SingleCellExperiment metadata to AnnData uns
+    #' See [as_SingleCellExperiment()] for more details on the conversion
     #'
-    #' @return A SingleCellExperiment object
-    to_SingleCellExperiment = function(
+    #' @param x_mapping See [as_SingleCellExperiment()]
+    #' @param assays_mapping See [as_SingleCellExperiment()]
+    #' @param colData_mapping See [as_SingleCellExperiment()]
+    #' @param rowData_mapping See [as_SingleCellExperiment()]
+    #' @param reducedDims_mapping See [as_SingleCellExperiment()]
+    #' @param colPairs_mapping See [as_SingleCellExperiment()]
+    #' @param rowPairs_mapping See [as_SingleCellExperiment()]
+    #' @param metadata_mapping See [as_SingleCellExperiment()]
+    #'
+    #' @return A `SingleCellExperiment` object
+    # nolint start: object_name_linter
+    as_SingleCellExperiment = function(
       x_mapping = NULL,
       assays_mapping = NULL,
-      colData_mapping = NULL, # nolint
-      rowData_mapping = NULL, # nolint
-      reduction_mapping = NULL,
-      colPairs_mapping = NULL, # nolint
-      rowPairs_mapping = NULL, # nolint
+      colData_mapping = NULL,
+      rowData_mapping = NULL,
+      reducedDims_mapping = NULL,
+      colPairs_mapping = NULL,
+      rowPairs_mapping = NULL,
       metadata_mapping = NULL
     ) {
+      # nolint end: object_name_linter
       to_SingleCellExperiment(
         self,
         x_mapping = x_mapping,
         assays_mapping = assays_mapping,
         colData_mapping = colData_mapping,
         rowData_mapping = rowData_mapping,
-        reduction_mapping = reduction_mapping,
+        reducedDims_mapping = reducedDims_mapping,
         colPairs_mapping = colPairs_mapping, # nolint
         rowPairs_mapping = rowPairs_mapping, # nolint
         metadata_mapping = metadata_mapping
       )
     },
-    #' @description Convert to Seurat
+    #' @description
+    #' `r lifecycle::badge('deprecated')`
     #'
-    #' See [to_Seurat()] for more details on the conversion and each of the parameters.
+    #' Deprecated, use `as_SingleCellExperiment()` instead
     #'
-    #' @param assay_name The name of the assay to use as the main data
-    #' @param x_mapping A character specifying how to map the AnnData X slot.
-    #' @param layers_mapping A named list mapping Seurat layers to AnnData layers
-    #' @param object_metadata_mapping A named list mapping Seurat object metadata to AnnData obs
-    #' @param assay_metadata_mapping A named list mapping Seurat assay metadata to AnnData var
-    #' @param reduction_mapping A named list mapping Seurat reductions to AnnData obsm/varm
-    #' @param graph_mapping A named list mapping Seurat graphs to AnnData obsp/varp
-    #' @param misc_mapping A named list mapping Seurat misc to AnnData uns
-    #' @return A Seurat object
-    to_Seurat = function(
+    #' @param ... Arguments passed to `adata$as_SingleCellExperiment()`
+    #'
+    #' @return A `SingleCellExperiment` object
+    to_SingleCellExperiment = function(...) {
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "to_SingleCellExperiment()",
+        "as_SingleCellExperiment()"
+      )
+
+      self$as_SingleCellExperiment(...)
+    },
+    #' @description
+    #' Convert to `Seurat`
+    #'
+    #' See [as_Seurat()] for more details on the conversion
+    #'
+    #' @param assay_name See [as_Seurat()]
+    #' @param x_mapping See [as_Seurat()]
+    #' @param layers_mapping See [as_Seurat()]
+    #' @param object_metadata_mapping See [as_Seurat()]
+    #' @param assay_metadata_mapping See [as_Seurat()]
+    #' @param reduction_mapping See [as_Seurat()]
+    #' @param graph_mapping See [as_Seurat()]
+    #' @param misc_mapping See [as_Seurat()]
+    #'
+    #' @return A `Seurat` object
+    as_Seurat = function(
       assay_name = "RNA",
       x_mapping = NULL,
       layers_mapping = NULL,
@@ -258,22 +257,58 @@ AbstractAnnData <- R6::R6Class(
         misc_mapping = misc_mapping
       )
     },
-    #' @description Convert to an InMemory AnnData
-    to_InMemoryAnnData = function() {
+    #' @description
+    #' `r lifecycle::badge('deprecated')`
+    #'
+    #' Deprecated, use `as_Seurat()` instead
+    #'
+    #' @param ... Arguments passed to `adata$as_Seurat()`
+    #'
+    #' @return A `Seurat` object
+    to_Seurat = function(...) {
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "to_Seurat()",
+        "as_Seurat()"
+      )
+
+      self$as_Seurat(...)
+    },
+    #' @description
+    #' Convert to an [`InMemoryAnnData`]
+    #'
+    #' See [as_InMemoryAnnData()] for more details on the conversion
+    #'
+    #' @return An [InMemoryAnnData] object
+    as_InMemoryAnnData = function() {
       to_InMemoryAnnData(self)
     },
-    #' @description Convert to an HDF5 Backed AnnData
-    #' @param file The path to the HDF5 file
-    #' @param compression The compression algorithm to use when writing the
-    #' HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
-    #' `"none"`.
-    #' @param mode The mode to open the HDF5 file.
-    #'  * `a` creates a new file or opens an existing one for read/write.
-    #' * `r+` opens an existing file for read/write.
-    #' * `w` creates a file, truncating any existing ones
-    #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
-    #' @return An HDF5AnnData object
-    to_HDF5AnnData = function(
+    #' @description
+    #' `r lifecycle::badge('deprecated')`
+    #'
+    #' Deprecated, use `as_InMemoryAnnData()` instead
+    #'
+    #' @return An [`InMemoryAnnData`] object
+    to_InMemoryAnnData = function() {
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "to_InMemoryAnnData()",
+        "as_InMemoryAnnData()"
+      )
+
+      self$as_InMemoryAnnData()
+    },
+    #' @description
+    #' Convert to an [`HDF5AnnData`]
+    #'
+    #' See [as_HDF5AnnData()] for more details on the conversion
+    #'
+    #' @param file See [as_HDF5AnnData()]
+    #' @param compression See [as_HDF5AnnData()]
+    #' @param mode See [as_HDF5AnnData()]
+    #'
+    #' @return An [`HDF5AnnData`] object
+    as_HDF5AnnData = function(
       file,
       compression = c("none", "gzip", "lzf"),
       mode = c("w-", "r", "r+", "a", "w", "x")
@@ -285,43 +320,51 @@ AbstractAnnData <- R6::R6Class(
         mode = mode
       )
     },
-    #' @description Write the AnnData object to an H5AD file.
-    #' @param path The path to the H5AD file
-    #' @param compression The compression algorithm to use when writing the
-    #' HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
-    #' `"none"`.
-    #' @param mode The mode to open the HDF5 file.
-    #' * `a` creates a new file or opens an existing one for read/write.
-    #' * `r+` opens an existing file for read/write.
-    #' * `w` creates a file, truncating any existing ones
-    #' * `w-`/`x` are synonyms creating a file and failing if it already exists.
+    #' @description
+    #' `r lifecycle::badge('deprecated')`
+    #'
+    #' Deprecated, use `as_HDF5AnnData()` instead
+    #'
+    #' @param ... Arguments passed to `adata$as_HDF5AnnData()`
+    #'
+    #' @return An [`HDF5AnnData`] object
+    to_HDF5AnnData = function(...) {
+      lifecycle::deprecate_warn(
+        "0.99.0",
+        "to_HDF5AnnDAta()",
+        "as_HDF5AnnData()",
+      )
+
+      self$as_HDF5AnnData(...)
+    },
+    #' @description
+    #' Write the `AnnData` object to an H5AD file
+    #'
+    #' See [write_h5ad()] for details
+    #'
+    #' @param path See [write_h5ad()]
+    #' @param compression See [write_h5ad()]
+    #' @param mode See [write_h5ad()]
+    #'
     #' @return `path` invisibly
-    #' @examples
-    #' adata <- AnnData(
-    #'   X = matrix(1:5, 3L, 5L),
-    #'   layers = list(
-    #'     A = matrix(5:1, 3L, 5L),
-    #'     B = matrix(letters[1:5], 3L, 5L)
-    #'   ),
-    #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
-    #'   var = data.frame(row.names = letters[1:5], gene = 1:5)
-    #' )
-    #' h5ad_file <- tempfile(fileext = ".h5ad")
-    #' adata$write_h5ad(h5ad_file)
-    write_h5ad = function(path, compression = "gzip", mode = "w") {
-      self$to_HDF5AnnData(path, compression = compression, mode = mode)
-      path
+    write_h5ad = function(
+      path,
+      compression = c("none", "gzip", "lzf"),
+      mode = c("w-", "r", "r+", "a", "w", "x")
+    ) {
+      write_h5ad(object = self, path, compression = compression, mode = mode)
     }
   ),
   private = list(
     # @description `.validate_aligned_array()` checks that dimensions are
     #   consistent with the anndata object.
+    #
     # @param mat A matrix to validate
     # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
     #   the name of a layer.
     # @param shape Expected dimensions of matrix
-    # @param expected_rownames
-    # @param expected_colnames
+    # @param expected_rownames Expected row names
+    # @param expected_colnames Expected column names
     .validate_aligned_array = function(
       mat,
       label,
@@ -385,6 +428,7 @@ AbstractAnnData <- R6::R6Class(
     },
     # @description `.validate_aligned_mapping()` checks for named lists and
     #   correct dimensions on elements.
+    #
     # @param collection A named list of 0 or more matrix elements with
     #   whose entries will be validated
     # @param label The label of the collection, used for error messages
@@ -442,6 +486,7 @@ AbstractAnnData <- R6::R6Class(
 
     # @description `.validate_obsvar_dataframe()` checks that the
     #   object is a data.frame and removes explicit dimnames.
+    #
     # @param df A data frame to validate. Should be an obs or a var.
     # @param label Must be `"obs"` or `"var"`
     .validate_obsvar_dataframe = function(df, label = c("obs", "var")) {
@@ -476,6 +521,7 @@ AbstractAnnData <- R6::R6Class(
 
     # @description `.validate_obsvar_names()` checks that `*_names()`
     #   are NULL or consistent with the dimensions of `obs` or `var`.
+    #
     # @param names A vector to validate
     # @param label Must be `"obs"` or `"var"`
     .validate_obsvar_names = function(
