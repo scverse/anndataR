@@ -47,6 +47,6 @@ Other object converters:
 \code{\link{as_AnnData}()},
 \code{\link{as_InMemoryAnnData}},
 \code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}}
+\code{\link{as_SingleCellExperiment}()}
 }
 \concept{object converters}

@@ -189,7 +189,7 @@ AbstractAnnData <- R6::R6Class(
       metadata_mapping = NULL
     ) {
       # nolint end: object_name_linter
-      to_SingleCellExperiment(
+      as_SingleCellExperiment(
         self,
         assays_mapping = assays_mapping,
         colData_mapping = colData_mapping,

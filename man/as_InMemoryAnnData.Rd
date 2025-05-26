@@ -7,8 +7,8 @@
 \item{adata}{An \code{AnnData} object to be converted to \code{\link{InMemoryAnnData}}}
 }
 \value{
-An \code{\link{InMemoryAnnData}} object with the same data as the input \code{AnnData}
-object
+An \code{\link{InMemoryAnnData}} object with the same data as the input
+\code{AnnData} object
 }
 \description{
 Convert another \code{AnnData} object to an \code{\link{InMemoryAnnData}} object
@@ -30,6 +30,6 @@ Other object converters:
 \code{\link{as_AnnData}()},
 \code{\link{as_HDF5AnnData}},
 \code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}}
+\code{\link{as_SingleCellExperiment}()}
 }
 \concept{object converters}
