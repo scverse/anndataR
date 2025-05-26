@@ -111,6 +111,7 @@ to the \code{key} argument after processing with \code{\link[SeuratObject:Key]{S
   # Default usage
   seurat <- ad$as_Seurat(
     assay_name = "RNA",
+    x_mapping = "counts",
     layers_mapping = NULL,
     object_metadata_mapping = NULL,
     assay_metadata_mapping = NULL,

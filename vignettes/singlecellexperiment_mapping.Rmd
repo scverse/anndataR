@@ -171,7 +171,7 @@ sce_assays_x <- ad$as_SingleCellExperiment(
   assays_mapping = c(layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
   colData_mapping = c(),
   rowData_mapping = c(),
-  reduction_mapping = c(),
+  reducedDims_mapping = c(),
   colPairs_mapping = c(),
   rowPairs_mapping = c(),
   metadata_mapping = c()
