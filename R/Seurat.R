@@ -562,7 +562,30 @@ to_Seurat <- function(...) {
   self_name(adata$var_keys())
 }
 
-# See as_AnnData() for function documentation
+#' Convert a Seurat object to an AnnData object
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function is deprecated, use [as_AnnData()] instead
+#'
+#' @param seurat_obj See [as_AnnData()]
+#' @param assay_name See [as_AnnData()]
+#' @param x_mapping See [as_AnnData()]
+#' @param layers_mapping See [as_AnnData()]
+#' @param obs_mapping See [as_AnnData()]
+#' @param var_mapping See [as_AnnData()]
+#' @param obsm_mapping See [as_AnnData()]
+#' @param varm_mapping See [as_AnnData()]
+#' @param obsp_mapping See [as_AnnData()]
+#' @param varp_mapping See [as_AnnData()]
+#' @param uns_mapping See [as_AnnData()]
+#' @param output_class See [as_AnnData()]
+#' @param ... See [as_AnnData()]
+#'
+#' @return An `AnnData` object
+#' @export
+# nolint start: object_name_linter
 # nolint start: object_name_linter
 from_Seurat <- function(
   # nolint end: object_name_linter
@@ -580,6 +603,12 @@ from_Seurat <- function(
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
+  lifecycle::deprecate_soft(
+    when = "0.99.0",
+    what = "from_Seurat()",
+    with = "as_AnnData()"
+  )
+
   check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
 
   output_class <- match.arg(output_class)
