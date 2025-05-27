@@ -422,7 +422,28 @@ to_SingleCelllExperiment <- function(...) {
   })
 }
 
-# See as_AnnData() for function documentation
+#' Convert a SingleCellExperiment object to an AnnData object
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function is deprecated, use [as_AnnData()] instead
+#'
+#' @param sce See [as_AnnData()]
+#' @param x_mapping See [as_AnnData()]
+#' @param layers_mapping See [as_AnnData()]
+#' @param obs_mapping See [as_AnnData()]
+#' @param var_mapping See [as_AnnData()]
+#' @param obsm_mapping See [as_AnnData()]
+#' @param varm_mapping See [as_AnnData()]
+#' @param obsp_mapping See [as_AnnData()]
+#' @param varp_mapping See [as_AnnData()]
+#' @param uns_mapping See [as_AnnData()]
+#' @param output_class See [as_AnnData()]
+#' @param ... See [as_AnnData()]
+#'
+#' @return An `AnnData` object
+#' @export
 # nolint start: object_name_linter
 from_SingleCellExperiment <- function(
   # nolint end: object_name_linter
@@ -439,6 +460,12 @@ from_SingleCellExperiment <- function(
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
+  lifecycle::deprecate_soft(
+    when = "0.99.0",
+    what = "from_SingleCellExperiment()",
+    with = "as_AnnData()"
+  )
+
   check_requires(
     "Converting SingleCellExperiment to AnnData",
     "SingleCellExperiment",
