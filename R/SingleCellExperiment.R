@@ -227,7 +227,9 @@ as_SingleCellExperiment <- function(
 #'
 #' @return A `SingleCellExperiment` object
 #' @export
+# nolint start: object_name_linter
 to_SingleCelllExperiment <- function(...) {
+  # nolint end: object_name_linter
   lifecycle::deprecate_warn(
     when = "0.99.0",
     what = "to_SingleCellExperiment()",

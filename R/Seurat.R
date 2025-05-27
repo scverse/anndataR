@@ -281,7 +281,9 @@ as_Seurat <- function(
 #'
 #' @return A `Seurat` object
 #' @export
+# nolint start: object_name_linter
 to_Seurat <- function(...) {
+  # nolint end: object_name_linter
   lifecycle::deprecate_warn(
     when = "0.99.0",
     what = "to_Seurat()",
@@ -585,7 +587,6 @@ to_Seurat <- function(...) {
 #'
 #' @return An `AnnData` object
 #' @export
-# nolint start: object_name_linter
 # nolint start: object_name_linter
 from_Seurat <- function(
   # nolint end: object_name_linter
