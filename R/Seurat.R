@@ -470,14 +470,14 @@ from_Seurat <- function(
   seurat_obj,
   assay_name = NULL,
   x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
@@ -505,22 +505,60 @@ from_Seurat <- function(
   # Set the default assay so we can easily get the dimensions etc.
   SeuratObject::DefaultAssay(seurat_obj) <- assay_name
 
-  # For any mappings that are not set, using the guessing function
-  layers_mapping <- self_name(layers_mapping) %||%
-    .from_Seurat_guess_layers(seurat_obj, assay_name)
-  obs_mapping <- self_name(obs_mapping) %||%
-    .from_Seurat_guess_obs(seurat_obj, assay_name)
-  var_mapping <- self_name(var_mapping) %||%
-    .from_Seurat_guess_var(seurat_obj, assay_name)
-  obsm_mapping <- self_name(obsm_mapping) %||%
-    .from_Seurat_guess_obsms(seurat_obj, assay_name)
-  varm_mapping <- self_name(varm_mapping) %||%
-    .from_Seurat_guess_varms(seurat_obj, assay_name)
-  obsp_mapping <- self_name(obsp_mapping) %||%
-    .from_Seurat_guess_obsps(seurat_obj, assay_name)
-  varp_mapping <- self_name(varp_mapping) %||%
-    .from_Seurat_guess_varps(seurat_obj)
-  uns_mapping <- self_name(uns_mapping) %||% .from_Seurat_guess_uns(seurat_obj)
+  layers_mapping <- get_mapping(
+    layers_mapping,
+    .from_Seurat_guess_layers,
+    seurat_obj,
+    "layers_mapping",
+    assay_name = assay_name
+  )
+  obs_mapping <- get_mapping(
+    obs_mapping,
+    .from_Seurat_guess_obs,
+    seurat_obj,
+    "obs_mapping",
+    assay_name = assay_name
+  )
+  var_mapping <- get_mapping(
+    var_mapping,
+    .from_Seurat_guess_var,
+    seurat_obj,
+    "var_mapping",
+    assay_name = assay_name
+  )
+  obsm_mapping <- get_mapping(
+    obsm_mapping,
+    .from_Seurat_guess_obsms,
+    seurat_obj,
+    "obsm_mapping",
+    assay_name = assay_name
+  )
+  varm_mapping <- get_mapping(
+    varm_mapping,
+    .from_Seurat_guess_varms,
+    seurat_obj,
+    "varm_mapping",
+    assay_name = assay_name
+  )
+  obsp_mapping <- get_mapping(
+    obsp_mapping,
+    .from_Seurat_guess_obsps,
+    seurat_obj,
+    "obsp_mapping",
+    assay_name = assay_name
+  )
+  varp_mapping <- get_mapping(
+    varp_mapping,
+    .from_Seurat_guess_varps,
+    seurat_obj,
+    "varp_mapping"
+  )
+  uns_mapping <- get_mapping(
+    uns_mapping,
+    .from_Seurat_guess_uns,
+    seurat_obj,
+    "uns_mapping"
+  )
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(seurat_obj)), ...)
