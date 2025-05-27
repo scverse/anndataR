@@ -1,6 +1,6 @@
-test_that("to_Seurat() fails gracefully", {
-  expect_error(to_Seurat(), regexp = "adata.*is missing")
-  expect_error(to_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
+test_that("as_Seurat() fails gracefully", {
+  expect_error(as_Seurat(), regexp = "adata.*is missing")
+  expect_error(as_Seurat("foo"), regexp = "must be a <AbstractAnnData>")
 })
 
 skip_if_not_installed("Seurat")
