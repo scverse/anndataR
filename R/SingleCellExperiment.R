@@ -72,20 +72,6 @@ to_SingleCellExperiment <- function(
     "metadata_mapping",
     slot = "uns"
   )
-
-  # assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
-  # colData_mapping <- self_name(colData_mapping) %||%
-  #   .to_SCE_guess_all(adata, "obs")
-  # rowData_mapping <- self_name(rowData_mapping) %||%
-  #   .to_SCE_guess_all(adata, "var")
-  # reducedDims_mapping <- self_name(reducedDims_mapping) %||%
-  #   .to_SCE_guess_reducedDims(adata)
-  # colPairs_mapping <- self_name(colPairs_mapping) %||%
-  #   .to_SCE_guess_all(adata, "obsp")
-  # rowPairs_mapping <- self_name(rowPairs_mapping) %||%
-  #   .to_SCE_guess_all(adata, "varp")
-  # metadata_mapping <- self_name(metadata_mapping) %||%
-  #   .to_SCE_guess_all(adata, "uns")
   # nolint end object_name_linter
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
@@ -126,16 +112,6 @@ to_SingleCellExperiment <- function(
 
   # construct reducedDims
   reduceddims <- .to_SCE_process_reducedDims_mapping(adata, reducedDims_mapping)
-
-  # arguments <- list(
-  #   assays = sce_assays,
-  #   colData = col_data,
-  #   rowData = row_data,
-  #   colPairs = col_pairs,
-  #   rowPairs = row_pairs,
-  #   metadata = metadata,
-  #   checkDimnames = TRUE
-  # )
 
   # construct output object
   sce <- SingleCellExperiment::SingleCellExperiment(
