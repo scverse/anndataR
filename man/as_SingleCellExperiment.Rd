@@ -113,13 +113,13 @@ with the following names used to create a
 
   # Default usage
   sce <- ad$as_SingleCellExperiment(
-    assays_mapping = NULL,
-    colData_mapping = NULL,
-    rowData_mapping = NULL,
-    reducedDims_mapping = NULL,
-    colPairs_mapping = NULL,
-    rowPairs_mapping = NULL,
-    metadata_mapping = NULL
+    assays_mapping = TRUE,
+    colData_mapping = TRUE,
+    rowData_mapping = TRUE,
+    reducedDims_mapping = TRUE,
+    colPairs_mapping = TRUE,
+    rowPairs_mapping = TRUE,
+    metadata_mapping = TRUE
  )
 \dontshow{\}) # examplesIf}
 }

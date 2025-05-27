@@ -180,13 +180,13 @@ AbstractAnnData <- R6::R6Class(
     #' @return A `SingleCellExperiment` object
     # nolint start: object_name_linter
     as_SingleCellExperiment = function(
-      assays_mapping = NULL,
-      colData_mapping = NULL,
-      rowData_mapping = NULL,
-      reducedDims_mapping = NULL,
-      colPairs_mapping = NULL,
-      rowPairs_mapping = NULL,
-      metadata_mapping = NULL
+      assays_mapping = TRUE,
+      colData_mapping = TRUE,
+      rowData_mapping = TRUE,
+      reducedDims_mapping = TRUE,
+      colPairs_mapping = TRUE,
+      rowPairs_mapping = TRUE,
+      metadata_mapping = TRUE
     ) {
       # nolint end: object_name_linter
       to_SingleCellExperiment(
@@ -233,12 +233,12 @@ AbstractAnnData <- R6::R6Class(
     #' @return A `Seurat` object
     as_Seurat = function(
       assay_name = "RNA",
-      layers_mapping = NULL,
-      object_metadata_mapping = NULL,
-      assay_metadata_mapping = NULL,
-      reduction_mapping = NULL,
-      graph_mapping = NULL,
-      misc_mapping = NULL
+      layers_mapping = TRUE,
+      object_metadata_mapping = TRUE,
+      assay_metadata_mapping = TRUE,
+      reduction_mapping = TRUE,
+      graph_mapping = TRUE,
+      misc_mapping = TRUE
     ) {
       to_Seurat(
         self,

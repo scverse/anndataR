@@ -85,3 +85,52 @@ self_name <- function(x) {
 
   x
 }
+
+#' Get mapping
+#'
+#' Get a mapping argument for a conversion function
+#'
+#' @param mapping The user-supplied mapping argument. Can be a named vector,
+#'   `TRUE` or `FALSE`.
+#' @param guesser A function that guesses the default mapping from `obj` if
+#'   `mapping` is `TRUE`
+#' @param obj The object that is being converted and is passed to `guesser`
+#'   if needed
+#' @param name The name of the mapping argument, used for error messages
+#' @param ... Additional arguments passed to `guesser`
+#'
+#' @description
+#' If `mapping` is `NULL` or empty it is set to `FALSE` with a warning. `FALSE`
+#' values return an empty mapping.
+#'
+#' @returns A named mapping vector
+#' @noRd
+get_mapping <- function(mapping, guesser, obj, name, ...) {
+  if (rlang::is_empty(mapping)) {
+    cli_warn(c(
+      "The {.arg {name}} argument is empty, setting it to {.val {FALSE}}"
+    ))
+
+    mapping <- FALSE
+  }
+
+  # If FALSE, return an empty mapping
+  if (isFALSE(mapping)) {
+    return(list())
+  }
+
+  # If TRUE, use the guesser function to get the default mapping
+  if (isTRUE(mapping)) {
+    return(guesser(obj, ...))
+  }
+
+  if (!is.vector(mapping)) {
+    cli_abort(paste(
+      "{.arg {name}} must be a vector, {.val {TRUE}} or {.val {FALSE}}, not",
+      "{.cls {class(mapping)}}"
+    ))
+  }
+
+  # Make sure provided mapping has names
+  self_name(mapping)
+}

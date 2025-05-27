@@ -363,7 +363,7 @@ test_that("as_AnnData works with v3 Assays", {
     obj_v3_assay[["RNA"]] <- as(Seurat::GetAssay(obj, "RNA"), "Assay")
   )
 
-  adata_v3_assay <- from_Seurat(obj_v3_assay)
+  adata_v3_assay <- as_AnnData(obj_v3_assay)
 
   expect_identical(
     to_R_matrix(adata_v3_assay$layers$counts),
@@ -374,7 +374,7 @@ test_that("as_AnnData works with v3 Assays", {
 test_that("as_AnnData works with list mappings", {
   active_assay <- SeuratObject::DefaultAssay(obj)
   expect_no_error(
-    from_Seurat(
+    as_AnnData(
       obj,
       layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
       obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
@@ -391,7 +391,7 @@ test_that("as_AnnData works with list mappings", {
 test_that("as_AnnData works with unnamed mappings", {
   active_assay <- SeuratObject::DefaultAssay(obj)
   expect_no_error(
-    from_Seurat(
+    as_AnnData(
       obj,
       layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
       obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),

@@ -108,12 +108,12 @@ to the \code{key} argument after processing with \code{\link[SeuratObject:Key]{S
   # Default usage
   seurat <- ad$as_Seurat(
     assay_name = "RNA",
-    layers_mapping = NULL,
-    object_metadata_mapping = NULL,
-    assay_metadata_mapping = NULL,
-    reduction_mapping = NULL,
-    graph_mapping = NULL,
-    misc_mapping = NULL
+    layers_mapping = TRUE,
+    object_metadata_mapping = TRUE,
+    assay_metadata_mapping = TRUE,
+    reduction_mapping = TRUE,
+    graph_mapping = TRUE,
+    misc_mapping = TRUE
   )
 \dontshow{\}) # examplesIf}
 }
