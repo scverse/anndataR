@@ -273,12 +273,12 @@ See \code{\link[=as_Seurat]{as_Seurat()}} for more details on the conversion
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_Seurat(
   assay_name = "RNA",
-  layers_mapping = NULL,
-  object_metadata_mapping = NULL,
-  assay_metadata_mapping = NULL,
-  reduction_mapping = NULL,
-  graph_mapping = NULL,
-  misc_mapping = NULL
+  layers_mapping = TRUE,
+  object_metadata_mapping = TRUE,
+  assay_metadata_mapping = TRUE,
+  reduction_mapping = TRUE,
+  graph_mapping = TRUE,
+  misc_mapping = TRUE
 )}\if{html}{\out{</div>}}
 }
 

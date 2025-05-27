@@ -164,13 +164,13 @@ NULL
 #'
 #'   # Default usage
 #'   sce <- ad$as_SingleCellExperiment(
-#'     assays_mapping = NULL,
-#'     colData_mapping = NULL,
-#'     rowData_mapping = NULL,
-#'     reducedDims_mapping = NULL,
-#'     colPairs_mapping = NULL,
-#'     rowPairs_mapping = NULL,
-#'     metadata_mapping = NULL
+#'     assays_mapping = TRUE,
+#'     colData_mapping = TRUE,
+#'     rowData_mapping = TRUE,
+#'     reducedDims_mapping = TRUE,
+#'     colPairs_mapping = TRUE,
+#'     rowPairs_mapping = TRUE,
+#'     metadata_mapping = TRUE
 #'  )
 NULL
 
@@ -272,11 +272,11 @@ NULL
 #'   # Default usage
 #'   seurat <- ad$as_Seurat(
 #'     assay_name = "RNA",
-#'     layers_mapping = NULL,
-#'     object_metadata_mapping = NULL,
-#'     assay_metadata_mapping = NULL,
-#'     reduction_mapping = NULL,
-#'     graph_mapping = NULL,
-#'     misc_mapping = NULL
+#'     layers_mapping = TRUE,
+#'     object_metadata_mapping = TRUE,
+#'     assay_metadata_mapping = TRUE,
+#'     reduction_mapping = TRUE,
+#'     graph_mapping = TRUE,
+#'     misc_mapping = TRUE
 #'   )
 NULL

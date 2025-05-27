@@ -92,12 +92,12 @@ The `assay_name` parameter will only determine what the name of the assay in the
 ```{r as_Seurat explicit}
 ad$as_Seurat(
   assay_name = "Other_assay",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 ```
 
@@ -113,10 +113,10 @@ You can see that Seurat adds some columns by default (`orig.ident`, `nCount_RNA`
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 seurat_object[[]]
 ```
@@ -131,11 +131,11 @@ The other layers of the AnnData object will be copied by name.
 ```{r as_Seurat_implicit_layers}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  object_metadata_mapping = FALSE,
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 Layers(seurat_object[["RNA"]])
 ```
@@ -151,11 +151,11 @@ If no information is provided, anndataR will try to convert the whole `var` slot
 ```{r as_Seurat_implicit_assay_metadata}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 seurat_object[["RNA"]][[]]
 ```
@@ -189,11 +189,11 @@ Other graphs will not be converted.
 ```{r as_Seurat_implicit_graph}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  misc_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  misc_mapping = FALSE
 )
 
 Graphs(seurat_object)
@@ -207,11 +207,11 @@ By default, it will copy the `uns` slot from the AnnData object.
 ```{r as_Seurat_implicit_misc}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE
 )
 Misc(seurat_object)
 ```

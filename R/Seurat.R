@@ -20,16 +20,42 @@ to_Seurat <- function(
     )
   }
 
-  object_metadata_mapping <- self_name(object_metadata_mapping) %||%
-    .to_Seurat_guess_object_metadata(adata)
-  layers_mapping <- self_name(layers_mapping) %||%
-    .to_Seurat_guess_layers(adata)
-  assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
-    .to_Seurat_guess_assay_metadata(adata)
-  reduction_mapping <- self_name(reduction_mapping) %||%
-    .to_Seurat_guess_reductions(adata)
-  graph_mapping <- self_name(graph_mapping) %||% .to_Seurat_guess_graphs(adata)
-  misc_mapping <- self_name(misc_mapping) %||% .to_Seurat_guess_misc(adata)
+  object_metadata_mapping <- get_mapping(
+    object_metadata_mapping,
+    .to_Seurat_guess_object_metadata,
+    adata,
+    "object_metadata_mapping"
+  )
+  layers_mapping <- get_mapping(
+    layers_mapping,
+    .to_Seurat_guess_layers,
+    adata,
+    "layers_mapping"
+  )
+  assay_metadata_mapping <- get_mapping(
+    assay_metadata_mapping,
+    .to_Seurat_guess_assay_metadata,
+    adata,
+    "assay_metadata_mapping"
+  )
+  reduction_mapping <- get_mapping(
+    reduction_mapping,
+    .to_Seurat_guess_reductions,
+    adata,
+    "reduction_mapping"
+  )
+  graph_mapping <- get_mapping(
+    graph_mapping,
+    .to_Seurat_guess_graphs,
+    adata,
+    "graph_mapping"
+  )
+  misc_mapping <- get_mapping(
+    misc_mapping,
+    .to_Seurat_guess_misc,
+    adata,
+    "misc_mapping"
+  )
 
   if (length(adata$layers) == 0 && is.null(adata$X)) {
     cli_abort(
