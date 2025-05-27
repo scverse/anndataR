@@ -243,13 +243,13 @@ and it will remain empty.
 ```{r as_ad_implicit_assays}
 ad_assays <- as_AnnData(
   sce,
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 ad_assays
 ```
@@ -266,11 +266,11 @@ We will store the reduced dimensions in the `obsm` slot, with the name of the `r
 ```{r as_ad_implicit_reductions}
 ad_reductions <- as_AnnData(
   sce,
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 ad_reductions
 ```
@@ -301,13 +301,13 @@ in AnnData's obsm/varm, and each value corresponds to the name of a reducedDim i
 ```{r as_ad_explicit_obsm}
 ad_obsm <- as_AnnData(
   sce,
-  layers_mapping = c(),
-  obs_mapping = c(),
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
   obsm_mapping = c(X_pca = "pca", X_umap = "umap"),
   varm_mapping = c(PCs = "pca"),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 
 ad_obsm

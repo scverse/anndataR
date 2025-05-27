@@ -100,7 +100,7 @@ See the [in-depth vignette on conversion to and from SingleCellExperiment object
 as_AnnData(
   sce_obj,
   x_mapping = "counts",
-  layers_mapping = list()
+  layers_mapping = FALSE
 )
 ```
 

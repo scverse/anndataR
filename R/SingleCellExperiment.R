@@ -369,14 +369,14 @@ from_SingleCellExperiment <- function(
   # nolint end: object_name_linter
   sce,
   x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
@@ -394,33 +394,60 @@ from_SingleCellExperiment <- function(
     )
   }
 
-  # For any mappings that are not set, using the guessing function
-  layers_mapping <- self_name(layers_mapping) %||%
-    .from_SCE_guess_layers(sce, x_mapping)
-  obs_mapping <- self_name(obs_mapping) %||%
-    .from_SCE_guess_all(
-      sce,
-      SingleCellExperiment::colData
-    )
-  var_mapping <- self_name(var_mapping) %||%
-    .from_SCE_guess_all(
-      sce,
-      SingleCellExperiment::rowData
-    )
-  obsm_mapping <- self_name(obsm_mapping) %||% .from_SCE_guess_obsm(sce)
-  varm_mapping <- self_name(varm_mapping) %||% .from_SCE_guess_varm(sce)
-  obsp_mapping <- self_name(obsp_mapping) %||%
-    .from_SCE_guess_obspvarp(
-      sce,
-      SingleCellExperiment::colPairs
-    )
-  varp_mapping <- self_name(varp_mapping) %||%
-    .from_SCE_guess_obspvarp(
-      sce,
-      SingleCellExperiment::rowPairs
-    )
-  uns_mapping <- self_name(uns_mapping) %||%
-    .from_SCE_guess_all(sce, S4Vectors::metadata)
+  layers_mapping <- get_mapping(
+    layers_mapping,
+    .from_SCE_guess_layers,
+    sce,
+    "layers_mapping",
+    x_mapping = x_mapping
+  )
+  obs_mapping <- get_mapping(
+    obs_mapping,
+    .from_SCE_guess_all,
+    sce,
+    "obs_mapping",
+    slot = SingleCellExperiment::colData
+  )
+  var_mapping <- get_mapping(
+    var_mapping,
+    .from_SCE_guess_all,
+    sce,
+    "var_mapping",
+    slot = SingleCellExperiment::rowData
+  )
+  obsm_mapping <- get_mapping(
+    obsm_mapping,
+    .from_SCE_guess_obsm,
+    sce,
+    "obsm_mapping"
+  )
+  varm_mapping <- get_mapping(
+    varm_mapping,
+    .from_SCE_guess_varm,
+    sce,
+    "varm_mapping"
+  )
+  obsp_mapping <- get_mapping(
+    obsp_mapping,
+    .from_SCE_guess_obspvarp,
+    sce,
+    "obsp_mapping",
+    slot = SingleCellExperiment::colPairs
+  )
+  varp_mapping <- get_mapping(
+    varp_mapping,
+    .from_SCE_guess_obspvarp,
+    sce,
+    "varp_mapping",
+    slot = SingleCellExperiment::rowPairs
+  )
+  uns_mapping <- get_mapping(
+    uns_mapping,
+    .from_SCE_guess_all,
+    sce,
+    "uns_mapping",
+    slot = S4Vectors::metadata
+  )
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(sce)), ...)
