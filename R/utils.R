@@ -94,7 +94,7 @@ self_name <- function(x) {
 #'   `TRUE` or `FALSE`.
 #' @param guesser A function that guesses the default mapping from `obj` if
 #'   `mapping` is `TRUE`
-#' @param object The object that is being converted and is passed to `guesser`
+#' @param obj The object that is being converted and is passed to `guesser`
 #'   if needed
 #' @param name The name of the mapping argument, used for error messages
 #' @param ... Additional arguments passed to `guesser`

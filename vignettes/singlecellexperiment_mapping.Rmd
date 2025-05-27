@@ -113,7 +113,7 @@ In a SingleCellExperiment object, the reduced dimensions are usually stored in t
 or as a `LinearEmbeddingMatrix`. In the first case, only the reduced dimensions are stored, in the second case, the loadings and associated metadata are stored as well.
 
 We guess the mapping of the reductions the same way as we do for the `Seurat` conversion:
-- All itmes in the `obsm` slot are stored as a matrix in the `reducedDims` slot
+- All items in the `obsm` slot are stored as a matrix in the `reducedDims` slot
 - If the `obsm` slot contains a `X_pca` slot, we will also store the associated loadings (in `varm`) as a `LinearEmbeddingMatrix`
 
 ```{r implicit_pca}
