@@ -67,8 +67,8 @@ Note that there is no one-to-one mapping possible between the AnnData and Single
 See the [in-depth vignette on conversion to and from SingleCellExperiment objects](singlecellexperiment.html) for more details on how to customize the conversion process. For instance:
 
 ```{r ex_mapping, eval=FALSE}
-adata$to_SingleCellExperiment(
-  assays_mapping = list(),
+adata$as_SingleCellExperiment(
+  assays_mapping = FALSE,
   colData_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
   rowData_mapping = list(rowdata1 = "character", rowdata2 = "logical")
 )

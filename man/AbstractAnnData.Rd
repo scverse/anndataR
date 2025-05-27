@@ -208,13 +208,13 @@ Convert to \code{SingleCellExperiment}
 See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}} for more details on the conversion
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_SingleCellExperiment(
-  assays_mapping = NULL,
-  colData_mapping = NULL,
-  rowData_mapping = NULL,
-  reducedDims_mapping = NULL,
-  colPairs_mapping = NULL,
-  rowPairs_mapping = NULL,
-  metadata_mapping = NULL
+  assays_mapping = TRUE,
+  colData_mapping = TRUE,
+  rowData_mapping = TRUE,
+  reducedDims_mapping = TRUE,
+  colPairs_mapping = TRUE,
+  rowPairs_mapping = TRUE,
+  metadata_mapping = TRUE
 )}\if{html}{\out{</div>}}
 }
 

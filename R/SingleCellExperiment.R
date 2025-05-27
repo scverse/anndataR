@@ -2,13 +2,13 @@
 # nolint start: object_name_linter
 to_SingleCellExperiment <- function(
   adata,
-  assays_mapping = NULL,
-  colData_mapping = NULL,
-  rowData_mapping = NULL,
-  reducedDims_mapping = NULL,
-  colPairs_mapping = NULL,
-  rowPairs_mapping = NULL,
-  metadata_mapping = NULL
+  assays_mapping = TRUE,
+  colData_mapping = TRUE,
+  rowData_mapping = TRUE,
+  reducedDims_mapping = TRUE,
+  colPairs_mapping = TRUE,
+  rowPairs_mapping = TRUE,
+  metadata_mapping = TRUE
 ) {
   # nolint end: object_name_linter
   check_requires(
@@ -25,19 +25,67 @@ to_SingleCellExperiment <- function(
 
   # guess mappings if not provided
   # nolint start object_name_linter
-  assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
-  colData_mapping <- self_name(colData_mapping) %||%
-    .to_SCE_guess_all(adata, "obs")
-  rowData_mapping <- self_name(rowData_mapping) %||%
-    .to_SCE_guess_all(adata, "var")
-  reducedDims_mapping <- self_name(reducedDims_mapping) %||%
-    .to_SCE_guess_reducedDims(adata)
-  colPairs_mapping <- self_name(colPairs_mapping) %||%
-    .to_SCE_guess_all(adata, "obsp")
-  rowPairs_mapping <- self_name(rowPairs_mapping) %||%
-    .to_SCE_guess_all(adata, "varp")
-  metadata_mapping <- self_name(metadata_mapping) %||%
-    .to_SCE_guess_all(adata, "uns")
+  assays_mapping <- get_mapping(
+    assays_mapping,
+    .to_SCE_guess_assays,
+    adata,
+    "assays_mapping"
+  )
+  colData_mapping <- get_mapping(
+    colData_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "colData_mapping",
+    slot = "obs"
+  )
+  rowData_mapping <- get_mapping(
+    rowData_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "rowData_mapping",
+    slot = "var"
+  )
+  reducedDims_mapping <- get_mapping(
+    reducedDims_mapping,
+    .to_SCE_guess_reducedDims,
+    adata,
+    "reducedDims_mapping"
+  )
+  colPairs_mapping <- get_mapping(
+    colPairs_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "colPairs_mapping",
+    slot = "obsp"
+  )
+  rowPairs_mapping <- get_mapping(
+    rowPairs_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "rowPairs_mapping",
+    slot = "varp"
+  )
+  metadata_mapping <- get_mapping(
+    metadata_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "metadata_mapping",
+    slot = "uns"
+  )
+
+  # assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
+  # colData_mapping <- self_name(colData_mapping) %||%
+  #   .to_SCE_guess_all(adata, "obs")
+  # rowData_mapping <- self_name(rowData_mapping) %||%
+  #   .to_SCE_guess_all(adata, "var")
+  # reducedDims_mapping <- self_name(reducedDims_mapping) %||%
+  #   .to_SCE_guess_reducedDims(adata)
+  # colPairs_mapping <- self_name(colPairs_mapping) %||%
+  #   .to_SCE_guess_all(adata, "obsp")
+  # rowPairs_mapping <- self_name(rowPairs_mapping) %||%
+  #   .to_SCE_guess_all(adata, "varp")
+  # metadata_mapping <- self_name(metadata_mapping) %||%
+  #   .to_SCE_guess_all(adata, "uns")
   # nolint end object_name_linter
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
@@ -55,15 +103,14 @@ to_SingleCellExperiment <- function(
   }
 
   # construct colData
-  # FIXME: probably better way to make a dataframe from a list of vectors
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
-  col_data <- .to_SCE_process_simple_mapping(adata, colData_mapping, "obs")
+  col_data <- .to_SCE_process_dataframe_mapping(adata, colData_mapping, "obs")
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
-  row_data <- .to_SCE_process_simple_mapping(adata, rowData_mapping, "var")
+  row_data <- .to_SCE_process_dataframe_mapping(adata, rowData_mapping, "var")
 
   # construct colPairs
   # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
@@ -80,28 +127,29 @@ to_SingleCellExperiment <- function(
   # construct reducedDims
   reduceddims <- .to_SCE_process_reducedDims_mapping(adata, reducedDims_mapping)
 
-  arguments <- list(
+  # arguments <- list(
+  #   assays = sce_assays,
+  #   colData = col_data,
+  #   rowData = row_data,
+  #   colPairs = col_pairs,
+  #   rowPairs = row_pairs,
+  #   metadata = metadata,
+  #   checkDimnames = TRUE
+  # )
+
+  # construct output object
+  sce <- SingleCellExperiment::SingleCellExperiment(
     assays = sce_assays,
+    colData = col_data,
+    rowData = row_data,
     colPairs = col_pairs,
     rowPairs = row_pairs,
     metadata = metadata,
     checkDimnames = TRUE
   )
-  # add col_data if not empty list
-  if (length(col_data) > 0) {
-    arguments$colData <- as(col_data, "DataFrame")
-  }
-  # add row_data if not empty list
-  if (length(row_data) > 0) {
-    arguments$rowData <- as(row_data, "DataFrame")
-  }
 
-  # construct output object
-  sce <- do.call(SingleCellExperiment::SingleCellExperiment, arguments)
-  rownames(sce) <- rownames(adata$var)
-  colnames(sce) <- rownames(adata$obs)
-
-  SingleCellExperiment::reducedDims(sce) <- reduceddims # only here to ensure that the dimensions are right
+  # only here to ensure that the dimensions are right
+  SingleCellExperiment::reducedDims(sce) <- reduceddims
 
   sce
 }
@@ -177,6 +225,29 @@ to_SingleCellExperiment <- function(
   purrr::map(mapping, function(.item) {
     adata[[slot]][[.item]]
   })
+}
+
+# nolint start: object_length_linter object_name_linter
+.to_SCE_process_dataframe_mapping <- function(adata, mapping, slot) {
+  # nolint end: object_length_linter object_name_linter
+  if (slot == "obs") {
+    row_names <- adata$obs_names
+  } else if (slot == "var") {
+    row_names <- adata$var_names
+  } else {
+    cli_abort(c(
+      "{.arg slot} must be either {.val obs} or {.val var}, but is {.val {slot}}"
+    ))
+  }
+
+  if (rlang::is_empty(mapping)) {
+    return(S4Vectors::DataFrame(row.names = row_names))
+  }
+
+  purrr::map(mapping, function(.item) {
+    adata[[slot]][[.item]]
+  }) |>
+    S4Vectors::DataFrame(row.names = row_names)
 }
 
 # trackstatus: class=SingleCellExperiment, feature=get_obsm, status=done

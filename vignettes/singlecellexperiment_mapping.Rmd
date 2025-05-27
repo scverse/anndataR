@@ -84,17 +84,19 @@ We try to guess the name of the `X` slot: if there is no `counts` layer present,
 If there is a `counts` layer present, we will name the `X` slot the `data` assay.
 All other layers are stored as assays with their layer name.
 
-In the below example, we will convert an AnnData object with a `counts` layer and two other layers to a SingleCellExperiment object.
-In order for the implicit conversion to work, we will not provide a `layers_mapping`.
-We explicitly pass empty lists to the other mapping arguments for clarity in the resulting object. They ensure that nothing gets converted to the respective slots.
+In the below example, we will convert an AnnData object with a `counts` layer and two other layers to a `SingleCellExperiment` object.
+In order for the implicit conversion to work, we use the default `assays_mapping = TRUE`.
+We explicitly pass `FALSE` to the other mapping arguments for clarity in the resulting object.
+This ensures that nothing gets converted to the respective slots.
+
 ```{r implicit_layers}
 sce_layers <- ad$as_SingleCellExperiment(
-  colData_mapping = c(),
-  rowData_mapping = c(),
-  reducedDims_mapping = c(),
-  colPairs_mapping = c(),
-  rowPairs_mapping = c(),
-  metadata_mapping = c()
+  colData_mapping = FALSE,
+  rowData_mapping = FALSE,
+  reducedDims_mapping = FALSE,
+  colPairs_mapping = FALSE,
+  rowPairs_mapping = FALSE,
+  metadata_mapping = FALSE
 )
 
 sce_layers
@@ -110,34 +112,36 @@ the loadings in the `varm` slot (usually called `PCs`) and the explained varianc
 In a SingleCellExperiment object, the reduced dimensions are usually stored in the `reducedDims` slot, as either an element of a named list,
 or as a `LinearEmbeddingMatrix`. In the first case, only the reduced dimensions are stored, in the second case, the loadings and associated metadata are stored as well.
 
-We guess the mapping of the reductions the same way as we do for the Seurat conversion:
-- If the `obsm` slot contains a slot starting with `X_`, we will store this as a `reducedDims` slot and no associated `varm` or `uns` slots.
-- If the `obsm` slot contains a `X_pca` slot, we will also store the associated loadings (in `varm`) in a LinearEmbeddingMatrix.
+We guess the mapping of the reductions the same way as we do for the `Seurat` conversion:
+- All itmes in the `obsm` slot are stored as a matrix in the `reducedDims` slot
+- If the `obsm` slot contains a `X_pca` slot, we will also store the associated loadings (in `varm`) as a `LinearEmbeddingMatrix`
 
 ```{r implicit_pca}
 sce_dimred <- ad$as_SingleCellExperiment(
-  colData_mapping = c(),
-  rowData_mapping = c(),
-  colPairs_mapping = c(),
-  rowPairs_mapping = c(),
-  metadata_mapping = c()
+  colData_mapping = FALSE,
+  rowData_mapping = FALSE,
+  colPairs_mapping = FALSE,
+  rowPairs_mapping = FALSE,
+  metadata_mapping = FALSE
 )
 
 reducedDims(sce_dimred)
 ```
+
 We can see that indeed, the `pca` dimred got converted to a `LinearEmbeddingMatrix`, comprising of the information in the `obsm` and `varm` slots.
 The `umap` dimred got stored as a `reducedDims` slot, and consists only of the reduced dimensions in the `obsm` slot.
 
 ### colData, rowData, colPairs, rowPairs, metadata
-The other SingleCellExperiment slots are easy one-to-one mappings of AnnData slots.
+
+The other `SingleCellExperiment` slots are easy one-to-one mappings of `AnnData` slots.
 We will assume that all `colData` is stored in the `obs` slot, all `rowData` is stored in the `var` slot,
 all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in the `varp` slot,
 and all `metadata` is stored in the `uns` slot.
 
 ```{r implicit_easy}
 sce_implicit <- ad$as_SingleCellExperiment(
-  assays_mapping = c(),
-  reducedDims_mapping = c()
+  assays_mapping = FALSE,
+  reducedDims_mapping = FALSE
 )
 
 sce_implicit
@@ -154,12 +158,12 @@ We will give an example for each of the mappings.
 ```{r explicit_assays}
 sce_assays <- ad$as_SingleCellExperiment(
   assays_mapping = c(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
-  colData_mapping = c(),
-  rowData_mapping = c(),
-  reducedDims_mapping = c(),
-  colPairs_mapping = c(),
-  rowPairs_mapping = c(),
-  metadata_mapping = c()
+  colData_mapping = FALSE,
+  rowData_mapping = FALSE,
+  reducedDims_mapping = FALSE,
+  colPairs_mapping = FALSE,
+  rowPairs_mapping = FALSE,
+  metadata_mapping = FALSE
 )
 sce_assays
 ```
@@ -170,10 +174,10 @@ You can see that the `X` slot got stored as `counts`, and the `layers` got store
 
 ```{r explicit col_data}
 sce <- ad$as_SingleCellExperiment(
-  assays_mapping = c(),
+  assays_mapping = FALSE,
   colData_mapping = c(coldata1 = "integer", coldata2 = "numeric"),
   rowData_mapping = c(rowdata1 = "character", rowdata2 = "logical"),
-  reducedDims_mapping = c(),
+  reducedDims_mapping = FALSE,
   colPairs_mapping = c(
     colPairs_dense = "numeric_matrix",
     colPairs_sparse = "numeric_csparse"
@@ -192,25 +196,23 @@ sce <- ad$as_SingleCellExperiment(
 sce
 ```
 
-Here you can see that the anndata slots (specified as values in the mapping) get stored in the corresponding SingleCellExperiment 
-slots (the columns of which are the names of the mapping).
-e.g. the `integer` column of the AnnData `obs` in the AnnData object gets stored in the `coldata1` column of the `colData` of 
-the SingleCellExperiment object.
+Here you can see that the `AnnData` slots (specified as values in the mapping) get stored in the corresponding `SingleCellExperiment` slots (the columns of which are the names of the mapping).
+e.g. the `integer` column of the `AnnData` `obs` in the `AnnData` object gets stored in the `coldata1` column of the `colData` of the `SingleCellExperiment` object.
 
 ### reductions_mapping
 
 ```{r explicit_reductions}
 sce <- ad$as_SingleCellExperiment(
   assays_mapping = c(counts = "X"),
-  colData_mapping = c(),
-  rowData_mapping = c(),
+  colData_mapping = FALSE,
+  rowData_mapping = FALSE,
   reducedDims_mapping = list(
     "pca" = c(sampleFactors = "X_pca", featureLoadings = "PCs"),
     "umap" = c(sampleFactors = "X_umap")
   ),
-  colPairs_mapping = c(),
-  rowPairs_mapping = c(),
-  metadata_mapping = c()
+  colPairs_mapping = FALSE,
+  rowPairs_mapping = FALSE,
+  metadata_mapping = FALSE
 )
 sce
 ```
@@ -222,7 +224,7 @@ We will also store the reduction characterized by the `X_umap` data in the `obsm
 
 # Convert SingleCellExperiment objects to AnnData objects
 
-The reverse, converting SingleCellExperiment objects to AnnData objects works in a similar way.
+The reverse, converting `SingleCellExperiment` objects to `AnnData` objects works in a similar way.
 There's an implicit conversion, where we attempt a standard conversion, but the user can always provide an explicit mapping as well.
 
 ```{r construct sce}
