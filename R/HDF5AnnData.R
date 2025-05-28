@@ -361,6 +361,8 @@ HDF5AnnData <- R6::R6Class(
     close = function() {
       if (private$.h5obj$is_valid) {
         private$.h5obj$close_all()
+        cleanup_HDF5AnnData(file = private$.h5obj$file)
+        gc()
       }
     },
 
