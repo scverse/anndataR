@@ -15,7 +15,6 @@ test_that("writing H5AD works", {
 test_that("reading H5AD to InMemoryAnnData closes file", {
   expect_no_condition({
     read_h5ad(file)
-    gc()
     write_h5ad(dummy, file, mode = "w")
   })
 })
