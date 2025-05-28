@@ -24,7 +24,7 @@ to_Seurat <- function(
   object_metadata_mapping <- self_name(object_metadata_mapping) %||%
     .to_Seurat_guess_object_metadata(adata)
   layers_mapping <- self_name(layers_mapping) %||%
-    .to_Seurat_guess_layers(adata, x_mapping)
+    .to_Seurat_guess_layers(adata)
   assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
     .to_Seurat_guess_assay_metadata(adata)
   reduction_mapping <- self_name(reduction_mapping) %||%
@@ -53,6 +53,8 @@ to_Seurat <- function(
       c(NA, layers_mapping),
       c(x_mapping, names(layers_mapping))
     )
+  } else if (!is.null(adata$X)) {
+    layers_mapping[["X"]] <- NA
   }
   if (any(duplicated(names(layers_mapping)))) {
     cli_abort(
@@ -394,13 +396,9 @@ to_Seurat <- function(
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_layers <- function(adata, x_mapping) {
+.to_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-  layers <- self_name(adata$layers_keys())
-  if (!is.null(adata$X) && is.null(x_mapping)) {
-    layers[["X"]] <- NA
-  }
-  layers
+  self_name(adata$layers_keys())
 }
 
 # nolint start: object_name_linter object_length_linter

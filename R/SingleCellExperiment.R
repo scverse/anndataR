@@ -55,6 +55,8 @@ to_SingleCellExperiment <- function(
       c(NA, assays_mapping),
       c(x_mapping, names(assays_mapping))
     )
+  } else if (!is.null(adata$X)) {
+    assays_mapping[["X"]] <- NA
   }
   if (any(duplicated(names(assays_mapping)))) {
     cli_abort(
