@@ -46,7 +46,7 @@ to_Seurat <- function(
   if (!is.null(x_mapping)) {
     if (any(is.na(layers_mapping))) {
       cli_abort(
-        "{.arg layers_mapping} must not contain any {.val NA} values when {.arg x_mapping} is provided"
+        "{.arg layers_mapping} must not contain any {.val {NA}} values when {.arg x_mapping} is provided"
       )
     }
     layers_mapping <- setNames(
