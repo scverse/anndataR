@@ -4,7 +4,6 @@ test_that("reading H5AD as SingleCellExperiment works", {
   skip_if_not_installed("SingleCellExperiment")
 
   sce <- read_h5ad(file, as = "SingleCellExperiment", mode = "r")
-  gc()
   expect_s4_class(sce, "SingleCellExperiment")
 })
 
@@ -17,6 +16,5 @@ test_that("reading H5AD as Seurat works", {
 
 test_that("reading H5AD as InMemoryAnnData works", {
   adata <- read_h5ad(file, as = "InMemoryAnnData", mode = "r")
-  gc()
   expect_equal(class(adata), c("InMemoryAnnData", "AbstractAnnData", "R6"))
 })
