@@ -8,6 +8,9 @@
 
 \item{assay_name}{Name of the assay to be created in the new \code{Seurat} object}
 
+\item{x_mapping}{A string specifying the name of the layer in the resulting
+\code{Seurat} object where the data in the \code{X} slot of \code{adata} will be mapped to}
+
 \item{layers_mapping}{A named vector where names are names of \code{Layers} in the
 resulting \code{Seurat} object and values are keys of \code{layers} in \code{adata}. See
 below for details.}
@@ -108,6 +111,7 @@ to the \code{key} argument after processing with \code{\link[SeuratObject:Key]{S
   # Default usage
   seurat <- ad$as_Seurat(
     assay_name = "RNA",
+    x_mapping = "counts",
     layers_mapping = NULL,
     object_metadata_mapping = NULL,
     assay_metadata_mapping = NULL,

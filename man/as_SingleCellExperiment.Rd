@@ -6,6 +6,10 @@
 \arguments{
 \item{adata}{The \code{AnnData} object to convert}
 
+\item{x_mapping}{A string specifying the name of the assay in the resulting
+\code{SingleCellExperiment} where the data in the \code{X} slot of \code{adata} will be
+mapped to}
+
 \item{assays_mapping}{A named vector where names are names of \code{assays} in the
 resulting \code{SingleCellExperiment} object and values are keys of \code{layers} in
 \code{adata}. See below for details.}

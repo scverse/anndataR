@@ -2,6 +2,7 @@
 # nolint start: object_name_linter
 to_SingleCellExperiment <- function(
   adata,
+  x_mapping = NULL,
   assays_mapping = NULL,
   colData_mapping = NULL,
   rowData_mapping = NULL,
@@ -25,7 +26,8 @@ to_SingleCellExperiment <- function(
 
   # guess mappings if not provided
   # nolint start object_name_linter
-  assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
+  assays_mapping <- self_name(assays_mapping) %||%
+    .to_SCE_guess_all(adata, "layers")
   colData_mapping <- self_name(colData_mapping) %||%
     .to_SCE_guess_all(adata, "obs")
   rowData_mapping <- self_name(rowData_mapping) %||%
@@ -42,16 +44,37 @@ to_SingleCellExperiment <- function(
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
+
+  if (!is.null(x_mapping)) {
+    if (any(is.na(assays_mapping))) {
+      cli_abort(
+        "{.arg assays_mapping} must not contain any {.val NA} values when {.arg x_mapping} is provided"
+      )
+    }
+    assays_mapping <- setNames(
+      c(NA, assays_mapping),
+      c(x_mapping, names(assays_mapping))
+    )
+  } else if (!is.null(adata$X)) {
+    assays_mapping[["X"]] <- NA
+  }
+  if (any(duplicated(names(assays_mapping)))) {
+    cli_abort(
+      "{.arg assays_mapping} or {.arg x_mapping} must not contain any duplicate names",
+      "i" = "Found duplicate names: {.val {names(assays_mapping)[duplicated(names(assays_mapping))]}}"
+    )
+  }
   sce_assays <- vector("list", length(assays_mapping))
   names(sce_assays) <- names(assays_mapping)
   for (i in seq_along(assays_mapping)) {
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
-    if (from != "X") {
-      sce_assays[[to]] <- to_R_matrix(adata$layers[[from]])
-    } else {
-      sce_assays[[to]] <- to_R_matrix(adata$X)
-    }
+    sce_assays[[to]] <-
+      if (is.na(from)) {
+        to_R_matrix(adata$X)
+      } else {
+        to_R_matrix(adata$layers[[from]])
+      }
   }
 
   # construct colData
@@ -104,35 +127,6 @@ to_SingleCellExperiment <- function(
   SingleCellExperiment::reducedDims(sce) <- reduceddims # only here to ensure that the dimensions are right
 
   sce
-}
-
-# nolint start: object_length_linter object_name_linter
-.to_SCE_guess_assays <- function(adata) {
-  # nolint end: object_length_linter object_name_linter
-  if (!(inherits(adata, "AbstractAnnData"))) {
-    cli_abort(
-      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
-    )
-  }
-
-  layers <- list()
-
-  if (!is.null(adata$X)) {
-    layer_name_for_x <-
-      if (!"counts" %in% names(adata$layers)) {
-        # could expand checks, to check if integers
-        "counts"
-      } else {
-        "data"
-      }
-    layers[[layer_name_for_x]] <- "X"
-  }
-
-  for (layer_name in names(adata$layers)) {
-    layers[[layer_name]] <- layer_name
-  }
-
-  layers
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -323,6 +317,7 @@ from_SingleCellExperiment <- function(
     )
   }
 
+  x_mapping <- x_mapping %||% c()
   # For any mappings that are not set, using the guessing function
   layers_mapping <- self_name(layers_mapping) %||%
     .from_SCE_guess_layers(sce, x_mapping)

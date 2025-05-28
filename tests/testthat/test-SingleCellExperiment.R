@@ -85,6 +85,41 @@ for (layer_key in names(ad$layers)) {
   })
 }
 
+test_that("to_SCE fails when providing duplicate assay names", {
+  expect_error(
+    ad$as_SingleCellExperiment(
+      x_mapping = "counts",
+      assays_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
+    ),
+    regexp = "duplicate names"
+  )
+})
+
+test_that("to_SCE works when only providing x_mapping", {
+  sce <- ad$as_SingleCellExperiment(x_mapping = "counts")
+  assay_names <- names(assays(sce))
+  expect_true("counts" %in% assay_names)
+  expect_true(all(ad$layers_keys() %in% assay_names))
+})
+
+test_that("to_SCE works with assays_mapping and x_mapping", {
+  sce <- ad$as_SingleCellExperiment(
+    x_mapping = "counts",
+    assays_mapping = c(data = "numeric_matrix", integer = "integer_matrix")
+  )
+  assay_names <- names(assays(sce))
+  expect_true("counts" %in% assay_names)
+  expect_true("data" %in% assay_names)
+  expect_true("integer" %in% assay_names)
+})
+
+test_that("to_SCE works with no x_mapping and no layers_mapping", {
+  sce <- ad$as_SingleCellExperiment()
+  assay_names <- names(assays(sce))
+  expect_true("X" %in% assay_names)
+  expect_true(all(ad$layers_keys() %in% assay_names))
+})
+
 # trackstatus: class=SingleCellExperiment, feature=test_get_obsp, status=done
 for (obsp_key in names(ad$obsp)) {
   test_that(paste0("as_SCE retains obsp key: ", obsp_key), {
@@ -176,7 +211,7 @@ test_that("as_SCE retains pca dimred", {
 test_that("as_SCE works with list mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
-      assays_mapping = as.list(.to_SCE_guess_assays(ad)),
+      assays_mapping = as.list(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
       reducedDims_mapping = as.list(.to_SCE_guess_reducedDims(ad)),
@@ -204,7 +239,7 @@ test_that("as_SCE works with a vector reducedDims_mapping", {
 test_that("as_SCE works with unnamed mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
-      assays_mapping = unname(.to_SCE_guess_assays(ad)),
+      assays_mapping = unname(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = unname(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = unname(.to_SCE_guess_all(ad, "var")),
       colPairs_mapping = unname(.to_SCE_guess_all(ad, "obsp")),
