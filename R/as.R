@@ -151,9 +151,9 @@ NULL
 #'   `adata$varm[[featureLoadings]]` is passed to the `featureLoadings` argument
 #' - `metadata`: a key of the `uns` slot in `adata` (optional),
 #'   `adata$uns[[metadata]]` is passed to the `metadata` argument
-#' 
+#'
 #' ## The `x_mapping` and `assays_mapping` arguments
-#' 
+#'
 #' Specifying the slot in `assays(sce)` where the data in `adata$X` will be stored
 #' can be done with either the `x_mapping` argument or the `assays_mapping` argument,
 #' where a value of `NA` is used to indicate the data in `adata$X`.
@@ -271,9 +271,9 @@ NULL
 #'   `adata$obsm[[embeddings]]` is passed to the `embeddings` argument
 #' - `loadings`: a key of the `varm` slot in `adata` (optional),
 #'   `adata$varm[[loadings]]` is passed to the `loadings` argument
-#' 
+#'
 #' ## The `x_mapping` and `layers_mapping` arguments
-#' 
+#'
 #' Specifying the slot in `Layers(seurat)` where the data in `adata$X` will be stored
 #' can be done with either the `x_mapping` argument or the `assays_mapping` argument,
 #' where a value of `NA` is used to indicate the data in `adata$X`.
