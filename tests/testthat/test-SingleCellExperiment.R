@@ -85,8 +85,25 @@ for (layer_key in names(ad$layers)) {
   })
 }
 
+test_that("to_SCE fails when providing duplicate assay names", {
+  expect_error(
+    ad$as_SingleCellExperiment(
+      x_mapping = "counts",
+      assays_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
+    ),
+    regexp = "duplicate names"
+  )
+})
+
+test_that("to_SCE works when only providing x_mapping", {
+  sce <- ad$as_SingleCellExperiment(x_mapping = "counts")
+  assay_names <- names(assays(sce))
+  expect_true("counts" %in% assay_names)
+  expect_true(all(ad$layers_keys() %in% assay_names))
+})
+
 test_that("to_SCE works with assays_mapping and x_mapping", {
-  sce <- ad$to_SingleCellExperiment(
+  sce <- ad$as_SingleCellExperiment(
     x_mapping = "counts",
     assays_mapping = c(data = "numeric_matrix", integer = "integer_matrix")
   )
@@ -96,14 +113,11 @@ test_that("to_SCE works with assays_mapping and x_mapping", {
   expect_true("integer" %in% assay_names)
 })
 
-test_that("to_SCE fails when providing duplicate assay names", {
-  expect_error(
-    ad$to_SingleCellExperiment(
-      x_mapping = "counts",
-      assays_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
-    ),
-    regexp = "duplicate names"
-  )
+test_that("to_SCE works with no x_mapping and no layers_mapping", {
+  sce <- ad$as_SingleCellExperiment()
+  assay_names <- names(assays(sce))
+  expect_true("X" %in% assay_names)
+  expect_true(all(ad$layers_keys() %in% assay_names))
 })
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_obsp, status=done
