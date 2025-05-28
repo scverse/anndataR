@@ -98,6 +98,23 @@ for (layer_key in names(ad$layers)) {
   })
 }
 
+test_that("to_Seurat fails when providing duplicate layer names", {
+  expect_error(
+    ad$to_Seurat(
+      x_mapping = "counts",
+      layers_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
+    ),
+    regexp = "duplicate names"
+  )
+})
+
+test_that("to_Seurat works when only providing x_mapping", {
+  seu <- ad$to_Seurat(x_mapping = "counts")
+  layer_names <- names(seu@assays[[seu@active.assay]]@layers)
+  expect_true("counts" %in% layer_names)
+  expect_true(all(ad$layers_keys() %in% layer_names))
+})
+
 test_that("to_Seurat works with layers_mapping and x_mapping", {
   seu <- ad$to_Seurat(
     x_mapping = "counts",
@@ -109,14 +126,14 @@ test_that("to_Seurat works with layers_mapping and x_mapping", {
   expect_true("integer" %in% layer_names)
 })
 
-test_that("to_Seurat fails when providing duplicate layer names", {
-  expect_error(
-    ad$to_Seurat(
-      x_mapping = "counts",
-      layers_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
-    ),
-    regexp = "duplicate names"
-  )
+test_that("to_Seurat works with no x_mapping and no layers_mapping", {
+  ad$layers[["counts"]] <- ad$layers[["numeric_matrix"]]
+  seu <- ad$to_Seurat()
+  layer_names <- names(seu@assays[[seu@active.assay]]@layers)
+  expect_true("X" %in% layer_names)
+  expect_true(all(ad$layers_keys() %in% layer_names))
+  # cleanup
+  ad$layers[["counts"]] <- NULL
 })
 
 # trackstatus: class=Seurat, feature=test_get_uns, status=done
