@@ -110,9 +110,8 @@ test_that("to_Seurat fails when providing duplicate layer names", {
 
 test_that("to_Seurat works when only providing x_mapping", {
   seu <- ad$as_Seurat(x_mapping = "counts")
-  layer_names <- names(seu@assays[[seu@active.assay]]@layers)
-  expect_true("counts" %in% layer_names)
-  expect_true(all(ad$layers_keys() %in% layer_names))
+  expect_true("counts" %in% Layers(seu))
+  expect_true(all(ad$layers_keys() %in% Layers(seu)))
 })
 
 test_that("to_Seurat works with layers_mapping and x_mapping", {
@@ -120,18 +119,16 @@ test_that("to_Seurat works with layers_mapping and x_mapping", {
     x_mapping = "counts",
     layers_mapping = c(data = "numeric_matrix", integer = "integer_matrix")
   )
-  layer_names <- names(seu@assays[[seu@active.assay]]@layers)
-  expect_true("counts" %in% layer_names)
-  expect_true("data" %in% layer_names)
-  expect_true("integer" %in% layer_names)
+  expect_true("counts" %in% Layers(seu))
+  expect_true("data" %in% Layers(seu))
+  expect_true("integer" %in% Layers(seu))
 })
 
 test_that("to_Seurat works with no x_mapping and no layers_mapping", {
   ad$layers[["counts"]] <- ad$layers[["numeric_matrix"]]
   seu <- ad$as_Seurat()
-  layer_names <- names(seu@assays[[seu@active.assay]]@layers)
-  expect_true("X" %in% layer_names)
-  expect_true(all(ad$layers_keys() %in% layer_names))
+  expect_true("X" %in% Layers(seu))
+  expect_true(all(ad$layers_keys() %in% Layers(seu)))
   # cleanup
   ad$layers[["counts"]] <- NULL
 })
