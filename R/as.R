@@ -123,6 +123,7 @@ NULL
 #'
 #' | **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
+#' | `adata$X` | `assays(sce)` | `x_mapping = "counts"` | The data in `adata$X` is copied to the assay named `X` |
 #' | `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |
 #' | `adata$obs` | `colData(sce)` | `colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #' | `adata$var` | `rowData(sce)` | `rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
@@ -150,6 +151,14 @@ NULL
 #'   `adata$varm[[featureLoadings]]` is passed to the `featureLoadings` argument
 #' - `metadata`: a key of the `uns` slot in `adata` (optional),
 #'   `adata$uns[[metadata]]` is passed to the `metadata` argument
+#' 
+#' ## The `x_mapping` and `assays_mapping` arguments
+#' 
+#' Specifying the slot in `assays(sce)` where the data in `adata$X` will be stored
+#' can be done with either the `x_mapping` argument or the `assays_mapping` argument,
+#' where a value of `NA` is used to indicate the data in `adata$X`.
+#' You may not specify both `NA` in `assays_mapping` and a value in `x_mapping`.
+#' The name you provide for `x_mapping` may not be a name in `assays_mapping`.
 #'
 #' @return A `SingleCellExperiment` object containing the requested data from
 #'   `adata`
@@ -234,6 +243,7 @@ NULL
 #'
 #' | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
+#' | `adata$X` | `Layers(seurat)` | `x_mapping = "counts"` | The data in `adata$X` is copied to the assay named `X` |
 #' | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
 #' | `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #' | `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
@@ -261,6 +271,15 @@ NULL
 #'   `adata$obsm[[embeddings]]` is passed to the `embeddings` argument
 #' - `loadings`: a key of the `varm` slot in `adata` (optional),
 #'   `adata$varm[[loadings]]` is passed to the `loadings` argument
+#' 
+#' ## The `x_mapping` and `layers_mapping` arguments
+#' 
+#' Specifying the slot in `Layers(seurat)` where the data in `adata$X` will be stored
+#' can be done with either the `x_mapping` argument or the `assays_mapping` argument,
+#' where a value of `NA` is used to indicate the data in `adata$X`.
+#' You may not specify both `NA` in `layers_mapping` and a value in `x_mapping`.
+#' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
+#' You must provide a layer named `counts` or `data` in either `x_mapping` or `layers_mapping`.
 #'
 #' @return A `Seurat` object containing the requested data from `adata`
 #' @name as_Seurat
