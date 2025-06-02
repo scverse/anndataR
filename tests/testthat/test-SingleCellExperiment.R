@@ -435,11 +435,11 @@ ad_partial <- from_SingleCellExperiment(
   layers_mapping = layers_mapping,
   obs_mapping = obs_mapping,
   var_mapping = var_mapping,
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  obsm_mapping = list(),
+  varm_mapping = list(),
+  obsp_mapping = list(),
+  varp_mapping = list(),
+  uns_mapping = list()
 )
 
 for (obs_key in names(obs_mapping)) {
@@ -483,3 +483,20 @@ for (var_key in names(var_mapping)) {
     )
   })
 }
+
+test_that(paste0("from_SCE does not copy unmapped structs"), {
+  msg <- message_if_known(
+    backend = "from_SCE",
+    slot = c("obsm", "varm", "obsp", "varp", "uns"),
+    dtype = "unmapped",
+    process = "convert",
+    known_issues = known_issues
+  )
+  skip_if(!is.null(msg), message = msg)
+
+  expect_true(is.null(ad_partial$obsm))
+  expect_true(is.null(ad_partial$varm))
+  expect_true(is.null(ad_partial$obsp))
+  expect_true(is.null(ad_partial$varp))
+  expect_true(is.null(ad_partial$uns))
+})
