@@ -153,12 +153,19 @@ NULL
 #'   `adata$uns[[metadata]]` is passed to the `metadata` argument
 #'
 #' ## The `x_mapping` and `assays_mapping` arguments
-#'
-#' Specifying the slot in `assays(sce)` where the data in `adata$X` will be stored
-#' can be done with either the `x_mapping` argument or the `assays_mapping` argument,
-#' where a value of `NA` is used to indicate the data in `adata$X`.
+#' 
+#' In order to specify where the data in `adata$X` will be stored in the
+#' `assays(sce)` slot of the resulting object, you can use either the `x_mapping` 
+#' argument or the `assays_mapping` argument.
+#' If you use `x_mapping`, it should be a string specifying the name of the layer
+#' in `assays(sce)` where the data in `adata$X` will be stored.
+#' If you use `assays_mapping`, it should be a named vector where names are names
+#' of `assays(sce)` and values are keys of `layers` in `adata`.
+#' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
 #' You may not specify both `NA` in `assays_mapping` and a value in `x_mapping`.
 #' The name you provide for `x_mapping` may not be a name in `assays_mapping`.
+#' You must provide an assay named `counts` or `data` in either `x_mapping` or
+#' `assays_mapping`.
 #'
 #' @return A `SingleCellExperiment` object containing the requested data from
 #'   `adata`
@@ -273,13 +280,19 @@ NULL
 #'   `adata$varm[[loadings]]` is passed to the `loadings` argument
 #'
 #' ## The `x_mapping` and `layers_mapping` arguments
-#'
-#' Specifying the slot in `Layers(seurat)` where the data in `adata$X` will be stored
-#' can be done with either the `x_mapping` argument or the `assays_mapping` argument,
-#' where a value of `NA` is used to indicate the data in `adata$X`.
+#' 
+#' In order to specify where the data in `adata$X` will be stored in the
+#' `Layers(seurat)` slot of the resulting object, you can use either the `x_mapping` 
+#' argument or the `layers_mapping` argument.
+#' If you use `x_mapping`, it should be a string specifying the name of the layer
+#' in `Layers(seurat)` where the data in `adata$X` will be stored.
+#' If you use `layers_mapping`, it should be a named vector where names are names
+#' of `Layers(seurat)` and values are keys of `layers` in `adata`.
+#' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
 #' You may not specify both `NA` in `layers_mapping` and a value in `x_mapping`.
 #' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
-#' You must provide a layer named `counts` or `data` in either `x_mapping` or `layers_mapping`.
+#' You must provide a layer named `counts` or `data` in either `x_mapping` or
+#' `layers_mapping`.
 #'
 #' @return A `Seurat` object containing the requested data from `adata`
 #' @name as_Seurat

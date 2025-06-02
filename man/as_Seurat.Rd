@@ -69,6 +69,7 @@ vector. If an unnamed vector is provided, the values will be used as names
 
 \subsection{Conversion table}{\tabular{llll}{
    \strong{From \code{AnnData}} \tab \strong{To \code{Seurat}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \code{adata$X} \tab \code{Layers(seurat)} \tab \code{x_mapping = "counts"} \tab The data in \code{adata$X} is copied to the assay named \code{X} \cr
    \code{adata$layers} \tab \code{Layers(seurat)} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{seurat[[]]} \tab \code{object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{adata$var} \tab \code{seurat[[assay_name]][[]]} \tab \code{assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
@@ -98,6 +99,22 @@ to the \code{key} argument after processing with \code{\link[SeuratObject:Key]{S
 \item \code{loadings}: a key of the \code{varm} slot in \code{adata} (optional),
 \code{adata$varm[[loadings]]} is passed to the \code{loadings} argument
 }
+}
+
+\subsection{The \code{x_mapping} and \code{layers_mapping} arguments}{
+
+In order to specify where the data in \code{adata$X} will be stored in the
+\code{Layers(seurat)} slot of the resulting object, you can use either the \code{x_mapping}
+argument or the \code{layers_mapping} argument.
+If you use \code{x_mapping}, it should be a string specifying the name of the layer
+in \code{Layers(seurat)} where the data in \code{adata$X} will be stored.
+If you use \code{layers_mapping}, it should be a named vector where names are names
+of \code{Layers(seurat)} and values are keys of \code{layers} in \code{adata}.
+In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the vector.
+You may not specify both \code{NA} in \code{layers_mapping} and a value in \code{x_mapping}.
+The name you provide for \code{x_mapping} may not be a name in \code{layers_mapping}.
+You must provide a layer named \code{counts} or \code{data} in either \code{x_mapping} or
+\code{layers_mapping}.
 }
 }
 \examples{

@@ -75,6 +75,7 @@ table
 
 \subsection{Conversion table}{\tabular{llll}{
    \strong{From \code{AnnData}} \tab \strong{To \code{SingleCellExperiment}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \code{adata$X} \tab \code{assays(sce)} \tab \code{x_mapping = "counts"} \tab The data in \code{adata$X} is copied to the assay named \code{X} \cr
    \code{adata$layers} \tab \code{assays(sce)} \tab \code{assays_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{colData(sce)} \tab \code{colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{adata$var} \tab \code{rowData(sce)} \tab \code{rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
@@ -104,6 +105,22 @@ with the following names used to create a
 \item \code{metadata}: a key of the \code{uns} slot in \code{adata} (optional),
 \code{adata$uns[[metadata]]} is passed to the \code{metadata} argument
 }
+}
+
+\subsection{The \code{x_mapping} and \code{assays_mapping} arguments}{
+
+In order to specify where the data in \code{adata$X} will be stored in the
+\code{assays(sce)} slot of the resulting object, you can use either the \code{x_mapping}
+argument or the \code{assays_mapping} argument.
+If you use \code{x_mapping}, it should be a string specifying the name of the layer
+in \code{assays(sce)} where the data in \code{adata$X} will be stored.
+If you use \code{assays_mapping}, it should be a named vector where names are names
+of \code{assays(sce)} and values are keys of \code{layers} in \code{adata}.
+In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the vector.
+You may not specify both \code{NA} in \code{assays_mapping} and a value in \code{x_mapping}.
+The name you provide for \code{x_mapping} may not be a name in \code{assays_mapping}.
+You must provide an assay named \code{counts} or \code{data} in either \code{x_mapping} or
+\code{assays_mapping}.
 }
 }
 \examples{
