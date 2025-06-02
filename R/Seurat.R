@@ -401,29 +401,6 @@ to_Seurat <- function(
   self_name(adata$layers_keys())
 }
 
-# nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_reductions <- function(adata) {
-  # nolint end: object_name_linter object_length_linter
-  if (!inherits(adata, "AbstractAnnData")) {
-    "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
-  }
-
-  reductions <- list()
-
-  for (reduction_name in names(adata$obsm)) {
-    if (grepl("^X_", reduction_name)) {
-      out <-
-        if (reduction_name == "X_pca" && "PCs" %in% names(adata$varm)) {
-          list(key = "X_pca", obsm = "X_pca", varm = "PCs")
-        } else {
-          list(key = reduction_name, obsm = reduction_name, varm = NULL)
-        }
-      reductions[[reduction_name]] <- out
-    }
-  }
-
-  reductions
-}
 
 # nolint start: object_name_linter
 .to_Seurat_process_metadata <- function(adata, mapping, slot) {

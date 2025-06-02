@@ -15,9 +15,6 @@ ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 skip_if_not_installed("Seurat")
 library(Seurat)
 
-##################
-# TEST TO_SEURAT #
-##################
 layers_mapping <- c(NA, names(ad$layers))
 names(layers_mapping) <- c("counts", names(ad$layers))
 seu <- ad$as_Seurat(layers_mapping = layers_mapping)
