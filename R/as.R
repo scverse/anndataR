@@ -153,9 +153,9 @@ NULL
 #'   `adata$uns[[metadata]]` is passed to the `metadata` argument
 #'
 #' ## The `x_mapping` and `assays_mapping` arguments
-#' 
+#'
 #' In order to specify where the data in `adata$X` will be stored in the
-#' `assays(sce)` slot of the resulting object, you can use either the `x_mapping` 
+#' `assays(sce)` slot of the resulting object, you can use either the `x_mapping`
 #' argument or the `assays_mapping` argument.
 #' If you use `x_mapping`, it should be a string specifying the name of the layer
 #' in `assays(sce)` where the data in `adata$X` will be stored.
@@ -280,9 +280,9 @@ NULL
 #'   `adata$varm[[loadings]]` is passed to the `loadings` argument
 #'
 #' ## The `x_mapping` and `layers_mapping` arguments
-#' 
+#'
 #' In order to specify where the data in `adata$X` will be stored in the
-#' `Layers(seurat)` slot of the resulting object, you can use either the `x_mapping` 
+#' `Layers(seurat)` slot of the resulting object, you can use either the `x_mapping`
 #' argument or the `layers_mapping` argument.
 #' If you use `x_mapping`, it should be a string specifying the name of the layer
 #' in `Layers(seurat)` where the data in `adata$X` will be stored.
