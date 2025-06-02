@@ -404,3 +404,8 @@ test_that("as_AnnData works with unnamed mappings", {
     )
   )
 })
+
+test_that("as_AnnData works with empty mappings", {
+  expect_warning(as_AnnData(obj, layers_mapping = NULL), "argument is empty")
+  expect_warning(as_AnnData(obj, layers_mapping = c()), "argument is empty")
+})
