@@ -114,20 +114,20 @@ AnnData <- function(
 #'
 #'   All mapping arguments except for `x_mapping` expect a named character
 #'   vector where names are the keys of the slot in the `AnnData` object and
-#'   values are the names of items in the corresponding slot of `x`. If `NULL`,
+#'   values are the names of items in the corresponding slot of `x`. If `TRUE`,
 #'   the conversion function will guess which items to copy as described in the
 #'   conversion tables for each object type. In most cases, the default is to
 #'   copy all items using the same names except where the correspondence between
-#'   objects is unclear. To avoid copying anything to a slot, provide an empty
-#'   vector. If an unnamed vector is provided, the values will be used as names
+#'   objects is unclear. To avoid copying anything to a slot, set the mapping
+#'   argument to `FALSE`. Empty mapping arguments (`NULL`, `c()`, `list()`) will
+#'   be treated as `FALSE` with a warning. If an unnamed vector is provided, the
+#'   values will be used as names.
 #'
-#'   ## Examples:
-#'
-#'   - `NULL` will guess which items to copy as described in the conversion
+#'   - `TRUE` will guess which items to copy as described in the conversion
 #'     tables for each object type
 #'   - `c(adata_item = "x_item")` will copy `x_item` from the slot in `x` to
 #'     `adata_item` in the corresponding slot of new `AnnData` object
-#'   - `c()` will avoid copying anything to the slot
+#'   - `FALSE` will avoid copying anything to the slot
 #'   - `c("x_item")` is equivalent to `c(x_item = "x_item")`
 #'
 #' @section Converting from a `SingleCellExperiment` object:

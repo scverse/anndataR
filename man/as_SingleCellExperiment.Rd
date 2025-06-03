@@ -6,13 +6,13 @@
 \usage{
 as_SingleCellExperiment(
   adata,
-  assays_mapping = NULL,
-  colData_mapping = NULL,
-  rowData_mapping = NULL,
-  reducedDims_mapping = NULL,
-  colPairs_mapping = NULL,
-  rowPairs_mapping = NULL,
-  metadata_mapping = NULL
+  assays_mapping = TRUE,
+  colData_mapping = TRUE,
+  rowData_mapping = TRUE,
+  reducedDims_mapping = TRUE,
+  colPairs_mapping = TRUE,
+  rowPairs_mapping = TRUE,
+  metadata_mapping = TRUE
 )
 }
 \arguments{
@@ -61,20 +61,23 @@ Convert an \code{AnnData} object to a \code{SingleCellExperiment} object
 
 All mapping arguments expect a named character vector where names are the
 names of the slot in the \code{SingleCellExperiment} object and values are the
-keys of the corresponding slot of \code{adata}. If \code{NULL}, the conversion function
-will guess which items to copy as described in the conversion tables
-conversion table below. In most cases, the default is to copy all items using
-the same names except where the correspondence between objects is unclear.
-The \code{reducedDims_mapping} argument can also accept a more complex list format,
-see below for details. To avoid copying anything to a slot, provide an empty
-vector. If an unnamed vector is provided, the values will be used as names
+keys of the corresponding slot of \code{adata}. If \code{TRUE}, the conversion function
+will guess which items to copy as described in the conversion tables below.
+In most cases, the default is to copy all items using the same names except
+where the correspondence between objects is unclear. The
+\code{reducedDims_mapping} argument can also accept a more complex list format,
+see below for details. To avoid copying anything to a slot, set the mapping
+argument to \code{FALSE}. Empty mapping arguments (\code{NULL}, \code{c()}, \code{list()}) will
+be treated as \code{FALSE} with a warning. If an unnamed vector is provided, the
+values will be used as names.
 \subsection{Examples:}{
 \itemize{
-\item \code{NULL} will guess which items to copy as described in the conversion
+\item \code{TRUE} will guess which items to copy as described in the conversion
 table
-\item \code{c(sce_item = "adata_item")} will copy \code{adata_item} from the slot in \code{adata} to
-\code{sce_item} in the corresponding slot of new \code{SingleCellExperiment} object
-\item \code{c()} will avoid copying anything to the slot
+\item \code{c(sce_item = "adata_item")} will copy \code{adata_item} from the slot in
+\code{adata} to \code{sce_item} in the corresponding slot of the new
+\code{SingleCellExperiment} object
+\item \code{FALSE} will avoid copying anything to the slot
 \item \code{c("adata_item")} is equivalent to \code{c(adata_item = "adata_item")}
 }
 }

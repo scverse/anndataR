@@ -31,20 +31,24 @@
 #'
 #' All mapping arguments expect a named character vector where names are the
 #' names of the slot in the `Seurat` object and values are the keys of the
-#' corresponding slot of `adata`. If `NULL`, the conversion function will guess
-#' which items to copy as described in the conversion tables conversion table
-#' below. In most cases, the default is to copy all items using the same names
-#' except where the correspondence between objects is unclear. The
-#' `reduction_mapping` argument can also accept a more complex list format, see
-#' below for details. To avoid copying anything to a slot, provide an empty
-#' vector. If an unnamed vector is provided, the values will be used as names
+#' corresponding slot of `adata`. If `TRUE`, the conversion function will guess
+#' which items to copy as described in the conversion table below. In most
+#' cases, the default is to copy all items using the same names except where the
+#' correspondence between objects is unclear. The `reduction_mapping` argument
+#' can also accept a more complex list format, see below for details. To avoid
+#' copying anything to a slot, set the mapping argument to `FALSE`. Empt
+#'  mapping arguments (`NULL`, `c()`, `list()`) will be treated as `FALSE` with
+#' a warning. If an unnamed vector is provided, the values will be used as
+#' names.
 #'
 #' ### Examples:
 #'
-#' - `NULL` will guess which items to copy as described in the conversion table
+#' - `TRUE` will guess which items to copy as described in the conversion
+#'   table
 #' - `c(seurat_item = "adata_item")` will copy `adata_item` from the slot in
-#'   `adata` to `seurat_item` in the corresponding slot of new `Seurat` object
-#' - `c()` will avoid copying anything to the slot
+#'   `adata` to `seurat_item` in the corresponding slot of the new `Seurat`
+#'   object
+#' - `FALSE` will avoid copying anything to the slot
 #' - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
 #'
 #' ## Conversion table

@@ -34,22 +34,25 @@
 #'
 #' All mapping arguments expect a named character vector where names are the
 #' names of the slot in the `SingleCellExperiment` object and values are the
-#' keys of the corresponding slot of `adata`. If `NULL`, the conversion function
-#' will guess which items to copy as described in the conversion tables
-#' conversion table below. In most cases, the default is to copy all items using
-#' the same names except where the correspondence between objects is unclear.
-#' The `reducedDims_mapping` argument can also accept a more complex list format,
-#' see below for details. To avoid copying anything to a slot, provide an empty
-#' vector. If an unnamed vector is provided, the values will be used as names
+#' keys of the corresponding slot of `adata`. If `TRUE`, the conversion function
+#' will guess which items to copy as described in the conversion tables below.
+#' In most cases, the default is to copy all items using the same names except
+#' where the correspondence between objects is unclear. The
+#' `reducedDims_mapping` argument can also accept a more complex list format,
+#' see below for details. To avoid copying anything to a slot, set the mapping
+#' argument to `FALSE`. Empty mapping arguments (`NULL`, `c()`, `list()`) will
+#' be treated as `FALSE` with a warning. If an unnamed vector is provided, the
+#' values will be used as names.
 #'
 #' ### Examples:
 #'
-#'   - `NULL` will guess which items to copy as described in the conversion
-#' table
-#'   - `c(sce_item = "adata_item")` will copy `adata_item` from the slot in `adata` to
-#' `sce_item` in the corresponding slot of new `SingleCellExperiment` object
-#'   - `c()` will avoid copying anything to the slot
-#'   - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
+#' - `TRUE` will guess which items to copy as described in the conversion
+#'   table
+#' - `c(sce_item = "adata_item")` will copy `adata_item` from the slot in
+#'   `adata` to `sce_item` in the corresponding slot of the new
+#'   `SingleCellExperiment` object
+#' - `FALSE` will avoid copying anything to the slot
+#' - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
 #'
 #' ## Conversion table
 #'

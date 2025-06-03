@@ -124,21 +124,21 @@ functionality of an \code{AnnData} object, see \link{AnnData-usage}.
 
 All mapping arguments except for \code{x_mapping} expect a named character
 vector where names are the keys of the slot in the \code{AnnData} object and
-values are the names of items in the corresponding slot of \code{x}. If \code{NULL},
+values are the names of items in the corresponding slot of \code{x}. If \code{TRUE},
 the conversion function will guess which items to copy as described in the
 conversion tables for each object type. In most cases, the default is to
 copy all items using the same names except where the correspondence between
-objects is unclear. To avoid copying anything to a slot, provide an empty
-vector. If an unnamed vector is provided, the values will be used as names
-\subsection{Examples:}{
+objects is unclear. To avoid copying anything to a slot, set the mapping
+argument to \code{FALSE}. Empty mapping arguments (\code{NULL}, \code{c()}, \code{list()}) will
+be treated as \code{FALSE} with a warning. If an unnamed vector is provided, the
+values will be used as names.
 \itemize{
-\item \code{NULL} will guess which items to copy as described in the conversion
+\item \code{TRUE} will guess which items to copy as described in the conversion
 tables for each object type
 \item \code{c(adata_item = "x_item")} will copy \code{x_item} from the slot in \code{x} to
 \code{adata_item} in the corresponding slot of new \code{AnnData} object
-\item \code{c()} will avoid copying anything to the slot
+\item \code{FALSE} will avoid copying anything to the slot
 \item \code{c("x_item")} is equivalent to \code{c(x_item = "x_item")}
-}
 }
 }
 
