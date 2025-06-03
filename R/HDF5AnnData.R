@@ -360,7 +360,9 @@ HDF5AnnData <- R6::R6Class(
     #' @description Close the HDF5 file
     close = function() {
       if (private$.h5obj$is_valid) {
-        private$.h5obj$close()
+        private$.h5obj$close_all()
+        cleanup_HDF5AnnData(file = private$.h5obj$file)
+        gc()
       }
     },
 
@@ -376,9 +378,44 @@ HDF5AnnData <- R6::R6Class(
   )
 )
 
-# See as_HDF5AnnData() for function documentation
+#' Convert an `AnnData` to an `HDF5AnnData`
+#'
+#' Convert another `AnnData` object to an [`HDF5AnnData`] object
+#'
+#' @param adata An `AnnData` object to be converted to [`HDF5AnnData`]
+#' @param file The file name (character) of the `.h5ad` file
+#' @param compression The compression algorithm to use when writing the
+#'   HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
+#'   `"none"`.
+#' @param mode The mode to open the HDF5 file:
+#'
+#'   * `a` creates a new file or opens an existing one for read/write
+#'   * `r` opens an existing file for reading
+#'   * `r+` opens an existing file for read/write
+#'   * `w` creates a file, truncating any existing ones
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#'
+#' @return An [`HDF5AnnData`] object with the same data as the input `AnnData`
+#'   object.
+#' @keywords internal
+#'
+#' @family object converters
+#'
+#' @examples
+#' ad <- AnnData(
+#'   X = matrix(1:5, 3L, 5L),
+#'   layers = list(
+#'     A = matrix(5:1, 3L, 5L),
+#'     B = matrix(letters[1:5], 3L, 5L)
+#'   ),
+#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'   var = data.frame(row.names = letters[1:5], gene = 1:5),
+#' )
+#' ad$as_HDF5AnnData("test.h5ad")
+#' # remove file
+#' file.remove("test.h5ad")
 # nolint start: object_name_linter
-to_HDF5AnnData <- function(
+as_HDF5AnnData <- function(
   # nolint end: object_name_linter
   adata,
   file,

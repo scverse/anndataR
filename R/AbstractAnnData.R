@@ -191,7 +191,7 @@ AbstractAnnData <- R6::R6Class(
       metadata_mapping = NULL
     ) {
       # nolint end: object_name_linter
-      to_SingleCellExperiment(
+      as_SingleCellExperiment(
         self,
         x_mapping = x_mapping,
         assays_mapping = assays_mapping,
@@ -245,7 +245,7 @@ AbstractAnnData <- R6::R6Class(
       graph_mapping = NULL,
       misc_mapping = NULL
     ) {
-      to_Seurat(
+      as_Seurat(
         self,
         assay_name = assay_name,
         x_mapping = x_mapping,
@@ -281,7 +281,7 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' @return An [InMemoryAnnData] object
     as_InMemoryAnnData = function() {
-      to_InMemoryAnnData(self)
+      as_InMemoryAnnData(self)
     },
     #' @description
     #' `r lifecycle::badge('deprecated')`
@@ -313,7 +313,7 @@ AbstractAnnData <- R6::R6Class(
       compression = c("none", "gzip", "lzf"),
       mode = c("w-", "r", "r+", "a", "w", "x")
     ) {
-      to_HDF5AnnData(
+      as_HDF5AnnData(
         adata = self,
         file = file,
         compression = compression,
