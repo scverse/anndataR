@@ -411,7 +411,7 @@ HDF5AnnData <- R6::R6Class(
 #'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
 #'   var = data.frame(row.names = letters[1:5], gene = 1:5),
 #' )
-#' ad$as_HDF5AnnData("test.h5ad")
+#' ad$as_HDF5AnnData("test.h5ad", mode = "w")
 #' # remove file
 #' file.remove("test.h5ad")
 # nolint start: object_name_linter
