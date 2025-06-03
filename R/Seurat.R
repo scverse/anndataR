@@ -1,15 +1,120 @@
-# See as_Seurat for function documentation
+#' Convert an `AnnData` to a `Seurat`
+#'
+#' Convert an `AnnData` object to a `Seurat` object
+#'
+#' @param adata The `AnnData` object to convert.
+#' @param assay_name Name of the assay to be created in the new `Seurat` object
+#' @param layers_mapping A named vector where names are names of `Layers` in the
+#'   resulting `Seurat` object and values are keys of `layers` in `adata`. See
+#'   below for details.
+#' @param object_metadata_mapping A named vector where names are cell metadata
+#'   columns in the resulting `Seurat` object and values are columns of `obs` in
+#'   `adata`. See below for details.
+#' @param assay_metadata_mapping A named vector where names are variable
+#'   metadata columns in the assay of the resulting `Seurat` object and values
+#'   are columns of `var` in `adata`. See below for details.
+#' @param reduction_mapping A named vector where names are names of `Embeddings`
+#'   in the resulting `Seurat` object and values are keys of `obsm` in `adata`.
+#'   Alternatively, a named list where names are names of `Embeddings` in the
+#'   resulting `Seurat` object and values are vectors with the items `"key"`,
+#'   `"embeddings"` and (optionally) `"loadings"`. See below for details.
+#' @param graph_mapping  A named vector where names are names of `Graphs` in the
+#'   resulting `Seurat` object and values are keys of `obsp` in `adata`. See
+#'   below for details.
+#' @param misc_mapping A named vector where names are names of `Misc` in the
+#'   resulting `Seurat` object and values are keys of `uns` in `adata`. See
+#'   below for details.
+#'
+#' @details
+#'
+#' ## Mapping arguments
+#'
+#' All mapping arguments expect a named character vector where names are the
+#' names of the slot in the `Seurat` object and values are the keys of the
+#' corresponding slot of `adata`. If `NULL`, the conversion function will guess
+#' which items to copy as described in the conversion tables conversion table
+#' below. In most cases, the default is to copy all items using the same names
+#' except where the correspondence between objects is unclear. The
+#' `reduction_mapping` argument can also accept a more complex list format, see
+#' below for details. To avoid copying anything to a slot, provide an empty
+#' vector. If an unnamed vector is provided, the values will be used as names
+#'
+#' ### Examples:
+#'
+#' - `NULL` will guess which items to copy as described in the conversion table
+#' - `c(seurat_item = "adata_item")` will copy `adata_item` from the slot in
+#'   `adata` to `seurat_item` in the corresponding slot of new `Seurat` object
+#' - `c()` will avoid copying anything to the slot
+#' - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
+#'
+#' ## Conversion table
+#'
+# nolint start: line_length_linter
+#'
+#' | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
+#' |--------------------|-------------------------------|------------------------------|-----------------------|
+#' | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
+#' | `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+#' | `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+#' | `adata$obsm` | `Embeddings(sce)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))`  | All items that can be coerced to a numeric matrix are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
+#' | `adata$obsp` | `Graphs(seurat)` | `graph_mapping = c(nn = "connectivities")` | All items are copied by name |
+#' | `adata$varp` | _NA_  | _NA_ | There is no corresponding slot for `varp` |
+#' | `adata$uns` | `Misc(seurat)` | `misc_mapping = c(project_metadata = "metadata")` | All items are copied by name |
+#'
+# nolint end: line_length_linter
+#'
+#' ## The `reduction_mapping` argument
+#'
+#' For the simpler named vector format, the names should be the names of
+#' `Embeddings` in the resulting `Seurat` object, and the values
+#' should be the keys of `obsm` in `adata`. A key will created from the `obsm`
+#' key.
+#'
+#' For more advanced mapping, use the list format where each item is a vector
+#' with the following names defining arguments to
+#' [SeuratObject::CreateDimReducObject()]:
+#'
+#' - `key`: the key of the resulting [`SeuratObject::DimReduc`] object, passed
+#'   to the `key` argument after processing with [SeuratObject::Key()]
+#' - `embeddings`: a key of the `obsm` slot in `adata`,
+#'   `adata$obsm[[embeddings]]` is passed to the `embeddings` argument
+#' - `loadings`: a key of the `varm` slot in `adata` (optional),
+#'   `adata$varm[[loadings]]` is passed to the `loadings` argument
+#'
+#' @return A `Seurat` object containing the requested data from `adata`
+#' @keywords internal
+#'
+#' @family object converters
+#'
+#' @examplesIf rlang::is_installed("Seurat")
+#'   ad <- AnnData(
+#'     X = matrix(1:5, 3L, 5L),
+#'     obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+#'     var = data.frame(row.names = letters[1:5], gene = 1:5)
+#'   )
+#'
+#'   # Default usage
+#'   seurat <- ad$as_Seurat(
+#'     assay_name = "RNA",
+#'     layers_mapping = TRUE,
+#'     object_metadata_mapping = TRUE,
+#'     assay_metadata_mapping = TRUE,
+#'     reduction_mapping = TRUE,
+#'     graph_mapping = TRUE,
+#'     misc_mapping = TRUE
+#'   )
+#'
 #' @importFrom Matrix t
 # nolint start: object_name_linter
-to_Seurat <- function(
+as_Seurat <- function(
   adata,
   assay_name = "RNA",
-  layers_mapping = NULL,
-  object_metadata_mapping = NULL,
-  assay_metadata_mapping = NULL,
-  reduction_mapping = NULL,
-  graph_mapping = NULL,
-  misc_mapping = NULL
+  layers_mapping = TRUE,
+  object_metadata_mapping = TRUE,
+  assay_metadata_mapping = TRUE,
+  reduction_mapping = TRUE,
+  graph_mapping = TRUE,
+  misc_mapping = TRUE
 ) {
   # nolint end: object_name_linter
   check_requires("Converting AnnData to Seurat", c("Seurat", "SeuratObject"))
@@ -189,6 +294,28 @@ to_Seurat <- function(
   }
 
   obj
+}
+
+#' Convert an AnnData object to a Seurat object
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function is deprecated, use `adata$as_Seurat()` instead
+#'
+#' @param ... Arguments passed to [as_Seurat()]
+#'
+#' @return A `Seurat` object
+#' @export
+# nolint start: object_name_linter
+to_Seurat <- function(...) {
+  # nolint end: object_name_linter
+  lifecycle::deprecate_warn(
+    when = "0.99.0",
+    what = "to_Seurat()",
+    with = "adata$as_Seurat()"
+  )
+  as_Seurat(...)
 }
 
 .to_seurat_is_atomic_character <- function(x) {
@@ -463,7 +590,29 @@ to_Seurat <- function(
   self_name(adata$var_keys())
 }
 
-# See as_AnnData() for function documentation
+#' Convert a Seurat object to an AnnData object
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function is deprecated, use [as_AnnData()] instead
+#'
+#' @param seurat_obj See [as_AnnData()]
+#' @param assay_name See [as_AnnData()]
+#' @param x_mapping See [as_AnnData()]
+#' @param layers_mapping See [as_AnnData()]
+#' @param obs_mapping See [as_AnnData()]
+#' @param var_mapping See [as_AnnData()]
+#' @param obsm_mapping See [as_AnnData()]
+#' @param varm_mapping See [as_AnnData()]
+#' @param obsp_mapping See [as_AnnData()]
+#' @param varp_mapping See [as_AnnData()]
+#' @param uns_mapping See [as_AnnData()]
+#' @param output_class See [as_AnnData()]
+#' @param ... See [as_AnnData()]
+#'
+#' @return An `AnnData` object
+#' @export
 # nolint start: object_name_linter
 from_Seurat <- function(
   # nolint end: object_name_linter
@@ -481,6 +630,12 @@ from_Seurat <- function(
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
+  lifecycle::deprecate_soft(
+    when = "0.99.0",
+    what = "from_Seurat()",
+    with = "as_AnnData()"
+  )
+
   check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
 
   output_class <- match.arg(output_class)
