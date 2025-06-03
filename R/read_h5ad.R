@@ -63,15 +63,15 @@ read_h5ad <- function(
   hdf5_adata <- HDF5AnnData$new(path, mode = mode)
 
   if (as == "HDF5AnnData") {
-    hdf5_adata
-  } else {
-    adata <- switch(
-      as,
-      "SingleCellExperiment" = hdf5_adata$as_SingleCellExperiment(...),
-      "Seurat" = hdf5_adata$as_Seurat(...),
-      "InMemoryAnnData" = hdf5_adata$as_InMemoryAnnData(...)
-    )
-    hdf5_adata$close()
-    adata
+    return(hdf5_adata)
   }
+  
+  adata <- switch(
+    as,
+    "SingleCellExperiment" = hdf5_adata$as_SingleCellExperiment(...),
+    "Seurat" = hdf5_adata$as_Seurat(...),
+    "InMemoryAnnData" = hdf5_adata$as_InMemoryAnnData(...)
+  )
+  hdf5_adata$close()
+  adata
 }
