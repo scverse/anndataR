@@ -65,7 +65,7 @@ read_h5ad <- function(
   if (as == "HDF5AnnData") {
     return(hdf5_adata)
   }
-  
+
   adata <- switch(
     as,
     "SingleCellExperiment" = hdf5_adata$as_SingleCellExperiment(...),
