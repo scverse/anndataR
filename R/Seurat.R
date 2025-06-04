@@ -55,7 +55,7 @@
 #'
 #' | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
-#' | `adata$X` | `Layers(seurat)` | `x_mapping = "counts"` | The data in `adata$X` is copied to the assay named `X` |
+#' | `adata$X` | `Layers(seurat)` | `x_mapping = "counts"` _OR_ `layers_mapping = c(counts = NA)` | The data in `adata$X` is copied to a layer named `X` |
 #' | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
 #' | `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #' | `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
