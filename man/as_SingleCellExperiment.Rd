@@ -130,7 +130,6 @@ in \code{assays(sce)} where the data in \code{adata$X} will be stored.
 If you use \code{assays_mapping}, it should be a named vector where names are names
 of \code{assays(sce)} and values are keys of \code{layers} in \code{adata}.
 In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the vector.
-You may not specify both \code{NA} in \code{assays_mapping} and a value in \code{x_mapping}.
 The name you provide for \code{x_mapping} may not be a name in \code{assays_mapping}.
 You must provide an assay named \code{counts} or \code{data} in either \code{x_mapping} or
 \code{assays_mapping}.

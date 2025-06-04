@@ -94,7 +94,6 @@
 #' If you use `layers_mapping`, it should be a named vector where names are names
 #' of `Layers(seurat)` and values are keys of `layers` in `adata`.
 #' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
-#' You may not specify both `NA` in `layers_mapping` and a value in `x_mapping`.
 #' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
 #' You must provide a layer named `counts` or `data` in either `x_mapping` or
 #' `layers_mapping`.
@@ -168,11 +167,6 @@ as_Seurat <- function(
 
   # check seurat layers (which includes the X mapping)
   if (!is.null(x_mapping)) {
-    if (any(is.na(layers_mapping))) {
-      cli_abort(
-        "{.arg layers_mapping} must not contain any {.val {NA}} values when {.arg x_mapping} is provided"
-      )
-    }
     layers_mapping <- setNames(
       c(NA, layers_mapping),
       c(x_mapping, names(layers_mapping))
@@ -287,7 +281,6 @@ as_Seurat <- function(
       obsp <- adata$obsp[[graph]]
       dimnames(obsp) <- list(obs_names, obs_names)
       obsp_gr <- Seurat::as.Graph(obsp)
-      SeuratObject::DefaultAssay(obsp_gr) <- assay_name
       SeuratObject::DefaultAssay(obsp_gr) <- assay_name
       obj[[paste0(assay_name, "_", graph_name)]] <- obsp_gr
     }

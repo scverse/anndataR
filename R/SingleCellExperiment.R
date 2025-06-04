@@ -60,7 +60,7 @@
 #'
 #' | **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
-#' | `adata$X` | `assays(sce)` | `x_mapping = "counts"` _OR_ `layers_mapping = c(counts = NA)` | The data in `adata$X` is copied to the assay named `X` |
+#' | `adata$X` | `assays(sce)` | `x_mapping = "counts"` | The data in `adata$X` is copied to the assay named `X` |
 #' | `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |
 #' | `adata$obs` | `colData(sce)` | `colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #' | `adata$var` | `rowData(sce)` | `rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
@@ -99,7 +99,6 @@
 #' If you use `assays_mapping`, it should be a named vector where names are names
 #' of `assays(sce)` and values are keys of `layers` in `adata`.
 #' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
-#' You may not specify both `NA` in `assays_mapping` and a value in `x_mapping`.
 #' The name you provide for `x_mapping` may not be a name in `assays_mapping`.
 #' You must provide an assay named `counts` or `data` in either `x_mapping` or
 #' `assays_mapping`.
@@ -175,11 +174,6 @@ as_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
 
   if (!is.null(x_mapping)) {
-    if (any(is.na(assays_mapping))) {
-      cli_abort(
-        "{.arg assays_mapping} must not contain any {.val NA} values when {.arg x_mapping} is provided"
-      )
-    }
     assays_mapping <- setNames(
       c(NA, assays_mapping),
       c(x_mapping, names(assays_mapping))

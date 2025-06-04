@@ -73,7 +73,7 @@ for (layer_key in names(ad$layers)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    expect_true(layer_key %in% names(assays(sce)))
+    expect_true(layer_key %in% assayNames(sce))
     expect_true(
       all.equal(
         as.matrix(t(assay(sce, layer_key))),
@@ -97,7 +97,7 @@ test_that("to_SCE fails when providing duplicate assay names", {
 
 test_that("to_SCE works when only providing x_mapping", {
   sce <- ad$as_SingleCellExperiment(x_mapping = "counts")
-  assay_names <- names(assays(sce))
+  assay_names <- assayNames(sce)
   expect_true("counts" %in% assay_names)
   expect_true(all(ad$layers_keys() %in% assay_names))
 })
@@ -107,7 +107,7 @@ test_that("to_SCE works with assays_mapping and x_mapping", {
     x_mapping = "counts",
     assays_mapping = c(data = "numeric_matrix", integer = "integer_matrix")
   )
-  assay_names <- names(assays(sce))
+  assay_names <- assayNames(sce)
   expect_true("counts" %in% assay_names)
   expect_true("data" %in% assay_names)
   expect_true("integer" %in% assay_names)
@@ -115,7 +115,7 @@ test_that("to_SCE works with assays_mapping and x_mapping", {
 
 test_that("to_SCE works with no x_mapping and no layers_mapping", {
   sce <- ad$as_SingleCellExperiment()
-  assay_names <- names(assays(sce))
+  assay_names <- assayNames(sce)
   expect_true("X" %in% assay_names)
   expect_true(all(ad$layers_keys() %in% assay_names))
 })
@@ -322,7 +322,7 @@ for (var_key in colnames(rowData(sce))) {
 }
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_layers, status=done
-for (layer_key in names(assays(sce))) {
+for (layer_key in assayNames(sce)) {
   test_that(paste0("from_SCE retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "from_SCE",
