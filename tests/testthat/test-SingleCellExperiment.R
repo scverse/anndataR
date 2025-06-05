@@ -465,3 +465,78 @@ test_that("from_SCE works with unnamed mappings", {
     )
   )
 })
+
+obs_mapping <- c(obs1 = "character", obs2 = "numeric")
+var_mapping <- c(var1 = "character", var2 = "numeric")
+layers_mapping <- c(counts = "integer_matrix", data = "numeric_matrix")
+
+ad_partial <- from_SingleCellExperiment(
+  sce,
+  layers_mapping = layers_mapping,
+  obs_mapping = obs_mapping,
+  var_mapping = var_mapping,
+  obsm_mapping = list(),
+  varm_mapping = list(),
+  obsp_mapping = list(),
+  varp_mapping = list(),
+  uns_mapping = list()
+)
+
+for (obs_key in names(obs_mapping)) {
+  obs_from <- obs_mapping[[obs_key]]
+  test_that(paste0("from_SCE retains obs key: ", obs_key), {
+    msg <- message_if_known(
+      backend = "from_SCE",
+      slot = c("obs"),
+      dtype = obs_key,
+      process = "convert",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    expect_true(obs_key %in% colnames(ad_partial$obs))
+    expect_equal(
+      ad_partial$obs[[obs_key]],
+      colData(sce)[[obs_from]],
+      info = paste0("obs_key: ", obs_key)
+    )
+  })
+}
+
+for (var_key in names(var_mapping)) {
+  var_from <- var_mapping[[var_key]]
+  test_that(paste0("from_SCE retains var key: ", var_key), {
+    msg <- message_if_known(
+      backend = "from_SCE",
+      slot = c("var"),
+      dtype = var_key,
+      process = "convert",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    expect_true(var_key %in% colnames(ad_partial$var))
+    expect_equal(
+      ad_partial$var[[var_key]],
+      rowData(sce)[[var_from]],
+      info = paste0("var_key: ", var_key)
+    )
+  })
+}
+
+test_that(paste0("from_SCE does not copy unmapped structs"), {
+  msg <- message_if_known(
+    backend = "from_SCE",
+    slot = c("obsm", "varm", "obsp", "varp", "uns"),
+    dtype = "unmapped",
+    process = "convert",
+    known_issues = known_issues
+  )
+  skip_if(!is.null(msg), message = msg)
+
+  expect_true(is.null(ad_partial$obsm))
+  expect_true(is.null(ad_partial$varm))
+  expect_true(is.null(ad_partial$obsp))
+  expect_true(is.null(ad_partial$varp))
+  expect_true(is.null(ad_partial$uns))
+})

@@ -634,17 +634,21 @@ from_SingleCellExperiment <- function(
 .from_SCE_process_obs <- function(adata, sce, obs_mapping) {
   # nolint end: object_name_linter
 
-  if (!rlang::is_empty(obs_mapping)) {
-    adata$obs <- SummarizedExperiment::colData(sce) |>
-      as.data.frame() |>
-      setNames(names(obs_mapping))
+  if (is.null(colnames(sce)) && rlang::is_empty(obs_mapping)) {
+    adata$obs <- data.frame(matrix(nrow = ncol(sce), ncol = 0))
   } else {
-    # Store an empty data.frame to keep the obs names
-    if (is.null(colnames(sce))) {
-      adata$obs <- data.frame(matrix(nrow = ncol(sce), ncol = 0))
-    } else {
-      adata$obs <- data.frame(row.names = colnames(sce))
-    }
+    adata$obs <- purrr::map(obs_mapping, function(.item) {
+      # Check if the column exists
+      if (!.item %in% names(SingleCellExperiment::colData(sce))) {
+        cli_abort(c(
+          "Column {.val {obs_mapping[[.item]]}} not found in SCE object.",
+          "i" = "Available columns: {.val {names(SingleCellExperiment::colData(sce))}}"
+        ))
+      }
+      SingleCellExperiment::colData(sce)[[.item]]
+    }) |>
+      as.data.frame(row.names = colnames(sce)) |>
+      setNames(names(obs_mapping))
   }
 }
 
@@ -654,17 +658,22 @@ from_SingleCellExperiment <- function(
 .from_SCE_process_var <- function(adata, sce, var_mapping) {
   # nolint end: object_name_linter
 
-  if (!rlang::is_empty(var_mapping)) {
-    adata$var <- SummarizedExperiment::rowData(sce) |>
-      as.data.frame() |>
-      setNames(names(var_mapping))
+  # store an empty data.frame to keep the var names
+  if (is.null(rownames(sce)) && rlang::is_empty(var_mapping)) {
+    adata$var <- data.frame(matrix(nrow = nrow(sce), ncol = 0))
   } else {
-    # Store an empty data.frame to keep the var names
-    if (is.null(rownames(sce))) {
-      adata$var <- data.frame(matrix(nrow = nrow(sce), ncol = 0))
-    } else {
-      adata$var <- data.frame(row.names = rownames(sce))
-    }
+    adata$var <- purrr::map(var_mapping, function(.item) {
+      # Check if the column exists
+      if (!.item %in% names(SingleCellExperiment::rowData(sce))) {
+        cli_abort(c(
+          "Column {.val {var_mapping[[.item]]}} not found in SCE object.",
+          "i" = "Available columns: {.val {names(SingleCellExperiment::rowData(sce))}}"
+        ))
+      }
+      SingleCellExperiment::rowData(sce)[[.item]]
+    }) |>
+      as.data.frame(row.names = rownames(sce)) |>
+      setNames(names(var_mapping))
   }
 }
 
