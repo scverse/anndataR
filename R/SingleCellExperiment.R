@@ -3,6 +3,9 @@
 #' Convert an `AnnData` object to a `SingleCellExperiment` object
 #'
 #' @param adata The `AnnData` object to convert
+#' @param x_mapping A string specifying the name of the assay in the resulting
+#'   `SingleCellExperiment` where the data in the `X` slot of `adata` will be
+#'   mapped to
 #' @param assays_mapping A named vector where names are names of `assays` in the
 #'   resulting `SingleCellExperiment` object and values are keys of `layers` in
 #'   `adata`. See below for details.
@@ -57,6 +60,7 @@
 #'
 #' | **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
+#' | `adata$X` | `assays(sce)` | `x_mapping = "counts"` | The data in `adata$X` is copied to the assay named `X` |
 #' | `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |
 #' | `adata$obs` | `colData(sce)` | `colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #' | `adata$var` | `rowData(sce)` | `rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
@@ -85,6 +89,20 @@
 #' - `metadata`: a key of the `uns` slot in `adata` (optional),
 #'   `adata$uns[[metadata]]` is passed to the `metadata` argument
 #'
+#' ## The `x_mapping` and `assays_mapping` arguments
+#'
+#' In order to specify where the data in `adata$X` will be stored in the
+#' `assays(sce)` slot of the resulting object, you can use either the `x_mapping`
+#' argument or the `assays_mapping` argument.
+#' If you use `x_mapping`, it should be a string specifying the name of the layer
+#' in `assays(sce)` where the data in `adata$X` will be stored.
+#' If you use `assays_mapping`, it should be a named vector where names are names
+#' of `assays(sce)` and values are keys of `layers` in `adata`.
+#' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
+#' The name you provide for `x_mapping` may not be a name in `assays_mapping`.
+#' You must provide an assay named `counts` or `data` in either `x_mapping` or
+#' `assays_mapping`.
+#'
 #' @return A `SingleCellExperiment` object containing the requested data from
 #'   `adata`
 #' @keywords internal
@@ -112,6 +130,7 @@
 # nolint start: object_name_linter
 as_SingleCellExperiment <- function(
   adata,
+  x_mapping = NULL,
   assays_mapping = NULL,
   colData_mapping = NULL,
   rowData_mapping = NULL,
@@ -135,7 +154,8 @@ as_SingleCellExperiment <- function(
 
   # guess mappings if not provided
   # nolint start object_name_linter
-  assays_mapping <- self_name(assays_mapping) %||% .to_SCE_guess_assays(adata)
+  assays_mapping <- self_name(assays_mapping) %||%
+    .to_SCE_guess_all(adata, "layers")
   colData_mapping <- self_name(colData_mapping) %||%
     .to_SCE_guess_all(adata, "obs")
   rowData_mapping <- self_name(rowData_mapping) %||%
@@ -152,16 +172,32 @@ as_SingleCellExperiment <- function(
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
+
+  if (!is.null(x_mapping)) {
+    assays_mapping <- setNames(
+      c(NA, assays_mapping),
+      c(x_mapping, names(assays_mapping))
+    )
+  } else if (!is.null(adata$X)) {
+    assays_mapping[["X"]] <- NA
+  }
+  if (any(duplicated(names(assays_mapping)))) {
+    cli_abort(
+      "{.arg assays_mapping} or {.arg x_mapping} must not contain any duplicate names",
+      "i" = "Found duplicate names: {.val {names(assays_mapping)[duplicated(names(assays_mapping))]}}"
+    )
+  }
   sce_assays <- vector("list", length(assays_mapping))
   names(sce_assays) <- names(assays_mapping)
   for (i in seq_along(assays_mapping)) {
     from <- assays_mapping[[i]]
     to <- names(assays_mapping)[[i]]
-    if (from != "X") {
-      sce_assays[[to]] <- to_R_matrix(adata$layers[[from]])
-    } else {
-      sce_assays[[to]] <- to_R_matrix(adata$X)
-    }
+    sce_assays[[to]] <-
+      if (is.na(from)) {
+        to_R_matrix(adata$X)
+      } else {
+        to_R_matrix(adata$layers[[from]])
+      }
   }
 
   # construct colData
@@ -236,35 +272,6 @@ to_SingleCelllExperiment <- function(...) {
     with = "adata$as_SingleCellExperiment()"
   )
   as_SingleCellExperiment(...)
-}
-
-# nolint start: object_length_linter object_name_linter
-.to_SCE_guess_assays <- function(adata) {
-  # nolint end: object_length_linter object_name_linter
-  if (!(inherits(adata, "AbstractAnnData"))) {
-    cli_abort(
-      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
-    )
-  }
-
-  layers <- list()
-
-  if (!is.null(adata$X)) {
-    layer_name_for_x <-
-      if (!"counts" %in% names(adata$layers)) {
-        # could expand checks, to check if integers
-        "counts"
-      } else {
-        "data"
-      }
-    layers[[layer_name_for_x]] <- "X"
-  }
-
-  for (layer_name in names(adata$layers)) {
-    layers[[layer_name]] <- layer_name
-  }
-
-  layers
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -482,6 +489,7 @@ from_SingleCellExperiment <- function(
     )
   }
 
+  x_mapping <- x_mapping %||% c()
   # For any mappings that are not set, using the guessing function
   layers_mapping <- self_name(layers_mapping) %||%
     .from_SCE_guess_layers(sce, x_mapping)

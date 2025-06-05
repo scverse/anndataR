@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 **{anndataR}** allows users to convert to and from SingleCellExperiment and AnnData objects.
 This can be done with or without extra user input as to which fields and slots of the respective objects
 should be converted and should be put where.
-Please take into account that lossless conversion is not always possible between AnnData and SingleCellExperiment, 
+Please take into account that lossless conversion is not always possible between AnnData and SingleCellExperiment,
 and please inspect the object before and after inspection to ensure that all data is correctly converted.
 
 ```{r deps, message=FALSE, warning=FALSE}
@@ -57,13 +57,13 @@ ad$obsm[["X_umap"]] <- matrix(1:20, 10, 2)
 
 ## Implicit conversion
 **{anndataR}** will try to make a reasonable guess of which AnnData slots should end up in which SingleCellExperiment slots.
-A SingleCellExperiment object (this is converted from an AnnData object) consists of `assays`, `colData`, `rowData`, `metadata`, 
+A SingleCellExperiment object (this is converted from an AnnData object) consists of `assays`, `colData`, `rowData`, `metadata`,
 `reducedDims`, `colPairs`, `rowPairs` and `metadata`.
 
 Each of these slots can be customized by the user by providing a mapping. We will go more into detail on these
 user-specified mappings in the mapping section.
 
-By default, anndataR will try to guess a reasonable mapping. If you do not want this to happen, and you want nothing to be converted to a slot, 
+By default, anndataR will try to guess a reasonable mapping. If you do not want this to happen, and you want nothing to be converted to a slot,
 you can pass an empty list.
 
 Here, we showcase what happens if you do not provide any mapping for the conversion.
@@ -74,18 +74,16 @@ sce
 
 In the following subsections, we detail how each of these implicit conversions work.
 
-### assays
+### assays and x_mapping
 
 In an AnnData object, count matrices can be present in the `X` slot or in the `layers` slot.
 In a SingleCellExperiment object, count matrices are stored in the `assays` slot, as a named list.
 
-By default, the `X` slot and all the elements of the `layers` slot will be stored in the `assays` slot of the SingleCellExperiment object.
-We try to guess the name of the `X` slot: if there is no `counts` layer present, we will use the `X` slot as the `counts` assay.
-If there is a `counts` layer present, we will name the `X` slot the `data` assay.
-All other layers are stored as assays with their layer name.
+By default, the `X` slot and all the elements of the `layers` slot will be stored in the `assays` slot of the SingleCellExperiment object,
+with the same names as in the AnnData object.
 
 In the below example, we will convert an AnnData object with a `counts` layer and two other layers to a SingleCellExperiment object.
-In order for the implicit conversion to work, we will not provide a `layers_mapping`.
+In order for the implicit conversion to work, we will not provide a `layers_mapping` or `x_mapping` argument.
 We explicitly pass empty lists to the other mapping arguments for clarity in the resulting object. They ensure that nothing gets converted to the respective slots.
 ```{r implicit_layers}
 sce_layers <- ad$as_SingleCellExperiment(
@@ -153,7 +151,7 @@ We will give an example for each of the mappings.
 
 ```{r explicit_assays}
 sce_assays <- ad$as_SingleCellExperiment(
-  assays_mapping = c(counts = "X", layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
+  assays_mapping = c(counts = NA, layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
   colData_mapping = c(),
   rowData_mapping = c(),
   reducedDims_mapping = c(),
@@ -165,6 +163,21 @@ sce_assays
 ```
 
 You can see that the `X` slot got stored as `counts`, and the `layers` got stored as assays with the names `layer1` and `layer2`.
+We can also provide the `x_mapping` argument, which will dictate where the `X` slot gets stored, but then we should omit it from the `assays_mapping` argument.
+
+```{r explicit_x}
+sce_assays_x <- ad$as_SingleCellExperiment(
+  x_mapping = "counts",
+  assays_mapping = c(layer1 = "integer_matrix", layer2 = "numeric_rsparse"),
+  colData_mapping = c(),
+  rowData_mapping = c(),
+  reducedDims_mapping = c(),
+  colPairs_mapping = c(),
+  rowPairs_mapping = c(),
+  metadata_mapping = c()
+)
+sce_assays_x
+```
 
 ### colData, rowData, colPairs, rowPairs, metadata
 
@@ -192,16 +205,17 @@ sce <- ad$as_SingleCellExperiment(
 sce
 ```
 
-Here you can see that the anndata slots (specified as values in the mapping) get stored in the corresponding SingleCellExperiment 
+Here you can see that the anndata slots (specified as values in the mapping) get stored in the corresponding SingleCellExperiment
 slots (the columns of which are the names of the mapping).
-e.g. the `integer` column of the AnnData `obs` in the AnnData object gets stored in the `coldata1` column of the `colData` of 
+e.g. the `integer` column of the AnnData `obs` in the AnnData object gets stored in the `coldata1` column of the `colData` of
 the SingleCellExperiment object.
 
 ### reductions_mapping
 
 ```{r explicit_reductions}
 sce <- ad$as_SingleCellExperiment(
-  assays_mapping = c(counts = "X"),
+  x_mapping = "counts",
+  assays_mapping = c(),
   colData_mapping = c(),
   rowData_mapping = c(),
   reducedDims_mapping = list(
@@ -235,7 +249,7 @@ ad <- as_AnnData(sce)
 
 If there is no `layer_mapping` or `x_mapping` provided, we will try to guess the mapping.
 We will simply map all the assays in the SingleCellExperiment object to the `layers` slot of the AnnData object.
-Watch out: if there is no `x_mapping` provided, none of the `assays` will be stored in the `X` slot of the AnnData object, 
+Watch out: if there is no `x_mapping` provided, none of the `assays` will be stored in the `X` slot of the AnnData object,
 and it will remain empty.
 
 ```{r as_ad_implicit_assays}
@@ -275,14 +289,13 @@ ad_reductions
 
 ### obs, var, obsp, varp, uns
 The conversion of `obs`, `var`, `obsp`, `varp` and `uns` is straightforward: there's a one-to-one mapping between the SingleCellExperiment slots and the AnnData slots.
-We assume that all `colData` is stored in the `obs` slot, all `rowData` is stored in the `var` slot, 
+We assume that all `colData` is stored in the `obs` slot, all `rowData` is stored in the `var` slot,
 all `colPairs` are stored in the `obsp` slot and all `rowPairs` are stored in the `varp` slot,
 and all `metadata` is stored in the `uns` slot.
 
 ```{r implicit_all}
 ad <- as_AnnData(
-  sce,
-  x_mapping = "counts"
+  sce
 )
 ad
 ```
@@ -293,7 +306,7 @@ It's also possible to provide an explicit mapping for the conversion from Single
 For all of the mappings (`layers_mapping`, `obs_mapping`, `var_mapping`, `obsp_mapping`, `varp_mapping`, and `uns_mapping`),
 you can provide a named vector where the names are the names in the AnnData object and the values are the names in the SingleCellExperiment object.
 
-The `obsm_mapping` and `varm_mapping` work in the same way - they're named vectors where each name corresponds to a key 
+The `obsm_mapping` and `varm_mapping` work in the same way - they're named vectors where each name corresponds to a key
 in AnnData's obsm/varm, and each value corresponds to the name of a reducedDim in SCE.
 
 ```{r as_ad_explicit_obsm}

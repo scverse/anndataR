@@ -48,7 +48,7 @@ ad <- AnnData(
 )
 ad$as_HDF5AnnData("test.h5ad")
 # remove file
-file.remove("test.h5ad")
+unlink("test.h5ad")
 }
 \seealso{
 Other object converters: 
