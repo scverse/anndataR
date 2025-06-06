@@ -11,7 +11,7 @@ ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 sce <- ad$as_SingleCellExperiment()
 ad <- as_AnnData(sce)
 
-test_that("from_SCE retains observations and features", {
+test_that("as_AnnData (SCE) retains observations and features", {
   expect_equal(nrow(sce), 20)
   expect_equal(ncol(sce), 10)
 
@@ -23,7 +23,7 @@ test_that("from_SCE retains observations and features", {
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_obs, status=done
 for (obs_key in colnames(colData(sce))) {
-  test_that(paste0("from_SCE retains obs key: ", obs_key), {
+  test_that(paste0("as_AnnData (SCE) retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("obs"),
@@ -44,7 +44,7 @@ for (obs_key in colnames(colData(sce))) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_var, status=done
 for (var_key in colnames(rowData(sce))) {
-  test_that(paste0("from_SCE retains var key: ", var_key), {
+  test_that(paste0("as_AnnData (SCE) retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("var"),
@@ -65,7 +65,7 @@ for (var_key in colnames(rowData(sce))) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_layers, status=done
 for (layer_key in assayNames(sce)) {
-  test_that(paste0("from_SCE retains layer: ", layer_key), {
+  test_that(paste0("as_AnnData (SCE) retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("layers"),
@@ -89,7 +89,7 @@ for (layer_key in assayNames(sce)) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_obsp, status=done
 for (obsp_key in names(colPairs(sce))) {
-  test_that(paste0("from_SCE retains obsp key: ", obsp_key), {
+  test_that(paste0("as_AnnData (SCE) retains obsp key: ", obsp_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("obsp"),
@@ -111,7 +111,7 @@ for (obsp_key in names(colPairs(sce))) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_varp, status=done
 for (varp_key in names(rowPairs(sce))) {
-  test_that(paste0("from_SCE retains varp key: ", varp_key), {
+  test_that(paste0("as_AnnData (SCE) retains varp key: ", varp_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("varp"),
@@ -132,7 +132,7 @@ for (varp_key in names(rowPairs(sce))) {
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_uns, status=done
 for (uns_key in names(metadata(sce))) {
-  test_that(paste0("from_SCE retains uns key: ", uns_key), {
+  test_that(paste0("as_AnnData (SCE) retains uns key: ", uns_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("uns"),
@@ -151,7 +151,7 @@ for (uns_key in names(metadata(sce))) {
   })
 }
 
-test_that("from_SCE retains pca dimred", {
+test_that("as_AnnData (SCE) retains pca dimred", {
   msg <- message_if_known(
     backend = "from_SCE",
     slot = c("obsm", "varm"),
@@ -176,7 +176,7 @@ test_that("from_SCE retains pca dimred", {
   )
 })
 
-test_that("from_SCE works with list mappings", {
+test_that("as_AnnData (SCE) works with list mappings", {
   expect_no_error(
     as_AnnData(
       sce,
@@ -192,7 +192,7 @@ test_that("from_SCE works with list mappings", {
   )
 })
 
-test_that("from_SCE works with unnamed mappings", {
+test_that("as_AnnData (SCE) works with unnamed mappings", {
   expect_no_error(
     as_AnnData(
       sce,
@@ -208,7 +208,7 @@ test_that("from_SCE works with unnamed mappings", {
   )
 })
 
-test_that("from_SCE works with empty mappings", {
+test_that("as_AnnData (SCE) works with empty mappings", {
   expect_warning(as_AnnData(sce, layers_mapping = NULL), "argument is empty")
   expect_warning(as_AnnData(sce, layers_mapping = c()), "argument is empty")
 })
@@ -231,7 +231,7 @@ ad_partial <- as_AnnData(
 
 for (obs_key in names(obs_mapping)) {
   obs_from <- obs_mapping[[obs_key]]
-  test_that(paste0("from_SCE retains obs key: ", obs_key), {
+  test_that(paste0("as_AnnData (SCE) retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("obs"),
@@ -252,7 +252,7 @@ for (obs_key in names(obs_mapping)) {
 
 for (var_key in names(var_mapping)) {
   var_from <- var_mapping[[var_key]]
-  test_that(paste0("from_SCE retains var key: ", var_key), {
+  test_that(paste0("as_AnnData (SCE) retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "from_SCE",
       slot = c("var"),
@@ -271,7 +271,7 @@ for (var_key in names(var_mapping)) {
   })
 }
 
-test_that(paste0("from_SCE does not copy unmapped structs"), {
+test_that(paste0("as_AnnData (SCE) does not copy unmapped structs"), {
   msg <- message_if_known(
     backend = "from_SCE",
     slot = c("obsm", "varm", "obsp", "varp", "uns"),
