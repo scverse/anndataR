@@ -360,11 +360,15 @@ to_Seurat <- function(...) {
   as_Seurat(...)
 }
 
+# nolint start: object_name_linter
 .as_Seurat_is_atomic_character <- function(x) {
+  # nolint end: object_name_linter
   is.character(x) && length(x) == 1 && !is.na(x)
 }
 
+# nolint start: object_name_linter
 .as_Seurat_get_matrix_by_key <- function(adata, mapping, key) {
+  # nolint end: object_name_linter
   if (!key %in% names(mapping)) {
     return(NULL)
   }
@@ -373,7 +377,9 @@ to_Seurat <- function(...) {
   .as_Seurat_get_matrix(adata, layer_name)
 }
 
+# nolint start: object_name_linter
 .as_Seurat_get_matrix <- function(adata, layer_name) {
+  # nolint end: object_name_linter
   if (is.na(layer_name)) {
     return(to_R_matrix(adata$X))
   }
@@ -395,7 +401,9 @@ to_Seurat <- function(...) {
   to_R_matrix(adata$layers[[layer_name]])
 }
 
+# nolint start: object_name_linter
 .as_Seurat_process_reduction <- function(
+  # nolint end: object_name_linter
   adata,
   assay_name,
   key,

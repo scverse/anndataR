@@ -171,19 +171,19 @@ as_AnnData <- function(
 #' @rdname as_AnnData
 #' @export
 as_AnnData.SingleCellExperiment <- function(
-    x,
-    x_mapping = NULL,
-    layers_mapping = TRUE,
-    obs_mapping = TRUE,
-    var_mapping = TRUE,
-    obsm_mapping = TRUE,
-    varm_mapping = TRUE,
-    obsp_mapping = TRUE,
-    varp_mapping = TRUE,
-    uns_mapping = TRUE,
-    assay_name = TRUE,
-    output_class = c("InMemory", "HDF5AnnData"),
-    ...
+  x,
+  x_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
+  assay_name = TRUE,
+  output_class = c("InMemory", "HDF5AnnData"),
+  ...
 ) {
   from_SingleCellExperiment(
     sce = x,
@@ -204,19 +204,19 @@ as_AnnData.SingleCellExperiment <- function(
 #' @rdname as_AnnData
 #' @export
 as_AnnData.Seurat <- function(
-    x,
-    x_mapping = NULL,
-    layers_mapping = TRUE,
-    obs_mapping = TRUE,
-    var_mapping = TRUE,
-    obsm_mapping = TRUE,
-    varm_mapping = TRUE,
-    obsp_mapping = TRUE,
-    varp_mapping = TRUE,
-    uns_mapping = TRUE,
-    assay_name = NULL,
-    output_class = c("InMemory", "HDF5AnnData"),
-    ...
+  x,
+  x_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
+  assay_name = NULL,
+  output_class = c("InMemory", "HDF5AnnData"),
+  ...
 ) {
   from_Seurat(
     seurat_obj = x,
