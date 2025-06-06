@@ -74,9 +74,9 @@ your own mappings.
 
 Here, we showcase what happens if you do not provide any mapping information for the conversion.
 ```{r as_Seurat_implicit, eval = FALSE}
-seurat_obj <- to_Seurat(ad)
+seurat_obj <- as_Seurat(ad)
 seurat_obj
-# Error in `to_Seurat()`:
+# Error in `as_Seurat()`:
 # ! `layers_mapping` must contain an item named "counts" and/or "data"
 # ℹ Found names: "X", "integer_matrix", and "numeric_rsparse"
 ```
