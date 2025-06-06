@@ -12,7 +12,9 @@ ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-seu <- ad$as_Seurat()
+layers_mapping <- c(NA, names(ad$layers))
+names(layers_mapping) <- c("counts", names(ad$layers))
+seu <- ad$as_Seurat(layers_mapping = layers_mapping)
 
 test_that("as_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)
@@ -137,6 +139,7 @@ test_that("as_Seurat retains pca dimred", {
 test_that("as_Seurat works with list mappings", {
   expect_no_error(
     ad$as_Seurat(
+      x_mapping = "counts",
       object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
       layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
       assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
@@ -156,6 +159,7 @@ test_that("as_Seurat works with list mappings", {
 test_that("as_Seurat works with a vector reduction_mapping", {
   expect_no_error(
     ad$as_Seurat(
+      x_mapping = "counts",
       reduction_mapping = c(numeric = "numeric_matrix")
     )
   )
@@ -177,6 +181,6 @@ test_that("as_Seurat works with unnamed mappings", {
 })
 
 test_that("deprecated to_Seurat() works", {
-  expect_warning(seu <- ad$to_Seurat())
+  expect_warning(seu <- ad$to_Seurat(x_mapping = "counts"))
   expect_s4_class(seu, "Seurat")
 })
