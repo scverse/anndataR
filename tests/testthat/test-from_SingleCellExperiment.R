@@ -222,11 +222,11 @@ ad_partial <- as_AnnData(
   layers_mapping = layers_mapping,
   obs_mapping = obs_mapping,
   var_mapping = var_mapping,
-  obsm_mapping = list(),
-  varm_mapping = list(),
-  obsp_mapping = list(),
-  varp_mapping = list(),
-  uns_mapping = list()
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 
 for (obs_key in names(obs_mapping)) {
