@@ -150,7 +150,7 @@
 #' as_AnnData(sce)
 # nolint start: object_name_linter
 as_AnnData <- function(
-    # nolint end: object_name_linter
+  # nolint end: object_name_linter
   x,
   x_mapping = NULL,
   layers_mapping = TRUE,
