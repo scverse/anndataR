@@ -466,11 +466,16 @@ test_that("from_SCE works with unnamed mappings", {
   )
 })
 
+test_that("as_AnnData works with empty mappings", {
+  expect_warning(as_AnnData(sce, layers_mapping = NULL), "argument is empty")
+  expect_warning(as_AnnData(sce, layers_mapping = c()), "argument is empty")
+})
+
 obs_mapping <- c(obs1 = "character", obs2 = "numeric")
 var_mapping <- c(var1 = "character", var2 = "numeric")
 layers_mapping <- c(counts = "integer_matrix", data = "numeric_matrix")
 
-ad_partial <- from_SingleCellExperiment(
+ad_partial <- as_AnnData(
   sce,
   layers_mapping = layers_mapping,
   obs_mapping = obs_mapping,

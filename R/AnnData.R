@@ -114,20 +114,20 @@ AnnData <- function(
 #'
 #'   All mapping arguments except for `x_mapping` expect a named character
 #'   vector where names are the keys of the slot in the `AnnData` object and
-#'   values are the names of items in the corresponding slot of `x`. If `NULL`,
+#'   values are the names of items in the corresponding slot of `x`. If `TRUE`,
 #'   the conversion function will guess which items to copy as described in the
 #'   conversion tables for each object type. In most cases, the default is to
 #'   copy all items using the same names except where the correspondence between
-#'   objects is unclear. To avoid copying anything to a slot, provide an empty
-#'   vector. If an unnamed vector is provided, the values will be used as names
+#'   objects is unclear. To avoid copying anything to a slot, set the mapping
+#'   argument to `FALSE`. Empty mapping arguments (`NULL`, `c()`, `list()`) will
+#'   be treated as `FALSE` with a warning. If an unnamed vector is provided, the
+#'   values will be used as names.
 #'
-#'   ## Examples:
-#'
-#'   - `NULL` will guess which items to copy as described in the conversion
+#'   - `TRUE` will guess which items to copy as described in the conversion
 #'     tables for each object type
 #'   - `c(adata_item = "x_item")` will copy `x_item` from the slot in `x` to
 #'     `adata_item` in the corresponding slot of new `AnnData` object
-#'   - `c()` will avoid copying anything to the slot
+#'   - `FALSE` will avoid copying anything to the slot
 #'   - `c("x_item")` is equivalent to `c(x_item = "x_item")`
 #'
 #' @section Converting from a `SingleCellExperiment` object:
@@ -216,14 +216,14 @@ as_AnnData <- function(
   # nolint end: object_name_linter
   x,
   x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
   assay_name = NULL,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
@@ -236,15 +236,15 @@ as_AnnData <- function(
 as_AnnData.SingleCellExperiment <- function(
   x,
   x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
-  assay_name = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
+  assay_name = TRUE,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
@@ -269,14 +269,14 @@ as_AnnData.SingleCellExperiment <- function(
 as_AnnData.Seurat <- function(
   x,
   x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
   assay_name = NULL,
   output_class = c("InMemory", "HDF5AnnData"),
   ...

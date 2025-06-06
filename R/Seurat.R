@@ -33,20 +33,24 @@
 #'
 #' All mapping arguments expect a named character vector where names are the
 #' names of the slot in the `Seurat` object and values are the keys of the
-#' corresponding slot of `adata`. If `NULL`, the conversion function will guess
-#' which items to copy as described in the conversion tables conversion table
-#' below. In most cases, the default is to copy all items using the same names
-#' except where the correspondence between objects is unclear. The
-#' `reduction_mapping` argument can also accept a more complex list format, see
-#' below for details. To avoid copying anything to a slot, provide an empty
-#' vector. If an unnamed vector is provided, the values will be used as names
+#' corresponding slot of `adata`. If `TRUE`, the conversion function will guess
+#' which items to copy as described in the conversion table below. In most
+#' cases, the default is to copy all items using the same names except where the
+#' correspondence between objects is unclear. The `reduction_mapping` argument
+#' can also accept a more complex list format, see below for details. To avoid
+#' copying anything to a slot, set the mapping argument to `FALSE`. Empt
+#'  mapping arguments (`NULL`, `c()`, `list()`) will be treated as `FALSE` with
+#' a warning. If an unnamed vector is provided, the values will be used as
+#' names.
 #'
 #' ### Examples:
 #'
-#' - `NULL` will guess which items to copy as described in the conversion table
+#' - `TRUE` will guess which items to copy as described in the conversion
+#'   table
 #' - `c(seurat_item = "adata_item")` will copy `adata_item` from the slot in
-#'   `adata` to `seurat_item` in the corresponding slot of new `Seurat` object
-#' - `c()` will avoid copying anything to the slot
+#'   `adata` to `seurat_item` in the corresponding slot of the new `Seurat`
+#'   object
+#' - `FALSE` will avoid copying anything to the slot
 #' - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
 #'
 #' ## Conversion table
@@ -114,12 +118,12 @@
 #'   seurat <- ad$as_Seurat(
 #'     assay_name = "RNA",
 #'     x_mapping = "counts",
-#'     layers_mapping = NULL,
-#'     object_metadata_mapping = NULL,
-#'     assay_metadata_mapping = NULL,
-#'     reduction_mapping = NULL,
-#'     graph_mapping = NULL,
-#'     misc_mapping = NULL
+#'     layers_mapping = TRUE,
+#'     object_metadata_mapping = TRUE,
+#'     assay_metadata_mapping = TRUE,
+#'     reduction_mapping = TRUE,
+#'     graph_mapping = TRUE,
+#'     misc_mapping = TRUE
 #'   )
 #'
 #' @importFrom Matrix t
@@ -128,12 +132,12 @@ as_Seurat <- function(
   adata,
   assay_name = "RNA",
   x_mapping = NULL,
-  layers_mapping = NULL,
-  object_metadata_mapping = NULL,
-  assay_metadata_mapping = NULL,
-  reduction_mapping = NULL,
-  graph_mapping = NULL,
-  misc_mapping = NULL
+  layers_mapping = TRUE,
+  object_metadata_mapping = TRUE,
+  assay_metadata_mapping = TRUE,
+  reduction_mapping = TRUE,
+  graph_mapping = TRUE,
+  misc_mapping = TRUE
 ) {
   # nolint end: object_name_linter
   check_requires("Converting AnnData to Seurat", c("Seurat", "SeuratObject"))
@@ -144,16 +148,42 @@ as_Seurat <- function(
     )
   }
 
-  object_metadata_mapping <- self_name(object_metadata_mapping) %||%
-    .to_Seurat_guess_object_metadata(adata)
-  layers_mapping <- self_name(layers_mapping) %||%
-    .to_Seurat_guess_layers(adata)
-  assay_metadata_mapping <- self_name(assay_metadata_mapping) %||%
-    .to_Seurat_guess_assay_metadata(adata)
-  reduction_mapping <- self_name(reduction_mapping) %||%
-    .to_Seurat_guess_reductions(adata)
-  graph_mapping <- self_name(graph_mapping) %||% .to_Seurat_guess_graphs(adata)
-  misc_mapping <- self_name(misc_mapping) %||% .to_Seurat_guess_misc(adata)
+  object_metadata_mapping <- get_mapping(
+    object_metadata_mapping,
+    .to_Seurat_guess_object_metadata,
+    adata,
+    "object_metadata_mapping"
+  )
+  layers_mapping <- get_mapping(
+    layers_mapping,
+    .to_Seurat_guess_layers,
+    adata,
+    "layers_mapping"
+  )
+  assay_metadata_mapping <- get_mapping(
+    assay_metadata_mapping,
+    .to_Seurat_guess_assay_metadata,
+    adata,
+    "assay_metadata_mapping"
+  )
+  reduction_mapping <- get_mapping(
+    reduction_mapping,
+    .to_Seurat_guess_reductions,
+    adata,
+    "reduction_mapping"
+  )
+  graph_mapping <- get_mapping(
+    graph_mapping,
+    .to_Seurat_guess_graphs,
+    adata,
+    "graph_mapping"
+  )
+  misc_mapping <- get_mapping(
+    misc_mapping,
+    .to_Seurat_guess_misc,
+    adata,
+    "misc_mapping"
+  )
 
   if (length(adata$layers) == 0 && is.null(adata$X)) {
     cli_abort(
@@ -626,14 +656,14 @@ from_Seurat <- function(
   seurat_obj,
   assay_name = NULL,
   x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
@@ -667,22 +697,60 @@ from_Seurat <- function(
   # Set the default assay so we can easily get the dimensions etc.
   SeuratObject::DefaultAssay(seurat_obj) <- assay_name
 
-  # For any mappings that are not set, using the guessing function
-  layers_mapping <- self_name(layers_mapping) %||%
-    .from_Seurat_guess_layers(seurat_obj, assay_name)
-  obs_mapping <- self_name(obs_mapping) %||%
-    .from_Seurat_guess_obs(seurat_obj, assay_name)
-  var_mapping <- self_name(var_mapping) %||%
-    .from_Seurat_guess_var(seurat_obj, assay_name)
-  obsm_mapping <- self_name(obsm_mapping) %||%
-    .from_Seurat_guess_obsms(seurat_obj, assay_name)
-  varm_mapping <- self_name(varm_mapping) %||%
-    .from_Seurat_guess_varms(seurat_obj, assay_name)
-  obsp_mapping <- self_name(obsp_mapping) %||%
-    .from_Seurat_guess_obsps(seurat_obj, assay_name)
-  varp_mapping <- self_name(varp_mapping) %||%
-    .from_Seurat_guess_varps(seurat_obj)
-  uns_mapping <- self_name(uns_mapping) %||% .from_Seurat_guess_uns(seurat_obj)
+  layers_mapping <- get_mapping(
+    layers_mapping,
+    .from_Seurat_guess_layers,
+    seurat_obj,
+    "layers_mapping",
+    assay_name = assay_name
+  )
+  obs_mapping <- get_mapping(
+    obs_mapping,
+    .from_Seurat_guess_obs,
+    seurat_obj,
+    "obs_mapping",
+    assay_name = assay_name
+  )
+  var_mapping <- get_mapping(
+    var_mapping,
+    .from_Seurat_guess_var,
+    seurat_obj,
+    "var_mapping",
+    assay_name = assay_name
+  )
+  obsm_mapping <- get_mapping(
+    obsm_mapping,
+    .from_Seurat_guess_obsms,
+    seurat_obj,
+    "obsm_mapping",
+    assay_name = assay_name
+  )
+  varm_mapping <- get_mapping(
+    varm_mapping,
+    .from_Seurat_guess_varms,
+    seurat_obj,
+    "varm_mapping",
+    assay_name = assay_name
+  )
+  obsp_mapping <- get_mapping(
+    obsp_mapping,
+    .from_Seurat_guess_obsps,
+    seurat_obj,
+    "obsp_mapping",
+    assay_name = assay_name
+  )
+  varp_mapping <- get_mapping(
+    varp_mapping,
+    .from_Seurat_guess_varps,
+    seurat_obj,
+    "varp_mapping"
+  )
+  uns_mapping <- get_mapping(
+    uns_mapping,
+    .from_Seurat_guess_uns,
+    seurat_obj,
+    "uns_mapping"
+  )
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(seurat_obj)), ...)

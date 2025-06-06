@@ -68,7 +68,7 @@ See the [in-depth vignette on conversion to and from SingleCellExperiment object
 
 ```{r ex_mapping, eval=FALSE}
 adata$as_SingleCellExperiment(
-  assays_mapping = list(),
+  assays_mapping = FALSE,
   colData_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
   rowData_mapping = list(rowdata1 = "character", rowdata2 = "logical")
 )
@@ -100,7 +100,7 @@ See the [in-depth vignette on conversion to and from SingleCellExperiment object
 as_AnnData(
   sce_obj,
   x_mapping = "counts",
-  layers_mapping = list()
+  layers_mapping = FALSE
 )
 ```
 

@@ -8,12 +8,12 @@ as_Seurat(
   adata,
   assay_name = "RNA",
   x_mapping = NULL,
-  layers_mapping = NULL,
-  object_metadata_mapping = NULL,
-  assay_metadata_mapping = NULL,
-  reduction_mapping = NULL,
-  graph_mapping = NULL,
-  misc_mapping = NULL
+  layers_mapping = TRUE,
+  object_metadata_mapping = TRUE,
+  assay_metadata_mapping = TRUE,
+  reduction_mapping = TRUE,
+  graph_mapping = TRUE,
+  misc_mapping = TRUE
 )
 }
 \arguments{
@@ -61,19 +61,23 @@ Convert an \code{AnnData} object to a \code{Seurat} object
 
 All mapping arguments expect a named character vector where names are the
 names of the slot in the \code{Seurat} object and values are the keys of the
-corresponding slot of \code{adata}. If \code{NULL}, the conversion function will guess
-which items to copy as described in the conversion tables conversion table
-below. In most cases, the default is to copy all items using the same names
-except where the correspondence between objects is unclear. The
-\code{reduction_mapping} argument can also accept a more complex list format, see
-below for details. To avoid copying anything to a slot, provide an empty
-vector. If an unnamed vector is provided, the values will be used as names
+corresponding slot of \code{adata}. If \code{TRUE}, the conversion function will guess
+which items to copy as described in the conversion table below. In most
+cases, the default is to copy all items using the same names except where the
+correspondence between objects is unclear. The \code{reduction_mapping} argument
+can also accept a more complex list format, see below for details. To avoid
+copying anything to a slot, set the mapping argument to \code{FALSE}. Empt
+mapping arguments (\code{NULL}, \code{c()}, \code{list()}) will be treated as \code{FALSE} with
+a warning. If an unnamed vector is provided, the values will be used as
+names.
 \subsection{Examples:}{
 \itemize{
-\item \code{NULL} will guess which items to copy as described in the conversion table
+\item \code{TRUE} will guess which items to copy as described in the conversion
+table
 \item \code{c(seurat_item = "adata_item")} will copy \code{adata_item} from the slot in
-\code{adata} to \code{seurat_item} in the corresponding slot of new \code{Seurat} object
-\item \code{c()} will avoid copying anything to the slot
+\code{adata} to \code{seurat_item} in the corresponding slot of the new \code{Seurat}
+object
+\item \code{FALSE} will avoid copying anything to the slot
 \item \code{c("adata_item")} is equivalent to \code{c(adata_item = "adata_item")}
 }
 }
@@ -141,12 +145,12 @@ You must provide a layer named \code{counts} or \code{data} in either \code{x_ma
   seurat <- ad$as_Seurat(
     assay_name = "RNA",
     x_mapping = "counts",
-    layers_mapping = NULL,
-    object_metadata_mapping = NULL,
-    assay_metadata_mapping = NULL,
-    reduction_mapping = NULL,
-    graph_mapping = NULL,
-    misc_mapping = NULL
+    layers_mapping = TRUE,
+    object_metadata_mapping = TRUE,
+    assay_metadata_mapping = TRUE,
+    reduction_mapping = TRUE,
+    graph_mapping = TRUE,
+    misc_mapping = TRUE
   )
 \dontshow{\}) # examplesIf}
 }

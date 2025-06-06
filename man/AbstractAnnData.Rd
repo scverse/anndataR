@@ -209,13 +209,13 @@ See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}} for more d
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_SingleCellExperiment(
   x_mapping = NULL,
-  assays_mapping = NULL,
-  colData_mapping = NULL,
-  rowData_mapping = NULL,
-  reducedDims_mapping = NULL,
-  colPairs_mapping = NULL,
-  rowPairs_mapping = NULL,
-  metadata_mapping = NULL
+  assays_mapping = TRUE,
+  colData_mapping = TRUE,
+  rowData_mapping = TRUE,
+  reducedDims_mapping = TRUE,
+  colPairs_mapping = TRUE,
+  rowPairs_mapping = TRUE,
+  metadata_mapping = TRUE
 )}\if{html}{\out{</div>}}
 }
 
@@ -277,12 +277,12 @@ See \code{\link[=as_Seurat]{as_Seurat()}} for more details on the conversion
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_Seurat(
   assay_name = "RNA",
   x_mapping = NULL,
-  layers_mapping = NULL,
-  object_metadata_mapping = NULL,
-  assay_metadata_mapping = NULL,
-  reduction_mapping = NULL,
-  graph_mapping = NULL,
-  misc_mapping = NULL
+  layers_mapping = TRUE,
+  object_metadata_mapping = TRUE,
+  assay_metadata_mapping = TRUE,
+  reduction_mapping = TRUE,
+  graph_mapping = TRUE,
+  misc_mapping = TRUE
 )}\if{html}{\out{</div>}}
 }
 

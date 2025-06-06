@@ -106,12 +106,12 @@ The `assay_name` parameter will only determine what the name of the assay in the
 ```{r as_Seurat explicit}
 ad$as_Seurat(
   assay_name = "Other_assay",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 ```
 
@@ -127,10 +127,10 @@ You can see that Seurat adds some columns by default (`orig.ident`, `nCount_RNA`
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 seurat_object[[]]
 ```
@@ -146,11 +146,11 @@ provide a mapping for either `counts` or `data` in the `layers_mapping` argument
 ```{r as_Seurat_implicit_layers}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  object_metadata_mapping = FALSE,
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 Layers(seurat_object[["RNA"]])
 ```
@@ -166,11 +166,11 @@ If no information is provided, anndataR will try to convert the whole `var` slot
 ```{r as_Seurat_implicit_assay_metadata}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  reduction_mapping = c(),
-  graph_mapping = c(),
-  misc_mapping = c()
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE,
+  misc_mapping = FALSE
 )
 seurat_object[["RNA"]][[]]
 ```
@@ -204,11 +204,11 @@ Other graphs will not be converted.
 ```{r as_Seurat_implicit_graph}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  misc_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  misc_mapping = FALSE
 )
 
 Graphs(seurat_object)
@@ -222,11 +222,11 @@ By default, it will copy the `uns` slot from the AnnData object.
 ```{r as_Seurat_implicit_misc}
 seurat_object <- ad$as_Seurat(
   assay_name = "RNA",
-  object_metadata_mapping = c(),
+  object_metadata_mapping = FALSE,
   layers_mapping = c(counts = NA),
-  assay_metadata_mapping = c(),
-  reduction_mapping = c(),
-  graph_mapping = c()
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = FALSE,
+  graph_mapping = FALSE
 )
 Misc(seurat_object)
 ```
@@ -372,14 +372,14 @@ By default it's the `DefaultAssay`.
 ad <- as_AnnData(
   obj,
   assay_name = NULL,
-  layers_mapping = c(),
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 ad
 ```
@@ -392,14 +392,14 @@ By default, no data will be put into the `X` slot of the AnnData object. If you 
 ad <- as_AnnData(
   obj,
   assay_name = "RNA",
-  layers_mapping = c(),
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 ad$X
 ```
@@ -412,13 +412,13 @@ By default, all layers in the Seurat object will be copied to the AnnData object
 ```{r fsi_layers_mapping}
 ad <- as_AnnData(
   obj,
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 
 names(ad$layers)
@@ -432,13 +432,13 @@ By default, all information in the `meta.data` slot of the Seurat object is copi
 ```{r fsi_obs_mapping}
 ad <- as_AnnData(
   obj,
-  layers_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 names(ad$obs)
 ```
@@ -450,13 +450,13 @@ By default, all information in the `meta.data` slot of the specified assay of th
 ```{r fsi_var_mapping}
 ad <- as_AnnData(
   obj,
-  layers_mapping = c(),
-  obs_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 names(ad$var)
 ```
@@ -468,13 +468,13 @@ By default, it will prefix the name of all Seurat reductions with `X_`.
 ```{r fsi_obsm_mapping}
 ad <- as_AnnData(
   obj,
-  layers_mapping = c(),
-  obs_mapping = c(),
-  var_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 
 ad
@@ -488,13 +488,13 @@ By default, all loadings of dimensionality reductions will be copied to the `var
 ```{r fsi_varm_mapping}
 ad <- as_AnnData(
   obj,
-  layers_mapping = c(),
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 
 ad$varm
@@ -507,13 +507,13 @@ By default, all Seurat graphs are copied to the `obsp` slot of the AnnData objec
 ```{r fsi_obsp_mapping}
 ad <- as_AnnData(
   obj,
-  layers_mapping = c(),
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  varp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  varp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 ad$obsp
 ```
@@ -525,13 +525,13 @@ By default, no information is copied to the `varp` slot of the AnnData object.
 ```{r fsi_varp_mapping}
 ad <- as_AnnData(
   obj,
-  layers_mapping = c(),
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  uns_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  uns_mapping = FALSE
 )
 ad$varp
 ```
@@ -543,13 +543,13 @@ By default all information in the `misc` slot of the Seurat object is copied to 
 ```{r fsi_uns_mapping}
 ad <- as_AnnData(
   obj,
-  layers_mapping = c(),
-  obs_mapping = c(),
-  var_mapping = c(),
-  obsm_mapping = c(),
-  varm_mapping = c(),
-  obsp_mapping = c(),
-  varp_mapping = c()
+  layers_mapping = FALSE,
+  obs_mapping = FALSE,
+  var_mapping = FALSE,
+  obsm_mapping = FALSE,
+  varm_mapping = FALSE,
+  obsp_mapping = FALSE,
+  varp_mapping = FALSE
 )
 ad$uns
 ```

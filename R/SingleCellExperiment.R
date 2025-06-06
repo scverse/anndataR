@@ -37,22 +37,25 @@
 #'
 #' All mapping arguments expect a named character vector where names are the
 #' names of the slot in the `SingleCellExperiment` object and values are the
-#' keys of the corresponding slot of `adata`. If `NULL`, the conversion function
-#' will guess which items to copy as described in the conversion tables
-#' conversion table below. In most cases, the default is to copy all items using
-#' the same names except where the correspondence between objects is unclear.
-#' The `reducedDims_mapping` argument can also accept a more complex list format,
-#' see below for details. To avoid copying anything to a slot, provide an empty
-#' vector. If an unnamed vector is provided, the values will be used as names
+#' keys of the corresponding slot of `adata`. If `TRUE`, the conversion function
+#' will guess which items to copy as described in the conversion tables below.
+#' In most cases, the default is to copy all items using the same names except
+#' where the correspondence between objects is unclear. The
+#' `reducedDims_mapping` argument can also accept a more complex list format,
+#' see below for details. To avoid copying anything to a slot, set the mapping
+#' argument to `FALSE`. Empty mapping arguments (`NULL`, `c()`, `list()`) will
+#' be treated as `FALSE` with a warning. If an unnamed vector is provided, the
+#' values will be used as names.
 #'
 #' ### Examples:
 #'
-#'   - `NULL` will guess which items to copy as described in the conversion
-#' table
-#'   - `c(sce_item = "adata_item")` will copy `adata_item` from the slot in `adata` to
-#' `sce_item` in the corresponding slot of new `SingleCellExperiment` object
-#'   - `c()` will avoid copying anything to the slot
-#'   - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
+#' - `TRUE` will guess which items to copy as described in the conversion
+#'   table
+#' - `c(sce_item = "adata_item")` will copy `adata_item` from the slot in
+#'   `adata` to `sce_item` in the corresponding slot of the new
+#'   `SingleCellExperiment` object
+#' - `FALSE` will avoid copying anything to the slot
+#' - `c("adata_item")` is equivalent to `c(adata_item = "adata_item")`
 #'
 #' ## Conversion table
 #'
@@ -119,25 +122,25 @@
 #'
 #'   # Default usage
 #'   sce <- ad$as_SingleCellExperiment(
-#'     assays_mapping = NULL,
-#'     colData_mapping = NULL,
-#'     rowData_mapping = NULL,
-#'     reducedDims_mapping = NULL,
-#'     colPairs_mapping = NULL,
-#'     rowPairs_mapping = NULL,
-#'     metadata_mapping = NULL
+#'     assays_mapping = TRUE,
+#'     colData_mapping = TRUE,
+#'     rowData_mapping = TRUE,
+#'     reducedDims_mapping = TRUE,
+#'     colPairs_mapping = TRUE,
+#'     rowPairs_mapping = TRUE,
+#'     metadata_mapping = TRUE
 #'  )
 # nolint start: object_name_linter
 as_SingleCellExperiment <- function(
   adata,
   x_mapping = NULL,
-  assays_mapping = NULL,
-  colData_mapping = NULL,
-  rowData_mapping = NULL,
-  reducedDims_mapping = NULL,
-  colPairs_mapping = NULL,
-  rowPairs_mapping = NULL,
-  metadata_mapping = NULL
+  assays_mapping = TRUE,
+  colData_mapping = TRUE,
+  rowData_mapping = TRUE,
+  reducedDims_mapping = TRUE,
+  colPairs_mapping = TRUE,
+  rowPairs_mapping = TRUE,
+  metadata_mapping = TRUE
 ) {
   # nolint end: object_name_linter
   check_requires(
@@ -154,20 +157,54 @@ as_SingleCellExperiment <- function(
 
   # guess mappings if not provided
   # nolint start object_name_linter
-  assays_mapping <- self_name(assays_mapping) %||%
-    .to_SCE_guess_all(adata, "layers")
-  colData_mapping <- self_name(colData_mapping) %||%
-    .to_SCE_guess_all(adata, "obs")
-  rowData_mapping <- self_name(rowData_mapping) %||%
-    .to_SCE_guess_all(adata, "var")
-  reducedDims_mapping <- self_name(reducedDims_mapping) %||%
-    .to_SCE_guess_reducedDims(adata)
-  colPairs_mapping <- self_name(colPairs_mapping) %||%
-    .to_SCE_guess_all(adata, "obsp")
-  rowPairs_mapping <- self_name(rowPairs_mapping) %||%
-    .to_SCE_guess_all(adata, "varp")
-  metadata_mapping <- self_name(metadata_mapping) %||%
-    .to_SCE_guess_all(adata, "uns")
+  assays_mapping <- get_mapping(
+    assays_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "assays_mapping",
+    slot = "layers"
+  )
+  colData_mapping <- get_mapping(
+    colData_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "colData_mapping",
+    slot = "obs"
+  )
+  rowData_mapping <- get_mapping(
+    rowData_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "rowData_mapping",
+    slot = "var"
+  )
+  reducedDims_mapping <- get_mapping(
+    reducedDims_mapping,
+    .to_SCE_guess_reducedDims,
+    adata,
+    "reducedDims_mapping"
+  )
+  colPairs_mapping <- get_mapping(
+    colPairs_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "colPairs_mapping",
+    slot = "obsp"
+  )
+  rowPairs_mapping <- get_mapping(
+    rowPairs_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "rowPairs_mapping",
+    slot = "varp"
+  )
+  metadata_mapping <- get_mapping(
+    metadata_mapping,
+    .to_SCE_guess_all,
+    adata,
+    "metadata_mapping",
+    slot = "uns"
+  )
   # nolint end object_name_linter
 
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
@@ -201,15 +238,14 @@ as_SingleCellExperiment <- function(
   }
 
   # construct colData
-  # FIXME: probably better way to make a dataframe from a list of vectors
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
-  col_data <- .to_SCE_process_simple_mapping(adata, colData_mapping, "obs")
+  col_data <- .to_SCE_process_dataframe_mapping(adata, colData_mapping, "obs")
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
-  row_data <- .to_SCE_process_simple_mapping(adata, rowData_mapping, "var")
+  row_data <- .to_SCE_process_dataframe_mapping(adata, rowData_mapping, "var")
 
   # construct colPairs
   # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
@@ -226,28 +262,19 @@ as_SingleCellExperiment <- function(
   # construct reducedDims
   reduceddims <- .to_SCE_process_reducedDims_mapping(adata, reducedDims_mapping)
 
-  arguments <- list(
+  # construct output object
+  sce <- SingleCellExperiment::SingleCellExperiment(
     assays = sce_assays,
+    colData = col_data,
+    rowData = row_data,
     colPairs = col_pairs,
     rowPairs = row_pairs,
     metadata = metadata,
     checkDimnames = TRUE
   )
-  # add col_data if not empty list
-  if (length(col_data) > 0) {
-    arguments$colData <- as(col_data, "DataFrame")
-  }
-  # add row_data if not empty list
-  if (length(row_data) > 0) {
-    arguments$rowData <- as(row_data, "DataFrame")
-  }
 
-  # construct output object
-  sce <- do.call(SingleCellExperiment::SingleCellExperiment, arguments)
-  rownames(sce) <- rownames(adata$var)
-  colnames(sce) <- rownames(adata$obs)
-
-  SingleCellExperiment::reducedDims(sce) <- reduceddims # only here to ensure that the dimensions are right
+  # only here to ensure that the dimensions are right
+  SingleCellExperiment::reducedDims(sce) <- reduceddims
 
   sce
 }
@@ -316,6 +343,29 @@ to_SingleCellExperiment <- function(...) {
   purrr::map(mapping, function(.item) {
     adata[[slot]][[.item]]
   })
+}
+
+# nolint start: object_length_linter object_name_linter
+.to_SCE_process_dataframe_mapping <- function(adata, mapping, slot) {
+  # nolint end: object_length_linter object_name_linter
+  if (slot == "obs") {
+    row_names <- adata$obs_names
+  } else if (slot == "var") {
+    row_names <- adata$var_names
+  } else {
+    cli_abort(c(
+      "{.arg slot} must be either {.val obs} or {.val var}, but is {.val {slot}}"
+    ))
+  }
+
+  if (rlang::is_empty(mapping)) {
+    return(S4Vectors::DataFrame(row.names = row_names))
+  }
+
+  purrr::map(mapping, function(.item) {
+    adata[[slot]][[.item]]
+  }) |>
+    S4Vectors::DataFrame(row.names = row_names)
 }
 
 # trackstatus: class=SingleCellExperiment, feature=get_obsm, status=done
@@ -458,14 +508,14 @@ from_SingleCellExperiment <- function(
   # nolint end: object_name_linter
   sce,
   x_mapping = NULL,
-  layers_mapping = NULL,
-  obs_mapping = NULL,
-  var_mapping = NULL,
-  obsm_mapping = NULL,
-  varm_mapping = NULL,
-  obsp_mapping = NULL,
-  varp_mapping = NULL,
-  uns_mapping = NULL,
+  layers_mapping = TRUE,
+  obs_mapping = TRUE,
+  var_mapping = TRUE,
+  obsm_mapping = TRUE,
+  varm_mapping = TRUE,
+  obsp_mapping = TRUE,
+  varp_mapping = TRUE,
+  uns_mapping = TRUE,
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
@@ -489,34 +539,60 @@ from_SingleCellExperiment <- function(
     )
   }
 
-  x_mapping <- x_mapping %||% c()
-  # For any mappings that are not set, using the guessing function
-  layers_mapping <- self_name(layers_mapping) %||%
-    .from_SCE_guess_layers(sce, x_mapping)
-  obs_mapping <- self_name(obs_mapping) %||%
-    .from_SCE_guess_all(
-      sce,
-      SingleCellExperiment::colData
-    )
-  var_mapping <- self_name(var_mapping) %||%
-    .from_SCE_guess_all(
-      sce,
-      SingleCellExperiment::rowData
-    )
-  obsm_mapping <- self_name(obsm_mapping) %||% .from_SCE_guess_obsm(sce)
-  varm_mapping <- self_name(varm_mapping) %||% .from_SCE_guess_varm(sce)
-  obsp_mapping <- self_name(obsp_mapping) %||%
-    .from_SCE_guess_obspvarp(
-      sce,
-      SingleCellExperiment::colPairs
-    )
-  varp_mapping <- self_name(varp_mapping) %||%
-    .from_SCE_guess_obspvarp(
-      sce,
-      SingleCellExperiment::rowPairs
-    )
-  uns_mapping <- self_name(uns_mapping) %||%
-    .from_SCE_guess_all(sce, S4Vectors::metadata)
+  layers_mapping <- get_mapping(
+    layers_mapping,
+    .from_SCE_guess_layers,
+    sce,
+    "layers_mapping",
+    x_mapping = x_mapping
+  )
+  obs_mapping <- get_mapping(
+    obs_mapping,
+    .from_SCE_guess_all,
+    sce,
+    "obs_mapping",
+    slot = SingleCellExperiment::colData
+  )
+  var_mapping <- get_mapping(
+    var_mapping,
+    .from_SCE_guess_all,
+    sce,
+    "var_mapping",
+    slot = SingleCellExperiment::rowData
+  )
+  obsm_mapping <- get_mapping(
+    obsm_mapping,
+    .from_SCE_guess_obsm,
+    sce,
+    "obsm_mapping"
+  )
+  varm_mapping <- get_mapping(
+    varm_mapping,
+    .from_SCE_guess_varm,
+    sce,
+    "varm_mapping"
+  )
+  obsp_mapping <- get_mapping(
+    obsp_mapping,
+    .from_SCE_guess_obspvarp,
+    sce,
+    "obsp_mapping",
+    slot = SingleCellExperiment::colPairs
+  )
+  varp_mapping <- get_mapping(
+    varp_mapping,
+    .from_SCE_guess_obspvarp,
+    sce,
+    "varp_mapping",
+    slot = SingleCellExperiment::rowPairs
+  )
+  uns_mapping <- get_mapping(
+    uns_mapping,
+    .from_SCE_guess_all,
+    sce,
+    "uns_mapping",
+    slot = S4Vectors::metadata
+  )
 
   generator <- get_anndata_constructor(output_class)
   adata <- generator$new(shape = rev(dim(sce)), ...)
