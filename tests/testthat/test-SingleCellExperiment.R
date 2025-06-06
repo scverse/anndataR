@@ -73,7 +73,7 @@ for (layer_key in names(ad$layers)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    expect_true(layer_key %in% names(assays(sce)))
+    expect_true(layer_key %in% assayNames(sce))
     expect_true(
       all.equal(
         as.matrix(t(assay(sce, layer_key))),
@@ -84,6 +84,41 @@ for (layer_key in names(ad$layers)) {
     )
   })
 }
+
+test_that("to_SCE fails when providing duplicate assay names", {
+  expect_error(
+    ad$as_SingleCellExperiment(
+      x_mapping = "counts",
+      assays_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
+    ),
+    regexp = "duplicate names"
+  )
+})
+
+test_that("to_SCE works when only providing x_mapping", {
+  sce <- ad$as_SingleCellExperiment(x_mapping = "counts")
+  assay_names <- assayNames(sce)
+  expect_true("counts" %in% assay_names)
+  expect_true(all(ad$layers_keys() %in% assay_names))
+})
+
+test_that("to_SCE works with assays_mapping and x_mapping", {
+  sce <- ad$as_SingleCellExperiment(
+    x_mapping = "counts",
+    assays_mapping = c(data = "numeric_matrix", integer = "integer_matrix")
+  )
+  assay_names <- assayNames(sce)
+  expect_true("counts" %in% assay_names)
+  expect_true("data" %in% assay_names)
+  expect_true("integer" %in% assay_names)
+})
+
+test_that("to_SCE works with no x_mapping and no layers_mapping", {
+  sce <- ad$as_SingleCellExperiment()
+  assay_names <- assayNames(sce)
+  expect_true("X" %in% assay_names)
+  expect_true(all(ad$layers_keys() %in% assay_names))
+})
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_obsp, status=done
 for (obsp_key in names(ad$obsp)) {
@@ -176,7 +211,7 @@ test_that("as_SCE retains pca dimred", {
 test_that("as_SCE works with list mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
-      assays_mapping = as.list(.to_SCE_guess_assays(ad)),
+      assays_mapping = as.list(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
       reducedDims_mapping = as.list(.to_SCE_guess_reducedDims(ad)),
@@ -204,7 +239,7 @@ test_that("as_SCE works with a vector reducedDims_mapping", {
 test_that("as_SCE works with unnamed mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
-      assays_mapping = unname(.to_SCE_guess_assays(ad)),
+      assays_mapping = unname(.to_SCE_guess_all(ad, "layers")),
       colData_mapping = unname(.to_SCE_guess_all(ad, "obs")),
       rowData_mapping = unname(.to_SCE_guess_all(ad, "var")),
       colPairs_mapping = unname(.to_SCE_guess_all(ad, "obsp")),
@@ -287,7 +322,7 @@ for (var_key in colnames(rowData(sce))) {
 }
 
 # trackstatus: class=SingleCellExperiment, feature=test_set_layers, status=done
-for (layer_key in names(assays(sce))) {
+for (layer_key in assayNames(sce)) {
   test_that(paste0("from_SCE retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "from_SCE",
@@ -434,4 +469,79 @@ test_that("from_SCE works with unnamed mappings", {
 test_that("as_AnnData works with empty mappings", {
   expect_warning(as_AnnData(sce, layers_mapping = NULL), "argument is empty")
   expect_warning(as_AnnData(sce, layers_mapping = c()), "argument is empty")
+})
+
+obs_mapping <- c(obs1 = "character", obs2 = "numeric")
+var_mapping <- c(var1 = "character", var2 = "numeric")
+layers_mapping <- c(counts = "integer_matrix", data = "numeric_matrix")
+
+ad_partial <- as_AnnData(
+  sce,
+  layers_mapping = layers_mapping,
+  obs_mapping = obs_mapping,
+  var_mapping = var_mapping,
+  obsm_mapping = list(),
+  varm_mapping = list(),
+  obsp_mapping = list(),
+  varp_mapping = list(),
+  uns_mapping = list()
+)
+
+for (obs_key in names(obs_mapping)) {
+  obs_from <- obs_mapping[[obs_key]]
+  test_that(paste0("from_SCE retains obs key: ", obs_key), {
+    msg <- message_if_known(
+      backend = "from_SCE",
+      slot = c("obs"),
+      dtype = obs_key,
+      process = "convert",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    expect_true(obs_key %in% colnames(ad_partial$obs))
+    expect_equal(
+      ad_partial$obs[[obs_key]],
+      colData(sce)[[obs_from]],
+      info = paste0("obs_key: ", obs_key)
+    )
+  })
+}
+
+for (var_key in names(var_mapping)) {
+  var_from <- var_mapping[[var_key]]
+  test_that(paste0("from_SCE retains var key: ", var_key), {
+    msg <- message_if_known(
+      backend = "from_SCE",
+      slot = c("var"),
+      dtype = var_key,
+      process = "convert",
+      known_issues = known_issues
+    )
+    skip_if(!is.null(msg), message = msg)
+
+    expect_true(var_key %in% colnames(ad_partial$var))
+    expect_equal(
+      ad_partial$var[[var_key]],
+      rowData(sce)[[var_from]],
+      info = paste0("var_key: ", var_key)
+    )
+  })
+}
+
+test_that(paste0("from_SCE does not copy unmapped structs"), {
+  msg <- message_if_known(
+    backend = "from_SCE",
+    slot = c("obsm", "varm", "obsp", "varp", "uns"),
+    dtype = "unmapped",
+    process = "convert",
+    known_issues = known_issues
+  )
+  skip_if(!is.null(msg), message = msg)
+
+  expect_true(is.null(ad_partial$obsm))
+  expect_true(is.null(ad_partial$varm))
+  expect_true(is.null(ad_partial$obsp))
+  expect_true(is.null(ad_partial$varp))
+  expect_true(is.null(ad_partial$uns))
 })

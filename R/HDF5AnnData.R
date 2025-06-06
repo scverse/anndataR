@@ -360,7 +360,9 @@ HDF5AnnData <- R6::R6Class(
     #' @description Close the HDF5 file
     close = function() {
       if (private$.h5obj$is_valid) {
-        private$.h5obj$close()
+        private$.h5obj$close_all()
+        cleanup_HDF5AnnData(file = private$.h5obj$file)
+        gc()
       }
     },
 
@@ -411,7 +413,7 @@ HDF5AnnData <- R6::R6Class(
 #' )
 #' ad$as_HDF5AnnData("test.h5ad")
 #' # remove file
-#' file.remove("test.h5ad")
+#' unlink("test.h5ad")
 # nolint start: object_name_linter
 as_HDF5AnnData <- function(
   # nolint end: object_name_linter

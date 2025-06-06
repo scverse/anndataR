@@ -208,6 +208,7 @@ Convert to \code{SingleCellExperiment}
 See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}} for more details on the conversion
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_SingleCellExperiment(
+  x_mapping = NULL,
   assays_mapping = TRUE,
   colData_mapping = TRUE,
   rowData_mapping = TRUE,
@@ -221,6 +222,8 @@ See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}} for more d
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{x_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
+
 \item{\code{assays_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
 
 \item{\code{colData_mapping}}{See \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}}
@@ -273,6 +276,7 @@ See \code{\link[=as_Seurat]{as_Seurat()}} for more details on the conversion
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_Seurat(
   assay_name = "RNA",
+  x_mapping = NULL,
   layers_mapping = TRUE,
   object_metadata_mapping = TRUE,
   assay_metadata_mapping = TRUE,
@@ -286,6 +290,8 @@ See \code{\link[=as_Seurat]{as_Seurat()}} for more details on the conversion
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{assay_name}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
+
+\item{\code{x_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 
 \item{\code{layers_mapping}}{See \code{\link[=as_Seurat]{as_Seurat()}}}
 

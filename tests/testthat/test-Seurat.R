@@ -12,7 +12,12 @@ ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-seu <- ad$as_Seurat()
+skip_if_not_installed("Seurat")
+library(Seurat)
+
+layers_mapping <- c(NA, names(ad$layers))
+names(layers_mapping) <- c("counts", names(ad$layers))
+seu <- ad$as_Seurat(layers_mapping = layers_mapping)
 
 test_that("as_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)
@@ -90,6 +95,41 @@ for (layer_key in names(ad$layers)) {
   })
 }
 
+test_that("to_Seurat fails when providing duplicate layer names", {
+  expect_error(
+    ad$as_Seurat(
+      x_mapping = "counts",
+      layers_mapping = c(counts = "numeric_matrix", integer = "integer_matrix")
+    ),
+    regexp = "duplicate names"
+  )
+})
+
+test_that("to_Seurat works when only providing x_mapping", {
+  seu <- ad$as_Seurat(x_mapping = "counts")
+  expect_true("counts" %in% Layers(seu))
+  expect_true(all(ad$layers_keys() %in% Layers(seu)))
+})
+
+test_that("to_Seurat works with layers_mapping and x_mapping", {
+  seu <- ad$as_Seurat(
+    x_mapping = "counts",
+    layers_mapping = c(data = "numeric_matrix", integer = "integer_matrix")
+  )
+  expect_true("counts" %in% Layers(seu))
+  expect_true("data" %in% Layers(seu))
+  expect_true("integer" %in% Layers(seu))
+})
+
+test_that("to_Seurat works with no x_mapping and no layers_mapping", {
+  ad$layers[["counts"]] <- ad$layers[["numeric_matrix"]]
+  seu <- ad$as_Seurat()
+  expect_true("X" %in% Layers(seu))
+  expect_true(all(ad$layers_keys() %in% Layers(seu)))
+  # cleanup
+  ad$layers[["counts"]] <- NULL
+})
+
 # trackstatus: class=Seurat, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {
   test_that(paste0("as_Seurat retains uns key: ", uns_key), {
@@ -137,6 +177,7 @@ test_that("as_Seurat retains pca dimred", {
 test_that("as_Seurat works with list mappings", {
   expect_no_error(
     ad$as_Seurat(
+      x_mapping = "counts",
       object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
       layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
       assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
@@ -156,6 +197,7 @@ test_that("as_Seurat works with list mappings", {
 test_that("as_Seurat works with a vector reduction_mapping", {
   expect_no_error(
     ad$as_Seurat(
+      x_mapping = "counts",
       reduction_mapping = c(numeric = "numeric_matrix")
     )
   )
@@ -177,7 +219,7 @@ test_that("as_Seurat works with unnamed mappings", {
 })
 
 test_that("deprecated to_Seurat() works", {
-  expect_warning(seu <- ad$to_Seurat())
+  expect_warning(seu <- ad$to_Seurat(x_mapping = "counts"))
   expect_s4_class(seu, "Seurat")
 })
 

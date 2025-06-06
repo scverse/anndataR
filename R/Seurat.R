@@ -4,6 +4,8 @@
 #'
 #' @param adata The `AnnData` object to convert.
 #' @param assay_name Name of the assay to be created in the new `Seurat` object
+#' @param x_mapping A string specifying the name of the layer in the resulting
+#'   `Seurat` object where the data in the `X` slot of `adata` will be mapped to
 #' @param layers_mapping A named vector where names are names of `Layers` in the
 #'   resulting `Seurat` object and values are keys of `layers` in `adata`. See
 #'   below for details.
@@ -57,6 +59,7 @@
 #'
 #' | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
+#' | `adata$X` | `Layers(seurat)` | `x_mapping = "counts"` _OR_ `layers_mapping = c(counts = NA)` | The data in `adata$X` is copied to a layer named `X` |
 #' | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
 #' | `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #' | `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
@@ -85,6 +88,20 @@
 #' - `loadings`: a key of the `varm` slot in `adata` (optional),
 #'   `adata$varm[[loadings]]` is passed to the `loadings` argument
 #'
+#' ## The `x_mapping` and `layers_mapping` arguments
+#'
+#' In order to specify where the data in `adata$X` will be stored in the
+#' `Layers(seurat)` slot of the resulting object, you can use either the `x_mapping`
+#' argument or the `layers_mapping` argument.
+#' If you use `x_mapping`, it should be a string specifying the name of the layer
+#' in `Layers(seurat)` where the data in `adata$X` will be stored.
+#' If you use `layers_mapping`, it should be a named vector where names are names
+#' of `Layers(seurat)` and values are keys of `layers` in `adata`.
+#' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
+#' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
+#' You must provide a layer named `counts` or `data` in either `x_mapping` or
+#' `layers_mapping`.
+#'
 #' @return A `Seurat` object containing the requested data from `adata`
 #' @keywords internal
 #'
@@ -100,6 +117,7 @@
 #'   # Default usage
 #'   seurat <- ad$as_Seurat(
 #'     assay_name = "RNA",
+#'     x_mapping = "counts",
 #'     layers_mapping = TRUE,
 #'     object_metadata_mapping = TRUE,
 #'     assay_metadata_mapping = TRUE,
@@ -113,6 +131,7 @@
 as_Seurat <- function(
   adata,
   assay_name = "RNA",
+  x_mapping = NULL,
   layers_mapping = TRUE,
   object_metadata_mapping = TRUE,
   assay_metadata_mapping = TRUE,
@@ -176,16 +195,30 @@ as_Seurat <- function(
   obs_names <- adata$obs_names
   var_names <- adata$var_names
 
-  # check seurat layers
-  if (is.null(names(layers_mapping))) {
-    names(layers_mapping) <- layers_mapping
+  # check seurat layers (which includes the X mapping)
+  if (!is.null(x_mapping)) {
+    layers_mapping <- setNames(
+      c(NA, layers_mapping),
+      c(x_mapping, names(layers_mapping))
+    )
+  } else if (!is.null(adata$X)) {
+    layers_mapping[["X"]] <- NA
+  }
+  if (any(duplicated(names(layers_mapping)))) {
+    cli_abort(
+      "{.arg layers_mapping} or {.arg x_mapping} must not contain any duplicate names",
+      "i" = "Found duplicate names: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
+    )
   }
   if (
     !("counts" %in% names(layers_mapping)) &&
       !("data" %in% names(layers_mapping))
   ) {
     cli_abort(c(
-      "{.arg layers_mapping} must contain an item named {.val counts} and/or {.val data}",
+      paste(
+        "{.arg layers_mapping} must contain an item named {.val counts} and/or {.val data}",
+        "Provide this with {.arg x_mapping} or {.arg layers_mapping}."
+      ),
       "i" = "Found names: {.val {names(layers_mapping)}}"
     ))
   }
@@ -201,16 +234,22 @@ as_Seurat <- function(
   if (!is.null(data)) {
     dimnames(data) <- list(adata$var_names, adata$obs_names)
   }
+
   object_metadata <- .to_Seurat_process_metadata(
     adata,
     object_metadata_mapping,
     "obs"
   )
-  obj <- SeuratObject::CreateSeuratObject(
-    meta.data = object_metadata,
-    assay = assay_name,
+
+  assay <- SeuratObject::CreateAssay5Object(
     counts = counts,
-    data = data
+    data = data,
+  )
+
+  obj <- SeuratObject::CreateSeuratObject(
+    assay,
+    meta.data = object_metadata,
+    assay = assay_name
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
@@ -235,14 +274,13 @@ as_Seurat <- function(
 
   # copy other layers
   for (i in seq_along(layers_mapping)) {
-    from <- layers_mapping[[i]]
     to <- names(layers_mapping)[[i]]
     if (!to %in% c("counts", "data")) {
       SeuratObject::LayerData(
         obj,
         assay = assay_name,
         layer = to
-      ) <- to_R_matrix(adata$layers[[from]])
+      ) <- .to_seurat_get_matrix_by_key(adata, layers_mapping, to)
     }
   }
 
@@ -330,7 +368,6 @@ to_Seurat <- function(...) {
   if (!key %in% names(mapping)) {
     return(NULL)
   }
-
   layer_name <- mapping[[key]]
 
   .to_seurat_get_matrix(adata, layer_name)
@@ -530,22 +567,18 @@ to_Seurat <- function(...) {
 # nolint start: object_name_linter object_length_linter
 .to_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-  layers <- self_name(adata$layers_keys())
-
-  if (!is.null(adata$X)) {
-    # guess the name of the X slot
-    layer_name_for_x <-
-      if (!"counts" %in% adata$layers_keys()) {
-        "counts"
-      } else {
-        "data"
-      }
-
-    layers[layer_name_for_x] <- NA
-  }
-
-  layers
+  self_name(adata$layers_keys())
 }
+
+
+# nolint start: object_name_linter
+.to_Seurat_process_metadata <- function(adata, mapping, slot) {
+  # nolint end: object_name_linter
+  mapped <- adata[[slot]][unlist(mapping)]
+  names(mapped) <- names(mapping)
+  mapped
+}
+
 
 # nolint start: object_name_linter object_length_linter
 .to_Seurat_guess_reductions <- function(adata) {
