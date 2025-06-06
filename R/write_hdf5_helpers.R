@@ -47,6 +47,9 @@ hdf5_create_dataset <- function(
   # TODO: allow the user to choose compression level
   gzip_level <- if (compression == "none") 0 else 9
 
+  dataset_properties <- hdf5r::H5P_DATASET_CREATE$new()
+  dataset_properties$set_obj_track_times(track_times = FALSE)
+  print(paste0("Creating dataset with properties: ", name))
   out <- file$create_dataset(
     name = name,
     dims = dims,
@@ -54,7 +57,8 @@ hdf5_create_dataset <- function(
     robj = value,
     chunk_dims = NULL,
     space = space,
-    dtype = dtype
+    dtype = dtype,
+    dataset_create_pl = dataset_properties
   )
   # todo: create attr?
 
