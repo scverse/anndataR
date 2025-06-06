@@ -140,12 +140,12 @@ test_that("as_Seurat works with list mappings", {
   expect_no_error(
     ad$as_Seurat(
       x_mapping = "counts",
-      object_metadata_mapping = as.list(.to_Seurat_guess_object_metadata(ad)),
-      layers_mapping = as.list(.to_Seurat_guess_layers(ad)),
-      assay_metadata_mapping = as.list(.to_Seurat_guess_assay_metadata(ad)),
-      reduction_mapping = as.list(.to_Seurat_guess_reductions(ad)),
-      graph_mapping = as.list(.to_Seurat_guess_graphs(ad)),
-      misc_mapping = as.list(.to_Seurat_guess_misc(ad))
+      object_metadata_mapping = as.list(.as_Seurat_guess_object_metadata(ad)),
+      layers_mapping = as.list(.as_Seurat_guess_layers(ad)),
+      assay_metadata_mapping = as.list(.as_Seurat_guess_assay_metadata(ad)),
+      reduction_mapping = as.list(.as_Seurat_guess_reductions(ad)),
+      graph_mapping = as.list(.as_Seurat_guess_graphs(ad)),
+      misc_mapping = as.list(.as_Seurat_guess_misc(ad))
     )
   )
 
@@ -168,14 +168,14 @@ test_that("as_Seurat works with a vector reduction_mapping", {
 test_that("as_Seurat works with unnamed mappings", {
   expect_no_error(
     ad$as_Seurat(
-      object_metadata_mapping = unname(.to_Seurat_guess_object_metadata(ad)),
+      object_metadata_mapping = unname(.as_Seurat_guess_object_metadata(ad)),
       layers_mapping = c(
-        na.omit(unname(.to_Seurat_guess_layers(ad))),
+        na.omit(unname(.as_Seurat_guess_layers(ad))),
         counts = NA
       ),
-      assay_metadata_mapping = unname(.to_Seurat_guess_assay_metadata(ad)),
-      graph_mapping = unname(.to_Seurat_guess_graphs(ad)),
-      misc_mapping = unname(.to_Seurat_guess_misc(ad))
+      assay_metadata_mapping = unname(.as_Seurat_guess_assay_metadata(ad)),
+      graph_mapping = unname(.as_Seurat_guess_graphs(ad)),
+      misc_mapping = unname(.as_Seurat_guess_misc(ad))
     )
   )
 })

@@ -159,48 +159,48 @@ as_SingleCellExperiment <- function(
   # nolint start object_name_linter
   assays_mapping <- get_mapping(
     assays_mapping,
-    .to_SCE_guess_all,
+    .as_SCE_guess_all,
     adata,
     "assays_mapping",
     slot = "layers"
   )
   colData_mapping <- get_mapping(
     colData_mapping,
-    .to_SCE_guess_all,
+    .as_SCE_guess_all,
     adata,
     "colData_mapping",
     slot = "obs"
   )
   rowData_mapping <- get_mapping(
     rowData_mapping,
-    .to_SCE_guess_all,
+    .as_SCE_guess_all,
     adata,
     "rowData_mapping",
     slot = "var"
   )
   reducedDims_mapping <- get_mapping(
     reducedDims_mapping,
-    .to_SCE_guess_reducedDims,
+    .as_SCE_guess_reducedDims,
     adata,
     "reducedDims_mapping"
   )
   colPairs_mapping <- get_mapping(
     colPairs_mapping,
-    .to_SCE_guess_all,
+    .as_SCE_guess_all,
     adata,
     "colPairs_mapping",
     slot = "obsp"
   )
   rowPairs_mapping <- get_mapping(
     rowPairs_mapping,
-    .to_SCE_guess_all,
+    .as_SCE_guess_all,
     adata,
     "rowPairs_mapping",
     slot = "varp"
   )
   metadata_mapping <- get_mapping(
     metadata_mapping,
-    .to_SCE_guess_all,
+    .as_SCE_guess_all,
     adata,
     "metadata_mapping",
     slot = "uns"
@@ -240,27 +240,27 @@ as_SingleCellExperiment <- function(
   # construct colData
   # trackstatus: class=SingleCellExperiment, feature=get_obs, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_obs_names, status=done
-  col_data <- .to_SCE_process_dataframe_mapping(adata, colData_mapping, "obs")
+  col_data <- .as_SCE_process_dataframe_mapping(adata, colData_mapping, "obs")
 
   # construct rowData
   # trackstatus: class=SingleCellExperiment, feature=get_var, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_var_names, status=done
-  row_data <- .to_SCE_process_dataframe_mapping(adata, rowData_mapping, "var")
+  row_data <- .as_SCE_process_dataframe_mapping(adata, rowData_mapping, "var")
 
   # construct colPairs
   # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
-  col_pairs <- .to_SCE_process_simple_mapping(adata, colPairs_mapping, "obsp")
+  col_pairs <- .as_SCE_process_simple_mapping(adata, colPairs_mapping, "obsp")
 
   # construct rowPairs
   # trackstatus: class=SingleCellExperiment, feature=get_varp, status=done
-  row_pairs <- .to_SCE_process_simple_mapping(adata, rowPairs_mapping, "varp")
+  row_pairs <- .as_SCE_process_simple_mapping(adata, rowPairs_mapping, "varp")
 
   # construct metadata
   # trackstatus: class=SingleCellExperiment, feature=get_uns, status=done
-  metadata <- .to_SCE_process_simple_mapping(adata, metadata_mapping, "uns")
+  metadata <- .as_SCE_process_simple_mapping(adata, metadata_mapping, "uns")
 
   # construct reducedDims
-  reduceddims <- .to_SCE_process_reducedDims_mapping(adata, reducedDims_mapping)
+  reduceddims <- .as_SCE_process_reducedDims_mapping(adata, reducedDims_mapping)
 
   # construct output object
   sce <- SingleCellExperiment::SingleCellExperiment(
@@ -302,7 +302,7 @@ to_SingleCellExperiment <- function(...) {
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_guess_all <- function(adata, slot) {
+.as_SCE_guess_all <- function(adata, slot) {
   # nolint end: object_length_linter object_name_linter
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -314,7 +314,7 @@ to_SingleCellExperiment <- function(...) {
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_guess_reducedDims <- function(adata) {
+.as_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
   purrr::map(adata$obsm_keys(), function(.obsm) {
     if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
@@ -333,7 +333,7 @@ to_SingleCellExperiment <- function(...) {
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_simple_mapping <- function(adata, mapping, slot) {
+.as_SCE_process_simple_mapping <- function(adata, mapping, slot) {
   # nolint end: object_length_linter object_name_linter
 
   if (rlang::is_empty(mapping)) {
@@ -346,7 +346,7 @@ to_SingleCellExperiment <- function(...) {
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_dataframe_mapping <- function(adata, mapping, slot) {
+.as_SCE_process_dataframe_mapping <- function(adata, mapping, slot) {
   # nolint end: object_length_linter object_name_linter
   if (slot == "obs") {
     row_names <- adata$obs_names
@@ -371,7 +371,7 @@ to_SingleCellExperiment <- function(...) {
 # trackstatus: class=SingleCellExperiment, feature=get_obsm, status=done
 # trackstatus: class=SingleCellExperiment, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_reducedDim <- function(
+.as_SCE_process_reducedDim <- function(
   # nolint end: object_length_linter object_name_linter
   adata,
   obsm_key,
@@ -438,7 +438,7 @@ to_SingleCellExperiment <- function(...) {
 }
 
 # nolint start: object_length_linter object_name_linter
-.to_SCE_process_reducedDims_mapping <- function(adata, reducedDims_mapping) {
+.as_SCE_process_reducedDims_mapping <- function(adata, reducedDims_mapping) {
   # nolint end: object_length_linter object_name_linter
 
   # If the mapping is a vector expand it to the list format
@@ -472,7 +472,7 @@ to_SingleCellExperiment <- function(...) {
       .map[["featureLoadings"]] else NULL
     uns <- if ("metadata" %in% names(.map)) .map[["metadata"]] else NULL
 
-    .to_SCE_process_reducedDim(
+    .as_SCE_process_reducedDim(
       adata,
       obsm_key = .map[["sampleFactors"]],
       varm_key = varm,

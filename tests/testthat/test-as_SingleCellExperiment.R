@@ -211,13 +211,13 @@ test_that("as_SCE retains pca dimred", {
 test_that("as_SCE works with list mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
-      assays_mapping = as.list(.to_SCE_guess_all(ad, "layers")),
-      colData_mapping = as.list(.to_SCE_guess_all(ad, "obs")),
-      rowData_mapping = as.list(.to_SCE_guess_all(ad, "var")),
-      reducedDims_mapping = as.list(.to_SCE_guess_reducedDims(ad)),
-      colPairs_mapping = as.list(.to_SCE_guess_all(ad, "obsp")),
-      rowPairs_mapping = as.list(.to_SCE_guess_all(ad, "varp")),
-      metadata_mapping = as.list(.to_SCE_guess_all(ad, "uns"))
+      assays_mapping = as.list(.as_SCE_guess_all(ad, "layers")),
+      colData_mapping = as.list(.as_SCE_guess_all(ad, "obs")),
+      rowData_mapping = as.list(.as_SCE_guess_all(ad, "var")),
+      reducedDims_mapping = as.list(.as_SCE_guess_reducedDims(ad)),
+      colPairs_mapping = as.list(.as_SCE_guess_all(ad, "obsp")),
+      rowPairs_mapping = as.list(.as_SCE_guess_all(ad, "varp")),
+      metadata_mapping = as.list(.as_SCE_guess_all(ad, "uns"))
     )
   )
 
@@ -239,12 +239,12 @@ test_that("as_SCE works with a vector reducedDims_mapping", {
 test_that("as_SCE works with unnamed mappings", {
   expect_no_error(
     ad$as_SingleCellExperiment(
-      assays_mapping = unname(.to_SCE_guess_all(ad, "layers")),
-      colData_mapping = unname(.to_SCE_guess_all(ad, "obs")),
-      rowData_mapping = unname(.to_SCE_guess_all(ad, "var")),
-      colPairs_mapping = unname(.to_SCE_guess_all(ad, "obsp")),
-      rowPairs_mapping = unname(.to_SCE_guess_all(ad, "varp")),
-      metadata_mapping = unname(.to_SCE_guess_all(ad, "uns"))
+      assays_mapping = unname(.as_SCE_guess_all(ad, "layers")),
+      colData_mapping = unname(.as_SCE_guess_all(ad, "obs")),
+      rowData_mapping = unname(.as_SCE_guess_all(ad, "var")),
+      colPairs_mapping = unname(.as_SCE_guess_all(ad, "obsp")),
+      rowPairs_mapping = unname(.as_SCE_guess_all(ad, "varp")),
+      metadata_mapping = unname(.as_SCE_guess_all(ad, "uns"))
     )
   )
 })

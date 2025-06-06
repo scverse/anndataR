@@ -150,37 +150,37 @@ as_Seurat <- function(
 
   object_metadata_mapping <- get_mapping(
     object_metadata_mapping,
-    .to_Seurat_guess_object_metadata,
+    .as_Seurat_guess_object_metadata,
     adata,
     "object_metadata_mapping"
   )
   layers_mapping <- get_mapping(
     layers_mapping,
-    .to_Seurat_guess_layers,
+    .as_Seurat_guess_layers,
     adata,
     "layers_mapping"
   )
   assay_metadata_mapping <- get_mapping(
     assay_metadata_mapping,
-    .to_Seurat_guess_assay_metadata,
+    .as_Seurat_guess_assay_metadata,
     adata,
     "assay_metadata_mapping"
   )
   reduction_mapping <- get_mapping(
     reduction_mapping,
-    .to_Seurat_guess_reductions,
+    .as_Seurat_guess_reductions,
     adata,
     "reduction_mapping"
   )
   graph_mapping <- get_mapping(
     graph_mapping,
-    .to_Seurat_guess_graphs,
+    .as_Seurat_guess_graphs,
     adata,
     "graph_mapping"
   )
   misc_mapping <- get_mapping(
     misc_mapping,
-    .to_Seurat_guess_misc,
+    .as_Seurat_guess_misc,
     adata,
     "misc_mapping"
   )
@@ -226,8 +226,8 @@ as_Seurat <- function(
   # trackstatus: class=Seurat, feature=get_obs, status=done
   # trackstatus: class=Seurat, feature=get_X, status=done
   # trackstatus: class=Seurat, feature=get_layers, status=done
-  counts <- .to_seurat_get_matrix_by_key(adata, layers_mapping, "counts")
-  data <- .to_seurat_get_matrix_by_key(adata, layers_mapping, "data")
+  counts <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, "counts")
+  data <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, "data")
   if (!is.null(counts)) {
     dimnames(counts) <- list(adata$var_names, adata$obs_names)
   }
@@ -235,7 +235,7 @@ as_Seurat <- function(
     dimnames(data) <- list(adata$var_names, adata$obs_names)
   }
 
-  object_metadata <- .to_Seurat_process_metadata(
+  object_metadata <- .as_Seurat_process_metadata(
     adata,
     object_metadata_mapping,
     "obs"
@@ -253,7 +253,7 @@ as_Seurat <- function(
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
-  assay_metadata <- .to_Seurat_process_metadata(
+  assay_metadata <- .as_Seurat_process_metadata(
     adata,
     assay_metadata_mapping,
     "var"
@@ -280,12 +280,12 @@ as_Seurat <- function(
         obj,
         assay = assay_name,
         layer = to
-      ) <- .to_seurat_get_matrix_by_key(adata, layers_mapping, to)
+      ) <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, to)
     }
   }
 
   if (!rlang::is_empty(reduction_mapping)) {
-    reductions <- .to_Seurat_process_reduction_mapping(
+    reductions <- .as_Seurat_process_reduction_mapping(
       adata,
       reduction_mapping,
       assay_name
@@ -360,25 +360,25 @@ to_Seurat <- function(...) {
   as_Seurat(...)
 }
 
-.to_seurat_is_atomic_character <- function(x) {
+.as_Seurat_is_atomic_character <- function(x) {
   is.character(x) && length(x) == 1 && !is.na(x)
 }
 
-.to_seurat_get_matrix_by_key <- function(adata, mapping, key) {
+.as_Seurat_get_matrix_by_key <- function(adata, mapping, key) {
   if (!key %in% names(mapping)) {
     return(NULL)
   }
   layer_name <- mapping[[key]]
 
-  .to_seurat_get_matrix(adata, layer_name)
+  .as_Seurat_get_matrix(adata, layer_name)
 }
 
-.to_seurat_get_matrix <- function(adata, layer_name) {
+.as_Seurat_get_matrix <- function(adata, layer_name) {
   if (is.na(layer_name)) {
     return(to_R_matrix(adata$X))
   }
 
-  if (!.to_seurat_is_atomic_character(layer_name)) {
+  if (!.as_Seurat_is_atomic_character(layer_name)) {
     cli_abort(
       "{.arg layer_name} must be a {.cls character} vector of length 1",
       call = rlang::caller_env()
@@ -395,21 +395,21 @@ to_Seurat <- function(...) {
   to_R_matrix(adata$layers[[layer_name]])
 }
 
-.to_seurat_process_reduction <- function(
+.as_Seurat_process_reduction <- function(
   adata,
   assay_name,
   key,
   obsm_embedding,
   varm_loadings
 ) {
-  if (!.to_seurat_is_atomic_character(key)) {
+  if (!.as_Seurat_is_atomic_character(key)) {
     cli_abort(
       "{.arg key} must be a {.cls character} vector of length 1",
       call = rlang::caller_env()
     )
   }
 
-  if (!.to_seurat_is_atomic_character(obsm_embedding)) {
+  if (!.as_Seurat_is_atomic_character(obsm_embedding)) {
     cli_abort(
       "{.arg obsm_embedding} must be a {.cls character} vector of length 1",
       call = rlang::caller_env()
@@ -417,7 +417,7 @@ to_Seurat <- function(...) {
   }
 
   if (
-    !is.null(varm_loadings) && !.to_seurat_is_atomic_character(varm_loadings)
+    !is.null(varm_loadings) && !.as_Seurat_is_atomic_character(varm_loadings)
   ) {
     cli_abort(
       paste(
@@ -496,7 +496,7 @@ to_Seurat <- function(...) {
 # trackstatus: class=Seurat, feature=get_obsm, status=done
 # trackstatus: class=Seurat, feature=get_varm, status=done
 # nolint start: object_length_linter object_name_linter
-.to_Seurat_process_reduction_mapping <- function(
+.as_Seurat_process_reduction_mapping <- function(
   adata,
   reduction_mapping,
   assay_name
@@ -540,7 +540,7 @@ to_Seurat <- function(...) {
       varm_loadings <- NULL
     }
 
-    dr <- .to_seurat_process_reduction(
+    dr <- .as_Seurat_process_reduction(
       adata = adata,
       assay_name = assay_name,
       key = reduction["key"],
@@ -557,7 +557,7 @@ to_Seurat <- function(...) {
 }
 
 # nolint start: object_name_linter
-.to_Seurat_process_metadata <- function(adata, mapping, slot) {
+.as_Seurat_process_metadata <- function(adata, mapping, slot) {
   # nolint end: object_name_linter
   mapped <- adata[[slot]][unlist(mapping)]
   names(mapped) <- names(mapping)
@@ -565,14 +565,14 @@ to_Seurat <- function(...) {
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_layers <- function(adata) {
+.as_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   self_name(adata$layers_keys())
 }
 
 
 # nolint start: object_name_linter
-.to_Seurat_process_metadata <- function(adata, mapping, slot) {
+.as_Seurat_process_metadata <- function(adata, mapping, slot) {
   # nolint end: object_name_linter
   mapped <- adata[[slot]][unlist(mapping)]
   names(mapped) <- names(mapping)
@@ -581,7 +581,7 @@ to_Seurat <- function(...) {
 
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_reductions <- function(adata) {
+.as_Seurat_guess_reductions <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   purrr::map(adata$obsm_keys(), function(.obsm) {
     if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
@@ -604,25 +604,25 @@ to_Seurat <- function(...) {
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_graphs <- function(adata) {
+.as_Seurat_guess_graphs <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   self_name(adata$obsp_keys())
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_misc <- function(adata) {
+.as_Seurat_guess_misc <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   self_name(adata$uns_keys())
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_object_metadata <- function(adata) {
+.as_Seurat_guess_object_metadata <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   self_name(adata$obs_keys())
 }
 
 # nolint start: object_name_linter object_length_linter
-.to_Seurat_guess_assay_metadata <- function(adata) {
+.as_Seurat_guess_assay_metadata <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   self_name(adata$var_keys())
 }
