@@ -468,8 +468,11 @@ to_SingleCellExperiment <- function(...) {
   }
 
   purrr::map(reducedDims_mapping, function(.map) {
-    varm <- if ("featureLoadings" %in% names(.map))
-      .map[["featureLoadings"]] else NULL
+    varm <- if ("featureLoadings" %in% names(.map)) {
+      .map[["featureLoadings"]]
+    } else {
+      NULL
+    }
     uns <- if ("metadata" %in% names(.map)) .map[["metadata"]] else NULL
 
     .as_SCE_process_reducedDim(
