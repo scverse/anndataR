@@ -284,7 +284,14 @@ HDF5AnnData <- R6::R6Class(
           )
         }
 
-        file <- hdf5r::H5File$new(file, mode = mode)
+        fcpl <- hdf5r::H5P_FILE_CREATE$new()
+        fcpl$set_link_creation_order(
+          track_creation_flags = 3L
+        )
+
+        print(fcpl)
+
+        file <- hdf5r::H5File$new(file, mode = mode, file_create_pl = fcpl)
       }
 
       # type check

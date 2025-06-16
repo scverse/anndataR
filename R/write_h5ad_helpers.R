@@ -252,7 +252,9 @@ write_h5ad_sparse_array <- function(
   }
 
   # Write sparse matrix
-  file$create_group(name)
+  group_create_pl <- hdf5r::H5P_GROUP_CREATE$new()
+  group_create_pl$set_link_creation_order(track_creation_flags = 3L)
+  file$create_group(name, group_create_pl = group_create_pl)
   write_h5ad_dense_array(
     attr(value, indices_attr),
     file,
@@ -292,7 +294,9 @@ write_h5ad_nullable_boolean <- function(
   compression,
   version = "0.1.0"
 ) {
-  file$create_group(name)
+  group_create_pl <- hdf5r::H5P_GROUP_CREATE$new()
+  group_create_pl$set_link_creation_order(track_creation_flags = 3L)
+  file$create_group(name, group_create_pl = group_create_pl)
 
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
@@ -344,7 +348,9 @@ write_h5ad_nullable_integer <- function(
   compression,
   version = "0.1.0"
 ) {
-  file$create_group(name)
+  group_create_pl <- hdf5r::H5P_GROUP_CREATE$new()
+  group_create_pl$set_link_creation_order(track_creation_flags = 3L)
+  file$create_group(name, group_create_pl = group_create_pl)
 
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- 1L
@@ -427,7 +433,9 @@ write_h5ad_categorical <- function(
   compression,
   version = "0.2.0"
 ) {
-  file$create_group(name)
+  group_create_pl <- hdf5r::H5P_GROUP_CREATE$new()
+  group_create_pl$set_link_creation_order(track_creation_flags = 3L)
+  file$create_group(name, group_create_pl = group_create_pl)
 
   categories <- levels(value)
 
@@ -535,7 +543,9 @@ write_h5ad_mapping <- function(
   compression,
   version = "0.1.0"
 ) {
-  file$create_group(name)
+  group_create_pl <- hdf5r::H5P_GROUP_CREATE$new()
+  group_create_pl$set_link_creation_order(track_creation_flags = 3L)
+  file$create_group(name, group_create_pl = group_create_pl)
 
   # Write mapping elements
   for (key in names(value)) {
@@ -568,7 +578,9 @@ write_h5ad_data_frame <- function(
   index = NULL,
   version = "0.2.0"
 ) {
-  file$create_group(name)
+  group_create_pl <- hdf5r::H5P_GROUP_CREATE$new()
+  group_create_pl$set_link_creation_order(track_creation_flags = 3L)
+  file$create_group(name, group_create_pl = group_create_pl)
   write_h5ad_encoding(file, name, "dataframe", version)
 
   if (is.null(index)) {
@@ -634,27 +646,31 @@ write_h5ad_data_frame <- function(
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
 write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
+  group_create_pl <- hdf5r::H5P_GROUP_CREATE$new()
+  group_create_pl$set_link_creation_order(track_creation_flags = 3L)
+
+  # file$create_group("/")#, group_create_pl = group_create_pl)
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
 
   write_h5ad_element(obs[, integer(0)], file, "/obs", compression)
   write_h5ad_element(var[, integer(0)], file, "/var", compression)
 
-  file$create_group("layers")
+  file$create_group("layers", group_create_pl = group_create_pl)
   write_h5ad_encoding(file, "/layers", "dict", "0.1.0")
 
-  file$create_group("obsm")
+  file$create_group("obsm", group_create_pl = group_create_pl)
   write_h5ad_encoding(file, "/obsm", "dict", "0.1.0")
 
-  file$create_group("obsp")
+  file$create_group("obsp", group_create_pl = group_create_pl)
   write_h5ad_encoding(file, "/obsp", "dict", "0.1.0")
 
-  file$create_group("uns")
+  file$create_group("uns", group_create_pl = group_create_pl)
   write_h5ad_encoding(file, "/uns", "dict", "0.1.0")
 
-  file$create_group("varm")
+  file$create_group("varm", group_create_pl = group_create_pl)
   write_h5ad_encoding(file, "/varm", "dict", "0.1.0")
 
-  file$create_group("varp")
+  file$create_group("varp", group_create_pl = group_create_pl)
   write_h5ad_encoding(file, "/varp", "dict", "0.1.0")
 
   invisible(NULL)
