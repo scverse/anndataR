@@ -32,7 +32,7 @@ URL: https://anndatar.data-intuitive.com/,
     https://github.com/scverse/anndataR
 BugReports: https://github.com/scverse/anndataR/issues
 Depends: 
-    R (>= 4.0.0)
+    R (>= 4.1.0)
 Imports:
     cli,
     lifecycle,
