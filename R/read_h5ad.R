@@ -52,7 +52,7 @@ read_h5ad <- function(
 
   if (lifecycle::is_present(to)) {
     lifecycle::deprecate_warn(
-      when = "0.99.0",
+      when = "0.1.0",
       what = "read_h5ad(to = )",
       with = "read_h5ad(as = )",
       details = "Overwriting `as` with `to`."
