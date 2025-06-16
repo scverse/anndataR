@@ -37,6 +37,7 @@ Other contributors:
   \item Chananchida Sang-aram (\href{https://orcid.org/0000-0002-0922-0822}{ORCID}) (csangara) [contributor]
   \item Data Intuitive \email{info@data-intuitive.com} [funder, copyright holder]
   \item Chan Zuckerberg Initiative [funder]
+  \item scverse consortium [sponsor]
 }
 
 }
