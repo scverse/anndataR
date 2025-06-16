@@ -28,7 +28,9 @@ HDF5AnnData <- R6::R6Class(
   active = list(
     #' @field X See [AnnData-usage]
     X = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
         read_h5ad_element(private$.h5obj, "X")
@@ -46,7 +48,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field layers See [AnnData-usage]
     layers = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
         read_h5ad_element(private$.h5obj, "layers")
@@ -69,7 +73,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obsm See [AnnData-usage]
     obsm = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
         read_h5ad_element(private$.h5obj, "obsm")
@@ -86,7 +92,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
         read_h5ad_element(private$.h5obj, "varm")
@@ -103,7 +111,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obsp See [AnnData-usage]
     obsp = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
         read_h5ad_element(private$.h5obj, "obsp")
@@ -121,7 +131,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field varp See [AnnData-usage]
     varp = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
         read_h5ad_element(private$.h5obj, "varp")
@@ -139,7 +151,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obs See [AnnData-usage]
     obs = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
         read_h5ad_element(private$.h5obj, "obs")
@@ -156,7 +170,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field var See [AnnData-usage]
     var = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
         read_h5ad_element(private$.h5obj, "var")
@@ -172,7 +188,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obs_names See [AnnData-usage]
     obs_names = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
         rownames(self$obs)
@@ -193,7 +211,9 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field uns See [AnnData-usage]
     uns = function(value) {
-      if (!private$.h5obj$is_valid) cli_abort("HDF5 file is closed")
+      if (!private$.h5obj$is_valid) {
+        cli_abort("HDF5 file is closed")
+      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
         read_h5ad_element(private$.h5obj, "uns")
