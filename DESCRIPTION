@@ -19,7 +19,8 @@ Authors@R: c(
     person("Chananchida", "Sang-aram", role = "ctb",
            comment = c(ORCID = "0000-0002-0922-0822", github = "csangara")),
     person("Data Intuitive", , , "info@data-intuitive.com", role = c("fnd", "cph")),
-    person("Chan Zuckerberg Initiative", role = "fnd")
+    person("Chan Zuckerberg Initiative", role = "fnd"),
+    person("scverse consortium", role = "spn")
   )
 Description: Bring the power and flexibility of AnnData to the R
     ecosystem, allowing you to effortlessly manipulate and analyze your
