@@ -353,7 +353,7 @@ as_Seurat <- function(
 to_Seurat <- function(...) {
   # nolint end: object_name_linter
   lifecycle::deprecate_warn(
-    when = "0.99.0",
+    when = "0.1.0",
     what = "to_Seurat()",
     with = "adata$as_Seurat()"
   )

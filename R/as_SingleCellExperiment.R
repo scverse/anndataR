@@ -294,7 +294,7 @@ as_SingleCellExperiment <- function(
 to_SingleCellExperiment <- function(...) {
   # nolint end: object_name_linter
   lifecycle::deprecate_warn(
-    when = "0.99.0",
+    when = "0.1.0",
     what = "to_SingleCellExperiment()",
     with = "adata$as_SingleCellExperiment()"
   )
