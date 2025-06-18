@@ -465,7 +465,7 @@ HDF5AnnData <- R6::R6Class(
       }
 
       if (overwrite) {
-        cli::alert_danger("Overwriting existing file")
+        cli::cli_alert_danger("Overwriting existing file")
         shape <- get_shape(obs, var, X, shape)
         obs <- get_initial_obs(obs, X, shape)
         var <- get_initial_var(var, X, shape)
@@ -475,8 +475,9 @@ HDF5AnnData <- R6::R6Class(
       # File is supposed to exist by now. Check if it is a valid H5AD file
       attrs <- rhdf5::h5readAttributes(file, "/")
       if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
+        path <- rhdf5::H5Fget_name(file)
         cli_abort(c(
-          "File {.file {file}} is not a valid H5AD file.",
+          "File {.file {path}} is not a valid H5AD file.",
           i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
         ))
       }
@@ -560,7 +561,8 @@ as_HDF5AnnData <- function(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  rhdf5 = FALSE
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -582,7 +584,8 @@ as_HDF5AnnData <- function(
     uns = adata$uns,
     compression = compression,
     shape = adata$shape(),
-    mode = mode
+    mode = mode,
+    rhdf5 = rhdf5
   )
 }
 

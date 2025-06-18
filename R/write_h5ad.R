@@ -80,6 +80,7 @@ write_h5ad <- function(
   path,
   compression = c("none", "gzip", "lzf"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  rhdf5 = FALSE,
   ...
 ) {
   mode <- match.arg(mode)
@@ -87,7 +88,8 @@ write_h5ad <- function(
     object$as_HDF5AnnData(
       path,
       compression = compression,
-      mode = mode
+      mode = mode,
+      rhdf5 = rhdf5
     )
   } else {
     as_AnnData(

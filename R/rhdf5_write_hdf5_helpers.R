@@ -1,31 +1,21 @@
-#' Create a dataset in a HDF5 file
+#' Write a dataset to a HDF5 file
 #'
-#' Write HDF5 dataset with chosen compression (can be none)
+#' Write a HDF5 dataset with chosen compression (can be none)
+#'
+#' @param file A H5AD file handle
+#' @param name Name of the element within the H5AD file
+#' @param value Value to write
+#' @param compression The compression to use when writing the element. Can be
+#'   one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param ... Other arguments passed to [rhdf5::h5write()]
 #'
 #' @noRd
-#'
-#' @param file Path to a HDF5 file
-#' @param name Name of the element within the H5AD file containing the data
-#' frame
-#' @param value Value to write. Must be a vector to the same length as the data
-#' frame.
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param scalar Whether to write the value as a scalar or not
-#' @param dtype The data type of the attribute to write. If `NULL` then the data
-#'  type is guessed using `hdf5r::guess_dtype()`.
-#' @param space The space of the attribute to write. If `NULL` then the space
-#'   is guessed using `hdf5r::guess_space()`.
-#'
-#' @return Whether the `path` exists in `file`
-rhdf5_hdf5_create_dataset <- function(
+rhdf5_hdf5_write_dataset <- function(
   file,
   name,
   value,
   compression = c("none", "gzip", "lzf"),
-  scalar = FALSE,
-  dtype = NULL,
-  space = NULL
+  ...
 ) {
   compression <- match.arg(compression)
 
@@ -35,30 +25,16 @@ rhdf5_hdf5_create_dataset <- function(
     dims <- length(value)
   }
 
-  if (is.null(dtype)) {
-    dtype <- hdf5r::guess_dtype(value, scalar = scalar, string_len = Inf)
-  }
-
-  if (is.null(space)) {
-    space <- hdf5r::guess_space(value, dtype = dtype, chunked = FALSE)
-  }
-
-  # TODO: lzf compression is not supported in hdf5r
-  # TODO: allow the user to choose compression level
-  gzip_level <- if (compression == "none") 0 else 9
-
-  out <- file$create_dataset(
-    name = name,
-    dims = dims,
-    gzip_level = gzip_level,
-    robj = value,
-    chunk_dims = NULL,
-    space = space,
-    dtype = dtype
+  rhdf5::h5createDataset(
+    file,
+    name,
+    dims,
+    storage.mode = storage.mode(value),
+    filter = toupper(compression),
+    native = TRUE
   )
-  # todo: create attr?
 
-  out
+  rhdf5::h5write(value, file, name, native = TRUE, ...)
 }
 
 
@@ -66,12 +42,11 @@ rhdf5_hdf5_create_dataset <- function(
 #'
 #' Check that a path in HDF5 exists
 #'
-#' @noRd
-#'
 #' @param file Path to a HDF5 file
 #' @param target_path The path within the file to test for
 #'
-#' @return Whether the `path` exists in `file`
+#' @return Whether `target_path` exists in `file`
+#' @noRd
 rhdf5_hdf5_path_exists <- function(file, target_path) {
   tryCatch(
     {
@@ -83,57 +58,39 @@ rhdf5_hdf5_path_exists <- function(file, target_path) {
   )
 }
 
-#' Create a HDF5 attribute
+#' Write a HDF5 attribute
 #'
-#' Create a HDF5 attribute in a HDF5 file
-#'
-#' @noRd
+#' Write a HDF5 attribute to a HDF5 file
 #'
 #' @param file Path to a H5AD file or an open H5AD handle
 #' @param name Name of the element within the H5AD file
 #' @param attr_name Name of the attribute to write
 #' @param attr_value Value of the attribute to write
-#' @param is_scalar Whether to write attributes as scalar values. Can be `TRUE`
-#' to write all attributes as scalars, `FALSE` to write no attributes as
-#' scalars, or a vector of the names of `attributes` that should be written.
-#' @param dtype The data type of the attribute to write. If `NULL` then the data
-#'   type is guessed using `hdf5r::guess_dtype()`.
-#' @param space The space of the attribute to write. If `NULL` and `is_scalar` then
-#'   the space is set to a scalar space. If `NULL` and `!is_scalar` then the space
-#'   is guessed using `hdf5r::guess_space()`.
-rhdf5_hdf5_create_attribute <- function(
+#' @param is_scalar Whether to write the attribute as a scalar value
+#'
+#' @noRd
+rhdf5_hdf5_write_attribute <- function(
   file,
   name,
   attr_name,
   attr_value,
-  is_scalar = TRUE,
-  dtype = NULL,
-  space = NULL
+  is_scalar = TRUE
 ) {
-  if (!inherits(file, "H5File")) {
+  if (!inherits(file, "H5IdComponent")) {
     cli_abort("{.arg file} must be an open H5AD handle")
   }
 
-  if (is.null(dtype)) {
-    dtype <- hdf5r::guess_dtype(
-      attr_value,
-      scalar = is_scalar,
-      string_len = Inf
-    )
+  if (name != "/") {
+    h5obj <- file&name
+    on.exit(rhdf5::H5Oclose(h5obj))
+  } else {
+    h5obj <- file
   }
-  if (is.null(space)) {
-    space <-
-      if (is_scalar) {
-        hdf5r::H5S$new(type = "scalar")
-      } else {
-        hdf5r::guess_space(attr_value, dtype = dtype, chunked = FALSE)
-      }
-  }
-  file$create_attr_by_name(
-    attr_name = attr_name,
-    obj_name = name,
-    robj = attr_value,
-    dtype = dtype,
-    space = space
+
+  rhdf5::h5writeAttribute(
+    attr = attr_value,
+    h5obj = h5obj,
+    name = attr_name,
+    asScalar = is_scalar
   )
 }

@@ -26,10 +26,12 @@ rhdf5_write_h5ad_element <- function(
   file,
   name,
   compression = c("none", "gzip", "lzf"),
-  stop_on_error = FALSE,
+  stop_on_error = TRUE,
   ...
 ) {
   compression <- match.arg(compression)
+
+  cli::cli_alert_info("Writing {.path {name}} with {.pkg rhdf5}")
 
   # Sparse matrices
   write_fun <-
@@ -84,8 +86,8 @@ rhdf5_write_h5ad_element <- function(
 
   # Delete the path if it already exists
   # TODO: do this here?
-  if (hdf5_path_exists(file, name)) {
-    hdf5r::h5unlink(file, name)
+  if (rhdf5_hdf5_path_exists(file, name)) {
+    rhdf5::h5delete(file, name)
   }
 
   tryCatch(
@@ -129,17 +131,15 @@ rhdf5_write_h5ad_element <- function(
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
 rhdf5_write_h5ad_encoding <- function(file, name, encoding, version) {
-  # interpreted from:
-  # https://github.com/ycli1995/hdf5r.Extra/blob/a09078234a9457d74c019dabae8619393826b581/R/hdf5-internal.R#L76
-
-  hdf5_create_attribute(
+  rhdf5_hdf5_write_attribute(
     file,
     name,
     "encoding-type",
     encoding,
     is_scalar = TRUE
   )
-  hdf5_create_attribute(
+
+  rhdf5_hdf5_write_attribute(
     file,
     name,
     "encoding-version",
@@ -190,20 +190,12 @@ rhdf5_write_h5ad_dense_array <- function(
     }
   }
 
-  # Guess data type
-  dtype <- NULL
-
-  if (is.logical(value)) {
-    dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
-  }
-
   # Write dense array
-  hdf5_create_dataset(
+  rhdf5_hdf5_write_dataset(
     file = file,
     name = name,
     value = value,
     compression = compression,
-    dtype = dtype
   )
 
   # Write encoding
@@ -252,19 +244,19 @@ rhdf5_write_h5ad_sparse_array <- function(
   }
 
   # Write sparse matrix
-  file$create_group(name)
-  rhdf5_write_h5ad_dense_array(
-    attr(value, indices_attr),
+  rhdf5::h5createGroup(file, name)
+  rhdf5_hdf5_write_dataset(
     file,
     paste0(name, "/indices"),
+    attr(value, indices_attr),
     compression
   )
-  rhdf5_write_h5ad_dense_array(value@p, file, paste0(name, "/indptr"), compression)
-  rhdf5_write_h5ad_dense_array(value@x, file, paste0(name, "/data"), compression)
+  rhdf5_hdf5_write_dataset(file, paste0(name, "/indptr"), value@p, compression)
+  rhdf5_hdf5_write_dataset(file, paste0(name, "/data"), value@x, compression)
   rhdf5_write_h5ad_encoding(file, name, type, version)
 
   # Write shape attribute
-  hdf5_create_attribute(
+  rhdf5_hdf5_write_attribute(
     file,
     name,
     "shape",
@@ -292,7 +284,7 @@ rhdf5_write_h5ad_nullable_boolean <- function(
   compression,
   version = "0.1.0"
 ) {
-  file$create_group(name)
+  rhdf5::h5createGroup(file, name)
 
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
@@ -304,21 +296,12 @@ rhdf5_write_h5ad_nullable_boolean <- function(
     compression
   )
 
-  # write mask manually
-  # nolint start: commented_code_linter
-  # rhdf5_write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
-  # nolint end: commented_code_linter
-
-  # NOTE: `mask_dtype` will be written as a H5T_STD_U8LE, but h5py writes this as a H5T_STD_I8LE
-  mask_dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
-
-  hdf5_create_dataset(
-    file = file,
-    name = paste0(name, "/mask"),
-    value = is.na(value),
-    dtype = mask_dtype
+  rhdf5_write_h5ad_dense_array(
+    is.na(value),
+    file,
+    paste0(name, "/mask"),
+    compression
   )
-  rhdf5_write_h5ad_encoding(file, paste0(name, "/mask"), "array", "0.2.0")
 
   # set encoding
   rhdf5_write_h5ad_encoding(file, name, "nullable-boolean", version)
@@ -344,7 +327,7 @@ rhdf5_write_h5ad_nullable_integer <- function(
   compression,
   version = "0.1.0"
 ) {
-  file$create_group(name)
+  rhdf5::h5createGroup(file, name)
 
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- 1L
@@ -355,31 +338,14 @@ rhdf5_write_h5ad_nullable_integer <- function(
     paste0(name, "/values"),
     compression
   )
-  # nolint start: commented_code_linter
-  # rhdf5_write_h5ad_dense_array(is.na(value), file, paste0(name, "/mask"), compression)
-  # nolint end: commented_code_linter
 
-  # write mask manually
-  mask_value <- is.na(value)
-  mask_dims <- length(mask_value)
-  mask_dtype <- hdf5r::H5T_LOGICAL$new(include_NA = FALSE)
-  mask_space <- hdf5r::guess_space(
-    mask_value,
-    dtype = mask_dtype,
-    chunked = FALSE
+  rhdf5_write_h5ad_dense_array(
+    is.na(value),
+    file,
+    paste0(name, "/mask"),
+    compression
   )
-  mask_gzip_level <- if (compression == "none") 0 else 9
-  mask_name <- paste0(name, "/mask")
-  file$create_dataset(
-    name = mask_name,
-    dims = mask_dims,
-    gzip_level = mask_gzip_level,
-    robj = mask_value,
-    chunk_dims = NULL,
-    space = mask_space,
-    dtype = mask_dtype
-  )
-  rhdf5_write_h5ad_encoding(file, mask_name, "array", "0.2.0")
+
   rhdf5_write_h5ad_encoding(file, name, "nullable-integer", version)
 }
 
@@ -402,8 +368,7 @@ rhdf5_write_h5ad_string_array <- function(
   compression,
   version = "0.2.0"
 ) {
-  # TODO: add variable length string and encoding?
-  hdf5_create_dataset(file, name, value, compression)
+  rhdf5_hdf5_write_dataset(file, name, value, compression)
 
   rhdf5_write_h5ad_encoding(file, name, "string-array", version)
 }
@@ -427,7 +392,7 @@ rhdf5_write_h5ad_categorical <- function(
   compression,
   version = "0.2.0"
 ) {
-  file$create_group(name)
+  rhdf5::h5createGroup(file, name)
 
   categories <- levels(value)
 
@@ -455,7 +420,7 @@ rhdf5_write_h5ad_categorical <- function(
   )
 
   # Write ordered attribute
-  hdf5_create_attribute(
+  rhdf5_hdf5_write_attribute(
     file,
     name,
     "ordered",
@@ -483,8 +448,14 @@ rhdf5_write_h5ad_string_scalar <- function(
   compression,
   version = "0.2.0"
 ) {
-  # TODO: add compression, variable length string and encoding!
-  hdf5_create_dataset(file, name, value, compression, scalar = TRUE)
+  rhdf5_hdf5_write_dataset(
+    file = file,
+    name = name,
+    value = value,
+    compression = compression,
+    variableLengthString = TRUE,
+    encoding = "UTF-8"
+  )
 
   # Write encoding
   rhdf5_write_h5ad_encoding(file, name, "string", version)
@@ -509,8 +480,12 @@ rhdf5_write_h5ad_numeric_scalar <- function(
   compression,
   version = "0.2.0"
 ) {
-  # Write scalar
-  hdf5_create_dataset(file, name, value, compression, scalar = TRUE)
+  rhdf5_hdf5_write_dataset(
+    file = file,
+    name = name,
+    value = value,
+    compression = compression
+  )
 
   # Write encoding
   rhdf5_write_h5ad_encoding(file, name, "numeric-scalar", version)
@@ -535,7 +510,7 @@ rhdf5_write_h5ad_mapping <- function(
   compression,
   version = "0.1.0"
 ) {
-  file$create_group(name)
+  rhdf5::h5createGroup(file, name)
 
   # Write mapping elements
   for (key in names(value)) {
@@ -568,7 +543,7 @@ rhdf5_write_h5ad_data_frame <- function(
   index = NULL,
   version = "0.2.0"
 ) {
-  file$create_group(name)
+  rhdf5::h5createGroup(file, name)
   rhdf5_write_h5ad_encoding(file, name, "dataframe", version)
 
   if (is.null(index)) {
@@ -605,18 +580,27 @@ rhdf5_write_h5ad_data_frame <- function(
   )
 
   # Write additional data frame attributes
-  hdf5_create_attribute(
+  rhdf5_hdf5_write_attribute(
     file,
     name,
     "_index",
     index_name,
     is_scalar = TRUE
   )
-  hdf5_create_attribute(
+
+  col_order <- colnames(value)
+  col_order <- col_order[col_order != index_name]
+  # If there are no columns other than the index we set column order to an
+  # empty numeric vector
+  if (length(col_order) == 0) {
+    col_order <- numeric()
+  }
+
+  rhdf5_hdf5_write_attribute(
     file,
     name,
     "column-order",
-    colnames(value),
+    col_order,
     is_scalar = FALSE
   )
 }
@@ -639,22 +623,22 @@ rhdf5_write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0
   rhdf5_write_h5ad_element(obs[, integer(0)], file, "/obs", compression)
   rhdf5_write_h5ad_element(var[, integer(0)], file, "/var", compression)
 
-  file$create_group("layers")
+  rhdf5::h5createGroup(file, "layers")
   rhdf5_write_h5ad_encoding(file, "/layers", "dict", "0.1.0")
 
-  file$create_group("obsm")
+  rhdf5::h5createGroup(file, "obsm")
   rhdf5_write_h5ad_encoding(file, "/obsm", "dict", "0.1.0")
 
-  file$create_group("obsp")
+  rhdf5::h5createGroup(file, "obsp")
   rhdf5_write_h5ad_encoding(file, "/obsp", "dict", "0.1.0")
 
-  file$create_group("uns")
+  rhdf5::h5createGroup(file, "uns")
   rhdf5_write_h5ad_encoding(file, "/uns", "dict", "0.1.0")
 
-  file$create_group("varm")
+  rhdf5::h5createGroup(file, "varm")
   rhdf5_write_h5ad_encoding(file, "/varm", "dict", "0.1.0")
 
-  file$create_group("varp")
+  rhdf5::h5createGroup(file, "varp")
   rhdf5_write_h5ad_encoding(file, "/varp", "dict", "0.1.0")
 
   invisible(NULL)
