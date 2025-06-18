@@ -505,6 +505,13 @@ HDF5AnnData <- R6::R6Class(
         cleanup_HDF5AnnData(file = private$.h5obj$file)
         gc()
       }
+
+      if (private$.rhdf5) {
+        h5obj <- private$.h5obj
+        rhdf5::H5Fclose(private$.h5obj)
+        rhdf5::H5garbage_collect()
+        gc()
+      }
     },
 
     #' @description See the `n_obs` field in [AnnData-usage]

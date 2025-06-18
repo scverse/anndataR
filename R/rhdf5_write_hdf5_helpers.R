@@ -82,7 +82,7 @@ rhdf5_hdf5_write_attribute <- function(
 
   if (name != "/") {
     h5obj <- file&name
-    on.exit(rhdf5::H5Oclose(h5obj))
+    on.exit(rhdf5::H5Oclose(h5obj), add = TRUE)
   } else {
     h5obj <- file
   }

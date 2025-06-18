@@ -166,6 +166,7 @@ rhdf5_read_h5ad_sparse_array <- function(
   type <- match.arg(type)
 
   h5group <- file&name
+  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
   attrs <- rhdf5::h5readAttributes(file, name, native = TRUE)
 
   data <- as.vector(h5group$data)
@@ -266,6 +267,7 @@ rhdf5_read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
   h5group <- file&name
+  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
   data <- h5group$values
 
@@ -324,6 +326,7 @@ rhdf5_read_h5ad_categorical <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
   h5group <- file&name
+  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
   # Get codes and convert to 1-based indexing
   codes <- h5group$codes + 1L
@@ -387,7 +390,9 @@ rhdf5_read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
 rhdf5_read_h5ad_mapping <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  items <- rhdf5::h5ls(file&name, recursive = FALSE)$name
+  h5group <- file&name
+  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
+  items <- rhdf5::h5ls(h5group, recursive = FALSE)$name
 
   rhdf5_read_h5ad_collection(file, name, items)
 }
