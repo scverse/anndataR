@@ -8,20 +8,17 @@
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_h5ad_encoding <- function(file, name) {
-  if (!is.null(name)) {
-    file <- file[[name]]
-  }
-
+rhdf5_read_h5ad_encoding <- function(file, name) {
   tryCatch(
     {
+      attrs <- rhdf5::h5readAttributes(file, name)
       list(
-        type = hdf5r::h5attr(file, "encoding-type"),
-        version = hdf5r::h5attr(file, "encoding-version")
+        type = attrs[["encoding-type"]],
+        version = attrs[["encoding-version"]]
       )
     },
     error = function(e) {
-      path <- if (is.character(file)) file else file$get_filename() # nolint object_usage_linter
+      path <- if (is.character(file)) file else rhdf5::H5Fget_name(file) # nolint object_usage_linter
       cli_abort(
         "Encoding attributes not found for element {.val {name}} in {.path {path}}"
       )
@@ -42,57 +39,43 @@ read_h5ad_encoding <- function(file, name) {
 #'
 #' @details
 #' Encoding is automatically determined from the element using
-#' `read_h5ad_encoding` and used to select the appropriate reading function.
+#' `rhdf5_read_h5ad_encoding` and used to select the appropriate reading function.
 #'
 #' @return Value depending on the encoding
 #'
 #' @noRd
-read_h5ad_element <- function(
+rhdf5_read_h5ad_element <- function(
   file,
   name,
   type = NULL,
   version = NULL,
   stop_on_error = FALSE,
-  rhdf5 = FALSE,
   ...
 ) {
-  if (rhdf5) {
-    return(
-      rhdf5_read_h5ad_element(
-        file = file,
-        name = name,
-        type = type,
-        version = version,
-        stop_on_error = stop_on_error,
-        ...
-      )
-    )
-  }
-
-  if (!hdf5_path_exists(file, name)) {
+  if (!rhdf5_hdf5_path_exists(file, name)) {
     return(NULL)
   }
 
   if (is.null(type)) {
-    encoding_list <- read_h5ad_encoding(file, name)
+    encoding_list <- rhdf5_read_h5ad_encoding(file, name)
     type <- encoding_list$type
     version <- encoding_list$version
   }
 
   read_fun <- switch(
     type,
-    "array" = read_h5ad_dense_array,
-    "rec-array" = read_h5ad_rec_array,
-    "csr_matrix" = read_h5ad_csr_matrix,
-    "csc_matrix" = read_h5ad_csc_matrix,
-    "dataframe" = read_h5ad_data_frame,
-    "dict" = read_h5ad_mapping,
-    "string" = read_h5ad_string_scalar,
-    "numeric-scalar" = read_h5ad_numeric_scalar,
-    "categorical" = read_h5ad_categorical,
-    "string-array" = read_h5ad_string_array,
-    "nullable-integer" = read_h5ad_nullable_integer,
-    "nullable-boolean" = read_h5ad_nullable_boolean,
+    "array" = rhdf5_read_h5ad_dense_array,
+    "rec-array" = rhdf5_read_h5ad_rec_array,
+    "csr_matrix" = rhdf5_read_h5ad_csr_matrix,
+    "csc_matrix" = rhdf5_read_h5ad_csc_matrix,
+    "dataframe" = rhdf5_read_h5ad_data_frame,
+    "dict" = rhdf5_read_h5ad_mapping,
+    "string" = rhdf5_read_h5ad_string_scalar,
+    "numeric-scalar" = rhdf5_read_h5ad_numeric_scalar,
+    "categorical" = rhdf5_read_h5ad_categorical,
+    "string-array" = rhdf5_read_h5ad_string_array,
+    "nullable-integer" = rhdf5_read_h5ad_nullable_integer,
+    "nullable-boolean" = rhdf5_read_h5ad_nullable_boolean,
     cli_abort(
       "No function for reading H5AD encoding {.cls {type}} for element {.val {name}}"
     )
@@ -128,10 +111,10 @@ read_h5ad_element <- function(
 #' @return a matrix or a vector if 1D
 #'
 #' @noRd
-read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
+rhdf5_read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  data <- file[[name]]$read()
+  data <- rhdf5::h5read(file, name, native = TRUE)
 
   # If the array is 1D, explicitly add a dimension
   if (is.null(dim(data))) {
@@ -139,18 +122,11 @@ read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
     dim(data) <- length(data)
   }
 
-  # transpose the matrix if need be
-  if (is.matrix(data)) {
-    data <- t(data)
-  } else if (is.array(data) && length(dim(data)) > 1) {
-    data <- aperm(data)
-  }
-
   data
 }
 
-read_h5ad_csr_matrix <- function(file, name, version) {
-  read_h5ad_sparse_array(
+rhdf5_read_h5ad_csr_matrix <- function(file, name, version) {
+  rhdf5_read_h5ad_sparse_array(
     file = file,
     name = name,
     version = version,
@@ -158,8 +134,8 @@ read_h5ad_csr_matrix <- function(file, name, version) {
   )
 }
 
-read_h5ad_csc_matrix <- function(file, name, version) {
-  read_h5ad_sparse_array(
+rhdf5_read_h5ad_csc_matrix <- function(file, name, version) {
+  rhdf5_read_h5ad_sparse_array(
     file = file,
     name = name,
     version = version,
@@ -180,7 +156,7 @@ read_h5ad_csc_matrix <- function(file, name, version) {
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
-read_h5ad_sparse_array <- function(
+rhdf5_read_h5ad_sparse_array <- function(
   file,
   name,
   version = "0.1.0",
@@ -189,10 +165,13 @@ read_h5ad_sparse_array <- function(
   version <- match.arg(version)
   type <- match.arg(type)
 
-  data <- as.vector(file[[paste0(name, "/data")]]$read())
-  indices <- as.vector(file[[paste0(name, "/indices")]]$read())
-  indptr <- as.vector(file[[paste0(name, "/indptr")]]$read())
-  shape <- as.vector(hdf5r::h5attr(file[[name]], "shape"))
+  h5group <- file&name
+  attrs <- rhdf5::h5readAttributes(file, name, native = TRUE)
+
+  data <- as.vector(h5group$data)
+  indices <- as.vector(h5group$indices)
+  indptr <- as.vector(h5group$indptr)
+  shape <- as.vector(attrs[["shape"]])
 
   if (type == "csc_matrix") {
     mtx <- Matrix::sparseMatrix(
@@ -236,10 +215,10 @@ read_h5ad_sparse_array <- function(
 #' @return a named list of 1D arrays
 #'
 #' @noRd
-read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
+rhdf5_read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  as.list(file[[name]]$read())
+  rhdf5::h5read(file, name, native = TRUE)
 }
 
 #' Read H5AD nullable boolean
@@ -253,8 +232,8 @@ read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
 #' @return a boolean vector
 #'
 #' @noRd
-read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
-  as.logical(read_h5ad_nullable(file, name, version))
+rhdf5_read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
+  as.logical(rhdf5_read_h5ad_nullable(file, name, version))
 }
 
 #' Read H5AD nullable integer
@@ -268,8 +247,8 @@ read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
 #' @return an integer vector
 #'
 #' @noRd
-read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
-  as.integer(read_h5ad_nullable(file, name, version))
+rhdf5_read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
+  as.integer(rhdf5_read_h5ad_nullable(file, name, version))
 }
 
 #' Read H5AD nullable
@@ -283,14 +262,14 @@ read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
 #' @return a nullable vector
 #'
 #' @noRd
-read_h5ad_nullable <- function(file, name, version = "0.1.0") {
+rhdf5_read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  grp <- file[[name]]
+  h5group <- file&name
 
-  data <- grp[["values"]]$read()
+  data <- h5group$values
 
-  mask <- grp[["mask"]]$read()
+  mask <- h5group$mask
 
   data[mask] <- NA
 
@@ -308,11 +287,11 @@ read_h5ad_nullable <- function(file, name, version = "0.1.0") {
 #' @return a character vector/matrix
 #'
 #' @noRd
-read_h5ad_string_array <- function(file, name, version = "0.2.0") {
+rhdf5_read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
   # reads in transposed
-  data <- file[[name]]$read()
+  data <- rhdf5::h5read(file, name, native = TRUE)
 
   # If the array has no dimension, explicitly add it
   if (is.null(dim(data))) {
@@ -341,20 +320,21 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
 #' @return a factor
 #'
 #' @noRd
-read_h5ad_categorical <- function(file, name, version = "0.2.0") {
+rhdf5_read_h5ad_categorical <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  element <- file[[name]]
+  h5group <- file&name
 
   # Get codes and convert to 1-based indexing
-  codes <- element[["codes"]]$read() + 1L
+  codes <- h5group$codes + 1L
 
   # Set missing values
   codes[codes == 0L] <- NA_integer_
 
-  levels <- element[["categories"]]$read()
+  levels <- h5group$categories
 
-  ordered <- hdf5r::h5attr(element, "ordered")
+  attrs <- rhdf5::h5readAttributes(file, name, native = TRUE)
+  ordered <- attrs[["ordered"]]
 
   factor(levels[codes], levels = levels, ordered = ordered)
 }
@@ -370,9 +350,10 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 #' @return a character vector of length 1
 #'
 #' @noRd
-read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
+rhdf5_read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  file[[name]]$read()
+
+  rhdf5::h5read(file, name, native = TRUE)
 }
 
 #' Read H5AD numeric scalar
@@ -386,9 +367,10 @@ read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 #' @return a numeric vector of length 1
 #'
 #' @noRd
-read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
+rhdf5_read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
-  file[[name]]$read()
+
+  rhdf5::h5read(file, name, native = TRUE)
 }
 
 #' Read H5AD mapping
@@ -402,12 +384,12 @@ read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
 #' @return a named list
 #'
 #' @noRd
-read_h5ad_mapping <- function(file, name, version = "0.1.0") {
+rhdf5_read_h5ad_mapping <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  columns <- file[[name]]$ls()$name
+  items <- rhdf5::h5ls(file&name, recursive = FALSE)$name
 
-  read_h5ad_collection(file, name, columns)
+  rhdf5_read_h5ad_collection(file, name, items)
 }
 
 #' Read H5AD data frame
@@ -421,14 +403,15 @@ read_h5ad_mapping <- function(file, name, version = "0.1.0") {
 #' @return a data.frame
 #'
 #' @noRd
-read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
+rhdf5_read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  index_name <- hdf5r::h5attr(file[[name]], "_index")
-  column_order <- hdf5r::h5attr(file[[name]], "column-order")
+  attrs <- rhdf5::h5readAttributes(file, name, native = TRUE)
+  index_name <- attrs[["_index"]]
+  column_order <- attrs[["column-order"]]
 
-  index <- read_h5ad_element(file, file.path(name, index_name))
-  data <- read_h5ad_collection(file, name, column_order)
+  index <- rhdf5_read_h5ad_element(file, file.path(name, index_name))
+  data <- rhdf5_read_h5ad_collection(file, name, column_order)
 
   as.data.frame(
     row.names = index,
@@ -447,17 +430,17 @@ read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
 #' @return a named list
 #'
 #' @noRd
-read_h5ad_collection <- function(file, name, item_names) {
-  columns <- list()
+rhdf5_read_h5ad_collection <- function(file, name, item_names) {
+  items <- list()
   for (item_name in item_names) {
     new_name <- paste0(name, "/", item_name)
-    encoding <- read_h5ad_encoding(file, new_name)
-    columns[[item_name]] <- read_h5ad_element(
+    encoding <- rhdf5_read_h5ad_encoding(file, new_name)
+    items[[item_name]] <- rhdf5_read_h5ad_element(
       file = file,
       name = new_name,
       type = encoding$type,
       version = encoding$version
     )
   }
-  columns
+  items
 }

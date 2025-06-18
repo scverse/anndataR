@@ -45,8 +45,13 @@ read_h5ad <- function(
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   to = deprecated(),
   mode = c("r", "r+", "a", "w", "w-", "x"),
+  rhdf5 = FALSE,
   ...
 ) {
+  if (rhdf5) {
+    cli::cli_alert_danger("Using {.pkg rhdf5} to read H5AD")
+  }
+
   as <- match.arg(as)
   mode <- match.arg(mode)
 
@@ -60,7 +65,7 @@ read_h5ad <- function(
     as <- to
   }
 
-  hdf5_adata <- HDF5AnnData$new(path, mode = mode)
+  hdf5_adata <- HDF5AnnData$new(path, mode = mode, rhdf5 = rhdf5)
 
   if (as == "HDF5AnnData") {
     return(hdf5_adata)
