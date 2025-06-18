@@ -48,6 +48,7 @@ Suggests:
     knitr,
     processx,
     reticulate (>= 1.36.1),
+    rhdf5,
     rmarkdown,
     S4Vectors,
     Seurat,
