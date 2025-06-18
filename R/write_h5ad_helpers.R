@@ -26,7 +26,7 @@ write_h5ad_element <- function(
   file,
   name,
   compression = c("none", "gzip", "lzf"),
-  stop_on_error = TRUE,
+  stop_on_error = FALSE,
   rhdf5 = FALSE,
   ...
 ) {

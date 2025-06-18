@@ -416,7 +416,7 @@ HDF5AnnData <- R6::R6Class(
     ) {
       # TODO: Add file mode
 
-      cli::cli_alert_danger("Using {.pkg rhdf5} to initialise {.cls HDF5AnnData}")
+      # cli::cli_alert_danger("Using {.pkg rhdf5} to initialise {.cls HDF5AnnData}")
 
       check_requires("HDF5AnnData", "rhdf5")
 
