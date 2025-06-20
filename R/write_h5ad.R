@@ -102,9 +102,14 @@ write_h5ad <- function(
     )
   }
 
-  adata$close()
-  rm(adata)
-  gc()
+  if (rhdf5) {
+    rm(adata)
+    gc()
+  } else {
+    adata$close()
+    rm(adata)
+    gc()
+  }
 
   invisible(path)
 }

@@ -3,7 +3,7 @@ skip_if_not_installed("rhdf5")
 requireNamespace("vctrs")
 
 filename <- system.file("extdata", "example.h5ad", package = "anndataR")
-file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY")
+file <- rhdf5::H5Fopen(filename, flags = "H5F_ACC_RDONLY")
 
 test_that("reading encoding works", {
   encoding <- rhdf5_read_h5ad_encoding(file, "obs")
