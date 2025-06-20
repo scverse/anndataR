@@ -426,33 +426,37 @@ HDF5AnnData <- R6::R6Class(
 
       private$.close_on_finalize <- is.character(file)
 
-      overwrite <- (is.character(file) && !file.exists(file)) ||
-        any(
-            !is.null(X),
-            !is.null(obs),
-            !is.null(var),
-            !is.null(layers),
-            !is.null(obsm),
-            !is.null(varm),
-            !is.null(obsp),
-            !is.null(varp),
-            !is.null(uns)
-        )
+      write_mode <- any(
+        !is.null(X),
+        !is.null(obs),
+        !is.null(var),
+        !is.null(layers),
+        !is.null(obsm),
+        !is.null(varm),
+        !is.null(obsp),
+        !is.null(varp),
+        !is.null(uns),
+        !is.null(shape)
+      )
 
-      if (is.character(file)) {
-        if (file.exists(file)) {
-          if (!rhdf5::H5Fis_hdf5(file)) {
-            cli_abort(
-              paste(
-                "File {.file {file}} exists but is not a valid HDF5 file"
-              ),
-              call = rlang::caller_env()
-            )
-          }
-          file <- rhdf5::H5Fopen(file, native = TRUE)
-        } else {
+      file_exists <- (is.character(file) && file.exists(file)) ||
+        inherits(file, "H5IdComponent")
+
+      if (write_mode && file_exists) {
+        if (is.character(file)) {
+          unlink(file)
           file <- rhdf5::H5Fcreate(file, native = TRUE)
+        } else {
+          rhdf5_hdf5_clear_file(file)
         }
+      } else if (write_mode && !file_exists) {
+        file <- rhdf5::H5Fcreate(file, native = TRUE)
+      } else if (!write_mode && file_exists) {
+        if (is.character(file)) {
+          file <- rhdf5::H5Fopen(file, native = TRUE)
+        }
+      } else if (!write_mode && !file_exists) {
+        file <- rhdf5::H5Fcreate(file, native = TRUE)
       }
 
       if (!inherits(file, "H5IdComponent")) {
@@ -464,7 +468,7 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
-      if (overwrite) {
+      if (write_mode) {
         shape <- get_shape(obs, var, X, shape)
         obs <- get_initial_obs(obs, X, shape)
         var <- get_initial_var(var, X, shape)
@@ -485,7 +489,7 @@ HDF5AnnData <- R6::R6Class(
       private$.h5obj <- file
       private$.rhdf5 <- TRUE
 
-      if (overwrite) {
+      if (write_mode) {
         for (slot in .anndata_slots) {
           value <- get(slot)
           if (!is.null(value)) {
