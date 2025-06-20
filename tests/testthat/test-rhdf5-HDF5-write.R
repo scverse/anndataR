@@ -7,7 +7,7 @@ if (file.exists(file)) {
   file.remove(file)
 }
 
-file <- rhdf5::H5Fopen(file)
+file <- rhdf5::H5Fcreate(file)
 
 test_that("Writing H5AD dense arrays works", {
   value <- matrix(rnorm(20), nrow = 5, ncol = 4)

@@ -48,9 +48,9 @@ read_h5ad <- function(
   rhdf5 = FALSE,
   ...
 ) {
-  if (rhdf5) {
-    cli::cli_alert_danger("Using {.pkg rhdf5} to read H5AD")
-  }
+  # if (rhdf5) {
+  #   cli::cli_alert_danger("Using {.pkg rhdf5} to read H5AD")
+  # }
 
   as <- match.arg(as)
   mode <- match.arg(mode)

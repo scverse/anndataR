@@ -465,7 +465,6 @@ HDF5AnnData <- R6::R6Class(
       }
 
       if (overwrite) {
-        cli::cli_alert_danger("Overwriting existing file")
         shape <- get_shape(obs, var, X, shape)
         obs <- get_initial_obs(obs, X, shape)
         var <- get_initial_var(var, X, shape)
