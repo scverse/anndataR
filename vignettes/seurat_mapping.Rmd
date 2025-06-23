@@ -76,20 +76,6 @@ Here, we showcase what happens if you do not provide any mapping information for
 ```{r as_Seurat_implicit, eval = FALSE}
 seurat_obj <- as_Seurat(ad)
 seurat_obj
-# Error in `as_Seurat()`:
-# ! `layers_mapping` must contain an item named "counts" and/or "data"
-# ℹ Found names: "X", "integer_matrix", and "numeric_rsparse"
-```
-
-Immediately, we run in the first error: one of the layers in the AnnData object is not named `counts` or `data`, so we cannot
-implicitly determine which layer should be copied to the `counts` or `data` slot of the Seurat object.
-We can either provide our own mapping, or rename the layer in the AnnData object. In this case we will rename the layer, so we can
-see the rest of the implicit mapping. We will go more into detail on how to provide your own mapping in the next section.
-
-```{r as_Seurat_implicit_rename}
-ad$layers[["counts"]] <- ad$layers[["integer_matrix"]]
-seurat_obj <- ad$as_Seurat()
-seurat_obj
 ```
 
 In the following subsections, we detail how each of these implicit conversions work.
@@ -139,9 +125,6 @@ seurat_object[[]]
 
 Seurat allows for multiple layers to be stored in the object. This corresponds with the `layers` slot in the AnnData object.
 If no mapping is provided, all layers of the AnnData object will be copied by name. The `X` slot will also be copied by name.
-
-There must be a layer called `counts` and/or `data` in the final Seurat object. If no AnnData layers are named `counts` or `data`, you must
-provide a mapping for either `counts` or `data` in the `layers_mapping` argument or provide a mapping for the `X` slot with the `x_mapping` argument.
 
 ```{r as_Seurat_implicit_layers}
 seurat_object <- ad$as_Seurat(
