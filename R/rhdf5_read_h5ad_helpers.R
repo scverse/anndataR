@@ -219,7 +219,8 @@ rhdf5_read_h5ad_sparse_array <- function(
 rhdf5_read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  rhdf5::h5read(file, name, native = TRUE)
+  rhdf5::h5read(file, name, native = TRUE, compoundAsDataFrame = FALSE) |>
+    lapply(as.vector)
 }
 
 #' Read H5AD nullable boolean
@@ -269,9 +270,9 @@ rhdf5_read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   h5group <- file&name
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
-  data <- h5group$values
+  data <- as.vector(h5group$values)
 
-  mask <- h5group$mask
+  mask <- as.logical(h5group$mask)
 
   data[mask] <- NA
 
