@@ -208,7 +208,7 @@ as_Seurat <- function(
       "i" = "Found duplicate names: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
     )
   }
-  
+
   # trackstatus: class=Seurat, feature=get_obs, status=done
   object_metadata <- .as_Seurat_process_metadata(
     adata,
