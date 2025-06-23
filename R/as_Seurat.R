@@ -99,8 +99,6 @@
 #' of `Layers(seurat)` and values are keys of `layers` in `adata`.
 #' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
 #' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
-#' You must provide a layer named `counts` or `data` in either `x_mapping` or
-#' `layers_mapping`.
 #'
 #' @return A `Seurat` object containing the requested data from `adata`
 #' @keywords internal
@@ -210,30 +208,6 @@ as_Seurat <- function(
       "i" = "Found duplicate names: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"
     )
   }
-  if (
-    !("counts" %in% names(layers_mapping)) &&
-      !("data" %in% names(layers_mapping))
-  ) {
-    cli_abort(c(
-      paste(
-        "{.arg layers_mapping} must contain an item named {.val counts} and/or {.val data}",
-        "Provide this with {.arg x_mapping} or {.arg layers_mapping}."
-      ),
-      "i" = "Found names: {.val {names(layers_mapping)}}"
-    ))
-  }
-
-  # trackstatus: class=Seurat, feature=get_obs, status=done
-  # trackstatus: class=Seurat, feature=get_X, status=done
-  # trackstatus: class=Seurat, feature=get_layers, status=done
-  counts <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, "counts")
-  data <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, "data")
-  if (!is.null(counts)) {
-    dimnames(counts) <- list(adata$var_names, adata$obs_names)
-  }
-  if (!is.null(data)) {
-    dimnames(data) <- list(adata$var_names, adata$obs_names)
-  }
 
   object_metadata <- .as_Seurat_process_metadata(
     adata,
@@ -241,15 +215,11 @@ as_Seurat <- function(
     "obs"
   )
 
-  assay <- SeuratObject::CreateAssay5Object(
-    counts = counts,
-    data = data,
-  )
-
-  obj <- SeuratObject::CreateSeuratObject(
-    assay,
-    meta.data = object_metadata,
-    assay = assay_name
+  obj <- .as_Seurat_create_object_with_layers(
+    adata,
+    layers_mapping,
+    object_metadata,
+    assay_name
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
@@ -271,18 +241,6 @@ as_Seurat <- function(
   # trackstatus: class=Seurat, feature=get_var_names, status=done
   colnames(obj) <- obs_names
   rownames(obj) <- var_names
-
-  # copy other layers
-  for (i in seq_along(layers_mapping)) {
-    to <- names(layers_mapping)[[i]]
-    if (!to %in% c("counts", "data")) {
-      SeuratObject::LayerData(
-        obj,
-        assay = assay_name,
-        layer = to
-      ) <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, to)
-    }
-  }
 
   if (!rlang::is_empty(reduction_mapping)) {
     reductions <- .as_Seurat_process_reduction_mapping(
@@ -399,6 +357,54 @@ to_Seurat <- function(...) {
 
   # check if dgRMatrix and convert to dgCMatrix
   to_R_matrix(adata$layers[[layer_name]])
+}
+
+# nolint start: object_name_linter
+.as_Seurat_create_object_with_layers <- function(
+  # nolint end: object_name_linter
+  adata,
+  layers_mapping,
+  object_metadata,
+  assay_name
+) {
+  if (!"counts" %in% names(layers_mapping)) {
+    # If there's no counts in the layers_mapping,
+    # we will consider the first layer as "dummy counts"
+    # And use it temporarily as the counts layer
+    dummy_counts <- names(layers_mapping)[[1]]
+  } else {
+    dummy_counts <- "counts"
+  }
+
+  counts <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, dummy_counts)
+  dimnames(counts) <- list(adata$var_names, adata$obs_names)
+
+  obj <- SeuratObject::CreateSeuratObject(
+    meta.data = object_metadata,
+    assay = assay_name,
+    counts = counts
+  )
+
+  # If we have used the dummy counts layer,
+  # we need to add the actual dummy counts layer to the object
+  # and remove the counts layer
+  if (!"counts" %in% names(layers_mapping)) {
+    SeuratObject::LayerData(obj, layer = dummy_counts) <- counts
+    obj[[assay_name]]$counts <- NULL
+  }
+
+  # Add all other layers to the object
+  for (i in seq_along(layers_mapping)) {
+    layer_name <- names(layers_mapping)[i]
+    if (layer_name != dummy_counts) {
+      SeuratObject::LayerData(
+        obj,
+        layer = layer_name,
+      ) <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, layer_name)
+    }
+  }
+
+  obj
 }
 
 # nolint start: object_name_linter
