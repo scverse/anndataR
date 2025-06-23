@@ -15,6 +15,7 @@
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms creating a file and failing if it already exists
 #' @param ... Additional arguments passed to [as_AnnData()]
+#' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
 #'
 #' @return `path` invisibly
 #' @export
