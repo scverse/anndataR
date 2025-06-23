@@ -258,3 +258,17 @@ test_that("writing gzip compressed files works", {
 #   expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
 # })
 # nolint end
+
+test_that("write_h5ad() gives consistent hashes", {
+  dummy <- generate_dataset(100, 200, example = TRUE, format = "AnnData")
+
+  file <- withr::local_file(tempfile(fileext = ".h5ad"))
+
+  write_h5ad(dummy, file, rhdf5 = TRUE)
+  hash1 <-rlang::hash_file(file)
+
+  write_h5ad(dummy, file, rhdf5 = TRUE)
+  hash2 <- rlang::hash_file(file)
+
+  expect_identical(hash1, hash2)
+})
