@@ -486,7 +486,7 @@ HDF5AnnData <- R6::R6Class(
         !is.null(shape)
       )
 
-      write_empy <- write_mode
+      write_empty <- write_mode
 
       file_exists <- (is.character(file) && file.exists(file)) ||
         inherits(file, "H5IdComponent")
