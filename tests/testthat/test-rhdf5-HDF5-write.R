@@ -25,7 +25,12 @@ test_that("Writing H5AD dense 3D arrays works", {
   value <- array(rnorm(60), dim = c(5, 4, 3))
 
   expect_silent(
-    rhdf5_write_h5ad_element(value, file, "dense_3d_array", compression = "none")
+    rhdf5_write_h5ad_element(
+      value,
+      file,
+      "dense_3d_array",
+      compression = "none"
+    )
   )
   expect_true(rhdf5_hdf5_path_exists(file, "/dense_3d_array"))
   attrs <- rhdf5::h5readAttributes(file, "dense_3d_array", native = TRUE)

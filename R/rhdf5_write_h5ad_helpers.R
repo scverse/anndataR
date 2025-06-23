@@ -277,6 +277,7 @@ rhdf5_write_h5ad_sparse_array <- function(
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
+# nolint start: object_length_linter
 rhdf5_write_h5ad_nullable_boolean <- function(
   value,
   file,
@@ -284,6 +285,7 @@ rhdf5_write_h5ad_nullable_boolean <- function(
   compression,
   version = "0.1.0"
 ) {
+  # nolint end: object_length_linter
   rhdf5::h5createGroup(file, name)
 
   value_no_na <- value
@@ -320,6 +322,7 @@ rhdf5_write_h5ad_nullable_boolean <- function(
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
+# nolint start: object_length_linter
 rhdf5_write_h5ad_nullable_integer <- function(
   value,
   file,
@@ -327,6 +330,7 @@ rhdf5_write_h5ad_nullable_integer <- function(
   compression,
   version = "0.1.0"
 ) {
+  # nolint end: object_length_linter
   rhdf5::h5createGroup(file, name)
 
   value_no_na <- value
@@ -473,6 +477,7 @@ rhdf5_write_h5ad_string_scalar <- function(
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
+# nolint start: object_length_linter
 rhdf5_write_h5ad_numeric_scalar <- function(
   value,
   file,
@@ -480,6 +485,7 @@ rhdf5_write_h5ad_numeric_scalar <- function(
   compression,
   version = "0.2.0"
 ) {
+  # nolint end: object_length_linter
   rhdf5_hdf5_write_dataset(
     file = file,
     name = name,
@@ -514,7 +520,12 @@ rhdf5_write_h5ad_mapping <- function(
 
   # Write mapping elements
   for (key in names(value)) {
-    rhdf5_write_h5ad_element(value[[key]], file, paste0(name, "/", key), compression)
+    rhdf5_write_h5ad_element(
+      value[[key]],
+      file,
+      paste0(name, "/", key),
+      compression
+    )
   }
 
   rhdf5_write_h5ad_encoding(file, name, "dict", version)
@@ -568,7 +579,12 @@ rhdf5_write_h5ad_data_frame <- function(
 
   # Write data frame columns
   for (col in colnames(value)) {
-    rhdf5_write_h5ad_element(value[[col]], file, paste0(name, "/", col), compression)
+    rhdf5_write_h5ad_element(
+      value[[col]],
+      file,
+      paste0(name, "/", col),
+      compression
+    )
   }
 
   # write index
@@ -617,7 +633,13 @@ rhdf5_write_h5ad_data_frame <- function(
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
-rhdf5_write_empty_h5ad <- function(file, obs, var, compression, version = "0.1.0") {
+rhdf5_write_empty_h5ad <- function(
+  file,
+  obs,
+  var,
+  compression,
+  version = "0.1.0"
+) {
   rhdf5_write_h5ad_encoding(file, "/", "anndata", "0.1.0")
 
   rhdf5_write_h5ad_element(obs[, integer(0)], file, "/obs", compression)

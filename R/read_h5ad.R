@@ -22,6 +22,7 @@
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #' @param ... Extra arguments provided to the `as_*` conversion function for the
 #'   object specified by `as`
+#' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
 #'
 #' @return The object specified by `as`
 #' @export
@@ -48,10 +49,6 @@ read_h5ad <- function(
   rhdf5 = FALSE,
   ...
 ) {
-  # if (rhdf5) {
-  #   cli::cli_alert_danger("Using {.pkg rhdf5} to read H5AD")
-  # }
-
   as <- match.arg(as)
   mode <- match.arg(mode)
 

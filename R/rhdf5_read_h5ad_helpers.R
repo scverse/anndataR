@@ -165,7 +165,7 @@ rhdf5_read_h5ad_sparse_array <- function(
   version <- match.arg(version)
   type <- match.arg(type)
 
-  h5group <- file&name
+  h5group <- rhdf5::H5Gopen(file, name)
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
   attrs <- rhdf5::h5readAttributes(file, name, native = TRUE)
 
@@ -234,7 +234,9 @@ rhdf5_read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
 #' @return a boolean vector
 #'
 #' @noRd
+# nolint start: object_length_linter
 rhdf5_read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
+  # nolint end: object_length_linter
   as.logical(rhdf5_read_h5ad_nullable(file, name, version))
 }
 
@@ -249,7 +251,9 @@ rhdf5_read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
 #' @return an integer vector
 #'
 #' @noRd
+# nolint start: object_length_linter
 rhdf5_read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
+  # nolint end: object_length_linter
   as.integer(rhdf5_read_h5ad_nullable(file, name, version))
 }
 
@@ -267,7 +271,7 @@ rhdf5_read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
 rhdf5_read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  h5group <- file&name
+  h5group <- rhdf5::H5Gopen(file, name)
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
   data <- as.vector(h5group$values)
@@ -317,7 +321,7 @@ rhdf5_read_h5ad_string_array <- function(file, name, version = "0.2.0") {
 rhdf5_read_h5ad_categorical <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  h5group <- file&name
+  h5group <- rhdf5::H5Gopen(file, name)
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
   # Get codes and convert to 1-based indexing
@@ -382,7 +386,7 @@ rhdf5_read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
 rhdf5_read_h5ad_mapping <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  h5group <- file&name
+  h5group <- rhdf5::H5Gopen(file, name)
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
   items <- rhdf5::h5ls(h5group, recursive = FALSE)$name
 

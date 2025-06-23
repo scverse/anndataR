@@ -13,6 +13,7 @@
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
+#' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
 #'
 #' @noRd
 #'

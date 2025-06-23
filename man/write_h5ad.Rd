@@ -9,6 +9,7 @@ write_h5ad(
   path,
   compression = c("none", "gzip", "lzf"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  rhdf5 = FALSE,
   ...
 )
 }

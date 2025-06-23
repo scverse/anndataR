@@ -44,7 +44,13 @@ HDF5AnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "X", private$.compression, rhdf5 = private$.rhdf5)
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "X",
+          private$.compression,
+          rhdf5 = private$.rhdf5
+        )
       }
     },
     #' @field layers See [AnnData-usage]
@@ -89,7 +95,12 @@ HDF5AnnData <- R6::R6Class(
           c(self$n_obs()),
           expected_rownames = rownames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "obsm", rhdf5 = private$.rhdf5)
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "obsm",
+          rhdf5 = private$.rhdf5
+        )
       }
     },
     #' @field varm See [AnnData-usage]
@@ -108,7 +119,12 @@ HDF5AnnData <- R6::R6Class(
           c(self$n_vars()),
           expected_rownames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "varm", rhdf5 = private$.rhdf5)
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "varm",
+          rhdf5 = private$.rhdf5
+        )
       }
     },
     #' @field obsp See [AnnData-usage]
@@ -128,7 +144,12 @@ HDF5AnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = rownames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "obsp", rhdf5 = private$.rhdf5)
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "obsp",
+          rhdf5 = private$.rhdf5
+        )
       }
     },
     #' @field varp See [AnnData-usage]
@@ -148,7 +169,12 @@ HDF5AnnData <- R6::R6Class(
           expected_rownames = colnames(self),
           expected_colnames = colnames(self)
         )
-        write_h5ad_element(value, private$.h5obj, "varp", rhdf5 = private$.rhdf5)
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "varp",
+          rhdf5 = private$.rhdf5
+        )
       }
     },
     #' @field obs See [AnnData-usage]
@@ -249,6 +275,7 @@ HDF5AnnData <- R6::R6Class(
     #'   [as_HDF5AnnData()] for details
     #' @param mode The mode to open the HDF5 file. See [as_HDF5AnnData()] for
     #'   details
+    #' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
     #'
     #' @details
     #' The constructor creates a new HDF5 `AnnData` interface object. This can
@@ -400,6 +427,30 @@ HDF5AnnData <- R6::R6Class(
       self
     },
 
+    #' @description
+    #' `HDF5AnnData` constructor
+    #'
+    #' @param file The file name (character) of the `.h5ad` file. If this file
+    #'   already exits, other arguments must be `NULL`.
+    #' @param X See the `X` slot in [AnnData-usage]
+    #' @param layers See the `layers` slot in [AnnData-usage]
+    #' @param obs See the `obs` slot in [AnnData-usage]
+    #' @param var See the `var` slot in [AnnData-usage]
+    #' @param obsm See the `obsm` slot in [AnnData-usage]
+    #' @param varm See the `varm` slot in [AnnData-usage]
+    #' @param obsp See the `obsp` slot in [AnnData-usage]
+    #' @param varp See the `varp` slot in [AnnData-usage]
+    #' @param uns See the `uns` slot in [AnnData-usage]
+    #' @param shape Shape tuple (e.g. `c(n_obs, n_vars)`). Can be provided if
+    #'   both `X` or `obs` and `var` are not provided.
+    #' @param compression The compression algorithm to use. See
+    #'   [as_HDF5AnnData()] for details
+    #'
+    #' @details
+    #' The constructor creates a new HDF5 `AnnData` interface object. This can
+    #' either be used to either connect to an existing `.h5ad` file or to
+    #' create a new one. If any additional slot arguments are set an existing
+    #' file will be overwritten.
     rhdf5_initialize = function(
       file,
       X = NULL,
@@ -414,10 +465,6 @@ HDF5AnnData <- R6::R6Class(
       shape = NULL,
       compression = c("none", "gzip", "lzf")
     ) {
-      # TODO: Add file mode
-
-      # cli::cli_alert_danger("Using {.pkg rhdf5} to initialise {.cls HDF5AnnData}")
-
       check_requires("HDF5AnnData", "rhdf5")
 
       compression <- match.arg(compression)
@@ -545,6 +592,7 @@ HDF5AnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
 #'
 #' @return An [`HDF5AnnData`] object with the same data as the input `AnnData`
 #'   object.

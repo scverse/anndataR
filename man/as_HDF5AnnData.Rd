@@ -8,7 +8,8 @@ as_HDF5AnnData(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  rhdf5 = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults 
 \item \code{w} creates a file, truncating any existing ones
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists
 }}
+
+\item{rhdf5}{Whether to use the \code{rhdf5} package for HDF5 operations}
 }
 \value{
 An \code{\link{HDF5AnnData}} object with the same data as the input \code{AnnData}
