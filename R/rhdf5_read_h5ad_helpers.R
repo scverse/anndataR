@@ -293,20 +293,11 @@ rhdf5_read_h5ad_nullable <- function(file, name, version = "0.1.0") {
 rhdf5_read_h5ad_string_array <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  # reads in transposed
   data <- rhdf5::h5read(file, name, native = TRUE)
 
-  # If the array has no dimension, explicitly add it
-  if (is.null(dim(data))) {
+  if (is.null(dim(data)) || length(dim(data)) == 1) {
     data <- as.vector(data)
     dim(data) <- length(data)
-  }
-
-  # If the array is a matrix, transpose
-  if (is.matrix(data)) {
-    data <- t(data)
-  } else if (is.array(data) && length(dim(data)) > 1) {
-    data <- aperm(data)
   }
 
   data
