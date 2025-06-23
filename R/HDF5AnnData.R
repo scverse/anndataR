@@ -486,6 +486,8 @@ HDF5AnnData <- R6::R6Class(
         !is.null(shape)
       )
 
+      write_empy <- write_mode
+
       file_exists <- (is.character(file) && file.exists(file)) ||
         inherits(file, "H5IdComponent")
 
@@ -504,6 +506,7 @@ HDF5AnnData <- R6::R6Class(
         }
       } else if (!write_mode && !file_exists) {
         file <- rhdf5::H5Fcreate(file, native = TRUE)
+        write_empty <- TRUE
       }
 
       if (!inherits(file, "H5IdComponent")) {
@@ -515,7 +518,7 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
-      if (write_mode) {
+      if (write_empty) {
         shape <- get_shape(obs, var, X, shape)
         obs <- get_initial_obs(obs, X, shape)
         var <- get_initial_var(var, X, shape)
