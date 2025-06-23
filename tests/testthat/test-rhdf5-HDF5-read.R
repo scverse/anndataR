@@ -131,18 +131,18 @@ rhdf5::H5Fclose(file)
 test_that("reading H5AD as SingleCellExperiment works", {
   skip_if_not_installed("SingleCellExperiment")
 
-  sce <- rhdf5_read_h5ad(filename, as = "SingleCellExperiment")
+  sce <- read_h5ad(filename, as = "SingleCellExperiment", rhdf5 = TRUE)
   expect_s4_class(sce, "SingleCellExperiment")
 })
 
 test_that("reading H5AD as Seurat works", {
   skip_if_not_installed("Seurat")
 
-  seurat <- rhdf5_read_h5ad(filename, as = "Seurat")
+  seurat <- read_h5ad(filename, as = "Seurat", rhdf5 = TRUE)
   expect_s4_class(seurat, "Seurat")
 })
 
 test_that("deprecated to argument in read_h5ad() works", {
-  expect_warning(mem_ad <- read_h5ad(filename, to = "InMemoryAnnData"), rhdf5 = TRUE)
+  expect_warning(mem_ad <- read_h5ad(filename, to = "InMemoryAnnData", rhdf5 = TRUE))
   expect_true(inherits(mem_ad, "InMemoryAnnData"))
 })
