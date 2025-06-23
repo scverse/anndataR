@@ -30,7 +30,7 @@ test_that("reading layers works", {
   )
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_rhdf5_obsm, status=done
+# trackstatus: class=HDF5AnnData, feature=test_get_rhdf5_obsm, status=done
 test_that("reading obsm works", {
   obsm <- adata$obsm
   expect_true(is.list(obsm), "list")
@@ -40,7 +40,7 @@ test_that("reading obsm works", {
   )
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_rhdf5_varm, status=done
+# trackstatus: class=HDF5AnnData, feature=test_get_rhdf5_varm, status=done
 test_that("reading varm works", {
   varm <- adata$varm
   expect_true(is.list(varm), "list")
@@ -50,7 +50,7 @@ test_that("reading varm works", {
   )
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_rhdf5_obs, status=done
+# trackstatus: class=HDF5AnnData, feature=test_get_rhdf5_obs, status=done
 test_that("reading obs works", {
   obs <- adata$obs
   expect_s3_class(obs, "data.frame")
@@ -72,7 +72,7 @@ test_that("reading obs works", {
   )
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_rhdf5_var, status=done
+# trackstatus: class=HDF5AnnData, feature=test_get_rhdf5_var, status=done
 test_that("reading var works", {
   var <- adata$var
   expect_s3_class(var, "data.frame")
@@ -94,13 +94,13 @@ test_that("reading var works", {
   )
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_rhdf5_obs_names, status=done
+# trackstatus: class=HDF5AnnData, feature=test_get_rhdf5_obs_names, status=done
 test_that("reading obs names works", {
   obs_names <- adata$obs_names
   expect_vector(obs_names, ptype = character(), size = 50)
 })
 
-# trackstatus: class=HDF5AnnData, feature=test_set_rhdf5_var_names, status=done
+# trackstatus: class=HDF5AnnData, feature=test_get_rhdf5_var_names, status=done
 test_that("reading var names works", {
   var_names <- adata$var_names
   expect_vector(var_names, ptype = character(), size = 100)
