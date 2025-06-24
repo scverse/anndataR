@@ -12,9 +12,7 @@ ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-layers_mapping <- c(NA, names(ad$layers))
-names(layers_mapping) <- c("counts", names(ad$layers))
-seu <- ad$as_Seurat(layers_mapping = layers_mapping)
+seu <- ad$as_Seurat()
 
 test_that("as_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)
