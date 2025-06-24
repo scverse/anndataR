@@ -97,7 +97,6 @@ seurat_obj <- ad$as_Seurat(
   x_mapping = c("X" = "counts")
 )
 Layers(seurat_obj)
-
 ```
 
 We can also provide a mapping for the `layers_mapping` argument:
