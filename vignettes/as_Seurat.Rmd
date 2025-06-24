@@ -128,8 +128,8 @@ seurat_obj[["RNA"]][[]] # assay level metadata (var slot)
 You can provide your own mappings, or convert nothing as follows:
 ```{r as_Seurat_obs_var_mapping}
 seurat_obj <- ad$as_Seurat(
-    object_metadata_mapping = c(metadata1 = "integer"),
-    assay_metadata_mapping = FALSE
+  object_metadata_mapping = c(metadata1 = "integer"),
+  assay_metadata_mapping = FALSE
 )
 seurat_obj[[]]
 seurat_obj[["RNA"]][[]]
@@ -157,10 +157,10 @@ seurat_obj[["X_pca"]][]
 We can specify this mapping explicitly as follows:
 ```{r as_Seurat_reduction_mapping}
 seurat_obj <- ad$as_Seurat(
-    reduction_mapping = list(
-        pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"),
-        umap = c(key = "UMAP_", embeddings = "X_umap")
-    )
+  reduction_mapping = list(
+    pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"),
+    umap = c(key = "UMAP_", embeddings = "X_umap")
+  )
 )
 seurat_obj[["pca"]][[]]
 seurat_obj[["pca"]][]
@@ -180,7 +180,7 @@ seurat_obj[["RNA_connectivities"]][1:10, 1:10]
 We can specify this mapping explicitly as follows. Note that here we also prepend the name of the graph with the `assay_name` (default "RNA").
 ```{r as_Seurat_graphs_mapping}
 seurat_obj <- ad$as_Seurat(
-    graph_mapping = c("connectivities" = "connectivities")
+  graph_mapping = c("connectivities" = "connectivities")
 )
 Graphs(seurat_obj)
 seurat_obj[["RNA_connectivities"]][1:10, 1:10]
@@ -198,7 +198,7 @@ We can specify this mapping explicitly as follows:
 
 ```{r as_Seurat_misc_mapping}
 seurat_obj <- ad$as_Seurat(
-    misc_mapping = c("misc1" = "vec_integer", "misc2" = "vec_character")
+  misc_mapping = c("misc1" = "vec_integer", "misc2" = "vec_character")
 )
 Misc(seurat_obj)
 ```
@@ -208,15 +208,15 @@ Misc(seurat_obj)
 If we take all these explicit mappings together, we end up converting the AnnData object to a Seurat object as follows:
 ```{r as_Seurat_complete_mapping}
 seurat_obj <- ad$as_Seurat(
-    layers_mapping = c(counts = "counts", numeric_rsparse = "numeric_rsparse"),
-    object_metadata_mapping = c(metadata1 = "integer"),
-    assay_metadata_mapping = FALSE,
-    reduction_mapping = list(
-        pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"),
-        umap = c(key = "UMAP_", embeddings = "X_umap")
-    ),
-    graph_mapping = c(connectivities = "connectivities"),
-    misc_mapping = c(misc1 = "vec_integer", misc2 = "vec_character")
+  layers_mapping = c(counts = "counts", numeric_rsparse = "numeric_rsparse"),
+  object_metadata_mapping = c(metadata1 = "integer"),
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = list(
+    pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"),
+    umap = c(key = "UMAP_", embeddings = "X_umap")
+  ),
+  graph_mapping = c(connectivities = "connectivities"),
+  misc_mapping = c(misc1 = "vec_integer", misc2 = "vec_character")
 )
 seurat_obj
 ```
