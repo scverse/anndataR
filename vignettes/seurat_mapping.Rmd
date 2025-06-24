@@ -78,7 +78,7 @@ your own mappings.
 ## Implicit mapping
 
 Here, we showcase what happens if you do not provide any mapping information for the conversion.
-```{r as_Seurat_implicit, error = FALSE}
+```{r as_Seurat_implicit, error = TRUE}
 seurat_obj <- ad$as_Seurat()
 seurat_obj
 ```
