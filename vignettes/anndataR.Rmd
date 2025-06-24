@@ -25,7 +25,10 @@ library(SeuratObject)
 library(SingleCellExperiment)
 ```
 
+## Introduction
 **{anndataR}** allows users to work with `.h5ad` files, access various slots in the datasets and convert these files to `SingleCellExperiment` objects and `SeuratObject`s, and vice versa.
+This enables users to move data easily between the different programming languages and analysis ecosystems needed to perform single-cell data analysis.
+This package differs from [zellkonverter](https://bioconductor.org/packages/release/bioc/html/zellkonverter.html) because it reads and writes these `.h5ad` files natively in R, and allows conversion to and from `SeuratObjects`s as well.
 
 Check out `?anndataR` for a full list of the functions provided by this package.
 
