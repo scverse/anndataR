@@ -325,3 +325,9 @@ ad_obsm <- as_AnnData(
 
 ad_obsm
 ```
+
+## Session info
+
+```{r}
+sessionInfo()
+```

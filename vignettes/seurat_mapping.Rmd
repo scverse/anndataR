@@ -471,3 +471,9 @@ ad <- as_AnnData(
 )
 ad
 ```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
