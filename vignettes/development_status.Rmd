@@ -172,3 +172,9 @@ for (class_name in c("SingleCellExperiment", "Seurat")) {
   cat("\n\n")
 }
 ```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
