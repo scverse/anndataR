@@ -146,8 +146,6 @@ rhdf5_write_h5ad_encoding <- function(file, name, encoding, version) {
     version,
     is_scalar = TRUE
   )
-
-  file
 }
 
 #' Write H5AD dense array
