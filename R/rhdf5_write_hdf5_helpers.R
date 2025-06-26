@@ -94,7 +94,9 @@ rhdf5_hdf5_write_attribute <- function(
     attr = attr_value,
     h5obj = h5obj,
     name = attr_name,
-    asScalar = is_scalar
+    asScalar = is_scalar,
+    encoding = "UTF-8",
+    variableLengthString = TRUE
   )
 }
 
