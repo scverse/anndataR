@@ -5,6 +5,7 @@
 #' @param file A H5AD file handle
 #' @param name Name of the element within the H5AD file
 #' @param value Value to write
+#' @param H5type Datatype to write, see [rhdf5::h5createDataset()]
 #' @param compression The compression to use when writing the element. Can be
 #'   one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param ... Other arguments passed to [rhdf5::h5write()]
@@ -14,6 +15,7 @@ rhdf5_hdf5_write_dataset <- function(
   file,
   name,
   value,
+  H5type = NULL,
   compression = c("none", "gzip", "lzf"),
   ...
 ) {
@@ -30,6 +32,7 @@ rhdf5_hdf5_write_dataset <- function(
     name,
     dims,
     storage.mode = storage.mode(value),
+    H5type = H5type,
     filter = toupper(compression),
     native = TRUE
   )

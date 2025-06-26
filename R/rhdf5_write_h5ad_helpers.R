@@ -180,12 +180,19 @@ rhdf5_write_h5ad_dense_array <- function(
     value[na_indices] <- NaN
   }
 
+  H5type <- if (is.integer(value)) {
+    "H5T_STD_I64LE"
+  } else {
+    NULL
+  }
+
   # Write dense array
   rhdf5_hdf5_write_dataset(
     file = file,
     name = name,
     value = value,
-    compression = compression,
+    H5type = H5type,
+    compression = compression
   )
 
   # Write encoding
@@ -236,13 +243,23 @@ rhdf5_write_h5ad_sparse_array <- function(
   # Write sparse matrix
   rhdf5::h5createGroup(file, name)
   rhdf5_hdf5_write_dataset(
-    file,
-    paste0(name, "/indices"),
-    attr(value, indices_attr),
-    compression
+    file = file,
+    name = paste0(name, "/indices"),
+    value = attr(value, indices_attr),
+    compression = compression
   )
-  rhdf5_hdf5_write_dataset(file, paste0(name, "/indptr"), value@p, compression)
-  rhdf5_hdf5_write_dataset(file, paste0(name, "/data"), value@x, compression)
+  rhdf5_hdf5_write_dataset(
+    file = file,
+    name = paste0(name, "/indptr"),
+    value = value@p,
+    compression = compression
+  )
+  rhdf5_hdf5_write_dataset(
+    file = file,
+    name = paste0(name, "/data"),
+    value = value@x,
+    compression = compression
+  )
   rhdf5_write_h5ad_encoding(file, name, type, version)
 
   # Write shape attribute
@@ -362,7 +379,12 @@ rhdf5_write_h5ad_string_array <- function(
   compression,
   version = "0.2.0"
 ) {
-  rhdf5_hdf5_write_dataset(file, name, value, compression)
+  rhdf5_hdf5_write_dataset(
+    file = file,
+    name = name,
+    value = value,
+    compression = compression
+  )
 
   rhdf5_write_h5ad_encoding(file, name, "string-array", version)
 }
