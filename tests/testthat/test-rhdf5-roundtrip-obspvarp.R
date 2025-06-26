@@ -180,11 +180,14 @@ for (name in test_names) {
       )
       write_h5ad(adata_r, file_r2, rhdf5 = TRUE)
 
+      # Remove the rhdf5-NA.OK for comparison
+      rhdf5::h5deleteAttribute(file_r2, paste0("/obsp/", r_name), "rhdf5-NA.OK")
+
       # run h5diff
       res_obsp <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/obsp/", name),
@@ -194,10 +197,13 @@ for (name in test_names) {
       )
       expect_equal(res_obsp$status, 0, info = res_obsp$stdout)
 
+      # Remove the rhdf5-NA.OK for comparison
+      rhdf5::h5deleteAttribute(file_r2, paste0("/varp/", r_name), "rhdf5-NA.OK")
+
       res_varp <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/varp/", name),
