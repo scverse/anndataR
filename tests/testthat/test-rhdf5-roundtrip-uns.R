@@ -47,7 +47,7 @@ for (name in test_names) {
 
   test_that(paste0("Reading an AnnData with uns '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("uns"),
       dtype = name,
       process = "read",
@@ -72,7 +72,7 @@ for (name in test_names) {
     paste0("Comparing an anndata with uns '", name, "' with reticulate works"),
     {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("uns"),
         dtype = name,
         process = c("read", "reticulate"),
@@ -91,7 +91,7 @@ for (name in test_names) {
 
   test_that(paste0("Writing an AnnData with uns '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("uns"),
       dtype = name,
       process = c("read", "write"),

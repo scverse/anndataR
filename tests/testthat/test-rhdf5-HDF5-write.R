@@ -265,7 +265,7 @@ test_that("write_h5ad() gives consistent hashes", {
   file <- withr::local_file(tempfile(fileext = ".h5ad"))
 
   write_h5ad(dummy, file, rhdf5 = TRUE)
-  hash1 <-rlang::hash_file(file)
+  hash1 <- rlang::hash_file(file)
 
   write_h5ad(dummy, file, rhdf5 = TRUE)
   hash2 <- rlang::hash_file(file)

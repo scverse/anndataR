@@ -46,7 +46,7 @@ for (name in test_names) {
 
   test_that(paste0("Reading an AnnData with layer '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("layers"),
       dtype = name,
       process = "read",
@@ -79,7 +79,7 @@ for (name in test_names) {
     ),
     {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("layers"),
         dtype = name,
         process = c("read", "reticulate"),
@@ -99,7 +99,7 @@ for (name in test_names) {
 
   test_that(paste0("Writing an AnnData with layer '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("layers"),
       dtype = name,
       process = c("read", "write"),
@@ -141,7 +141,7 @@ for (name in test_names) {
     )
     test_that(test_msg, {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("X"),
         dtype = c(name, r_name),
         process = c("h5diff"),

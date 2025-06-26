@@ -65,7 +65,7 @@ for (name in test_names) {
     paste0("Reading an AnnData with obsm and varm '", name, "' works"),
     {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("obsm", "varm"),
         dtype = name,
         process = "read",
@@ -103,7 +103,7 @@ for (name in test_names) {
     ),
     {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("obsm", "varm"),
         dtype = name,
         process = c("read", "reticulate"),
@@ -130,7 +130,7 @@ for (name in test_names) {
     paste0("Writing an AnnData with obsm and varm '", name, "' works"),
     {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("obsm", "varm"),
         dtype = name,
         process = c("read", "write"),
@@ -181,7 +181,7 @@ for (name in test_names) {
     )
     test_that(test_msg, {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("obsm", "varm"),
         dtype = c(name, r_name),
         process = c("h5diff"),

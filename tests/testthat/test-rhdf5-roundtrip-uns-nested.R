@@ -47,7 +47,7 @@ for (name in test_names) {
 
   test_that(paste0("Reading an AnnData with uns_nested '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("uns_nested"),
       dtype = name,
       process = "read",
@@ -76,7 +76,7 @@ for (name in test_names) {
     ),
     {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("uns_nested"),
         dtype = name,
         process = c("read", "reticulate"),
@@ -95,7 +95,7 @@ for (name in test_names) {
 
   test_that(paste0("Writing an AnnData with uns_nested '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("uns_nested"),
       dtype = name,
       process = c("read", "write"),

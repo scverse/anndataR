@@ -30,7 +30,7 @@ adata_py$write_h5ad(file_py)
 
 test_that(paste0("Reading an AnnData with layer '", name, "' works"), {
   msg <- message_if_known(
-    backend = "HDF5AnnData",
+    backend = "rhdf5-HDF5AnnData",
     slot = c("none"),
     dtype = name,
     process = "read",
@@ -52,7 +52,7 @@ test_that(paste0("Reading an AnnData with layer '", name, "' works"), {
 
 test_that(paste0("Writing an AnnData with layer '", name, "' works"), {
   msg <- message_if_known(
-    backend = "HDF5AnnData",
+    backend = "rhdf5-HDF5AnnData",
     slot = c("none"),
     dtype = name,
     process = c("read", "write"),

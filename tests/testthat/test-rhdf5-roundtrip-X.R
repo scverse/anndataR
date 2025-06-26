@@ -46,7 +46,7 @@ for (name in test_names) {
 
   test_that(paste0("Reading an AnnData with X '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("X"),
       dtype = name,
       process = "read",
@@ -71,7 +71,7 @@ for (name in test_names) {
     paste0("Comparing an anndata with X '", name, "' with reticulate works"),
     {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("X"),
         dtype = name,
         process = c("read", "reticulate"),
@@ -91,7 +91,7 @@ for (name in test_names) {
 
   test_that(paste0("Writing an AnnData with X '", name, "' works"), {
     msg <- message_if_known(
-      backend = "HDF5AnnData",
+      backend = "rhdf5-HDF5AnnData",
       slot = c("X"),
       dtype = name,
       process = c("read", "write"),
@@ -127,7 +127,7 @@ for (name in test_names) {
     )
     test_that(test_msg, {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = "rhdf5-HDF5AnnData",
         slot = c("X"),
         dtype = c(name, r_name),
         process = c("h5diff"),
