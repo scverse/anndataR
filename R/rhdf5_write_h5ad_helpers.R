@@ -277,8 +277,7 @@ rhdf5_write_h5ad_sparse_array <- function(
     name,
     "shape",
     dim(value),
-    is_scalar = FALSE,
-    H5type = "H5T_STD_I64LE"
+    is_scalar = FALSE
   )
 }
 
