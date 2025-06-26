@@ -122,6 +122,12 @@ rhdf5_read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
     dim(data) <- length(data)
   }
 
+  # Reverse {rhdf5} coercion to factors
+  if (is.factor(data) && all(levels(data) %in% c("TRUE", "FALSE"))) {
+    data <- as.logical(data)
+    dim(data) <- length(data)
+  }
+
   data
 }
 
