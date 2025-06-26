@@ -199,7 +199,13 @@ for (name in test_names) {
       write_h5ad(adata_r, file_r2, rhdf5 = TRUE)
 
       # Remove the rhdf5-NA.OK for comparison
-      rhdf5::h5deleteAttribute(file_r2, paste0("/obsm/", r_name), "rhdf5-NA.OK")
+      if (grepl("sparse", r_name)) {
+        rhdf5::h5deleteAttribute(file_r2, paste0("/obsm/", r_name, "/data"), "rhdf5-NA.OK")
+        rhdf5::h5deleteAttribute(file_r2, paste0("/obsm/", r_name, "/indices"), "rhdf5-NA.OK")
+        rhdf5::h5deleteAttribute(file_r2, paste0("/obsm/", r_name, "/indptr"), "rhdf5-NA.OK")
+      } else {
+        rhdf5::h5deleteAttribute(file_r2, paste0("/obsm/", r_name), "rhdf5-NA.OK")
+      }
 
       # run h5diff
       res_obsm <- processx::run(

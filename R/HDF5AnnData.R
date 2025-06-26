@@ -494,18 +494,18 @@ HDF5AnnData <- R6::R6Class(
       if (write_mode && file_exists) {
         if (is.character(file)) {
           unlink(file)
-          file <- rhdf5::H5Fcreate(file, native = TRUE)
+          file <- rhdf5::H5Fcreate(file, native = FALSE)
         } else {
           rhdf5_hdf5_clear_file(file)
         }
       } else if (write_mode && !file_exists) {
-        file <- rhdf5::H5Fcreate(file, native = TRUE)
+        file <- rhdf5::H5Fcreate(file, native = FALSE)
       } else if (!write_mode && file_exists) {
         if (is.character(file)) {
-          file <- rhdf5::H5Fopen(file, native = TRUE)
+          file <- rhdf5::H5Fopen(file, native = FALSE)
         }
       } else if (!write_mode && !file_exists) {
-        file <- rhdf5::H5Fcreate(file, native = TRUE)
+        file <- rhdf5::H5Fcreate(file, native = FALSE)
         write_empty <- TRUE
       }
 

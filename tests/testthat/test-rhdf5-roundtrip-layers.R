@@ -42,7 +42,7 @@ for (name in test_names) {
   )
 
   # write to file
-  adata_py$write_h5ad(file_py, rhdf5 = TRUE)
+  adata_py$write_h5ad(file_py)
 
   test_that(paste0("Reading an AnnData with layer '", name, "' works"), {
     msg <- message_if_known(

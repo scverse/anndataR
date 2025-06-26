@@ -34,10 +34,10 @@ rhdf5_hdf5_write_dataset <- function(
     storage.mode = storage.mode(value),
     H5type = H5type,
     filter = toupper(compression),
-    native = TRUE
+    native = FALSE
   )
 
-  rhdf5::h5write(value, file, name, native = TRUE, ...)
+  rhdf5::h5write(value, file, name, native = FALSE, ...)
 }
 
 
@@ -70,6 +70,7 @@ rhdf5_hdf5_path_exists <- function(file, target_path) {
 #' @param attr_name Name of the attribute to write
 #' @param attr_value Value of the attribute to write
 #' @param is_scalar Whether to write the attribute as a scalar value
+#' @param H5type H5type Datatype to write, see [rhdf5::h5createAttribute()]
 #'
 #' @noRd
 rhdf5_hdf5_write_attribute <- function(
@@ -77,7 +78,8 @@ rhdf5_hdf5_write_attribute <- function(
   name,
   attr_name,
   attr_value,
-  is_scalar = TRUE
+  is_scalar = TRUE,
+  H5type = NULL
 ) {
   if (!inherits(file, "H5IdComponent")) {
     cli_abort("{.arg file} must be an open H5AD handle")
@@ -89,6 +91,23 @@ rhdf5_hdf5_write_attribute <- function(
   } else {
     h5obj <- file
   }
+
+  dims <- if (is_scalar) {
+    NULL
+  } else if (is.vetor(attr_value)) {
+    length(attr_value)
+  } else {
+    dim(attr_value)
+  }
+
+  rhdf5::h5createAttribute(
+    h5obj,
+    attr = attr_name,
+    dims = dims,
+    file = file,
+    storage.mode = storage.mode(attr_value),
+    H5type = H5type
+  )
 
   rhdf5::h5writeAttribute(
     attr = attr_value,

@@ -180,6 +180,15 @@ rhdf5_write_h5ad_dense_array <- function(
     value[na_indices] <- NaN
   }
 
+
+  if (!is.vector(value)) {
+    if (is.matrix(value)) {
+      value <- t(value)
+    } else if (is.array(value)) {
+      value <- aperm(value)
+    }
+  }
+
   H5type <- if (is.integer(value)) {
     "H5T_STD_I64LE"
   } else {
@@ -268,7 +277,8 @@ rhdf5_write_h5ad_sparse_array <- function(
     name,
     "shape",
     dim(value),
-    is_scalar = FALSE
+    is_scalar = FALSE,
+    H5type = "H5T_STD_I64LE"
   )
 }
 
