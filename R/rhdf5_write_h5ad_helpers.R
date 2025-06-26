@@ -182,14 +182,6 @@ rhdf5_write_h5ad_dense_array <- function(
     value[na_indices] <- NaN
   }
 
-  if (!is.vector(value)) {
-    if (is.matrix(value)) {
-      value <- t(value)
-    } else if (is.array(value)) {
-      value <- aperm(value)
-    }
-  }
-
   # Write dense array
   rhdf5_hdf5_write_dataset(
     file = file,
