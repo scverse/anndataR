@@ -257,12 +257,18 @@ rhdf5_write_h5ad_boolean_array <- function(value, file, name, compression) {
   rhdf5::H5Tenum_insert(tid, name = "FALSE", value = 0L)
   rhdf5::H5Tenum_insert(tid, name = "TRUE", value = 1L)
 
+  dcpl <- rhdf5::H5Pcreate("H5P_DATASET_CREATE")
+  on.exit(rhdf5::H5Pclose(dcpl), add = TRUE)
+  rhdf5::H5Pset_fill_time(dcpl, "H5D_FILL_TIME_ALLOC")
+  rhdf5::H5Pset_obj_track_times(dcpl, FALSE)
+
   # Create the dataset with this new datatype
   h5dataset <- rhdf5::H5Dcreate(
     h5loc = file,
     name = name,
     dtype_id = tid,
-    h5space = h5space
+    h5space = h5space,
+    dcpl = dcpl
   )
   on.exit(rhdf5::H5Dclose(h5dataset), add = TRUE)
 
