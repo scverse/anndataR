@@ -196,16 +196,79 @@ rhdf5_write_h5ad_dense_array <- function(
   }
 
   # Write dense array
-  rhdf5_hdf5_write_dataset(
-    file = file,
-    name = name,
-    value = value,
-    H5type = H5type,
-    compression = compression
-  )
+  if (is.logical(value)) {
+    rhdf5_write_h5ad_boolean_array(
+      value = value,
+      file = file,
+      name = name,
+      compression = compression
+    )
+  } else {
+    rhdf5_hdf5_write_dataset(
+      file = file,
+      name = name,
+      value = value,
+      H5type = H5type,
+      compression = compression
+    )
+  }
 
-  # Write encoding
   rhdf5_write_h5ad_encoding(file, name, "array", version)
+}
+
+#' Write H5AD boolean array
+#'
+#' Write a boolean array to an H5AD file as a custom ENUM dataset
+#'
+#' @param value Value to write
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be
+#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#'
+#' @noRd
+rhdf5_write_h5ad_boolean_array <- function(value, file, name, compression) {
+  # Based on https://stackoverflow.com/a/74653515/4384120
+
+  # TODO: Add compression
+  # nolint start
+  # dcpl <- rhdf5::H5Pcreate("H5P_DATASET_CREATE")
+  # on.exit(rhdf5::H5Pclose(dcpl), add = TRUE)
+  # if (compression == "gzip") {
+  #   rhdf5::H5Pset_deflate(dcpl, 6L) # 6 is a good default compression level
+  # } else if (compression == "lzf") {
+  #   rhdf5::H5Pset_lzf(dcpl, h5tid = tid)
+  # }
+  # nolint end
+
+  value <- as.integer(value)
+  if (!is.null(dim(value))) {
+    dims <- dim(value)
+  } else {
+    dims <- length(value)
+  }
+
+  # Create the dataspace for the data to write
+  h5space <- rhdf5::H5Screate_simple(dims = dims, NULL, native = TRUE)
+  on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
+
+  # Create the Boolean ENUM datatype (TRUE = 0 FALSE = 1)
+  tid <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_SCHAR")
+  rhdf5::H5Tenum_insert(tid, name = "FALSE", value = 0L)
+  rhdf5::H5Tenum_insert(tid, name = "TRUE", value = 1L)
+
+  # Create the dataset with this new datatype
+  h5dataset <- rhdf5::H5Dcreate(
+    h5loc = file,
+    name = name,
+    dtype_id = tid,
+    h5space = h5space
+  )
+  on.exit(rhdf5::H5Dclose(h5dataset), add = TRUE)
+
+  # Write the data. We have to use as.raw() because our base type is 8-bit and
+  # R integers are 32-bit
+  rhdf5::H5Dwrite(h5dataset, as.raw(value), h5type = tid)
 }
 
 #' Write H5AD sparse array
@@ -325,7 +388,6 @@ rhdf5_write_h5ad_nullable_boolean <- function(
   rhdf5_write_h5ad_encoding(file, name, "nullable-boolean", version)
 }
 
-
 #' Write H5AD nullable integer
 #'
 #' Write a nullable integer to an H5AD file
@@ -350,7 +412,7 @@ rhdf5_write_h5ad_nullable_integer <- function(
   rhdf5::h5createGroup(file, name)
 
   value_no_na <- value
-  value_no_na[is.na(value_no_na)] <- 1L
+  value_no_na[is.na(value_no_na)] <- 0L
 
   rhdf5_write_h5ad_dense_array(
     value_no_na,

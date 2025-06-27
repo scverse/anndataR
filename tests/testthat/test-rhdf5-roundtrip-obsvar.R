@@ -166,6 +166,16 @@ for (name in test_names) {
         obs_types = list(r_name),
         var_types = list(r_name)
       )
+      # TODO: Fix when issue #289 is fixed https://github.com/scverse/anndataR/issues/289
+      if (r_name %in% c("logical", "logical_with_nas")) {
+        adata_r$obs[[r_name]] <- rep(c(TRUE, FALSE), 5)
+        adata_r$var[[r_name]] <- rep(c(TRUE, FALSE), 10)
+        if (r_name == "logical_with_nas") {
+          adata_r$obs[[r_name]][1] <- NA
+          adata_r$var[[r_name]][1] <- NA
+        }
+      }
+
       write_h5ad(adata_r, file_r2, rhdf5 = TRUE)
 
       # Remove the rhdf5-NA.OK for comparison
