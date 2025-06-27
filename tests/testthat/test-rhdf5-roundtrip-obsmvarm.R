@@ -196,6 +196,10 @@ for (name in test_names) {
         obsm_types = list(r_name),
         varm_types = list(r_name)
       )
+      # TODO: Remove this once issue #286 is fixed https://github.com/scverse/anndataR/issues/286
+      if (!(r_name %in% names(vector_generators))) {
+        adata_r$varm[[r_name]] <- generate_matrix(20, 20, r_name)
+      }
       write_h5ad(adata_r, file_r2, rhdf5 = TRUE)
 
       # Remove the rhdf5-NA.OK for comparison
