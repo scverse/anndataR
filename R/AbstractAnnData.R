@@ -306,18 +306,21 @@ AbstractAnnData <- R6::R6Class(
     #' @param file See [as_HDF5AnnData()]
     #' @param compression See [as_HDF5AnnData()]
     #' @param mode See [as_HDF5AnnData()]
+    #' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
     #'
     #' @return An [`HDF5AnnData`] object
     as_HDF5AnnData = function(
       file,
       compression = c("none", "gzip", "lzf"),
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      rhdf5 = FALSE
     ) {
       as_HDF5AnnData(
         adata = self,
         file = file,
         compression = compression,
-        mode = mode
+        mode = mode,
+        rhdf5 = rhdf5
       )
     },
     #' @description
