@@ -389,7 +389,13 @@ rhdf5_read_h5ad_string_scalar <- function(file, name, version = "0.2.0") {
 rhdf5_read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  rhdf5::h5read(file, name, native = FALSE)
+  value <- rhdf5::h5read(file, name, native = FALSE)
+
+  if (is.factor(value) && all(levels(value) %in% c("TRUE", "FALSE"))) {
+    value <- as.logical(value)
+  }
+
+  value
 }
 
 #' Read H5AD mapping
