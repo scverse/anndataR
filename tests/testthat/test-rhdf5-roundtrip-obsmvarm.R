@@ -60,6 +60,8 @@ for (name in test_names) {
 
   # write to file
   adata_py$write_h5ad(file_py)
+  # Read it back in to get the version as read from disk
+  adata_py <- ad$read_h5ad(file_py)
 
   test_that(
     paste0("Reading an AnnData with obsm and varm '", name, "' works"),
