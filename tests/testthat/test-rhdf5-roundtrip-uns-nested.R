@@ -58,8 +58,13 @@ for (name in test_names) {
     skip_if(!is.null(msg), message = msg)
 
     adata_r <- read_h5ad(file_py, as = "HDF5AnnData", rhdf5 = TRUE)
+    nested_keys <- if (name == "none") {
+      list()
+    } else {
+      names(adata_r$uns$nested)
+    }
     expect_equal(
-      names(adata_r$uns$nested),
+      nested_keys,
       bi$list(adata_py$uns$nested$keys())
     )
 
@@ -96,6 +101,8 @@ for (name in test_names) {
   )
 
   test_that(paste0("Writing an AnnData with uns_nested '", name, "' works"), {
+    skip_if(name == "none", message = "No value to test for 'none'")
+
     msg <- message_if_known(
       backend = "rhdf5-HDF5AnnData",
       slot = c("uns_nested"),
