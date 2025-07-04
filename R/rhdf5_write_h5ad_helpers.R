@@ -201,7 +201,6 @@ rhdf5_write_h5ad_dense_array <- function(
       file = file,
       name = name,
       value = value,
-      H5type = H5type,
       compression = compression
     )
   } else {
