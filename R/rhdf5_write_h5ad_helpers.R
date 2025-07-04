@@ -480,13 +480,10 @@ rhdf5_write_h5ad_string_scalar <- function(
   compression,
   version = "0.2.0"
 ) {
-  rhdf5_hdf5_write_dataset(
+  rhdf5_hdf5_write_scalar(
     file = file,
     name = name,
-    value = value,
-    compression = compression,
-    variableLengthString = TRUE,
-    encoding = "UTF-8"
+    value = value
   )
 
   # Write encoding
@@ -522,11 +519,10 @@ rhdf5_write_h5ad_numeric_scalar <- function(
       compression = compression
     )
   } else {
-    rhdf5_hdf5_write_dataset(
+    rhdf5_hdf5_write_scalar(
       file = file,
       name = name,
-      value = value,
-      compression = compression
+      value = value
     )
   }
 

@@ -40,6 +40,67 @@ rhdf5_hdf5_write_dataset <- function(
   rhdf5::h5write(value, file, name, native = FALSE, ...)
 }
 
+#' Write a scalar to a HDF5 file
+#'
+#' Write a HDF5 scalar
+#'
+#' @param file A HDF5 file handle
+#' @param name Name of the element within the H5AD file
+#' @param value Value to write
+#'
+#' @noRd
+rhdf5_hdf5_write_scalar <- function(
+    file,
+    name,
+    value
+) {
+
+  h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
+  on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
+
+  # Create the Boolean ENUM datatype (TRUE = 0 FALSE = 1)
+  tid <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_SCHAR")
+  rhdf5::H5Tenum_insert(tid, name = "FALSE", value = 0L)
+  rhdf5::H5Tenum_insert(tid, name = "TRUE", value = 1L)
+
+  # Adjusted based on rhdf5:::.setDataType
+  tid <- switch(
+    storage.mode(value)[1],
+    integer = "H5T_STD_I64LE",
+    double = "H5T_IEEE_F64LE",
+    character = {
+      tid <- rhdf5::H5Tcopy("H5T_C_S1")
+      rhdf5::H5Tset_strpad(tid, strpad = "NULLTERM")
+      rhdf5::H5Tset_size(tid, NULL)
+      rhdf5::H5Tset_cset(tid, "UTF-8")
+      tid
+    },
+    {
+      cli_abort(c(
+        "{.arg value} must be of type {.val integer}, {.val double} or {.val character}",
+        "i" = "Got {.val {storage.mode(value)[1]}}"
+      ))
+    }
+  )
+
+  dcpl <- rhdf5::H5Pcreate("H5P_DATASET_CREATE")
+  on.exit(rhdf5::H5Pclose(dcpl), add = TRUE)
+  rhdf5::H5Pset_fill_time(dcpl, "H5D_FILL_TIME_ALLOC")
+  rhdf5::H5Pset_obj_track_times(dcpl, FALSE)
+
+  # Create the dataset with this new datatype
+  h5dataset <- rhdf5::H5Dcreate(
+    h5loc = file,
+    name = name,
+    dtype_id = tid,
+    h5space = h5space,
+    dcpl = dcpl
+  )
+  on.exit(rhdf5::H5Dclose(h5dataset), add = TRUE)
+
+  rhdf5::H5Dwrite(h5dataset, value)
+}
+
 #' Write a boolean dataset to a HDF5 array
 #'
 #' Write a boolean dataset with chosen compression (can be none)
