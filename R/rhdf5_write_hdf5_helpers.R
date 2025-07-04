@@ -2,7 +2,7 @@
 #'
 #' Write a HDF5 dataset with chosen compression (can be none)
 #'
-#' @param file A H5AD file handle
+#' @param file A HDF5 file handle
 #' @param name Name of the element within the H5AD file
 #' @param value Value to write
 #' @param H5type Datatype to write, see [rhdf5::h5createDataset()]
@@ -40,6 +40,79 @@ rhdf5_hdf5_write_dataset <- function(
   rhdf5::h5write(value, file, name, native = FALSE, ...)
 }
 
+#' Write a boolean dataset to a HDF5 array
+#'
+#' Write a boolean dataset with chosen compression (can be none)
+#'
+#' @param file A HDF5 file handle
+#' @param name Name of the element within the H5AD file
+#' @param value Value to write
+#' @param is_scalar Whether to use a scalar data space
+#' @param compression The compression to use when writing the element. Can be
+#'   one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`. CURRENTLY NOT
+#'   IMPLEMENTED!
+#'
+#' @noRd
+rhdf5_hdf5_write_boolean_dataset <- function(
+  file,
+  name,
+  value,
+  is_scalar = FALSE,
+  compression = c("none", "gzip", "lzf")
+) {
+  # Based on https://stackoverflow.com/a/74653515/4384120
+
+  # TODO: Add compression
+  # nolint start
+  # dcpl <- rhdf5::H5Pcreate("H5P_DATASET_CREATE")
+  # on.exit(rhdf5::H5Pclose(dcpl), add = TRUE)
+  # if (compression == "gzip") {
+  #   rhdf5::H5Pset_deflate(dcpl, 6L) # 6 is a good default compression level
+  # } else if (compression == "lzf") {
+  #   rhdf5::H5Pset_lzf(dcpl, h5tid = tid)
+  # }
+  # nolint end
+
+  value <- as.integer(value)
+
+  # Create the dataspace for the data to write
+  if (is_scalar) {
+    h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
+  } else {
+    if (!is.null(dim(value))) {
+      dims <- dim(value)
+    } else {
+      dims <- length(value)
+    }
+
+    h5space <- rhdf5::H5Screate_simple(dims = dims, NULL, native = TRUE)
+  }
+  on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
+
+  # Create the Boolean ENUM datatype (TRUE = 0 FALSE = 1)
+  tid <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_SCHAR")
+  rhdf5::H5Tenum_insert(tid, name = "FALSE", value = 0L)
+  rhdf5::H5Tenum_insert(tid, name = "TRUE", value = 1L)
+
+  dcpl <- rhdf5::H5Pcreate("H5P_DATASET_CREATE")
+  on.exit(rhdf5::H5Pclose(dcpl), add = TRUE)
+  rhdf5::H5Pset_fill_time(dcpl, "H5D_FILL_TIME_ALLOC")
+  rhdf5::H5Pset_obj_track_times(dcpl, FALSE)
+
+  # Create the dataset with this new datatype
+  h5dataset <- rhdf5::H5Dcreate(
+    h5loc = file,
+    name = name,
+    dtype_id = tid,
+    h5space = h5space,
+    dcpl = dcpl
+  )
+  on.exit(rhdf5::H5Dclose(h5dataset), add = TRUE)
+
+  # Write the data. We have to use as.raw() because our base type is 8-bit and
+  # R integers are 32-bit
+  rhdf5::H5Dwrite(h5dataset, as.raw(value), h5type = tid)
+}
 
 #' HDF5 path exists
 #'
