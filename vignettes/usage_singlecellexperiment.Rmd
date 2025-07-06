@@ -64,43 +64,59 @@ sce_obj
 
 Note that there is no one-to-one mapping possible between the AnnData and SingleCellExperiment data structures, so some information might be lost during conversion. It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
 
-See the [in-depth vignette on conversion to and from SingleCellExperiment objects](singlecellexperiment.html) for more details on how to customize the conversion process. For instance:
+### Customizing the conversion
+You can customize the conversion process by providing specific mappings for each slot in the `SingleCellExperiment` object.
+Each of the mapping arguments can be provided with one of the following:
+- `TRUE`: all items in the slot will be copied using the default mapping
+- `FALSE`: the slot will not be copied
+- a (named) character vector: the names are the names of the slot in the `SingleCellExperiment` object, the values are the names of the slot in the `AnnData` object.
+
+See `?as_SingleCellExperiment` for more details on how to customize the conversion process. For instance:
 
 ```{r ex_mapping, eval=FALSE}
-adata$as_SingleCellExperiment(
-  assays_mapping = FALSE,
-  colData_mapping = list(coldata1 = "integer", coldata2 = "numeric"),
-  rowData_mapping = list(rowdata1 = "character", rowdata2 = "logical")
+sce_obj <- adata$as_SingleCellExperiment(
+  x_mapping = "counts",
+  assays_mapping = c("csc_counts"),
+  colData_mapping = c("Int", "IntNA"),
+  rowData_mapping = c(rowdata1 = "String", rowdata2 = "total_counts"),
+  reducedDims_mapping = list(
+    "pca" = c(sampleFactors = "X_pca", featureLoadings = "PCs"),
+    "umap" = c(sampleFactors = "X_umap")
+  ),
+  colPairs_mapping = TRUE,
+  rowPairs_mapping = FALSE,
+  metadata_mapping = c(value1 = "Bool", value2 = "IntScalar")
 )
+sce_obj
 ```
 
 ## Convert a SingleCellExperiment Object to an AnnData Object
 
-Here's an example demonstrating how to create a `SingleCellExperiment` object from scratch, then convert it to `AnnData` and save it as `.h5ad`
+The reverse conversion is also possible, allowing you to convert a `SingleCellExperiment` object back to an `AnnData` object, or to just write out the `SingleCellExperiment` object as an `.h5ad` file.
 
-```{r construct_sce}
-counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
-sce_obj <- SingleCellExperiment(list(counts = counts))
-
-sce_obj
+```{r write_Seurat}
+write_h5ad(sce_obj, tempfile(fileext = ".h5ad"))
 ```
 
-You can convert the `SingleCellExperiment` object to an `AnnData` object using the `as_AnnData` function:
-
-```{r from_SCE}
+This is equivalent to converting the `SingleCellExperiment` object to an `AnnData` object and then writing it out:
+```{r convert_and_write}
 adata <- as_AnnData(sce_obj)
-adata
+write_h5ad(adata, tempfile(fileext = ".h5ad"))
 ```
 
-Again note that there is no one-to-one mapping possible between the AnnData and SingleCellExperiment data structures, so some information might be lost during conversion. It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
+You can again customize the conversion process by providing specific mappings for each slot in the `AnnData` object. For more details, see `?as_AnnData`.
 
-See the [in-depth vignette on conversion to and from SingleCellExperiment objects](singlecellexperiment.html) for more details on how to customize the conversion process. Example:
-
-```{r from_SCE_ex}
+Here's an example:
+```{r customize_anndata_conversion}
 as_AnnData(
   sce_obj,
   x_mapping = "counts",
-  layers_mapping = FALSE
+  layers_mapping = c("csc_counts"),
+  obs_mapping = c(metadata1 = "Int", metadata2 = "IntNA"),
+  var_mapping = FALSE,
+  obsm_mapping = list(X_pca = "pca", X_umap = "umap"),
+  obsp_mapping = TRUE,
+  uns_mapping = c("value1", "value2")
 )
 ```
 
