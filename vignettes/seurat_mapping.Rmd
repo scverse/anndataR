@@ -355,7 +355,7 @@ suppressWarnings({
     RunPCA(npcs = 10L) |>
     FindNeighbors() |>
     RunUMAP(dims = 1:10)
-  obj@misc[["data"]] <- "some data"
+  Misc(obj, "data") <- "some data"
 })
 ```
 
