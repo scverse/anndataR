@@ -114,9 +114,9 @@ as_AnnData(
   layers_mapping = c("csc_counts"),
   obs_mapping = c(metadata1 = "Int", metadata2 = "IntNA"),
   var_mapping = FALSE,
-  obsm_mapping = list(X_pca = "pca", X_umap = "umap"),
+  obsm_mapping = list(X_pca = "X_pca", X_umap = "X_umap"),
   obsp_mapping = TRUE,
-  uns_mapping = c("value1", "value2")
+  uns_mapping = c("Bool", "IntScalar")
 )
 ```
 
