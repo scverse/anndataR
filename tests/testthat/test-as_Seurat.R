@@ -40,7 +40,7 @@ for (obs_key in colnames(ad$obs)) {
 
     expect_true(obs_key %in% colnames(seu[[]]))
     expect_equal(
-      seu@meta.data[[obs_key]], # accessor here
+      seu[[]][[obs_key]],
       ad$obs[[obs_key]],
       info = paste0("obs_key: ", obs_key),
       ignore_attr = TRUE
