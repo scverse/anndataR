@@ -40,7 +40,7 @@ for (obs_key in colnames(ad$obs)) {
 
     expect_true(obs_key %in% colnames(seu[[]]))
     expect_equal(
-      seu[[obs_key]],
+      seu@meta.data[[obs_key]],
       ad$obs[[obs_key]],
       info = paste0("obs_key: ", obs_key),
       ignore_attr = TRUE
@@ -121,7 +121,7 @@ test_that("as_Seurat retains pca dimred", {
   skip_if(!is.null(msg), message = msg)
 
   # trackstatus: class=Seurat, feature=test_get_obsm, status=wip
-  expect_true("X_pca" %in% names(seu@reductions))
+  expect_true("X_pca" %in% Reductions(seu))
   expect_equal(
     Embeddings(seu, reduction = "X_pca"),
     ad$obsm[["X_pca"]],
