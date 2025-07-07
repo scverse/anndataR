@@ -370,6 +370,16 @@ to_Seurat <- function(...) {
   object_metadata,
   assay_name
 ) {
+  if (
+    !"counts" %in% names(layers_mapping) &&
+      !"data" %in% names(layers_mapping)
+  ) {
+    cli_warn(c(
+      "No counts or data layer found in {.arg names(layers_mapping)},",
+      "this may lead to unexpected results when using the resulting Seurat object."
+    ))
+  }
+
   if (!"counts" %in% names(layers_mapping)) {
     # If there's no counts in the layers_mapping,
     # we will consider the first layer as "dummy counts"
