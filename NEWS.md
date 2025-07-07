@@ -1,6 +1,6 @@
 # anndataR 0.1.0.9001
 
-- remove anndataR.Rproj from repository
+- change uses of `sapply` to `vapply`
 
 # anndataR 0.1.0 (inital release candidate)
 
