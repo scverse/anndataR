@@ -50,6 +50,8 @@ test_that(paste0("Reading an AnnData with layer '", name, "' works"), {
   expect_equal(str_r, str_py)
 })
 
+gc()
+
 test_that(paste0("Writing an AnnData with layer '", name, "' works"), {
   msg <- message_if_known(
     backend = "HDF5AnnData",

@@ -106,6 +106,8 @@ for (name in test_names) {
     }
   )
 
+  gc()
+
   test_that(paste0("Writing an AnnData with obs and var '", name, "' works"), {
     msg <- message_if_known(
       backend = "HDF5AnnData",

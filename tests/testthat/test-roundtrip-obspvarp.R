@@ -109,6 +109,8 @@ for (name in test_names) {
     }
   )
 
+  gc()
+
   test_that(
     paste0("Writing an AnnData with obsp and varp '", name, "' works"),
     {
