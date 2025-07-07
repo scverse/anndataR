@@ -259,8 +259,8 @@ write_h5ad_sparse_array <- function(
     paste0(name, "/indices"),
     compression
   )
-  write_h5ad_dense_array(value@p, file, paste0(name, "/indptr"), compression)
-  write_h5ad_dense_array(value@x, file, paste0(name, "/data"), compression)
+  write_h5ad_dense_array(value@p, file, paste0(name, "/indptr"), compression) # accessor here
+  write_h5ad_dense_array(value@x, file, paste0(name, "/data"), compression) # accessor here
   write_h5ad_encoding(file, name, type, version)
 
   # Write shape attribute
