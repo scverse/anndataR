@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9001
+
+- remove anndataR.Rproj from repository
+
 # anndataR 0.1.0 (inital release candidate)
 
 Initial release candidate of **{anndataR}** including:
