@@ -32,7 +32,7 @@ status_lines <- map_df(source, function(path) {
         line_stripped <- gsub(" *# trackstatus: *", "", lines[[line_number]])
         line_split <- str_split_1(line_stripped, ", *")
         vals_split <- str_split(line_split, " *= *")
-        names <- sapply(vals_split, function(x) x[[1]])
+        names <- vapply(vals_split, function(x) x[[1]], character(1))
         values <- lapply(vals_split, function(x) x[[2]])
         df <- data.frame(setNames(values, names), check.names = FALSE)
         df$source_file <- path
