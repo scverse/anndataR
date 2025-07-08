@@ -29,7 +29,16 @@ object.
 
 ## Installation
 
-You can install the development version of **{anndataR}** like so:
+You can install **{anndataR}** from Bioconductor using **BiocManager**:
+
+```r
+if (!requireNamespace("BiocManager", quietly=TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("anndataR")
+```
+
+Or you can install the development version of **{anndataR}** from GitHub like so:
 
 ``` r
 # install.packages("pak")

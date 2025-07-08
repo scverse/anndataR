@@ -34,7 +34,15 @@ Check out `?anndataR` for a full list of the functions provided by this package.
 
 ## Installation
 
-Install using:
+Install using either **BiocManager** or from GitHub using **pak**:
+
+```{r, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly=TRUE)) {
+  install.packages("BiocManager")
+}
+BiocManager::install("anndataR")
+```
+
 ```{r, eval = FALSE}
 if (!require("pak", quietly = TRUE)) {
   install.packages("pak")
