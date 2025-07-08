@@ -355,7 +355,11 @@ HDF5AnnData <- R6::R6Class(
 
       if (is_readonly) {
         # if any of these variables are not NULL, throw an error
-        are_null <- sapply(.anndata_slots, function(x) is.null(get(x)))
+        are_null <- vapply(
+          .anndata_slots,
+          function(x) is.null(get(x)),
+          logical(1)
+        )
         if (!all(are_null)) {
           cli_abort(
             paste0(
