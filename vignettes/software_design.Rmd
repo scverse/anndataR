@@ -43,3 +43,9 @@ Notation:
   - `*X: Matrix` - variable `X` is abstract
   - `as_SingleCellExperiment(): SingleCellExperiment` - function `as_SingleCellExperiment` returns object of type `SingleCellExperiment`
   - `*as_SingleCellExperiment()` - function `as_SingleCellExperiment` is abstract
+
+## Session info
+
+```{r}
+sessionInfo()
+```

@@ -1,3 +1,15 @@
+# anndataR 0.1.0.9003
+
+- Simplify & update vignetttes
+
+# anndataR 0.1.0.9002
+
+- remove `anndataR.Rproj` file from repository
+
+# anndataR 0.1.0.9001
+
+- change uses of `sapply` to `vapply`
+
 # anndataR 0.1.0 (inital release candidate)
 
 Initial release candidate of **{anndataR}** including:
