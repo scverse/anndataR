@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9004
+
+- Use accessors instead of direct slot access where possible
+
 # anndataR 0.1.0.9003
 
 - Simplify & update vignetttes
