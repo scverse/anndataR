@@ -32,7 +32,7 @@ object.
 You can install **{anndataR}** from Bioconductor using **BiocManager**:
 
 ```r
-if (!requireNamespace("BiocManager", quietly=TRUE)) {
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 BiocManager::install("anndataR")
