@@ -55,13 +55,13 @@ rhdf5_hdf5_write_scalar <- function(
     value
 ) {
 
+  # Missing values need to be stored as floats
+  if (is.integer(value) && is.na(value)) {
+    value <- as.numeric(value)
+  }
+
   h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
   on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
-
-  # Create the Boolean ENUM datatype (TRUE = 0 FALSE = 1)
-  tid <- rhdf5::H5Tenum_create(dtype_id = "H5T_NATIVE_SCHAR")
-  rhdf5::H5Tenum_insert(tid, name = "FALSE", value = 0L)
-  rhdf5::H5Tenum_insert(tid, name = "TRUE", value = 1L)
 
   # Adjusted based on rhdf5:::.setDataType
   tid <- switch(
