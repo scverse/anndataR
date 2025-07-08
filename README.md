@@ -56,6 +56,15 @@ pak::pak("scverse/anndataR", dependencies = TRUE)
 
 The best way to get started with **{anndataR}** is to explore the package vignettes (available at https://anndatar.data-intuitive.com/articles/).
 
+In order to browse these vignettes locally, you need to build them during installation:
+
+```
+options(pkg.build_vignettes = TRUE)
+pak::pak("scverse/anndataR")
+```
+
+Take note that you need all suggested dependencies available, and that building them can take some time.
+
 - **Getting started**: An introduction to the package and its features.  
   `vignette("anndataR", package = "anndataR")`
 - **Reading and writing H5AD files**: How to read and write `*.h5ad` files.  

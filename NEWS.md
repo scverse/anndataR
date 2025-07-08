@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9003
+
+- Simplify & update vignetttes
+
 # anndataR 0.1.0.9002
 
 - remove `anndataR.Rproj` file from repository
