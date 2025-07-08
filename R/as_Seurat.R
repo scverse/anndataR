@@ -375,7 +375,7 @@ to_Seurat <- function(...) {
       !"data" %in% names(layers_mapping)
   ) {
     cli_warn(c(
-      "No counts or data layer found in {.arg names(layers_mapping)},",
+      "No {.val counts} or {.val data} layer found in {.arg names(layers_mapping)},",
       "this may lead to unexpected results when using the resulting Seurat object."
     ))
   }
