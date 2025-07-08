@@ -95,7 +95,7 @@ table
    \code{adata$layers} \tab \code{assays(sce)} \tab \code{assays_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{colData(sce)} \tab \code{colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{adata$var} \tab \code{rowData(sce)} \tab \code{rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
-   \code{adata$obsm} \tab \code{reducedDims(sce)} \tab \code{reducedDims_mapping = c(pca = "X_pca")} \strong{OR} \code{reducedDims_mapping = list(pca = c(obsm = "X_pca", varm = "PCs", uns = "pca_metadata"))} \tab All items are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
+   \code{adata$obsm} \tab \code{reducedDims(sce)} \tab \code{reducedDims_mapping = c(pca = "X_pca")} \strong{OR} \code{reducedDims_mapping = list(pca = c(sampleFactors = "X_pca", featureLoadings = "PCs", metadata = "pca_metadata"))} \tab All items are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
    \code{adata$obsp} \tab \code{colPairs(sce)} \tab \code{colPairs_mapping = c(nn = "connectivities")} \tab All items are copied by name \cr
    \code{adata$varp} \tab \code{rowPairs(sce)} \tab \code{rowPairs_mapping = c(gene_overlaps = "similarities")} \tab All items are copied by name \cr
    \code{adata$uns} \tab \code{metadata(sce)} \tab \code{uns_mapping = c(project_metadata = "metadata")} \tab All items are copied by name \cr
