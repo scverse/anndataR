@@ -1,11 +1,6 @@
 skip_if_no_anndata()
-skip_if_not_installed("reticulate")
 
 library(reticulate)
-testthat::skip_if_not(
-  reticulate::py_module_available("dummy_anndata"),
-  message = "Python dummy_anndata module not available for testing"
-)
 
 ad <- reticulate::import("anndata", convert = FALSE)
 bi <- reticulate::import_builtins()
