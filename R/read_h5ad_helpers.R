@@ -434,16 +434,20 @@ read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
 #'
 #' @noRd
 read_h5ad_collection <- function(file, name, item_names) {
-  columns <- list()
-  for (item_name in item_names) {
-    new_name <- paste0(name, "/", item_name)
-    encoding <- read_h5ad_encoding(file, new_name)
-    columns[[item_name]] <- read_h5ad_element(
-      file = file,
-      name = new_name,
-      type = encoding$type,
-      version = encoding$version
-    )
-  }
+  columns <- lapply(
+    item_names,
+    function(item_name) {
+      new_name <- paste0(name, "/", item_name)
+      encoding <- read_h5ad_encoding(file, new_name)
+      read_h5ad_element(
+        file = file,
+        name = new_name,
+        type = encoding$type,
+        version = encoding$version
+      )
+    }
+  )
+  names(columns) <- item_names
+
   columns
 }
