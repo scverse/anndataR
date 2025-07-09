@@ -434,7 +434,6 @@ read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
 #'
 #' @noRd
 read_h5ad_collection <- function(file, name, item_names) {
-
   columns <- lapply(
     item_names,
     function(item_name) {
@@ -449,6 +448,6 @@ read_h5ad_collection <- function(file, name, item_names) {
     }
   )
   names(columns) <- item_names
-  
+
   columns
 }
