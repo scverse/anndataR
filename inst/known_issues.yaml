@@ -294,20 +294,3 @@ known_issues:
     proposed_solution: Investigate if this is a problem or not.
     to_investigate: True
     to_fix: False
-  - backend: rhdf5-HDF5AnnData
-    slot:
-      - uns
-      - uns_nested
-    dtype:
-      - nullable_boolean_array
-      - nullable_integer_array
-    process: [reticulate]
-    error_message: |
-      adata_r$uns[[name]] (`actual`) not equal to reticulate::py_to_r(adata_py$uns[[name]]) (`expected`).
-
-      `actual` is a logical vector (NA, FALSE, TRUE, FALSE, TRUE, ...)
-      `expected` is an S3 object of class <pandas.core.arrays.boolean.BooleanArray/pandas.core.arrays.masked.BaseMaskedArray/pandas.core.arraylike.OpsMixin/pandas.core.arrays.base.ExtensionArray/python.builtin.object>, an environment
-    description: Python object is not being converted correctly.
-    proposed_solution: Debug and fix
-    to_investigate: True
-    to_fix: True
