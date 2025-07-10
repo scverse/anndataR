@@ -129,8 +129,6 @@ If you use \code{layers_mapping}, it should be a named vector where names are na
 of \code{Layers(seurat)} and values are keys of \code{layers} in \code{adata}.
 In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the vector.
 The name you provide for \code{x_mapping} may not be a name in \code{layers_mapping}.
-You must provide a layer named \code{counts} or \code{data} in either \code{x_mapping} or
-\code{layers_mapping}.
 }
 }
 \examples{
