@@ -553,18 +553,23 @@ HDF5AnnData <- R6::R6Class(
 
     #' @description Close the HDF5 file
     close = function() {
-      if (!private$.rhdf5 && private$.h5obj$is_valid) {
-        private$.h5obj$close_all()
-        cleanup_HDF5AnnData(file = private$.h5obj$file)
-        gc()
+      if (!private$.rhdf5) {
+        if (private$.h5obj$is_valid) {
+          private$.h5obj$close_all()
+          cleanup_HDF5AnnData(file = private$.h5obj$file)
+          gc()
+        }
+      } else {
+        if (rhdf5::H5Iis_valid(private$.h5obj)) {
+          tryCatch({
+            rhdf5::H5Fclose(private$.h5obj)
+            rhdf5::H5garbage_collect()
+            gc()
+          })
+        }
       }
 
-      if (private$.rhdf5) {
-        h5obj <- private$.h5obj
-        rhdf5::H5Fclose(private$.h5obj)
-        rhdf5::H5garbage_collect()
-        gc()
-      }
+      invisible(NULL)
     },
 
     #' @description See the `n_obs` field in [AnnData-usage]
