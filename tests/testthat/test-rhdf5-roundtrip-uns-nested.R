@@ -95,21 +95,24 @@ for (name in test_names) {
 
       # Avoid error because {reticulate} can't convert Python Categorical objects
       if (
-        name %in% c(
-          "categorical",
-          "categorical_missing_values",
-          "categorical_ordered",
-          "categorical_ordered_missing_values"
-        )
+        name %in%
+          c(
+            "categorical",
+            "categorical_missing_values",
+            "categorical_ordered",
+            "categorical_ordered_missing_values"
+          )
       ) {
         categorical <- adata_py$uns$nested[[name]]
-        categories <- reticulate::py_to_r(categorical$categories)
-        codes <- reticulate::py_to_r(categorical$codes)
-        ordered <- reticulate::py_to_r(categorical$ordered)
-        is_na <- codes == -1L
-        codes[is_na] <- 0L
-        py_value <- factor(categories[codes + 1], levels = categories, ordered = ordered)
-        py_value[is_na] <- NA
+        py_value <- convert_categorical(categorical)
+      } else if (name == "nullable_integer_array") {
+        # Avoid error because {reticulate} can't convert Python pandas Nullable Integer arrays
+        nullable_array <- adata_py$uns$nested[[name]]
+        py_value <- convert_nullable_integer_array(nullable_array)
+      } else if (name == "nullable_boolean_array") {
+        # Avoid error because {reticulate} can't convert Python pandas Nullable Boolean arrays
+        nullable_array <- adata_py$uns$nested[[name]]
+        py_value <- convert_nullable_boolean_array(nullable_array)
       } else {
         py_value <- reticulate::py_to_r(adata_py$uns$nested[[name]])
       }
