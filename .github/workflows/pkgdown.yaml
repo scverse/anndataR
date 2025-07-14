@@ -34,9 +34,9 @@ jobs:
           extra-packages: local::.
           needs: website
 
-      - name: Reinstall {rhdf}
+      - name: Reinstall {rhdf5}
         run: |
-          BiocManager::install(c("rhdf5", "Rhdf5lib"))
+          BiocManager::install(c("rhdf5", "Rhdf5lib"), force = TRUE)
         shell: Rscript {0}
 
       - name: Check {rhdf5} installed
