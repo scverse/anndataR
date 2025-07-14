@@ -34,6 +34,11 @@ jobs:
           extra-packages: local::.
           needs: website
 
+      - name: Reinstall {rhdf}
+        run: |
+          pak::pkg_install(c("rhdf5", "Rhdf5lib"))
+        shell: Rscript {0}
+
       - name: Check {rhdf5} installed
         run: |
           if (requireNamespace("rhdf5")) {
