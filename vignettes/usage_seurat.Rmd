@@ -68,51 +68,62 @@ Note that there is no one-to-one mapping possible between the AnnData and Seurat
 so some information might be lost during conversion. It is recommended to carefully inspect the converted object
 to ensure that all necessary information has been transferred.
 
+### Customizing the conversion
+
+You can customize the conversion process by providing specific mappings for each slot in the Seurat object.
+Each of the mapping arguments can be provided with one of the following:
+- `TRUE`: all items in the slot will be copied using the default mapping
+- `FALSE`: the slot will not be copied
+- a (named) character vector: the names are the names of the slot in the Seurat object, the values are the names of the slot in the AnnData object.
+
 See `?as_Seurat` for more details on how to customize the conversion process. For instance:
 
 ```{r customize_seurat_conversion}
-adata$as_Seurat(
-  assay_name = "ADT",
-  layers_mapping = c(counts = "dense_counts", data = "dense_X")
+seurat_obj <- adata$as_Seurat(
+  layers_mapping = c("counts", "dense_counts"),
+  object_metadata_mapping = c(metadata1 = "Int", metadata2 = "Float"),
+  assay_metadata_mapping = FALSE,
+  reduction_mapping = list(
+    pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"),
+    umap = c(key = "UMAP_", embeddings = "X_umap")
+  ),
+  graph_mapping = TRUE,
+  misc_mapping = c(misc1 = "Bool", misc2 = "IntScalar")
 )
+seurat_obj
 ```
 
 ## Convert a Seurat Object to an AnnData Object
 
-Here's an example demonstrating how to create a `Seurat` object from scratch, then convert it to `AnnData` and save it as `.h5ad`
+The reverse conversion is also possible, allowing you to convert the `Seurat` object back to an `AnnData` object, or to just write out the `Seurat` object as an `.h5ad` file.
 
-```{r create_seurat}
-counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
-seurat_obj <- CreateSeuratObject(counts = counts) |>
-  NormalizeData() |>
-  FindVariableFeatures() |>
-  ScaleData() |>
-  RunPCA(npcs = 10) |>
-  FindNeighbors() |>
-  RunUMAP(dims = 1:10)
-seurat_obj
+```{r write_seurat}
+write_h5ad(seurat_obj, tempfile(fileext = ".h5ad"))
 ```
 
-You can write out the `Seurat` object to an `.h5ad` file using the `write_h5ad` function:
-
-```r
-write_h5ad(seurat_obj, "seurat_obj.h5ad")
+This is equivalent to converting the `Seurat` object to an `AnnData` object and then writing it out:
+```{r convert_to_anndata}
+adata <- as_AnnData(seurat_obj)
+write_h5ad(adata, tempfile(fileext = ".h5ad"))
 ```
 
-If you need more customized conversion, you first need to convert the `Seurat` object to an `AnnData` object.
-Again note that there is no one-to-one mapping possible between the AnnData and SeuratObject data structures,
-so some information might be lost during conversion. It is recommended to carefully inspect the converted object
-to ensure that all necessary information has been transferred.
+You can again customize the conversion process by providing specific mappings for each slot in the `AnnData` object.
+For more details, see `?as_AnnData`.
 
-See `?as_AnnData` for more details on how to customize the conversion process. Example:
-
-```{r customize_as_AnnData}
-as_AnnData(
+Here's an example:
+```{r customize_anndata_conversion}
+adata <- as_AnnData(
   seurat_obj,
   assay_name = "RNA",
-  x_mapping = "data",
-  layers_mapping = c(foo = "counts")
+  x_mapping = "counts",
+  layers_mapping = c("dense_counts"),
+  obs_mapping = c(RNA_count = "nCount_RNA", metadata1 = "metadata1"),
+  var_mapping = FALSE,
+  obsm_mapping = list(X_pca = "pca", X_umap = "umap"),
+  obsp_mapping = TRUE,
+  uns_mapping = c("misc1", "misc2")
 )
+adata
 ```
 
 ## Session info

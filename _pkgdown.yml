@@ -10,13 +10,11 @@ navbar:
     menu:
     - text: Usage
     - text: Read/write H5AD files
-      href: articles/usage_h5ad.html
+      href: articles/anndataR.html
     - text: Read/write Seurat objects
       href: articles/usage_seurat.html
     - text: Read/write SingleCellExperiment objects
       href: articles/usage_singlecellexperiment.html
-    - text: Mapping between SingleCellExperiment and AnnData
-      href: articles/singlecellexperiment_mapping.html
     - text: -------
     - text: Development
     - text: Software design

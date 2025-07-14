@@ -213,7 +213,7 @@ AbstractAnnData <- R6::R6Class(
     #' @return A `SingleCellExperiment` object
     to_SingleCellExperiment = function(...) {
       lifecycle::deprecate_warn(
-        "0.99.0",
+        "0.1.0",
         "to_SingleCellExperiment()",
         "as_SingleCellExperiment()"
       )
@@ -267,7 +267,7 @@ AbstractAnnData <- R6::R6Class(
     #' @return A `Seurat` object
     to_Seurat = function(...) {
       lifecycle::deprecate_warn(
-        "0.99.0",
+        "0.1.0",
         "to_Seurat()",
         "as_Seurat()"
       )
@@ -291,7 +291,7 @@ AbstractAnnData <- R6::R6Class(
     #' @return An [`InMemoryAnnData`] object
     to_InMemoryAnnData = function() {
       lifecycle::deprecate_warn(
-        "0.99.0",
+        "0.1.0",
         "to_InMemoryAnnData()",
         "as_InMemoryAnnData()"
       )
@@ -330,7 +330,7 @@ AbstractAnnData <- R6::R6Class(
     #' @return An [`HDF5AnnData`] object
     to_HDF5AnnData = function(...) {
       lifecycle::deprecate_warn(
-        "0.99.0",
+        "0.1.0",
         "to_HDF5AnnDAta()",
         "as_HDF5AnnData()",
       )
