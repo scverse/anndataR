@@ -247,9 +247,7 @@ read_h5ad_rec_array <- function(file, name, version = "0.2.0") {
 #' @return a boolean vector
 #'
 #' @noRd
-# nolint start: object_length_linter
 read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
-  # nolint end: object_length_linter
   as.logical(read_h5ad_nullable(file, name, version))
 }
 
@@ -264,9 +262,7 @@ read_h5ad_nullable_boolean <- function(file, name, version = "0.1.0") {
 #' @return an integer vector
 #'
 #' @noRd
-# nolint start: object_length_linter
 read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
-  # nolint end: object_length_linter
   as.integer(read_h5ad_nullable(file, name, version))
 }
 
