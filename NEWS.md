@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9005
+
+- Bypass requiring a `counts` or `data` layer during `Seurat` conversion
+
 # anndataR 0.1.0.9003
 
 - Simplify & update vignetttes
