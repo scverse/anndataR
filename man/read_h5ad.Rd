@@ -9,7 +9,6 @@ read_h5ad(
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   to = deprecated(),
   mode = c("r", "r+", "a", "w", "w-", "x"),
-  rhdf5 = FALSE,
   ...
 )
 }
@@ -37,8 +36,6 @@ read_h5ad(
 \item \code{w} creates a file, truncating any existing ones.
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
 }}
-
-\item{rhdf5}{Whether to use the \code{rhdf5} package for HDF5 operations}
 
 \item{...}{Extra arguments provided to the \verb{as_*} conversion function for the
 object specified by \code{as}}

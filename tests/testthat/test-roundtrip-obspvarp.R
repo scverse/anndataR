@@ -43,6 +43,8 @@ for (name in test_names) {
 
   # write to file
   adata_py$write_h5ad(file_py)
+  # Read it back in to get the version as read from disk
+  adata_py <- ad$read_h5ad(file_py)
 
   test_that(
     paste0("Reading an AnnData with obsp and varp '", name, "' works"),
@@ -180,11 +182,14 @@ for (name in test_names) {
       )
       write_h5ad(adata_r, file_r2)
 
+      # Remove the rhdf5-NA.OK for comparison
+      hdf5_clear_rhdf5_attributes(file_r2, paste0("/obsp/", r_name))
+
       # run h5diff
       res_obsp <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/obsp/", name),
@@ -194,10 +199,13 @@ for (name in test_names) {
       )
       expect_equal(res_obsp$status, 0, info = res_obsp$stdout)
 
+      # Remove the rhdf5-NA.OK for comparison
+      hdf5_clear_rhdf5_attributes(file_r2, paste0("/varp/", r_name))
+
       res_varp <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/varp/", name),

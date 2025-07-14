@@ -374,8 +374,7 @@ See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for more details on the conv
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_HDF5AnnData(
   file,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x"),
-  rhdf5 = FALSE
+  mode = c("w-", "r", "r+", "a", "w", "x")
 )}\if{html}{\out{</div>}}
 }
 

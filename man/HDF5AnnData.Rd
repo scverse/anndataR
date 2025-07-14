@@ -50,7 +50,6 @@ Other AnnData classes:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-HDF5AnnData-new}{\code{HDF5AnnData$new()}}
-\item \href{#method-HDF5AnnData-rhdf5_initialize}{\code{HDF5AnnData$rhdf5_initialize()}}
 \item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
 \item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
 \item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
@@ -91,77 +90,6 @@ Close the HDF5 file when the object is garbage collected
 \code{HDF5AnnData} constructor
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(
-  file,
-  X = NULL,
-  obs = NULL,
-  var = NULL,
-  layers = NULL,
-  obsm = NULL,
-  varm = NULL,
-  obsp = NULL,
-  varp = NULL,
-  uns = NULL,
-  shape = NULL,
-  mode = c("r", "r+", "a", "w", "w-", "x"),
-  compression = c("none", "gzip", "lzf"),
-  rhdf5 = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{file}}{The file name (character) of the \code{.h5ad} file. If this file
-already exits, other arguments must be \code{NULL}.}
-
-\item{\code{X}}{See the \code{X} slot in \link{AnnData-usage}}
-
-\item{\code{obs}}{See the \code{obs} slot in \link{AnnData-usage}}
-
-\item{\code{var}}{See the \code{var} slot in \link{AnnData-usage}}
-
-\item{\code{layers}}{See the \code{layers} slot in \link{AnnData-usage}}
-
-\item{\code{obsm}}{See the \code{obsm} slot in \link{AnnData-usage}}
-
-\item{\code{varm}}{See the \code{varm} slot in \link{AnnData-usage}}
-
-\item{\code{obsp}}{See the \code{obsp} slot in \link{AnnData-usage}}
-
-\item{\code{varp}}{See the \code{varp} slot in \link{AnnData-usage}}
-
-\item{\code{uns}}{See the \code{uns} slot in \link{AnnData-usage}}
-
-\item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
-both \code{X} or \code{obs} and \code{var} are not provided.}
-
-\item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for
-details}
-
-\item{\code{compression}}{The compression algorithm to use. See
-\code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
-
-\item{\code{rhdf5}}{Whether to use the \code{rhdf5} package for HDF5 operations}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-The constructor creates a new HDF5 \code{AnnData} interface object. This can
-either be used to either connect to an existing \code{.h5ad} file or to
-create a new one. To create a new file both \code{obs_names} and \code{var_names}
-must be specified. In both cases, any additional slots provided will be
-set on the created object. This will cause data to be overwritten if the
-file already exists.
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-rhdf5_initialize"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-rhdf5_initialize}{}}}
-\subsection{Method \code{rhdf5_initialize()}}{
-\code{HDF5AnnData} constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$rhdf5_initialize(
   file,
   X = NULL,
   obs = NULL,

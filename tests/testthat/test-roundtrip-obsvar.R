@@ -43,6 +43,8 @@ for (name in test_names) {
 
   # write to file
   adata_py$write_h5ad(file_py)
+  # Read it back in to get the version as read from disk
+  adata_py <- ad$read_h5ad(file_py)
 
   test_that(paste0("reading an AnnData with obs and var '", name, "' works"), {
     msg <- message_if_known(
@@ -166,13 +168,26 @@ for (name in test_names) {
         obs_types = list(r_name),
         var_types = list(r_name)
       )
+      # TODO: Fix when issue #289 is fixed https://github.com/scverse/anndataR/issues/289
+      if (r_name %in% c("logical", "logical_with_nas")) {
+        adata_r$obs[[r_name]] <- rep(c(TRUE, FALSE), 5)
+        adata_r$var[[r_name]] <- rep(c(TRUE, FALSE), 10)
+        if (r_name == "logical_with_nas") {
+          adata_r$obs[[r_name]][1] <- NA
+          adata_r$var[[r_name]][1] <- NA
+        }
+      }
+
       write_h5ad(adata_r, file_r2)
+
+      # Remove the rhdf5-NA.OK for comparison
+      hdf5_clear_rhdf5_attributes(file_r2, paste0("/obs/", r_name))
 
       # run h5diff
       res_obs <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/obs/", name),
@@ -182,10 +197,13 @@ for (name in test_names) {
       )
       expect_equal(res_obs$status, 0, info = res_obs$stdout)
 
+      # Remove the rhdf5-NA.OK for comparison
+      hdf5_clear_rhdf5_attributes(file_r2, paste0("/var/", r_name))
+
       res_var <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/var/", name),

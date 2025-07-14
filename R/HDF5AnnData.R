@@ -16,7 +16,6 @@ HDF5AnnData <- R6::R6Class(
     .h5obj = NULL,
     .close_on_finalize = FALSE,
     .compression = NULL,
-    .rhdf5 = FALSE,
 
     #' @description Close the HDF5 file when the object is garbage collected
     finalize = function() {
@@ -29,12 +28,9 @@ HDF5AnnData <- R6::R6Class(
   active = list(
     #' @field X See [AnnData-usage]
     X = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.h5obj, "X", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "X")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_X, status=done
         value <- private$.validate_aligned_array(
@@ -48,19 +44,15 @@ HDF5AnnData <- R6::R6Class(
           value,
           private$.h5obj,
           "X",
-          private$.compression,
-          rhdf5 = private$.rhdf5
+          private$.compression
         )
       }
     },
     #' @field layers See [AnnData-usage]
     layers = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(private$.h5obj, "layers", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "layers")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
         value <- private$.validate_aligned_mapping(
@@ -74,19 +66,15 @@ HDF5AnnData <- R6::R6Class(
           value,
           private$.h5obj,
           "layers",
-          private$.compression,
-          rhdf5 = private$.rhdf5
+          private$.compression
         )
       }
     },
     #' @field obsm See [AnnData-usage]
     obsm = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.h5obj, "obsm", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "obsm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
         value <- private$.validate_aligned_mapping(
@@ -98,19 +86,15 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "obsm",
-          rhdf5 = private$.rhdf5
+          "obsm"
         )
       }
     },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.h5obj, "varm", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "varm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
         value <- private$.validate_aligned_mapping(
@@ -122,19 +106,15 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "varm",
-          rhdf5 = private$.rhdf5
+          "varm"
         )
       }
     },
     #' @field obsp See [AnnData-usage]
     obsp = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.h5obj, "obsp", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "obsp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
         value <- private$.validate_aligned_mapping(
@@ -147,19 +127,15 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "obsp",
-          rhdf5 = private$.rhdf5
+          "obsp"
         )
       }
     },
     #' @field varp See [AnnData-usage]
     varp = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.h5obj, "varp", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "varp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
         value <- private$.validate_aligned_mapping(
@@ -172,19 +148,15 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "varp",
-          rhdf5 = private$.rhdf5
+          "varp"
         )
       }
     },
     #' @field obs See [AnnData-usage]
     obs = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_h5ad_element(private$.h5obj, "obs", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "obs")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
@@ -192,35 +164,27 @@ HDF5AnnData <- R6::R6Class(
           value,
           private$.h5obj,
           "obs",
-          private$.compression,
-          rhdf5 = private$.rhdf5
+          private$.compression
         )
       }
     },
     #' @field var See [AnnData-usage]
     var = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_h5ad_element(private$.h5obj, "var", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "var")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
         write_h5ad_element(
           value,
           private$.h5obj,
-          "var",
-          rhdf5 = private$.rhdf5
+          "var"
         )
       }
     },
     #' @field obs_names See [AnnData-usage]
     obs_names = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
         rownames(self$obs)
@@ -241,192 +205,17 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field uns See [AnnData-usage]
     uns = function(value) {
-      if (!private$.rhdf5 && !private$.h5obj$is_valid) {
-        cli_abort("HDF5 file is closed")
-      }
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
-        read_h5ad_element(private$.h5obj, "uns", rhdf5 = private$.rhdf5)
+        read_h5ad_element(private$.h5obj, "uns")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
         value <- private$.validate_named_list(value, "uns")
-        write_h5ad_element(value, private$.h5obj, "uns", rhdf5 = private$.rhdf5)
+        write_h5ad_element(value, private$.h5obj, "uns")
       }
     }
   ),
   public = list(
-    #' @description
-    #' `HDF5AnnData` constructor
-    #'
-    #' @param file The file name (character) of the `.h5ad` file. If this file
-    #'   already exits, other arguments must be `NULL`.
-    #' @param X See the `X` slot in [AnnData-usage]
-    #' @param layers See the `layers` slot in [AnnData-usage]
-    #' @param obs See the `obs` slot in [AnnData-usage]
-    #' @param var See the `var` slot in [AnnData-usage]
-    #' @param obsm See the `obsm` slot in [AnnData-usage]
-    #' @param varm See the `varm` slot in [AnnData-usage]
-    #' @param obsp See the `obsp` slot in [AnnData-usage]
-    #' @param varp See the `varp` slot in [AnnData-usage]
-    #' @param uns See the `uns` slot in [AnnData-usage]
-    #' @param shape Shape tuple (e.g. `c(n_obs, n_vars)`). Can be provided if
-    #'   both `X` or `obs` and `var` are not provided.
-    #' @param compression The compression algorithm to use. See
-    #'   [as_HDF5AnnData()] for details
-    #' @param mode The mode to open the HDF5 file. See [as_HDF5AnnData()] for
-    #'   details
-    #' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
-    #'
-    #' @details
-    #' The constructor creates a new HDF5 `AnnData` interface object. This can
-    #' either be used to either connect to an existing `.h5ad` file or to
-    #' create a new one. To create a new file both `obs_names` and `var_names`
-    #' must be specified. In both cases, any additional slots provided will be
-    #' set on the created object. This will cause data to be overwritten if the
-    #' file already exists.
-    initialize = function(
-      file,
-      X = NULL,
-      obs = NULL,
-      var = NULL,
-      layers = NULL,
-      obsm = NULL,
-      varm = NULL,
-      obsp = NULL,
-      varp = NULL,
-      uns = NULL,
-      shape = NULL,
-      mode = c("r", "r+", "a", "w", "w-", "x"),
-      compression = c("none", "gzip", "lzf"),
-      rhdf5 = FALSE
-    ) {
-      if (rhdf5) {
-        self$rhdf5_initialize(
-          file = file,
-          X = X,
-          obs = obs,
-          var = var,
-          layers = layers,
-          obsm = obsm,
-          varm = varm,
-          obsp = obsp,
-          varp = varp,
-          uns = uns,
-          shape = shape,
-          compression = compression
-        )
-        return(self)
-      }
-
-      check_requires("HDF5AnnData", "hdf5r")
-
-      # check arguments
-      compression <- match.arg(compression)
-      mode <- match.arg(mode)
-
-      # store compression for later use
-      private$.compression <- compression
-
-      # check whether file needs to be closed on finalize
-      private$.close_on_finalize <- is.character(file)
-
-      # check whether file already exists
-      if (is.character(file)) {
-        if (!file.exists(file) && mode %in% c("r", "r+")) {
-          cli_abort(
-            paste(
-              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
-              "If you want to create a new file, use a different mode (e.g. 'w-').",
-              "See {.help read_h5ad} or {.help write_h5ad} for more information."
-            ),
-            call = rlang::caller_env()
-          )
-        }
-
-        if (file.exists(file) && mode %in% c("w-", "x")) {
-          cli_abort(
-            paste(
-              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
-              "If you want to overwrite the file, use a different mode (e.g. 'w').",
-              "See {.help read_h5ad} or {.help write_h5ad} for more information."
-            ),
-            call = rlang::caller_env()
-          )
-        }
-
-        file <- hdf5r::H5File$new(file, mode = mode)
-      }
-
-      # type check
-      if (!inherits(file, "H5File")) {
-        cli_abort(
-          paste(
-            "{.arg file} must be a {.cls character} or a {.cls hdf5r::H5File} object,",
-            "but is a {.cls {class(file)}}"
-          )
-        )
-      }
-
-      # detect file mode
-      is_readonly <- file$get_intent() == "H5F_ACC_RDONLY"
-      is_empty <- length(hdf5r::list.groups(file)) == 0L &&
-        length(hdf5r::list.datasets(file)) == 0L &&
-        length(hdf5r::list.attributes(file)) == 0L &&
-        length(hdf5r::list.objects(file)) == 0L
-
-      if (!is_readonly) {
-        if (!is_empty) {
-          cli_warn(
-            paste(
-              "File is opened in read/write mode.",
-              "Use with caution, as this can lead to data corruption."
-            )
-          )
-        } else {
-          # initialise AnnData
-          shape <- get_shape(obs, var, X, shape)
-          obs <- get_initial_obs(obs, X, shape)
-          var <- get_initial_var(var, X, shape)
-          write_empty_h5ad(file, obs, var, compression)
-        }
-      }
-
-      # File is supposed to exist by now. Check if it is a valid H5AD file
-      attrs <- hdf5r::h5attributes(file)
-      if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-        cli_abort(c(
-          "File {.file {file}} is not a valid H5AD file.",
-          i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
-        ))
-      }
-
-      # Set the file path
-      private$.h5obj <- file
-
-      if (is_readonly) {
-        # if any of these variables are not NULL, throw an error
-        are_null <- sapply(.anndata_slots, function(x) is.null(get(x)))
-        if (!all(are_null)) {
-          cli_abort(
-            paste0(
-              "Error trying to write data (",
-              paste(.anndata_slots[!are_null], collapse = ", "),
-              ") to an H5AD file opened in read-only mode."
-            )
-          )
-        }
-      } else {
-        for (slot in .anndata_slots) {
-          value <- get(slot)
-          if (!is.null(value)) {
-            self[[slot]] <- value
-          }
-        }
-      }
-
-      self
-    },
-
     #' @description
     #' `HDF5AnnData` constructor
     #'
@@ -451,7 +240,7 @@ HDF5AnnData <- R6::R6Class(
     #' either be used to either connect to an existing `.h5ad` file or to
     #' create a new one. If any additional slot arguments are set an existing
     #' file will be overwritten.
-    rhdf5_initialize = function(
+    initialize = function(
       file,
       X = NULL,
       obs = NULL,
@@ -466,6 +255,8 @@ HDF5AnnData <- R6::R6Class(
       compression = c("none", "gzip", "lzf")
     ) {
       check_requires("HDF5AnnData", "rhdf5")
+
+      # TODO: Add mode argument?
 
       compression <- match.arg(compression)
 
@@ -496,7 +287,7 @@ HDF5AnnData <- R6::R6Class(
           unlink(file)
           file <- rhdf5::H5Fcreate(file, native = FALSE)
         } else {
-          rhdf5_hdf5_clear_file(file)
+          hdf5_clear_file(file)
         }
       } else if (write_mode && !file_exists) {
         file <- rhdf5::H5Fcreate(file, native = FALSE)
@@ -522,7 +313,7 @@ HDF5AnnData <- R6::R6Class(
         shape <- get_shape(obs, var, X, shape)
         obs <- get_initial_obs(obs, X, shape)
         var <- get_initial_var(var, X, shape)
-        rhdf5_write_empty_h5ad(file, obs, var, compression)
+        write_empty_h5ad(file, obs, var, compression)
       }
 
       # File is supposed to exist by now. Check if it is a valid H5AD file
@@ -537,7 +328,6 @@ HDF5AnnData <- R6::R6Class(
 
       # Set the file path
       private$.h5obj <- file
-      private$.rhdf5 <- TRUE
 
       if (write_mode) {
         for (slot in .anndata_slots) {
@@ -553,20 +343,12 @@ HDF5AnnData <- R6::R6Class(
 
     #' @description Close the HDF5 file
     close = function() {
-      if (!private$.rhdf5) {
-        if (private$.h5obj$is_valid) {
-          private$.h5obj$close_all()
-          cleanup_HDF5AnnData(file = private$.h5obj$file)
+      if (rhdf5::H5Iis_valid(private$.h5obj)) {
+        tryCatch({
+          rhdf5::H5Fclose(private$.h5obj)
+          rhdf5::H5garbage_collect()
           gc()
-        }
-      } else {
-        if (rhdf5::H5Iis_valid(private$.h5obj)) {
-          tryCatch({
-            rhdf5::H5Fclose(private$.h5obj)
-            rhdf5::H5garbage_collect()
-            gc()
-          })
-        }
+        })
       }
 
       invisible(NULL)
@@ -600,7 +382,6 @@ HDF5AnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
-#' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
 #'
 #' @return An [`HDF5AnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -627,8 +408,7 @@ as_HDF5AnnData <- function(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x"),
-  rhdf5 = FALSE
+  mode = c("w-", "r", "r+", "a", "w", "x")
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -649,9 +429,7 @@ as_HDF5AnnData <- function(
     varp = adata$varp,
     uns = adata$uns,
     compression = compression,
-    shape = adata$shape(),
-    mode = mode,
-    rhdf5 = rhdf5
+    shape = adata$shape()
   )
 }
 

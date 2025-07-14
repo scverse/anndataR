@@ -15,7 +15,6 @@
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms creating a file and failing if it already exists
 #' @param ... Additional arguments passed to [as_AnnData()]
-#' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
 #'
 #' @return `path` invisibly
 #' @export
@@ -81,7 +80,6 @@ write_h5ad <- function(
   path,
   compression = c("none", "gzip", "lzf"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  rhdf5 = FALSE,
   ...
 ) {
   mode <- match.arg(mode)
@@ -89,8 +87,7 @@ write_h5ad <- function(
     object$as_HDF5AnnData(
       path,
       compression = compression,
-      mode = mode,
-      rhdf5 = rhdf5
+      mode = mode
     )
   } else {
     as_AnnData(
@@ -98,19 +95,13 @@ write_h5ad <- function(
       output_class = "HDF5AnnData",
       file = path,
       compression = compression,
-      mode = mode,
+      # mode = mode,
       ...
     )
   }
 
-  if (rhdf5) {
-    rm(adata)
-    gc()
-  } else {
-    adata$close()
-    rm(adata)
-    gc()
-  }
+  rm(adata)
+  gc()
 
   invisible(path)
 }

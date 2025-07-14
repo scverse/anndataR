@@ -9,7 +9,6 @@ write_h5ad(
   path,
   compression = c("none", "gzip", "lzf"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  rhdf5 = FALSE,
   ...
 )
 }
@@ -30,8 +29,6 @@ file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to \c
 \item \code{w} creates a file, truncating any existing ones
 \item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists
 }}
-
-\item{rhdf5}{Whether to use the \code{rhdf5} package for HDF5 operations}
 
 \item{...}{Additional arguments passed to \code{\link[=as_AnnData]{as_AnnData()}}}
 }

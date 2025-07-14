@@ -22,7 +22,6 @@
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #' @param ... Extra arguments provided to the `as_*` conversion function for the
 #'   object specified by `as`
-#' @param rhdf5 Whether to use the `rhdf5` package for HDF5 operations
 #'
 #' @return The object specified by `as`
 #' @export
@@ -46,7 +45,6 @@ read_h5ad <- function(
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   to = deprecated(),
   mode = c("r", "r+", "a", "w", "w-", "x"),
-  rhdf5 = FALSE,
   ...
 ) {
   as <- match.arg(as)
@@ -62,7 +60,7 @@ read_h5ad <- function(
     as <- to
   }
 
-  hdf5_adata <- HDF5AnnData$new(path, mode = mode, rhdf5 = rhdf5)
+  hdf5_adata <- HDF5AnnData$new(path)
 
   if (as == "HDF5AnnData") {
     return(hdf5_adata)

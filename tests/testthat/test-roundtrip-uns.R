@@ -44,6 +44,8 @@ for (name in test_names) {
 
   # write to file
   adata_py$write_h5ad(file_py)
+  # Read it back in to get the version as read from disk
+  adata_py <- ad$read_h5ad(file_py)
 
   test_that(paste0("Reading an AnnData with uns '", name, "' works"), {
     msg <- message_if_known(
@@ -56,8 +58,13 @@ for (name in test_names) {
     skip_if(!is.null(msg), message = msg)
 
     adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
+    uns_keys <- if (name == "none") {
+      list()
+    } else {
+      names(adata_r$uns)
+    }
     expect_equal(
-      names(adata_r$uns),
+      uns_keys,
       bi$list(adata_py$uns$keys())
     )
 
@@ -71,6 +78,7 @@ for (name in test_names) {
   test_that(
     paste0("Comparing an anndata with uns '", name, "' with reticulate works"),
     {
+      skip_if(name == "none", message = "No value to test for 'none'")
       msg <- message_if_known(
         backend = "HDF5AnnData",
         slot = c("uns"),
@@ -82,14 +90,37 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      # Avoid error because {reticulate} can't convert Python Categorical objects
+      if (
+        name %in% c(
+          "categorical",
+          "categorical_missing_values",
+          "categorical_ordered",
+          "categorical_ordered_missing_values"
+        )
+      ) {
+        categorical <- adata_py$uns[[name]]
+        categories <- reticulate::py_to_r(categorical$categories)
+        codes <- reticulate::py_to_r(categorical$codes)
+        ordered <- reticulate::py_to_r(categorical$ordered)
+        is_na <- codes == -1L
+        codes[is_na] <- 0L
+        py_value <- factor(categories[codes + 1], levels = categories, ordered = ordered)
+        py_value[is_na] <- NA
+      } else {
+        py_value <- reticulate::py_to_r(adata_py$uns[[name]])
+      }
+
       expect_equal(
         adata_r$uns[[name]],
-        reticulate::py_to_r(adata_py$uns[[name]])
+        py_value
       )
     }
   )
 
   test_that(paste0("Writing an AnnData with uns '", name, "' works"), {
+    skip_if(name == "none", message = "No value to test for 'none'")
+
     msg <- message_if_known(
       backend = "HDF5AnnData",
       slot = c("uns"),

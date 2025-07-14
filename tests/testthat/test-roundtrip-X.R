@@ -43,6 +43,8 @@ for (name in test_names) {
 
   # write to file
   adata_py$write_h5ad(file_py)
+  # Read it back in to get the version as read from disk
+  adata_py <- ad$read_h5ad(file_py)
 
   test_that(paste0("Reading an AnnData with X '", name, "' works"), {
     msg <- message_if_known(
@@ -139,10 +141,13 @@ for (name in test_names) {
       adata_r <- r_generate_dataset(10L, 20L, x_type = list(r_name))
       write_h5ad(adata_r, file_r2)
 
+      # Remove the rhdf5-NA.OK for comparison
+      hdf5_clear_rhdf5_attributes(file_r2, "X")
+
       # run h5diff
       res <- processx::run(
         "h5diff",
-        c("-v", file_py, file_r2, "/X"),
+        c("-v2", file_py, file_r2, "/X"),
         error_on_status = FALSE
       )
 
