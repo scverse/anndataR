@@ -50,11 +50,10 @@ hdf5_write_dataset <- function(
 #'
 #' @noRd
 hdf5_write_scalar <- function(
-    file,
-    name,
-    value
+  file,
+  name,
+  value
 ) {
-
   # Missing values need to be stored as floats
   if (is.integer(value) && is.na(value)) {
     value <- as.numeric(value)
@@ -268,7 +267,6 @@ hdf5_clear_file <- function(h5file) {
 #'
 #' @noRd
 hdf5_clear_rhdf5_attributes <- function(h5file, name) {
-
   if (!inherits(h5file, "H5IdComponent")) {
     h5file <- rhdf5::H5Fopen(h5file)
     on.exit(rhdf5::H5Fclose(h5file), add = TRUE)

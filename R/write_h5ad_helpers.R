@@ -180,7 +180,6 @@ write_h5ad_dense_array <- function(
     value[na_indices] <- NaN
   }
 
-
   if (!is.vector(value)) {
     if (is.matrix(value)) {
       value <- t(value)
@@ -502,7 +501,6 @@ write_h5ad_string_scalar <- function(
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
-# nolint start: object_length_linter
 write_h5ad_numeric_scalar <- function(
   value,
   file,

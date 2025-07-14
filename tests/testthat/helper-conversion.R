@@ -10,21 +10,24 @@ convert_categorical <- function(categorical) {
     ordered = ordered
   )
   py_value[is_na] <- NA
-  return(py_value)
+
+  py_value
 }
 
 convert_nullable_integer_array <- function(nullable_array) {
-  mask <- reticulate::py_to_r(py_get_attr(nullable_array, "_mask"))
-  data <- reticulate::py_to_r(py_get_attr(nullable_array, "_data"))
+  mask <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_mask"))
+  data <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_data"))
   py_value <- as.integer(data)
   py_value[mask] <- NA
-  return(py_value)
+
+  py_value
 }
 
 convert_nullable_boolean_array <- function(nullable_array) {
-  mask <- reticulate::py_to_r(py_get_attr(nullable_array, "_mask"))
-  data <- reticulate::py_to_r(py_get_attr(nullable_array, "_data"))
+  mask <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_mask"))
+  data <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_data"))
   py_value <- as.logical(data)
   py_value[mask] <- NA
-  return(py_value)
+
+  py_value
 }
