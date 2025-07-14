@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9007
+
+- Refactor superfluous for loops
+
 # anndataR 0.1.0.9004
 
 - Use accessors instead of direct slot access where possible
