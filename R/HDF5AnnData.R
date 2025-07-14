@@ -254,7 +254,7 @@ HDF5AnnData <- R6::R6Class(
       shape = NULL,
       compression = c("none", "gzip", "lzf")
     ) {
-      check_requires("HDF5AnnData", "rhdf5")
+      check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
 
       # TODO: Add mode argument?
 
