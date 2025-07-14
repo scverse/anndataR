@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9006
+
+- ignore `development_status.Rmd` vignette when building package
+
 # anndataR 0.1.0.9002
 
 - remove `anndataR.Rproj` file from repository
