@@ -1,11 +1,7 @@
 skip_if_no_anndata()
-skip_if_not_installed("reticulate")
+skip_if_no_dummy_anndata()
 
 library(reticulate)
-testthat::skip_if_not(
-  reticulate::py_module_available("dummy_anndata"),
-  message = "Python dummy_anndata module not available for testing"
-)
 
 ad <- reticulate::import("anndata", convert = FALSE)
 da <- reticulate::import("dummy_anndata", convert = FALSE)
@@ -127,6 +123,8 @@ for (name in test_names) {
       )
     }
   )
+
+  gc()
 
   test_that(
     paste0("Writing an AnnData with obsm and varm '", name, "' works"),

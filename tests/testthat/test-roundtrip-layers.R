@@ -1,11 +1,7 @@
 skip_if_no_anndata()
-skip_if_not_installed("reticulate")
+skip_if_no_dummy_anndata()
 
 library(reticulate)
-testthat::skip_if_not(
-  reticulate::py_module_available("dummy_anndata"),
-  message = "Python dummy_anndata module not available for testing"
-)
 
 ad <- reticulate::import("anndata", convert = FALSE)
 da <- reticulate::import("dummy_anndata", convert = FALSE)
@@ -72,6 +68,8 @@ for (name in test_names) {
     expect_equal(str_r, str_py)
   })
 
+  gc()
+
   # maybe this test simply shouldn't be run if there is a known issue with reticulate
   test_that(
     paste0(
@@ -98,6 +96,8 @@ for (name in test_names) {
       )
     }
   )
+
+  gc()
 
   test_that(paste0("Writing an AnnData with layer '", name, "' works"), {
     msg <- message_if_known(
@@ -127,6 +127,8 @@ for (name in test_names) {
       py_get_item(adata_py$layers, name)
     )
   })
+
+  gc()
 
   skip_if_no_h5diff()
   # Get all R datatypes that are equivalent to the python datatype (name)

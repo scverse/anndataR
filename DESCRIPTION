@@ -1,6 +1,6 @@
 Package: anndataR
 Title: AnnData interoperability in R
-Version: 0.1.0.9008
+Version: 0.1.0.9009
 Authors@R: c(
     person("Robrecht", "Cannoodt", , "robrecht@data-intuitive.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
@@ -47,7 +47,7 @@ Suggests:
     BiocStyle,
     knitr,
     processx,
-    reticulate (>= 1.36.1),
+    reticulate (>= 1.41.1),
     rhdf5,
     rmarkdown,
     S4Vectors,
