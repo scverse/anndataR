@@ -2,6 +2,18 @@
 
 - ignore `development_status.Rmd` vignette when building package
 
+# anndataR 0.1.0.9005
+
+- Bypass requiring a `counts` or `data` layer during `Seurat` conversion
+
+# anndataR 0.1.0.9004
+
+- Use accessors instead of direct slot access where possible
+
+# anndataR 0.1.0.9003
+
+- Simplify & update vignetttes
+
 # anndataR 0.1.0.9002
 
 - remove `anndataR.Rproj` file from repository
