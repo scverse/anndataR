@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9006
+
+- ignore `development_status.Rmd` vignette when building package
+
 # anndataR 0.1.0.9005
 
 - Bypass requiring a `counts` or `data` layer during `Seurat` conversion
