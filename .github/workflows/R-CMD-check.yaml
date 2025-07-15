@@ -47,23 +47,6 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Cache miniconda
-        uses: actions/cache@v4
-        if: runner.os == 'Linux'
-        # no need to cache on macOS or Windows, since it takes longer to unpack
-        # the cache than to install miniconda and dependencies
-        with:
-          path: ~/.local/share/r-miniconda
-          key: ${{ runner.os }}-v${{ matrix.config.r }}-reticulate-miniconda
-
-      - name: Install Python dependencies for reticulate
-        run: |
-          if (!reticulate:::miniconda_exists()) {
-            reticulate::install_miniconda()
-          }
-          reticulate::py_install(c("anndata", "scanpy", "dummy-anndata"), pip = TRUE)
-        shell: Rscript {0}
-
       - name: Install h5diff
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
