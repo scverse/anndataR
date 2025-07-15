@@ -96,13 +96,13 @@ for (name in test_names) {
             "categorical_ordered_missing_values"
           )
       ) {
-        categorical <- adata_py$uns$nested[[name]]
+        categorical <- adata_py$uns[[name]]
         py_value <- convert_categorical(categorical)
       } else if (name == "nullable_integer_array") {
-        nullable_array <- adata_py$uns$nested[[name]]
+        nullable_array <- adata_py$uns[[name]]
         py_value <- convert_nullable_integer_array(nullable_array)
       } else if (name == "nullable_boolean_array") {
-        nullable_array <- adata_py$uns$nested[[name]]
+        nullable_array <- adata_py$uns[[name]]
         py_value <- convert_nullable_boolean_array(nullable_array)
       } else {
         py_value <- reticulate::py_to_r(adata_py$uns[[name]])

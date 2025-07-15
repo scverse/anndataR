@@ -1,10 +1,10 @@
 convert_categorical <- function(categorical) {
-  categorical <- reticulate::py_to_r(categorical)
-  if (!inherits(categorical, "python.builtin.object")) {
-    return(categorical)
+  converted <- try(reticulate::py_to_r(categorical), silent = TRUE)
+  if (!inherits(converted, "try-error") && !inherits(converted, "python.builtin.object")) {
+    return(converted)
   }
 
-  categories <- reticulate::py_to_r(categorical$categories)
+  categories <- reticulate::py_to_r(categorical$categories$to_list())
   codes <- reticulate::py_to_r(categorical$codes)
   ordered <- reticulate::py_to_r(categorical$ordered)
   is_na <- codes == -1L

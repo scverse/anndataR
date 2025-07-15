@@ -108,7 +108,7 @@ for (name in test_names) {
         nullable_array <- adata_py$uns$nested[[name]]
         py_value <- convert_nullable_boolean_array(nullable_array)
       } else {
-        py_value <- reticulate::py_to_r(adata_py$uns[[name]])
+        py_value <- reticulate::py_to_r(adata_py$uns$nested[[name]])
       }
 
       expect_equal(
