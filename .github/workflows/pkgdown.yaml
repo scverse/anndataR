@@ -34,13 +34,11 @@ jobs:
           extra-packages: local::.
           needs: website
 
-      - name: Reinstall {rhdf5}
+      # Avoid a caching issue where {rhdf5} was not restored properly
+      - name: Reinstall {rhdf5} and check availability
         run: |
           BiocManager::install(c("rhdf5", "Rhdf5lib"), force = TRUE)
-        shell: Rscript {0}
 
-      - name: Check {rhdf5} installed
-        run: |
           if (requireNamespace("rhdf5")) {
             cat(as.character(packageVersion("rhdf5")))
           } else {
