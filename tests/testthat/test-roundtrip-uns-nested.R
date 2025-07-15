@@ -59,7 +59,7 @@ for (name in test_names) {
 
     adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
     nested_keys <- if (name == "none") {
-      list()
+      character(0)
     } else {
       names(adata_r$uns$nested)
     }
@@ -104,17 +104,7 @@ for (name in test_names) {
           )
       ) {
         categorical <- adata_py$uns$nested[[name]]
-        categories <- reticulate::py_to_r(categorical$categories)
-        codes <- reticulate::py_to_r(categorical$codes)
-        ordered <- reticulate::py_to_r(categorical$ordered)
-        is_na <- codes == -1L
-        codes[is_na] <- 0L
-        py_value <- factor(
-          categories[codes + 1],
-          levels = categories,
-          ordered = ordered
-        )
-        py_value[is_na] <- NA
+        py_value <- convert_categorical(categorical)
       } else {
         py_value <- reticulate::py_to_r(adata_py$uns$nested[[name]])
       }
