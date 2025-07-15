@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9008
+
+- Add Bioconductor installation instructions in preparation of submission
+
 # anndataR 0.1.0.9004
 
 - Use accessors instead of direct slot access where possible
