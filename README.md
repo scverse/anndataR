@@ -29,7 +29,16 @@ object.
 
 ## Installation
 
-You can install the development version of **{anndataR}** like so:
+You can install **{anndataR}** from Bioconductor using **BiocManager**:
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("anndataR")
+```
+
+Or you can install the development version of **{anndataR}** from GitHub like so:
 
 ``` r
 # install.packages("pak")
@@ -55,6 +64,15 @@ pak::pak("scverse/anndataR", dependencies = TRUE)
 ## Getting started
 
 The best way to get started with **{anndataR}** is to explore the package vignettes (available at https://anndatar.data-intuitive.com/articles/).
+
+In order to browse these vignettes locally, you need to build them during installation:
+
+```
+options(pkg.build_vignettes = TRUE)
+pak::pak("scverse/anndataR")
+```
+
+Take note that you need all suggested dependencies available, and that building them can take some time.
 
 - **Getting started**: An introduction to the package and its features.  
   `vignette("anndataR", package = "anndataR")`

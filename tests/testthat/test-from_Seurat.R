@@ -14,7 +14,7 @@ suppressWarnings({
   obj <- RunUMAP(obj, dims = 1:10)
 })
 
-active_assay <- obj@assays[[obj@active.assay]]
+active_assay <- obj[[DefaultAssay(obj)]]
 
 ad <- as_AnnData(obj)
 
@@ -29,7 +29,7 @@ test_that("as_AnnData (Seurat) retains number of observations and features", {
 })
 
 # trackstatus: class=Seurat, feature=test_set_obs, status=done
-for (obs_key in colnames(obj@meta.data)) {
+for (obs_key in colnames(Misc(obj))) {
   test_that(paste0("as_AnnData (Seurat) retains obs key: ", obs_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -43,14 +43,14 @@ for (obs_key in colnames(obj@meta.data)) {
     expect_true(obs_key %in% colnames(ad$obs))
     expect_equal(
       ad$obs[[obs_key]],
-      obj@meta.data[[obs_key]],
+      obj[[obs_key]],
       info = paste0("obs_key: ", obs_key)
     )
   })
 }
 
 # trackstatus: class=Seurat, feature=test_set_var, status=done
-for (var_key in colnames(active_assay@meta.data)) {
+for (var_key in colnames(active_assay[[]])) {
   test_that(paste0("as_AnnData (Seurat) retains var key: ", var_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -62,12 +62,12 @@ for (var_key in colnames(active_assay@meta.data)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(var_key %in% colnames(ad$var))
-    expect_equal(ad$var[[var_key]], active_assay@meta.data[[var_key]])
+    expect_equal(ad$var[[var_key]], active_assay[[var_key]][[1]])
   })
 }
 
 # trackstatus: class=Seurat, feature=test_set_layers, status=done
-for (layer_key in names(active_assay@layers)) {
+for (layer_key in names(active_assay[])) {
   test_that(paste0("as_AnnData (Seurat) retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -81,7 +81,7 @@ for (layer_key in names(active_assay@layers)) {
     expect_true(layer_key %in% names(ad$layers))
     expect_true(
       all.equal(
-        as.matrix(t(active_assay@layers[[layer_key]])),
+        as.matrix(t(active_assay[layer_key])),
         as.matrix(ad$layers[[layer_key]]),
         check.attributes = FALSE
       ),
@@ -91,7 +91,7 @@ for (layer_key in names(active_assay@layers)) {
 }
 
 # trackstatus: class=Seurat, feature=test_set_uns, status=done
-for (uns_key in names(obj@misc)) {
+for (uns_key in names(Misc(obj))) {
   test_that(paste0("as_AnnData (Seurat) retains uns key: ", uns_key), {
     msg <- message_if_known(
       backend = "from_Seurat",
@@ -103,7 +103,7 @@ for (uns_key in names(obj@misc)) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(uns_key %in% names(ad$uns))
-    expect_equal(ad$uns[[uns_key]], obj@misc[[uns_key]], ignore_attr = TRUE)
+    expect_equal(ad$uns[[uns_key]], Misc(obj)[[uns_key]], ignore_attr = TRUE)
   })
 }
 
@@ -164,12 +164,12 @@ test_that("as_AnnData (Seurat) retains connectivities", {
 
   expect_equal(
     as.matrix(ad$obsp[["nn"]]),
-    as.matrix(obj@graphs[["RNA_nn"]]),
+    as.matrix(Graphs(obj, "RNA_nn")),
     ignore_attr = TRUE
   )
   expect_equal(
     as.matrix(ad$obsp[["snn"]]),
-    as.matrix(obj@graphs[["RNA_snn"]]),
+    as.matrix(Graphs(obj, "RNA_snn")),
     ignore_attr = TRUE
   )
 })

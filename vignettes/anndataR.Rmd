@@ -25,13 +25,24 @@ library(SeuratObject)
 library(SingleCellExperiment)
 ```
 
-**{anndataR}** allows users to work with `.h5ad` files, access various slots in the datasets and convert these files to `SingleCellExperiment` objects and `SeuratObject`s, and vice versa.
+## Introduction
+**{anndataR}** allows users to work with `.h5ad` files, access various slots in the datasets and convert these files to `SingleCellExperiment` objects or `Seurat` objects, and vice versa.
+This enables users to move data easily between the different programming languages and analysis ecosystems needed to perform single-cell data analysis.
+This package differs from [zellkonverter](https://bioconductor.org/packages/release/bioc/html/zellkonverter.html) because it reads and writes these `.h5ad` files natively in R, and allows conversion to and from `Seurat` objects as well.
 
 Check out `?anndataR` for a full list of the functions provided by this package.
 
 ## Installation
 
-Install using:
+Install using either **BiocManager** or from GitHub using **pak**:
+
+```{r, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+BiocManager::install("anndataR")
+```
+
 ```{r, eval = FALSE}
 if (!require("pak", quietly = TRUE)) {
   install.packages("pak")
@@ -53,25 +64,25 @@ h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 Read an h5ad file in memory:
 
-```{r}
+```{r read-in-memory}
 adata <- read_h5ad(h5ad_path)
 ```
 
 Read an h5ad file on disk:
 
-```{r}
+```{r read-on-disk}
 adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
 
 View structure:
 
-```{r}
+```{r show-structure}
 adata
 ```
 
 Access AnnData slots:
 
-```{r}
+```{r access-slots}
 dim(adata$X)
 adata$obs[1:5, 1:6]
 adata$var[1:5, 1:6]
@@ -81,7 +92,7 @@ adata$var[1:5, 1:6]
 
 Convert the AnnData object to a SingleCellExperiment object:
 
-```{r}
+```{r as-SingleCellExperiment}
 sce <- adata$as_SingleCellExperiment()
 sce
 ```
@@ -93,9 +104,23 @@ obj <- adata$as_Seurat()
 obj
 ```
 
+Convert a SingleCellExperiment object to an AnnData object:
+
+```{r as-AnnData-from-SingleCellExperiment}
+adata <- as_AnnData(sce)
+adata
+```
+
+Convert a Seurat object to an AnnData object:
+
+```{r as-AnnData-from-Seurat}
+adata <- as_AnnData(obj)
+adata
+```
+
 ## Manually create an object
 
-```{r}
+```{r manually-create-object}
 adata <- AnnData(
   X = matrix(rnorm(100), nrow = 10),
   obs = data.frame(
@@ -107,6 +132,29 @@ adata <- AnnData(
 )
 
 adata
+```
+
+## Write to disk:
+
+Write an AnnData object to disk:
+
+```{r write-to-disk}
+tmpfile <- tempfile(fileext = ".h5ad")
+write_h5ad(adata, tmpfile)
+```
+
+Write an SCE object to disk:
+
+```{r write-SingleCellExperiment-to-disk}
+tmpfile <- tempfile(fileext = ".h5ad")
+write_h5ad(sce, tmpfile)
+```
+
+Write a Seurat object to disk:
+
+```{r write-Seurat-to-disk}
+tmpfile <- tempfile(fileext = ".h5ad")
+write_h5ad(obj, tmpfile)
 ```
 
 ## Session info

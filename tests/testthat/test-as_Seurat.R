@@ -12,9 +12,7 @@ ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
 
-layers_mapping <- c(NA, names(ad$layers))
-names(layers_mapping) <- c("counts", names(ad$layers))
-seu <- ad$as_Seurat(layers_mapping = layers_mapping)
+seu <- ad$as_Seurat()
 
 test_that("as_Seurat retains number of observations and features", {
   expect_equal(nrow(seu), 20)
@@ -38,11 +36,12 @@ for (obs_key in colnames(ad$obs)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    expect_true(obs_key %in% colnames(seu@meta.data))
+    expect_true(obs_key %in% colnames(seu[[]]))
     expect_equal(
-      seu@meta.data[[obs_key]],
+      seu[[]][[obs_key]],
       ad$obs[[obs_key]],
-      info = paste0("obs_key: ", obs_key)
+      info = paste0("obs_key: ", obs_key),
+      ignore_attr = TRUE
     )
   })
 }
@@ -60,8 +59,8 @@ for (var_key in colnames(ad$var)) {
     skip_if(!is.null(msg), message = msg)
 
     active_assay <- seu[[DefaultAssay(seu)]]
-    expect_true(var_key %in% colnames(active_assay@meta.data))
-    expect_equal(active_assay@meta.data[[var_key]], ad$var[[var_key]])
+    expect_true(var_key %in% colnames(active_assay[[]]))
+    expect_equal(active_assay[[var_key]][[1]], ad$var[[var_key]])
   })
 }
 
@@ -78,12 +77,11 @@ for (layer_key in names(ad$layers)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    active_assay <- seu@assays[[seu@active.assay]]
-
-    expect_true(layer_key %in% names(active_assay@layers))
+    active_assay <- seu[[DefaultAssay(seu)]]
+    expect_true(layer_key %in% active_assay[])
     expect_true(
       all.equal(
-        as.matrix(t(active_assay@layers[[layer_key]])),
+        as.matrix(t(active_assay[layer_key])),
         as.matrix(ad$layers[[layer_key]]),
         check.attributes = FALSE
       ),
@@ -104,8 +102,8 @@ for (uns_key in names(ad$uns)) {
     )
     skip_if(!is.null(msg), message = msg)
 
-    expect_true(uns_key %in% names(seu@misc))
-    expect_equal(seu@misc[[uns_key]], ad$uns[[uns_key]], ignore_attr = TRUE)
+    expect_true(uns_key %in% names(Misc(seu)))
+    expect_equal(Misc(seu)[[uns_key]], ad$uns[[uns_key]], ignore_attr = TRUE)
   })
 }
 
@@ -121,7 +119,7 @@ test_that("as_Seurat retains pca dimred", {
   skip_if(!is.null(msg), message = msg)
 
   # trackstatus: class=Seurat, feature=test_get_obsm, status=wip
-  expect_true("X_pca" %in% names(seu@reductions))
+  expect_true("X_pca" %in% Reductions(seu))
   expect_equal(
     Embeddings(seu, reduction = "X_pca"),
     ad$obsm[["X_pca"]],
