@@ -103,8 +103,6 @@
 #' of `assays(sce)` and values are keys of `layers` in `adata`.
 #' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
 #' The name you provide for `x_mapping` may not be a name in `assays_mapping`.
-#' You must provide an assay named `counts` or `data` in either `x_mapping` or
-#' `assays_mapping`.
 #'
 #' @return A `SingleCellExperiment` object containing the requested data from
 #'   `adata`
