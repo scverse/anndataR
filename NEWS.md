@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9008
+
+- Add Bioconductor installation instructions in preparation of submission
+
 # anndataR 0.1.0.9007
 
 - Refactor superfluous for loops
