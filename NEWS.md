@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9009
+
+- Fix execution of roundtrip tests
+
 # anndataR 0.1.0 (inital release candidate)
 
 Initial release candidate of **{anndataR}** including:
