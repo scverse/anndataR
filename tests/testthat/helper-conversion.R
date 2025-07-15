@@ -1,6 +1,9 @@
 convert_categorical <- function(categorical) {
   converted <- try(reticulate::py_to_r(categorical), silent = TRUE)
-  if (!inherits(converted, "try-error") && !inherits(converted, "python.builtin.object")) {
+  if (
+    !inherits(converted, "try-error") &&
+      !inherits(converted, "python.builtin.object")
+  ) {
     return(converted)
   }
 
