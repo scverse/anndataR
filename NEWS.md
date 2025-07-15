@@ -1,3 +1,7 @@
+# anndataR 0.1.0.9007
+
+- Refactor superfluous for loops
+- 
 # anndataR 0.1.0.9006
 
 - ignore `development_status.Rmd` vignette when building package
