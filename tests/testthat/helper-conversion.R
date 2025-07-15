@@ -1,7 +1,7 @@
 convert_categorical <- function(categorical) {
   categorical <- reticulate::py_to_r(categorical)
   if (!inherits(categorical, "python.builtin.object")) {
-    return(categrical)
+    return(categorical)
   }
 
   categories <- reticulate::py_to_r(categorical$categories)
