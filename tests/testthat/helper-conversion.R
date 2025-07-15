@@ -1,4 +1,9 @@
 convert_categorical <- function(categorical) {
+  categorical <- reticulate::py_to_r(categorical)
+  if (!inherits(categorical, "python.builtin.object")) {
+    return(categrical)
+  }
+
   categories <- reticulate::py_to_r(categorical$categories)
   codes <- reticulate::py_to_r(categorical$codes)
   ordered <- reticulate::py_to_r(categorical$ordered)
@@ -15,6 +20,11 @@ convert_categorical <- function(categorical) {
 }
 
 convert_nullable_integer_array <- function(nullable_array) {
+  nullable_array <- reticulate::py_to_r(nullable_array)
+  if (!inherits(nullable_array, "python.builtin.object")) {
+    return(nullable_array)
+  }
+
   mask <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_mask"))
   data <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_data"))
   py_value <- as.integer(data)
@@ -24,6 +34,11 @@ convert_nullable_integer_array <- function(nullable_array) {
 }
 
 convert_nullable_boolean_array <- function(nullable_array) {
+  nullable_array <- reticulate::py_to_r(nullable_array)
+  if (!inherits(nullable_array, "python.builtin.object")) {
+    return(nullable_array)
+  }
+
   mask <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_mask"))
   data <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_data"))
   py_value <- as.logical(data)

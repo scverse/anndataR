@@ -55,7 +55,7 @@ for (name in test_names) {
 
     adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
     uns_keys <- if (name == "none") {
-      character(0)
+      list()
     } else {
       names(adata_r$uns)
     }
@@ -98,6 +98,12 @@ for (name in test_names) {
       ) {
         categorical <- adata_py$uns$nested[[name]]
         py_value <- convert_categorical(categorical)
+      } else if (name == "nullable_integer_array") {
+        nullable_array <- adata_py$uns$nested[[name]]
+        py_value <- convert_nullable_integer_array(nullable_array)
+      } else if (name == "nullable_boolean_array") {
+        nullable_array <- adata_py$uns$nested[[name]]
+        py_value <- convert_nullable_boolean_array(nullable_array)
       } else {
         py_value <- reticulate::py_to_r(adata_py$uns[[name]])
       }
