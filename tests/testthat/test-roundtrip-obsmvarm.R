@@ -56,6 +56,8 @@ for (name in test_names) {
 
   # write to file
   adata_py$write_h5ad(file_py)
+  # Read it back in to get the version as read from disk
+  adata_py <- ad$read_h5ad(file_py)
 
   test_that(
     paste0("Reading an AnnData with obsm and varm '", name, "' works"),
@@ -194,13 +196,20 @@ for (name in test_names) {
         obsm_types = list(r_name),
         varm_types = list(r_name)
       )
-      write_h5ad(adata_r, file_r2)
+      # TODO: Remove this once issue #286 is fixed https://github.com/scverse/anndataR/issues/286
+      if (!(r_name %in% names(vector_generators))) {
+        adata_r$varm[[r_name]] <- generate_matrix(20, 20, r_name)
+      }
+      write_h5ad(adata_r, file_r2, mode = "w")
+
+      # Remove the rhdf5-NA.OK for comparison
+      hdf5_clear_rhdf5_attributes(file_r2, paste0("/obsm/", r_name))
 
       # run h5diff
       res_obsm <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/obsm/", name),
@@ -210,10 +219,13 @@ for (name in test_names) {
       )
       expect_equal(res_obsm$status, 0, info = res_obsm$stdout)
 
+      # Remove the rhdf5-NA.OK for comparison
+      hdf5_clear_rhdf5_attributes(file_r2, paste0("/varm/", r_name))
+
       res_varm <- processx::run(
         "h5diff",
         c(
-          "-v",
+          "-v2",
           file_py,
           file_r2,
           paste0("/varm/", name),

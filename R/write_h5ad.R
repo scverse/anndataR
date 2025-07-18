@@ -100,7 +100,6 @@ write_h5ad <- function(
     )
   }
 
-  adata$close()
   rm(adata)
   gc()
 
