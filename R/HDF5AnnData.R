@@ -302,7 +302,11 @@ HDF5AnnData <- R6::R6Class(
         }
 
         if (mode %in% c("w", "w-", "x")) {
-          file <- rhdf5::H5Fcreate(file, flags = "H5F_ACC_TRUNC", native = FALSE)
+          file <- rhdf5::H5Fcreate(
+            file,
+            flags = "H5F_ACC_TRUNC",
+            native = FALSE
+          )
         } else if (mode == "r") {
           is_readonly <- TRUE
           file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY", native = FALSE)
