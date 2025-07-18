@@ -200,7 +200,7 @@ for (name in test_names) {
       if (!(r_name %in% names(vector_generators))) {
         adata_r$varm[[r_name]] <- generate_matrix(20, 20, r_name)
       }
-      write_h5ad(adata_r, file_r2)
+      write_h5ad(adata_r, file_r2, mode = "w")
 
       # Remove the rhdf5-NA.OK for comparison
       hdf5_clear_rhdf5_attributes(file_r2, paste0("/obsm/", r_name))

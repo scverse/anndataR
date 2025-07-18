@@ -178,7 +178,7 @@ for (name in test_names) {
         obsp_types = list(r_name),
         varp_types = list(r_name)
       )
-      write_h5ad(adata_r, file_r2)
+      write_h5ad(adata_r, file_r2, mode = "w")
 
       # Remove the rhdf5-NA.OK for comparison
       hdf5_clear_rhdf5_attributes(file_r2, paste0("/obsp/", r_name))

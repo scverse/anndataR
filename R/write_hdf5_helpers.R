@@ -233,25 +233,6 @@ hdf5_write_attribute <- function(
   )
 }
 
-#' Clear HDF5 file
-#'
-#' Remove all contents from a HDF5 file
-#'
-#' @param h5file A HDF5 file handle
-#'
-#' @noRd
-hdf5_clear_file <- function(h5file) {
-  if (!inherits(h5file, "H5IdComponent")) {
-    cli_abort("{.arg h5file} must be an open H5AD handle")
-  }
-
-  contents <- rhdf5::h5ls(h5file, recursive = FALSE)
-
-  for (item in contents$name) {
-    rhdf5::h5delete(h5file, item)
-  }
-}
-
 #' Clear rhdf5 attributes
 #'
 #' Remove attributes added by rhdf5 from an element in a HDF5 file

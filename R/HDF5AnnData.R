@@ -232,6 +232,8 @@ HDF5AnnData <- R6::R6Class(
     #' @param uns See the `uns` slot in [AnnData-usage]
     #' @param shape Shape tuple (e.g. `c(n_obs, n_vars)`). Can be provided if
     #'   both `X` or `obs` and `var` are not provided.
+    #' @param mode The mode to open the HDF5 file. See [as_HDF5AnnData()] for
+    #'   details
     #' @param compression The compression algorithm to use. See
     #'   [as_HDF5AnnData()] for details
     #'
@@ -252,6 +254,7 @@ HDF5AnnData <- R6::R6Class(
       varp = NULL,
       uns = NULL,
       shape = NULL,
+      mode = c("a", "r", "r+", "w", "w-", "x"),
       compression = c("none", "gzip", "lzf")
     ) {
       check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
@@ -259,61 +262,81 @@ HDF5AnnData <- R6::R6Class(
       # TODO: Add mode argument?
 
       compression <- match.arg(compression)
+      mode <- match.arg(mode)
 
       private$.compression <- compression
 
       private$.close_on_finalize <- is.character(file)
 
-      write_mode <- any(
-        !is.null(X),
-        !is.null(obs),
-        !is.null(var),
-        !is.null(layers),
-        !is.null(obsm),
-        !is.null(varm),
-        !is.null(obsp),
-        !is.null(varp),
-        !is.null(uns),
-        !is.null(shape)
-      )
+      is_readonly <- FALSE
 
-      write_empty <- write_mode
-
-      file_exists <- (is.character(file) && file.exists(file)) ||
-        inherits(file, "H5IdComponent")
-
-      if (write_mode && file_exists) {
-        if (is.character(file)) {
-          unlink(file)
-          file <- rhdf5::H5Fcreate(file, native = FALSE)
-        } else {
-          hdf5_clear_file(file)
+      if (is.character(file)) {
+        if (mode == "a") {
+          if (file.exists(file)) {
+            mode <- "r+"
+          } else {
+            mode <- "w-"
+          }
         }
-      } else if (write_mode && !file_exists) {
-        file <- rhdf5::H5Fcreate(file, native = FALSE)
-      } else if (!write_mode && file_exists) {
-        if (is.character(file)) {
-          file <- rhdf5::H5Fopen(file, native = FALSE)
+
+        if (!file.exists(file) && mode %in% c("r", "r+")) {
+          cli_abort(
+            paste(
+              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
+              "If you want to create a new file, use a different mode (e.g. 'w-').",
+              "See {.help read_h5ad} or {.help write_h5ad} for more information."
+            ),
+            call = rlang::caller_env()
+          )
         }
-      } else if (!write_mode && !file_exists) {
-        file <- rhdf5::H5Fcreate(file, native = FALSE)
-        write_empty <- TRUE
+
+        if (file.exists(file) && mode %in% c("w-", "x")) {
+          cli_abort(
+            paste(
+              "File {.file {file}} already exists but mode is set to {.val {mode}}.",
+              "If you want to overwrite the file, use a different mode (e.g. 'w').",
+              "See {.help read_h5ad} or {.help write_h5ad} for more information."
+            ),
+            call = rlang::caller_env()
+          )
+        }
+
+        if (mode %in% c("w", "w-", "x")) {
+          file <- rhdf5::H5Fcreate(file, flags = "H5F_ACC_TRUNC", native = FALSE)
+        } else if (mode == "r") {
+          is_readonly <- TRUE
+          file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY", native = FALSE)
+        } else if (mode == "r+") {
+          file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDWR", native = FALSE)
+        }
       }
 
-      if (!inherits(file, "H5IdComponent")) {
+      if (!inherits(file, "H5IdComponent") && rhdf5::H5Iis_valid(file)) {
         cli_abort(
           paste(
-            "{.arg file} must be a {.cls character} or a {.cls rhdf5::H5IdComponent} object,",
+            "{.arg file} must be a {.cls character} or an open ",
+            "{.cls rhdf5::H5IdComponent} file handle object,",
             "but is a {.cls {class(file)}}"
           )
         )
       }
 
-      if (write_empty) {
-        shape <- get_shape(obs, var, X, shape)
-        obs <- get_initial_obs(obs, X, shape)
-        var <- get_initial_var(var, X, shape)
-        write_empty_h5ad(file, obs, var, compression)
+      is_empty <- nrow(rhdf5::h5ls(file)) == 0L
+
+      if (!is_readonly) {
+        if (!is_empty) {
+          cli_warn(
+            paste(
+              "An non-empty file is opened in read/write mode.",
+              "Use with caution, as this can lead to data corruption."
+            )
+          )
+        } else {
+          shape <- get_shape(obs, var, X, shape)
+          obs <- get_initial_obs(obs, X, shape)
+          var <- get_initial_var(var, X, shape)
+          write_empty_h5ad(file, obs, var, compression)
+        }
       }
 
       # File is supposed to exist by now. Check if it is a valid H5AD file
@@ -329,7 +352,23 @@ HDF5AnnData <- R6::R6Class(
       # Set the file path
       private$.h5obj <- file
 
-      if (write_mode) {
+      if (is_readonly) {
+        # if any of these variables are not NULL, throw an error
+        are_null <- vapply(
+          .anndata_slots,
+          function(x) is.null(get(x)),
+          logical(1)
+        )
+        if (!all(are_null)) {
+          cli_abort(
+            paste0(
+              "Error trying to write data (",
+              paste(.anndata_slots[!are_null], collapse = ", "),
+              ") to an H5AD file opened in read-only mode."
+            )
+          )
+        }
+      } else {
         for (slot in .anndata_slots) {
           value <- get(slot)
           if (!is.null(value)) {
@@ -428,8 +467,9 @@ as_HDF5AnnData <- function(
     obsp = adata$obsp,
     varp = adata$varp,
     uns = adata$uns,
-    compression = compression,
-    shape = adata$shape()
+    shape = adata$shape(),
+    mode = mode,
+    compression = compression
   )
 }
 

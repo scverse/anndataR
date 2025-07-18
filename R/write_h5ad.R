@@ -95,7 +95,7 @@ write_h5ad <- function(
       output_class = "HDF5AnnData",
       file = path,
       compression = compression,
-      # mode = mode, # nolint: commented_code_linter
+      mode = mode,
       ...
     )
   }

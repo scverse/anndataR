@@ -386,8 +386,6 @@ See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for more details on the conv
 \item{\code{compression}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
 \item{\code{mode}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
-
-\item{\code{rhdf5}}{Whether to use the \code{rhdf5} package for HDF5 operations}
 }
 \if{html}{\out{</div>}}
 }

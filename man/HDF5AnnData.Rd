@@ -101,6 +101,7 @@ Close the HDF5 file when the object is garbage collected
   varp = NULL,
   uns = NULL,
   shape = NULL,
+  mode = c("r", "r+", "a", "w", "w-", "x"),
   compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
@@ -131,6 +132,9 @@ already exits, other arguments must be \code{NULL}.}
 
 \item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
 both \code{X} or \code{obs} and \code{var} are not provided.}
+
+\item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for
+details}
 
 \item{\code{compression}}{The compression algorithm to use. See
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}

@@ -60,7 +60,7 @@ read_h5ad <- function(
     as <- to
   }
 
-  hdf5_adata <- HDF5AnnData$new(path)
+  hdf5_adata <- HDF5AnnData$new(path, mode = mode)
 
   if (as == "HDF5AnnData") {
     return(hdf5_adata)
@@ -72,6 +72,8 @@ read_h5ad <- function(
     "Seurat" = hdf5_adata$as_Seurat(...),
     "InMemoryAnnData" = hdf5_adata$as_InMemoryAnnData(...)
   )
+
   hdf5_adata$close()
+
   adata
 }

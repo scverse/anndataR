@@ -5,12 +5,12 @@ requireNamespace("vctrs")
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 test_that("opening H5AD works", {
-  adata <- HDF5AnnData$new(file)
+  adata <- HDF5AnnData$new(file, mode = "r")
   expect_true(inherits(adata, "HDF5AnnData"))
   adata$close()
 })
 
-adata <- HDF5AnnData$new(file)
+adata <- HDF5AnnData$new(file, mode = "r")
 
 # GETTERS ----------------------------------------------------------------
 # trackstatus: class=HDF5AnnData, feature=test_get_X, status=done

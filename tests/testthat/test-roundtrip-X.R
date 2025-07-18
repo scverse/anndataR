@@ -137,7 +137,7 @@ for (name in test_names) {
 
       # generate an R h5ad
       adata_r <- r_generate_dataset(10L, 20L, x_type = list(r_name))
-      write_h5ad(adata_r, file_r2)
+      write_h5ad(adata_r, file_r2, mode = "w")
 
       # Remove the rhdf5-NA.OK for comparison
       hdf5_clear_rhdf5_attributes(file_r2, "X")
