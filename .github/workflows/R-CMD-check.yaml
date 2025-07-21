@@ -38,7 +38,7 @@ jobs:
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
         run: |
-          sudo agt-get update
+          sudo apt-get update
           sudo apt-get -y install libsz2
 
       - uses: r-lib/actions/setup-pandoc@v2
