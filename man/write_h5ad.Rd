@@ -38,6 +38,10 @@ file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to \c
 \description{
 Write an H5AD file
 }
+\details{
+Compression is currently not supported for Boolean arrays, they will be
+written uncompressed.
+}
 \examples{
 adata <- AnnData(
   X = matrix(1:5, 3L, 5L),

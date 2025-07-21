@@ -101,7 +101,7 @@ Close the HDF5 file when the object is garbage collected
   varp = NULL,
   uns = NULL,
   shape = NULL,
-  mode = c("r", "r+", "a", "w", "w-", "x"),
+  mode = c("a", "r", "r+", "w", "w-", "x"),
   compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
