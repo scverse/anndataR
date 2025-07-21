@@ -49,7 +49,7 @@ jobs:
           needs: check
 
       # Avoid a caching issue where {rhdf5} was not restored properly
-      - name: Reinstall {rhdf5} and check availability
+      - name: Reinstall {rhdf5} on Linux
         if: runner.os == 'Linux'
         run: |
           BiocManager::install(c("rhdf5", "Rhdf5lib"), force = TRUE)

@@ -42,7 +42,7 @@ jobs:
           if (requireNamespace("rhdf5")) {
             cat(as.character(packageVersion("rhdf5")))
           } else {
-            cat("rhdf5 not found")
+            stop("rhdf5 not found")
           }
         shell: Rscript {0}
 
