@@ -48,6 +48,22 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      # Avoid a caching issue where {rhdf5} was not restored properly
+      - name: Reinstall {rhdf5} and check availability
+        if: runner.os == 'Linux'
+        run: |
+          BiocManager::install(c("rhdf5", "Rhdf5lib"), force = TRUE)
+        shell: Rscript {0}
+
+      - name: Check {rhdf5} availability
+        run: |
+          if (requireNamespace("rhdf5")) {
+            cat(as.character(packageVersion("rhdf5")))
+          } else {
+            stop("rhdf5 not found")
+          }
+        shell: Rscript {0}
+
       - name: Install h5diff
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
