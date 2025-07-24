@@ -39,7 +39,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get -y install libsz2
+          sudo apt-get -y install libsz2 libaec-dev
 
       - uses: r-lib/actions/setup-pandoc@v2
 
