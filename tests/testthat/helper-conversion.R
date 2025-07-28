@@ -1,3 +1,26 @@
+get_py_value <- function(adata_py, name) {
+  if (
+    name %in%
+    c(
+      "categorical",
+      "categorical_missing_values",
+      "categorical_ordered",
+      "categorical_ordered_missing_values"
+    )
+  ) {
+    categorical <- adata_py$uns$nested[[name]]
+    convert_categorical(categorical)
+  } else if (name == "nullable_integer_array") {
+    nullable_array <- adata_py$uns$nested[[name]]
+    convert_nullable_integer_array(nullable_array)
+  } else if (name == "nullable_boolean_array") {
+    nullable_array <- adata_py$uns$nested[[name]]
+    convert_nullable_boolean_array(nullable_array)
+  } else {
+    reticulate::py_to_r(adata_py$uns$nested[[name]])
+  }
+}
+
 convert_categorical <- function(categorical) {
   converted <- try(reticulate::py_to_r(categorical), silent = TRUE)
   if (

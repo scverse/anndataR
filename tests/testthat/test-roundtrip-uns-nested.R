@@ -89,27 +89,7 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
-      # Avoid error because {reticulate} can't convert Python Categorical objects
-      if (
-        name %in%
-          c(
-            "categorical",
-            "categorical_missing_values",
-            "categorical_ordered",
-            "categorical_ordered_missing_values"
-          )
-      ) {
-        categorical <- adata_py$uns$nested[[name]]
-        py_value <- convert_categorical(categorical)
-      } else if (name == "nullable_integer_array") {
-        nullable_array <- adata_py$uns$nested[[name]]
-        py_value <- convert_nullable_integer_array(nullable_array)
-      } else if (name == "nullable_boolean_array") {
-        nullable_array <- adata_py$uns$nested[[name]]
-        py_value <- convert_nullable_boolean_array(nullable_array)
-      } else {
-        py_value <- reticulate::py_to_r(adata_py$uns$nested[[name]])
-      }
+      py_value <- get_py_value(adata_py, name)
 
       expect_equal(
         adata_r$uns[["nested"]][[name]],
