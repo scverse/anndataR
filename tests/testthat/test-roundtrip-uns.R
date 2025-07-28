@@ -86,7 +86,7 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
-      py_value <- get_py_value(adata_py, name)
+      py_value <- convert_py_value(adata_py$uns[[name]], name)
 
       expect_equal(
         adata_r$uns[[name]],
