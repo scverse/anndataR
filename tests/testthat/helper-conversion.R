@@ -1,12 +1,12 @@
 convert_py_value <- function(py_value, name) {
   if (
     name %in%
-    c(
-      "categorical",
-      "categorical_missing_values",
-      "categorical_ordered",
-      "categorical_ordered_missing_values"
-    )
+      c(
+        "categorical",
+        "categorical_missing_values",
+        "categorical_ordered",
+        "categorical_ordered_missing_values"
+      )
   ) {
     py_value <- convert_categorical(py_value)
   } else if (name == "nullable_integer_array") {
