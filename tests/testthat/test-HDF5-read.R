@@ -1,12 +1,9 @@
-skip_if_not_installed("hdf5r")
+skip_if_not_installed("rhdf5")
 
 requireNamespace("vctrs")
 
 filename <- system.file("extdata", "example.h5ad", package = "anndataR")
-file <- hdf5r::H5File$new(
-  filename,
-  mode = "r"
-)
+file <- rhdf5::H5Fopen(filename, flags = "H5F_ACC_RDONLY", native = FALSE)
 
 test_that("reading encoding works", {
   encoding <- read_h5ad_encoding(file, "obs")
@@ -129,7 +126,7 @@ test_that("reading dataframes works", {
   )
 })
 
-file$close_all()
+rhdf5::H5Fclose(file)
 
 test_that("reading H5AD as SingleCellExperiment works", {
   skip_if_not_installed("SingleCellExperiment")
@@ -146,6 +143,8 @@ test_that("reading H5AD as Seurat works", {
 })
 
 test_that("deprecated to argument in read_h5ad() works", {
-  expect_warning(mem_ad <- read_h5ad(filename, to = "InMemoryAnnData"))
+  expect_warning(
+    mem_ad <- read_h5ad(filename, to = "InMemoryAnnData")
+  )
   expect_true(inherits(mem_ad, "InMemoryAnnData"))
 })

@@ -4,7 +4,7 @@ expect_equal_py <- function(a, b) {
 
   bi <- reticulate::import_builtins()
 
-  testthat::expect_equal(bi$type(a), bi$type(b)) # does this always work?
+  testthat::expect_equal(bi$str(bi$type(a)), bi$str(bi$type(b))) # does this always work?
 
   if (inherits(a, "pandas.core.frame.DataFrame")) {
     pd <- reticulate::import("pandas")

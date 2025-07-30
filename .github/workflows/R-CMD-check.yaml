@@ -25,7 +25,8 @@ jobs:
           - {os: windows-latest, r: 'release'}
           - {os: ubuntu-latest, r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'oldrel-1'}
+          # Fails due to #248, resolved with Bioconductor 3.22 release (October 2025)
+          # - {os: ubuntu-latest, r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -33,6 +34,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install libsz2 libaec-dev
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -46,6 +53,22 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+
+      # Avoid a caching issue where {rhdf5} was not restored properly
+      - name: Reinstall {rhdf5} on Linux
+        if: runner.os == 'Linux'
+        run: |
+          BiocManager::install(c("rhdf5", "Rhdf5lib"), force = TRUE)
+        shell: Rscript {0}
+
+      - name: Check {rhdf5} availability
+        run: |
+          if (requireNamespace("rhdf5")) {
+            cat(as.character(packageVersion("rhdf5")))
+          } else {
+            stop("rhdf5 not found")
+          }
+        shell: Rscript {0}
 
       - name: Install h5diff
         run: |

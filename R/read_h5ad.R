@@ -72,6 +72,8 @@ read_h5ad <- function(
     "Seurat" = hdf5_adata$as_Seurat(...),
     "InMemoryAnnData" = hdf5_adata$as_InMemoryAnnData(...)
   )
+
   hdf5_adata$close()
+
   adata
 }

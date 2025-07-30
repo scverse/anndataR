@@ -40,6 +40,8 @@ for (name in test_names) {
 
   # write to file
   adata_py$write_h5ad(file_py)
+  # Read it back in to get the version as read from disk
+  adata_py <- ad$read_h5ad(file_py)
 
   test_that(paste0("Reading an AnnData with uns_nested '", name, "' works"), {
     msg <- message_if_known(
@@ -52,8 +54,13 @@ for (name in test_names) {
     skip_if(!is.null(msg), message = msg)
 
     adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
+    nested_keys <- if (name == "none") {
+      list()
+    } else {
+      names(adata_r$uns$nested)
+    }
     expect_equal(
-      names(adata_r$uns$nested),
+      nested_keys,
       bi$list(adata_py$uns$nested$keys())
     )
 
@@ -82,9 +89,11 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      py_value <- convert_py_value(adata_py$uns$nested[[name]], name)
+
       expect_equal(
         adata_r$uns[["nested"]][[name]],
-        reticulate::py_to_r(adata_py$uns$nested[[name]])
+        py_value
       )
     }
   )
@@ -92,6 +101,8 @@ for (name in test_names) {
   gc()
 
   test_that(paste0("Writing an AnnData with uns_nested '", name, "' works"), {
+    skip_if(name == "none", message = "No value to test for 'none'")
+
     msg <- message_if_known(
       backend = "HDF5AnnData",
       slot = c("uns_nested"),

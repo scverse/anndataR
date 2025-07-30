@@ -101,7 +101,7 @@ Close the HDF5 file when the object is garbage collected
   varp = NULL,
   uns = NULL,
   shape = NULL,
-  mode = c("r", "r+", "a", "w", "w-", "x"),
+  mode = c("a", "r", "r+", "w", "w-", "x"),
   compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
@@ -144,10 +144,8 @@ details}
 \subsection{Details}{
 The constructor creates a new HDF5 \code{AnnData} interface object. This can
 either be used to either connect to an existing \code{.h5ad} file or to
-create a new one. To create a new file both \code{obs_names} and \code{var_names}
-must be specified. In both cases, any additional slots provided will be
-set on the created object. This will cause data to be overwritten if the
-file already exists.
+create a new one. If any additional slot arguments are set an existing
+file will be overwritten.
 }
 
 }

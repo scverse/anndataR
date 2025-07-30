@@ -1,38 +1,46 @@
-# anndataR 0.1.0.9009
+# anndataR devel
 
-- Fix execution of roundtrip tests
+## anndataR 0.1.0.9010
+
+- Switch HDF5 back end from **{hdf5r}** to **{rhdf5}** (PR #283, Fixes #272, #175, #299)
+  - Includes improved compatibility with H5AD files written by Python **anndata**
+- Improvements to rountrip testing (PR #283)
+
+## anndataR 0.1.0.9009
+
+- Fix execution of roundtrip tests (PR #293)
+
+## anndataR 0.1.0.9008
+
+- Add Bioconductor installation instructions in preparation of submission (PR #297)
+
+## anndataR 0.1.0.9007
+
+- Refactor superfluous for loops (PR #298)
 - 
-# anndataR 0.1.0.9008
+## anndataR 0.1.0.9006
 
-- Add Bioconductor installation instructions in preparation of submission
+- Ignore `development_status.Rmd` vignette when building package (PR #296)
 
-# anndataR 0.1.0.9007
+## anndataR 0.1.0.9005
 
-- Refactor superfluous for loops
-- 
-# anndataR 0.1.0.9006
+- Bypass requiring a `counts` or `data` layer during `Seurat` conversion (PR #284)
 
-- ignore `development_status.Rmd` vignette when building package
+## anndataR 0.1.0.9004
 
-# anndataR 0.1.0.9005
+- Use accessors instead of direct slot access where possible (PR #291)
 
-- Bypass requiring a `counts` or `data` layer during `Seurat` conversion
+## anndataR 0.1.0.9003
 
-# anndataR 0.1.0.9004
+- Simplify and update vignettes (PR #282)
 
-- Use accessors instead of direct slot access where possible
+## anndataR 0.1.0.9002
 
-# anndataR 0.1.0.9003
+- Remove `anndataR.Rproj` file from repository (PR #292)
 
-- Simplify & update vignetttes
+## anndataR 0.1.0.9001
 
-# anndataR 0.1.0.9002
-
-- remove `anndataR.Rproj` file from repository
-
-# anndataR 0.1.0.9001
-
-- change uses of `sapply` to `vapply`
+- Change uses of `sapply()` to `vapply()` (PR #294)
 
 # anndataR 0.1.0 (inital release candidate)
 

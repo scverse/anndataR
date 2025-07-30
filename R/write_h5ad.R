@@ -16,6 +16,10 @@
 #'   * `w-`/`x` are synonyms creating a file and failing if it already exists
 #' @param ... Additional arguments passed to [as_AnnData()]
 #'
+#' @details
+#' Compression is currently not supported for Boolean arrays, they will be
+#' written uncompressed.
+#'
 #' @return `path` invisibly
 #' @export
 #'
@@ -100,7 +104,6 @@ write_h5ad <- function(
     )
   }
 
-  adata$close()
   rm(adata)
   gc()
 
