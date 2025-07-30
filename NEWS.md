@@ -3,7 +3,7 @@
 ## anndataR 0.1.0.9010
 
 - Switch HDF5 back end from **{hdf5r}** to **{rhdf5}** (PR #283, Fixes #272, #175, #299)
-  - Includes improved compatiability with H5AD files written by Python **anndata**
+  - Includes improved compatibility with H5AD files written by Python **anndata**
 - Improvements to rountrip testing (PR #283)
 
 ## anndataR 0.1.0.9009
