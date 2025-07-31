@@ -54,13 +54,9 @@ for (name in test_names) {
     skip_if(!is.null(msg), message = msg)
 
     adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
-    uns_keys <- if (name == "none") {
-      list()
-    } else {
-      names(adata_r$uns)
-    }
+
     expect_equal(
-      uns_keys,
+      names(adata_r$uns),
       bi$list(adata_py$uns$keys())
     )
 
@@ -74,7 +70,6 @@ for (name in test_names) {
   test_that(
     paste0("Comparing an anndata with uns '", name, "' with reticulate works"),
     {
-      skip_if(name == "none", message = "No value to test for 'none'")
       msg <- message_if_known(
         backend = "HDF5AnnData",
         slot = c("uns"),
@@ -98,8 +93,6 @@ for (name in test_names) {
   gc()
 
   test_that(paste0("Writing an AnnData with uns '", name, "' works"), {
-    skip_if(name == "none", message = "No value to test for 'none'")
-
     msg <- message_if_known(
       backend = "HDF5AnnData",
       slot = c("uns"),
