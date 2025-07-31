@@ -394,6 +394,14 @@ write_h5ad_string_array <- function(
   compression,
   version = "0.2.0"
 ) {
+  if (!is.vector(value)) {
+    if (is.matrix(value)) {
+      value <- t(value)
+    } else if (is.array(value)) {
+      value <- aperm(value)
+    }
+  }
+
   hdf5_write_dataset(
     file = file,
     name = name,
