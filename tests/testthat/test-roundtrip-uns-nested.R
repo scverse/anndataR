@@ -54,13 +54,9 @@ for (name in test_names) {
     skip_if(!is.null(msg), message = msg)
 
     adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
-    nested_keys <- if (name == "none") {
-      list()
-    } else {
-      names(adata_r$uns$nested)
-    }
+
     expect_equal(
-      nested_keys,
+      names(adata_r$uns$nested),
       bi$list(adata_py$uns$nested$keys())
     )
 
