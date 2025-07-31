@@ -160,6 +160,10 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #'
 #' @noRd
 write_h5ad_null <- function(value, file, name, compression, version = "0.1.0") {
+  if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
+    return(invisible(NULL))
+  }
+
   h5s <- rhdf5::H5Screate("H5S_NULL")
   on.exit(rhdf5::H5Sclose(h5s), add = TRUE)
 
