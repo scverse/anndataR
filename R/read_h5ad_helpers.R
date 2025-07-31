@@ -64,6 +64,7 @@ read_h5ad_element <- function(
 
   read_fun <- switch(
     type,
+    "null" = read_h5ad_null,
     "array" = read_h5ad_dense_array,
     "rec-array" = read_h5ad_rec_array,
     "csr_matrix" = read_h5ad_csr_matrix,
@@ -100,6 +101,22 @@ read_h5ad_element <- function(
   )
 }
 
+#' Read H5AD null
+#'
+#' Read a null value from an H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return `NULL`
+#' @noRd
+read_h5ad_null <- function(file, name, version = "0.1.0") {
+  version <- match.arg(version)
+
+  NULL
+}
+
 #' Read H5AD dense array
 #'
 #' Read a dense array from an H5AD file
@@ -122,7 +139,7 @@ read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
     dim(data) <- length(data)
   }
 
-  # transpose the matrix if need be
+  # Transpose the matrix if need be
   if (is.matrix(data)) {
     data <- t(data)
   } else if (is.array(data) && length(dim(data)) > 1) {
@@ -131,8 +148,9 @@ read_h5ad_dense_array <- function(file, name, version = "0.2.0") {
 
   # Reverse {rhdf5} coercion to factors
   if (is.factor(data) && all(levels(data) %in% c("TRUE", "FALSE"))) {
+    dims <- dim(data)
     data <- as.logical(data)
-    dim(data) <- length(data)
+    dim(data) <- dims
   }
 
   data
