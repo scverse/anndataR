@@ -70,7 +70,6 @@ for (name in test_names) {
   test_that(
     paste0("Comparing an anndata with uns '", name, "' with reticulate works"),
     {
-      skip_if(name == "none", message = "No value to test for 'none'")
       msg <- message_if_known(
         backend = "HDF5AnnData",
         slot = c("uns"),
@@ -94,8 +93,6 @@ for (name in test_names) {
   gc()
 
   test_that(paste0("Writing an AnnData with uns '", name, "' works"), {
-    skip_if(name == "none", message = "No value to test for 'none'")
-
     msg <- message_if_known(
       backend = "HDF5AnnData",
       slot = c("uns"),
