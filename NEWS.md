@@ -1,10 +1,23 @@
 # anndataR devel
 
+## anndataR 0.1.0.9011
+
+- Updates for compatibility with Python **anndata** >= 0.12.0 (PR #305, Fixes #304)
+  - Add helpers for reading/writing `NULL` values to/from H5AD files
+  - Writing of `NULL` values can be disabled by setting
+    `option(anndataR.write_null = FALSE)` to allow the files to be read by
+    Python **anndata** < 0.12.0
+- Fix a bug where string arrays were not transposed correctly when writing to
+  H5AD files (PR #305)
+- Fix a bug where the dimenions of dense arrays were not properly conserved
+  when reading from H5AD (PR #305)
+- Remove workarounds and skipping of `none` values in roundtrip tests (PR #305)
+
 ## anndataR 0.1.0.9010
 
 - Switch HDF5 back end from **{hdf5r}** to **{rhdf5}** (PR #283, Fixes #272, #175, #299)
   - Includes improved compatibility with H5AD files written by Python **anndata**
-- Improvements to rountrip testing (PR #283)
+- Improvements to roundtrip testing (PR #283)
 
 ## anndataR 0.1.0.9009
 
