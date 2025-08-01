@@ -9,8 +9,6 @@ navbar:
     text: Articles
     menu:
     - text: Usage
-    - text: Read/write H5AD files
-      href: articles/anndataR.html
     - text: Read/write Seurat objects
       href: articles/usage_seurat.html
     - text: Read/write SingleCellExperiment objects
