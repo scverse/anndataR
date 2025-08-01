@@ -1,6 +1,6 @@
 # anndataR 0.2.0
 
-## Major changes
+## Breaking changes
 
 - Switch the HDF5 back end to use the **{rhdf5}** package instead of **{hdf5r}**
   (PR #283, Fixes #272, #175, #299)
@@ -9,8 +9,10 @@
     been resolved.
   - It also greatly improves compatibility with H5AD files written by Python
     **anndata**
+  - **NOTE:** Make sure to install **{rhdf5}** instead of **{hdf5r}** to be able
+    to read and write H5AD files!
 
-## Minor changes
+## Major changes
 
 - Updates for compatibility with Python **anndata** >= 0.12.0 (PR #305,
   Fixes #304)
@@ -22,6 +24,9 @@
   (PR #284)
   - There will still be a warning if neither of this is present as it may
     affect compatibility with **{Seurat}** functions
+    
+## Minor changes
+
 - Use accessor functions/methods instead of direct slot access where possible
   (PR #291)
 - Refactor superfluous for loops (PR #298)
