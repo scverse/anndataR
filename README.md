@@ -1,31 +1,22 @@
 # {anndataR}: An R package for working with AnnData objects <img src="man/figures/logo.png" align="right" alt="anndataR logo" width=120 />
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/anndataR.png)](https://CRAN.R-project.org/package=anndataR)
 [![R-CMD-check](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**{anndataR}** aims to make the AnnData format a first-class citizen in
-the R ecosystem, and to make it easy to work with AnnData files in R,
-either directly or by converting them to a SingleCellExperiment or Seurat
-object.
+**{anndataR}** aims to make the `AnnData` format a first-class citizen in the R ecosystem, and to make it easy to work with AnnData files in R, either directly or by converting them to a `SingleCellExperiment` or `Seurat` object.
 
 **{anndataR}** is an scverse® community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 
-
 ## Features of {anndataR}
 
-- Provide an `R6` class to work with AnnData objects in R (either in-memory or on-disk).
+- Provide an `R6` class to work with `AnnData` objects in R (either in-memory or on-disk)
 - Read/write `*.h5ad` files natively
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
-> [!WARNING]
->
-> This package is still in the experimental stage, and may not work as
-> expected. You can find the status of development of anndataR on the
-> [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking)
-> of the website. Please [report](https://github.com/scverse/anndataR/issues) any issues you encounter.
+You can find the status of development of **{anndataR}** on the [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking) of the package website. 
+Please [report](https://github.com/scverse/anndataR/issues) any issues you encounter.
 
 ## Installation
 
@@ -74,17 +65,13 @@ pak::pak("scverse/anndataR")
 
 Take note that you need all suggested dependencies available, and that building them can take some time.
 
-- **Getting started**: An introduction to the package and its features.  
+- [**Getting started**](https://anndatar.data-intuitive.com/articles/anndataR.html): An introduction to the package and its features.  
   `vignette("anndataR", package = "anndataR")`
-- **Reading and writing H5AD files**: How to read and write `*.h5ad` files.  
-  `vignette("usage_h5ad", package = "anndataR")`
-- **Converting to/from Seurat objects**: How to convert between `AnnData` and `Seurat` objects.  
+- [**Read/write `Seurat` objects**](https://anndatar.data-intuitive.com/articles/usage_seurat.html): How to convert between `AnnData` and `Seurat` objects.  
   `vignette("usage_seurat", package = "anndataR")`
-- **Converting to/from SingleCellExperiment objects**: How to convert between `AnnData` and `SingleCellExperiment` objects.  
+- [**Read/write `SingleCellExperiment` objects**](https://anndatar.data-intuitive.com/articles/usage_singlecellexperiment.html): How to convert between `AnnData` and `SingleCellExperiment` objects 
   `vignette("usage_singlecellexperiment", package = "anndataR")`
-- **Software Design**: An overview of the design of the package.  
-  `vignette("software_design", package = "anndataR")`
-- **Development Status**: An overview of the development status of the package.  
-  `vignette("development_status", package = "anndataR")`
-- **Known Isses**: An overview of known issues with the package.  
+- [**Software Design**](https://anndatar.data-intuitive.com/articles/software_design.html): An overview of the design of the package
+- [**Development Status**](https://anndatar.data-intuitive.com/articles/development_status.html): An overview of the development status of the package
+- [**Known Issues**](https://anndatar.data-intuitive.com/articles/known_issues.html): An overview of known issues with the package.  
   `vignette("known_issues", package = "anndataR")`
