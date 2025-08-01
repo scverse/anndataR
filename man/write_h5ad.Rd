@@ -39,8 +39,20 @@ file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to \c
 Write an H5AD file
 }
 \details{
+\subsection{Compression}{
+
 Compression is currently not supported for Boolean arrays, they will be
 written uncompressed.
+}
+
+\subsection{\code{NULL} values}{
+
+For compatibility with changes in Python \strong{anndata} 0.12.0, \code{NULL} values
+in \code{uns} are written to H5AD files as a \code{NULL} dataset (instead of not being
+written at all). To disable this behaviour, set
+\code{option(anndataR.write_null = FALSE)}. This may be required to allow the file
+to be read by older versions of Python \strong{anndata}.
+}
 }
 \examples{
 adata <- AnnData(
