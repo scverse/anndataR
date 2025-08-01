@@ -18,27 +18,24 @@ knitr::opts_chunk$set(
 
 This vignette demonstrates how to read and write `Seurat` objects using the **{anndataR}** package, leveraging the interoperability between `Seurat` and the `AnnData` format.
 
-Check out `?anndataR` for a full list of the functions provided by this package.
-
 ## Introduction
 
-Seurat is a widely used toolkit for single-cell analysis in R.
- **{anndataR}** enables conversion between `Seurat` objects and `AnnData` objects,
-allowing you to leverage the strengths of both the scverse and Seurat ecosystems.
+**{Seurat}** is a widely used toolkit for single-cell analysis in R.
+ **{anndataR}** enables conversion between `Seurat` objects and `AnnData` objects, allowing you to leverage the strengths of both the **scverse** and **{Seurat}** ecosystems.
 
 ## Prerequisites
 
-Before you begin, make sure you have both Seurat and **{anndataR}** installed. You can install them using the following code:
+This vignette requires the **{Seurat}** package in addition to **{anndataR}**.
+You can install them using the following code:
 
 ```r
 if (!requireNamespace("pak", quietly = TRUE)) {
     install.packages("pak")
 }
 pak::pak("Seurat")
-pak::pak("scverse/anndataR")
 ```
 
-## Converting an AnnData Object to a Seurat Object
+## Converting an `AnnData` Object to a `Seurat` Object
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `Seurat` object.
 
@@ -49,7 +46,7 @@ library(Seurat)
 h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 ```
 
-Read the `.h5ad` file and convert it to a `Seurat` object:
+Read the `.h5ad` file as a `Seurat` object:
 
 ```{r read_data}
 seurat_obj <- read_h5ad(h5ad_file, as = "Seurat")
@@ -64,17 +61,18 @@ seurat_obj <- adata$as_Seurat()
 seurat_obj
 ```
 
-Note that there is no one-to-one mapping possible between the AnnData and SeuratObject data structures,
-so some information might be lost during conversion. It is recommended to carefully inspect the converted object
-to ensure that all necessary information has been transferred.
+Note that there is no one-to-one mapping possible between the `AnnData` and `Seurat` data structures,
+so some information might be lost during conversion.
+It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
 
 ### Customizing the conversion
 
-You can customize the conversion process by providing specific mappings for each slot in the Seurat object.
+You can customize the conversion process by providing specific mappings for each slot in the `Seurat` object.
+
 Each of the mapping arguments can be provided with one of the following:
 - `TRUE`: all items in the slot will be copied using the default mapping
 - `FALSE`: the slot will not be copied
-- a (named) character vector: the names are the names of the slot in the Seurat object, the values are the names of the slot in the AnnData object.
+- A (named) character vector: the names are the names of the slot in the `Seurat` object, the values are the names of the slot in the `AnnData` object.
 
 See `?as_Seurat` for more details on how to customize the conversion process. For instance:
 
@@ -93,7 +91,9 @@ seurat_obj <- adata$as_Seurat(
 seurat_obj
 ```
 
-## Convert a Seurat Object to an AnnData Object
+The mapping arguments can also be passed directly to `read_h5ad()`.
+
+## Convert a `Seurat` object to an `AnnData` object
 
 The reverse conversion is also possible, allowing you to convert the `Seurat` object back to an `AnnData` object, or to just write out the `Seurat` object as an `.h5ad` file.
 
@@ -102,6 +102,7 @@ write_h5ad(seurat_obj, tempfile(fileext = ".h5ad"))
 ```
 
 This is equivalent to converting the `Seurat` object to an `AnnData` object and then writing it out:
+
 ```{r convert_to_anndata}
 adata <- as_AnnData(seurat_obj)
 write_h5ad(adata, tempfile(fileext = ".h5ad"))
@@ -111,6 +112,7 @@ You can again customize the conversion process by providing specific mappings fo
 For more details, see `?as_AnnData`.
 
 Here's an example:
+
 ```{r customize_anndata_conversion}
 adata <- as_AnnData(
   seurat_obj,
@@ -125,6 +127,8 @@ adata <- as_AnnData(
 )
 adata
 ```
+
+The mapping arguments can also be passed directly to `write_h5ad()`.
 
 ## Session info
 

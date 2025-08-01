@@ -18,26 +18,24 @@ knitr::opts_chunk$set(
 
 This vignette demonstrates how to read and write `SingleCellExperiment` objects using the **{anndataR}** package, leveraging the interoperability between `SingleCellExperiment` and the `AnnData` format.
 
-Check out `?anndataR` for a full list of the functions provided by this package.
-
 ## Introduction
 
-SingleCellExperiment is a widely used class for storing single-cell data in R, especially within the Bioconductor ecosystem.
-**{anndataR}** enables conversion between `SingleCellExperiment` objects and `AnnData` objects, allowing you to leverage the strengths of both the scverse and Bioconductor ecosystems.
+`SingleCellExperiment` is a widely used class for storing single-cell data in R, especially within the **Bioconductor** ecosystem.
+**{anndataR}** enables conversion between `SingleCellExperiment` objects and `AnnData` objects, allowing you to leverage the strengths of both the **scverse** and **Bioconductor** ecosystems.
 
 ## Prerequisites
 
-Before you begin, make sure you have both SingleCellExperiment and **{anndataR}** installed. You can install them using the following code:
+This vignette requires **{SingleCellExperiment}** in addition to **{anndataR}**.
+You can install them using the following code:
 
 ```r
-if (!requireNamespace("pak", quietly = TRUE)) {
-    install.packages("pak")
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
 }
-pak::pak(c("SingleCellExperiment", "SummarizedExperiment"))
-pak::pak("scverse/anndataR")
+BiocManager::install("SingleCellExperiment")
 ```
 
-## Converting an AnnData Object to a SingleCellExperiment Object
+## Converting an `AnnData` object to a `SingleCellExperiment` object
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `SingleCellExperiment` object.
 
@@ -48,28 +46,32 @@ library(SingleCellExperiment)
 h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 ```
 
-Read the `.h5ad` file:
+Read the `.h5ad` file as a `SingleCellExperiment` object:
 
-```{r read_h5ad}
-adata <- read_h5ad(h5ad_file)
-adata
-```
-
-Convert to a `SingleCellExperiment` object:
-
-```{r convert_implicit}
-sce_obj <- adata$as_SingleCellExperiment()
+```{r read_data}
+sce_obj <- read_h5ad(h5ad_file, as = "SingleCellExperiment")
 sce_obj
 ```
 
-Note that there is no one-to-one mapping possible between the AnnData and SingleCellExperiment data structures, so some information might be lost during conversion. It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
+This is equivalent to reading in the `.h5ad` file and explicitly converting.
+
+```{r read_h5ad}
+adata <- read_h5ad(h5ad_file)
+sce <- adata$as_SingleCellExperiment()
+sce
+```
+
+Note that there is no one-to-one mapping possible between the `AnnData` and `SingleCellExperiment` data structures, so some information might be lost during conversion.
+It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
 
 ### Customizing the conversion
+
 You can customize the conversion process by providing specific mappings for each slot in the `SingleCellExperiment` object.
+
 Each of the mapping arguments can be provided with one of the following:
 - `TRUE`: all items in the slot will be copied using the default mapping
 - `FALSE`: the slot will not be copied
-- a (named) character vector: the names are the names of the slot in the `SingleCellExperiment` object, the values are the names of the slot in the `AnnData` object.
+- A (named) character vector: the names are the names of the slot in the `SingleCellExperiment` object, the values are the names of the slot in the `AnnData` object.
 
 See `?as_SingleCellExperiment` for more details on how to customize the conversion process. For instance:
 
@@ -90,7 +92,9 @@ sce_obj <- adata$as_SingleCellExperiment(
 sce_obj
 ```
 
-## Convert a SingleCellExperiment Object to an AnnData Object
+The mapping arguments can also be passed directly to `read_h5ad()`.
+
+## Convert a `SingleCellExperiment` object to an `AnnData` object
 
 The reverse conversion is also possible, allowing you to convert a `SingleCellExperiment` object back to an `AnnData` object, or to just write out the `SingleCellExperiment` object as an `.h5ad` file.
 
@@ -99,6 +103,7 @@ write_h5ad(sce_obj, tempfile(fileext = ".h5ad"))
 ```
 
 This is equivalent to converting the `SingleCellExperiment` object to an `AnnData` object and then writing it out:
+
 ```{r convert_and_write}
 adata <- as_AnnData(sce_obj)
 write_h5ad(adata, tempfile(fileext = ".h5ad"))
@@ -107,6 +112,7 @@ write_h5ad(adata, tempfile(fileext = ".h5ad"))
 You can again customize the conversion process by providing specific mappings for each slot in the `AnnData` object. For more details, see `?as_AnnData`.
 
 Here's an example:
+
 ```{r customize_anndata_conversion}
 as_AnnData(
   sce_obj,
@@ -119,6 +125,8 @@ as_AnnData(
   uns_mapping = c("Bool", "IntScalar")
 )
 ```
+
+The mapping arguments can also be passed directly to `write_h5ad()`.
 
 ## Session info
 
