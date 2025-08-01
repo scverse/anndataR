@@ -17,8 +17,19 @@
 #' @param ... Additional arguments passed to [as_AnnData()]
 #'
 #' @details
+#'
+#' ## Compression
+#'
 #' Compression is currently not supported for Boolean arrays, they will be
 #' written uncompressed.
+#'
+#' ## `NULL` values
+#'
+#' For compatibility with changes in Python **anndata** 0.12.0, `NULL` values
+#' in `uns` are written to H5AD files as a `NULL` dataset (instead of not being
+#' written at all). To disable this behaviour, set
+#' `option(anndataR.write_null = FALSE)`. This may be required to allow the file
+#' to be read by older versions of Python **anndata**.
 #'
 #' @return `path` invisibly
 #' @export
