@@ -9,7 +9,7 @@ vignette: >
 
 The following tables show the status of the implementation of each feature in the package:
 
-```{r include=FALSE}
+```{r impl-table, include=FALSE}
 library(tibble)
 library(knitr)
 library(rprojroot)
@@ -132,7 +132,7 @@ status_formatted <- status |>
 
 ## Objects
 
-```{r echo=FALSE, results="asis"}
+```{r impl-table-objects, echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as markdown
 all_classes <- unique(status_formatted$class)
 object_classes <- all_classes[!all_classes %in% c("Seurat", "SingleCellExperiment")]
@@ -152,7 +152,7 @@ for (class_name in object_classes) {
 
 ## Conversion
 
-```{r echo=FALSE, results="asis"}
+```{r impl-table-conversion, echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as markdown
 for (class_name in c("SingleCellExperiment", "Seurat")) {
   cat("### ", class_name, "\n\n", sep = "")
@@ -175,6 +175,6 @@ for (class_name in c("SingleCellExperiment", "Seurat")) {
 
 ## Session info
 
-```{r}
+```{r sessioninfo}
 sessionInfo()
 ```
