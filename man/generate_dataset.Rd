@@ -107,9 +107,4 @@ Generate a dataset with different types of columns and layers
 }
 \examples{
 dummy <- generate_dataset()
-\dontrun{
-dummy <- generate_dataset(format = "AnnData")
-dummy <- generate_dataset(format = "SingleCellExperiment")
-dummy <- generate_dataset(format = "Seurat")
-}
 }
