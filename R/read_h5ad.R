@@ -48,16 +48,6 @@ read_h5ad <- function(
   as <- match.arg(as)
   mode <- match.arg(mode)
 
-  if (lifecycle::is_present(to)) {
-    lifecycle::deprecate_warn(
-      when = "0.1.0",
-      what = "read_h5ad(to = )",
-      with = "read_h5ad(as = )",
-      details = "Overwriting `as` with `to`."
-    )
-    as <- to
-  }
-
   hdf5_adata <- HDF5AnnData$new(path, mode = mode)
 
   if (as == "HDF5AnnData") {
