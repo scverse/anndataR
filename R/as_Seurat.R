@@ -299,28 +299,6 @@ as_Seurat <- function(
   obj
 }
 
-#' Convert an AnnData object to a Seurat object
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' This function is deprecated, use `adata$as_Seurat()` instead
-#'
-#' @param ... Arguments passed to [as_Seurat()]
-#'
-#' @return A `Seurat` object
-#' @export
-# nolint start: object_name_linter
-to_Seurat <- function(...) {
-  # nolint end: object_name_linter
-  lifecycle::deprecate_warn(
-    when = "0.1.0",
-    what = "to_Seurat()",
-    with = "adata$as_Seurat()"
-  )
-  as_Seurat(...)
-}
-
 # nolint start: object_name_linter
 .as_Seurat_is_atomic_character <- function(x) {
   # nolint end: object_name_linter

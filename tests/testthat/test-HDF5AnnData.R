@@ -187,8 +187,3 @@ test_that("writing var names works", {
   h5ad$var_names <- LETTERS[1:20]
   expect_identical(h5ad$var_names, LETTERS[1:20])
 })
-
-test_that("deprecated to_InMemoryAnnData() works", {
-  expect_warning(mem_ad <- adata$to_InMemoryAnnData())
-  expect_true(inherits(mem_ad, "InMemoryAnnData"))
-})

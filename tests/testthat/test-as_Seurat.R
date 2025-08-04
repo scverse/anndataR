@@ -177,8 +177,3 @@ test_that("as_Seurat works with unnamed mappings", {
     )
   )
 })
-
-test_that("deprecated to_Seurat() works", {
-  expect_warning(seu <- ad$to_Seurat(x_mapping = "counts"))
-  expect_s4_class(seu, "Seurat")
-})

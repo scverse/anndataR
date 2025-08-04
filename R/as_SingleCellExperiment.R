@@ -277,28 +277,6 @@ as_SingleCellExperiment <- function(
   sce
 }
 
-#' Convert an AnnData object to a SingleCellExperiment object
-#'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' This function is deprecated, use `adata$as_SingleCellExperiment()` instead
-#'
-#' @param ... Arguments passed to [as_SingleCellExperiment()]
-#'
-#' @return A `SingleCellExperiment` object
-#' @export
-# nolint start: object_name_linter
-to_SingleCellExperiment <- function(...) {
-  # nolint end: object_name_linter
-  lifecycle::deprecate_warn(
-    when = "0.1.0",
-    what = "to_SingleCellExperiment()",
-    with = "adata$as_SingleCellExperiment()"
-  )
-  as_SingleCellExperiment(...)
-}
-
 # nolint start: object_length_linter object_name_linter
 .as_SCE_guess_all <- function(adata, slot) {
   # nolint end: object_length_linter object_name_linter

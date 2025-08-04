@@ -204,23 +204,6 @@ AbstractAnnData <- R6::R6Class(
       )
     },
     #' @description
-    #' `r lifecycle::badge('deprecated')`
-    #'
-    #' Deprecated, use `as_SingleCellExperiment()` instead
-    #'
-    #' @param ... Arguments passed to `adata$as_SingleCellExperiment()`
-    #'
-    #' @return A `SingleCellExperiment` object
-    to_SingleCellExperiment = function(...) {
-      lifecycle::deprecate_warn(
-        "0.1.0",
-        "to_SingleCellExperiment()",
-        "as_SingleCellExperiment()"
-      )
-
-      self$as_SingleCellExperiment(...)
-    },
-    #' @description
     #' Convert to `Seurat`
     #'
     #' See [as_Seurat()] for more details on the conversion
@@ -258,23 +241,6 @@ AbstractAnnData <- R6::R6Class(
       )
     },
     #' @description
-    #' `r lifecycle::badge('deprecated')`
-    #'
-    #' Deprecated, use `as_Seurat()` instead
-    #'
-    #' @param ... Arguments passed to `adata$as_Seurat()`
-    #'
-    #' @return A `Seurat` object
-    to_Seurat = function(...) {
-      lifecycle::deprecate_warn(
-        "0.1.0",
-        "to_Seurat()",
-        "as_Seurat()"
-      )
-
-      self$as_Seurat(...)
-    },
-    #' @description
     #' Convert to an [`InMemoryAnnData`]
     #'
     #' See [as_InMemoryAnnData()] for more details on the conversion
@@ -282,21 +248,6 @@ AbstractAnnData <- R6::R6Class(
     #' @return An [InMemoryAnnData] object
     as_InMemoryAnnData = function() {
       as_InMemoryAnnData(self)
-    },
-    #' @description
-    #' `r lifecycle::badge('deprecated')`
-    #'
-    #' Deprecated, use `as_InMemoryAnnData()` instead
-    #'
-    #' @return An [`InMemoryAnnData`] object
-    to_InMemoryAnnData = function() {
-      lifecycle::deprecate_warn(
-        "0.1.0",
-        "to_InMemoryAnnData()",
-        "as_InMemoryAnnData()"
-      )
-
-      self$as_InMemoryAnnData()
     },
     #' @description
     #' Convert to an [`HDF5AnnData`]
