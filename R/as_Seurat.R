@@ -492,7 +492,7 @@ to_Seurat <- function(...) {
     }
 
   if (!grepl(SeuratObject::.KeyPattern(), key)) {
-    new_key <- suppressWarnings(Seurat::Key(key))
+    new_key <- SeuratObject::Key(key, quiet = TRUE)
     cli_warn(paste(
       "Key {.val {key}} does not match the expected pattern,",
       "it has been replaced with {.val {new_key}}"
@@ -534,7 +534,7 @@ to_Seurat <- function(...) {
   if (is.atomic(reduction_mapping)) {
     reduction_mapping <- purrr::map(reduction_mapping, function(.obsm) {
       c(
-        key = suppressWarnings(SeuratObject::Key(.obsm)),
+        key = SeuratObject::Key(.obsm, quiet = TRUE),
         embeddings = .obsm
       )
     })
@@ -617,7 +617,7 @@ to_Seurat <- function(...) {
 
     mapping <- c(
       # Make sure we have valid keys here to avoid warnings later
-      key = suppressWarnings(SeuratObject::Key(.obsm)),
+      key = SeuratObject::Key(.obsm, quiet = TRUE),
       embeddings = .obsm
     )
     if (.obsm == "X_pca" && "PCs" %in% names(adata$varm)) {
