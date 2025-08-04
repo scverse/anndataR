@@ -2,7 +2,8 @@
 
 - Bump required R version to 4.5 in preparation for Bioconductor submission
   (PR #309)
-- Remove deprecated functions and arguments (PR #311)
+- Remove deprecated functions and arguments (PR #311, PR #313)
+- Minor cleanups and improvements (PR #313).
 
 # anndataR 0.2.0
 
