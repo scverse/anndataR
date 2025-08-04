@@ -1,6 +1,8 @@
 # anndataR 0.99.0
 
-- Bump required R version to 4.5 in preparation of Bioconductor submission
+- Bump required R version to 4.5 in preparation for Bioconductor submission
+  (PR #309)
+- Remove deprecated functions and arguments (PR #311)
 
 # anndataR 0.2.0
 
