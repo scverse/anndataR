@@ -61,11 +61,8 @@ Other AnnData classes:
 \item \href{#method-AbstractAnnData-varp_keys}{\code{AbstractAnnData$varp_keys()}}
 \item \href{#method-AbstractAnnData-uns_keys}{\code{AbstractAnnData$uns_keys()}}
 \item \href{#method-AbstractAnnData-as_SingleCellExperiment}{\code{AbstractAnnData$as_SingleCellExperiment()}}
-\item \href{#method-AbstractAnnData-to_SingleCellExperiment}{\code{AbstractAnnData$to_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-as_Seurat}{\code{AbstractAnnData$as_Seurat()}}
-\item \href{#method-AbstractAnnData-to_Seurat}{\code{AbstractAnnData$to_Seurat()}}
 \item \href{#method-AbstractAnnData-as_InMemoryAnnData}{\code{AbstractAnnData$as_InMemoryAnnData()}}
-\item \href{#method-AbstractAnnData-to_InMemoryAnnData}{\code{AbstractAnnData$to_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-as_HDF5AnnData}{\code{AbstractAnnData$as_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-write_h5ad}{\code{AbstractAnnData$write_h5ad()}}
@@ -245,28 +242,6 @@ A \code{SingleCellExperiment} object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_SingleCellExperiment"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_SingleCellExperiment}{}}}
-\subsection{Method \code{to_SingleCellExperiment()}}{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-Deprecated, use \code{as_SingleCellExperiment()} instead
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_SingleCellExperiment(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Arguments passed to \code{adata$as_SingleCellExperiment()}}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{SingleCellExperiment} object
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-as_Seurat"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-as_Seurat}{}}}
 \subsection{Method \code{as_Seurat()}}{
@@ -312,28 +287,6 @@ A \code{Seurat} object
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_Seurat"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_Seurat}{}}}
-\subsection{Method \code{to_Seurat()}}{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-Deprecated, use \code{as_Seurat()} instead
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_Seurat(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Arguments passed to \code{adata$as_Seurat()}}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-A \code{Seurat} object
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AbstractAnnData-as_InMemoryAnnData"></a>}}
 \if{latex}{\out{\hypertarget{method-AbstractAnnData-as_InMemoryAnnData}{}}}
 \subsection{Method \code{as_InMemoryAnnData()}}{
@@ -346,21 +299,6 @@ See \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}} for more details on 
 
 \subsection{Returns}{
 An \link{InMemoryAnnData} object
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_InMemoryAnnData"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_InMemoryAnnData}{}}}
-\subsection{Method \code{to_InMemoryAnnData()}}{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-Deprecated, use \code{as_InMemoryAnnData()} instead
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_InMemoryAnnData()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-An \code{\link{InMemoryAnnData}} object
 }
 }
 \if{html}{\out{<hr>}}

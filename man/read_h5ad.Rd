@@ -7,7 +7,6 @@
 read_h5ad(
   path,
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
-  to = deprecated(),
   mode = c("r", "r+", "a", "w", "w-", "x"),
   ...
 )
@@ -25,8 +24,6 @@ read_h5ad(
 \item \code{"Seurat"}: Read the H5AD file as a
 \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object
 }}
-
-\item{to}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Deprecated, use \code{as} instead}
 
 \item{mode}{The mode to open the HDF5 file.
 \itemize{
