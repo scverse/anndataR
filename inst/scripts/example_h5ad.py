@@ -1,9 +1,9 @@
-# python v3.10.10
-import anndata  # anndata v0.8.0
-import scanpy  # scanpy v1.9.3
-import numpy  # numpy v1.23.5
-import pandas  # pandas v2.0.0
-import scipy.sparse  # scipy v1.10.1
+# python v3.13.5
+import anndata  # anndata v0.11.4
+import scanpy  # scanpy v1.11.4
+import numpy  # numpy v2.2.6
+import pandas  # pandas v2.3.0
+import scipy.sparse  # scipy v1.14.1
 
 # This script uses Python to create an example H5AD file for testing
 # interoperability between languages. It is designed to be a small but
@@ -22,6 +22,9 @@ import scipy.sparse  # scipy v1.10.1
 #
 # CHANGELOG
 #
+# v0.3.0 (2025-08-04)
+# - Add adata.varp["test_varp"] to test reading of varp
+# - Update package versions to latest stable versions
 # v0.2.0 (2023-05-11)
 # - Add 1D sparse matrix to `adata.uns["Sparse1D"]
 # - Reduce the size of `adata.uns["String2D"]` and add columns to values
@@ -83,5 +86,8 @@ scanpy.tl.umap(adata)
 scanpy.tl.leiden(adata)
 scanpy.tl.rank_genes_groups(adata, "leiden")
 
+# add varp to test reading of varp
+adata.varp["test_varp"] = numpy.random.rand(adata.n_vars, adata.n_vars)
+
 # Write the H5AD file
-adata.write("example.h5ad")
+adata.write_h5ad("example.h5ad", compression="gzip")
