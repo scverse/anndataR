@@ -13,7 +13,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r options, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -34,14 +34,14 @@ This package differs from [**{zellkonverter}**](https://bioconductor.org/package
 
 Install using either **{BiocManager}** or from GitHub using **{pak}**:
 
-```{r, eval = FALSE}
+```{r install-BiocManager, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
 BiocManager::install("anndataR")
 ```
 
-```{r, eval = FALSE}
+```{r install-pak, eval = FALSE}
 if (!require("pak", quietly = TRUE)) {
   install.packages("pak")
 }
@@ -54,7 +54,7 @@ Here's a quick example of how to use **{anndataR}**.
 
 First, we fetch an example `.h5ad` file included in the package:
 
-```{r}
+```{r h5ad-path}
 library(anndataR)
 
 h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
@@ -169,6 +169,6 @@ write_h5ad(obj, tmpfile)
 
 ## Session info
 
-```{r}
+```{r sessioninfo}
 sessionInfo()
 ```

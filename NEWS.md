@@ -1,3 +1,7 @@
+# anndataR 0.99.0
+
+- Bump required R version to 4.5 in preparation of Bioconductor submission
+
 # anndataR 0.2.0
 
 ## Breaking changes
