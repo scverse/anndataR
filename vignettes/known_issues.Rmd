@@ -10,8 +10,8 @@ vignette: >
 This document lists known issues with the package and suggests possible solutions.
 
 ```{r known-issues, echo=FALSE, results="asis"}
-# how to get a file from a package
-data <- yaml::read_yaml(system.file("known_issues.yaml", package = "anndataR"))$known_issues
+known_issues_path <- system.file("known_issues.yaml", package = "anndataR")
+data <- yaml::read_yaml(known_issues_path)$known_issues
 
 for (i in seq_along(data)) {
   str <- paste0(
