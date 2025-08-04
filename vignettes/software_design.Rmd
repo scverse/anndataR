@@ -8,7 +8,7 @@ vignette: >
 ---
 
 
-```{r, include = FALSE}
+```{r options, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = ""
@@ -46,6 +46,6 @@ Notation:
 
 ## Session info
 
-```{r}
+```{r sessioninfo}
 sessionInfo()
 ```
