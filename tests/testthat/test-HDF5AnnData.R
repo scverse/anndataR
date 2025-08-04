@@ -50,6 +50,26 @@ test_that("reading varm works", {
   )
 })
 
+# trackstatus: class=HDF5AnnData, feature=test_get_obsp, status=done
+test_that("reading obsp works", {
+  obsp <- adata$obsp
+  expect_true(is.list(obsp), "list")
+  expect_equal(
+    names(obsp),
+    c("connectivities", "distances")
+  )
+})
+
+# trackstatus: class=HDF5AnnData, feature=test_get_varp, status=done
+test_that("reading varp works", {
+  varp <- adata$varp
+  expect_true(is.list(varp), "list")
+  expect_equal(
+    names(varp),
+    c("test_varp")
+  )
+})
+
 # trackstatus: class=HDF5AnnData, feature=test_get_obs, status=done
 test_that("reading obs works", {
   obs <- adata$obs
@@ -186,4 +206,72 @@ test_that("writing var names works", {
 
   h5ad$var_names <- LETTERS[1:20]
   expect_identical(h5ad$var_names, LETTERS[1:20])
+})
+
+# trackstatus: class=HDF5AnnData, feature=test_set_obsm, status=done
+test_that("writing obsm works", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+
+  obsm_x <- matrix(rnorm(10 * 5), nrow = 10, ncol = 5)
+  h5ad$obsm <- list(X = obsm_x)
+  expect_identical(h5ad$obsm$X, obsm_x)
+})
+
+# trackstatus: class=HDF5AnnData, feature=test_set_varm, status=done
+test_that("writing varm works", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+  varm_x <- matrix(rnorm(20 * 5), nrow = 20, ncol = 5)
+  h5ad$varm <- list(PCs = varm_x)
+  expect_identical(h5ad$varm$PCs, varm_x)
+})
+
+# trackstatus: class=HDF5AnnData, feature=test_set_obsp, status=done
+test_that("writing obsp works", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+
+  obsp_x <- matrix(rnorm(10 * 10), nrow = 10, ncol = 10)
+  h5ad$obsp <- list(connectivities = obsp_x)
+  expect_identical(h5ad$obsp$connectivities, obsp_x)
+})
+
+# trackstatus: class=HDF5AnnData, feature=test_set_varp, status=done
+test_that("writing varp works", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+
+  varp_x <- matrix(rnorm(20 * 10), nrow = 20, ncol = 10)
+  h5ad$varp <- list(connectivities = varp_x)
+  expect_identical(h5ad$varp$connectivities, varp_x)
+})
+
+# trackstatus: class=HDF5AnnData, feature=test_set_uns, status=done
+test_that("writing uns works", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
+
+  h5ad$uns <- list(
+    foo = "bar",
+    baz = c(1, 2, 3),
+    nested = list(
+      nested_foo = "nested_bar",
+      nested_baz = c(4L, 5L, 6L)
+    )
+  )
+  expect_identical(h5ad$uns$foo, "bar")
+  expect_identical(h5ad$uns$baz, c(1, 2, 3))
+  expect_identical(h5ad$uns$nested$nested_foo, "nested_bar")
+  expect_identical(h5ad$uns$nested$nested_baz, c(4L, 5L, 6L))
 })
