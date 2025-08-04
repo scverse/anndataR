@@ -64,7 +64,6 @@ for (name in test_names) {
     expect_equal(str_r, str_py)
   })
 
-  # maybe this test simply shouldn't be run if there is a known issue with reticulate
   test_that(
     paste0("Comparing an anndata with X '", name, "' with reticulate works"),
     {
