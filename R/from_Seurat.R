@@ -1,10 +1,5 @@
 #' Convert a Seurat object to an AnnData object
 #'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' This function is deprecated, use [as_AnnData()] instead
-#'
 #' @param seurat_obj See [as_AnnData()]
 #' @param assay_name See [as_AnnData()]
 #' @param x_mapping See [as_AnnData()]
@@ -20,7 +15,7 @@
 #' @param ... See [as_AnnData()]
 #'
 #' @return An `AnnData` object
-#' @export
+#' @noRd
 # nolint start: object_name_linter
 from_Seurat <- function(
   # nolint end: object_name_linter

@@ -12,7 +12,6 @@
 #'     [`SingleCellExperiment::SingleCellExperiment`] object
 #'   * `"Seurat"`: Read the H5AD file as a
 #'     [`SeuratObject::Seurat`] object
-#' @param to `r lifecycle::badge('deprecated')` Deprecated, use `as` instead
 #' @param mode The mode to open the HDF5 file.
 #'
 #'   * `a` creates a new file or opens an existing one for read/write.
@@ -43,7 +42,6 @@
 read_h5ad <- function(
   path,
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
-  to = deprecated(),
   mode = c("r", "r+", "a", "w", "w-", "x"),
   ...
 ) {

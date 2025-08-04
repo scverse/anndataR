@@ -1,10 +1,5 @@
 #' Convert a SingleCellExperiment object to an AnnData object
 #'
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#'
-#' This function is deprecated, use [as_AnnData()] instead
-#'
 #' @param sce See [as_AnnData()]
 #' @param x_mapping See [as_AnnData()]
 #' @param layers_mapping See [as_AnnData()]
@@ -19,7 +14,7 @@
 #' @param ... See [as_AnnData()]
 #'
 #' @return An `AnnData` object
-#' @export
+#' @noRd
 # nolint start: object_name_linter
 from_SingleCellExperiment <- function(
   # nolint end: object_name_linter
