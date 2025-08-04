@@ -248,8 +248,3 @@ test_that("as_SCE works with unnamed mappings", {
     )
   )
 })
-
-test_that("deprecated to_SingleCellExperiment() works", {
-  expect_warning(sce <- ad$to_SingleCellExperiment())
-  expect_s4_class(sce, "SingleCellExperiment")
-})
