@@ -3,16 +3,14 @@ library(Seurat)
 
 known_issues <- read_known_issues()
 
-suppressWarnings({
-  counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
-  obj <- CreateSeuratObject(counts = counts)
-  obj <- NormalizeData(obj)
-  obj <- FindVariableFeatures(obj)
-  obj <- ScaleData(obj)
-  obj <- RunPCA(obj, npcs = 10L)
-  obj <- FindNeighbors(obj)
-  obj <- RunUMAP(obj, dims = 1:10)
-})
+counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
+obj <- CreateSeuratObject(counts = as(counts, "CsparseMatrix"))
+obj <- NormalizeData(obj, verbose = FALSE)
+obj <- FindVariableFeatures(obj, verbose = FALSE)
+obj <- ScaleData(obj, verbose = FALSE)
+obj <- RunPCA(obj, npcs = 10L, verbose = FALSE)
+obj <- FindNeighbors(obj, verbose = FALSE)
+obj <- RunUMAP(obj, dims = 1:10, verbose = FALSE)
 
 active_assay <- obj[[DefaultAssay(obj)]]
 
