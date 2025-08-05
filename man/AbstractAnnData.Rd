@@ -64,7 +64,6 @@ Other AnnData classes:
 \item \href{#method-AbstractAnnData-as_Seurat}{\code{AbstractAnnData$as_Seurat()}}
 \item \href{#method-AbstractAnnData-as_InMemoryAnnData}{\code{AbstractAnnData$as_InMemoryAnnData()}}
 \item \href{#method-AbstractAnnData-as_HDF5AnnData}{\code{AbstractAnnData$as_HDF5AnnData()}}
-\item \href{#method-AbstractAnnData-to_HDF5AnnData}{\code{AbstractAnnData$to_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-write_h5ad}{\code{AbstractAnnData$write_h5ad()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
 }
@@ -324,28 +323,6 @@ See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for more details on the conv
 \item{\code{compression}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
 \item{\code{mode}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-An \code{\link{HDF5AnnData}} object
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AbstractAnnData-to_HDF5AnnData"></a>}}
-\if{latex}{\out{\hypertarget{method-AbstractAnnData-to_HDF5AnnData}{}}}
-\subsection{Method \code{to_HDF5AnnData()}}{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
-
-Deprecated, use \code{as_HDF5AnnData()} instead
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$to_HDF5AnnData(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Arguments passed to \code{adata$as_HDF5AnnData()}}
 }
 \if{html}{\out{</div>}}
 }
