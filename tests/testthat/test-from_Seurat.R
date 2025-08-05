@@ -1,18 +1,18 @@
 skip_if_not_installed("Seurat")
 library(Seurat)
 
+`%||%` <- rlang::`%||%`
+
 known_issues <- read_known_issues()
 
-suppressWarnings({
-  counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
-  obj <- CreateSeuratObject(counts = counts)
-  obj <- NormalizeData(obj)
-  obj <- FindVariableFeatures(obj)
-  obj <- ScaleData(obj)
-  obj <- RunPCA(obj, npcs = 10L)
-  obj <- FindNeighbors(obj)
-  obj <- RunUMAP(obj, dims = 1:10)
-})
+counts <- matrix(rbinom(20000, 1000, .001), nrow = 100)
+obj <- CreateSeuratObject(counts = as(counts, "CsparseMatrix"))
+obj <- NormalizeData(obj, verbose = FALSE)
+obj <- FindVariableFeatures(obj, verbose = FALSE)
+obj <- ScaleData(obj, verbose = FALSE)
+obj <- RunPCA(obj, npcs = 10L, verbose = FALSE)
+obj <- FindNeighbors(obj, verbose = FALSE)
+obj <- RunUMAP(obj, dims = 1:10, verbose = FALSE)
 
 active_assay <- obj[[DefaultAssay(obj)]]
 
@@ -199,8 +199,16 @@ test_that("as_AnnData (Seurat) works with list mappings", {
       obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
       varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
       obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
-      varp_mapping = as.list(.from_Seurat_guess_varps(obj)),
-      uns_mapping = as.list(.from_Seurat_guess_uns(obj))
+      varp_mapping = if (length(as.list(.from_Seurat_guess_varps(obj))) > 0) {
+        as.list(.from_Seurat_guess_varps(obj))
+      } else {
+        FALSE
+      },
+      uns_mapping = if (length(as.list(.from_Seurat_guess_uns(obj))) > 0) {
+        as.list(.from_Seurat_guess_uns(obj))
+      } else {
+        FALSE
+      }
     )
   )
 })
@@ -216,8 +224,8 @@ test_that("as_AnnData (Seurat) works with unnamed mappings", {
       obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
       varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
       obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
-      varp_mapping = unname(.from_Seurat_guess_varps(obj)),
-      uns_mapping = unname(.from_Seurat_guess_uns(obj))
+      varp_mapping = unname(.from_Seurat_guess_varps(obj)) %||% FALSE,
+      uns_mapping = unname(.from_Seurat_guess_uns(obj)) %||% FALSE
     )
   )
 })

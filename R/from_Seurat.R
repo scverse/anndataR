@@ -33,12 +33,6 @@ from_Seurat <- function(
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
-  lifecycle::deprecate_soft(
-    when = "0.99.0",
-    what = "from_Seurat()",
-    with = "as_AnnData()"
-  )
-
   check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
 
   output_class <- match.arg(output_class)
