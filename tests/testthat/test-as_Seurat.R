@@ -161,8 +161,7 @@ test_that("as_Seurat works with list mappings", {
 
 test_that("as_Seurat works with a vector reduction_mapping", {
   expect_no_error(
-    ad$as_Seurat(reduction_mapping = c(numeric = "numeric_matrix")
-    )
+    ad$as_Seurat(reduction_mapping = c(numeric = "numeric_matrix"))
   )
 })
 
