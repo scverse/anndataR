@@ -272,23 +272,6 @@ AbstractAnnData <- R6::R6Class(
       )
     },
     #' @description
-    #' `r lifecycle::badge('deprecated')`
-    #'
-    #' Deprecated, use `as_HDF5AnnData()` instead
-    #'
-    #' @param ... Arguments passed to `adata$as_HDF5AnnData()`
-    #'
-    #' @return An [`HDF5AnnData`] object
-    to_HDF5AnnData = function(...) {
-      lifecycle::deprecate_warn(
-        "0.1.0",
-        "to_HDF5AnnDAta()",
-        "as_HDF5AnnData()",
-      )
-
-      self$as_HDF5AnnData(...)
-    },
-    #' @description
     #' Write the `AnnData` object to an H5AD file
     #'
     #' See [write_h5ad()] for details

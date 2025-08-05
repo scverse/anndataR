@@ -24,11 +24,6 @@
 #'
 #' @examples
 #' dummy <- generate_dataset()
-#' \dontrun{
-#' dummy <- generate_dataset(format = "AnnData")
-#' dummy <- generate_dataset(format = "SingleCellExperiment")
-#' dummy <- generate_dataset(format = "Seurat")
-#' }
 generate_dataset <- function(
   n_obs = 10L,
   n_vars = 20L,

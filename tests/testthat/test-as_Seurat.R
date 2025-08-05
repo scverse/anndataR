@@ -11,6 +11,12 @@ known_issues <- read_known_issues()
 ad <- generate_dataset(n_obs = 10L, n_vars = 20L, format = "AnnData")
 ad$obsm[["X_pca"]] <- matrix(1:50, 10, 5)
 ad$varm[["PCs"]] <- matrix(1:100, 20, 5)
+ad$layers["counts"] <- ad$layers["numeric_csparse"]
+
+# Remove column names to avoid warnings
+for (name in c("integer", "numeric", "integer_with_nas", "numeric_with_nas")) {
+  colnames(ad$obsm[[name]]) <- NULL
+}
 
 seu <- ad$as_Seurat()
 
@@ -137,7 +143,6 @@ test_that("as_Seurat retains pca dimred", {
 test_that("as_Seurat works with list mappings", {
   expect_no_error(
     ad$as_Seurat(
-      x_mapping = "counts",
       object_metadata_mapping = as.list(.as_Seurat_guess_object_metadata(ad)),
       layers_mapping = as.list(.as_Seurat_guess_layers(ad)),
       assay_metadata_mapping = as.list(.as_Seurat_guess_assay_metadata(ad)),
@@ -156,10 +161,7 @@ test_that("as_Seurat works with list mappings", {
 
 test_that("as_Seurat works with a vector reduction_mapping", {
   expect_no_error(
-    ad$as_Seurat(
-      x_mapping = "counts",
-      reduction_mapping = c(numeric = "numeric_matrix")
-    )
+    ad$as_Seurat(reduction_mapping = c(numeric = "numeric_matrix"))
   )
 })
 
@@ -169,7 +171,7 @@ test_that("as_Seurat works with unnamed mappings", {
       object_metadata_mapping = unname(.as_Seurat_guess_object_metadata(ad)),
       layers_mapping = c(
         na.omit(unname(.as_Seurat_guess_layers(ad))),
-        counts = NA
+        data = NA
       ),
       assay_metadata_mapping = unname(.as_Seurat_guess_assay_metadata(ad)),
       graph_mapping = unname(.as_Seurat_guess_graphs(ad)),
