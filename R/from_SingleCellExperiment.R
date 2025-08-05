@@ -31,12 +31,6 @@ from_SingleCellExperiment <- function(
   output_class = c("InMemory", "HDF5AnnData"),
   ...
 ) {
-  lifecycle::deprecate_soft(
-    when = "0.99.0",
-    what = "from_SingleCellExperiment()",
-    with = "as_AnnData()"
-  )
-
   check_requires(
     "Converting SingleCellExperiment to AnnData",
     "SingleCellExperiment",
