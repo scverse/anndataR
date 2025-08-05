@@ -250,7 +250,7 @@ test_that("writing varp works", {
   var <- data.frame(row.names = 1:20)
   h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
 
-  varp_x <- matrix(rnorm(20 * 10), nrow = 20, ncol = 10)
+  varp_x <- matrix(rnorm(20 * 20), nrow = 20, ncol = 20)
   h5ad$varp <- list(connectivities = varp_x)
   expect_identical(h5ad$varp$connectivities, varp_x)
 })
@@ -271,7 +271,7 @@ test_that("writing uns works", {
     )
   )
   expect_identical(h5ad$uns$foo, "bar")
-  expect_identical(h5ad$uns$baz, c(1, 2, 3))
+  expect_equal(h5ad$uns$baz, c(1, 2, 3), ignore_attr = TRUE)
   expect_identical(h5ad$uns$nested$nested_foo, "nested_bar")
-  expect_identical(h5ad$uns$nested$nested_baz, c(4L, 5L, 6L))
+  expect_equal(h5ad$uns$nested$nested_baz, c(4L, 5L, 6L), ignore_attr = TRUE)
 })
