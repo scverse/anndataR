@@ -352,9 +352,9 @@ as_Seurat <- function(
     !"counts" %in% names(layers_mapping) &&
       !"data" %in% names(layers_mapping)
   ) {
-    cli_warn(c(
+    cli_warn(paste(
       "No {.val counts} or {.val data} layer found in {.arg names(layers_mapping)},",
-      "this may lead to unexpected results when using the resulting Seurat object."
+      "this may lead to unexpected results when using the resulting {.cls Seurat} object."
     ))
   }
 
@@ -381,6 +381,7 @@ as_Seurat <- function(
   # and remove the counts layer
   if (!"counts" %in% names(layers_mapping)) {
     SeuratObject::LayerData(obj, layer = dummy_counts) <- counts
+    SeuratObject::DefaultLayer(obj[[assay_name]]) <- dummy_counts
     obj[[assay_name]]$counts <- NULL
   }
 
