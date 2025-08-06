@@ -4,6 +4,7 @@
   (PR #309)
 - Remove deprecated functions and arguments (PR #311, PR #313)
 - Minor cleanups and improvements (PR #313).
+- Add more tests to increase coverage (PR #315)
 
 # anndataR 0.2.0
 
