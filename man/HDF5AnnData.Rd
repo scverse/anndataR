@@ -3,6 +3,9 @@
 \name{HDF5AnnData}
 \alias{HDF5AnnData}
 \title{HDF5AnnData}
+\value{
+An \code{HDF5AnnData} object
+}
 \description{
 Implementation of an HDF5-backed \code{AnnData} object.
 

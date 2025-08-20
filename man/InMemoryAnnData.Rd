@@ -3,6 +3,9 @@
 \name{InMemoryAnnData}
 \alias{InMemoryAnnData}
 \title{InMemoryAnnData}
+\value{
+An \code{InMemoryAnnData} object
+}
 \description{
 Implementation of an in-memory AnnData object.
 

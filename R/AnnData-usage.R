@@ -70,6 +70,8 @@
 #'
 #' @section Methods:
 #'
+#' @return An `AnnData` object inheriting from [`AbstractAnnData`]
+#'
 #' ## Conversion methods:
 #'
 #' \describe{

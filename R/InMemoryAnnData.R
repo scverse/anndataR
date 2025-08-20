@@ -5,6 +5,8 @@
 #'
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
+#' @return An `InMemoryAnnData` object
+#'
 #' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'
 #' @family AnnData classes

@@ -3,6 +3,41 @@
 \name{AnnData-usage}
 \alias{AnnData-usage}
 \title{AnnData structure and usage}
+\value{
+An \code{AnnData} object inheriting from \code{\link{AbstractAnnData}}
+\subsection{Conversion methods:}{
+
+\describe{
+\item{
+\code{as_SingleCellExperiment()}
+}{
+Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}}, see
+\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
+}
+\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
+\item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
+\item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+}
+}
+
+\subsection{Output methods:}{
+
+\describe{
+\item{
+\code{write_h5ad()}
+}{
+Write the \code{AnnData} object to an HDF5 file, see \code{\link[=write_h5ad]{write_h5ad()}}
+}
+}
+}
+
+\subsection{General methods:}{
+
+\describe{
+\item{\code{print()}}{Print a summary of the \code{AnnData} object}
+}
+}
+}
 \description{
 The \code{AnnData} object stores a data matrix \code{X} together with annotations of
 observations \code{obs} (\code{obsm}, \code{obsp}) and variables \code{var} (\code{varm}, \code{varp}).
@@ -103,38 +138,6 @@ elements with number of rows and columns equal to \code{n_vars}.}
 
 \section{Methods}{
 
-\subsection{Conversion methods:}{
-
-\describe{
-\item{
-\code{as_SingleCellExperiment()}
-}{
-Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}}, see
-\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
-}
-\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
-\item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
-\item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
-}
-}
-
-\subsection{Output methods:}{
-
-\describe{
-\item{
-\code{write_h5ad()}
-}{
-Write the \code{AnnData} object to an HDF5 file, see \code{\link[=write_h5ad]{write_h5ad()}}
-}
-}
-}
-
-\subsection{General methods:}{
-
-\describe{
-\item{\code{print()}}{Print a summary of the \code{AnnData} object}
-}
-}
 }
 
 \section{Functions that can be used to create AnnData objects}{

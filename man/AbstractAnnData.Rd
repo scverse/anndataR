@@ -3,6 +3,9 @@
 \name{AbstractAnnData}
 \alias{AbstractAnnData}
 \title{Abstract AnnData class}
+\value{
+An \code{AbstractAnnData} object
+}
 \description{
 This class is an abstract representation of an \code{AnnData} object. It is
 intended to be used as a base class for concrete implementations of
