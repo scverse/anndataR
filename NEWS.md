@@ -1,3 +1,7 @@
+# anndataR 0.99.1
+
+* Resubmit because of failing Bioc checks (PR #318).
+
 # anndataR 0.99.0
 
 - Bump required R version to 4.5 in preparation for Bioconductor submission
