@@ -5,7 +5,7 @@ vector_generators <- list(
   factor_ordered = function(n) {
     factor(rep(c("Value1", "Value2"), length.out = n), ordered = TRUE)
   },
-  logical = function(n) sample(c(TRUE, FALSE), n, replace = TRUE),
+  logical = function(n) rep(c(TRUE, FALSE), length.out = n),
   numeric = function(n) seq(from = 0.5, to = n),
   character_with_nas = function(n) {
     x <- paste0("value", seq_len(n))
@@ -28,8 +28,8 @@ vector_generators <- list(
     x
   },
   logical_with_nas = function(n) {
-    x <- sample(c(TRUE, FALSE), n, replace = TRUE)
-    x[seq(1, n, by = 2)] <- NA
+    x <- rep(c(TRUE, FALSE), length.out = n)
+    x[1] <- NA
     x
   },
   numeric_with_nas = function(n) {
