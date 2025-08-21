@@ -68,9 +68,9 @@
 #' @field varp_keys Keys (element names) of `varp`
 #' @field uns_keys Keys (element names) of `uns`
 #'
-#' @section Methods:
-#'
 #' @return An `AnnData` object inheriting from [`AbstractAnnData`]
+#'
+#' @section Methods:
 #'
 #' ## Conversion methods:
 #'
