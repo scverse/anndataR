@@ -23,13 +23,13 @@ NULL
 #' \dontrun{
 #' # Requires Python and reticulate
 #' mat <- matrix(1:12, 3, 4)
-#' py_mat <- r_to_py_anndata(mat)
+#' py_mat <- try_r_to_py(mat)
 #'
 #' # For AnnData objects, prefer the automatic method:
 #' adata <- AnnData(X = mat)
 #' py_adata <- r_to_py(adata)  # Automatically converts
 #' }
-r_to_py_anndata <- function(x, ...) {
+try_r_to_py <- function(x, ...) {
   if (!requireNamespace("reticulate", quietly = TRUE)) {
     cli_abort("The {.pkg reticulate} package is required")
   }
@@ -55,7 +55,7 @@ r_to_py_anndata <- function(x, ...) {
     # Convert named list to Python dict
     py_dict <- reticulate::dict()
     for (name in names(x)) {
-      py_dict[[name]] <- r_to_py_anndata(x[[name]], ...)
+      py_dict[[name]] <- try_r_to_py(x[[name]], ...)
     }
     py_dict
   } else if (is.list(x)) {
@@ -91,7 +91,7 @@ r_to_py_anndata <- function(x, ...) {
 #' # Requires Python and reticulate
 #' # For individual objects:
 #' py_mat <- r_to_py(matrix(1:12, 3, 4))
-#' r_mat <- py_to_r_anndata(py_mat)
+#' r_mat <- try_py_to_r(py_mat)
 #'
 #' # For AnnData objects, prefer the automatic method:
 #' library(reticulate)
@@ -99,7 +99,7 @@ r_to_py_anndata <- function(x, ...) {
 #' py_adata <- ad$AnnData(X = py_mat)
 #' r_adata <- py_to_r(py_adata)  # Automatically converts to ReticulateAnnData
 #' }
-py_to_r_anndata <- function(x, ...) {
+try_py_to_r <- function(x, ...) {
   if (!requireNamespace("reticulate", quietly = TRUE)) {
     cli_abort("The {.pkg reticulate} package is required")
   }
@@ -146,7 +146,7 @@ py_to_r_anndata <- function(x, ...) {
       dict_keys <- reticulate::py_to_r(bi$list(x$keys()))
       result <- list()
       for (key in dict_keys) {
-        result[[key]] <- py_to_r_anndata(x[[key]], ...)
+        result[[key]] <- try_py_to_r(x[[key]], ...)
       }
       result
     } else {
@@ -168,7 +168,7 @@ py_to_r_anndata <- function(x, ...) {
 
             result <- list()
             for (key in keys) {
-              result[[key]] <- py_to_r_anndata(x[[key]], ...)
+              result[[key]] <- try_py_to_r(x[[key]], ...)
             }
             return(result)
           } else {

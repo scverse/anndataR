@@ -32,7 +32,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_X, status=done
-        py_to_r_anndata(private$.py_anndata$X)
+        try_py_to_r(private$.py_anndata$X)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_X, status=done
         value <- private$.validate_aligned_array(
@@ -42,7 +42,7 @@ ReticulateAnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        private$.py_anndata$X <- r_to_py_anndata(value)
+        private$.py_anndata$X <- try_r_to_py(value)
         self
       }
     },
@@ -53,7 +53,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_layers, status=done
-        py_to_r_anndata(private$.py_anndata$layers)
+        try_py_to_r(private$.py_anndata$layers)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_layers, status=done
         value <- private$.validate_aligned_mapping(
@@ -63,7 +63,7 @@ ReticulateAnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        private$.py_anndata$layers <- r_to_py_anndata(value)
+        private$.py_anndata$layers <- try_r_to_py(value)
         self
       }
     },
@@ -74,11 +74,11 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_obs, status=done
-        py_to_r_anndata(private$.py_anndata$obs)
+        try_py_to_r(private$.py_anndata$obs)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_obs, status=done
         value <- private$.validate_obsvar_dataframe(value, "obs")
-        private$.py_anndata$obs <- r_to_py_anndata(value)
+        private$.py_anndata$obs <- try_r_to_py(value)
         self
       }
     },
@@ -89,11 +89,11 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_var, status=done
-        py_to_r_anndata(private$.py_anndata$var)
+        try_py_to_r(private$.py_anndata$var)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_var, status=done
         value <- private$.validate_obsvar_dataframe(value, "var")
-        private$.py_anndata$var <- r_to_py_anndata(value)
+        private$.py_anndata$var <- try_r_to_py(value)
         self
       }
     },
@@ -134,7 +134,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_obsm, status=done
-        py_to_r_anndata(private$.py_anndata$obsm)
+        try_py_to_r(private$.py_anndata$obsm)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_obsm, status=done
         value <- private$.validate_aligned_mapping(
@@ -143,7 +143,7 @@ ReticulateAnnData <- R6::R6Class(
           c(self$n_obs()),
           expected_rownames = rownames(self)
         )
-        private$.py_anndata$obsm <- r_to_py_anndata(value)
+        private$.py_anndata$obsm <- try_r_to_py(value)
         self
       }
     },
@@ -154,7 +154,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_varm, status=done
-        py_to_r_anndata(private$.py_anndata$varm)
+        try_py_to_r(private$.py_anndata$varm)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_varm, status=done
         value <- private$.validate_aligned_mapping(
@@ -163,7 +163,7 @@ ReticulateAnnData <- R6::R6Class(
           c(self$n_vars()),
           expected_rownames = colnames(self)
         )
-        private$.py_anndata$varm <- r_to_py_anndata(value)
+        private$.py_anndata$varm <- try_r_to_py(value)
         self
       }
     },
@@ -174,7 +174,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_obsp, status=done
-        py_to_r_anndata(private$.py_anndata$obsp)
+        try_py_to_r(private$.py_anndata$obsp)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_obsp, status=done
         value <- private$.validate_aligned_mapping(
@@ -184,7 +184,7 @@ ReticulateAnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = rownames(self)
         )
-        private$.py_anndata$obsp <- r_to_py_anndata(value)
+        private$.py_anndata$obsp <- try_r_to_py(value)
         self
       }
     },
@@ -195,7 +195,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_varp, status=done
-        py_to_r_anndata(private$.py_anndata$varp)
+        try_py_to_r(private$.py_anndata$varp)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_varp, status=done
         value <- private$.validate_aligned_mapping(
@@ -205,7 +205,7 @@ ReticulateAnnData <- R6::R6Class(
           expected_rownames = colnames(self),
           expected_colnames = colnames(self)
         )
-        private$.py_anndata$varp <- r_to_py_anndata(value)
+        private$.py_anndata$varp <- try_r_to_py(value)
         self
       }
     },
@@ -216,11 +216,11 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_uns, status=done
-        py_to_r_anndata(private$.py_anndata$uns)
+        try_py_to_r(private$.py_anndata$uns)
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_uns, status=done
         value <- private$.validate_named_list(value, "uns")
-        private$.py_anndata$uns <- r_to_py_anndata(value)
+        private$.py_anndata$uns <- try_r_to_py(value)
         self
       }
     }
@@ -281,7 +281,7 @@ ReticulateAnnData <- R6::R6Class(
 
         if (!is.null(X)) {
           # Convert X to Python and create AnnData with proper obs/var names
-          py_X <- r_to_py_anndata(X)
+          py_X <- try_r_to_py(X)
 
           # Create obs and var DataFrames with proper row names
           n_obs <- nrow(X)
@@ -318,8 +318,8 @@ ReticulateAnnData <- R6::R6Class(
           pandas <- reticulate::import("pandas", convert = FALSE)
 
           # For Python AnnData, we need proper index names
-          py_obs <- r_to_py_anndata(obs)
-          py_var <- r_to_py_anndata(var)
+          py_obs <- try_r_to_py(obs)
+          py_var <- try_r_to_py(var)
 
           # Set proper index names if they don't exist or are auto-generated
           if (
