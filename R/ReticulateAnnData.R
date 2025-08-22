@@ -501,3 +501,23 @@ r_to_py.AbstractAnnData <- function(x, convert = TRUE) {
     return(ret_adata$py_anndata())
   }
 }
+
+#' Check if an object is a Python AnnData object
+#'
+#' @param x An object to check
+#'
+#' @return Logical indicating if the object is a Python AnnData object
+#' @noRd
+#'
+#' @examples
+#' \dontrun{
+#' # Requires Python anndata to be installed
+#' library(reticulate)
+#' ad <- import("anndata")
+#' py_adata <- ad$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
+#' is_py_anndata(py_adata)  # TRUE
+#' is_py_anndata(matrix(1:12, 3, 4))  # FALSE
+#' }
+is_py_anndata <- function(x) {
+  inherits(x, "anndata._core.anndata.AnnData")
+}

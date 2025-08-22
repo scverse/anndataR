@@ -56,9 +56,9 @@ Other AnnData classes:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-ReticulateAnnData-new}{\code{ReticulateAnnData$new()}}
-\item \href{#method-ReticulateAnnData-py_anndata}{\code{ReticulateAnnData$py_anndata()}}
 \item \href{#method-ReticulateAnnData-n_obs}{\code{ReticulateAnnData$n_obs()}}
 \item \href{#method-ReticulateAnnData-n_vars}{\code{ReticulateAnnData$n_vars()}}
+\item \href{#method-ReticulateAnnData-py_anndata}{\code{ReticulateAnnData$py_anndata()}}
 }
 }
 \if{html}{\out{
@@ -142,19 +142,6 @@ will be created using the other provided arguments.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ReticulateAnnData-py_anndata"></a>}}
-\if{latex}{\out{\hypertarget{method-ReticulateAnnData-py_anndata}{}}}
-\subsection{Method \code{py_anndata()}}{
-Get the underlying Python AnnData object
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ReticulateAnnData$py_anndata()}\if{html}{\out{</div>}}
-}
-
-\subsection{Returns}{
-The Python AnnData object
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ReticulateAnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-ReticulateAnnData-n_obs}{}}}
 \subsection{Method \code{n_obs()}}{
@@ -173,5 +160,18 @@ See the \code{n_vars} field in \link{AnnData-usage}
 \if{html}{\out{<div class="r">}}\preformatted{ReticulateAnnData$n_vars()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ReticulateAnnData-py_anndata"></a>}}
+\if{latex}{\out{\hypertarget{method-ReticulateAnnData-py_anndata}{}}}
+\subsection{Method \code{py_anndata()}}{
+Get the underlying Python AnnData object
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ReticulateAnnData$py_anndata()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+The Python AnnData object wrapped by this ReticulateAnnData
+}
 }
 }
