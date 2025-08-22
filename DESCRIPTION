@@ -43,7 +43,6 @@ Imports:
     rlang,
     stats
 Suggests:
-    anndata,
     BiocStyle,
     knitr,
     processx,

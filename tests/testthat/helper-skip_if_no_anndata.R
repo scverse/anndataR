@@ -2,7 +2,6 @@
 # or the R {anndata} package
 skip_if_no_anndata <- function() {
   testthat::skip_if_not_installed("reticulate")
-  testthat::skip_if_not_installed("anndata")
   requireNamespace("reticulate")
   reticulate::py_require("anndata")
   testthat::skip_if_not(
