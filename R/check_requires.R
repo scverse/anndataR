@@ -6,44 +6,129 @@
 #' @param what A message stating what the packages are required for. Used at the
 #'   start of the error message e.g. "{what} requires...".
 #' @param requires Character vector of required package names
-#' @param where Where to install the packages from. Either "CRAN" or "Bioc"
+#' @param where Where to install the packages from. Either "CRAN", "Bioc", or "Python"
 #'
 #' @return `'TRUE` invisibly if all packages are available, otherwise calls
 #'   [cli::cli_abort()]
 #'
 #' @importFrom rlang caller_env
 #' @noRd
-check_requires <- function(what, requires, where = c("CRAN", "Bioc")) {
+check_requires <- function(what, requires, where = c("CRAN", "Bioc", "Python")) {
   where <- match.arg(where)
 
-  is_available <- map_lgl(requires, requireNamespace, quietly = TRUE)
+  if (where == "Python") {
+    check_python_packages(what, requires)
+  } else {
+    check_r_packages(what, requires, where)
+  }
 
-  if (any(!is_available)) {
-    missing <- requires[!is_available]
+  invisible(TRUE)
+}
 
-    # nolint start object_usage_linter
-    missing_str <- paste0("\"", paste(missing, collapse = "\", \""), "\"")
-    if (length(missing) > 1) {
-      missing_str <- paste0("c(", missing_str, ")")
-    }
-    fun <- switch(
-      where,
-      CRAN = "install.packages",
-      Bioc = "install.packages(\"BiocManager\"); BiocManager::install"
-    )
-    # nolint end object_usage_linter
-
+#' Check required Python packages
+#'
+#' @param what A message stating what the packages are required for
+#' @param requires Character vector of required Python package names
+#'
+#' @importFrom rlang caller_env
+#' @noRd
+check_python_packages <- function(what, requires) {
+  # First check if reticulate is available
+  if (!requireNamespace("reticulate", quietly = TRUE)) {
     cli_abort(
       c(
-        "{what} requires the {.pkg {missing}} package{?s}",
-        "i" = paste(
-          "To continue, install {cli::qty(missing)}{?it/them} using",
-          "{.code {fun}({missing_str})}"
-        )
+        "{what} requires the {.pkg reticulate} package",
+        "i" = "Install it using {.code install.packages(\"reticulate\")}"
       ),
       call = caller_env()
     )
   }
 
-  invisible(TRUE)
+  is_available <- map_lgl(requires, reticulate::py_module_available)
+  
+  if (any(!is_available)) {
+    missing <- requires[!is_available]
+    missing_str <- format_python_package_list(missing)
+    
+    cli_abort(
+      c(
+        "{what} requires the Python {.pkg {missing}} package{?s}",
+        "i" = paste(
+          "To continue, install {cli::qty(missing)}{?it/them} using",
+          "{.code reticulate::py_install({missing_str})}"
+        )
+      ),
+      call = caller_env()
+    )
+  }
+}
+
+#' Check required R packages
+#'
+#' @param what A message stating what the packages are required for
+#' @param requires Character vector of required R package names
+#' @param where Where to install the packages from. Either "CRAN" or "Bioc"
+#'
+#' @importFrom rlang caller_env
+#' @noRd
+check_r_packages <- function(what, requires, where) {
+  is_available <- map_lgl(requires, requireNamespace, quietly = TRUE)
+
+  if (any(!is_available)) {
+    missing <- requires[!is_available]
+    missing_str <- format_r_package_list(missing)
+    install_fun <- get_r_install_function(where)
+    
+    cli_abort(
+      c(
+        "{what} requires the {.pkg {missing}} package{?s}",
+        "i" = paste(
+          "To continue, install {cli::qty(missing)}{?it/them} using",
+          "{.code {install_fun}({missing_str})}"
+        )
+      ),
+      call = caller_env()
+    )
+  }
+}
+
+#' Format Python package list for installation command
+#'
+#' @param packages Character vector of Python package names
+#' @return Formatted string for use in reticulate::py_install()
+#' @noRd
+format_python_package_list <- function(packages) {
+  missing_str <- paste0("'", paste(packages, collapse = "', '"), "'")
+  if (length(packages) > 1) {
+    missing_str <- paste0("c(", missing_str, ")")
+  }
+  missing_str
+}
+
+#' Format R package list for installation command
+#'
+#' @param packages Character vector of R package names
+#' @return Formatted string for use in install.packages()
+#' @noRd
+format_r_package_list <- function(packages) {
+  missing_str <- paste0("\"", paste(packages, collapse = "\", \""), "\"")
+  if (length(packages) > 1) {
+    missing_str <- paste0("c(", missing_str, ")")
+  }
+  missing_str
+}
+
+#' Get R package installation function
+#'
+#' @param where Where to install from. Either "CRAN" or "Bioc"
+#' @return Installation function name as string
+#' @noRd
+get_r_install_function <- function(where) {
+  # nolint start object_usage_linter
+  switch(
+    where,
+    CRAN = "install.packages",
+    Bioc = "install.packages(\"BiocManager\"); BiocManager::install"
+  )
+  # nolint end object_usage_linter
 }

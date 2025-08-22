@@ -162,7 +162,10 @@ Other object converters:
 \code{\link{as_AnnData}()},
 \code{\link{as_HDF5AnnData}()},
 \code{\link{as_InMemoryAnnData}()},
-\code{\link{as_Seurat}()}
+\code{\link{as_ReticulateAnnData}()},
+\code{\link{as_Seurat}()},
+\code{\link{py_to_r.anndata._core.anndata.AnnData}()},
+\code{\link{r_to_py.AbstractAnnData}()}
 }
 \concept{object converters}
 \keyword{internal}

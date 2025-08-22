@@ -162,7 +162,7 @@ as_AnnData <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   UseMethod("as_AnnData", x)
@@ -182,7 +182,7 @@ as_AnnData.SingleCellExperiment <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   from_SingleCellExperiment(
@@ -215,7 +215,7 @@ as_AnnData.Seurat <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   from_Seurat(
@@ -233,4 +233,52 @@ as_AnnData.Seurat <- function(
     output_class = output_class,
     ...
   )
+}
+
+#' @rdname as_AnnData
+#' @export
+as_AnnData.python.builtin.object <- function(
+  x,
+  output_class = c("ReticulateAnnData", "InMemory", "HDF5AnnData"),
+  ...
+) {
+  # Check if the Python object is an AnnData object
+  if (!requireNamespace("reticulate", quietly = TRUE)) {
+    cli_abort(
+      "The {.pkg reticulate} package is required to convert Python objects"
+    )
+  }
+
+  # Try to check if it's an AnnData object (this is a simplified check)
+  py_class_name <- tryCatch(
+    {
+      reticulate::py_to_r(x$`__class__`$`__name__`)
+    },
+    error = function(e) {
+      "unknown"
+    }
+  )
+
+  if (py_class_name != "AnnData") {
+    cli_abort(
+      paste(
+        "Python object must be an AnnData object,",
+        "got {.cls {py_class_name}} instead"
+      )
+    )
+  }
+
+  output_class <- match.arg(output_class)
+
+  adata <- ReticulateAnnData$new(py_anndata = x)
+
+  if (output_class == "ReticulateAnnData") {
+    return(adata)
+  } else if (output_class == "InMemory") {
+    return(adata$as_InMemoryAnnData(...))
+  } else if (output_class == "HDF5AnnData") {
+    return(adata$as_HDF5AnnData(...))
+  } else {
+    cli_abort("Unsupported output_class: {.val {output_class}}")
+  }
 }

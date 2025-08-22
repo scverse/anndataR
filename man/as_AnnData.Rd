@@ -4,6 +4,7 @@
 \alias{as_AnnData}
 \alias{as_AnnData.SingleCellExperiment}
 \alias{as_AnnData.Seurat}
+\alias{as_AnnData.python.builtin.object}
 \title{Convert to an \code{AnnData} object}
 \usage{
 as_AnnData(
@@ -18,7 +19,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -34,7 +35,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -50,7 +51,13 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  ...
+)
+
+\method{as_AnnData}{python.builtin.object}(
+  x,
+  output_class = c("ReticulateAnnData", "InMemory", "HDF5AnnData"),
   ...
 )
 }
@@ -220,8 +227,11 @@ Other AnnData creators:
 Other object converters: 
 \code{\link{as_HDF5AnnData}()},
 \code{\link{as_InMemoryAnnData}()},
+\code{\link{as_ReticulateAnnData}()},
 \code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}()}
+\code{\link{as_SingleCellExperiment}()},
+\code{\link{py_to_r.anndata._core.anndata.AnnData}()},
+\code{\link{r_to_py.AbstractAnnData}()}
 }
 \concept{AnnData creators}
 \concept{object converters}

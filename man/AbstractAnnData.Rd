@@ -18,7 +18,8 @@ See \link{AnnData-usage} for details on creating and using \code{AnnData} object
 
 Other AnnData classes: 
 \code{\link{HDF5AnnData}},
-\code{\link{InMemoryAnnData}}
+\code{\link{InMemoryAnnData}},
+\code{\link{ReticulateAnnData}}
 }
 \concept{AnnData classes}
 \section{Active bindings}{
@@ -66,6 +67,7 @@ Other AnnData classes:
 \item \href{#method-AbstractAnnData-as_SingleCellExperiment}{\code{AbstractAnnData$as_SingleCellExperiment()}}
 \item \href{#method-AbstractAnnData-as_Seurat}{\code{AbstractAnnData$as_Seurat()}}
 \item \href{#method-AbstractAnnData-as_InMemoryAnnData}{\code{AbstractAnnData$as_InMemoryAnnData()}}
+\item \href{#method-AbstractAnnData-as_ReticulateAnnData}{\code{AbstractAnnData$as_ReticulateAnnData()}}
 \item \href{#method-AbstractAnnData-as_HDF5AnnData}{\code{AbstractAnnData$as_HDF5AnnData()}}
 \item \href{#method-AbstractAnnData-write_h5ad}{\code{AbstractAnnData$write_h5ad()}}
 \item \href{#method-AbstractAnnData-clone}{\code{AbstractAnnData$clone()}}
@@ -301,6 +303,21 @@ See \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}} for more details on 
 
 \subsection{Returns}{
 An \link{InMemoryAnnData} object
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AbstractAnnData-as_ReticulateAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-AbstractAnnData-as_ReticulateAnnData}{}}}
+\subsection{Method \code{as_ReticulateAnnData()}}{
+Convert to a \code{\link{ReticulateAnnData}}
+
+See \code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}} for more details on the conversion
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_ReticulateAnnData()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+A \link{ReticulateAnnData} object
 }
 }
 \if{html}{\out{<hr>}}

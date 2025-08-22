@@ -252,6 +252,15 @@ AbstractAnnData <- R6::R6Class(
       as_InMemoryAnnData(self)
     },
     #' @description
+    #' Convert to a [`ReticulateAnnData`]
+    #'
+    #' See [as_ReticulateAnnData()] for more details on the conversion
+    #'
+    #' @return A [ReticulateAnnData] object
+    as_ReticulateAnnData = function() {
+      as_ReticulateAnnData(self)
+    },
+    #' @description
     #' Convert to an [`HDF5AnnData`]
     #'
     #' See [as_HDF5AnnData()] for more details on the conversion
