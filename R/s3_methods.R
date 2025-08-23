@@ -13,7 +13,6 @@
 #' @details
 #' The following S3 methods are available:
 #' \itemize{
-#'   \item \code{print(x)}: Print a summary of the AnnData object
 #'   \item \code{dim(x)}: Get dimensions (n_obs, n_vars)
 #'   \item \code{nrow(x)}: Get number of observations
 #'   \item \code{ncol(x)}: Get number of variables
@@ -24,7 +23,6 @@
 #'
 #' @return
 #' \itemize{
-#'   \item \code{print}: Returns \code{x} invisibly
 #'   \item \code{dim}: Numeric vector of length 2 (n_obs, n_vars)
 #'   \item \code{nrow}, \code{ncol}: Integer count
 #'   \item \code{rownames}, \code{colnames}: Character vector
@@ -40,8 +38,8 @@
 #' dim(ad)
 #' nrow(ad)
 #' ncol(ad)
-#' rownames(ad)[1:5]
-#' colnames(ad)[1:5]
+#' rownames(ad)
+#' colnames(ad)
 #'
 #' # Subsetting creates ViewAnnData
 #' subset_ad <- ad[1:10, 1:5]
@@ -51,54 +49,53 @@
 NULL
 
 #' @rdname AbstractAnnData-s3methods
-#' @export
-#' @rdname AbstractAnnData-s3methods
-#' @export
-print.AbstractAnnData <- function(x, ...) {
-  x$print(...)
-  invisible(x)
-}
-
-#' @rdname AbstractAnnData-s3methods
+#' @method dim AbstractAnnData
 #' @export
 dim.AbstractAnnData <- function(x) {
   x$shape()
 }
 
 #' @rdname AbstractAnnData-s3methods
+#' @method nrow AbstractAnnData
 #' @export
 nrow.AbstractAnnData <- function(x) {
   x$n_obs()
 }
 
 #' @rdname AbstractAnnData-s3methods
+#' @method ncol AbstractAnnData
 #' @export
 ncol.AbstractAnnData <- function(x) {
   x$n_vars()
 }
 
 #' @rdname AbstractAnnData-s3methods
+#' @method rownames AbstractAnnData
 #' @export
 rownames.AbstractAnnData <- function(x) {
   x$obs_names
 }
 
 #' @rdname AbstractAnnData-s3methods
+#' @method colnames AbstractAnnData
 #' @export
 colnames.AbstractAnnData <- function(x) {
   x$var_names
 }
 
 #' @rdname AbstractAnnData-s3methods
+#' @method [ AbstractAnnData
 #' @export
 `[.AbstractAnnData` <- function(x, i, j, drop = TRUE, ...) {
   view <- ViewAnnData$new(x)
-  
+
   # Handle observation (row) subsetting
   if (!missing(i)) {
     if (is.logical(i)) {
       if (length(i) != x$n_obs()) {
-        cli_abort("Logical vector for observations must have length {x$n_obs()}")
+        cli_abort(
+          "Logical vector for observations must have length {x$n_obs()}"
+        )
       }
     } else if (is.numeric(i)) {
       if (any(i < 1 | i > x$n_obs())) {
@@ -112,16 +109,18 @@ colnames.AbstractAnnData <- function(x) {
       obs_names <- x$obs_names
       if (any(!i %in% obs_names)) {
         missing_names <- i[!i %in% obs_names]
-        cli_abort("Observation names not found: {paste(missing_names, collapse = ', ')}")
+        cli_abort(
+          "Observation names not found: {paste(missing_names, collapse = ', ')}"
+        )
       }
       # Convert to logical
       logical_i <- obs_names %in% i
       i <- logical_i
     }
-    
+
     view$subset_obs(i)
   }
-  
+
   # Handle variable (column) subsetting
   if (!missing(j)) {
     if (is.logical(j)) {
@@ -140,15 +139,17 @@ colnames.AbstractAnnData <- function(x) {
       var_names <- x$var_names
       if (any(!j %in% var_names)) {
         missing_names <- j[!j %in% var_names]
-        cli_abort("Variable names not found: {paste(missing_names, collapse = ', ')}")
+        cli_abort(
+          "Variable names not found: {paste(missing_names, collapse = ', ')}"
+        )
       }
       # Convert to logical
       logical_j <- var_names %in% j
       j <- logical_j
     }
-    
+
     view$subset_var(j)
   }
-  
+
   view
 }
