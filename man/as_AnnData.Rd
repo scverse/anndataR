@@ -4,7 +4,6 @@
 \alias{as_AnnData}
 \alias{as_AnnData.SingleCellExperiment}
 \alias{as_AnnData.Seurat}
-\alias{as_AnnData.python.builtin.object}
 \title{Convert to an \code{AnnData} object}
 \usage{
 as_AnnData(
@@ -52,12 +51,6 @@ as_AnnData(
   uns_mapping = TRUE,
   assay_name = NULL,
   output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
-  ...
-)
-
-\method{as_AnnData}{python.builtin.object}(
-  x,
-  output_class = c("ReticulateAnnData", "InMemory", "HDF5AnnData"),
   ...
 )
 }
