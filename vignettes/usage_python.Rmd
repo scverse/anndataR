@@ -12,6 +12,18 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# Check if required Python packages are available
+python_available <- reticulate::py_available() && 
+  reticulate::py_module_available("scanpy") && 
+  reticulate::py_module_available("mudata")
+
+# Set eval based on Python package availability
+knitr::opts_chunk$set(eval = python_available)
+
+if (!python_available) {
+  message("Python packages scanpy and mudata are required to run this vignette. Code chunks will not be evaluated.")
+}
 ```
 
 ## Introduction
@@ -19,6 +31,8 @@ knitr::opts_chunk$set(
 anndataR works with Python AnnData objects through reticulate.
 You can load Python objects, apply Python functions to them, and
 convert to Seurat or SingleCellExperiment objects without manual conversion steps.
+
+**Note**: This vignette requires Python with the `scanpy` and `mudata` packages installed. If these are not available, the code chunks will not be evaluated but the examples remain visible.
 
 ## Basic Integration with Scanpy
 
