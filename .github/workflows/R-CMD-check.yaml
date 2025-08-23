@@ -77,10 +77,10 @@ jobs:
           fi
         shell: bash
 
-      - name: Install Python dependencies for vignettes
+      - name: Install Python dependencies for tests and vignettes
         run: |
           library(reticulate)
-          py_install(c("scanpy", "mudata"))
+          py_install(c("scanpy", "mudata", "dummy_anndata"))
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
