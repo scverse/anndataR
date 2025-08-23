@@ -134,7 +134,7 @@ try_py_to_r <- function(x, ...) {
         },
         error = function(e) {
           # Fallback: create empty list
-          return(list())
+          list()
         }
       )
     }
@@ -178,7 +178,7 @@ try_py_to_r <- function(x, ...) {
         },
         error = function(e) {
           # Final fallback to direct conversion
-          return(reticulate::py_to_r(x, ...))
+          reticulate::py_to_r(x, ...)
         }
       )
     }

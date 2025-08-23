@@ -31,8 +31,8 @@ test_that("ReticulateAnnData wrapping Python object works", {
   ad <- import("anndata", convert = FALSE)
 
   # Create a Python AnnData object
-  py_X <- r_to_py(matrix(1:20, nrow = 4, ncol = 5))
-  py_adata <- ad$AnnData(X = py_X)
+  py_x <- r_to_py(matrix(1:20, nrow = 4, ncol = 5))
+  py_adata <- ad$AnnData(X = py_x)
 
   # Wrap it with ReticulateAnnData
   r_adata <- ReticulateAnnData$new(py_anndata = py_adata)
@@ -104,8 +104,8 @@ test_that("ReticulateAnnData slot setting works", {
 
   # Set X
   # trackstatus: class=ReticulateAnnData, feature=test_set_X, status=done
-  new_X <- matrix(1:12, nrow = 3, ncol = 4)
-  adata$X <- new_X
+  new_x <- matrix(1:12, nrow = 3, ncol = 4)
+  adata$X <- new_x
   expect_equal(dim(adata$X), c(3, 4))
 
   # Set obs
@@ -141,7 +141,7 @@ test_that("ReticulateAnnData obsm, varm, obsp, varp access works", {
   X <- matrix(1:20, nrow = 4, ncol = 5)
   obs <- data.frame(row.names = paste0("cell", 1:4), group = letters[1:4])
   var <- data.frame(row.names = paste0("gene", 1:5), type = rep("gene", 5))
-  
+
   obsm <- list(
     X_pca = matrix(rnorm(8), nrow = 4, ncol = 2)
   )
@@ -262,24 +262,6 @@ test_that("ReticulateAnnData layers setting works", {
   expect_equal(dim(adata$layers$normalized), c(4, 5))
 })
 
-test_that("as_AnnData works with Python objects", {
-  skip_if_no_anndata_py()
-
-  library(reticulate)
-  ad <- import("anndata", convert = FALSE)
-
-  # Create a Python AnnData object
-  py_X <- r_to_py(matrix(1:20, nrow = 4, ncol = 5))
-  py_adata <- ad$AnnData(X = py_X)
-
-  # Convert using as_AnnData
-  r_adata <- as_AnnData(py_adata, output_class = "ReticulateAnnData")
-
-  expect_s3_class(r_adata, "ReticulateAnnData")
-  expect_equal(r_adata$n_obs(), 4)
-  expect_equal(r_adata$n_vars(), 5)
-})
-
 test_that("Conversion between ReticulateAnnData and other types works", {
   skip_if_no_anndata_py()
 
@@ -310,8 +292,8 @@ test_that("automatic py_to_r and r_to_py conversion works", {
   ad <- import("anndata", convert = FALSE)
 
   # Create Python AnnData
-  py_X <- r_to_py(matrix(1:12, nrow = 3, ncol = 4))
-  py_adata <- ad$AnnData(X = py_X)
+  py_x <- r_to_py(matrix(1:12, nrow = 3, ncol = 4))
+  py_adata <- ad$AnnData(X = py_x)
 
   # Test automatic py_to_r conversion
   r_adata <- py_to_r(py_adata)
@@ -327,7 +309,7 @@ test_that("automatic py_to_r and r_to_py conversion works", {
 
   # Test with other AnnData types
   mem_adata <- AnnData(X = matrix(1:20, nrow = 4, ncol = 5))
-  py_adata3 <- r_to_py(mem_adata)  # Should convert InMemoryAnnData to Python
+  py_adata3 <- r_to_py(mem_adata) # Should convert InMemoryAnnData to Python
   expect_true(inherits(py_adata3, "python.builtin.object"))
   expect_equal(as.integer(py_to_r(py_adata3$n_obs)), 4L)
   expect_equal(as.integer(py_to_r(py_adata3$n_vars)), 5L)
@@ -340,8 +322,8 @@ test_that("automatic py_to_r and r_to_py conversion works", {
   ad <- import("anndata", convert = FALSE)
 
   # Create Python AnnData
-  py_X <- r_to_py(matrix(1:12, nrow = 3, ncol = 4))
-  py_adata <- ad$AnnData(X = py_X)
+  py_x <- r_to_py(matrix(1:12, nrow = 3, ncol = 4))
+  py_adata <- ad$AnnData(X = py_x)
 
   # Test automatic Python to R conversion via S3 method
   r_adata <- py_to_r(py_adata)

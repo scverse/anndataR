@@ -279,7 +279,7 @@ ReticulateAnnData <- R6::R6Class(
 
         if (!is.null(X)) {
           # Convert X to Python and create AnnData with proper obs/var names
-          py_X <- try_r_to_py(X)
+          py_x <- try_r_to_py(X)
 
           # Create obs and var DataFrames with proper row names
           n_obs <- nrow(X)
@@ -303,7 +303,7 @@ ReticulateAnnData <- R6::R6Class(
           py_var <- pandas$DataFrame(index = reticulate::r_to_py(var_names))
 
           private$.py_anndata <- anndata$AnnData(
-            X = py_X,
+            X = py_x,
             obs = py_obs,
             var = py_var
           )

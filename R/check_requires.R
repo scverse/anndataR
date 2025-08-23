@@ -13,7 +13,11 @@
 #'
 #' @importFrom rlang caller_env
 #' @noRd
-check_requires <- function(what, requires, where = c("CRAN", "Bioc", "Python")) {
+check_requires <- function(
+  what,
+  requires,
+  where = c("CRAN", "Bioc", "Python")
+) {
   where <- match.arg(where)
 
   if (where == "Python") {
@@ -45,11 +49,13 @@ check_python_packages <- function(what, requires) {
   }
 
   is_available <- map_lgl(requires, reticulate::py_module_available)
-  
+
   if (any(!is_available)) {
     missing <- requires[!is_available]
+    # nolint start object_usage_linter
     missing_str <- format_python_package_list(missing)
-    
+    # nolint end object_usage_linter
+
     cli_abort(
       c(
         "{what} requires the Python {.pkg {missing}} package{?s}",
@@ -76,9 +82,11 @@ check_r_packages <- function(what, requires, where) {
 
   if (any(!is_available)) {
     missing <- requires[!is_available]
+    # nolint start object_usage_linter
     missing_str <- format_r_package_list(missing)
     install_fun <- get_r_install_function(where)
-    
+    # nolint end object_usage_linter
+
     cli_abort(
       c(
         "{what} requires the {.pkg {missing}} package{?s}",
