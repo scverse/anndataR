@@ -1,10 +1,10 @@
 #' @title ViewAnnData
 #'
 #' @description
-#' A lazy view of an AnnData object that allows applying transformations 
+#' A lazy view of an AnnData object that allows applying transformations
 #' (subsetting, renaming keys, or transformation functions) without immediately
 #' executing them. The transformations are applied when converting to a concrete
-#' AnnData implementation (InMemoryAnnData, HDF5AnnData) or other formats 
+#' AnnData implementation (InMemoryAnnData, HDF5AnnData) or other formats
 #' (SingleCellExperiment, Seurat).
 #'
 #' This class is useful for chaining multiple operations on large datasets
@@ -50,7 +50,7 @@ ViewAnnData <- R6::R6Class(
     .layers_renames = NULL,
     .uns_renames = NULL,
     .transformation_functions = NULL,
-    
+
     # Apply obs subsetting to a data frame or vector
     .apply_obs_subset = function(x) {
       if (is.null(private$.obs_subset) || is.null(x)) {
@@ -65,7 +65,7 @@ ViewAnnData <- R6::R6Class(
       }
       return(x)
     },
-    
+
     # Apply var subsetting to a data frame or matrix
     .apply_var_subset = function(x) {
       if (is.null(private$.var_subset) || is.null(x)) {
@@ -80,13 +80,13 @@ ViewAnnData <- R6::R6Class(
       }
       return(x)
     },
-    
+
     # Apply both obs and var subsetting to matrices
     .apply_obs_var_subset = function(x) {
       if (is.null(x)) {
         return(x)
       }
-      
+
       result <- x
       if (!is.null(private$.obs_subset)) {
         result <- result[private$.obs_subset, , drop = FALSE]
@@ -96,13 +96,13 @@ ViewAnnData <- R6::R6Class(
       }
       return(result)
     },
-    
+
     # Apply renaming to a named list
     .apply_renames = function(x, rename_map) {
       if (is.null(x) || is.null(rename_map)) {
         return(x)
       }
-      
+
       if (is.list(x)) {
         old_names <- names(x)
         new_names <- old_names
@@ -122,25 +122,25 @@ ViewAnnData <- R6::R6Class(
         }
         colnames(x) <- new_names
       }
-      
+
       return(x)
     },
-    
+
     # Apply transformation functions
     .apply_transformations = function(slot_name, x) {
       if (is.null(private$.transformation_functions) || is.null(x)) {
         return(x)
       }
-      
+
       transformations <- private$.transformation_functions[[slot_name]]
       if (is.null(transformations)) {
         return(x)
       }
-      
+
       for (transform_func in transformations) {
         x <- transform_func(x)
       }
-      
+
       return(x)
     }
   ),
@@ -148,21 +148,25 @@ ViewAnnData <- R6::R6Class(
     #' @field X See [AnnData-usage]
     X = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set X on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set X on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       x <- private$.base_adata$X
       x <- private$.apply_obs_var_subset(x)
       x <- private$.apply_transformations("X", x)
       return(x)
     },
-    
+
     #' @field layers See [AnnData-usage]
     layers = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set layers on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set layers on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       layers <- private$.base_adata$layers
       if (!is.null(layers)) {
         # Apply subsetting to each layer
@@ -174,61 +178,71 @@ ViewAnnData <- R6::R6Class(
       }
       return(layers)
     },
-    
+
     #' @field obs See [AnnData-usage]
     obs = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set obs on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set obs on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       obs <- private$.base_adata$obs
       obs <- private$.apply_obs_subset(obs)
       obs <- private$.apply_renames(obs, private$.obs_renames)
       obs <- private$.apply_transformations("obs", obs)
       return(obs)
     },
-    
-    #' @field var See [AnnData-usage]  
+
+    #' @field var See [AnnData-usage]
     var = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set var on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set var on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       var <- private$.base_adata$var
       var <- private$.apply_var_subset(var)
       var <- private$.apply_renames(var, private$.var_renames)
       var <- private$.apply_transformations("var", var)
       return(var)
     },
-    
+
     #' @field obs_names See [AnnData-usage]
     obs_names = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set obs_names on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set obs_names on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       names <- private$.base_adata$obs_names
       names <- private$.apply_obs_subset(names)
       return(names)
     },
-    
+
     #' @field var_names See [AnnData-usage]
     var_names = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set var_names on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set var_names on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       names <- private$.base_adata$var_names
       names <- private$.apply_var_subset(names)
       return(names)
     },
-    
+
     #' @field obsm See [AnnData-usage]
     obsm = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set obsm on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set obsm on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       obsm <- private$.base_adata$obsm
       if (!is.null(obsm)) {
         # Apply obs subsetting to each matrix
@@ -240,13 +254,15 @@ ViewAnnData <- R6::R6Class(
       }
       return(obsm)
     },
-    
+
     #' @field varm See [AnnData-usage]
     varm = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set varm on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set varm on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       varm <- private$.base_adata$varm
       if (!is.null(varm)) {
         # Apply var subsetting to each matrix
@@ -258,13 +274,15 @@ ViewAnnData <- R6::R6Class(
       }
       return(varm)
     },
-    
+
     #' @field obsp See [AnnData-usage]
     obsp = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set obsp on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set obsp on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       obsp <- private$.base_adata$obsp
       if (!is.null(obsp)) {
         # Apply obs subsetting to each matrix (both dimensions)
@@ -282,13 +300,15 @@ ViewAnnData <- R6::R6Class(
       }
       return(obsp)
     },
-    
+
     #' @field varp See [AnnData-usage]
     varp = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set varp on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set varp on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       varp <- private$.base_adata$varp
       if (!is.null(varp)) {
         # Apply var subsetting to each matrix (both dimensions)
@@ -306,13 +326,15 @@ ViewAnnData <- R6::R6Class(
       }
       return(varp)
     },
-    
+
     #' @field uns See [AnnData-usage]
     uns = function(value) {
       if (!missing(value)) {
-        cli_abort("Cannot set uns on a ViewAnnData object. Convert to a concrete implementation first.")
+        cli_abort(
+          "Cannot set uns on a ViewAnnData object. Convert to a concrete implementation first."
+        )
       }
-      
+
       uns <- private$.base_adata$uns
       uns <- private$.apply_renames(uns, private$.uns_renames)
       uns <- private$.apply_transformations("uns", uns)
@@ -330,7 +352,7 @@ ViewAnnData <- R6::R6Class(
       if (!inherits(base_adata, "AbstractAnnData")) {
         cli_abort("base_adata must be an AbstractAnnData object")
       }
-      
+
       private$.base_adata <- base_adata
       private$.obs_subset <- NULL
       private$.var_subset <- NULL
@@ -343,15 +365,15 @@ ViewAnnData <- R6::R6Class(
       private$.layers_renames <- list()
       private$.uns_renames <- list()
       private$.transformation_functions <- list()
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Subset observations based on a logical condition
     #'
-    #' @param condition A logical condition to apply to observations. 
-    #'   Can be a logical vector of length n_obs or an expression that 
+    #' @param condition A logical condition to apply to observations.
+    #'   Can be a logical vector of length n_obs or an expression that
     #'   evaluates to such a vector in the context of the obs data frame.
     #'
     #' @return The ViewAnnData object (for method chaining)
@@ -367,20 +389,25 @@ ViewAnnData <- R6::R6Class(
         if (!is.null(private$.obs_subset)) {
           obs_data <- obs_data[private$.obs_subset, , drop = FALSE]
         }
-        
-        condition_result <- eval(substitute(condition), obs_data, parent.frame())
+
+        condition_result <- eval(
+          substitute(condition),
+          obs_data,
+          parent.frame()
+        )
         if (!is.logical(condition_result)) {
           cli_abort("Condition must evaluate to a logical vector")
         }
-        
-        current_indices <- private$.obs_subset %||% seq_len(private$.base_adata$n_obs())
+
+        current_indices <- private$.obs_subset %||%
+          seq_len(private$.base_adata$n_obs())
         subset_indices <- current_indices[which(condition_result)]
       }
-      
+
       private$.obs_subset <- subset_indices
       invisible(self)
     },
-    
+
     #' @description
     #' Subset variables based on a logical condition
     #'
@@ -401,20 +428,25 @@ ViewAnnData <- R6::R6Class(
         if (!is.null(private$.var_subset)) {
           var_data <- var_data[private$.var_subset, , drop = FALSE]
         }
-        
-        condition_result <- eval(substitute(condition), var_data, parent.frame())
+
+        condition_result <- eval(
+          substitute(condition),
+          var_data,
+          parent.frame()
+        )
         if (!is.logical(condition_result)) {
           cli_abort("Condition must evaluate to a logical vector")
         }
-        
-        current_indices <- private$.var_subset %||% seq_len(private$.base_adata$n_vars())
+
+        current_indices <- private$.var_subset %||%
+          seq_len(private$.base_adata$n_vars())
         subset_indices <- current_indices[which(condition_result)]
       }
-      
+
       private$.var_subset <- subset_indices
       invisible(self)
     },
-    
+
     #' @description
     #' Rename columns in obs
     #'
@@ -426,16 +458,16 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(invisible(self))
       }
-      
+
       # Reverse the mapping: old_name -> new_name
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.obs_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Rename columns in var
     #'
@@ -447,16 +479,16 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(self)
       }
-      
+
       # Reverse the mapping: old_name -> new_name
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.var_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Rename keys in obsm
     #'
@@ -468,15 +500,15 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(invisible(self))
       }
-      
+
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.obsm_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Rename keys in varm
     #'
@@ -488,15 +520,15 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(invisible(self))
       }
-      
+
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.varm_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Rename keys in obsp
     #'
@@ -508,15 +540,15 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(self)
       }
-      
+
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.obsp_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Rename keys in varp
     #'
@@ -528,15 +560,15 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(self)
       }
-      
+
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.varp_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Rename keys in layers
     #'
@@ -548,15 +580,15 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(self)
       }
-      
+
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.layers_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Rename keys in uns
     #'
@@ -568,15 +600,15 @@ ViewAnnData <- R6::R6Class(
       if (length(renames) == 0) {
         return(self)
       }
-      
+
       for (new_name in names(renames)) {
         old_name <- renames[[new_name]]
         private$.uns_renames[[old_name]] <- new_name
       }
-      
+
       invisible(self)
     },
-    
+
     #' @description
     #' Add a transformation function to be applied to a specific slot
     #'
@@ -589,21 +621,33 @@ ViewAnnData <- R6::R6Class(
       if (!is.function(transform_func)) {
         cli_abort("transform_func must be a function")
       }
-      
-      valid_slots <- c("X", "obs", "var", "layers", "obsm", "varm", "obsp", "varp", "uns")
+
+      valid_slots <- c(
+        "X",
+        "obs",
+        "var",
+        "layers",
+        "obsm",
+        "varm",
+        "obsp",
+        "varp",
+        "uns"
+      )
       if (!slot_name %in% valid_slots) {
-        cli_abort("slot_name must be one of: {paste(valid_slots, collapse = ', ')}")
+        cli_abort(
+          "slot_name must be one of: {paste(valid_slots, collapse = ', ')}"
+        )
       }
-      
+
       if (is.null(private$.transformation_functions[[slot_name]])) {
         private$.transformation_functions[[slot_name]] <- list()
       }
-      
+
       private$.transformation_functions[[slot_name]] <- append(
-        private$.transformation_functions[[slot_name]], 
+        private$.transformation_functions[[slot_name]],
         transform_func
       )
-      
+
       invisible(self)
     }
   )
