@@ -4,18 +4,19 @@
 anndata_constructors <- function() {
   list(
     "HDF5AnnData" = HDF5AnnData,
-    "InMemoryAnnData" = InMemoryAnnData
+    "InMemoryAnnData" = InMemoryAnnData,
+    "ViewAnnData" = ViewAnnData
   )
 }
 
 #' Retrieve the AnnData constructor for a given class.
 #'
-#' @param class Name of the AnnData class. Must be one of `"HDF5AnnData"`
-#' or `"InMemoryAnnData"`.
+#' @param class Name of the AnnData class. Must be one of `"HDF5AnnData"`,
+#' `"InMemoryAnnData"`, or `"ViewAnnData"`.
 #'
 #' @noRd
 get_anndata_constructor <- function(
-  class = c("HDF5AnnData", "InMemoryAnnData")
+  class = c("HDF5AnnData", "InMemoryAnnData", "ViewAnnData")
 ) {
   # TODO: also support directly passing the correct class?
   class <- match.arg(class)

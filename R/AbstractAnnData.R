@@ -167,6 +167,157 @@ AbstractAnnData <- R6::R6Class(
       names(self$uns)
     },
     #' @description
+    #' Create a subset view of observations based on a logical condition
+    #'
+    #' @param condition A logical condition to apply to observations. 
+    #'   Can be a logical vector of length n_obs or an expression that 
+    #'   evaluates to such a vector in the context of the obs data frame.
+    #'
+    #' @return A [ViewAnnData] object with the specified observations
+    subset_obs = function(condition) {
+      view <- ViewAnnData$new(self)
+      
+      # Capture the condition as an expression
+      condition_expr <- substitute(condition)
+      
+      # Evaluate the condition in the current context
+      if (is.logical(condition)) {
+        view$subset_obs(condition)
+      } else {
+        # Evaluate condition in the context of obs
+        obs_data <- self$obs
+        condition_result <- eval(condition_expr, obs_data)
+        view$subset_obs(condition_result)
+      }
+    },
+    
+    #' @description
+    #' Create a subset view of variables based on a logical condition
+    #'
+    #' @param condition A logical condition to apply to variables.
+    #'   Can be a logical vector of length n_vars or an expression that
+    #'   evaluates to such a vector in the context of the var data frame.
+    #'
+    #' @return A [ViewAnnData] object with the specified variables
+    subset_var = function(condition) {
+      view <- ViewAnnData$new(self)
+      
+      # Capture the condition as an expression
+      condition_expr <- substitute(condition)
+      
+      # Evaluate the condition in the current context
+      if (is.logical(condition)) {
+        view$subset_var(condition)
+      } else {
+        # Evaluate condition in the context of var
+        var_data <- self$var
+        condition_result <- eval(condition_expr, var_data)
+        view$subset_var(condition_result)
+      }
+    },
+    
+    #' @description
+    #' Create a view with renamed observation columns
+    #'
+    #' @param ... Named arguments where names are new column names and values are old column names
+    #'
+    #' @return A [ViewAnnData] object with renamed obs columns
+    rename_obs = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_obs(...)
+    },
+    
+    #' @description
+    #' Create a view with renamed variable columns
+    #'
+    #' @param ... Named arguments where names are new column names and values are old column names
+    #'
+    #' @return A [ViewAnnData] object with renamed var columns
+    rename_var = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_var(...)
+    },
+    
+    #' @description
+    #' Create a view with renamed obsm keys
+    #'
+    #' @param ... Named arguments where names are new keys and values are old keys
+    #'
+    #' @return A [ViewAnnData] object with renamed obsm keys
+    rename_obsm = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_obsm(...)
+    },
+    
+    #' @description
+    #' Create a view with renamed varm keys
+    #'
+    #' @param ... Named arguments where names are new keys and values are old keys
+    #'
+    #' @return A [ViewAnnData] object with renamed varm keys
+    rename_varm = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_varm(...)
+    },
+    
+    #' @description
+    #' Create a view with renamed obsp keys
+    #'
+    #' @param ... Named arguments where names are new keys and values are old keys
+    #'
+    #' @return A [ViewAnnData] object with renamed obsp keys
+    rename_obsp = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_obsp(...)
+    },
+    
+    #' @description
+    #' Create a view with renamed varp keys
+    #'
+    #' @param ... Named arguments where names are new keys and values are old keys
+    #'
+    #' @return A [ViewAnnData] object with renamed varp keys
+    rename_varp = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_varp(...)
+    },
+    
+    #' @description
+    #' Create a view with renamed layers keys
+    #'
+    #' @param ... Named arguments where names are new keys and values are old keys
+    #'
+    #' @return A [ViewAnnData] object with renamed layers keys
+    rename_layers = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_layers(...)
+    },
+    
+    #' @description
+    #' Create a view with renamed uns keys
+    #'
+    #' @param ... Named arguments where names are new keys and values are old keys
+    #'
+    #' @return A [ViewAnnData] object with renamed uns keys
+    rename_uns = function(...) {
+      view <- ViewAnnData$new(self)
+      view$rename_uns(...)
+    },
+    
+    #' @description
+    #' Create a view with a transformation function applied to a specific slot
+    #'
+    #' @param slot_name The name of the slot to apply the transformation to
+    #'   (e.g., "X", "obs", "var", "layers", "obsm", "varm", "obsp", "varp", "uns")
+    #' @param transform_func A function that takes the slot data and returns transformed data
+    #'
+    #' @return A [ViewAnnData] object with the transformation applied
+    add_transformation = function(slot_name, transform_func) {
+      view <- ViewAnnData$new(self)
+      view$add_transformation(slot_name, transform_func)
+    },
+    
+    #' @description
     #' Convert to `SingleCellExperiment`
     #'
     #' See [as_SingleCellExperiment()] for more details on the conversion
