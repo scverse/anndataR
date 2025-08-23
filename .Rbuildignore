@@ -14,3 +14,4 @@
 ^vignettes/diagrams/*\.svg$
 ^vignettes/software_design\.Rmd$
 ^vignettes/development_status\.Rmd$
+^vignettes/data/*\.h5ad$

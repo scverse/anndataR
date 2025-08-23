@@ -55,3 +55,6 @@ rsconnect/
 
 # Rproj files
 *.Rproj
+
+# Vignette data files
+vignettes/data/*.h5ad
