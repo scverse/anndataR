@@ -1,3 +1,7 @@
+# anndataR unreleased
+
+* Add ReticulateAnnData class for seamless Python integration via reticulate (PR #322)
+
 # anndataR 0.99.2
 
 * Add `@return` to R6 object man pages to address **{BiocCheck}** warning (PR #319)
