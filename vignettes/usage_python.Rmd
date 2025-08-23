@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
 )
 
 # Check if required Python packages are available
-python_available <- reticulate::py_available() && 
-  reticulate::py_module_available("scanpy") && 
+python_available <- reticulate::py_available() &&
+  reticulate::py_module_available("scanpy") &&
   reticulate::py_module_available("mudata")
 
 # Set eval based on Python package availability
