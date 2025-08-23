@@ -77,6 +77,12 @@ jobs:
           fi
         shell: bash
 
+      - name: Install Python dependencies for tests
+        run: |
+          library(reticulate)
+          py_install("dummy_anndata")
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
