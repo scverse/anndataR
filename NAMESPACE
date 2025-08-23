@@ -2,7 +2,6 @@
 
 S3method(as_AnnData,Seurat)
 S3method(as_AnnData,SingleCellExperiment)
-S3method(as_AnnData,python.builtin.object)
 S3method(py_to_r,anndata._core.anndata.AnnData)
 S3method(r_to_py,AbstractAnnData)
 export(AnnData)
