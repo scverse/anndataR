@@ -266,17 +266,15 @@ ReticulateAnnData <- R6::R6Class(
 
       if (!is.null(py_anndata)) {
         # Use existing Python AnnData object
-        if (!inherits(py_anndata, "python.builtin.object")) {
+        if (!is_py_anndata(py_anndata)) {
           cli_abort(
             "{.arg py_anndata} must be a Python AnnData object from {.pkg reticulate}"
           )
         }
 
-        # TODO: Add validation that py_anndata is actually an AnnData object
         private$.py_anndata <- py_anndata
       } else {
         # Create new Python AnnData object
-        # Use convert = FALSE to prevent automatic conversion by R anndata package
         anndata <- reticulate::import("anndata", convert = FALSE)
 
         if (!is.null(X)) {
@@ -291,12 +289,12 @@ ReticulateAnnData <- R6::R6Class(
           obs_names <- if (!is.null(rownames(X))) {
             rownames(X)
           } else {
-            paste0("cell", 1:n_obs)
+            paste0("cell", seq_len(n_obs))
           }
           var_names <- if (!is.null(colnames(X))) {
             colnames(X)
           } else {
-            paste0("gene", 1:n_vars)
+            paste0("gene", seq_len(n_vars))
           }
 
           # Create DataFrames
