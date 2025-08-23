@@ -1,4 +1,4 @@
-skip_if_no_anndata()
+skip_if_no_anndata_py()
 
 library(reticulate)
 

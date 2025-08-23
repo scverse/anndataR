@@ -1,5 +1,5 @@
 test_that("ReticulateAnnData creation works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   # Test creating empty ReticulateAnnData
   adata <- ReticulateAnnData$new(shape = c(10, 5))
@@ -25,7 +25,7 @@ test_that("ReticulateAnnData creation works", {
 })
 
 test_that("ReticulateAnnData wrapping Python object works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   library(reticulate)
   ad <- import("anndata", convert = FALSE)
@@ -44,7 +44,7 @@ test_that("ReticulateAnnData wrapping Python object works", {
 })
 
 test_that("ReticulateAnnData slot access works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   X <- matrix(1:20, nrow = 4, ncol = 5)
   obs <- data.frame(row.names = paste0("cell", 1:4), group = letters[1:4])
@@ -98,7 +98,7 @@ test_that("ReticulateAnnData slot access works", {
 })
 
 test_that("ReticulateAnnData slot setting works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   adata <- ReticulateAnnData$new(shape = c(3, 4))
 
@@ -136,7 +136,7 @@ test_that("ReticulateAnnData slot setting works", {
 })
 
 test_that("ReticulateAnnData obsm, varm, obsp, varp access works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   X <- matrix(1:20, nrow = 4, ncol = 5)
   obs <- data.frame(row.names = paste0("cell", 1:4), group = letters[1:4])
@@ -191,7 +191,7 @@ test_that("ReticulateAnnData obsm, varm, obsp, varp access works", {
 })
 
 test_that("ReticulateAnnData obsm, varm, obsp, varp setting works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   X <- matrix(1:20, nrow = 4, ncol = 5)
   adata <- ReticulateAnnData$new(X = X)
@@ -226,7 +226,7 @@ test_that("ReticulateAnnData obsm, varm, obsp, varp setting works", {
 })
 
 test_that("ReticulateAnnData names setting works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   X <- matrix(1:20, nrow = 4, ncol = 5)
   adata <- ReticulateAnnData$new(X = X)
@@ -245,7 +245,7 @@ test_that("ReticulateAnnData names setting works", {
 })
 
 test_that("ReticulateAnnData layers setting works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   X <- matrix(1:20, nrow = 4, ncol = 5)
   adata <- ReticulateAnnData$new(X = X)
@@ -263,7 +263,7 @@ test_that("ReticulateAnnData layers setting works", {
 })
 
 test_that("as_AnnData works with Python objects", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   library(reticulate)
   ad <- import("anndata", convert = FALSE)
@@ -281,7 +281,7 @@ test_that("as_AnnData works with Python objects", {
 })
 
 test_that("Conversion between ReticulateAnnData and other types works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   X <- matrix(1:20, nrow = 4, ncol = 5)
   obs <- data.frame(row.names = paste0("cell", 1:4), group = letters[1:4])
@@ -304,7 +304,7 @@ test_that("Conversion between ReticulateAnnData and other types works", {
 })
 
 test_that("automatic py_to_r and r_to_py conversion works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   library(reticulate)
   ad <- import("anndata", convert = FALSE)
@@ -334,7 +334,7 @@ test_that("automatic py_to_r and r_to_py conversion works", {
 })
 
 test_that("automatic py_to_r and r_to_py conversion works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   library(reticulate)
   ad <- import("anndata", convert = FALSE)
@@ -369,7 +369,7 @@ test_that("reticulate utility functions work", {
   expect_false(is_py_anndata(regular_matrix))
 
   # Skip the rest if anndata/reticulate not available
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
 
   library(reticulate)
   ad <- import("anndata", convert = FALSE)
