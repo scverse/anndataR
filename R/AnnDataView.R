@@ -99,7 +99,10 @@ AnnDataView <- R6::R6Class(
     # Helper to show error for setter operations
     .abort_setter = function(field_name) {
       cli_abort(
-        "Cannot set {field_name} on a AnnDataView object. Convert to a concrete implementation first using any of the as_*() functions (e.g., as_InMemoryAnnData(), as_HDF5AnnData())."
+        paste0(
+          "Cannot set {field_name} on a AnnDataView object. Convert to a concrete implementation ",
+          "first using any of the as_*() functions (e.g., as_InMemoryAnnData(), as_HDF5AnnData())."
+        )
       )
     }
   ),
@@ -377,7 +380,9 @@ convert_to_indices <- function(
     }
     indices <- match(subset, names_vector)
     if (any(is.na(indices))) {
+      # nolint start: object_usage_linter
       missing_names <- subset[is.na(indices)]
+      # nolint end: object_usage_linter
       cli_abort(
         "Names of {context_name} not found: {paste(missing_names, collapse = ', ')}"
       )
