@@ -1,3 +1,8 @@
+# anndataR unreleased
+
+* Implement S3 methods for AbstractAnnData objects: `dim`, `nrow`, `ncol`, `rownames`, `colnames`, and `[` (PR #1096).
+* Improve lazy subsetting for AbstractAnnData objects (PR #1096).
+
 # anndataR 0.99.2
 
 * Add `@return` to R6 object man pages to address **{BiocCheck}** warning (PR #319)
