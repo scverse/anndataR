@@ -31,7 +31,7 @@ classDiagram
   InMemoryAnnData --|> AbstractAnnData
   ZarrAnnData --|> AbstractAnnData
   ReticulateAnnData --|> AbstractAnnData
-  SubsetAnnData --|> AbstractAnnData
+  AnnDataView --|> AbstractAnnData
 
   
 
@@ -51,18 +51,20 @@ classDiagram
     *var_names: Array[String]
     *write_h5ad(): Unit
 
-    subset(): SubsetAnnData
     as_SingleCellExperiment(): SingleCellExperiment
     as_Seurat(): Seurat
 
     as_HDF5AnnData(): HDF5AnnData
     as_InMemoryAnnData(): InMemoryAnnData
+
+    .[,]: AnnDataView
   }
 
   AbstractAnnData --> SingleCellExperiment
   AbstractAnnData --> Seurat
-  AbstractAnnData --> SubsetAnnData
+  AbstractAnnData --> AnnDataView
 
-  class SubsetAnnData {
+  class AnnDataView {
     init(ad)
+    subset(ad, i, j)
   }
