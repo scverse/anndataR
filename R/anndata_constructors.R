@@ -10,8 +10,8 @@ anndata_constructors <- function() {
 
 #' Retrieve the AnnData constructor for a given class.
 #'
-#' @param class Name of the AnnData class. Must be one of `"HDF5AnnData"`,
-#' `"InMemoryAnnData"`, or `"AnnDataView"`.
+#' @param class Name of the AnnData class. Must be one of `"HDF5AnnData"`
+#' or `"InMemoryAnnData"`.
 #'
 #' @noRd
 get_anndata_constructor <- function(
