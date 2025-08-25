@@ -2,8 +2,11 @@
 
 S3method(as_AnnData,Seurat)
 S3method(as_AnnData,SingleCellExperiment)
+S3method(cbind,AbstractAnnData)
+S3method(rbind,AbstractAnnData)
 export(AnnData)
 export(as_AnnData)
+export(concat)
 export(generate_dataset)
 export(read_h5ad)
 export(write_h5ad)
