@@ -43,7 +43,7 @@
 #'   to be converted. If `NULL`, the default assay will be used
 #'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
 #' @param output_class The `AnnData` class to convert to. Must be one of
-#'   `"HDF5AnnData"`, `"InMemoryAnnData"`, or `"ViewAnnData"`.
+#'   `"HDF5AnnData"`, `"InMemoryAnnData"`, or `"AnnDataView"`.
 #' @param ... Additional arguments passed to the generator function for
 #'   `output_class`
 #'

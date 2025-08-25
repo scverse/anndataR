@@ -69,7 +69,7 @@ test_that("S3 method [.AbstractAnnData works with numeric indices", {
 
   # Test row subsetting
   result <- ad[1:3, ]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_s3_class(result, "AbstractAnnData")
   expect_equal(nrow(result), 3)
   expect_equal(ncol(result), 5)
@@ -78,7 +78,7 @@ test_that("S3 method [.AbstractAnnData works with numeric indices", {
 
   # Test column subsetting
   result <- ad[, 2:4]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 10)
   expect_equal(ncol(result), 3)
   expect_equal(rownames(result), rownames(ad))
@@ -86,7 +86,7 @@ test_that("S3 method [.AbstractAnnData works with numeric indices", {
 
   # Test combined subsetting
   result <- ad[1:3, 2:4]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 3)
   expect_equal(ncol(result), 3)
   expect_equal(rownames(result), rownames(ad)[1:3])
@@ -110,7 +110,7 @@ test_that("S3 method [.AbstractAnnData works with logical indices", {
     FALSE
   )
   result <- ad[logical_rows, ]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 5)
   expect_equal(ncol(result), 5)
   expect_equal(rownames(result), rownames(ad)[logical_rows])
@@ -118,14 +118,14 @@ test_that("S3 method [.AbstractAnnData works with logical indices", {
   # Test column subsetting with logical vector
   logical_cols <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
   result <- ad[, logical_cols]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 10)
   expect_equal(ncol(result), 3)
   expect_equal(colnames(result), colnames(ad)[logical_cols])
 
   # Test combined logical subsetting
   result <- ad[logical_rows, logical_cols]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 5)
   expect_equal(ncol(result), 3)
 })
@@ -142,7 +142,7 @@ test_that("S3 method [.AbstractAnnData works with character indices", {
   # Test row subsetting with character vector
   selected_obs <- c("cell_1", "cell_3", "cell_5")
   result <- ad[selected_obs, ]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 3)
   expect_equal(ncol(result), 5)
   expect_equal(rownames(result), selected_obs)
@@ -150,14 +150,14 @@ test_that("S3 method [.AbstractAnnData works with character indices", {
   # Test column subsetting with character vector
   selected_vars <- c("gene_2", "gene_4")
   result <- ad[, selected_vars]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 10)
   expect_equal(ncol(result), 2)
   expect_equal(colnames(result), selected_vars)
 
   # Test combined character subsetting
   result <- ad[selected_obs, selected_vars]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 3)
   expect_equal(ncol(result), 2)
   expect_equal(rownames(result), selected_obs)
@@ -233,7 +233,7 @@ test_that("S3 methods work with HDF5AnnData", {
 
   # Test subsetting works
   result <- h5_ad[1:3, 1:2]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 3)
   expect_equal(ncol(result), 2)
 
@@ -253,7 +253,7 @@ test_that("S3 methods work with InMemoryAnnData", {
 
   # Test subsetting works
   result <- ad[1:3, 1:2]
-  expect_s3_class(result, "ViewAnnData")
+  expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 3)
   expect_equal(ncol(result), 2)
 

@@ -36,8 +36,8 @@ AnnData(
 
 Other AnnData classes: 
 \code{\link{AbstractAnnData}},
-\code{\link{HDF5AnnData}},
-\code{\link{ViewAnnData}}
+\code{\link{AnnDataView}},
+\code{\link{HDF5AnnData}}
 }
 \concept{AnnData classes}
 \section{Super class}{

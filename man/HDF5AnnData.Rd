@@ -16,8 +16,8 @@ See \link{AnnData-usage} for details on creating and using \code{AnnData} object
 
 Other AnnData classes: 
 \code{\link{AbstractAnnData}},
-\code{\link{InMemoryAnnData}},
-\code{\link{ViewAnnData}}
+\code{\link{AnnDataView}},
+\code{\link{InMemoryAnnData}}
 }
 \concept{AnnData classes}
 \section{Super class}{

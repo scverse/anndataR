@@ -1,4 +1,4 @@
-#' @title ViewAnnData
+#' @title AnnDataView
 #'
 #' @description
 #' A lazy view of an AnnData object that allows applying transformations
@@ -10,7 +10,7 @@
 #' This class is useful for chaining multiple operations on large datasets
 #' without creating intermediate copies of the data.
 #'
-#' @return A `ViewAnnData` object
+#' @return A `AnnDataView` object
 #'
 #' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'
@@ -34,8 +34,8 @@
 #' result <- view$as_InMemoryAnnData()
 #'
 #' @export
-ViewAnnData <- R6::R6Class(
-  "ViewAnnData",
+AnnDataView <- R6::R6Class(
+  "AnnDataView",
   inherit = AbstractAnnData,
   private = list(
     .base_adata = NULL,
@@ -149,7 +149,7 @@ ViewAnnData <- R6::R6Class(
     X = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set X on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set X on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -163,7 +163,7 @@ ViewAnnData <- R6::R6Class(
     layers = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set layers on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set layers on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -183,7 +183,7 @@ ViewAnnData <- R6::R6Class(
     obs = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set obs on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set obs on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -198,7 +198,7 @@ ViewAnnData <- R6::R6Class(
     var = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set var on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set var on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -213,7 +213,7 @@ ViewAnnData <- R6::R6Class(
     obs_names = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set obs_names on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set obs_names on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -226,7 +226,7 @@ ViewAnnData <- R6::R6Class(
     var_names = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set var_names on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set var_names on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -239,7 +239,7 @@ ViewAnnData <- R6::R6Class(
     obsm = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set obsm on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set obsm on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -259,7 +259,7 @@ ViewAnnData <- R6::R6Class(
     varm = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set varm on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set varm on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -279,7 +279,7 @@ ViewAnnData <- R6::R6Class(
     obsp = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set obsp on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set obsp on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -305,7 +305,7 @@ ViewAnnData <- R6::R6Class(
     varp = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set varp on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set varp on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -331,7 +331,7 @@ ViewAnnData <- R6::R6Class(
     uns = function(value) {
       if (!missing(value)) {
         cli_abort(
-          "Cannot set uns on a ViewAnnData object. Convert to a concrete implementation first."
+          "Cannot set uns on a AnnDataView object. Convert to a concrete implementation first."
         )
       }
 
@@ -343,11 +343,11 @@ ViewAnnData <- R6::R6Class(
   ),
   public = list(
     #' @description
-    #' Create a new ViewAnnData object
+    #' Create a new AnnDataView object
     #'
     #' @param base_adata An existing AnnData object to create a view of
     #'
-    #' @return A new `ViewAnnData` object
+    #' @return A new `AnnDataView` object
     initialize = function(base_adata) {
       if (!inherits(base_adata, "AbstractAnnData")) {
         cli_abort("base_adata must be an AbstractAnnData object")
@@ -376,7 +376,7 @@ ViewAnnData <- R6::R6Class(
     #'   Can be a logical vector of length n_obs or an expression that
     #'   evaluates to such a vector in the context of the obs data frame.
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     subset_obs = function(condition) {
       if (is.logical(condition)) {
         if (length(condition) != self$n_obs()) {
@@ -415,7 +415,7 @@ ViewAnnData <- R6::R6Class(
     #'   Can be a logical vector of length n_vars or an expression that
     #'   evaluates to such a vector in the context of the var data frame.
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     subset_var = function(condition) {
       if (is.logical(condition)) {
         if (length(condition) != self$n_vars()) {
@@ -452,7 +452,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new column names and values are old column names
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_obs = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -473,7 +473,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new column names and values are old column names
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_var = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -494,7 +494,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new keys and values are old keys
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_obsm = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -514,7 +514,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new keys and values are old keys
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_varm = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -534,7 +534,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new keys and values are old keys
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_obsp = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -554,7 +554,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new keys and values are old keys
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_varp = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -574,7 +574,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new keys and values are old keys
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_layers = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -594,7 +594,7 @@ ViewAnnData <- R6::R6Class(
     #'
     #' @param ... Named arguments where names are new keys and values are old keys
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     rename_uns = function(...) {
       renames <- list(...)
       if (length(renames) == 0) {
@@ -616,7 +616,7 @@ ViewAnnData <- R6::R6Class(
     #'   (e.g., "X", "obs", "var", "layers", "obsm", "varm", "obsp", "varp", "uns")
     #' @param transform_func A function that takes the slot data and returns transformed data
     #'
-    #' @return The ViewAnnData object (for method chaining)
+    #' @return The AnnDataView object (for method chaining)
     add_transformation = function(slot_name, transform_func) {
       if (!is.function(transform_func)) {
         cli_abort("transform_func must be a function")

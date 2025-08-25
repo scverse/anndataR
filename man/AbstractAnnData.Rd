@@ -17,9 +17,9 @@ See \link{AnnData-usage} for details on creating and using \code{AnnData} object
 \link{AnnData-usage} for details on creating and using \code{AnnData} objects
 
 Other AnnData classes: 
+\code{\link{AnnDataView}},
 \code{\link{HDF5AnnData}},
-\code{\link{InMemoryAnnData}},
-\code{\link{ViewAnnData}}
+\code{\link{InMemoryAnnData}}
 }
 \concept{AnnData classes}
 \section{Active bindings}{
@@ -229,7 +229,7 @@ evaluates to such a vector in the context of the obs data frame.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with the specified observations
+A \link{AnnDataView} object with the specified observations
 }
 }
 \if{html}{\out{<hr>}}
@@ -251,7 +251,7 @@ evaluates to such a vector in the context of the var data frame.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with the specified variables
+A \link{AnnDataView} object with the specified variables
 }
 }
 \if{html}{\out{<hr>}}
@@ -271,7 +271,7 @@ Create a view with renamed observation columns
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed obs columns
+A \link{AnnDataView} object with renamed obs columns
 }
 }
 \if{html}{\out{<hr>}}
@@ -291,7 +291,7 @@ Create a view with renamed variable columns
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed var columns
+A \link{AnnDataView} object with renamed var columns
 }
 }
 \if{html}{\out{<hr>}}
@@ -311,7 +311,7 @@ Create a view with renamed obsm keys
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed obsm keys
+A \link{AnnDataView} object with renamed obsm keys
 }
 }
 \if{html}{\out{<hr>}}
@@ -331,7 +331,7 @@ Create a view with renamed varm keys
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed varm keys
+A \link{AnnDataView} object with renamed varm keys
 }
 }
 \if{html}{\out{<hr>}}
@@ -351,7 +351,7 @@ Create a view with renamed obsp keys
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed obsp keys
+A \link{AnnDataView} object with renamed obsp keys
 }
 }
 \if{html}{\out{<hr>}}
@@ -371,7 +371,7 @@ Create a view with renamed varp keys
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed varp keys
+A \link{AnnDataView} object with renamed varp keys
 }
 }
 \if{html}{\out{<hr>}}
@@ -391,7 +391,7 @@ Create a view with renamed layers keys
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed layers keys
+A \link{AnnDataView} object with renamed layers keys
 }
 }
 \if{html}{\out{<hr>}}
@@ -411,7 +411,7 @@ Create a view with renamed uns keys
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with renamed uns keys
+A \link{AnnDataView} object with renamed uns keys
 }
 }
 \if{html}{\out{<hr>}}
@@ -434,7 +434,7 @@ Create a view with a transformation function applied to a specific slot
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \link{ViewAnnData} object with the transformation applied
+A \link{AnnDataView} object with the transformation applied
 }
 }
 \if{html}{\out{<hr>}}

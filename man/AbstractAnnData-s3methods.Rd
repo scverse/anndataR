@@ -38,7 +38,7 @@
 \item \code{dim}: Numeric vector of length 2 (n_obs, n_vars)
 \item \code{nrow}, \code{ncol}: Integer count
 \item \code{rownames}, \code{colnames}: Character vector
-\item \code{[}: A ViewAnnData object with the specified subset
+\item \code{[}: A AnnDataView object with the specified subset
 }
 }
 \description{
@@ -68,7 +68,7 @@ ncol(ad)
 rownames(ad)
 colnames(ad)
 
-# Subsetting creates ViewAnnData
+# Subsetting creates AnnDataView
 subset_ad <- ad[1:10, 1:5]
 subset_ad <- ad[c(TRUE, FALSE), ]  # logical subsetting
 subset_ad <- ad[c("obs_1", "obs_2"), c("var_1", "var_2")]  # name subsetting

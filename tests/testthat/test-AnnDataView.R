@@ -28,19 +28,19 @@ test_that("AbstractAnnData basic subsetting and renaming methods", {
     )
   )
 
-  # Test that basic subsetting methods return ViewAnnData
+  # Test that basic subsetting methods return AnnDataView
   view_obs <- ad$subset_obs(cell_type == "A")
-  expect_s3_class(view_obs, "ViewAnnData")
+  expect_s3_class(view_obs, "AnnDataView")
 
   view_var <- ad$subset_var(gene_type == "X")
-  expect_s3_class(view_var, "ViewAnnData")
+  expect_s3_class(view_var, "AnnDataView")
 
-  # Test that basic renaming methods return ViewAnnData
+  # Test that basic renaming methods return AnnDataView
   view_rename <- ad$rename_obs(cell_category = "cell_type")
-  expect_s3_class(view_rename, "ViewAnnData")
+  expect_s3_class(view_rename, "AnnDataView")
 })
 
-test_that("ViewAnnData obs subsetting through AbstractAnnData", {
+test_that("AnnDataView obs subsetting through AbstractAnnData", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -76,7 +76,7 @@ test_that("ViewAnnData obs subsetting through AbstractAnnData", {
   expect_equal(view3$obs_names, "C")
 })
 
-test_that("ViewAnnData var subsetting through AbstractAnnData", {
+test_that("AnnDataView var subsetting through AbstractAnnData", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -112,7 +112,7 @@ test_that("ViewAnnData var subsetting through AbstractAnnData", {
   expect_equal(view3$var_names, c("a", "c", "e"))
 })
 
-test_that("ViewAnnData combined subsetting through AbstractAnnData", {
+test_that("AnnDataView combined subsetting through AbstractAnnData", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -157,7 +157,7 @@ test_that("ViewAnnData combined subsetting through AbstractAnnData", {
   expect_equal(dim(view$varp$correlations), c(2L, 2L))
 })
 
-test_that("ViewAnnData renaming through AbstractAnnData", {
+test_that("AnnDataView renaming through AbstractAnnData", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -215,7 +215,7 @@ test_that("ViewAnnData renaming through AbstractAnnData", {
   expect_false("method" %in% names(view5$uns))
 })
 
-test_that("ViewAnnData method chaining through AbstractAnnData", {
+test_that("AnnDataView method chaining through AbstractAnnData", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -243,7 +243,7 @@ test_that("ViewAnnData method chaining through AbstractAnnData", {
   expect_false("gene_type" %in% colnames(view$var))
 })
 
-test_that("ViewAnnData transformation functions through AbstractAnnData", {
+test_that("AnnDataView transformation functions through AbstractAnnData", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -279,7 +279,7 @@ test_that("ViewAnnData transformation functions through AbstractAnnData", {
   expect_identical(view3$X, (ad$X * 2) + 1)
 })
 
-test_that("ViewAnnData conversion to InMemoryAnnData through AbstractAnnData", {
+test_that("AnnDataView conversion to InMemoryAnnData through AbstractAnnData", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -309,7 +309,7 @@ test_that("ViewAnnData conversion to InMemoryAnnData through AbstractAnnData", {
   expect_equal(result$obs$cell_category, c("A", "A"))
 })
 
-test_that("ViewAnnData error handling", {
+test_that("AnnDataView error handling", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(row.names = LETTERS[1:3], cell_type = c("A", "B", "A")),
@@ -321,19 +321,19 @@ test_that("ViewAnnData error handling", {
 
   # Test initialization with non-AbstractAnnData
   expect_error(
-    ViewAnnData$new("not_an_anndata"),
+    AnnDataView$new("not_an_anndata"),
     "must be an AbstractAnnData object"
   )
 
-  # Test setting values on ViewAnnData (create view first)
+  # Test setting values on AnnDataView (create view first)
   view <- ad$subset_obs(cell_type == "A")
   expect_error(
     view$X <- matrix(1:15, 3L, 5L),
-    "Cannot set X on a ViewAnnData object"
+    "Cannot set X on a AnnDataView object"
   )
   expect_error(
     view$obs <- data.frame(),
-    "Cannot set obs on a ViewAnnData object"
+    "Cannot set obs on a AnnDataView object"
   )
 
   # Test invalid transformation function
@@ -348,8 +348,8 @@ test_that("ViewAnnData error handling", {
     "slot_name must be one of"
   )
 
-  # Test that ViewAnnData inherits from AbstractAnnData
+  # Test that AnnDataView inherits from AbstractAnnData
   view2 <- ad$subset_obs(cell_type == "A")
   expect_s3_class(view2, "AbstractAnnData")
-  expect_s3_class(view2, "ViewAnnData")
+  expect_s3_class(view2, "AnnDataView")
 })
