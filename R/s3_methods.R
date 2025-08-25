@@ -87,69 +87,11 @@ colnames.AbstractAnnData <- function(x) {
 #' @method [ AbstractAnnData
 #' @export
 `[.AbstractAnnData` <- function(x, i, j, drop = TRUE, ...) {
-  view <- AnnDataView$new(x)
-
-  # Handle observation (row) subsetting
-  if (!missing(i)) {
-    if (is.logical(i)) {
-      if (length(i) != x$n_obs()) {
-        cli_abort(
-          "Logical vector for observations must have length {x$n_obs()}"
-        )
-      }
-    } else if (is.numeric(i)) {
-      if (any(i < 1 | i > x$n_obs())) {
-        cli_abort("Observation indices must be between 1 and {x$n_obs()}")
-      }
-      # Convert to logical
-      logical_i <- rep(FALSE, x$n_obs())
-      logical_i[i] <- TRUE
-      i <- logical_i
-    } else if (is.character(i)) {
-      obs_names <- x$obs_names
-      if (any(!i %in% obs_names)) {
-        missing_names <- i[!i %in% obs_names]
-        cli_abort(
-          "Observation names not found: {paste(missing_names, collapse = ', ')}"
-        )
-      }
-      # Convert to logical
-      logical_i <- obs_names %in% i
-      i <- logical_i
-    }
-
-    view$subset_obs(i)
+  if (inherits(x, "AnnDataView")) {
+    # If x is already a view, we need to update the view with new indices
+    return(x$subset(i, j))
   }
 
-  # Handle variable (column) subsetting
-  if (!missing(j)) {
-    if (is.logical(j)) {
-      if (length(j) != x$n_vars()) {
-        cli_abort("Logical vector for variables must have length {x$n_vars()}")
-      }
-    } else if (is.numeric(j)) {
-      if (any(j < 1 | j > x$n_vars())) {
-        cli_abort("Variable indices must be between 1 and {x$n_vars()}")
-      }
-      # Convert to logical
-      logical_j <- rep(FALSE, x$n_vars())
-      logical_j[j] <- TRUE
-      j <- logical_j
-    } else if (is.character(j)) {
-      var_names <- x$var_names
-      if (any(!j %in% var_names)) {
-        missing_names <- j[!j %in% var_names]
-        cli_abort(
-          "Variable names not found: {paste(missing_names, collapse = ', ')}"
-        )
-      }
-      # Convert to logical
-      logical_j <- var_names %in% j
-      j <- logical_j
-    }
-
-    view$subset_var(j)
-  }
-
-  view
+  # Create AnnDataView with both subsets at once
+  AnnDataView$new(x, i, j)
 }

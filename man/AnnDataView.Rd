@@ -7,14 +7,10 @@
 A \code{AnnDataView} object
 }
 \description{
-A lazy view of an AnnData object that allows applying transformations
-(subsetting, renaming keys, or transformation functions) without immediately
-executing them. The transformations are applied when converting to a concrete
-AnnData implementation (InMemoryAnnData, HDF5AnnData) or other formats
-(SingleCellExperiment, Seurat).
-
-This class is useful for chaining multiple operations on large datasets
-without creating intermediate copies of the data.
+A lazy view of an AnnData object that allows applying subsetting operations
+without immediately executing them. Subsetting is applied when converting to
+a concrete AnnData implementation (InMemoryAnnData, HDF5AnnData) or other
+formats (SingleCellExperiment, Seurat).
 }
 \examples{
 # Create a base AnnData object
@@ -24,13 +20,12 @@ ad <- AnnData(
   var = data.frame(row.names = letters[1:5], gene_type = c("X", "Y", "X", "Y", "Z"))
 )
 
-# Create a view with lazy transformations using AbstractAnnData methods
+# Create a view with lazy subsetting using AbstractAnnData methods
 view <- ad$
   subset_obs(cell_type == "A")$
-  subset_var(gene_type \%in\% c("X", "Y"))$
-  rename_obs(cell_category = "cell_type")
+  subset_var(gene_type \%in\% c("X", "Y"))
 
-# Apply transformations by converting to concrete implementation
+# Apply subsetting by converting to a concrete implementation
 result <- view$as_InMemoryAnnData()
 
 }
@@ -77,17 +72,7 @@ Other AnnData classes:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-AnnDataView-new}{\code{AnnDataView$new()}}
-\item \href{#method-AnnDataView-subset_obs}{\code{AnnDataView$subset_obs()}}
-\item \href{#method-AnnDataView-subset_var}{\code{AnnDataView$subset_var()}}
-\item \href{#method-AnnDataView-rename_obs}{\code{AnnDataView$rename_obs()}}
-\item \href{#method-AnnDataView-rename_var}{\code{AnnDataView$rename_var()}}
-\item \href{#method-AnnDataView-rename_obsm}{\code{AnnDataView$rename_obsm()}}
-\item \href{#method-AnnDataView-rename_varm}{\code{AnnDataView$rename_varm()}}
-\item \href{#method-AnnDataView-rename_obsp}{\code{AnnDataView$rename_obsp()}}
-\item \href{#method-AnnDataView-rename_varp}{\code{AnnDataView$rename_varp()}}
-\item \href{#method-AnnDataView-rename_layers}{\code{AnnDataView$rename_layers()}}
-\item \href{#method-AnnDataView-rename_uns}{\code{AnnDataView$rename_uns()}}
-\item \href{#method-AnnDataView-add_transformation}{\code{AnnDataView$add_transformation()}}
+\item \href{#method-AnnDataView-subset}{\code{AnnDataView$subset()}}
 \item \href{#method-AnnDataView-clone}{\code{AnnDataView$clone()}}
 }
 }
@@ -120,245 +105,44 @@ Other AnnData classes:
 \subsection{Method \code{new()}}{
 Create a new AnnDataView object
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$new(base_adata)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$new(base_adata, i, j)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{base_adata}}{An existing AnnData object to create a view of}
+
+\item{\code{i}}{Optional initial obs subset (logical, integer, or character vector)}
+
+\item{\code{j}}{Optional initial var subset (logical, integer, or character vector)}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
 A new \code{AnnDataView} object
+Subset the AnnDataView
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-subset_obs"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-subset_obs}{}}}
-\subsection{Method \code{subset_obs()}}{
-Subset observations based on a logical condition
+\if{html}{\out{<a id="method-AnnDataView-subset"></a>}}
+\if{latex}{\out{\hypertarget{method-AnnDataView-subset}{}}}
+\subsection{Method \code{subset()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$subset_obs(condition)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$subset(i, j)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{condition}}{A logical condition to apply to observations.
-Can be a logical vector of length n_obs or an expression that
-evaluates to such a vector in the context of the obs data frame.}
+\item{\code{i}}{Row indices (observations). Can be numeric, logical, or character.}
+
+\item{\code{j}}{Column indices (variables). Can be numeric, logical, or character.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-subset_var"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-subset_var}{}}}
-\subsection{Method \code{subset_var()}}{
-Subset variables based on a logical condition
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$subset_var(condition)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{condition}}{A logical condition to apply to variables.
-Can be a logical vector of length n_vars or an expression that
-evaluates to such a vector in the context of the var data frame.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_obs"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_obs}{}}}
-\subsection{Method \code{rename_obs()}}{
-Rename columns in obs
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_obs(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new column names and values are old column names}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_var"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_var}{}}}
-\subsection{Method \code{rename_var()}}{
-Rename columns in var
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_var(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new column names and values are old column names}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_obsm"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_obsm}{}}}
-\subsection{Method \code{rename_obsm()}}{
-Rename keys in obsm
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_obsm(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new keys and values are old keys}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_varm"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_varm}{}}}
-\subsection{Method \code{rename_varm()}}{
-Rename keys in varm
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_varm(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new keys and values are old keys}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_obsp"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_obsp}{}}}
-\subsection{Method \code{rename_obsp()}}{
-Rename keys in obsp
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_obsp(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new keys and values are old keys}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_varp"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_varp}{}}}
-\subsection{Method \code{rename_varp()}}{
-Rename keys in varp
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_varp(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new keys and values are old keys}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_layers"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_layers}{}}}
-\subsection{Method \code{rename_layers()}}{
-Rename keys in layers
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_layers(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new keys and values are old keys}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-rename_uns"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-rename_uns}{}}}
-\subsection{Method \code{rename_uns()}}{
-Rename keys in uns
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$rename_uns(...)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{...}}{Named arguments where names are new keys and values are old keys}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataView-add_transformation"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataView-add_transformation}{}}}
-\subsection{Method \code{add_transformation()}}{
-Add a transformation function to be applied to a specific slot
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataView$add_transformation(slot_name, transform_func)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{slot_name}}{The name of the slot to apply the transformation to
-(e.g., "X", "obs", "var", "layers", "obsm", "varm", "obsp", "varp", "uns")}
-
-\item{\code{transform_func}}{A function that takes the slot data and returns transformed data}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-The AnnDataView object (for method chaining)
+A new \code{AnnDataView} object
 }
 }
 \if{html}{\out{<hr>}}
