@@ -105,7 +105,7 @@ to be converted. If \code{NULL}, the default assay will be used
 (\code{\link[SeuratObject:DefaultAssay]{SeuratObject::DefaultAssay()}}). This is ignored for other objects.}
 
 \item{output_class}{The \code{AnnData} class to convert to. Must be one of
-\code{"HDF5AnnData"}, \code{"InMemoryAnnData"}, or \code{"AnnDataView"}.}
+\code{"HDF5AnnData"} or \code{"InMemoryAnnData"}.}
 
 \item{...}{Additional arguments passed to the generator function for
 \code{output_class}}

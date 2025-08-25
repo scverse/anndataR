@@ -12,22 +12,20 @@
 #'
 #' @details
 #' The following S3 methods are available:
-#' \itemize{
-#'   \item \code{dim(x)}: Get dimensions (n_obs, n_vars)
-#'   \item \code{nrow(x)}: Get number of observations
-#'   \item \code{ncol(x)}: Get number of variables
-#'   \item \code{rownames(x)}: Get observation names
-#'   \item \code{colnames(x)}: Get variable names
-#'   \item \code{x[i, j]}: Subset observations and/or variables
-#' }
+#'
+#'   * `dim(x)`: Get dimensions (n_obs, n_vars)
+#'   * `nrow(x)`: Get number of observations
+#'   * `ncol(x)`: Get number of variables
+#'   * `rownames(x)`: Get observation names
+#'   * `colnames(x)`: Get variable names
+#'   * `x[i, j]`: Subset observations and/or variables
 #'
 #' @return
-#' \itemize{
-#'   \item \code{dim}: Numeric vector of length 2 (n_obs, n_vars)
-#'   \item \code{nrow}, \code{ncol}: Integer count
-#'   \item \code{rownames}, \code{colnames}: Character vector
-#'   \item \code{[}: A AnnDataView object with the specified subset
-#' }
+#'
+#'   * `dim`: Numeric vector of length 2 (n_obs, n_vars)
+#'   * `nrow`, `ncol`: Integer count
+#'   * `rownames`, `colnames`: Character vector
+#'   * `[`: A AnnDataView object with the specified subset
 #'
 #' @examples
 #' \dontrun{
