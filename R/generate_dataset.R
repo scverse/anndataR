@@ -322,9 +322,13 @@ generate_dataset <- function(
   # generate obsm
   obsm <- lapply(obsm_types, function(obsm_type) {
     if (obsm_type %in% names(vector_generators)) {
-      generate_dataframe(n_obs, obsm_type)
+      mat <- generate_dataframe(n_obs, obsm_type)
+      rownames(mat) <- obs_names # todo: this shouldn't be necessary
+      mat
     } else {
-      generate_matrix(n_obs, n_vars = 10L, obsm_type)
+      mat <- generate_matrix(n_obs, n_vars = 10L, obsm_type)
+      rownames(mat) <- obs_names # todo: this shouldn't be necessary
+      mat
     }
   })
   names(obsm) <- obsm_types
@@ -332,9 +336,13 @@ generate_dataset <- function(
   # generate varm
   varm <- lapply(varm_types, function(varm_type) {
     if (varm_type %in% names(vector_generators)) {
-      generate_dataframe(n_vars, varm_type)
+      mat <- generate_dataframe(n_vars, varm_type)
+      rownames(mat) <- var_names
+      mat
     } else {
-      generate_matrix(n_vars, n_vars = 10L, varm_type)
+      mat <- generate_matrix(n_vars, n_vars = 10L, varm_type)
+      rownames(mat) <- var_names
+      mat
     }
   })
   names(varm) <- varm_types
