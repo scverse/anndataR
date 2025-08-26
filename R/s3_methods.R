@@ -16,15 +16,21 @@
 #'   * `dim(x)`: Get dimensions (n_obs, n_vars)
 #'   * `nrow(x)`: Get number of observations
 #'   * `ncol(x)`: Get number of variables
+#'   * `dimnames(x)`: Get dimension names
 #'   * `rownames(x)`: Get observation names
 #'   * `colnames(x)`: Get variable names
+#'   * `dimnames(x) <- value`: Set dimension names
+#'   * `rownames(x) <- value`: Set observation names
+#'   * `colnames(x) <- value`: Set variable names
 #'   * `x[i, j]`: Subset observations and/or variables
 #'
 #' @return
 #'
 #'   * `dim`: Numeric vector of length 2 (n_obs, n_vars)
 #'   * `nrow`, `ncol`: Integer count
+#'   * `dimnames`: List with obs_names and var_names
 #'   * `rownames`, `colnames`: Character vector
+#'   * `dimnames<-`, `rownames<-`, `colnames<-`: The modified object (invisibly)
 #'   * `[`: A AnnDataView object with the specified subset
 #'
 #' @examples
@@ -36,13 +42,24 @@
 #' dim(ad)
 #' nrow(ad)
 #' ncol(ad)
+#' dimnames(ad)
 #' rownames(ad)
 #' colnames(ad)
+#'
+#' # Set names using dimnames
+#' dimnames(ad) <- list(
+#'   paste0("cell_", 1:nrow(ad)),
+#'   paste0("gene_", 1:ncol(ad))
+#' )
+#'
+#' # Or set names individually (uses dimnames<- internally)
+#' rownames(ad) <- paste0("cell_", 1:nrow(ad))
+#' colnames(ad) <- paste0("gene_", 1:ncol(ad))
 #'
 #' # Subsetting creates AnnDataView
 #' subset_ad <- ad[1:10, 1:5]
 #' subset_ad <- ad[c(TRUE, FALSE), ]  # logical subsetting
-#' subset_ad <- ad[c("obs_1", "obs_2"), c("var_1", "var_2")]  # name subsetting
+#' subset_ad <- ad[c("cell_1", "cell_2"), c("gene_1", "gene_2")]  # name subsetting
 #' }
 NULL
 
@@ -68,17 +85,26 @@ ncol.AbstractAnnData <- function(x) {
 }
 
 #' @rdname AbstractAnnData-s3methods
-#' @method rownames AbstractAnnData
+#' @method dimnames AbstractAnnData
 #' @export
-rownames.AbstractAnnData <- function(x) {
-  x$obs_names
+dimnames.AbstractAnnData <- function(x) {
+  list(x$obs_names, x$var_names)
 }
 
 #' @rdname AbstractAnnData-s3methods
-#' @method colnames AbstractAnnData
+#' @method dimnames<- AbstractAnnData
 #' @export
-colnames.AbstractAnnData <- function(x) {
-  x$var_names
+`dimnames<-.AbstractAnnData` <- function(x, value) {
+  if (is.null(value)) {
+    x$obs_names <- NULL
+    x$var_names <- NULL
+  } else {
+    if (!is.null(value[[1]])) {
+      x$obs_names <- value[[1]]
+    }
+    if (!is.null(value[[2]])) x$var_names <- value[[2]]
+  }
+  x
 }
 
 #' @rdname AbstractAnnData-s3methods

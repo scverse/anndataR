@@ -5,8 +5,8 @@
 \alias{dim.AbstractAnnData}
 \alias{nrow.AbstractAnnData}
 \alias{ncol.AbstractAnnData}
-\alias{rownames.AbstractAnnData}
-\alias{colnames.AbstractAnnData}
+\alias{dimnames.AbstractAnnData}
+\alias{dimnames<-.AbstractAnnData}
 \alias{[.AbstractAnnData}
 \title{S3 Methods for AbstractAnnData Objects}
 \usage{
@@ -16,9 +16,9 @@
 
 \method{ncol}{AbstractAnnData}(x)
 
-\method{rownames}{AbstractAnnData}(x)
+\method{dimnames}{AbstractAnnData}(x)
 
-\method{colnames}{AbstractAnnData}(x)
+\method{dimnames}{AbstractAnnData}(x) <- value
 
 \method{[}{AbstractAnnData}(x, i, j, drop = TRUE, ...)
 }
@@ -37,7 +37,9 @@
 \itemize{
 \item \code{dim}: Numeric vector of length 2 (n_obs, n_vars)
 \item \code{nrow}, \code{ncol}: Integer count
-\item \code{rownames}, \code{colnames}: Character vector
+\item \code{dimnames}: List with obs_names and var_names
+\item \code{rownames}, \code{colnames}: Character vector (extracted from dimnames)
+\item \verb{dimnames<-}, \verb{rownames<-}, \verb{colnames<-}: The modified object (invisibly)
 \item \code{[}: A AnnDataView object with the specified subset
 }
 }
@@ -51,8 +53,12 @@ The following S3 methods are available:
 \item \code{dim(x)}: Get dimensions (n_obs, n_vars)
 \item \code{nrow(x)}: Get number of observations
 \item \code{ncol(x)}: Get number of variables
-\item \code{rownames(x)}: Get observation names
-\item \code{colnames(x)}: Get variable names
+\item \code{dimnames(x)}: Get dimension names (list of obs_names, var_names)
+\item \code{rownames(x)}: Get observation names (calls dimnames)
+\item \code{colnames(x)}: Get variable names (calls dimnames)
+\item \code{dimnames(x) <- value}: Set dimension names
+\item \code{rownames(x) <- value}: Set observation names (calls dimnames<-)
+\item \code{colnames(x) <- value}: Set variable names (calls dimnames<-)
 \item \code{x[i, j]}: Subset observations and/or variables
 }
 }
@@ -65,12 +71,23 @@ ad <- generate_dataset(n_obs = 100, n_vars = 50)
 dim(ad)
 nrow(ad)
 ncol(ad)
+dimnames(ad)
 rownames(ad)
 colnames(ad)
+
+# Set names using dimnames
+dimnames(ad) <- list(
+  paste0("cell_", 1:nrow(ad)),
+  paste0("gene_", 1:ncol(ad))
+)
+
+# Or set names individually (uses dimnames<- internally)
+rownames(ad) <- paste0("cell_", 1:nrow(ad))
+colnames(ad) <- paste0("gene_", 1:ncol(ad))
 
 # Subsetting creates AnnDataView
 subset_ad <- ad[1:10, 1:5]
 subset_ad <- ad[c(TRUE, FALSE), ]  # logical subsetting
-subset_ad <- ad[c("obs_1", "obs_2"), c("var_1", "var_2")]  # name subsetting
+subset_ad <- ad[c("cell_1", "cell_2"), c("gene_1", "gene_2")]  # name subsetting
 }
 }

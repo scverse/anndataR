@@ -64,6 +64,58 @@ test_that("S3 method colnames.AbstractAnnData works", {
   expect_equal(colnames(ad), custom_names)
 })
 
+test_that("S3 method rownames<-.AbstractAnnData works", {
+  ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
+
+  # Test setting rownames
+  new_names <- paste0("cell_", 1:10)
+  rownames(ad) <- new_names
+
+  expect_equal(rownames(ad), new_names)
+  expect_equal(ad$obs_names, new_names)
+
+  # Test that the function modifies the object correctly
+  new_names2 <- paste0("obs_", 1:10)
+  rownames(ad) <- new_names2
+  expect_equal(rownames(ad), new_names2)
+
+  # Test assignment result (R's standard behavior for assignment operators)
+  result <- rownames(ad) <- paste0("final_obs_", 1:10)
+  expect_equal(result, paste0("final_obs_", 1:10))
+  expect_equal(rownames(ad), paste0("final_obs_", 1:10))
+
+  # Test with NULL (should work if the underlying implementation supports it)
+  expect_no_error({
+    rownames(ad) <- NULL
+  })
+})
+
+test_that("S3 method colnames<-.AbstractAnnData works", {
+  ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
+
+  # Test setting colnames
+  new_names <- paste0("gene_", 1:5)
+  colnames(ad) <- new_names
+
+  expect_equal(colnames(ad), new_names)
+  expect_equal(ad$var_names, new_names)
+
+  # Test that the function modifies the object correctly
+  new_names2 <- paste0("var_", 1:5)
+  colnames(ad) <- new_names2
+  expect_equal(colnames(ad), new_names2)
+
+  # Test assignment result (R's standard behavior for assignment operators)
+  result <- colnames(ad) <- paste0("final_var_", 1:5)
+  expect_equal(result, paste0("final_var_", 1:5))
+  expect_equal(colnames(ad), paste0("final_var_", 1:5))
+
+  # Test with NULL (should work if the underlying implementation supports it)
+  expect_no_error({
+    colnames(ad) <- NULL
+  })
+})
+
 test_that("S3 method [.AbstractAnnData works with numeric indices", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
@@ -170,47 +222,47 @@ test_that("S3 method [.AbstractAnnData error handling works", {
   # Test invalid logical vector length for observations
   expect_error(
     ad[c(TRUE, FALSE), ],
-    "Logical vector for observations must have length 10"
+    "Logical subset of observations must have length 10"
   )
 
   # Test invalid logical vector length for variables
   expect_error(
     ad[, c(TRUE, FALSE)],
-    "Logical vector for variables must have length 5"
+    "Logical subset of variables must have length 5"
   )
 
   # Test out-of-bounds numeric indices for observations
   expect_error(
     ad[11, ],
-    "Observation indices must be between 1 and 10"
+    "Integer indices observations must be between 1 and 10"
   )
 
   expect_error(
     ad[0, ],
-    "Observation indices must be between 1 and 10"
+    "Integer indices observations must be between 1 and 10"
   )
 
   # Test out-of-bounds numeric indices for variables
   expect_error(
     ad[, 6],
-    "Variable indices must be between 1 and 5"
+    "Integer indices variables must be between 1 and 5"
   )
 
   expect_error(
     ad[, 0],
-    "Variable indices must be between 1 and 5"
+    "Integer indices variables must be between 1 and 5"
   )
 
   # Test invalid character names for observations
   expect_error(
     ad[c("nonexistent_obs"), ],
-    "Observation names not found: nonexistent_obs"
+    "Names of observations not found: nonexistent_obs"
   )
 
   # Test invalid character names for variables
   expect_error(
     ad[, c("nonexistent_var")],
-    "Variable names not found: nonexistent_var"
+    "Names of variables not found: nonexistent_var"
   )
 })
 
@@ -259,6 +311,45 @@ test_that("S3 methods work with InMemoryAnnData", {
 
   # Test print works
   expect_output(print(ad), "AnnData object")
+})
+
+test_that("S3 methods integration: setting names and subsetting", {
+  ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
+
+  # Set custom names using S3 setter methods
+  custom_obs_names <- paste0("cell_", 1:10)
+  custom_var_names <- paste0("gene_", 1:5)
+
+  rownames(ad) <- custom_obs_names
+  colnames(ad) <- custom_var_names
+
+  # Verify names were set correctly
+  expect_equal(rownames(ad), custom_obs_names)
+  expect_equal(colnames(ad), custom_var_names)
+  expect_equal(ad$obs_names, custom_obs_names)
+  expect_equal(ad$var_names, custom_var_names)
+
+  # Test subsetting using the custom names
+  selected_cells <- c("cell_1", "cell_3", "cell_5")
+  selected_genes <- c("gene_1", "gene_2")
+
+  result <- ad[selected_cells, selected_genes]
+
+  expect_s3_class(result, "AnnDataView")
+  expect_equal(nrow(result), 3)
+  expect_equal(ncol(result), 2)
+  expect_equal(rownames(result), selected_cells)
+  expect_equal(colnames(result), selected_genes)
+
+  # Test that the subsetting actually worked by checking dimensions
+  expect_identical(result$X, ad$X[c(1, 3, 5), c(1, 2), drop = FALSE])
+
+  # Test mixed subsetting: numeric for rows, names for columns
+  mixed_result <- ad[1:3, selected_genes]
+  expect_equal(nrow(mixed_result), 3)
+  expect_equal(ncol(mixed_result), 2)
+  expect_equal(rownames(mixed_result), custom_obs_names[1:3])
+  expect_equal(colnames(mixed_result), selected_genes)
 })
 
 test_that("S3 methods are consistent across different backends", {
