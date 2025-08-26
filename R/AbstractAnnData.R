@@ -337,7 +337,7 @@ AbstractAnnData <- R6::R6Class(
           cli_abort(
             c(
               "{.code rownames({label})} is not as expected",
-              "i" = "Expected row names: {style_vec(expected_colnames)}",
+              "i" = "Expected row names: {style_vec(expected_rownames)}",
               "i" = "Provided row names: {style_vec(rownames(mat))}"
             ),
             call = rlang::caller_env()
