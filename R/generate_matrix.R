@@ -61,10 +61,6 @@ matrix_generators <- list(
   integer_matrix = function(n_obs, n_vars) {
     generate_integer_matrix(n_obs, n_vars)
   },
-  integer_dense = function(n_obs, n_vars) {
-    m <- generate_integer_matrix(n_obs, n_vars)
-    as(m, "denseMatrix")
-  },
   integer_csparse = function(n_obs, n_vars) {
     m <- generate_integer_matrix(n_obs, n_vars)
     as(m, "CsparseMatrix")
@@ -76,10 +72,6 @@ matrix_generators <- list(
   integer_matrix_with_nas = function(n_obs, n_vars) {
     m <- generate_integer_matrix(n_obs, n_vars, NAs = TRUE)
     m
-  },
-  integer_dense_with_nas = function(n_obs, n_vars) {
-    m <- generate_integer_matrix(n_obs, n_vars, NAs = TRUE)
-    as(m, "denseMatrix")
   },
   integer_csparse_with_nas = function(n_obs, n_vars) {
     m <- generate_integer_matrix(n_obs, n_vars, NAs = TRUE)
