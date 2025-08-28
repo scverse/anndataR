@@ -94,6 +94,7 @@ HDF5AnnData <- R6::R6Class(
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
         private$.validate_aligned_mapping(
+          value,
           "obsm",
           c(self$n_obs()),
           expected_rownames = self$obs_names
@@ -147,7 +148,7 @@ HDF5AnnData <- R6::R6Class(
             private$.h5obj,
             "obsp",
             private$.compression
-        )
+          )
       }
     },
     #' @field varp See [AnnData-usage]
