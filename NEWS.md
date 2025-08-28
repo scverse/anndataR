@@ -1,3 +1,22 @@
+# anndataR unreleased
+
+## Minor changes
+
+- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
+  operators for cleaner code (PR #328)
+- Add explanatory comments for matrix generation alignment with dummy-anndata 
+  (PR #328)
+
+
+## Bug fixes
+
+- Add compression parameter to additional write operations in `HDF5AnnData` 
+  for consistency (PR #328)
+- Directly use `obs_names` and `var_names` properties instead of corresponding
+  indirect S3 methods `rownames` and `colnames` (PR #328)
+- Fix error message variable name in `.validate_aligned_array()` method 
+  (expected_colnames → expected_rownames) (PR #328)
+
 # anndataR 0.99.2
 
 * Add `@return` to R6 object man pages to address **{BiocCheck}** warning (PR #319)
