@@ -104,7 +104,8 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "obsm"
+          "obsm",
+          private$.compression
         )
       }
     },
@@ -126,7 +127,8 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "varm"
+          "varm",
+          private$.compression
         )
       }
     },
@@ -149,7 +151,8 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "obsp"
+          "obsp",
+          private$.compression
         )
       }
     },
@@ -172,7 +175,8 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "varp"
+          "varp",
+          private$.compression
         )
       }
     },
@@ -207,7 +211,8 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_element(
           value,
           private$.h5obj,
-          "var"
+          "var",
+          private$.compression
         )
       }
     },
@@ -245,7 +250,12 @@ HDF5AnnData <- R6::R6Class(
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
         value <- private$.validate_named_list(value, "uns")
-        write_h5ad_element(value, private$.h5obj, "uns")
+        write_h5ad_element(
+          value,
+          private$.h5obj,
+          "uns",
+          private$.compression
+        )
       }
     }
   ),
