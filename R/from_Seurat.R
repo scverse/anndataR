@@ -297,7 +297,23 @@ from_Seurat <- function(
         "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
-    SeuratObject::Loadings(seurat_obj, .reduction)
+    mat <- SeuratObject::Loadings(seurat_obj, .reduction)
+
+    # NOTE: loadings only contains a subset of the rows that should be in the varm.
+    # hence, expand it to all of the varnames in the adata
+    if (!identical(rownames(mat), adata$var_names)) {
+      cli_warn(c(
+        "Row names of a varm matrix coming from Seurat do not match the var names",
+        "Hence we need to expand the matrix to include all var names."
+      ))
+
+      expanded_mat <- matrix(0, nrow = nrow(adata$var), ncol = ncol(mat))
+      rownames(expanded_mat) <- adata$var_names
+      colnames(expanded_mat) <- colnames(mat)
+      expanded_mat[rownames(mat), ] <- mat
+
+      mat <- expanded_mat
+    }
   })
 }
 
