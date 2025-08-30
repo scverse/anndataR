@@ -16,7 +16,8 @@ obj <- RunUMAP(obj, dims = 1:10, verbose = FALSE)
 
 active_assay <- obj[[DefaultAssay(obj)]]
 
-ad <- as_AnnData(obj)
+# converting to anndata produces warning due to hvg subsetting
+ad <- suppressWarnings(as_AnnData(obj))
 
 test_that("as_AnnData (Seurat) retains number of observations and features", {
   expect_equal(ad$n_obs(), 200L)
@@ -189,7 +190,10 @@ test_that("as_AnnData (Seurat) works with v3 Assays", {
     obj_v3_assay[["RNA"]] <- as(Seurat::GetAssay(obj, "RNA"), "Assay")
   )
 
-  adata_v3_assay <- as_AnnData(obj_v3_assay)
+  expect_warning(
+    adata_v3_assay <- as_AnnData(obj_v3_assay),
+    regexp = "Row names of a varm matrix coming from Seurat do not match the var names"
+  )
 
   expect_identical(
     to_R_matrix(adata_v3_assay$layers$counts),
@@ -200,24 +204,27 @@ test_that("as_AnnData (Seurat) works with v3 Assays", {
 test_that("as_AnnData (Seurat) works with list mappings", {
   active_assay <- SeuratObject::DefaultAssay(obj)
   expect_no_error(
-    as_AnnData(
-      obj,
-      layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
-      obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
-      var_mapping = as.list(.from_Seurat_guess_var(obj, active_assay)),
-      obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
-      varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
-      obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
-      varp_mapping = if (length(as.list(.from_Seurat_guess_varps(obj))) > 0) {
-        as.list(.from_Seurat_guess_varps(obj))
-      } else {
-        FALSE
-      },
-      uns_mapping = if (length(as.list(.from_Seurat_guess_uns(obj))) > 0) {
-        as.list(.from_Seurat_guess_uns(obj))
-      } else {
-        FALSE
-      }
+    expect_warning(
+      as_AnnData(
+        obj,
+        layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
+        obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
+        var_mapping = as.list(.from_Seurat_guess_var(obj, active_assay)),
+        obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
+        varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
+        obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
+        varp_mapping = if (length(as.list(.from_Seurat_guess_varps(obj))) > 0) {
+          as.list(.from_Seurat_guess_varps(obj))
+        } else {
+          FALSE
+        },
+        uns_mapping = if (length(as.list(.from_Seurat_guess_uns(obj))) > 0) {
+          as.list(.from_Seurat_guess_uns(obj))
+        } else {
+          FALSE
+        }
+      ),
+      regexp = "Row names of a varm matrix coming from Seurat do not match the var names"
     )
   )
 })
@@ -225,21 +232,24 @@ test_that("as_AnnData (Seurat) works with list mappings", {
 test_that("as_AnnData (Seurat) works with unnamed mappings", {
   active_assay <- SeuratObject::DefaultAssay(obj)
   expect_no_error(
-    as_AnnData(
-      obj,
-      layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
-      obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),
-      var_mapping = unname(.from_Seurat_guess_var(obj, active_assay)),
-      obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
-      varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
-      obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
-      varp_mapping = unname(.from_Seurat_guess_varps(obj)) %||% FALSE,
-      uns_mapping = unname(.from_Seurat_guess_uns(obj)) %||% FALSE
+    expect_warning(
+      as_AnnData(
+        obj,
+        layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
+        obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),
+        var_mapping = unname(.from_Seurat_guess_var(obj, active_assay)),
+        obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
+        varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
+        obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
+        varp_mapping = unname(.from_Seurat_guess_varps(obj)) %||% FALSE,
+        uns_mapping = unname(.from_Seurat_guess_uns(obj)) %||% FALSE
+      ),
+      regexp = "Row names of a varm matrix coming from Seurat do not match the var names"
     )
   )
 })
 
 test_that("as_AnnData (Seurat) works with empty mappings", {
-  expect_warning(as_AnnData(obj, layers_mapping = NULL), "argument is empty")
-  expect_warning(as_AnnData(obj, layers_mapping = c()), "argument is empty")
+  expect_warning(as_AnnData(obj, varm_mapping = NULL), regexp = "argument is empty")
+  expect_warning(as_AnnData(obj, varm_mapping = c()), regexp = "argument is empty")
 })
