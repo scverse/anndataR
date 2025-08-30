@@ -117,17 +117,26 @@ test_that("as_AnnData (Seurat) retains pca", {
   )
   skip_if(!is.null(msg), message = msg)
 
-  # trackstatus: class=Seurat, feature=test_set_obsm, status=wip
+  # trackstatus: class=Seurat, feature=test_set_obsm, status=done
   expect_equal(
     ad$obsm[["pca"]],
     Embeddings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
 
-  # trackstatus: class=Seurat, feature=test_set_varm, status=wip
+  # trackstatus: class=Seurat, feature=test_set_varm, status=done
+  expanded_varm_pca <- ad$varm[["pca"]]
+  loadings <- Loadings(obj, reduction = "pca")
+
+  # check whether rows not in loadings are all zero
+  should_be_zero <- expanded_varm_pca[!rownames(expanded_varm_pca) %in% rownames(loadings), , drop = FALSE]
+  expect_true(all(should_be_zero == 0))
+
+  # now check the matching rows
+  matching_varm_pca <- expanded_varm_pca[rownames(loadings), , drop = FALSE]
   expect_equal(
-    ad$varm[["pca"]],
-    Loadings(obj, reduction = "pca"),
+    matching_varm_pca,
+    loadings,
     ignore_attr = TRUE
   )
 })
