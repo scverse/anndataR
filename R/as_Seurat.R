@@ -190,19 +190,9 @@ as_Seurat <- function(
   }
 
   # store obs and var names
-  obs_names <- if (inherits(adata, "AbstractAnnData")) {
-      adata$obs_names
-    } else {
-      py_builtins <- reticulate::import_builtins()
-      py_builtins$list(adata$obs_names)
-    }
-
-  var_names <- if (inherits(adata, "AbstractAnnData")) {
-    adata$var_names
-  } else {
-    py_builtins <- reticulate::import_builtins()
-    py_builtins$list(adata$var_names)
-  }
+  var_obs_names <- get_var_obs_names(adata)
+  var_names <- var_obs_names[[1]]
+  obs_names <- var_obs_names[[2]]
 
   # check seurat layers (which includes the X mapping)
   if (!is.null(x_mapping)) {
@@ -273,12 +263,7 @@ as_Seurat <- function(
       graph_name <- names(graph_mapping)[[i]]
       graph <- graph_mapping[[i]]
 
-      obsp_keys <- if (inherits(adata, "AbstractAnnData")) {
-        adata$obsp_keys()
-      } else {
-        py_builtins <- reticulate::import_builtins()
-        py_builtins$list(adata$obsp$keys())
-      }
+      obsp_keys <- get_slot_keys(adata, "obsp")
 
       if (!(graph %in% obsp_keys)) {
         cli_abort(c(
@@ -310,7 +295,17 @@ as_Seurat <- function(
         ))
       }
 
-      SeuratObject::Misc(obj, misc_name) <- adata$uns[[uns_key]]
+      tryCatch(
+        {
+          SeuratObject::Misc(obj, misc_name) <- adata$uns[[uns_key]]
+        },
+        error = function(e) {
+          cli_warn(c(
+            "Could not add item {.val {uns_key}} from {.code adata$uns} to {.code Misc(obj, {misc_name})}",
+            "i" = "Error message: {.val {e$message}}"
+          ))
+        }
+      )
     }
   }
 
@@ -348,7 +343,7 @@ as_Seurat <- function(
     )
   }
 
-  if (!layer_name %in% names(adata$layers)) {
+  if (!layer_name %in% get_slot_keys(adata, "layers")) {
     cli_abort(
       "{.arg layer_name} must be the name of a layer or {.val NULL}",
     )
@@ -386,15 +381,7 @@ as_Seurat <- function(
   }
 
   counts <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, dummy_counts)
-  dimnames(counts) <- if (inherits(adata, "AbstractAnnData")) {
-      list(adata$var_names, adata$obs_names)
-    } else {
-      py_builtins <- reticulate::import_builtins()
-      list(
-        py_builtins$list(adata$var_names),
-        py_builtins$list(adata$obs_names)
-      )
-    }
+  dimnames(counts) <- get_var_obs_names(adata)
 
   obj <- SeuratObject::CreateSeuratObject(
     meta.data = object_metadata,
@@ -471,12 +458,7 @@ as_Seurat <- function(
   }
 
   embed <- as.matrix(adata$obsm[[obsm_embedding]])
-  rownames(embed) <- if (inherits(adata, "AbstractAnnData")) {
-      adata$obs_names
-    } else {
-      py_builtins <- reticulate::import_builtins()
-      py_builtins$list(adata$obs_names)
-    }
+  rownames(embed) <- get_var_obs_names(adata)[[2]]
 
   if (!is.numeric(embed)) {
     cli_abort(
@@ -604,12 +586,7 @@ as_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .as_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-  if (inherits(adata, "AbstractAnnData")) {
-    self_name(adata$layers_keys())
-  } else {
-    py_builtins <- reticulate::import_builtins()
-    self_name(py_builtins$list(adata$layers$keys()))
-  }
+  self_name(get_slot_keys(adata, "layers"))
 }
 
 
@@ -648,12 +625,7 @@ as_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .as_Seurat_guess_graphs <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-  if (inherits(adata, "AbstractAnnData")) {
-    self_name(adata$obsp_keys())
-  } else {
-    py_builtins <- reticulate::import_builtins()
-    self_name(py_builtins$list(adata$obsp$keys()))
-  }
+  self_name(get_slot_keys(adata, "obsp"))
 }
 
 # nolint start: object_name_linter object_length_linter
@@ -672,4 +644,25 @@ as_Seurat <- function(
 .as_Seurat_guess_assay_metadata <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   self_name(adata$var_keys())
+}
+
+get_var_obs_names <- function(adata) {
+  if (inherits(adata, "AbstractAnnData")) {
+    list(adata$var_names, adata$obs_names)
+  } else {
+    py_builtins <- reticulate::import_builtins()
+    list(
+      py_builtins$list(adata$var_names),
+      py_builtins$list(adata$obs_names)
+    )
+  }
+}
+
+get_slot_keys <- function(adata, slot) {
+  if (inherits(adata, "AbstractAnnData")) {
+    names(adata[[slot]])
+  } else {
+    py_builtins <- reticulate::import_builtins()
+    py_builtins$list(adata[[slot]]$keys())
+  }
 }
