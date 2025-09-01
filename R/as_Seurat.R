@@ -140,11 +140,11 @@ as_Seurat <- function(
   # nolint end: object_name_linter
   check_requires("Converting AnnData to Seurat", c("Seurat", "SeuratObject"))
 
-  if (!(inherits(adata, "AbstractAnnData"))) {
-    cli_abort(
-      "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
-    )
-  }
+  # if (!(inherits(adata, "AbstractAnnData"))) {
+  #   cli_abort(
+  #     "{.arg adata} must be a {.cls AbstractAnnData} but has class {.cls {class(adata)}}"
+  #   )
+  # }
 
   object_metadata_mapping <- get_mapping(
     object_metadata_mapping,
@@ -190,8 +190,19 @@ as_Seurat <- function(
   }
 
   # store obs and var names
-  obs_names <- adata$obs_names
-  var_names <- adata$var_names
+  obs_names <- if (inherits(adata, "AbstractAnnData")) {
+      adata$obs_names
+    } else {
+      py_builtins <- reticulate::import_builtins()
+      py_builtins$list(adata$obs_names)
+    }
+
+  var_names <- if (inherits(adata, "AbstractAnnData")) {
+    adata$var_names
+  } else {
+    py_builtins <- reticulate::import_builtins()
+    py_builtins$list(adata$var_names)
+  }
 
   # check seurat layers (which includes the X mapping)
   if (!is.null(x_mapping)) {
@@ -262,7 +273,14 @@ as_Seurat <- function(
       graph_name <- names(graph_mapping)[[i]]
       graph <- graph_mapping[[i]]
 
-      if (!(graph %in% adata$obsp_keys())) {
+      obsp_keys <- if (inherits(adata, "AbstractAnnData")) {
+        adata$obsp_keys()
+      } else {
+        py_builtins <- reticulate::import_builtins()
+        py_builtins$list(adata$obsp$keys())
+      }
+
+      if (!(graph %in% obsp_keys)) {
         cli_abort(c(
           "The requested item {.val {graph}} does not exist in {.code adata$obsp}",
           "i" = "{.code adata$obsp_keys()}: {.val {adata$obsp_keys()}}"
@@ -368,7 +386,15 @@ as_Seurat <- function(
   }
 
   counts <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, dummy_counts)
-  dimnames(counts) <- list(adata$var_names, adata$obs_names)
+  dimnames(counts) <- if (inherits(adata, "AbstractAnnData")) {
+      list(adata$var_names, adata$obs_names)
+    } else {
+      py_builtins <- reticulate::import_builtins()
+      list(
+        py_builtins$list(adata$var_names),
+        py_builtins$list(adata$obs_names)
+      )
+    }
 
   obj <- SeuratObject::CreateSeuratObject(
     meta.data = object_metadata,
@@ -445,7 +471,12 @@ as_Seurat <- function(
   }
 
   embed <- as.matrix(adata$obsm[[obsm_embedding]])
-  rownames(embed) <- adata$obs_names
+  rownames(embed) <- if (inherits(adata, "AbstractAnnData")) {
+      adata$obs_names
+    } else {
+      py_builtins <- reticulate::import_builtins()
+      py_builtins$list(adata$obs_names)
+    }
 
   if (!is.numeric(embed)) {
     cli_abort(
@@ -573,7 +604,12 @@ as_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .as_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-  self_name(adata$layers_keys())
+  if (inherits(adata, "AbstractAnnData")) {
+    self_name(adata$layers_keys())
+  } else {
+    py_builtins <- reticulate::import_builtins()
+    self_name(py_builtins$list(adata$layers$keys()))
+  }
 }
 
 
@@ -612,7 +648,12 @@ as_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .as_Seurat_guess_graphs <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-  self_name(adata$obsp_keys())
+  if (inherits(adata, "AbstractAnnData")) {
+    self_name(adata$obsp_keys())
+  } else {
+    py_builtins <- reticulate::import_builtins()
+    self_name(py_builtins$list(adata$obsp$keys()))
+  }
 }
 
 # nolint start: object_name_linter object_length_linter
