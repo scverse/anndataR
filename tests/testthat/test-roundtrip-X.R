@@ -78,9 +78,16 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      # Extract X matrices, removing dimnames for comparison since
+      # R AnnData adds dimnames on-the-fly but Python doesn't preserve them
+      actual_X <- adata_r$X
+      expected_X <- py_to_r(adata_py$X)
+      dimnames(actual_X) <- NULL
+      dimnames(expected_X) <- NULL
+
       expect_equal(
-        adata_r$X,
-        py_to_r(adata_py$X),
+        actual_X,
+        expected_X,
         tolerance = 1e-6
       )
     }

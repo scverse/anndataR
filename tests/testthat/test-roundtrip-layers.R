@@ -88,9 +88,16 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
+      # So we need to strip dimnames for comparison
+      actual_mat <- adata_r$layers[[name]]
+      expected_mat <- py_to_r(py_get_item(adata_py$layers, name))
+      dimnames(actual_mat) <- NULL
+      dimnames(expected_mat) <- NULL
+
       expect_equal(
-        adata_r$layers[[name]],
-        py_to_r(py_get_item(adata_py$layers, name)),
+        actual_mat,
+        expected_mat,
         tolerance = 1e-6
       )
     }
