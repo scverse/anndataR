@@ -80,14 +80,14 @@ for (name in test_names) {
 
       # Extract X matrices, removing dimnames for comparison since
       # R AnnData adds dimnames on-the-fly but Python doesn't preserve them
-      actual_X <- adata_r$X
-      expected_X <- py_to_r(adata_py$X)
-      dimnames(actual_X) <- NULL
-      dimnames(expected_X) <- NULL
+      actual_x <- adata_r$X
+      expected_x <- py_to_r(adata_py$X)
+      dimnames(actual_x) <- NULL
+      dimnames(expected_x) <- NULL
 
       expect_equal(
-        actual_X,
-        expected_X,
+        actual_x,
+        expected_x,
         tolerance = 1e-6
       )
     }

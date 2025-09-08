@@ -130,7 +130,11 @@ test_that("as_AnnData (Seurat) retains pca", {
   loadings <- Loadings(obj, reduction = "pca")
 
   # check whether rows not in loadings are all zero
-  should_be_zero <- expanded_varm_pca[!rownames(expanded_varm_pca) %in% rownames(loadings), , drop = FALSE]
+  should_be_zero <- expanded_varm_pca[
+    !rownames(expanded_varm_pca) %in% rownames(loadings),
+    ,
+    drop = FALSE
+  ]
   expect_true(all(should_be_zero == 0))
 
   # now check the matching rows
@@ -250,6 +254,12 @@ test_that("as_AnnData (Seurat) works with unnamed mappings", {
 })
 
 test_that("as_AnnData (Seurat) works with empty mappings", {
-  expect_warning(as_AnnData(obj, varm_mapping = NULL), regexp = "argument is empty")
-  expect_warning(as_AnnData(obj, varm_mapping = c()), regexp = "argument is empty")
+  expect_warning(
+    as_AnnData(obj, varm_mapping = NULL),
+    regexp = "argument is empty"
+  )
+  expect_warning(
+    as_AnnData(obj, varm_mapping = c()),
+    regexp = "argument is empty"
+  )
 })

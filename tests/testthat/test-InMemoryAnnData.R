@@ -10,9 +10,9 @@ test_that("Creating InMemoryAnnData works", {
 
   # trackstatus: class=InMemoryAnnData, feature=test_get_X, status=done
   # X should now have dimnames added on-the-fly
-  expected_X <- dummy$X
-  dimnames(expected_X) <- list(rownames(dummy$obs), rownames(dummy$var))
-  expect_equal(ad$X, expected_X)
+  expected_x <- dummy$X
+  dimnames(expected_x) <- list(rownames(dummy$obs), rownames(dummy$var))
+  expect_equal(ad$X, expected_x)
   # trackstatus: class=InMemoryAnnData, feature=test_get_obs, status=done
   expect_equal(ad$obs, dummy$obs)
   # trackstatus: class=InMemoryAnnData, feature=test_get_var, status=done
@@ -128,9 +128,9 @@ test_that("write to X", {
   ad$X <- X2
 
   # X should have dimnames added on-the-fly
-  expected_X2 <- X2
-  dimnames(expected_X2) <- list(ad$obs_names, ad$var_names)
-  expect_equal(ad$X, expected_X2)
+  expected_x2 <- X2
+  dimnames(expected_x2) <- list(ad$obs_names, ad$var_names)
+  expect_equal(ad$X, expected_x2)
 
   # change row in X
   ad$X[2, ] <- 10
@@ -256,14 +256,14 @@ test_that("write to layers", {
 
   ## element assignment
   ad$layers[["X2"]] <- dummy$X + 2
-  expected_X2 <- dummy$X + 2
-  dimnames(expected_X2) <- list(ad$obs_names, ad$var_names)
-  expect_equal(ad$layers[["X2"]], expected_X2)
+  expected_x2 <- dummy$X + 2
+  dimnames(expected_x2) <- list(ad$obs_names, ad$var_names)
+  expect_equal(ad$layers[["X2"]], expected_x2)
 
   ad$layers[["X4"]] <- dummy$X + 4
-  expected_X4 <- dummy$X + 4
-  dimnames(expected_X4) <- list(ad$obs_names, ad$var_names)
-  expect_equal(ad$layers[["X4"]], expected_X4)
+  expected_x4 <- dummy$X + 4
+  dimnames(expected_x4) <- list(ad$obs_names, ad$var_names)
+  expect_equal(ad$layers[["X4"]], expected_x4)
 
   ## list assignment
   ad$layers <- rev(dummy$layers)
