@@ -44,7 +44,8 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.h5obj, "X")
+        read_h5ad_element(private$.h5obj, "X") |>
+          private$.add_matrix_dimnames("X")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_X, status=done
         private$.validate_aligned_array(
@@ -67,7 +68,8 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(private$.h5obj, "layers")
+        read_h5ad_element(private$.h5obj, "layers") |>
+          private$.add_mapping_dimnames("layers")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
         private$.validate_aligned_mapping(
@@ -90,14 +92,17 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.h5obj, "obsm")
+        read_h5ad_element(private$.h5obj, "obsm") |>
+          private$.add_mapping_dimnames("obsm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
         private$.validate_aligned_mapping(
           value,
           "obsm",
           c(self$n_obs()),
-          expected_rownames = self$obs_names
+          expected_rownames = self$obs_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
         ) |>
           write_h5ad_element(
             private$.h5obj,
@@ -112,14 +117,17 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.h5obj, "varm")
+        read_h5ad_element(private$.h5obj, "varm") |>
+          private$.add_mapping_dimnames("varm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
         private$.validate_aligned_mapping(
           value,
           "varm",
           c(self$n_vars()),
-          expected_rownames = self$var_names
+          expected_rownames = self$var_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
         ) |>
           write_h5ad_element(
             private$.h5obj,
@@ -134,7 +142,8 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.h5obj, "obsp")
+        read_h5ad_element(private$.h5obj, "obsp") |>
+          private$.add_mapping_dimnames("obsp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
         private$.validate_aligned_mapping(
@@ -157,7 +166,8 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.h5obj, "varp")
+        read_h5ad_element(private$.h5obj, "varp") |>
+          private$.add_mapping_dimnames("varp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
         private$.validate_aligned_mapping(
