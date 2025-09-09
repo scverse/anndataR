@@ -294,7 +294,6 @@ as_SingleCellExperiment <- function(
   # nolint end: object_length_linter object_name_linter
 
   # Common mappings from scanpy/AnnData conventions to Bioconductor conventions
-  # Format: scanpy_name -> list(bioc_name = "name", varm_key = "varm_key")
   common_dimred_mappings <- list(
     "X_pca" = list(bioc_name = "pca", varm_key = "PCs"),
     "X_tsne" = list(bioc_name = "tsne", varm_key = NULL),
