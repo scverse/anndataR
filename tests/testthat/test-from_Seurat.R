@@ -118,7 +118,7 @@ test_that("as_AnnData (Seurat) retains pca", {
   )
   skip_if(!is.null(msg), message = msg)
 
-  # trackstatus: class=Seurat, feature=test_set_obsm, status=done
+  # trackstatus: class=Seurat, feature=test_set_obsm, status=wip
   expect_equal(
     ad$obsm[["pca"]],
     Embeddings(obj, reduction = "pca"),
