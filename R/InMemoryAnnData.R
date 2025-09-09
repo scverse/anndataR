@@ -60,8 +60,8 @@ InMemoryAnnData <- R6::R6Class(
           value,
           "X",
           shape = c(self$n_obs(), self$n_vars()),
-          expected_rownames = private$.obs_names,
-          expected_colnames = private$.var_names
+          expected_rownames = self$obs_names,
+          expected_colnames = self$var_names
         )
         self
       }
@@ -78,8 +78,8 @@ InMemoryAnnData <- R6::R6Class(
           value,
           "layers",
           c(self$n_obs(), self$n_vars()),
-          expected_rownames = private$.obs_names,
-          expected_colnames = private$.var_names
+          expected_rownames = self$obs_names,
+          expected_colnames = self$var_names
         )
         self
       }
@@ -152,7 +152,7 @@ InMemoryAnnData <- R6::R6Class(
           value,
           "obsm",
           c(self$n_obs()),
-          expected_rownames = private$.obs_names,
+          expected_rownames = self$obs_names,
           strip_rownames = TRUE,
           strip_colnames = FALSE
         )
@@ -171,7 +171,7 @@ InMemoryAnnData <- R6::R6Class(
           value,
           "varm",
           c(self$n_vars()),
-          expected_rownames = private$.var_names,
+          expected_rownames = self$var_names,
           strip_rownames = TRUE,
           strip_colnames = FALSE
         )
@@ -190,8 +190,8 @@ InMemoryAnnData <- R6::R6Class(
           value,
           "obsp",
           c(self$n_obs(), self$n_obs()),
-          expected_rownames = private$.obs_names,
-          expected_colnames = private$.obs_names
+          expected_rownames = self$obs_names,
+          expected_colnames = self$obs_names
         )
         self
       }
@@ -208,8 +208,8 @@ InMemoryAnnData <- R6::R6Class(
           value,
           "varp",
           c(self$n_vars(), self$n_vars()),
-          expected_rownames = private$.var_names,
-          expected_colnames = private$.var_names
+          expected_rownames = self$var_names,
+          expected_colnames = self$var_names
         )
         self
       }
