@@ -303,8 +303,8 @@ from_Seurat <- function(
     # hence, expand it to all of the varnames in the adata
     if (!identical(rownames(mat), adata$var_names)) {
       cli_warn(c(
-        "Row names of a varm matrix coming from Seurat do not match the var names",
-        "Hence we need to expand the matrix to include all var names."
+        "Row names of {.code Loadings(seurat_obj, {.val {.reduction})} do not match the expected var names",
+        "!" = "The matrix will be expanded to include all var names."
       ))
 
       expanded_mat <- matrix(0, nrow = nrow(adata$var), ncol = ncol(mat))
