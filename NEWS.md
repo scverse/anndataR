@@ -1,3 +1,7 @@
+# anndataR unreleased
+
+- Fix mapping of embeddings during `as_SingleCellExperiment()` conversion (PR #333).
+
 # anndataR 0.99.2
 
 * Add `@return` to R6 object man pages to address **{BiocCheck}** warning (PR #319)
