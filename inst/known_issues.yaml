@@ -1,17 +1,1 @@
-known_issues:
-  - backend: to_SCE
-    slot:
-      - obsm
-      - varm
-    dtype:
-      - pca
-    process: [convert]
-    error_message:
-      sampleFactors(reducedDims(sce)$pca) (`actual`) not equal to ad$obsm[["X_pca"]] (`expected`).
-
-        `dimnames(actual)` is a list
-        `dimnames(expected)` is absent
-    description: converted sce object has dimnames(), whilst the original anndata does not.
-    proposed_solution: Investigate if this is a problem or not.
-    to_investigate: True
-    to_fix: False
+known_issues: []

@@ -41,6 +41,11 @@ is_known <- function(backend, slot, dtype, process, known_issues = NULL) {
     known_issues <- read_known_issues()
   }
 
+  # Handle empty known_issues data frame
+  if (nrow(known_issues) == 0) {
+    return(logical(0))
+  }
+
   filt <- rep(TRUE, nrow(known_issues))
 
   if (!is.null(backend)) {

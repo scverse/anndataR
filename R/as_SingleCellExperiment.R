@@ -292,20 +292,56 @@ as_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .as_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  purrr::map(adata$obsm_keys(), function(.obsm) {
+
+  # Common mappings from scanpy/AnnData conventions to Bioconductor conventions
+  # Format: scanpy_name -> list(bioc_name = "name", varm_key = "varm_key")
+  common_dimred_mappings <- list(
+    "X_pca" = list(bioc_name = "pca", varm_key = "PCs"),
+    "X_tsne" = list(bioc_name = "tsne", varm_key = NULL),
+    "X_umap" = list(bioc_name = "umap", varm_key = NULL),
+    "X_diffmap" = list(bioc_name = "diffmap", varm_key = NULL),
+    "X_draw_graph_fa" = list(bioc_name = "fa", varm_key = NULL),
+    "X_draw_graph_fr" = list(bioc_name = "fr", varm_key = NULL),
+    "X_phate" = list(bioc_name = "phate", varm_key = NULL),
+    "X_trimap" = list(bioc_name = "trimap", varm_key = NULL)
+  )
+
+  # Create mapping and name pairs for each obsm key
+  results <- purrr::map(adata$obsm_keys(), function(.obsm) {
     if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
       return(NULL)
     }
 
     mapping <- c(sampleFactors = .obsm)
-    if (.obsm == "X_pca" && "PCs" %in% names(adata$varm)) {
-      mapping["featureLoadings"] <- "PCs"
+
+    # Check if this is a known dimensionality reduction with loadings
+    if (.obsm %in% names(common_dimred_mappings)) {
+      dimred_info <- common_dimred_mappings[[.obsm]]
+      if (
+        !is.null(dimred_info$varm_key) &&
+          dimred_info$varm_key %in% names(adata$varm)
+      ) {
+        mapping["featureLoadings"] <- dimred_info$varm_key
+      }
     }
 
-    mapping
+    # Determine the final name: use Bioconductor convention if available
+    final_name <- if (.obsm %in% names(common_dimred_mappings)) {
+      common_dimred_mappings[[.obsm]]$bioc_name
+    } else {
+      .obsm
+    }
+
+    list(mapping = mapping, name = final_name)
   }) |>
-    setNames(adata$obsm_keys()) |>
     purrr::compact()
+
+  # Extract mappings and names, then set names
+  result_names <- purrr::map_chr(results, "name")
+  results <- purrr::map(results, "mapping")
+  names(results) <- result_names
+
+  results
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -382,7 +418,9 @@ as_SingleCellExperiment <- function(
     }
 
     loadings <- adata$varm[[varm_key]]
-    rownames(loadings) <- colnames(embedding)
+    # Add rownames (variable names) and colnames to loadings matrix
+    rownames(loadings) <- adata$var_names
+    colnames(loadings) <- colnames(embedding)
   } else {
     loadings <- matrix(nrow = 0, ncol = ncol(embedding))
   }

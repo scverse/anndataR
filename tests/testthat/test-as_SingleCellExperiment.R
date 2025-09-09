@@ -23,7 +23,7 @@ test_that("as_SCE retains nr of observations and features", {
 for (obs_key in colnames(ad$obs)) {
   test_that(paste0("as_SCE retains obs key: ", obs_key), {
     msg <- message_if_known(
-      backend = "to_SCE",
+      backend = "as_SCE",
       slot = c("obs"),
       dtype = obs_key,
       process = "convert",
@@ -44,7 +44,7 @@ for (obs_key in colnames(ad$obs)) {
 for (var_key in colnames(ad$var)) {
   test_that(paste0("as_SCE retains var key: ", var_key), {
     msg <- message_if_known(
-      backend = "to_SCE",
+      backend = "as_SCE",
       slot = c("var"),
       dtype = var_key,
       process = "convert",
@@ -65,7 +65,7 @@ for (var_key in colnames(ad$var)) {
 for (layer_key in names(ad$layers)) {
   test_that(paste0("as_SCE retains layer: ", layer_key), {
     msg <- message_if_known(
-      backend = "to_SCE",
+      backend = "as_SCE",
       slot = c("layers"),
       dtype = layer_key,
       process = "convert",
@@ -124,7 +124,7 @@ test_that("as_SCE works with no x_mapping and no layers_mapping", {
 for (obsp_key in names(ad$obsp)) {
   test_that(paste0("as_SCE retains obsp key: ", obsp_key), {
     msg <- message_if_known(
-      backend = "to_SCE",
+      backend = "as_SCE",
       slot = c("obsp"),
       dtype = obsp_key,
       process = "convert",
@@ -145,7 +145,7 @@ for (obsp_key in names(ad$obsp)) {
 for (varp_key in names(ad$varp)) {
   test_that(paste0("as_SCE retains varp key: ", varp_key), {
     msg <- message_if_known(
-      backend = "to_SCE",
+      backend = "as_SCE",
       slot = c("obsp"),
       dtype = varp_key,
       process = "convert",
@@ -166,7 +166,7 @@ for (varp_key in names(ad$varp)) {
 for (uns_key in names(ad$uns)) {
   test_that(paste0("as_SCE retains uns key: ", uns_key), {
     msg <- message_if_known(
-      backend = "to_SCE",
+      backend = "as_SCE",
       slot = c("uns"),
       dtype = uns_key,
       process = "convert",
@@ -185,7 +185,7 @@ for (uns_key in names(ad$uns)) {
 
 test_that("as_SCE retains pca dimred", {
   msg <- message_if_known(
-    backend = "to_SCE",
+    backend = "as_SCE",
     slot = c("obsm", "varm"),
     dtype = "pca",
     process = "convert",
@@ -193,15 +193,14 @@ test_that("as_SCE retains pca dimred", {
   )
   skip_if(!is.null(msg), message = msg)
 
-  # trackstatus: class=SingleCellExperiment, feature=test_get_obsm, status=wip
+  # trackstatus: class=SingleCellExperiment, feature=test_get_obsm, status=done
   expect_true("pca" %in% names(reducedDims(sce)))
   expect_equal(
     sampleFactors(reducedDims(sce)$pca),
-    ad$obsm[["X_pca"]],
-    ignore.attributes = TRUE
+    ad$obsm[["X_pca"]]
   )
 
-  # trackstatus: class=SingleCellExperiment, feature=test_get_varm, status=wip
+  # trackstatus: class=SingleCellExperiment, feature=test_get_varm, status=done
   expect_equal(
     featureLoadings(reducedDims(sce)$pca),
     ad$varm[["PCs"]]
