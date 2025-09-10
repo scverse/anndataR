@@ -269,7 +269,7 @@ from_Seurat <- function(
   adata$obsm <- purrr::map(obsm_mapping, function(.reduction) {
     if (!(.reduction %in% SeuratObject::Reductions(seurat_obj))) {
       cli_abort(c(
-        "Reduction {.val {.reduction}} not found in Seurat object.",
+        "Reduction {.val {(.reduction)}} not found in Seurat object.",
         "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
@@ -293,7 +293,7 @@ from_Seurat <- function(
   adata$varm <- purrr::map(varm_mapping, function(.reduction) {
     if (!(.reduction %in% SeuratObject::Reductions(seurat_obj))) {
       cli_abort(c(
-        "Reduction {.val {.reduction}} not found in Seurat object.",
+        "Reduction {.val {(.reduction)}} not found in Seurat object.",
         "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
@@ -358,7 +358,7 @@ from_Seurat <- function(
     # Check if the misc data exists
     if (!(.varp %in% names(SeuratObject::Misc(seurat_obj)))) {
       cli_abort(c(
-        "Misc data {.val {.varp}} not found in Seurat object.",
+        "Misc data {.val {(.varp)}} not found in Seurat object.",
         "i" = "Available misc data: {.val {names(SeuratObject::Misc(seurat_obj))}}"
       ))
     }
@@ -382,7 +382,7 @@ from_Seurat <- function(
   adata$uns <- purrr::map(uns_mapping, function(.misc) {
     if (!(.misc %in% names(SeuratObject::Misc(seurat_obj)))) {
       cli_abort(c(
-        "Misc data {.val {.misc}} not found in Seurat object.",
+        "Misc data {.val {(.misc)}} not found in Seurat object.",
         "i" = "Available misc data: {.val {names(SeuratObject::Misc(seurat_obj))}}"
       ))
     }
