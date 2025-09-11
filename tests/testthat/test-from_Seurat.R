@@ -12,7 +12,10 @@ obj <- FindVariableFeatures(obj, verbose = FALSE)
 obj <- ScaleData(obj, verbose = FALSE)
 obj <- RunPCA(obj, npcs = 10L, verbose = FALSE)
 obj <- FindNeighbors(obj, verbose = FALSE)
-obj <- RunUMAP(obj, dims = 1:10, verbose = FALSE)
+# Suppress Seurat UWOT warning
+withr::with_options(list("Seurat.warn.umap.uwot" = FALSE), {
+  obj <- RunUMAP(obj, dims = 1:10, verbose = FALSE)
+})
 
 active_assay <- obj[[DefaultAssay(obj)]]
 
