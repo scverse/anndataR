@@ -196,7 +196,7 @@ test_that("as_AnnData (Seurat) works with v3 Assays", {
 
   expect_warning(
     adata_v3_assay <- as_AnnData(obj_v3_assay),
-    regexp = "Row names of a varm matrix coming from Seurat do not match the var names"
+    regexp = "Row names of .* do not match the expected var names"
   )
 
   expect_identical(
@@ -228,7 +228,7 @@ test_that("as_AnnData (Seurat) works with list mappings", {
           FALSE
         }
       ),
-      regexp = "Row names of a varm matrix coming from Seurat do not match the var names"
+      regexp = "Row names of .* do not match the expected var names"
     )
   )
 })
@@ -248,7 +248,7 @@ test_that("as_AnnData (Seurat) works with unnamed mappings", {
         varp_mapping = unname(.from_Seurat_guess_varps(obj)) %||% FALSE,
         uns_mapping = unname(.from_Seurat_guess_uns(obj)) %||% FALSE
       ),
-      regexp = "Row names of a varm matrix coming from Seurat do not match the var names"
+      regexp = "Row names of .* do not match the expected var names"
     )
   )
 })
