@@ -110,14 +110,27 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
+      # So we need to strip dimnames for comparison
+      actual_obsm <- adata_r$obsm[[name]]
+      expected_obsm <- py_to_r(py_get_item(adata_py$obsm, name))
+      dimnames(actual_obsm) <- NULL
+      dimnames(expected_obsm) <- NULL
+
       expect_equal(
-        adata_r$obsm[[name]],
-        py_to_r(py_get_item(adata_py$obsm, name)),
+        actual_obsm,
+        expected_obsm,
         tolerance = 1e-6
       )
+
+      actual_varm <- adata_r$varm[[name]]
+      expected_varm <- py_to_r(py_get_item(adata_py$varm, name))
+      dimnames(actual_varm) <- NULL
+      dimnames(expected_varm) <- NULL
+
       expect_equal(
-        adata_r$varm[[name]],
-        py_to_r(py_get_item(adata_py$varm, name)),
+        actual_varm,
+        expected_varm,
         tolerance = 1e-6
       )
     }

@@ -184,7 +184,7 @@ new \code{AnnData} object.\tabular{llll}{
 }
 
 \examples{
-\dontshow{if (rlang::is_installed("Seurat")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("Seurat")) withAutoprint(\{ # examplesIf}
 # Convert a Seurat object to an AnnData object
 library(Seurat)
 
@@ -199,7 +199,7 @@ obj <- RunUMAP(obj, dims = 1:10)
 
 as_AnnData(obj)
 \dontshow{\}) # examplesIf}
-\dontshow{if (rlang::is_installed("SingleCellExperiment")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("SingleCellExperiment")) withAutoprint(\{ # examplesIf}
 # Convert a SingleCellExperiment object to an AnnData object
 library(SingleCellExperiment)
 

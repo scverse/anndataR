@@ -9,7 +9,10 @@ test_that("Creating InMemoryAnnData works", {
   )
 
   # trackstatus: class=InMemoryAnnData, feature=test_get_X, status=done
-  expect_equal(ad$X, dummy$X)
+  # X should now have dimnames added on-the-fly
+  expected_x <- dummy$X
+  dimnames(expected_x) <- list(rownames(dummy$obs), rownames(dummy$var))
+  expect_equal(ad$X, expected_x)
   # trackstatus: class=InMemoryAnnData, feature=test_get_obs, status=done
   expect_equal(ad$obs, dummy$obs)
   # trackstatus: class=InMemoryAnnData, feature=test_get_var, status=done
@@ -56,7 +59,16 @@ test_that("'layers' works", {
     expect_no_condition({
       ad <- AnnData(obs = obs, var = var, layers = layers)
     })
-    expect_identical(ad$layers, layers)
+    # Expected layers should have dimnames added
+    expected_layers <- layers
+    if (!is.null(expected_layers)) {
+      for (i in seq_along(expected_layers)) {
+        if (!is.null(expected_layers[[i]])) {
+          dimnames(expected_layers[[i]]) <- list(rownames(obs), rownames(var))
+        }
+      }
+    }
+    expect_identical(ad$layers, expected_layers)
   }
 
   obs <- var <- data.frame()
@@ -115,15 +127,22 @@ test_that("write to X", {
   X2 <- Matrix::rsparsematrix(nrow = 10, ncol = 20, density = .1)
   ad$X <- X2
 
-  expect_equal(ad$X, X2)
+  # X should have dimnames added on-the-fly
+  expected_x2 <- X2
+  dimnames(expected_x2) <- list(ad$obs_names, ad$var_names)
+  expect_equal(ad$X, expected_x2)
 
   # change row in X
   ad$X[2, ] <- 10
-  expect_equal(ad$X[2, ], rep(10, 20L))
+  expected_row <- rep(10, 20L)
+  names(expected_row) <- ad$var_names
+  expect_equal(ad$X[2, ], expected_row)
 
   # change column in X
   ad$X[, 3] <- 5
-  expect_equal(ad$X[, 3], rep(5, 10L))
+  expected_col <- rep(5, 10L)
+  names(expected_col) <- ad$obs_names
+  expect_equal(ad$X[, 3], expected_col)
 })
 
 # trackstatus: class=InMemoryAnnData, feature=test_set_obs, status=done
@@ -143,7 +162,10 @@ test_that("write to obs", {
 
   expect_equal(ncol(ad$obs), 3)
   expect_equal(nrow(ad$obs), 10)
-  expect_equal(ad$obs, obs2)
+  # obs should now have rownames added on-the-fly
+  expected_obs2 <- obs2
+  rownames(expected_obs2) <- ad$obs_names
+  expect_equal(ad$obs, expected_obs2)
 
   # change row in obs
   obs2row <- data.frame(foo = "a", bar = 3, zing = FALSE)
@@ -172,7 +194,10 @@ test_that("write to var", {
 
   expect_equal(ncol(ad$var), 3)
   expect_equal(nrow(ad$var), 20)
-  expect_equal(ad$var, var2)
+  # var should now have rownames added on-the-fly
+  expected_var2 <- var2
+  rownames(expected_var2) <- ad$var_names
+  expect_equal(ad$var, expected_var2)
 
   # change row in var
   var2row <- data.frame(foo = "a", bar = 3, zing = FALSE)
@@ -231,19 +256,35 @@ test_that("write to layers", {
 
   ## element assignment
   ad$layers[["X2"]] <- dummy$X + 2
-  expect_equal(ad$layers[["X2"]], dummy$X + 2)
+  expected_x2 <- dummy$X + 2
+  dimnames(expected_x2) <- list(ad$obs_names, ad$var_names)
+  expect_equal(ad$layers[["X2"]], expected_x2)
 
   ad$layers[["X4"]] <- dummy$X + 4
-  expect_equal(ad$layers[["X4"]], dummy$X + 4)
+  expected_x4 <- dummy$X + 4
+  dimnames(expected_x4) <- list(ad$obs_names, ad$var_names)
+  expect_equal(ad$layers[["X4"]], expected_x4)
 
   ## list assignment
   ad$layers <- rev(dummy$layers)
-  expect_equal(ad$layers, rev(dummy$layers))
+  expected_layers <- rev(dummy$layers)
+  for (i in seq_along(expected_layers)) {
+    if (!is.null(expected_layers[[i]])) {
+      dimnames(expected_layers[[i]]) <- list(ad$obs_names, ad$var_names)
+    }
+  }
+  expect_equal(ad$layers, expected_layers)
 
   ## remove
   ad$layers <- NULL
   expect_true(is.null(ad$layers))
   ## add to NULL
   ad$layers <- dummy$layers
-  expect_identical(ad$layers, dummy$layers)
+  expected_layers <- dummy$layers
+  for (i in seq_along(expected_layers)) {
+    if (!is.null(expected_layers[[i]])) {
+      dimnames(expected_layers[[i]]) <- list(ad$obs_names, ad$var_names)
+    }
+  }
+  expect_identical(ad$layers, expected_layers)
 })

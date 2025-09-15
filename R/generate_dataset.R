@@ -312,6 +312,7 @@ generate_dataset <- function(
     if (obsm_type %in% names(vector_generators)) {
       generate_dataframe(n_obs, obsm_type)
     } else {
+      # generate n_obs vars to stay aligned with dummy-anndata, see scverse/anndataR#286
       generate_matrix(n_obs, n_vars = n_obs, obsm_type)
     }
   })
@@ -322,6 +323,7 @@ generate_dataset <- function(
     if (varm_type %in% names(vector_generators)) {
       generate_dataframe(n_vars, varm_type)
     } else {
+      # generate n_vars vars to stay aligned with dummy-anndata, see scverse/anndataR#286
       generate_matrix(n_vars, n_vars = n_vars, varm_type)
     }
   })

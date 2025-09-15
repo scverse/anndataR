@@ -100,9 +100,15 @@ for (obsp_key in names(colPairs(sce))) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(obsp_key %in% names(ad$obsp))
+    # AnnData now adds dimnames on-the-fly, but SCE doesn't preserve them
+    # So we need to strip dimnames for comparison
+    actual_mat <- ad$obsp[[obsp_key]]
+    expected_mat <- colPairs(sce, asSparse = TRUE)[[obsp_key]]
+    dimnames(actual_mat) <- NULL
+    dimnames(expected_mat) <- NULL
     expect_equal(
-      ad$obsp[[obsp_key]],
-      colPairs(sce, asSparse = TRUE)[[obsp_key]],
+      actual_mat,
+      expected_mat,
       ignore_attr = TRUE,
       info = paste0("obsp_key: ", obsp_key)
     )
@@ -122,9 +128,15 @@ for (varp_key in names(rowPairs(sce))) {
     skip_if(!is.null(msg), message = msg)
 
     expect_true(varp_key %in% names(ad$varp))
+    # AnnData now adds dimnames on-the-fly, but SCE doesn't preserve them
+    # So we need to strip dimnames for comparison
+    actual_mat <- ad$varp[[varp_key]]
+    expected_mat <- rowPairs(sce, asSparse = TRUE)[[varp_key]]
+    dimnames(actual_mat) <- NULL
+    dimnames(expected_mat) <- NULL
     expect_equal(
-      ad$varp[[varp_key]],
-      rowPairs(sce, asSparse = TRUE)[[varp_key]],
+      actual_mat,
+      expected_mat,
       info = paste0("varp_key: ", varp_key)
     )
   })
@@ -170,9 +182,15 @@ test_that("as_AnnData (SCE) retains pca dimred", {
 
   # trackstatus: class=SingleCellExperiment, feature=test_set_varm, status=wip
   expect_true("X_pca" %in% names(ad$varm))
+  # AnnData now adds dimnames on-the-fly, but SCE doesn't preserve them
+  # So we need to strip dimnames for comparison
+  actual_mat <- ad$varm[["X_pca"]]
+  expected_mat <- featureLoadings(reducedDims(sce)$X_pca)
+  dimnames(actual_mat) <- NULL
+  dimnames(expected_mat) <- NULL
   expect_equal(
-    featureLoadings(reducedDims(sce)$X_pca),
-    ad$varm[["X_pca"]]
+    expected_mat,
+    actual_mat
   )
 })
 

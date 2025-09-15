@@ -137,6 +137,9 @@ for (obsp_key in names(ad$obsp)) {
     sce_matrix <- as.matrix(colPair(sce, obsp_key, asSparse = TRUE))
     ad_matrix <- as.matrix(ad$obsp[[obsp_key]])
 
+    # Remove dimnames for comparison since SCE doesn't preserve AnnData dimnames
+    dimnames(sce_matrix) <- NULL
+    dimnames(ad_matrix) <- NULL
     expect_equal(sce_matrix, ad_matrix, info = paste0("obsp_key: ", obsp_key))
   })
 }
@@ -158,6 +161,9 @@ for (varp_key in names(ad$varp)) {
     sce_matrix <- as.matrix(rowPair(sce, varp_key, asSparse = TRUE))
     ad_matrix <- as.matrix(ad$varp[[varp_key]])
 
+    # Remove dimnames for comparison since SCE doesn't preserve AnnData dimnames
+    dimnames(sce_matrix) <- NULL
+    dimnames(ad_matrix) <- NULL
     expect_equal(sce_matrix, ad_matrix, info = paste0("varp_key: ", varp_key))
   })
 }

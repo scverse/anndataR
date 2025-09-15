@@ -306,7 +306,9 @@ AbstractAnnData <- R6::R6Class(
       label,
       shape,
       expected_rownames = NULL,
-      expected_colnames = NULL
+      expected_colnames = NULL,
+      strip_rownames = TRUE,
+      strip_colnames = TRUE
     ) {
       if (is.null(mat)) {
         return(mat)
@@ -337,12 +339,15 @@ AbstractAnnData <- R6::R6Class(
           cli_abort(
             c(
               "{.code rownames({label})} is not as expected",
-              "i" = "Expected row names: {style_vec(expected_colnames)}",
+              "i" = "Expected row names: {style_vec(expected_rownames)}",
               "i" = "Provided row names: {style_vec(rownames(mat))}"
             ),
             call = rlang::caller_env()
           )
         }
+      }
+      # Strip rownames for storage if requested
+      if (strip_rownames) {
         rownames(mat) <- NULL
       }
 
@@ -357,6 +362,9 @@ AbstractAnnData <- R6::R6Class(
             call = rlang::caller_env()
           )
         }
+      }
+      # Strip colnames for storage if requested
+      if (strip_colnames) {
         colnames(mat) <- NULL
       }
 
@@ -376,7 +384,9 @@ AbstractAnnData <- R6::R6Class(
       label,
       shape,
       expected_rownames = NULL,
-      expected_colnames = NULL
+      expected_colnames = NULL,
+      strip_rownames = TRUE,
+      strip_colnames = TRUE
     ) {
       if (is.null(collection)) {
         return(collection)
@@ -387,12 +397,14 @@ AbstractAnnData <- R6::R6Class(
 
       for (mtx_name in collection_names) {
         collection_name <- paste0(label, "[['", mtx_name, "']]")
-        private$.validate_aligned_array(
+        collection[[mtx_name]] <- private$.validate_aligned_array(
           collection[[mtx_name]],
           collection_name,
           shape = shape,
           expected_rownames = expected_rownames,
-          expected_colnames = expected_colnames
+          expected_colnames = expected_colnames,
+          strip_rownames = strip_rownames,
+          strip_colnames = strip_colnames
         )
       }
 
@@ -492,6 +504,92 @@ AbstractAnnData <- R6::R6Class(
       }
 
       names
+    },
+
+    # @description Add dimnames to matrices/data.frames for user access
+    # @param mat A matrix or data.frame to add dimnames to
+    # @param slot_type The type of slot: "X", "layers", "obsm", "varm", "obsp", "varp"
+    .add_matrix_dimnames = function(
+      mat,
+      slot_type = c("X", "layers", "obsm", "varm", "obsp", "varp")
+    ) {
+      if (is.null(mat)) {
+        return(mat)
+      }
+
+      slot_type <- match.arg(slot_type)
+
+      switch(
+        slot_type,
+        "X" = {
+          dimnames(mat) <- list(self$obs_names, self$var_names)
+        },
+        "layers" = {
+          dimnames(mat) <- list(self$obs_names, self$var_names)
+        },
+        "obsm" = {
+          rownames(mat) <- self$obs_names
+        },
+        "varm" = {
+          rownames(mat) <- self$var_names
+        },
+        "obsp" = {
+          dimnames(mat) <- list(self$obs_names, self$obs_names)
+        },
+        "varp" = {
+          dimnames(mat) <- list(self$var_names, self$var_names)
+        }
+      )
+
+      mat
+    },
+
+    # @description Add dimnames to mapping lists (obsm, varm, obsp, varp, layers)
+    # @param mapping_list A named list of matrices to add dimnames to
+    # @param slot_type The type of slot: "layers", "obsm", "varm", "obsp", "varp"
+    .add_mapping_dimnames = function(
+      mapping_list,
+      slot_type = c("layers", "obsm", "varm", "obsp", "varp")
+    ) {
+      if (is.null(mapping_list)) {
+        return(mapping_list)
+      }
+
+      slot_type <- match.arg(slot_type)
+
+      for (i in seq_along(mapping_list)) {
+        if (!is.null(mapping_list[[i]])) {
+          mapping_list[[i]] <- private$.add_matrix_dimnames(
+            mapping_list[[i]],
+            slot_type
+          )
+        }
+      }
+
+      mapping_list
+    },
+
+    # @description Add rownames to obs/var data.frames
+    # @param df A data.frame to add rownames to
+    # @param slot_type The type of slot: "obs" or "var"
+    .add_obsvar_dimnames = function(df, slot_type = c("obs", "var")) {
+      if (is.null(df)) {
+        return(df)
+      }
+
+      slot_type <- match.arg(slot_type)
+
+      switch(
+        slot_type,
+        "obs" = {
+          rownames(df) <- self$obs_names
+        },
+        "var" = {
+          rownames(df) <- self$var_names
+        }
+      )
+
+      df
     }
   )
 )

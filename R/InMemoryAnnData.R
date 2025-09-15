@@ -39,6 +39,8 @@ InMemoryAnnData <- R6::R6Class(
     .layers = NULL,
     .obs = NULL,
     .var = NULL,
+    .obs_names = NULL,
+    .var_names = NULL,
     .obsm = NULL,
     .varm = NULL,
     .obsp = NULL,
@@ -50,15 +52,16 @@ InMemoryAnnData <- R6::R6Class(
     X = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_X, status=done
-        private$.X
+        private$.X |>
+          private$.add_matrix_dimnames("X")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_X, status=done
         private$.X <- private$.validate_aligned_array(
           value,
           "X",
           shape = c(self$n_obs(), self$n_vars()),
-          expected_rownames = rownames(self),
-          expected_colnames = colnames(self)
+          expected_rownames = self$obs_names,
+          expected_colnames = self$var_names
         )
         self
       }
@@ -67,15 +70,16 @@ InMemoryAnnData <- R6::R6Class(
     layers = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_layers, status=done
-        private$.layers
+        private$.layers |>
+          private$.add_mapping_dimnames("layers")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_layers, status=done
         private$.layers <- private$.validate_aligned_mapping(
           value,
           "layers",
           c(self$n_obs(), self$n_vars()),
-          expected_rownames = rownames(self),
-          expected_colnames = colnames(self)
+          expected_rownames = self$obs_names,
+          expected_colnames = self$var_names
         )
         self
       }
@@ -84,9 +88,15 @@ InMemoryAnnData <- R6::R6Class(
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obs, status=done
-        private$.obs
+        private$.obs |>
+          private$.add_obsvar_dimnames("obs")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_obs, status=done
+        # Extract obs_names if present before validation
+        if (!is.null(value) && has_row_names(value)) {
+          private$.obs_names <- rownames(value)
+          rownames(value) <- NULL
+        }
         private$.obs <- private$.validate_obsvar_dataframe(value, "obs")
         self
       }
@@ -95,9 +105,15 @@ InMemoryAnnData <- R6::R6Class(
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_var, status=done
-        private$.var
+        private$.var |>
+          private$.add_obsvar_dimnames("var")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_var, status=done
+        # Extract var_names if present before validation
+        if (!is.null(value) && has_row_names(value)) {
+          private$.var_names <- rownames(value)
+          rownames(value) <- NULL
+        }
         private$.var <- private$.validate_obsvar_dataframe(value, "var")
         self
       }
@@ -106,10 +122,10 @@ InMemoryAnnData <- R6::R6Class(
     obs_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obs_names, status=done
-        rownames(private$.obs)
+        private$.obs_names
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_obs_names, status=done
-        rownames(private$.obs) <- private$.validate_obsvar_names(value, "obs")
+        private$.obs_names <- private$.validate_obsvar_names(value, "obs")
         self
       }
     },
@@ -117,10 +133,10 @@ InMemoryAnnData <- R6::R6Class(
     var_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_var_names, status=done
-        rownames(private$.var)
+        private$.var_names
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_var_names, status=done
-        rownames(private$.var) <- private$.validate_obsvar_names(value, "var")
+        private$.var_names <- private$.validate_obsvar_names(value, "var")
         self
       }
     },
@@ -128,14 +144,17 @@ InMemoryAnnData <- R6::R6Class(
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
-        private$.obsm
+        private$.obsm |>
+          private$.add_mapping_dimnames("obsm")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=done
         private$.obsm <- private$.validate_aligned_mapping(
           value,
           "obsm",
           c(self$n_obs()),
-          expected_rownames = rownames(self)
+          expected_rownames = self$obs_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
         )
         self
       }
@@ -144,14 +163,17 @@ InMemoryAnnData <- R6::R6Class(
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_varm, status=done
-        private$.varm
+        private$.varm |>
+          private$.add_mapping_dimnames("varm")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_varm, status=done
         private$.varm <- private$.validate_aligned_mapping(
           value,
           "varm",
           c(self$n_vars()),
-          expected_rownames = colnames(self)
+          expected_rownames = self$var_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
         )
         self
       }
@@ -160,15 +182,16 @@ InMemoryAnnData <- R6::R6Class(
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_obsp, status=done
-        private$.obsp
+        private$.obsp |>
+          private$.add_mapping_dimnames("obsp")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_obsp, status=done
         private$.obsp <- private$.validate_aligned_mapping(
           value,
           "obsp",
           c(self$n_obs(), self$n_obs()),
-          expected_rownames = rownames(self),
-          expected_colnames = rownames(self)
+          expected_rownames = self$obs_names,
+          expected_colnames = self$obs_names
         )
         self
       }
@@ -177,15 +200,16 @@ InMemoryAnnData <- R6::R6Class(
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_varp, status=done
-        private$.varp
+        private$.varp |>
+          private$.add_mapping_dimnames("varp")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_varp, status=done
         private$.varp <- private$.validate_aligned_mapping(
           value,
           "varp",
           c(self$n_vars(), self$n_vars()),
-          expected_rownames = colnames(self),
-          expected_colnames = colnames(self)
+          expected_rownames = self$var_names,
+          expected_colnames = self$var_names
         )
         self
       }
@@ -241,6 +265,14 @@ InMemoryAnnData <- R6::R6Class(
       if (!is.data.frame(var)) {
         cli_abort("{.arg var} must be a {.cls data.frame}")
       }
+
+      # Extract and store obs_names/var_names separately
+      private$.obs_names <- rownames(obs)
+      private$.var_names <- rownames(var)
+
+      # Remove rownames from the data.frames before storing
+      rownames(obs) <- NULL
+      rownames(var) <- NULL
       private$.obs <- obs
       private$.var <- var
 

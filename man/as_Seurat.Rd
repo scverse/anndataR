@@ -132,7 +132,7 @@ The name you provide for \code{x_mapping} may not be a name in \code{layers_mapp
 }
 }
 \examples{
-\dontshow{if (rlang::is_installed("Seurat")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("Seurat")) withAutoprint(\{ # examplesIf}
   ad <- AnnData(
     X = matrix(1:5, 3L, 5L),
     obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
