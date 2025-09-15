@@ -414,6 +414,8 @@ from_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_obsms <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
+  # Get reverse mappings from centralized location
+  reverse_seurat_mappings <- .get_dimred_mapping(from = "seurat")
 
   obsm_mapping <- c()
 
@@ -424,7 +426,13 @@ from_Seurat <- function(
       next
     }
 
-    obsm_mapping[reduction_name] <- reduction_name
+    # Create mapping: AnnData obsm name -> Seurat reduction name
+    anndata_name <- if (reduction_name %in% names(reverse_seurat_mappings)) {
+      reverse_seurat_mappings[[reduction_name]]$anndata_obsm
+    } else {
+      reduction_name
+    }
+    obsm_mapping[anndata_name] <- reduction_name
   }
 
   obsm_mapping
@@ -433,6 +441,8 @@ from_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .from_Seurat_guess_varms <- function(seurat_obj, assay_name) {
   # nolint end: object_name_linter object_length_linter
+  # Get reverse mappings from centralized location
+  reverse_seurat_varm_mappings <- .get_dimred_mapping(from = "seurat")
 
   varm_mapping <- c()
 
@@ -445,7 +455,17 @@ from_Seurat <- function(
         nrow(loadings) == nrow(seurat_obj) &&
         SeuratObject::DefaultAssay(reduction) == assay_name
     ) {
-      varm_mapping[reduction_name] <- reduction_name
+      # Create mapping: AnnData varm name -> Seurat reduction name
+      anndata_varm_name <- if (
+        reduction_name %in%
+          names(reverse_seurat_varm_mappings) &&
+          !is.null(reverse_seurat_varm_mappings[[reduction_name]]$anndata_varm)
+      ) {
+        reverse_seurat_varm_mappings[[reduction_name]]$anndata_varm
+      } else {
+        reduction_name
+      }
+      varm_mapping[anndata_varm_name] <- reduction_name
     }
   }
 

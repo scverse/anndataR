@@ -293,17 +293,8 @@ as_SingleCellExperiment <- function(
 .as_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
 
-  # Common mappings from scanpy/AnnData conventions to Bioconductor conventions
-  common_dimred_mappings <- list(
-    "X_pca" = list(bioc_name = "pca", varm_key = "PCs"),
-    "X_tsne" = list(bioc_name = "tsne", varm_key = NULL),
-    "X_umap" = list(bioc_name = "umap", varm_key = NULL),
-    "X_diffmap" = list(bioc_name = "diffmap", varm_key = NULL),
-    "X_draw_graph_fa" = list(bioc_name = "fa", varm_key = NULL),
-    "X_draw_graph_fr" = list(bioc_name = "fr", varm_key = NULL),
-    "X_phate" = list(bioc_name = "phate", varm_key = NULL),
-    "X_trimap" = list(bioc_name = "trimap", varm_key = NULL)
-  )
+  # Get mappings keyed by AnnData obsm names from centralized location
+  obsm_mappings <- .get_dimred_mapping(from = "anndata_obsm")
 
   # Create mapping and name pairs for each obsm key
   results <- purrr::map(adata$obsm_keys(), function(.obsm) {
@@ -314,19 +305,19 @@ as_SingleCellExperiment <- function(
     mapping <- c(sampleFactors = .obsm)
 
     # Check if this is a known dimensionality reduction with loadings
-    if (.obsm %in% names(common_dimred_mappings)) {
-      dimred_info <- common_dimred_mappings[[.obsm]]
+    if (.obsm %in% names(obsm_mappings)) {
+      dimred_info <- obsm_mappings[[.obsm]]
       if (
-        !is.null(dimred_info$varm_key) &&
-          dimred_info$varm_key %in% names(adata$varm)
+        !is.null(dimred_info$anndata_varm) &&
+          dimred_info$anndata_varm %in% names(adata$varm)
       ) {
-        mapping["featureLoadings"] <- dimred_info$varm_key
+        mapping["featureLoadings"] <- dimred_info$anndata_varm
       }
     }
 
     # Determine the final name: use Bioconductor convention if available
-    final_name <- if (.obsm %in% names(common_dimred_mappings)) {
-      common_dimred_mappings[[.obsm]]$bioc_name
+    final_name <- if (.obsm %in% names(obsm_mappings)) {
+      obsm_mappings[[.obsm]]$sce
     } else {
       .obsm
     }

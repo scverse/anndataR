@@ -155,11 +155,24 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_obsm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
-  obsm_mapping <- self_name(SingleCellExperiment::reducedDimNames(sce))
+  # Get reverse mappings from centralized location
+  reverse_dimred_mappings <- .get_dimred_mapping(from = "sce")
 
-  if (rlang::is_empty(obsm_mapping)) {
+  sce_names <- SingleCellExperiment::reducedDimNames(sce)
+
+  if (rlang::is_empty(sce_names)) {
     c()
   } else {
+    # Create mapping: AnnData name -> SCE name
+    obsm_mapping <- c()
+    for (sce_name in sce_names) {
+      anndata_name <- if (sce_name %in% names(reverse_dimred_mappings)) {
+        reverse_dimred_mappings[[sce_name]]$anndata_obsm
+      } else {
+        sce_name
+      }
+      obsm_mapping[anndata_name] <- sce_name
+    }
     obsm_mapping
   }
 }
@@ -167,12 +180,25 @@ from_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .from_SCE_guess_varm <- function(sce) {
   # nolint end: object_length_linter object_name_linter
+  # Get reverse mappings for varm from centralized location
+  reverse_varm_mappings <- .get_dimred_mapping(from = "sce")
+
   varm_mapping <- c()
 
   for (reduction_name in names(SingleCellExperiment::reducedDims(sce))) {
     reduction <- SingleCellExperiment::reducedDim(sce, reduction_name)
     if (inherits(reduction, "LinearEmbeddingMatrix")) {
-      varm_mapping[reduction_name] <- reduction_name
+      # Create mapping: AnnData varm name -> SCE reduction name
+      anndata_varm_name <- if (
+        reduction_name %in%
+          names(reverse_varm_mappings) &&
+          !is.null(reverse_varm_mappings[[reduction_name]]$anndata_varm)
+      ) {
+        reverse_varm_mappings[[reduction_name]]$anndata_varm
+      } else {
+        reduction_name
+      }
+      varm_mapping[anndata_varm_name] <- reduction_name
     }
   }
 

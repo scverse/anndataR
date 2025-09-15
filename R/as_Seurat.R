@@ -589,23 +589,46 @@ as_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .as_Seurat_guess_reductions <- function(adata) {
   # nolint end: object_name_linter object_length_linter
+  # Get mappings keyed by AnnData obsm names from centralized location
+  obsm_mappings <- .get_dimred_mapping(from = "anndata_obsm")
+
   purrr::map(adata$obsm_keys(), function(.obsm) {
     if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
       return(NULL)
     }
 
+    # Determine the Seurat reduction name using common mappings
+    seurat_name <- if (.obsm %in% names(obsm_mappings)) {
+      obsm_mappings[[.obsm]]$seurat
+    } else {
+      .obsm
+    }
+
     mapping <- c(
       # Make sure we have valid keys here to avoid warnings later
-      key = SeuratObject::Key(.obsm, quiet = TRUE),
+      key = SeuratObject::Key(seurat_name, quiet = TRUE),
       embeddings = .obsm
     )
-    if (.obsm == "X_pca" && "PCs" %in% names(adata$varm)) {
-      mapping["loadings"] <- "PCs"
+
+    # Check if this obsm has associated loadings in varm
+    if (.obsm %in% names(obsm_mappings)) {
+      dimred_info <- obsm_mappings[[.obsm]]
+      varm_key <- dimred_info$anndata_varm
+      if (!is.null(varm_key) && varm_key %in% names(adata$varm)) {
+        mapping["loadings"] <- varm_key
+      }
     }
 
     mapping
   }) |>
-    setNames(adata$obsm_keys()) |>
+    setNames(purrr::map_chr(adata$obsm_keys(), function(.obsm) {
+      # Use Seurat naming convention for the reduction names
+      if (.obsm %in% names(obsm_mappings)) {
+        obsm_mappings[[.obsm]]$seurat
+      } else {
+        .obsm
+      }
+    })) |>
     purrr::compact()
 }
 
