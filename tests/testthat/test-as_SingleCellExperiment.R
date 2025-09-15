@@ -200,16 +200,15 @@ test_that("as_SCE retains pca dimred", {
   skip_if(!is.null(msg), message = msg)
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_obsm, status=done
-  expect_true("pca" %in% names(reducedDims(sce)))
+  expect_true("PCA" %in% names(reducedDims(sce)))
   expect_equal(
-    sampleFactors(reducedDims(sce)$pca),
-    ad$obsm[["X_pca"]],
-    ignore.attributes = TRUE # TODO: remove this after #328 is merged
+    sampleFactors(reducedDims(sce)$PCA),
+    ad$obsm[["X_pca"]]
   )
 
   # trackstatus: class=SingleCellExperiment, feature=test_get_varm, status=done
   expect_equal(
-    featureLoadings(reducedDims(sce)$pca),
+    featureLoadings(reducedDims(sce)$PCA),
     ad$varm[["PCs"]]
   )
 })
