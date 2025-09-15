@@ -269,7 +269,7 @@ from_Seurat <- function(
   adata$obsm <- purrr::map(obsm_mapping, function(.reduction) {
     if (!(.reduction %in% SeuratObject::Reductions(seurat_obj))) {
       cli_abort(c(
-        "Reduction {.val {.reduction}} not found in Seurat object.",
+        "Reduction {.val {(.reduction)}} not found in Seurat object.",
         "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
@@ -293,11 +293,27 @@ from_Seurat <- function(
   adata$varm <- purrr::map(varm_mapping, function(.reduction) {
     if (!(.reduction %in% SeuratObject::Reductions(seurat_obj))) {
       cli_abort(c(
-        "Reduction {.val {.reduction}} not found in Seurat object.",
+        "Reduction {.val {(.reduction)}} not found in Seurat object.",
         "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
-    SeuratObject::Loadings(seurat_obj, .reduction)
+    mat <- SeuratObject::Loadings(seurat_obj, .reduction)
+
+    # NOTE: loadings only contains a subset of the rows that should be in the varm.
+    # hence, expand it to all of the varnames in the adata
+    if (!identical(rownames(mat), adata$var_names)) {
+      cli_warn(c(
+        "Row names of {.code Loadings(seurat_obj, {.val {(.reduction)}})} do not match the expected var names",
+        "!" = "The matrix will be expanded to include all var names."
+      ))
+
+      expanded_mat <- matrix(0, nrow = nrow(adata$var), ncol = ncol(mat))
+      rownames(expanded_mat) <- adata$var_names
+      colnames(expanded_mat) <- colnames(mat)
+      expanded_mat[rownames(mat), ] <- mat
+
+      mat <- expanded_mat
+    }
   })
 }
 
@@ -342,7 +358,7 @@ from_Seurat <- function(
     # Check if the misc data exists
     if (!(.varp %in% names(SeuratObject::Misc(seurat_obj)))) {
       cli_abort(c(
-        "Misc data {.val {.varp}} not found in Seurat object.",
+        "Misc data {.val {(.varp)}} not found in Seurat object.",
         "i" = "Available misc data: {.val {names(SeuratObject::Misc(seurat_obj))}}"
       ))
     }
@@ -366,7 +382,7 @@ from_Seurat <- function(
   adata$uns <- purrr::map(uns_mapping, function(.misc) {
     if (!(.misc %in% names(SeuratObject::Misc(seurat_obj)))) {
       cli_abort(c(
-        "Misc data {.val {.misc}} not found in Seurat object.",
+        "Misc data {.val {(.misc)}} not found in Seurat object.",
         "i" = "Available misc data: {.val {names(SeuratObject::Misc(seurat_obj))}}"
       ))
     }
