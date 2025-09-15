@@ -48,7 +48,7 @@
       anndata_uns = NULL
     ),
     list(
-      sce = "TSNE",
+      sce = "tSNE",
       seurat = "tsne",
       anndata_obsm = "X_tsne",
       anndata_varm = NULL,

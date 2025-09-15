@@ -82,8 +82,8 @@ sce_obj <- adata$as_SingleCellExperiment(
   colData_mapping = c("Int", "IntNA"),
   rowData_mapping = c(rowdata1 = "String", rowdata2 = "total_counts"),
   reducedDims_mapping = list(
-    "pca" = c(sampleFactors = "X_pca", featureLoadings = "PCs"),
-    "umap" = c(sampleFactors = "X_umap")
+    "PCA" = c(sampleFactors = "X_pca", featureLoadings = "PCs"),
+    "UMAP" = c(sampleFactors = "X_umap")
   ),
   colPairs_mapping = TRUE,
   rowPairs_mapping = FALSE,
@@ -120,7 +120,7 @@ as_AnnData(
   layers_mapping = c("csc_counts"),
   obs_mapping = c(metadata1 = "Int", metadata2 = "IntNA"),
   var_mapping = FALSE,
-  obsm_mapping = list(X_pca = "pca", X_umap = "umap"),
+  obsm_mapping = list(X_pca = "PCA", X_umap = "UMAP"),
   obsp_mapping = TRUE,
   uns_mapping = c("Bool", "IntScalar")
 )
