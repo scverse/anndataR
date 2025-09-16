@@ -25,6 +25,8 @@
 \arguments{
 \item{x}{An AbstractAnnData object}
 
+\item{value}{For \verb{dimnames<-}: A list of two character vectors (obs_names, var_names)}
+
 \item{i}{Row indices (observations). Can be numeric, logical, or character.}
 
 \item{j}{Column indices (variables). Can be numeric, logical, or character.}
@@ -38,7 +40,7 @@
 \item \code{dim}: Numeric vector of length 2 (n_obs, n_vars)
 \item \code{nrow}, \code{ncol}: Integer count
 \item \code{dimnames}: List with obs_names and var_names
-\item \code{rownames}, \code{colnames}: Character vector (extracted from dimnames)
+\item \code{rownames}, \code{colnames}: Character vector
 \item \verb{dimnames<-}, \verb{rownames<-}, \verb{colnames<-}: The modified object (invisibly)
 \item \code{[}: A AnnDataView object with the specified subset
 }
@@ -53,12 +55,12 @@ The following S3 methods are available:
 \item \code{dim(x)}: Get dimensions (n_obs, n_vars)
 \item \code{nrow(x)}: Get number of observations
 \item \code{ncol(x)}: Get number of variables
-\item \code{dimnames(x)}: Get dimension names (list of obs_names, var_names)
-\item \code{rownames(x)}: Get observation names (calls dimnames)
-\item \code{colnames(x)}: Get variable names (calls dimnames)
+\item \code{dimnames(x)}: Get dimension names
+\item \code{rownames(x)}: Get observation names
+\item \code{colnames(x)}: Get variable names
 \item \code{dimnames(x) <- value}: Set dimension names
-\item \code{rownames(x) <- value}: Set observation names (calls dimnames<-)
-\item \code{colnames(x) <- value}: Set variable names (calls dimnames<-)
+\item \code{rownames(x) <- value}: Set observation names
+\item \code{colnames(x) <- value}: Set variable names
 \item \code{x[i, j]}: Subset observations and/or variables
 }
 }

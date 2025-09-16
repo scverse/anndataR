@@ -5,6 +5,7 @@
 #'
 #' @name AbstractAnnData-s3methods
 #' @param x An AbstractAnnData object
+#' @param value For `dimnames<-`: A list of two character vectors (obs_names, var_names)
 #' @param i Row indices (observations). Can be numeric, logical, or character.
 #' @param j Column indices (variables). Can be numeric, logical, or character.
 #' @param drop Ignored (for compatibility with generic)

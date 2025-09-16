@@ -20,10 +20,8 @@ ad <- AnnData(
   var = data.frame(row.names = letters[1:5], gene_type = c("X", "Y", "X", "Y", "Z"))
 )
 
-# Create a view with lazy subsetting using AbstractAnnData methods
-view <- ad$
-  subset_obs(cell_type == "A")$
-  subset_var(gene_type \%in\% c("X", "Y"))
+# Create a view with lazy subsetting using S3 [ method
+view <- ad[ad$obs$cell_type == "A", ad$var$gene_type \%in\% c("X", "Y")]
 
 # Apply subsetting by converting to a concrete implementation
 result <- view$as_InMemoryAnnData()
