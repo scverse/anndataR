@@ -200,20 +200,32 @@ read_h5ad_sparse_array <- function(
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
   attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
 
+  data <- as.vector(h5group$data)
+  indices <- as.vector(h5group$indices)
+  indptr <- as.vector(h5group$indptr)
+  shape <- as.vector(attrs[["shape"]])
+
   if (type == "csc_matrix") {
-    repr <- "C"
+    mtx <- Matrix::sparseMatrix(
+      i = indices,
+      p = indptr,
+      x = data,
+      dims = shape,
+      repr = "C",
+      index1 = FALSE
+    )
   } else if (type == "csr_matrix") {
-    repr <- "R"
+    mtx <- Matrix::sparseMatrix(
+      j = indices,
+      p = indptr,
+      x = data,
+      dims = shape,
+      repr = "R",
+      index1 = FALSE
+    )
   }
 
-  Matrix::sparseMatrix(
-    j = as.vector(h5group$indices),
-    p = as.vector(h5group$indptr),
-    x = as.vector(h5group$data),
-    dims = as.vector(attrs[["shape"]]),
-    repr = repr,
-    index1 = FALSE
-  )
+  mtx
 }
 
 #' Read H5AD recarray
