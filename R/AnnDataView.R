@@ -46,7 +46,8 @@ AnnDataView <- R6::R6Class(
         return(x)
       }
 
-      if (is.data.frame(x) || is.matrix(x)) {
+      # Check if x is a subsettable matrix-like object (data.frame, matrix, or Matrix)
+      if (is.data.frame(x) || is.matrix(x) || inherits(x, "Matrix")) {
         result <- x
 
         # Apply obs subsetting to rows if requested
