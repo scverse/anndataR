@@ -3,7 +3,6 @@ skip_if_not_installed("Matrix")
 test_that("S3 method dim.AbstractAnnData works", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test dim() method
   result <- dim(ad)
   expect_type(result, "integer")
   expect_length(result, 2)
@@ -15,7 +14,6 @@ test_that("S3 method dim.AbstractAnnData works", {
 test_that("S3 method nrow.AbstractAnnData works", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test nrow() method
   result <- nrow(ad)
   expect_type(result, "integer")
   expect_length(result, 1)
@@ -26,7 +24,6 @@ test_that("S3 method nrow.AbstractAnnData works", {
 test_that("S3 method ncol.AbstractAnnData works", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test ncol() method
   result <- ncol(ad)
   expect_type(result, "integer")
   expect_length(result, 1)
@@ -37,7 +34,6 @@ test_that("S3 method ncol.AbstractAnnData works", {
 test_that("S3 method rownames.AbstractAnnData works", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test rownames() method
   result <- rownames(ad)
   expect_type(result, "character")
   expect_length(result, 10)
@@ -52,7 +48,6 @@ test_that("S3 method rownames.AbstractAnnData works", {
 test_that("S3 method colnames.AbstractAnnData works", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test colnames() method
   result <- colnames(ad)
   expect_type(result, "character")
   expect_length(result, 5)
@@ -67,7 +62,6 @@ test_that("S3 method colnames.AbstractAnnData works", {
 test_that("S3 method rownames<-.AbstractAnnData works", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test setting rownames
   new_names <- paste0("cell_", 1:10)
   rownames(ad) <- new_names
 
@@ -93,7 +87,6 @@ test_that("S3 method rownames<-.AbstractAnnData works", {
 test_that("S3 method colnames<-.AbstractAnnData works", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test setting colnames
   new_names <- paste0("gene_", 1:5)
   colnames(ad) <- new_names
 
@@ -119,7 +112,6 @@ test_that("S3 method colnames<-.AbstractAnnData works", {
 test_that("S3 method [.AbstractAnnData works with numeric indices", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test row subsetting
   result <- ad[1:3, ]
   expect_s3_class(result, "AnnDataView")
   expect_s3_class(result, "AbstractAnnData")
@@ -128,7 +120,6 @@ test_that("S3 method [.AbstractAnnData works with numeric indices", {
   expect_equal(rownames(result), rownames(ad)[1:3])
   expect_equal(colnames(result), colnames(ad))
 
-  # Test column subsetting
   result <- ad[, 2:4]
   expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 10)
@@ -136,7 +127,6 @@ test_that("S3 method [.AbstractAnnData works with numeric indices", {
   expect_equal(rownames(result), rownames(ad))
   expect_equal(colnames(result), colnames(ad)[2:4])
 
-  # Test combined subsetting
   result <- ad[1:3, 2:4]
   expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 3)
@@ -148,7 +138,6 @@ test_that("S3 method [.AbstractAnnData works with numeric indices", {
 test_that("S3 method [.AbstractAnnData works with logical indices", {
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
 
-  # Test row subsetting with logical vector
   logical_rows <- c(
     TRUE,
     FALSE,
@@ -167,7 +156,6 @@ test_that("S3 method [.AbstractAnnData works with logical indices", {
   expect_equal(ncol(result), 5)
   expect_equal(rownames(result), rownames(ad)[logical_rows])
 
-  # Test column subsetting with logical vector
   logical_cols <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
   result <- ad[, logical_cols]
   expect_s3_class(result, "AnnDataView")
@@ -175,7 +163,6 @@ test_that("S3 method [.AbstractAnnData works with logical indices", {
   expect_equal(ncol(result), 3)
   expect_equal(colnames(result), colnames(ad)[logical_cols])
 
-  # Test combined logical subsetting
   result <- ad[logical_rows, logical_cols]
   expect_s3_class(result, "AnnDataView")
   expect_equal(nrow(result), 5)
@@ -191,7 +178,6 @@ test_that("S3 method [.AbstractAnnData works with character indices", {
   ad$obs_names <- custom_obs_names
   ad$var_names <- custom_var_names
 
-  # Test row subsetting with character vector
   selected_obs <- c("cell_1", "cell_3", "cell_5")
   result <- ad[selected_obs, ]
   expect_s3_class(result, "AnnDataView")
@@ -199,7 +185,6 @@ test_that("S3 method [.AbstractAnnData works with character indices", {
   expect_equal(ncol(result), 5)
   expect_equal(rownames(result), selected_obs)
 
-  # Test column subsetting with character vector
   selected_vars <- c("gene_2", "gene_4")
   result <- ad[, selected_vars]
   expect_s3_class(result, "AnnDataView")
