@@ -15,7 +15,6 @@
 - Add explanatory comments for matrix generation alignment with dummy-anndata 
   (PR #328)
 
-
 ## Bug fixes
 
 - Add compression parameter to additional write operations in `HDF5AnnData` 
@@ -28,6 +27,10 @@
   - Seurat PCA loadings only contain variable features, not all genes
   - Now properly expands loadings matrix to include all genes with zeros for non-variable features
   - Adds warning when rownames don't match var_names during conversion
+
+## Documentation
+
+- `citation("anndataR")` now returns details of the **{anndataR}** preprint (PR #351)
 
 # anndataR 0.99.2
 
