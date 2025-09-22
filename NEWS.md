@@ -2,8 +2,8 @@
 
 ## New functionality
 
-* Implemented AnnDataView class, which provides a lazy view of an AnnData object without copying data (PR #1096).
-* Implement S3 methods for AbstractAnnData objects: `dim`, `nrow`, `ncol`, `dimnames`, `rownames`, `colnames`, and `[` (PR #1096).
+* Implemented an `AnnDataView` class, which provides a lazy view of an `AnnData` object without copying data (PR #1096)
+* Implemented S3 methods for `AbstractAnnData` objects: `dim`, `nrow`, `ncol`, `dimnames`, `rownames`, `colnames`, and `[` (PR #1096)
 
 ## Major changes
 

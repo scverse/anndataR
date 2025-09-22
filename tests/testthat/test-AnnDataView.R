@@ -1,4 +1,4 @@
-test_that("AnnDataView basic subsetting methods", {
+test_that("AnnDataView basic subsetting methods work", {
   # Create a base AnnData object
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
@@ -39,7 +39,7 @@ test_that("AnnDataView basic subsetting methods", {
   expect_s3_class(view_var, "AnnDataView")
 })
 
-test_that("AnnDataView obs subsetting", {
+test_that("AnnDataView obs subsetting works", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -77,7 +77,7 @@ test_that("AnnDataView obs subsetting", {
   expect_equal(view3$obs_names, "C")
 })
 
-test_that("AnnDataView var subsetting", {
+test_that("AnnDataView var subsetting works", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -114,7 +114,7 @@ test_that("AnnDataView var subsetting", {
   expect_equal(view3$var_names, c("a", "c", "e"))
 })
 
-test_that("AnnDataView combined subsetting", {
+test_that("AnnDataView combined subsetting works", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -165,7 +165,7 @@ test_that("AnnDataView combined subsetting", {
   expect_equal(dim(view$varp$correlations), c(2L, 2L))
 })
 
-test_that("AnnDataView layers subsetting", {
+test_that("AnnDataView layers subsetting works", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -230,7 +230,7 @@ test_that("AnnDataView no nested views", {
   expect_identical(view2$var, view_combined$var)
 })
 
-test_that("AnnDataView uns field (unaffected by subsetting)", {
+test_that("AnnDataView uns field are unaffected by subsetting", {
   ad <- AnnData(
     X = matrix(1:6, 2L, 3L),
     obs = data.frame(
@@ -257,7 +257,7 @@ test_that("AnnDataView uns field (unaffected by subsetting)", {
   expect_equal(view$uns$params$a, 1)
 })
 
-test_that("AnnDataView conversion to InMemoryAnnData", {
+test_that("AnnDataView conversion to InMemoryAnnData works", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(
@@ -288,7 +288,7 @@ test_that("AnnDataView conversion to InMemoryAnnData", {
   expect_equal(result$var$gene_type, c("X", "X"))
 })
 
-test_that("AnnDataView error handling", {
+test_that("AnnDataView error handling works", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(row.names = LETTERS[1:3], cell_type = c("A", "B", "A")),
@@ -335,7 +335,7 @@ test_that("AnnDataView error handling", {
   expect_s3_class(view2, "AnnDataView")
 })
 
-test_that("AnnDataView subsetting with invalid conditions", {
+test_that("AnnDataView subsetting fails with invalid conditions", {
   ad <- AnnData(
     X = matrix(1:15, 3L, 5L),
     obs = data.frame(row.names = LETTERS[1:3], cell_type = c("A", "B", "A")),
