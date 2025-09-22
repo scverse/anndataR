@@ -217,6 +217,11 @@ ncol(view3)
 rownames(view3)
 colnames(view3)
 
+# Access data matrices and metadata
+view3$X
+view3$obs
+view3$var
+
 # Views can be converted to concrete implementations
 concrete <- view3$as_InMemoryAnnData()
 concrete
