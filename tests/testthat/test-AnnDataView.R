@@ -48,6 +48,20 @@ test_that("AnnDataView obs subsetting works", {
 
   expect_equal(nrow(view3$obs), 1L)
   expect_equal(view3$obs_names, "cell3")
+
+  # Test numeric index subsetting
+  view4 <- ad[c(1, 3), ]
+
+  expect_equal(nrow(view4$obs), 2L)
+  expect_equal(view4$obs_names, c("cell1", "cell3"))
+  expect_equal(dim(view4$X), c(2L, 5L))
+
+  # Test character name subsetting
+  view5 <- ad[c("cell1", "cell3"), ]
+
+  expect_equal(nrow(view5$obs), 2L)
+  expect_equal(view5$obs_names, c("cell1", "cell3"))
+  expect_equal(dim(view5$X), c(2L, 5L))
 })
 
 test_that("AnnDataView var subsetting works", {
@@ -79,6 +93,20 @@ test_that("AnnDataView var subsetting works", {
 
   expect_equal(nrow(view3$var), 3L)
   expect_equal(view3$var_names, c("gene3", "gene4", "gene5"))
+
+  # Test numeric index subsetting
+  view4 <- ad[, c(1, 3, 5)]
+
+  expect_equal(nrow(view4$var), 3L)
+  expect_equal(view4$var_names, c("gene1", "gene3", "gene5"))
+  expect_equal(dim(view4$X), c(3L, 3L))
+
+  # Test character name subsetting
+  view5 <- ad[, c("gene1", "gene3", "gene5")]
+
+  expect_equal(nrow(view5$var), 3L)
+  expect_equal(view5$var_names, c("gene1", "gene3", "gene5"))
+  expect_equal(dim(view5$X), c(3L, 3L))
 })
 
 test_that("AnnDataView combined subsetting works", {
@@ -113,6 +141,27 @@ test_that("AnnDataView combined subsetting works", {
 
   # Check that varp is subset correctly (var on both dimensions)
   expect_equal(dim(view$varp$numeric_matrix), c(3L, 3L))
+
+  # Test combined numeric index subsetting
+  view2 <- ad[c(1, 3), c(1, 3, 5)]
+
+  expect_equal(dim(view2$X), c(2L, 3L))
+  expect_equal(view2$obs_names, c("cell1", "cell3"))
+  expect_equal(view2$var_names, c("gene1", "gene3", "gene5"))
+
+  # Test combined character name subsetting
+  view3 <- ad[c("cell1", "cell3"), c("gene1", "gene3", "gene5")]
+
+  expect_equal(dim(view3$X), c(2L, 3L))
+  expect_equal(view3$obs_names, c("cell1", "cell3"))
+  expect_equal(view3$var_names, c("gene1", "gene3", "gene5"))
+
+  # Test mixed subsetting (logical obs, numeric var)
+  view4 <- ad[ad$obs$factor == "Value1", c(1, 3, 5)]
+
+  expect_equal(dim(view4$X), c(2L, 3L))
+  expect_equal(view4$obs_names, c("cell1", "cell3"))
+  expect_equal(view4$var_names, c("gene1", "gene3", "gene5"))
 })
 
 test_that("AnnDataView layers subsetting works", {
@@ -213,7 +262,7 @@ test_that("AnnDataView conversion to InMemoryAnnData works", {
   expect_equal(result$var_names, c("gene1", "gene3", "gene5"))
   expect_equal(as.character(result$obs$factor), c("Value1", "Value1"))
   expect_equal(as.character(result$var$factor), c("Value1", "Value1", "Value1"))
-  
+
   # Check that layers are preserved
   expect_equal(length(result$layers), length(ad$layers))
   expect_equal(dim(result$layers$numeric_matrix), c(2L, 3L))
@@ -287,6 +336,39 @@ test_that("AnnDataView subsetting fails with invalid conditions", {
   expect_error(
     ad["invalid", ], # String that's not a valid name
     "Names of observations not found: invalid"
+  )
+
+  # Test invalid numeric indices
+  expect_error(
+    ad[c(1, 5), ], # Index 5 is out of bounds (only 3 obs)
+    "Integer indices observations must be between 1 and 3"
+  )
+
+  expect_error(
+    ad[, c(1, 10)], # Index 10 is out of bounds (only 5 vars)
+    "Integer indices variables must be between 1 and 5"
+  )
+
+  # Test negative indices (not supported)
+  expect_error(
+    ad[-1, ],
+    "Integer indices observations must be between 1 and 3"
+  )
+
+  expect_error(
+    ad[, -1],
+    "Integer indices variables must be between 1 and 5"
+  )
+
+  # Test invalid character names
+  expect_error(
+    ad[c("cell1", "invalid_cell"), ],
+    "Names of observations not found: invalid_cell"
+  )
+
+  expect_error(
+    ad[, c("gene1", "invalid_gene")],
+    "Names of variables not found: invalid_gene"
   )
 
   # Test with character subsetting when only auto-generated names exist
