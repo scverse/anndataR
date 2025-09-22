@@ -1,6 +1,6 @@
-#' AnnDataView
+#' @title A View of an AnnData Object
 #'
-#' A lazy view of an AnnData object that allows applying subsetting operations
+#' @description A lazy view of an AnnData object that allows applying subsetting operations
 #' without immediately executing them. Subsetting is applied when converting to
 #' a concrete AnnData implementation (InMemoryAnnData, HDF5AnnData) or other
 #' formats (SingleCellExperiment, Seurat).

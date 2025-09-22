@@ -2,7 +2,7 @@
 % Please edit documentation in R/AnnDataView.R
 \name{AnnDataView}
 \alias{AnnDataView}
-\title{AnnDataView}
+\title{A View of an AnnData Object}
 \value{
 A \code{AnnDataView} object
 }
