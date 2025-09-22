@@ -101,6 +101,12 @@ AnnDataView <- R6::R6Class(
           "first using any of the as_*() functions (e.g., as_InMemoryAnnData(), as_HDF5AnnData())."
         )
       )
+    },
+
+    # Override class name to show "View of BaseClass"
+    .class_name = function() {
+      base_class <- class(private$.base_adata)[1]
+      paste("View of", base_class)
     }
   ),
   active = list(
