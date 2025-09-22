@@ -75,3 +75,26 @@ Take note that you need all suggested dependencies available, and that building 
 - [**Development Status**](https://anndatar.data-intuitive.com/articles/development_status.html): An overview of the development status of the package
 - [**Known Issues**](https://anndatar.data-intuitive.com/articles/known_issues.html): An overview of known issues with the package.  
   `vignette("known_issues", package = "anndataR")`
+  
+## Citing **{anndataR}**
+
+If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
+
+```
+> citation("anndataR")
+
+Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025).
+“anndataR improves interoperability between R and Python in single-cell transcriptomics.” _bioRxiv_, 2025.08.18.669052.
+doi:10.1101/2025.08.18.669052 <https://doi.org/10.1101/2025.08.18.669052>.
+
+A BibTeX entry for LaTeX users is
+
+  @Article{,
+    title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
+    author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
+    journal = {bioRxiv},
+    year = {2025},
+    pages = {2025.08.18.669052},
+    doi = {10.1101/2025.08.18.669052},
+  }
+```
