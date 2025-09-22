@@ -82,6 +82,11 @@ test_that("S3 method rownames<-.AbstractAnnData works", {
   expect_no_error({
     rownames(ad) <- NULL
   })
+
+  # Check that rownames are reset to default values
+  default_names <- as.character(seq_len(10))
+  expect_equal(rownames(ad), default_names)
+  expect_equal(ad$obs_names, default_names)
 })
 
 test_that("S3 method colnames<-.AbstractAnnData works", {
@@ -107,6 +112,11 @@ test_that("S3 method colnames<-.AbstractAnnData works", {
   expect_no_error({
     colnames(ad) <- NULL
   })
+
+  # Check that colnames are reset to default values
+  default_names <- as.character(seq_len(5))
+  expect_equal(colnames(ad), default_names)
+  expect_equal(ad$var_names, default_names)
 })
 
 test_that("S3 method [.AbstractAnnData works with numeric indices", {

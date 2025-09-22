@@ -110,13 +110,23 @@ dimnames.AbstractAnnData <- function(x) {
 #' @export
 `dimnames<-.AbstractAnnData` <- function(x, value) {
   if (is.null(value)) {
-    x$obs_names <- NULL
-    x$var_names <- NULL
+    # When dimnames(x) <- NULL, generate default sequential names
+    # This mimics Python AnnData behavior but uses 1-based indexing (R convention)
+    # instead of 0-based indexing (Python convention)
+    x$obs_names <- as.character(seq_len(x$n_obs()))
+    x$var_names <- as.character(seq_len(x$n_vars()))
   } else {
-    if (!is.null(value[[1]])) {
+    if (is.null(value[[1]])) {
+      x$obs_names <- as.character(seq_len(x$n_obs()))
+    } else {
       x$obs_names <- value[[1]]
     }
-    if (!is.null(value[[2]])) x$var_names <- value[[2]]
+
+    if (is.null(value[[2]])) {
+      x$var_names <- as.character(seq_len(x$n_vars()))
+    } else {
+      x$var_names <- value[[2]]
+    }
   }
   x
 }
