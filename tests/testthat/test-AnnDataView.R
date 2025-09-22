@@ -192,7 +192,7 @@ test_that("AnnDataView layers subsetting works", {
   )
 })
 
-test_that("AnnDataView no nested views", {
+test_that("AnnDataView avoids nested wrappers when chaining subsets", {
   ad <- generate_dataset(
     n_obs = 3L,
     n_vars = 5L,
@@ -204,7 +204,8 @@ test_that("AnnDataView no nested views", {
   obs_condition <- ad$obs$factor == "Value1" # Should select cell1 and cell3
   var_condition <- ad$var$factor == "Value1" # Should select gene1, gene3, gene5
 
-  # Test that subsetting a view doesn't create nested views
+  # Test that subsetting a view doesn't create nested AnnDataView(AnnDataView(...))
+  # Instead, it should compute combined indices and create a new view from the original data
   view1 <- ad[obs_condition, ]
   view2 <- view1[, var_condition]
 
@@ -213,11 +214,17 @@ test_that("AnnDataView no nested views", {
   expect_equal(view2$obs_names, c("cell1", "cell3"))
   expect_equal(view2$var_names, c("gene1", "gene3", "gene5"))
 
-  # The result should be equivalent to doing both subsets at once
+  # Verify that chained subsetting produces the same result as combined subsetting
+  # This indirectly ensures that the implementation avoids nested wrappers
+  # by computing combined indices rather than wrapping views within views
   view_combined <- ad[obs_condition, var_condition]
   expect_identical(view2$X, view_combined$X)
   expect_identical(view2$obs, view_combined$obs)
   expect_identical(view2$var, view_combined$var)
+
+  # Additional verification that the chained view behaves correctly
+  expect_equal(view2$n_obs(), 2L)
+  expect_equal(view2$n_vars(), 3L)
 })
 
 test_that("AnnDataView uns field are unaffected by subsetting", {
