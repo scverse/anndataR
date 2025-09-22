@@ -214,6 +214,35 @@ test_that("AnnDataView avoids nested wrappers when chaining subsets", {
   expect_equal(view2$obs_names, c("cell1", "cell3"))
   expect_equal(view2$var_names, c("gene1", "gene3", "gene5"))
 
+  # Test chaining subsets on the same dimension multiple times
+  # First subset obs to select cell1 and cell3, then further subset to just cell3
+  view_obs1 <- ad[obs_condition, ] # cell1, cell3
+  view_obs2 <- view_obs1[c("cell3"), ] # further subset to just cell3
+
+  expect_s3_class(view_obs2, "AnnDataView")
+  expect_equal(dim(view_obs2$X), c(1L, 5L)) # 1 obs × 5 vars
+  expect_equal(view_obs2$obs_names, "cell3")
+
+  # Test chaining var subsets multiple times
+  # First subset vars to gene1, gene3, gene5, then further subset to gene1, gene5
+  view_var1 <- ad[, var_condition] # gene1, gene3, gene5
+  view_var2 <- view_var1[, c("gene1", "gene5")] # further subset
+
+  expect_s3_class(view_var2, "AnnDataView")
+  expect_equal(dim(view_var2$X), c(3L, 2L)) # 3 obs × 2 vars
+  expect_equal(view_var2$var_names, c("gene1", "gene5"))
+
+  # Test complex chaining: obs -> var -> obs -> var
+  view_complex <- ad[obs_condition, ][, var_condition][c("cell3"), ][, c(
+    "gene1",
+    "gene5"
+  )]
+
+  expect_s3_class(view_complex, "AnnDataView")
+  expect_equal(dim(view_complex$X), c(1L, 2L)) # 1 obs × 2 vars
+  expect_equal(view_complex$obs_names, "cell3")
+  expect_equal(view_complex$var_names, c("gene1", "gene5"))
+
   # Verify that chained subsetting produces the same result as combined subsetting
   # This indirectly ensures that the implementation avoids nested wrappers
   # by computing combined indices rather than wrapping views within views
