@@ -370,9 +370,11 @@ convert_to_indices <- function(
     return(subset)
   } else if (is.character(subset)) {
     if (is.null(names_vector)) {
-      cli_abort(
-        "Cannot use character to subset {context_name} when names are not available"
-      )
+      cli_abort(c(
+        "Cannot use character names to subset {context_name}",
+        "i" = "The {context_name} do not have names (obs_names/var_names are NULL)",
+        "i" = "Use integer indices instead, or set names first"
+      ))
     }
     indices <- match(subset, names_vector)
     if (any(is.na(indices))) {
