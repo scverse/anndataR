@@ -3,6 +3,19 @@
 #' These S3 methods provide standard R interfaces for AbstractAnnData objects,
 #' making them behave like native R objects with familiar syntax.
 #'
+#' @details
+#' **Subsetting behavior**: The `[` method supports logical, integer, and character
+#' subsetting for both observations (rows) and variables (columns). However, unlike
+#' standard R behavior:
+#'
+#' - Logical vectors are **not recycled** and must have the exact same length as
+#'   the dimension being subset
+#' - **Negative indices are not supported** (R's "exclude these" syntax)
+#'
+#' These design choices ensure clear and predictable subsetting behavior for
+#' biological data matrices, avoiding potential confusion from accidental recycling
+#' or exclusion patterns.
+#'
 #' @name AbstractAnnData-s3methods
 #' @param x An AbstractAnnData object
 #' @param value For `dimnames<-`: A list of two character vectors (obs_names, var_names)
@@ -59,7 +72,7 @@
 #'
 #' # Subsetting creates AnnDataView
 #' subset_ad <- ad[1:10, 1:5]
-#' subset_ad <- ad[c(TRUE, FALSE), ]  # logical subsetting
+#' subset_ad <- ad[rep(c(TRUE, FALSE), length.out = nrow(ad)), ]  # logical subsetting (no recycling)
 #' subset_ad <- ad[c("cell_1", "cell_2"), c("gene_1", "gene_2")]  # name subsetting
 #' }
 NULL

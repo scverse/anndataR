@@ -50,6 +50,19 @@ These S3 methods provide standard R interfaces for AbstractAnnData objects,
 making them behave like native R objects with familiar syntax.
 }
 \details{
+\strong{Subsetting behavior}: The \code{[} method supports logical, integer, and character
+subsetting for both observations (rows) and variables (columns). However, unlike
+standard R behavior:
+\itemize{
+\item Logical vectors are \strong{not recycled} and must have the exact same length as
+the dimension being subset
+\item \strong{Negative indices are not supported} (R's "exclude these" syntax)
+}
+
+These design choices ensure clear and predictable subsetting behavior for
+biological data matrices, avoiding potential confusion from accidental recycling
+or exclusion patterns.
+
 The following S3 methods are available:
 \itemize{
 \item \code{dim(x)}: Get dimensions (n_obs, n_vars)
@@ -89,7 +102,7 @@ colnames(ad) <- paste0("gene_", 1:ncol(ad))
 
 # Subsetting creates AnnDataView
 subset_ad <- ad[1:10, 1:5]
-subset_ad <- ad[c(TRUE, FALSE), ]  # logical subsetting
+subset_ad <- ad[rep(c(TRUE, FALSE), length.out = nrow(ad)), ]  # logical subsetting (no recycling)
 subset_ad <- ad[c("cell_1", "cell_2"), c("gene_1", "gene_2")]  # name subsetting
 }
 }
