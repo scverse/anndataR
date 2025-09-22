@@ -167,6 +167,14 @@ tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(obj, tmpfile)
 ```
 
+## Citing **{anndataR}**
+
+If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
+
+```{r citation}
+citation("anndataR")
+```
+
 ## Session info
 
 ```{r sessioninfo}
