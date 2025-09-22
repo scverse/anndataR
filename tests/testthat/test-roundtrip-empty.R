@@ -41,9 +41,10 @@ test_that(paste0("Reading an AnnData with layer '", name, "' works"), {
     unlist(reticulate::py_to_r(adata_py$shape))
   )
 
-  # check that the print output is the same
+  # check that the print output is the same (normalize class names)
   str_r <- capture.output(print(adata_r))
   str_py <- capture.output(print(adata_py))
+  str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
   expect_equal(str_r, str_py)
 })
 

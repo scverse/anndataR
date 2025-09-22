@@ -285,7 +285,7 @@ test_that("S3 methods work with HDF5AnnData", {
   expect_equal(ncol(result), 2)
 
   # Test print works
-  expect_output(print(h5_ad), "AnnData object")
+  expect_output(print(h5_ad), "InMemoryAnnData object")
 })
 
 test_that("S3 methods work with InMemoryAnnData", {
@@ -305,7 +305,7 @@ test_that("S3 methods work with InMemoryAnnData", {
   expect_equal(ncol(result), 2)
 
   # Test print works
-  expect_output(print(ad), "AnnData object")
+  expect_output(print(ad), "InMemoryAnnData object")
 })
 
 test_that("S3 methods integration: setting names and subsetting", {
