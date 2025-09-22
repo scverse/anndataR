@@ -192,6 +192,112 @@ test_that("AnnDataView layers subsetting works", {
   )
 })
 
+test_that("AnnDataView obsm subsetting works", {
+  ad <- generate_dataset(
+    n_obs = 3L,
+    n_vars = 5L,
+    example = TRUE,
+    format = "AnnData"
+  )
+
+  # Create logical conditions
+  obs_condition <- ad$obs$factor == "Value1" # Should select cell1 and cell3
+  var_condition <- ad$var$factor == "Value1" # Should select gene1, gene3, gene5
+
+  view <- ad[obs_condition, var_condition]
+
+  # obsm should be subset on rows (observations) but columns unchanged
+  expect_equal(nrow(view$obsm$numeric_matrix), 2L) # 2 selected obs
+  expect_equal(ncol(view$obsm$numeric_matrix), 3L) # columns unchanged
+  expect_equal(nrow(view$obsm$numeric_dense), 2L)
+  expect_equal(nrow(view$obsm$numeric_csparse), 2L)
+
+  # Verify that subsetting maintains the correct values (obs rows only)
+  expect_identical(
+    view$obsm$numeric_matrix,
+    ad$obsm$numeric_matrix[c(1, 3), , drop = FALSE]
+  )
+})
+
+test_that("AnnDataView varm subsetting works", {
+  ad <- generate_dataset(
+    n_obs = 3L,
+    n_vars = 5L,
+    example = TRUE,
+    format = "AnnData"
+  )
+
+  # Create logical conditions
+  obs_condition <- ad$obs$factor == "Value1" # Should select cell1 and cell3
+  var_condition <- ad$var$factor == "Value1" # Should select gene1, gene3, gene5
+
+  view <- ad[obs_condition, var_condition]
+
+  # varm should be subset on rows (variables) but columns unchanged
+  expect_equal(nrow(view$varm$numeric_matrix), 3L) # 3 selected vars
+  expect_equal(ncol(view$varm$numeric_matrix), 5L) # columns unchanged
+  expect_equal(nrow(view$varm$numeric_dense), 3L)
+  expect_equal(nrow(view$varm$numeric_csparse), 3L)
+
+  # Verify that subsetting maintains the correct values (var rows only)
+  expect_identical(
+    view$varm$numeric_matrix,
+    ad$varm$numeric_matrix[c(1, 3, 5), , drop = FALSE]
+  )
+})
+
+test_that("AnnDataView obsp subsetting works", {
+  ad <- generate_dataset(
+    n_obs = 3L,
+    n_vars = 5L,
+    example = TRUE,
+    format = "AnnData"
+  )
+
+  # Create logical conditions
+  obs_condition <- ad$obs$factor == "Value1" # Should select cell1 and cell3
+  var_condition <- ad$var$factor == "Value1" # Should select gene1, gene3, gene5
+
+  view <- ad[obs_condition, var_condition]
+
+  # obsp should be subset on both rows and columns (observations)
+  expect_equal(dim(view$obsp$numeric_matrix), c(2L, 2L)) # 2x2 for selected obs
+  expect_equal(dim(view$obsp$numeric_dense), c(2L, 2L))
+  expect_equal(dim(view$obsp$numeric_csparse), c(2L, 2L))
+
+  # Verify that subsetting maintains the correct values (both dimensions)
+  expect_identical(
+    view$obsp$numeric_matrix,
+    ad$obsp$numeric_matrix[c(1, 3), c(1, 3), drop = FALSE]
+  )
+})
+
+test_that("AnnDataView varp subsetting works", {
+  ad <- generate_dataset(
+    n_obs = 3L,
+    n_vars = 5L,
+    example = TRUE,
+    format = "AnnData"
+  )
+
+  # Create logical conditions
+  obs_condition <- ad$obs$factor == "Value1" # Should select cell1 and cell3
+  var_condition <- ad$var$factor == "Value1" # Should select gene1, gene3, gene5
+
+  view <- ad[obs_condition, var_condition]
+
+  # varp should be subset on both rows and columns (variables)
+  expect_equal(dim(view$varp$numeric_matrix), c(3L, 3L)) # 3x3 for selected vars
+  expect_equal(dim(view$varp$numeric_dense), c(3L, 3L))
+  expect_equal(dim(view$varp$numeric_csparse), c(3L, 3L))
+
+  # Verify that subsetting maintains the correct values (both dimensions)
+  expect_identical(
+    view$varp$numeric_matrix,
+    ad$varp$numeric_matrix[c(1, 3, 5), c(1, 3, 5), drop = FALSE]
+  )
+})
+
 test_that("AnnDataView avoids nested wrappers when chaining subsets", {
   ad <- generate_dataset(
     n_obs = 3L,
