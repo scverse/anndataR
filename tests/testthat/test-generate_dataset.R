@@ -11,12 +11,18 @@ test_that("generating dummy data works", {
 test_that("generating dummy SingleCellExperiment works", {
   dummy <- generate_dataset(format = "SingleCellExperiment")
   expect_s4_class(dummy, "SingleCellExperiment")
+
+  dummy <- generate_dataset(format = "SingleCellExperiment", example = TRUE)
+  expect_s4_class(dummy, "SingleCellExperiment")
 })
 
 suppressPackageStartupMessages(library(SeuratObject))
 
 test_that("generating dummy Seurat works", {
   dummy <- generate_dataset(format = "Seurat")
+  expect_s4_class(dummy, "Seurat")
+
+  dummy <- generate_dataset(format = "Seurat", example = TRUE)
   expect_s4_class(dummy, "Seurat")
 })
 
