@@ -67,6 +67,11 @@ examples.
 To generate no data for a given slot, set the matching type argument to
 \code{NULL} or an empty vector, e.g. \code{obs_types = c()} will generate an empty
 \code{obs} data frame.
+
+When generating \code{SingleCellExperiment} or \code{Seurat} objects, only some of the
+generated slots will be included in the output object. To generate a more
+complete object use \verb{format = "AnnData} followed by
+\code{adata$as_SingleCellExperiment()} or \code{adata$as_Seurat()}.
 }
 \examples{
 # Generate all types as a list

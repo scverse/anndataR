@@ -34,6 +34,11 @@
 #' `NULL` or an empty vector, e.g. `obs_types = c()` will generate an empty
 #' `obs` data frame.
 #'
+#' When generating `SingleCellExperiment` or `Seurat` objects, only some of the
+#' generated slots will be included in the output object. To generate a more
+#' complete object use `format = "AnnData` followed by
+#' `adata$as_SingleCellExperiment()` or `adata$as_Seurat()`.
+#'
 #' @seealso [generator_types] for types that can be supplied to arguments
 #'
 #' @examples
@@ -295,23 +300,26 @@ generate_dataset <- function(
 .generate_dataset_as_seurat <- function(dataset_list) {
   check_requires("Creating a SeuratObject", "SeuratObject")
 
-  X <- t(dataset_list$layers[["integer_csparse"]])
+  if (!is.null(dataset_list$X)) {
+    X <- t(dataset_list$X)
+  } else if (!is.null(dataset_list$layers)) {
+    X <- t(dataset_list$layers[[1]])
+  } else {
+    cli_abort("Creating a {.cls Seurat} requires {.arg x_type} or {.arg layer_types} to be set")
+  }
+
+  X <- t(dataset_list$X)
   colnames(X) <- dataset_list$obs_names
   rownames(X) <- dataset_list$var_names
 
   seurat <- SeuratObject::CreateSeuratObject(X)
 
-  X2 <- Matrix::t(dataset_list$layers[["numeric_csparse"]])
-  colnames(X2) <- dataset_list$obs_names
-  rownames(X2) <- dataset_list$var_names
-  seurat <- SeuratObject::SetAssayData(seurat, "data", X2)
-
-  X3 <- Matrix::t(dataset_list$layers[["numeric_matrix"]])
-  colnames(X3) <- dataset_list$obs_names
-  rownames(X3) <- dataset_list$var_names
-  seurat <- SeuratObject::SetAssayData(seurat, "scale.data", X3)
-
-  # TODO: Seurat v5 now supports more than just these three layers
+  for (layer in names(dataset_list$layers)) {
+    layer_data <- Matrix::t(dataset_list$layers[[layer]])
+    colnames(layer_data) <- dataset_list$obs_names
+    rownames(layer_data) <- dataset_list$var_names
+    seurat <- SeuratObject::SetAssayData(seurat, layer, layer_data)
+  }
 
   seurat <- SeuratObject::AddMetaData(seurat, dataset_list$obs)
 
