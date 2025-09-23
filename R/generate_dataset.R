@@ -98,7 +98,7 @@ generate_dataset <- function(
     }
     types <- get(types_arg)
     if (!all(types %in% generator_types[[slot]])) {
-      invalid_types <- types[!types %in% generator_types[[slot]]]
+      invalid_types <- types[!types %in% generator_types[[slot]]] # nolint: object_use_linter
       cli_abort(c(
         "Some {.arg {types_arg}} types are not valid: {.val {invalid_types}}.",
         "i" = "Valid types are: {.val {generator_types[[slot]]}}"
