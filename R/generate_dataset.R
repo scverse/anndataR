@@ -305,7 +305,9 @@ generate_dataset <- function(
   } else if (!is.null(dataset_list$layers)) {
     X <- t(dataset_list$layers[[1]])
   } else {
-    cli_abort("Creating a {.cls Seurat} requires {.arg x_type} or {.arg layer_types} to be set")
+    cli_abort(
+      "Creating a {.cls Seurat} requires {.arg x_type} or {.arg layer_types} to be set"
+    )
   }
 
   X <- t(dataset_list$X)
