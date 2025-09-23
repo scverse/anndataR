@@ -271,7 +271,7 @@ AnnDataView <- R6::R6Class(
     #' @return A new `AnnDataView` object
     initialize = function(base_adata, i, j) {
       if (!inherits(base_adata, "AbstractAnnData")) {
-		cli_abort("{.arg base_adata} must be an {.cls AbstractAnnData} object")
+        cli_abort("{.arg base_adata} must be an {.cls AbstractAnnData} object")
       }
 
       private$.base_adata <- base_adata

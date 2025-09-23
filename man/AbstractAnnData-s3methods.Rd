@@ -65,15 +65,15 @@ or exclusion patterns.
 
 The following S3 methods are available:
 \itemize{
-\item \code{dim(x)}: Get dimensions (n_obs, n_vars)
-\item \code{nrow(x)}: Get number of observations
-\item \code{ncol(x)}: Get number of variables
-\item \code{dimnames(x)}: Get dimension names
-\item \code{rownames(x)}: Get observation names
-\item \code{colnames(x)}: Get variable names
+\item \code{dim(x)}: Get dimensions (n_obs, n_vars), equivalent to \code{x$shape()}
+\item \code{nrow(x)}: Get number of observations, equivalent to \code{x$n_obs()}
+\item \code{ncol(x)}: Get number of variables, equivalent to \code{x$n_vars()}
+\item \code{dimnames(x)}: Get dimension names, (obs_names, var_names)
+\item \code{rownames(x)}: Get observation names, equivalent to \code{x$obs_names()}
+\item \code{colnames(x)}: Get variable names, equivalent to \code{x$var_names()}
 \item \code{dimnames(x) <- value}: Set dimension names
-\item \code{rownames(x) <- value}: Set observation names
-\item \code{colnames(x) <- value}: Set variable names
+\item \code{rownames(x) <- value}: Set observation names, equivalent to \code{x$obs_names() <- ...}
+\item \code{colnames(x) <- value}: Set variable names, equivalent to \code{x$var_names() <- ...}
 \item \code{x[i, j]}: Subset observations and/or variables
 }
 }
