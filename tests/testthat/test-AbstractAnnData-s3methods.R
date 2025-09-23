@@ -229,23 +229,23 @@ test_that("S3 method [.AbstractAnnData error handling works", {
   # Test out-of-bounds numeric indices for observations
   expect_error(
     ad[11, ],
-    "Integer indices observations must be between 1 and 10"
+    "Integer indices for observations must be between 1 and 10"
   )
 
   expect_error(
     ad[0, ],
-    "Integer indices observations must be between 1 and 10"
+    "Integer indices for observations must be between 1 and 10"
   )
 
   # Test out-of-bounds numeric indices for variables
   expect_error(
     ad[, 6],
-    "Integer indices variables must be between 1 and 5"
+    "Integer indices for variables must be between 1 and 5"
   )
 
   expect_error(
     ad[, 0],
-    "Integer indices variables must be between 1 and 5"
+    "Integer indices for variables must be between 1 and 5"
   )
 
   # Test invalid character names for observations

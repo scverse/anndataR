@@ -421,7 +421,7 @@ test_that("AnnDataView error handling works", {
   # Test initialization with non-AbstractAnnData
   expect_error(
     AnnDataView$new("not_an_anndata"),
-    "must be an AbstractAnnData object"
+    "must be an.*AbstractAnnData.*object"
   )
 
   # Test setting values on AnnDataView (create view first)
@@ -483,23 +483,23 @@ test_that("AnnDataView subsetting fails with invalid conditions", {
   # Test invalid numeric indices
   expect_error(
     ad[c(1, 5), ], # Index 5 is out of bounds (only 3 obs)
-    "Integer indices observations must be between 1 and 3"
+    "Integer indices for observations must be between 1 and 3"
   )
 
   expect_error(
     ad[, c(1, 10)], # Index 10 is out of bounds (only 5 vars)
-    "Integer indices variables must be between 1 and 5"
+    "Integer indices for variables must be between 1 and 5"
   )
 
   # Test negative indices (not supported)
   expect_error(
     ad[-1, ],
-    "Integer indices observations must be between 1 and 3"
+    "Integer indices for observations must be between 1 and 3"
   )
 
   expect_error(
     ad[, -1],
-    "Integer indices variables must be between 1 and 5"
+    "Integer indices for variables must be between 1 and 5"
   )
 
   # Test invalid character names
