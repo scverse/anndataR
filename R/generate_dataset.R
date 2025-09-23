@@ -1,238 +1,82 @@
 #' Generate a dataset
 #'
-#' Generate a dataset with different types of columns and layers
+#' Generate a synthetic dataset with different types of columns and layers. This
+#' is primarily designed for use in tests, examples, vignettes and other
+#' documentation but is also provided to users for creating reproducible
+#' examples.
 #'
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
-#' @param x_type Type of matrix to generate for X
-#' @param layer_types Types of matrices to generate for layers
-#' @param obs_types Types of vectors to generate for obs
-#' @param var_types Types of vectors to generate for var
-#' @param obsm_types Types of matrices to generate for obsm
-#' @param varm_types Types of matrices to generate for varm
-#' @param obsp_types Types of matrices to generate for obsp
-#' @param varp_types Types of matrices to generate for varp
-#' @param uns_types Types of objects to generate for uns
-#' @param example If `TRUE`, the types will be overridden to a small set of
-#'   types. This is useful for documentations.
+#' @param x_type Type of matrix to generate for X, see [generator_types]
+#' @param layer_types Types of matrices to generate for layers, see
+#'   [generator_types]
+#' @param obs_types Types of vectors to generate for obs, see [generator_types]
+#' @param var_types Types of vectors to generate for var, see [generator_types]
+#' @param obsm_types Types of matrices to generate for obsm, see
+#'   [generator_types]
+#' @param varm_types Types of matrices to generate for varm, see
+#'   [generator_types]
+#' @param obsp_types Types of matrices to generate for obsp, see
+#'   [generator_types]
+#' @param varp_types Types of matrices to generate for varp, see
+#'   [generator_types]
+#' @param uns_types Types of objects to generate for uns, see [generator_types]
+#' @param example If `TRUE`, the types will be overridden with a small subset of
+#'   types. This is useful for documentation.
 #' @param format Object type to output, one of "list", "AnnData",
 #'   "SingleCellExperiment", or "Seurat".
 #'
 #' @return Object containing the generated dataset as defined by `output`
-#'
 #' @export
 #'
+#' @seealso [generator_types] for types that can be supplied to arguments
+#'
 #' @examples
+#' # Generate all types as a list
 #' dummy <- generate_dataset()
+#'
+#' # Generate the example types
+#' dummy_example <- generate_dataset(example = TRUE)
+#'
+#' # Generate an AnnData
+#' dummy_anndata <- generate_dataset(format = "AnnData", example = TRUE)
+#'
+#' # Generate a SingleCellExperiment
+#' if (rlang::is_installed("SingleCellExperiment")) {
+#'   dummy_sce <- generate_dataset(format = "SingleCellExperiment", example = TRUE)
+#' }
+#'
+#' # Generate a Seurat object
+#' if (rlang::is_installed("SeuratObject")) {
+#'   dummy_seurat <- generate_dataset(format = "Seurat", example = TRUE)
+#' }
 generate_dataset <- function(
   n_obs = 10L,
   n_vars = 20L,
   x_type = "numeric_matrix",
-  layer_types = c(
-    "numeric_matrix",
-    "numeric_dense",
-    "numeric_csparse",
-    "numeric_rsparse",
-    "numeric_matrix_with_nas", #
-    "numeric_dense_with_nas",
-    "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas",
-    "integer_matrix",
-    "integer_csparse",
-    "integer_rsparse",
-    "integer_matrix_with_nas",
-    "integer_csparse_with_nas",
-    "integer_rsparse_with_nas"
-  ),
-  obs_types = c(
-    "character",
-    "integer",
-    "factor",
-    "factor_ordered",
-    "logical",
-    "numeric",
-    "character_with_nas",
-    "integer_with_nas",
-    "factor_with_nas",
-    "factor_ordered_with_nas",
-    "logical_with_nas",
-    "numeric_with_nas"
-  ),
-  var_types = c(
-    "character",
-    "integer",
-    "factor",
-    "factor_ordered",
-    "logical",
-    "numeric",
-    "character_with_nas",
-    "integer_with_nas",
-    "factor_with_nas",
-    "factor_ordered_with_nas",
-    "logical_with_nas",
-    "numeric_with_nas"
-  ),
-  obsm_types = c(
-    "numeric_matrix",
-    "numeric_dense",
-    "numeric_csparse",
-    "numeric_rsparse",
-    "numeric_matrix_with_nas",
-    "numeric_dense_with_nas",
-    "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas",
-    "integer_matrix",
-    "integer_csparse",
-    "integer_rsparse",
-    "integer_matrix_with_nas",
-    "integer_csparse_with_nas",
-    "integer_rsparse_with_nas",
-    "character",
-    "integer",
-    "factor",
-    "factor_ordered",
-    "logical",
-    "numeric",
-    "character_with_nas",
-    "integer_with_nas",
-    "factor_with_nas",
-    "factor_ordered_with_nas",
-    "logical_with_nas",
-    "numeric_with_nas"
-  ),
-  varm_types = c(
-    "numeric_matrix",
-    "numeric_dense",
-    "numeric_csparse",
-    "numeric_rsparse",
-    "numeric_matrix_with_nas",
-    "numeric_dense_with_nas",
-    "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas",
-    "integer_matrix",
-    "integer_csparse",
-    "integer_rsparse",
-    "integer_matrix_with_nas",
-    "integer_csparse_with_nas",
-    "integer_rsparse_with_nas",
-    "character",
-    "integer",
-    "factor",
-    "factor_ordered",
-    "logical",
-    "numeric",
-    "character_with_nas",
-    "integer_with_nas",
-    "factor_with_nas",
-    "factor_ordered_with_nas",
-    "logical_with_nas",
-    "numeric_with_nas"
-  ),
-  obsp_types = c(
-    "numeric_matrix",
-    "numeric_dense",
-    "numeric_csparse",
-    "numeric_rsparse",
-    "numeric_matrix_with_nas",
-    "numeric_dense_with_nas",
-    "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas",
-    "integer_matrix",
-    "integer_csparse",
-    "integer_rsparse",
-    "integer_matrix_with_nas",
-    "integer_csparse_with_nas",
-    "integer_rsparse_with_nas"
-  ),
-  varp_types = c(
-    "numeric_matrix",
-    "numeric_dense",
-    "numeric_csparse",
-    "numeric_rsparse",
-    "numeric_matrix_with_nas",
-    "numeric_dense_with_nas",
-    "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas",
-    "integer_matrix",
-    "integer_csparse",
-    "integer_rsparse",
-    "integer_matrix_with_nas",
-    "integer_csparse_with_nas",
-    "integer_rsparse_with_nas"
-  ),
-  uns_types = c(
-    "scalar_character",
-    "scalar_integer",
-    "scalar_factor",
-    "scalar_factor_ordered",
-    "scalar_logical",
-    "scalar_numeric",
-    "scalar_character_with_nas",
-    "scalar_integer_with_nas",
-    "scalar_factor_with_nas",
-    "scalar_factor_ordered_with_nas",
-    "scalar_logical_with_nas",
-    "scalar_numeric_with_nas",
-    "vec_character",
-    "vec_integer",
-    "vec_factor",
-    "vec_factor_ordered",
-    "vec_logical",
-    "vec_numeric",
-    "vec_character_with_nas",
-    "vec_integer_with_nas",
-    "vec_factor_with_nas",
-    "vec_factor_ordered_with_nas",
-    "vec_logical_with_nas",
-    "vec_numeric_with_nas",
-    "df_character",
-    "df_integer",
-    "df_factor",
-    "df_factor_ordered",
-    "df_logical",
-    "df_numeric",
-    "df_character_with_nas",
-    "df_integer_with_nas",
-    "df_factor_with_nas",
-    "df_factor_ordered_with_nas",
-    "df_logical_with_nas",
-    "df_numeric_with_nas",
-    "mat_numeric_matrix",
-    "mat_numeric_dense",
-    "mat_numeric_csparse",
-    "mat_numeric_rsparse",
-    "mat_numeric_matrix_with_nas",
-    "mat_numeric_dense_with_nas",
-    "mat_numeric_csparse_with_nas",
-    "mat_numeric_rsparse_with_nas",
-    "mat_integer_matrix",
-    "mat_integer_csparse",
-    "mat_integer_rsparse",
-    "mat_integer_matrix_with_nas",
-    "mat_integer_csparse_with_nas",
-    "mat_integer_rsparse_with_nas",
-    "list"
-  ),
+  layer_types = generator_types$layers,
+  obs_types = generatorpr_types$obs,
+  var_types = generator_types$var,
+  obsm_types = generator_types$obsm,
+  varm_types = generator_types$varm,
+  obsp_types = generator_types$obsp,
+  varp_types = generator_types$varp,
+  uns_types = generator_types$uns,
   example = FALSE,
   format = c("list", "AnnData", "SingleCellExperiment", "Seurat")
 ) {
   format <- match.arg(format)
 
   if (example) {
-    x_type <- "numeric_matrix"
-    layer_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
-    obs_types <- c("character", "integer", "factor")
-    var_types <- c("character", "integer", "factor")
-    obsm_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
-    varm_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
-    obsp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
-    varp_types <- c("numeric_matrix", "numeric_dense", "numeric_csparse")
-    uns_types <- c(
-      "scalar_character",
-      "vec_integer",
-      "df_logical",
-      "mat_numeric_matrix"
-    )
+    x_type <- example_generator_types$X
+    layer_types <- example_generator_types$layers
+    obs_types <- example_generator_types$obs
+    var_types <- example_generator_types$var
+    obsm_types <- example_generator_types$obsm
+    varm_types <- example_generator_types$varm
+    obsp_types <- example_generator_types$obsp
+    varp_types <- example_generator_types$varp
+    uns_types <- example_generator_types$uns
   }
 
   dataset_list <- .generate_dataset_as_list(
@@ -270,21 +114,15 @@ generate_dataset <- function(
 .generate_dataset_as_list <- function(
   n_obs = 10L,
   n_vars = 20L,
-  x_type = names(matrix_generators)[[1]],
-  layer_types = names(matrix_generators),
-  obs_types = names(vector_generators),
-  var_types = names(vector_generators),
-  obsm_types = c(names(matrix_generators), names(vector_generators)),
-  varm_types = c(names(matrix_generators), names(vector_generators)),
-  obsp_types = names(matrix_generators),
-  varp_types = names(matrix_generators),
-  uns_types = c(
-    paste0("scalar_", names(vector_generators)),
-    paste0("vec_", names(vector_generators)),
-    paste0("df_", names(vector_generators)),
-    paste0("mat_", names(matrix_generators)),
-    "list"
-  )
+  x_type = generator_types$X[1],
+  layer_types = generator_types$layers,
+  obs_types = generatorpr_types$obs,
+  var_types = generator_types$var,
+  obsm_types = generator_types$obsm,
+  varm_types = generator_types$varm,
+  obsp_types = generator_types$obsp,
+  varp_types = generator_types$varp,
+  uns_types = generator_types$uns
 ) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)

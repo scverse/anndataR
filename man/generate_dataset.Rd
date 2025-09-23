@@ -8,59 +8,14 @@ generate_dataset(
   n_obs = 10L,
   n_vars = 20L,
   x_type = "numeric_matrix",
-  layer_types = c("numeric_matrix", "numeric_dense", "numeric_csparse",
-    "numeric_rsparse", "numeric_matrix_with_nas", "numeric_dense_with_nas",
-    "numeric_csparse_with_nas", "numeric_rsparse_with_nas", "integer_matrix",
-    "integer_csparse", "integer_rsparse", "integer_matrix_with_nas",
-    "integer_csparse_with_nas", "integer_rsparse_with_nas"),
-  obs_types = c("character", "integer", "factor", "factor_ordered", "logical", "numeric",
-    "character_with_nas", "integer_with_nas", "factor_with_nas",
-    "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"),
-  var_types = c("character", "integer", "factor", "factor_ordered", "logical", "numeric",
-    "character_with_nas", "integer_with_nas", "factor_with_nas",
-    "factor_ordered_with_nas", "logical_with_nas", "numeric_with_nas"),
-  obsm_types = c("numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
-    "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas", "integer_matrix", "integer_csparse", "integer_rsparse",
-    "integer_matrix_with_nas", "integer_csparse_with_nas", "integer_rsparse_with_nas",
-    "character", "integer", "factor", "factor_ordered", "logical", "numeric",
-    "character_with_nas", "integer_with_nas", "factor_with_nas",
-    "factor_ordered_with_nas", "logical_with_nas", 
-     "numeric_with_nas"),
-  varm_types = c("numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
-    "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas", "integer_matrix", "integer_csparse", "integer_rsparse",
-    "integer_matrix_with_nas", "integer_csparse_with_nas", "integer_rsparse_with_nas",
-    "character", "integer", "factor", "factor_ordered", "logical", "numeric",
-    "character_with_nas", "integer_with_nas", "factor_with_nas",
-    "factor_ordered_with_nas", "logical_with_nas", 
-     "numeric_with_nas"),
-  obsp_types = c("numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
-    "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas", "integer_matrix", "integer_csparse", "integer_rsparse",
-    "integer_matrix_with_nas", "integer_csparse_with_nas", "integer_rsparse_with_nas"),
-  varp_types = c("numeric_matrix", "numeric_dense", "numeric_csparse", "numeric_rsparse",
-    "numeric_matrix_with_nas", "numeric_dense_with_nas", "numeric_csparse_with_nas",
-    "numeric_rsparse_with_nas", "integer_matrix", "integer_csparse", "integer_rsparse",
-    "integer_matrix_with_nas", "integer_csparse_with_nas", "integer_rsparse_with_nas"),
-  uns_types = c("scalar_character", "scalar_integer", "scalar_factor",
-    "scalar_factor_ordered", "scalar_logical", "scalar_numeric",
-    "scalar_character_with_nas", "scalar_integer_with_nas", "scalar_factor_with_nas",
-    "scalar_factor_ordered_with_nas", "scalar_logical_with_nas",
-    "scalar_numeric_with_nas", "vec_character", "vec_integer", "vec_factor",
-    "vec_factor_ordered", "vec_logical", "vec_numeric", "vec_character_with_nas",
-    "vec_integer_with_nas", "vec_factor_with_nas", "vec_factor_ordered_with_nas",
-    "vec_logical_with_nas", 
-     "vec_numeric_with_nas", "df_character", "df_integer",
-    "df_factor", "df_factor_ordered", "df_logical", "df_numeric",
-    "df_character_with_nas", "df_integer_with_nas", "df_factor_with_nas",
-    "df_factor_ordered_with_nas", "df_logical_with_nas", "df_numeric_with_nas",
-    "mat_numeric_matrix", "mat_numeric_dense", "mat_numeric_csparse",
-    "mat_numeric_rsparse", "mat_numeric_matrix_with_nas", "mat_numeric_dense_with_nas",
-    "mat_numeric_csparse_with_nas", "mat_numeric_rsparse_with_nas", "mat_integer_matrix",
-    
-     "mat_integer_csparse", "mat_integer_rsparse", "mat_integer_matrix_with_nas",
-    "mat_integer_csparse_with_nas", "mat_integer_rsparse_with_nas", "list"),
+  layer_types = generator_types$layers,
+  obs_types = generatorpr_types$obs,
+  var_types = generator_types$var,
+  obsm_types = generator_types$obsm,
+  varm_types = generator_types$varm,
+  obsp_types = generator_types$obsp,
+  varp_types = generator_types$varp,
+  uns_types = generator_types$uns,
   example = FALSE,
   format = c("list", "AnnData", "SingleCellExperiment", "Seurat")
 )
@@ -70,26 +25,31 @@ generate_dataset(
 
 \item{n_vars}{Number of variables to generate}
 
-\item{x_type}{Type of matrix to generate for X}
+\item{x_type}{Type of matrix to generate for X, see \link{generator_types}}
 
-\item{layer_types}{Types of matrices to generate for layers}
+\item{layer_types}{Types of matrices to generate for layers, see
+\link{generator_types}}
 
-\item{obs_types}{Types of vectors to generate for obs}
+\item{obs_types}{Types of vectors to generate for obs, see \link{generator_types}}
 
-\item{var_types}{Types of vectors to generate for var}
+\item{var_types}{Types of vectors to generate for var, see \link{generator_types}}
 
-\item{obsm_types}{Types of matrices to generate for obsm}
+\item{obsm_types}{Types of matrices to generate for obsm, see
+\link{generator_types}}
 
-\item{varm_types}{Types of matrices to generate for varm}
+\item{varm_types}{Types of matrices to generate for varm, see
+\link{generator_types}}
 
-\item{obsp_types}{Types of matrices to generate for obsp}
+\item{obsp_types}{Types of matrices to generate for obsp, see
+\link{generator_types}}
 
-\item{varp_types}{Types of matrices to generate for varp}
+\item{varp_types}{Types of matrices to generate for varp, see
+\link{generator_types}}
 
-\item{uns_types}{Types of objects to generate for uns}
+\item{uns_types}{Types of objects to generate for uns, see \link{generator_types}}
 
-\item{example}{If \code{TRUE}, the types will be overridden to a small set of
-types. This is useful for documentations.}
+\item{example}{If \code{TRUE}, the types will be overridden with a small subset of
+types. This is useful for documentation.}
 
 \item{format}{Object type to output, one of "list", "AnnData",
 "SingleCellExperiment", or "Seurat".}
@@ -98,8 +58,31 @@ types. This is useful for documentations.}
 Object containing the generated dataset as defined by \code{output}
 }
 \description{
-Generate a dataset with different types of columns and layers
+Generate a synthetic dataset with different types of columns and layers. This
+is primarily designed for use in tests, examples, vignettes and other
+documentation but is also provided to users for creating reproducible
+examples.
 }
 \examples{
+# Generate all types as a list
 dummy <- generate_dataset()
+
+# Generate the example types
+dummy_example <- generate_dataset(example = TRUE)
+
+# Generate an AnnData
+dummy_anndata <- generate_dataset(format = "AnnData", example = TRUE)
+
+# Generate a SingleCellExperiment
+if (rlang::is_installed("SingleCellExperiment")) {
+  dummy_sce <- generate_dataset(format = "SingleCellExperiment", example = TRUE)
+}
+
+# Generate a Seurat object
+if (rlang::is_installed("SeuratObject")) {
+  dummy_seurat <- generate_dataset(format = "Seurat", example = TRUE)
+}
+}
+\seealso{
+\link{generator_types} for types that can be supplied to arguments
 }
