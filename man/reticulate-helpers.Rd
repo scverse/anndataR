@@ -33,16 +33,16 @@ the R-Python boundary.
 The main conversion functions include:
 \itemize{
 \item \code{py_to_r.anndata._core.anndata.AnnData}: Converts Python AnnData
-objects to R ReticulateAnnData objects
-\item \code{r_to_py.AbstractAnnData}: Converts R AbstractAnnData objects
+objects to R \link{ReticulateAnnData} objects
+\item \code{r_to_py.AbstractAnnData}: Converts R \link{AbstractAnnData} objects
 to Python AnnData objects
 \item \code{py_to_r.collections.abc.Mapping}: Converts Python mapping
 objects to R lists
 }
 
 These functions are automatically registered as S3 methods and are called
-when using \code{reticulate::py_to_r()} and \code{reticulate::r_to_py()}
-on compatible objects.
+when using \code{reticulate::py_to_r()} and \code{reticulate::r_to_py()} on compatible
+objects.
 }
 \examples{
 \dontrun{
