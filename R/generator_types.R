@@ -57,15 +57,15 @@ generator_types <- list(
 #' @examples
 #' example_generator_types
 example_generator_types <- list(
-    X <- "numeric_matrix",
-    layers <- c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    obs <- c("character", "integer", "factor"),
-    var <- c("character", "integer", "factor"),
-    obsm <- c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    varm <- c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    obsp <- c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    varp <- c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    uns <- c(
+    X = "numeric_matrix",
+    layers = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+    obs = c("character", "integer", "factor"),
+    var = c("character", "integer", "factor"),
+    obsm = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+    varm = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+    obsp = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+    varp = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+    uns = c(
         "scalar_character",
         "vec_integer",
         "df_logical",
