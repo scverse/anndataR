@@ -60,8 +60,10 @@ check_python_packages <- function(what, requires) {
       c(
         "{what} requires the Python {.pkg {missing}} package{?s}",
         "i" = paste(
-          "To continue, install {cli::qty(missing)}{?it/them} using",
-          "{.code reticulate::py_install({missing_str})}"
+          "To continue, require {cli::qty(missing)}{?it/them} using",
+          "{.code reticulate::py_require({missing_str})} or install",
+          "{cli::qty(missing)}{?it/them} them in your Python environment",
+          "using another method" 
         )
       ),
       call = caller_env()
@@ -92,7 +94,7 @@ check_r_packages <- function(what, requires, where) {
         "{what} requires the {.pkg {missing}} package{?s}",
         "i" = paste(
           "To continue, install {cli::qty(missing)}{?it/them} using",
-          "{.code {install_fun}({missing_str})}"
+          "{.run {install_fun}({missing_str})}"
         )
       ),
       call = caller_env()

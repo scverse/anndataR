@@ -11,7 +11,7 @@
 #' There are different back ends for `AnnData` objects that inherit from the
 #' abstract [AbstractAnnData] class. For example, the [InMemoryAnnData] stores
 #' data in memory, the [HDF5AnnData] is backed by a H5AD file, and the
-#' [ReticulateAnnData] provides direct integration with Python AnnData objects
+#' [ReticulateAnnData] provides direct integration with Python `AnnData` objects
 #' via reticulate.
 #'
 #' ## Usage

@@ -30,9 +30,7 @@ NULL
 #' py_adata <- r_to_py(adata)  # Automatically converts
 #' }
 try_r_to_py <- function(x, ...) {
-  if (!requireNamespace("reticulate", quietly = TRUE)) {
-    cli_abort("The {.pkg reticulate} package is required")
-  }
+  check_requires("Converting R to Python", "reticulate")
 
   if (is.null(x)) {
     return(reticulate::py_none())
@@ -100,9 +98,7 @@ try_r_to_py <- function(x, ...) {
 #' r_adata <- py_to_r(py_adata)  # Automatically converts to ReticulateAnnData
 #' }
 try_py_to_r <- function(x, ...) {
-  if (!requireNamespace("reticulate", quietly = TRUE)) {
-    cli_abort("The {.pkg reticulate} package is required")
-  }
+  check_requires("Converting Python to R", "reticulate")
 
   if (is.null(x) || identical(x, reticulate::py_none())) {
     return(NULL)
