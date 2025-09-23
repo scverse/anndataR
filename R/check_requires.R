@@ -37,16 +37,7 @@ check_requires <- function(
 #' @importFrom rlang caller_env
 #' @noRd
 check_python_packages <- function(what, requires) {
-  # First check if reticulate is available
-  if (!requireNamespace("reticulate", quietly = TRUE)) {
-    cli_abort(
-      c(
-        "{what} requires the {.pkg reticulate} package",
-        "i" = "Install it using {.code install.packages(\"reticulate\")}"
-      ),
-      call = caller_env()
-    )
-  }
+  check_requires(what, "reticulate")
 
   is_available <- map_lgl(requires, reticulate::py_module_available)
 
@@ -63,7 +54,7 @@ check_python_packages <- function(what, requires) {
           "To continue, require {cli::qty(missing)}{?it/them} using",
           "{.code reticulate::py_require({missing_str})} or install",
           "{cli::qty(missing)}{?it/them} them in your Python environment",
-          "using another method" 
+          "using another method"
         )
       ),
       call = caller_env()
