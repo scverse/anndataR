@@ -44,22 +44,22 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.h5obj, "X")
+        read_h5ad_element(private$.h5obj, "X") |>
+          private$.add_matrix_dimnames("X")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_X, status=done
-        value <- private$.validate_aligned_array(
+        private$.validate_aligned_array(
           value,
           "X",
           shape = c(self$n_obs(), self$n_vars()),
-          expected_rownames = rownames(self),
-          expected_colnames = colnames(self)
-        )
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "X",
-          private$.compression
-        )
+          expected_rownames = self$obs_names,
+          expected_colnames = self$var_names
+        ) |>
+          write_h5ad_element(
+            private$.h5obj,
+            "X",
+            private$.compression
+          )
       }
     },
     #' @field layers See [AnnData-usage]
@@ -68,22 +68,22 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(private$.h5obj, "layers")
+        read_h5ad_element(private$.h5obj, "layers") |>
+          private$.add_mapping_dimnames("layers")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
-        value <- private$.validate_aligned_mapping(
+        private$.validate_aligned_mapping(
           value,
           "layers",
           c(self$n_obs(), self$n_vars()),
-          expected_rownames = rownames(self),
-          expected_colnames = colnames(self)
-        )
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "layers",
-          private$.compression
-        )
+          expected_rownames = self$obs_names,
+          expected_colnames = self$var_names
+        ) |>
+          write_h5ad_element(
+            private$.h5obj,
+            "layers",
+            private$.compression
+          )
       }
     },
     #' @field obsm See [AnnData-usage]
@@ -92,20 +92,23 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.h5obj, "obsm")
+        read_h5ad_element(private$.h5obj, "obsm") |>
+          private$.add_mapping_dimnames("obsm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
-        value <- private$.validate_aligned_mapping(
+        private$.validate_aligned_mapping(
           value,
           "obsm",
           c(self$n_obs()),
-          expected_rownames = rownames(self)
-        )
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "obsm"
-        )
+          expected_rownames = self$obs_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
+        ) |>
+          write_h5ad_element(
+            private$.h5obj,
+            "obsm",
+            private$.compression
+          )
       }
     },
     #' @field varm See [AnnData-usage]
@@ -114,20 +117,23 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.h5obj, "varm")
+        read_h5ad_element(private$.h5obj, "varm") |>
+          private$.add_mapping_dimnames("varm")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
-        value <- private$.validate_aligned_mapping(
+        private$.validate_aligned_mapping(
           value,
           "varm",
           c(self$n_vars()),
-          expected_rownames = colnames(self)
-        )
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "varm"
-        )
+          expected_rownames = self$var_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
+        ) |>
+          write_h5ad_element(
+            private$.h5obj,
+            "varm",
+            private$.compression
+          )
       }
     },
     #' @field obsp See [AnnData-usage]
@@ -136,21 +142,22 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.h5obj, "obsp")
+        read_h5ad_element(private$.h5obj, "obsp") |>
+          private$.add_mapping_dimnames("obsp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
-        value <- private$.validate_aligned_mapping(
+        private$.validate_aligned_mapping(
           value,
           "obsp",
           c(self$n_obs(), self$n_obs()),
-          expected_rownames = rownames(self),
-          expected_colnames = rownames(self)
-        )
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "obsp"
-        )
+          expected_rownames = self$obs_names,
+          expected_colnames = self$obs_names
+        ) |>
+          write_h5ad_element(
+            private$.h5obj,
+            "obsp",
+            private$.compression
+          )
       }
     },
     #' @field varp See [AnnData-usage]
@@ -159,21 +166,22 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.h5obj, "varp")
+        read_h5ad_element(private$.h5obj, "varp") |>
+          private$.add_mapping_dimnames("varp")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
-        value <- private$.validate_aligned_mapping(
+        private$.validate_aligned_mapping(
           value,
           "varp",
           c(self$n_vars(), self$n_vars()),
-          expected_rownames = colnames(self),
-          expected_colnames = colnames(self)
-        )
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "varp"
-        )
+          expected_rownames = self$var_names,
+          expected_colnames = self$var_names
+        ) |>
+          write_h5ad_element(
+            private$.h5obj,
+            "varp",
+            private$.compression
+          )
       }
     },
     #' @field obs See [AnnData-usage]
@@ -185,13 +193,12 @@ HDF5AnnData <- R6::R6Class(
         read_h5ad_element(private$.h5obj, "obs")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
-        value <- private$.validate_obsvar_dataframe(value, "obs")
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "obs",
-          private$.compression
-        )
+        private$.validate_obsvar_dataframe(value, "obs") |>
+          write_h5ad_element(
+            private$.h5obj,
+            "obs",
+            private$.compression
+          )
       }
     },
     #' @field var See [AnnData-usage]
@@ -203,12 +210,12 @@ HDF5AnnData <- R6::R6Class(
         read_h5ad_element(private$.h5obj, "var")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
-        value <- private$.validate_obsvar_dataframe(value, "var")
-        write_h5ad_element(
-          value,
-          private$.h5obj,
-          "var"
-        )
+        private$.validate_obsvar_dataframe(value, "var") |>
+          write_h5ad_element(
+            private$.h5obj,
+            "var",
+            private$.compression
+          )
       }
     },
     #' @field obs_names See [AnnData-usage]
@@ -244,8 +251,12 @@ HDF5AnnData <- R6::R6Class(
         read_h5ad_element(private$.h5obj, "uns")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
-        value <- private$.validate_named_list(value, "uns")
-        write_h5ad_element(value, private$.h5obj, "uns")
+        private$.validate_named_list(value, "uns") |>
+          write_h5ad_element(
+            private$.h5obj,
+            "uns",
+            private$.compression
+          )
       }
     }
   ),

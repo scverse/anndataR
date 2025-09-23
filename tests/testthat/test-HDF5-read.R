@@ -129,7 +129,7 @@ test_that("reading dataframes works", {
 rhdf5::H5Fclose(file)
 
 test_that("reading H5AD as SingleCellExperiment works", {
-  skip_if_not_installed("SingleCellExperiment")
+  suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
 
   sce <- read_h5ad(filename, as = "SingleCellExperiment")
   expect_s4_class(sce, "SingleCellExperiment")

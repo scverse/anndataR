@@ -68,9 +68,10 @@ for (name in test_names) {
         bi$list(adata_py$varp$keys())
       )
 
-      # check that the print output is the same
+      # check that the print output is the same (normalize class names)
       str_r <- capture.output(print(adata_r))
       str_py <- capture.output(print(adata_py))
+      str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
       expect_equal(str_r, str_py)
     }
   )
@@ -93,14 +94,27 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
+      # So we need to strip dimnames for comparison
+      actual_obsp <- adata_r$obsp[[name]]
+      expected_obsp <- py_to_r(py_get_item(adata_py$obsp, name))
+      dimnames(actual_obsp) <- NULL
+      dimnames(expected_obsp) <- NULL
+
       expect_equal(
-        adata_r$obsp[[name]],
-        py_to_r(py_get_item(adata_py$obsp, name)),
+        actual_obsp,
+        expected_obsp,
         tolerance = 1e-6
       )
+
+      actual_varp <- adata_r$varp[[name]]
+      expected_varp <- py_to_r(py_get_item(adata_py$varp, name))
+      dimnames(actual_varp) <- NULL
+      dimnames(expected_varp) <- NULL
+
       expect_equal(
-        adata_r$varp[[name]],
-        py_to_r(py_get_item(adata_py$varp, name)),
+        actual_varp,
+        expected_varp,
         tolerance = 1e-6
       )
     }

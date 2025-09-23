@@ -137,7 +137,7 @@ The name you provide for \code{x_mapping} may not be a name in \code{assays_mapp
 }
 }
 \examples{
-\dontshow{if (rlang::is_installed("SingleCellExperiment")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("SingleCellExperiment")) withAutoprint(\{ # examplesIf}
   ad <- AnnData(
     X = matrix(1:5, 3L, 5L),
     layers = list(A = matrix(5:1, 3L, 5L), B = matrix(letters[1:5], 3L, 5L)),

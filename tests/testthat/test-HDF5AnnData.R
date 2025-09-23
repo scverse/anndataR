@@ -217,7 +217,10 @@ test_that("writing obsm works", {
 
   obsm_x <- matrix(rnorm(10 * 5), nrow = 10, ncol = 5)
   h5ad$obsm <- list(X = obsm_x)
-  expect_identical(h5ad$obsm$X, obsm_x)
+  # obsm should now have rownames added on-the-fly
+  expected_obsm_x <- obsm_x
+  rownames(expected_obsm_x) <- h5ad$obs_names
+  expect_identical(h5ad$obsm$X, expected_obsm_x)
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_varm, status=done
@@ -228,7 +231,10 @@ test_that("writing varm works", {
   h5ad <- HDF5AnnData$new(h5ad_file, obs = obs, var = var)
   varm_x <- matrix(rnorm(20 * 5), nrow = 20, ncol = 5)
   h5ad$varm <- list(PCs = varm_x)
-  expect_identical(h5ad$varm$PCs, varm_x)
+  # varm should now have rownames added on-the-fly
+  expected_varm_x <- varm_x
+  rownames(expected_varm_x) <- h5ad$var_names
+  expect_identical(h5ad$varm$PCs, expected_varm_x)
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_obsp, status=done
@@ -240,7 +246,10 @@ test_that("writing obsp works", {
 
   obsp_x <- matrix(rnorm(10 * 10), nrow = 10, ncol = 10)
   h5ad$obsp <- list(connectivities = obsp_x)
-  expect_identical(h5ad$obsp$connectivities, obsp_x)
+  # obsp should now have dimnames added on-the-fly
+  expected_obsp_x <- obsp_x
+  dimnames(expected_obsp_x) <- list(h5ad$obs_names, h5ad$obs_names)
+  expect_identical(h5ad$obsp$connectivities, expected_obsp_x)
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_varp, status=done
@@ -252,7 +261,10 @@ test_that("writing varp works", {
 
   varp_x <- matrix(rnorm(20 * 20), nrow = 20, ncol = 20)
   h5ad$varp <- list(connectivities = varp_x)
-  expect_identical(h5ad$varp$connectivities, varp_x)
+  # varp should now have dimnames added on-the-fly
+  expected_varp_x <- varp_x
+  dimnames(expected_varp_x) <- list(h5ad$var_names, h5ad$var_names)
+  expect_identical(h5ad$varp$connectivities, expected_varp_x)
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_uns, status=done

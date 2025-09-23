@@ -1,6 +1,42 @@
 # anndataR unreleased
 
+## New functionality
+
+* Implemented an `AnnDataView` class, which provides a lazy view of an `AnnData` object without copying data (PR #1096)
+* Implemented S3 methods for `AbstractAnnData` objects: `dim`, `nrow`, `ncol`, `dimnames`, `rownames`, `colnames`, and `[` (PR #1096)
 * Add ReticulateAnnData class for seamless Python integration via reticulate (PR #322)
+
+## Major changes
+
+- Refactor obs/var_names handling for improved data consistency (PR #328)
+  - `InMemoryAnnData` now stores `obs_names` and `var_names` as separate private fields instead of relying on rownames of `obs`/`var` data.frames
+  - `HDF5AnnData` maintains separate obs/var names management to ensure consistency between obs/var data.frames and dimnames
+  - All matrix data (`X`, `layers`, `obsm`, `varm`, `obsp`, `varp`) is now stored internally **without** dimnames for consistency
+  - Dimnames are added **on-the-fly** when users access data, ensuring proper obs/var name display
+
+## Minor changes
+
+- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
+  operators for cleaner code (PR #328)
+- Add explanatory comments for matrix generation alignment with dummy-anndata 
+  (PR #328)
+
+## Bug fixes
+
+- Add compression parameter to additional write operations in `HDF5AnnData` 
+  for consistency (PR #328)
+- Directly use `obs_names` and `var_names` properties instead of corresponding
+  indirect S3 methods `rownames` and `colnames` (PR #328)
+- Fix error message variable name in `.validate_aligned_array()` method 
+  (expected_colnames → expected_rownames) (PR #328)
+- Fix Seurat conversion for PCA loadings with variable feature subsets (PR #328)
+  - Seurat PCA loadings only contain variable features, not all genes
+  - Now properly expands loadings matrix to include all genes with zeros for non-variable features
+  - Adds warning when rownames don't match var_names during conversion
+
+## Documentation
+
+- `citation("anndataR")` now returns details of the **{anndataR}** preprint (PR #351)
 
 # anndataR 0.99.2
 

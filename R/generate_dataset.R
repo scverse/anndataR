@@ -38,11 +38,9 @@ generate_dataset <- function(
     "numeric_csparse_with_nas",
     "numeric_rsparse_with_nas",
     "integer_matrix",
-    "integer_dense",
     "integer_csparse",
     "integer_rsparse",
     "integer_matrix_with_nas",
-    "integer_dense_with_nas",
     "integer_csparse_with_nas",
     "integer_rsparse_with_nas"
   ),
@@ -84,11 +82,9 @@ generate_dataset <- function(
     "numeric_csparse_with_nas",
     "numeric_rsparse_with_nas",
     "integer_matrix",
-    "integer_dense",
     "integer_csparse",
     "integer_rsparse",
     "integer_matrix_with_nas",
-    "integer_dense_with_nas",
     "integer_csparse_with_nas",
     "integer_rsparse_with_nas",
     "character",
@@ -114,11 +110,9 @@ generate_dataset <- function(
     "numeric_csparse_with_nas",
     "numeric_rsparse_with_nas",
     "integer_matrix",
-    "integer_dense",
     "integer_csparse",
     "integer_rsparse",
     "integer_matrix_with_nas",
-    "integer_dense_with_nas",
     "integer_csparse_with_nas",
     "integer_rsparse_with_nas",
     "character",
@@ -144,11 +138,9 @@ generate_dataset <- function(
     "numeric_csparse_with_nas",
     "numeric_rsparse_with_nas",
     "integer_matrix",
-    "integer_dense",
     "integer_csparse",
     "integer_rsparse",
     "integer_matrix_with_nas",
-    "integer_dense_with_nas",
     "integer_csparse_with_nas",
     "integer_rsparse_with_nas"
   ),
@@ -162,11 +154,9 @@ generate_dataset <- function(
     "numeric_csparse_with_nas",
     "numeric_rsparse_with_nas",
     "integer_matrix",
-    "integer_dense",
     "integer_csparse",
     "integer_rsparse",
     "integer_matrix_with_nas",
-    "integer_dense_with_nas",
     "integer_csparse_with_nas",
     "integer_rsparse_with_nas"
   ),
@@ -216,11 +206,9 @@ generate_dataset <- function(
     "mat_numeric_csparse_with_nas",
     "mat_numeric_rsparse_with_nas",
     "mat_integer_matrix",
-    "mat_integer_dense",
     "mat_integer_csparse",
     "mat_integer_rsparse",
     "mat_integer_matrix_with_nas",
-    "mat_integer_dense_with_nas",
     "mat_integer_csparse_with_nas",
     "mat_integer_rsparse_with_nas",
     "list"
@@ -324,7 +312,8 @@ generate_dataset <- function(
     if (obsm_type %in% names(vector_generators)) {
       generate_dataframe(n_obs, obsm_type)
     } else {
-      generate_matrix(n_obs, n_vars = 10L, obsm_type)
+      # generate n_obs vars to stay aligned with dummy-anndata, see scverse/anndataR#286
+      generate_matrix(n_obs, n_vars = n_obs, obsm_type)
     }
   })
   names(obsm) <- obsm_types
@@ -334,7 +323,8 @@ generate_dataset <- function(
     if (varm_type %in% names(vector_generators)) {
       generate_dataframe(n_vars, varm_type)
     } else {
-      generate_matrix(n_vars, n_vars = 10L, varm_type)
+      # generate n_vars vars to stay aligned with dummy-anndata, see scverse/anndataR#286
+      generate_matrix(n_vars, n_vars = n_vars, varm_type)
     }
   })
   names(varm) <- varm_types

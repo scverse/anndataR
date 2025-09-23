@@ -17,6 +17,7 @@ See \link{AnnData-usage} for details on creating and using \code{AnnData} object
 \link{AnnData-usage} for details on creating and using \code{AnnData} objects
 
 Other AnnData classes: 
+\code{\link{AnnDataView}},
 \code{\link{HDF5AnnData}},
 \code{\link{InMemoryAnnData}},
 \code{\link{ReticulateAnnData}}

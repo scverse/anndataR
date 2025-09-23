@@ -5,39 +5,6 @@
 \title{AnnData structure and usage}
 \value{
 An \code{AnnData} object inheriting from \code{\link{AbstractAnnData}}
-\subsection{Conversion methods:}{
-
-\describe{
-\item{
-\code{as_SingleCellExperiment()}
-}{
-Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}}, see
-\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
-}
-\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
-\item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
-\item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
-\item{\code{as_ReticulateAnnData()}}{Convert to \code{\link{ReticulateAnnData}}, see \code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}}}
-}
-}
-
-\subsection{Output methods:}{
-
-\describe{
-\item{
-\code{write_h5ad()}
-}{
-Write the \code{AnnData} object to an HDF5 file, see \code{\link[=write_h5ad]{write_h5ad()}}
-}
-}
-}
-
-\subsection{General methods:}{
-
-\describe{
-\item{\code{print()}}{Print a summary of the \code{AnnData} object}
-}
-}
 }
 \description{
 The \code{AnnData} object stores a data matrix \code{X} together with annotations of
@@ -49,7 +16,7 @@ annotations in \code{uns}.
 There are different back ends for \code{AnnData} objects that inherit from the
 abstract \link{AbstractAnnData} class. For example, the \link{InMemoryAnnData} stores
 data in memory, the \link{HDF5AnnData} is backed by a H5AD file, and the
-\link{ReticulateAnnData} provides direct integration with Python AnnData objects
+\link{ReticulateAnnData} provides direct integration with Python \code{AnnData} objects
 via reticulate.
 }
 
@@ -153,6 +120,7 @@ Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExpe
 \item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
 \item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
 \item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+\item{\code{as_ReticulateAnnData()}}{Convert to \code{\link{ReticulateAnnData}}, see \code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}}}
 }
 }
 

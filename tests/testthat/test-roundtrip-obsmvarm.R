@@ -85,9 +85,10 @@ for (name in test_names) {
         bi$list(adata_py$varm$keys())
       )
 
-      # check that the print output is the same
+      # check that the print output is the same (normalize class names)
       str_r <- capture.output(print(adata_r))
       str_py <- capture.output(print(adata_py))
+      str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
       expect_equal(str_r, str_py)
     }
   )
@@ -110,14 +111,27 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
+      # So we need to strip dimnames for comparison
+      actual_obsm <- adata_r$obsm[[name]]
+      expected_obsm <- py_to_r(py_get_item(adata_py$obsm, name))
+      dimnames(actual_obsm) <- NULL
+      dimnames(expected_obsm) <- NULL
+
       expect_equal(
-        adata_r$obsm[[name]],
-        py_to_r(py_get_item(adata_py$obsm, name)),
+        actual_obsm,
+        expected_obsm,
         tolerance = 1e-6
       )
+
+      actual_varm <- adata_r$varm[[name]]
+      expected_varm <- py_to_r(py_get_item(adata_py$varm, name))
+      dimnames(actual_varm) <- NULL
+      dimnames(expected_varm) <- NULL
+
       expect_equal(
-        adata_r$varm[[name]],
-        py_to_r(py_get_item(adata_py$varm, name)),
+        actual_varm,
+        expected_varm,
         tolerance = 1e-6
       )
     }
@@ -195,10 +209,6 @@ for (name in test_names) {
         obsm_types = list(r_name),
         varm_types = list(r_name)
       )
-      # TODO: Remove this once issue #286 is fixed https://github.com/scverse/anndataR/issues/286
-      if (!(r_name %in% names(vector_generators))) {
-        adata_r$varm[[r_name]] <- generate_matrix(20, 20, r_name)
-      }
       write_h5ad(adata_r, file_r2, mode = "w")
 
       # Remove the rhdf5-NA.OK for comparison
