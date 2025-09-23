@@ -3,17 +3,26 @@
 ## Major changes
 
 - Refactor obs/var_names handling for improved data consistency (PR #328)
-  - `InMemoryAnnData` now stores `obs_names` and `var_names` as separate private fields instead of relying on rownames of `obs`/`var` data.frames
-  - `HDF5AnnData` maintains separate obs/var names management to ensure consistency between obs/var data.frames and dimnames
-  - All matrix data (`X`, `layers`, `obsm`, `varm`, `obsp`, `varp`) is now stored internally **without** dimnames for consistency
-  - Dimnames are added **on-the-fly** when users access data, ensuring proper obs/var name display
+  - `InMemoryAnnData` now stores `obs_names` and `var_names` as separate private
+    fields instead of relying on rownames of `obs`/`var` data.frames
+  - `HDF5AnnData` maintains separate obs/var names management to ensure
+    consistency between obs/var data.frames and dimnames
+  - All matrix data (`X`, `layers`, `obsm`, `varm`, `obsp`, `varp`) is now
+    stored internally **without** dimnames for consistency
+  - Dimnames are added **on-the-fly** when users access data, ensuring proper
+    obs/var name display
 
 ## Minor changes
 
 - Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
   operators for cleaner code (PR #328)
-- Add explanatory comments for matrix generation alignment with dummy-anndata 
-  (PR #328)
+- Add explanatory comments for matrix generation alignment with Python
+  **dummy-anndata** (PR #328)
+- Add `generator_types` and `example_generator_types` list objects to store
+  allowed/example types for `generate_dataset()` (PR #354)
+- Add checks for type arguments to `generate_dataset()` (PR #354)
+- Generalise the layers created by `generate_dataset()` when `format = "Seurat"`
+  (PR #354)
 
 ## Bug fixes
 
@@ -25,16 +34,19 @@
   (expected_colnames → expected_rownames) (PR #328)
 - Fix Seurat conversion for PCA loadings with variable feature subsets (PR #328)
   - Seurat PCA loadings only contain variable features, not all genes
-  - Now properly expands loadings matrix to include all genes with zeros for non-variable features
+  - Now properly expands loadings matrix to include all genes with zeros for
+    non-variable features
   - Adds warning when rownames don't match var_names during conversion
 
 ## Documentation
 
-- `citation("anndataR")` now returns details of the **{anndataR}** preprint (PR #351)
+- `citation("anndataR")` now returns details of the **{anndataR}** preprint
+  (PR #351)
 
 # anndataR 0.99.2
 
-* Add `@return` to R6 object man pages to address **{BiocCheck}** warning (PR #319)
+* Add `@return` to R6 object man pages to address **{BiocCheck}** warning
+  (PR #319)
 
 # anndataR 0.99.1
 
