@@ -98,7 +98,8 @@ AnnDataView <- R6::R6Class(
       cli_abort(
         paste0(
           "Cannot set {.field {field_name}} on an {.cls AnnDataView} object. Convert to a concrete implementation ",
-          "first using any of the {.code as_*()} methods (e.g., {.code adata$as_InMemoryAnnData()}, {.code adata$as_HDF5AnnData()})."
+          "first using any of the {.code as_*()} methods ",
+          "(e.g., {.code adata$as_InMemoryAnnData()}, {.code adata$as_HDF5AnnData()})."
         )
       )
     },

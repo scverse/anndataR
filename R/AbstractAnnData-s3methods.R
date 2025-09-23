@@ -141,5 +141,5 @@ dimnames.AbstractAnnData <- function(x) {
   }
 
   # Create AnnDataView with both subsets at once
-  AnnDataView$new(x, i, j)
+  AnnDataView$new(x, i, j) # nolint: object_usage_linter
 }
