@@ -34,7 +34,7 @@ A list of available generator types for different components of a dataset
 that can be passed to arguments of \code{\link[=generate_dataset]{generate_dataset()}}
 }
 \details{
-The \code{generator_types} contains all available types and
+The \code{generator_types} list contains all available types and
 \code{example_generator_types} contains only those that are used when
 \code{example = TRUE} is passed to \code{\link[=generate_dataset]{generate_dataset()}}.
 }

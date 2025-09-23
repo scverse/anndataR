@@ -29,6 +29,11 @@
 #' @return Object containing the generated dataset as defined by `output`
 #' @export
 #'
+#' @details
+#' To generate no data for a given slot, provide an empty vector to the matching
+#' types argument, e.g. `obs_types = c()` will generate an empty `obs` data
+#' frame.
+#'
 #' @seealso [generator_types] for types that can be supplied to arguments
 #'
 #' @examples
@@ -55,7 +60,7 @@ generate_dataset <- function(
   n_vars = 20L,
   x_type = "numeric_matrix",
   layer_types = generator_types$layers,
-  obs_types = generatorpr_types$obs,
+  obs_types = generator_types$obs,
   var_types = generator_types$var,
   obsm_types = generator_types$obsm,
   varm_types = generator_types$varm,
@@ -86,6 +91,8 @@ generate_dataset <- function(
   for (slot in .anndata_slots) {
     types_arg <- if (slot == "X") {
       "x_type"
+    } else if (slot == "layers") {
+      "layer_types"
     } else {
       paste0(slot, "_types")
     }
@@ -136,7 +143,7 @@ generate_dataset <- function(
   n_vars = 20L,
   x_type = generator_types$X[1],
   layer_types = generator_types$layers,
-  obs_types = generatorpr_types$obs,
+  obs_types = generator_types$obs,
   var_types = generator_types$var,
   obsm_types = generator_types$obsm,
   varm_types = generator_types$varm,

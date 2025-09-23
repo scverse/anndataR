@@ -9,7 +9,7 @@ generate_dataset(
   n_vars = 20L,
   x_type = "numeric_matrix",
   layer_types = generator_types$layers,
-  obs_types = generatorpr_types$obs,
+  obs_types = generator_types$obs,
   var_types = generator_types$var,
   obsm_types = generator_types$obsm,
   varm_types = generator_types$varm,
@@ -62,6 +62,11 @@ Generate a synthetic dataset with different types of columns and layers. This
 is primarily designed for use in tests, examples, vignettes and other
 documentation but is also provided to users for creating reproducible
 examples.
+}
+\details{
+To generate no data for a given slot, provide an empty vector to the matching
+types argument, e.g. \code{obs_types = c()} will generate an empty \code{obs} data
+frame.
 }
 \examples{
 # Generate all types as a list
