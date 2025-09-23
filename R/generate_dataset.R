@@ -79,6 +79,26 @@ generate_dataset <- function(
     uns_types <- example_generator_types$uns
   }
 
+  if (length(x_type) != 1) {
+    cli_abort("{.arg x_type} must be a single type")
+  }
+
+  for (slot in .anndata_slots) {
+    types_arg <- if (slot == "X") {
+      "x_type"
+    } else {
+      paste0(slot, "_types")
+    }
+    types <- get(types_arg)
+    if (!all(types %in% generator_types[[slot]])) {
+      invalid_types <- types[!types %in% generator_types[[slot]]]
+      cli_abort(c(
+        "Some {.arg {types_arg}} types are not valid: {.val {invalid_types}}.",
+        "i" = "Valid types are: {.val {generator_types[[slot]]}}"
+      ))
+    }
+  }
+
   dataset_list <- .generate_dataset_as_list(
     n_obs = n_obs,
     n_vars = n_vars,
