@@ -97,8 +97,8 @@ AnnDataView <- R6::R6Class(
     .abort_setter = function(field_name) {
       cli_abort(
         paste0(
-          "Cannot set {field_name} on a AnnDataView object. Convert to a concrete implementation ",
-          "first using any of the as_*() functions (e.g., as_InMemoryAnnData(), as_HDF5AnnData())."
+          "Cannot set {.field {field_name}} on an {.cls AnnDataView} object. Convert to a concrete implementation ",
+          "first using any of the {.code as_*()} methods (e.g., {.code adata$as_InMemoryAnnData()}, {.code adata$as_HDF5AnnData()})."
         )
       )
     },
@@ -271,7 +271,7 @@ AnnDataView <- R6::R6Class(
     #' @return A new `AnnDataView` object
     initialize = function(base_adata, i, j) {
       if (!inherits(base_adata, "AbstractAnnData")) {
-        cli_abort("base_adata must be an AbstractAnnData object")
+		cli_abort("{.arg base_adata} must be an {.cls AbstractAnnData} object")
       }
 
       private$.base_adata <- base_adata
@@ -371,7 +371,7 @@ convert_to_indices <- function(
     subset <- as.integer(subset)
     if (any(subset < 1 | subset > max_length)) {
       cli_abort(
-        "Integer indices {context_name} must be between 1 and {max_length}"
+        "Integer indices for {context_name} must be between 1 and {max_length}"
       )
     }
     return(subset)
@@ -379,7 +379,7 @@ convert_to_indices <- function(
     if (is.null(names_vector)) {
       cli_abort(c(
         "Cannot use character names to subset {context_name}",
-        "i" = "The {context_name} do not have names (obs_names/var_names are NULL)",
+        "i" = "The {context_name} do not have names ({.field obs_names}/{.field var_names} are NULL)",
         "i" = "Use integer indices instead, or set names first"
       ))
     }

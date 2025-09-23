@@ -27,15 +27,15 @@
 #' @details
 #' The following S3 methods are available:
 #'
-#'   * `dim(x)`: Get dimensions (n_obs, n_vars)
-#'   * `nrow(x)`: Get number of observations
-#'   * `ncol(x)`: Get number of variables
-#'   * `dimnames(x)`: Get dimension names
-#'   * `rownames(x)`: Get observation names
-#'   * `colnames(x)`: Get variable names
+#'   * `dim(x)`: Get dimensions (n_obs, n_vars), equivalent to `x$shape()`
+#'   * `nrow(x)`: Get number of observations, equivalent to `x$n_obs()`
+#'   * `ncol(x)`: Get number of variables, equivalent to `x$n_vars()`
+#'   * `dimnames(x)`: Get dimension names, (obs_names, var_names)
+#'   * `rownames(x)`: Get observation names, equivalent to `x$obs_names()`
+#'   * `colnames(x)`: Get variable names, equivalent to `x$var_names()`
 #'   * `dimnames(x) <- value`: Set dimension names
-#'   * `rownames(x) <- value`: Set observation names
-#'   * `colnames(x) <- value`: Set variable names
+#'   * `rownames(x) <- value`: Set observation names, equivalent to `x$obs_names() <- ...`
+#'   * `colnames(x) <- value`: Set variable names, equivalent to `x$var_names() <- ...`
 #'   * `x[i, j]`: Subset observations and/or variables
 #'
 #' @return
