@@ -32,21 +32,21 @@
 #'
 #' @export
 generator_types <- list(
-    X = names(matrix_generators),
-    layers = names(matrix_generators),
-    obs = names(vector_generators),
-    var = names(vector_generators),
-    obsm = c(names(matrix_generators), names(vector_generators)),
-    varm = c(names(matrix_generators), names(vector_generators)),
-    obsp = names(matrix_generators),
-    varp = names(matrix_generators),
-    uns = c(
-        paste0("scalar_", names(vector_generators)),
-        paste0("vec_", names(vector_generators)),
-        paste0("df_", names(vector_generators)),
-        paste0("mat_", names(matrix_generators)),
-        "list"
-    )
+  X = names(matrix_generators),
+  layers = names(matrix_generators),
+  obs = names(vector_generators),
+  var = names(vector_generators),
+  obsm = c(names(matrix_generators), names(vector_generators)),
+  varm = c(names(matrix_generators), names(vector_generators)),
+  obsp = names(matrix_generators),
+  varp = names(matrix_generators),
+  uns = c(
+    paste0("scalar_", names(vector_generators)),
+    paste0("vec_", names(vector_generators)),
+    paste0("df_", names(vector_generators)),
+    paste0("mat_", names(matrix_generators)),
+    "list"
+  )
 )
 
 #' @rdname generator_types
@@ -57,18 +57,18 @@ generator_types <- list(
 #' @examples
 #' example_generator_types
 example_generator_types <- list(
-    X = "numeric_matrix",
-    layers = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    obs = c("character", "integer", "factor"),
-    var = c("character", "integer", "factor"),
-    obsm = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    varm = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    obsp = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    varp = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
-    uns = c(
-        "scalar_character",
-        "vec_integer",
-        "df_logical",
-        "mat_numeric_matrix"
-    )
+  X = "numeric_matrix",
+  layers = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+  obs = c("character", "integer", "factor"),
+  var = c("character", "integer", "factor"),
+  obsm = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+  varm = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+  obsp = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+  varp = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
+  uns = c(
+    "scalar_character",
+    "vec_integer",
+    "df_logical",
+    "mat_numeric_matrix"
+  )
 )
