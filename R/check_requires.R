@@ -44,7 +44,7 @@ check_python_packages <- function(what, requires) {
   if (any(!is_available)) {
     missing <- requires[!is_available]
     # nolint start object_usage_linter
-    missing_str <- format_python_package_list(missing)
+    missing_str <- format_package_list(missing)
     # nolint end object_usage_linter
 
     cli_abort(
@@ -76,7 +76,7 @@ check_r_packages <- function(what, requires, where) {
   if (any(!is_available)) {
     missing <- requires[!is_available]
     # nolint start object_usage_linter
-    missing_str <- format_r_package_list(missing)
+    missing_str <- format_package_list(missing)
     install_fun <- get_r_install_function(where)
     # nolint end object_usage_linter
 
@@ -93,25 +93,12 @@ check_r_packages <- function(what, requires, where) {
   }
 }
 
-#' Format Python package list for installation command
+#' Format package list for installation command
 #'
-#' @param packages Character vector of Python package names
-#' @return Formatted string for use in reticulate::py_install()
+#' @param packages Character vector of package names
+#' @return Formatted string for use in installation functions
 #' @noRd
-format_python_package_list <- function(packages) {
-  missing_str <- paste0("'", paste(packages, collapse = "', '"), "'")
-  if (length(packages) > 1) {
-    missing_str <- paste0("c(", missing_str, ")")
-  }
-  missing_str
-}
-
-#' Format R package list for installation command
-#'
-#' @param packages Character vector of R package names
-#' @return Formatted string for use in install.packages()
-#' @noRd
-format_r_package_list <- function(packages) {
+format_package_list <- function(packages) {
   missing_str <- paste0("\"", paste(packages, collapse = "\", \""), "\"")
   if (length(packages) > 1) {
     missing_str <- paste0("c(", missing_str, ")")

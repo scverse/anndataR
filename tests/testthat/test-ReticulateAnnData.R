@@ -360,14 +360,14 @@ test_that("reticulate utility functions work", {
 
   # Test conversion utilities with simple objects
   r_mat <- matrix(1:6, 2, 3)
-  py_mat <- try_r_to_py(r_mat)
-  r_mat2 <- try_py_to_r(py_mat)
+  py_mat <- r_to_py(r_mat)
+  r_mat2 <- py_to_r(py_mat)
   expect_equal(dim(r_mat2), c(2, 3))
 
   # Test with data frame
   r_df <- data.frame(x = 1:3, y = letters[1:3])
-  py_df <- try_r_to_py(r_df)
-  r_df2 <- try_py_to_r(py_df)
+  py_df <- r_to_py(r_df)
+  r_df2 <- py_to_r(py_df)
   expect_s3_class(r_df2, "data.frame")
   expect_equal(nrow(r_df2), 3)
 })
