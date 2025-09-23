@@ -431,19 +431,19 @@ test_that("AnnDataView error handling works", {
   view <- ad[obs_condition, ]
   expect_error(
     view$X <- matrix(1:15, 3L, 5L),
-    "Cannot set X on a AnnDataView object"
+    "Cannot set X on an.*AnnDataView.*object"
   )
   expect_error(
     view$obs <- data.frame(),
-    "Cannot set obs on a AnnDataView object"
+    "Cannot set obs on an.*AnnDataView.*object"
   )
   expect_error(
     view$var <- data.frame(),
-    "Cannot set var on a AnnDataView object"
+    "Cannot set var on an.*AnnDataView.*object"
   )
   expect_error(
     view$layers <- list(),
-    "Cannot set layers on a AnnDataView object"
+    "Cannot set layers on an.*AnnDataView.*object"
   )
 
   # Test that AnnDataView inherits from AbstractAnnData
