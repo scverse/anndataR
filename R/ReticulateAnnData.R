@@ -272,7 +272,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (!is.null(py_anndata)) {
         # Use existing Python AnnData object
-        if (!is_py_anndata(py_anndata)) {
+        if (!inherits(py_anndata, "anndata._core.anndata.AnnData")) {
           cli_abort(
             "{.arg py_anndata} must be a Python AnnData object from {.pkg reticulate}"
           )
@@ -443,85 +443,4 @@ as_ReticulateAnnData <- function(adata) {
     uns = adata$uns,
     shape = adata$shape()
   )
-}
-
-#' S3 method for converting Python AnnData objects to R ReticulateAnnData
-#'
-#' This method is automatically called when using `reticulate::py_to_r()` on a
-#' Python AnnData object, provided the anndataR package is loaded.
-#'
-#' @param x A Python AnnData object
-#'
-#' @return A [`ReticulateAnnData`] object wrapping the Python object
-#' @export
-#'
-#' @family object converters
-#'
-#' @importFrom reticulate py_to_r
-#' @method py_to_r anndata._core.anndata.AnnData
-#' @examples
-#' \dontrun{
-#' # This method is called automatically:
-#' library(reticulate)
-#' library(anndataR)
-#' ad_py <- import("anndata", convert = FALSE)
-#' py_adata <- ad_py$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
-#' r_adata <- py_to_r(py_adata)  # Automatically uses this method
-#' }
-py_to_r.anndata._core.anndata.AnnData <- function(x) {
-  ReticulateAnnData$new(py_anndata = x)
-}
-
-#' S3 method for converting AbstractAnnData objects to Python
-#'
-#' This method is automatically called when using `reticulate::r_to_py()` on an
-#' AbstractAnnData object, provided the anndataR package is loaded.
-#'
-#' @param x An AbstractAnnData object (any anndataR implementation)
-#' @param convert Whether to convert the result (passed to reticulate)
-#'
-#' @return A Python AnnData object
-#' @export
-#'
-#' @family object converters
-#'
-#' @importFrom reticulate r_to_py
-#' @method r_to_py AbstractAnnData
-#' @examples
-#' \dontrun{
-#' # This method is called automatically:
-#' library(reticulate)
-#' library(anndataR)
-#' r_adata <- AnnData(X = matrix(1:12, 3, 4))
-#' py_adata <- r_to_py(r_adata)  # Automatically uses this method
-#' }
-r_to_py.AbstractAnnData <- function(x, convert = TRUE) {
-  if (inherits(x, "ReticulateAnnData")) {
-    # If it's already a ReticulateAnnData, return the underlying Python object
-    return(x$py_anndata())
-  } else {
-    # Convert other AnnData types to ReticulateAnnData first, then extract Python object
-    ret_adata <- as_ReticulateAnnData(x)
-    return(ret_adata$py_anndata())
-  }
-}
-
-#' Check if an object is a Python AnnData object
-#'
-#' @param x An object to check
-#'
-#' @return Logical indicating if the object is a Python AnnData object
-#' @noRd
-#'
-#' @examples
-#' \dontrun{
-#' # Requires Python anndata to be installed
-#' library(reticulate)
-#' ad <- import("anndata")
-#' py_adata <- ad$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
-#' is_py_anndata(py_adata)  # TRUE
-#' is_py_anndata(matrix(1:12, 3, 4))  # FALSE
-#' }
-is_py_anndata <- function(x) {
-  inherits(x, "anndata._core.anndata.AnnData")
 }

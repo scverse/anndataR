@@ -346,17 +346,7 @@ test_that("automatic py_to_r and r_to_py conversion works", {
 })
 
 test_that("reticulate utility functions work", {
-  # Test is_py_anndata with non-Python objects (doesn't require reticulate)
-  regular_matrix <- matrix(1:12, 3, 4)
-  expect_false(is_py_anndata(regular_matrix))
-
-  # Skip the rest if anndata/reticulate not available
-  skip_if_no_anndata_py()
-
   library(reticulate)
-  ad <- import("anndata", convert = FALSE)
-  py_adata <- ad$AnnData(shape = c(3L, 4L))
-  expect_true(is_py_anndata(py_adata))
 
   # Test conversion utilities with simple objects
   r_mat <- matrix(1:6, 2, 3)
