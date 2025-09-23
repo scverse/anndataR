@@ -64,9 +64,9 @@ documentation but is also provided to users for creating reproducible
 examples.
 }
 \details{
-To generate no data for a given slot, provide an empty vector to the matching
-types argument, e.g. \code{obs_types = c()} will generate an empty \code{obs} data
-frame.
+To generate no data for a given slot, set the matching type argument to
+\code{NULL} or an empty vector, e.g. \code{obs_types = c()} will generate an empty
+\code{obs} data frame.
 }
 \examples{
 # Generate all types as a list

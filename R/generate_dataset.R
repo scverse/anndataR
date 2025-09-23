@@ -30,9 +30,9 @@
 #' @export
 #'
 #' @details
-#' To generate no data for a given slot, provide an empty vector to the matching
-#' types argument, e.g. `obs_types = c()` will generate an empty `obs` data
-#' frame.
+#' To generate no data for a given slot, set the matching type argument to
+#' `NULL` or an empty vector, e.g. `obs_types = c()` will generate an empty
+#' `obs` data frame.
 #'
 #' @seealso [generator_types] for types that can be supplied to arguments
 #'
@@ -84,7 +84,7 @@ generate_dataset <- function(
     uns_types <- example_generator_types$uns
   }
 
-  if (length(x_type) != 1) {
+  if (!rlang::is_empty(x_type) && length(x_type) != 1) {
     cli_abort("{.arg x_type} must be a single type")
   }
 
