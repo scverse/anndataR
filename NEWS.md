@@ -4,7 +4,7 @@
 
 * Implemented an `AnnDataView` class, which provides a lazy view of an `AnnData` object without copying data (PR #1096)
 * Implemented S3 methods for `AbstractAnnData` objects: `dim`, `nrow`, `ncol`, `dimnames`, `rownames`, `colnames`, and `[` (PR #1096)
-* Add ReticulateAnnData class for seamless Python integration via reticulate (PR #322)
+* Add `ReticulateAnnData` class for seamless Python integration via **{reticulate}** (PR #322)
 
 ## Major changes
 
