@@ -1,9 +1,8 @@
-#' Generator Types
+#' @description
+#' `generator_types` is list of available generator types for different components of a dataset
+#' that can be passed to arguments of [generate_dataset()].
 #'
-#' A list of available generator types for different components of a dataset
-#' that can be passed to arguments of [generate_dataset()]
-#'
-#' @format A named list with the following elements:
+#' @format `generator_types` is a named list with the following elements:
 #'
 #' - `X`: Types of matrices that can be used for the main data matrix
 #' - `layers`: Types of matrices that can be used for additional layers
@@ -21,16 +20,16 @@
 #'   annotations
 #'
 #' @details
-#' The `generator_types` list contains all available types and
-#' `example_generator_types` contains only those that are used when
-#' `example = TRUE` is passed to [generate_dataset()].
-#'
-#' @seealso [generate_dataset()] for the generator function
+#' The `generator_types` list contains all available types that can be passed to
+#' arguments of `generate_dataset()` and `example_generator_types` contains only
+#' those that are used with `generate_dataset(example = TRUE)`.
 #'
 #' @examples
+#' # All available generator types
 #' generator_types
 #'
 #' @export
+#' @rdname generate_dataset
 generator_types <- list(
   X = names(matrix_generators),
   layers = names(matrix_generators),
@@ -49,12 +48,13 @@ generator_types <- list(
   )
 )
 
-#' @rdname generator_types
+#' @rdname generate_dataset
 #' @export
 #'
-#' @format NULL
+#' @format `example_generator_types` has the same structure but only contains a subset of types
 #'
 #' @examples
+#' # Types used when example = TRUE
 #' example_generator_types
 example_generator_types <- list(
   X = "numeric_matrix",

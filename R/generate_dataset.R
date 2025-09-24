@@ -1,26 +1,26 @@
-#' Generate a dataset
+#' Generate a mock dataset
 #'
-#' Generate a synthetic dataset with different types of columns and layers. This
-#' is primarily designed for use in tests, examples, vignettes and other
+#' Generate a mock synthetic dataset with different types of columns and layers.
+#' This is primarily designed for use in tests, examples, vignettes and other
 #' documentation but is also provided to users for creating reproducible
 #' examples.
 #'
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
-#' @param x_type Type of matrix to generate for X, see [generator_types]
+#' @param x_type Type of matrix to generate for X, see `generator_types`
 #' @param layer_types Types of matrices to generate for layers, see
-#'   [generator_types]
-#' @param obs_types Types of vectors to generate for obs, see [generator_types]
-#' @param var_types Types of vectors to generate for var, see [generator_types]
+#'   `generator_types`
+#' @param obs_types Types of vectors to generate for obs, see `generator_types`
+#' @param var_types Types of vectors to generate for var, see `generator_types`
 #' @param obsm_types Types of matrices to generate for obsm, see
-#'   [generator_types]
+#'   `generator_types`
 #' @param varm_types Types of matrices to generate for varm, see
-#'   [generator_types]
+#'   `generator_types`
 #' @param obsp_types Types of matrices to generate for obsp, see
-#'   [generator_types]
+#'   `generator_types`
 #' @param varp_types Types of matrices to generate for varp, see
-#'   [generator_types]
-#' @param uns_types Types of objects to generate for uns, see [generator_types]
+#'   `generator_types`
+#' @param uns_types Types of objects to generate for uns, see `generator_types`
 #' @param example If `TRUE`, the types will be overridden with a small subset of
 #'   types. This is useful for documentation.
 #' @param format Object type to output, one of "list", "AnnData",
@@ -38,8 +38,6 @@
 #' generated slots will be included in the output object. To generate a more
 #' complete object use `format = "AnnData` followed by
 #' `adata$as_SingleCellExperiment()` or `adata$as_Seurat()`.
-#'
-#' @seealso [generator_types] for types that can be supplied to arguments
 #'
 #' @examples
 #' # Generate all types as a list
@@ -60,6 +58,7 @@
 #' if (rlang::is_installed("SeuratObject")) {
 #'   dummy_seurat <- generate_dataset(format = "Seurat", example = TRUE)
 #' }
+#'
 generate_dataset <- function(
   n_obs = 10L,
   n_vars = 20L,
