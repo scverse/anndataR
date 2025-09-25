@@ -18,8 +18,8 @@
   operators for cleaner code (PR #328)
 - Add explanatory comments for matrix generation alignment with Python
   **dummy-anndata** (PR #328)
-- Add `generator_types` and `example_generator_types` list objects to store
-  allowed/example types for `generate_dataset()` (PR #354)
+- Add `get_generator_types()` function return allowed/example types for
+  `generate_dataset()` (PR #354)
 - Add checks for type arguments to `generate_dataset()` (PR #354)
 - Generalise the layers created by `generate_dataset()` when `format = "Seurat"`
   (PR #354)
