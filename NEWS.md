@@ -43,6 +43,7 @@
   - Now properly expands loadings matrix to include all genes with zeros for
     non-variable features
   - Adds warning when rownames don't match var_names during conversion
+- Improve mapping of dimensionality reduction slots during conversion between AnnData, SingleCellExperiment, and Seurat (PR #333)
 
 ## Documentation
 

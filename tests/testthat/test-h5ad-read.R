@@ -9,7 +9,7 @@ test_that("reading H5AD as SingleCellExperiment works", {
 
 test_that("reading H5AD as Seurat works", {
   skip_if_not_installed("SeuratObject")
-  # TODO: remove this suppression when the to_seurat, from_seurat functions are updated.
+  # TODO: remove this suppression when the as_seurat, from_seurat functions are updated.
   seurat <- suppressWarnings(read_h5ad(file, as = "Seurat"))
   expect_s4_class(seurat, "Seurat")
 })

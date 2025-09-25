@@ -34,7 +34,7 @@ test_that("as_Seurat retains number of observations and features", {
 for (obs_key in colnames(ad$obs)) {
   test_that(paste0("as_Seurat retains obs key: ", obs_key), {
     msg <- message_if_known(
-      backend = "to_Seurat",
+      backend = "as_seurat",
       slot = c("obs"),
       dtype = obs_key,
       process = "convert",
@@ -56,7 +56,7 @@ for (obs_key in colnames(ad$obs)) {
 for (var_key in colnames(ad$var)) {
   test_that(paste0("as_Seurat retains var key: ", var_key), {
     msg <- message_if_known(
-      backend = "to_Seurat",
+      backend = "as_seurat",
       slot = c("var"),
       dtype = var_key,
       process = "convert",
@@ -75,7 +75,7 @@ for (var_key in colnames(ad$var)) {
 for (layer_key in names(ad$layers)) {
   test_that(paste0("as_Seurat retains layer: ", layer_key), {
     msg <- message_if_known(
-      backend = "to_Seurat",
+      backend = "as_seurat",
       slot = c("layers"),
       dtype = layer_key,
       process = "convert",
@@ -100,7 +100,7 @@ for (layer_key in names(ad$layers)) {
 for (uns_key in names(ad$uns)) {
   test_that(paste0("as_Seurat retains uns key: ", uns_key), {
     msg <- message_if_known(
-      backend = "to_Seurat",
+      backend = "as_seurat",
       slot = c("uns"),
       dtype = uns_key,
       process = "convert",
@@ -115,7 +115,7 @@ for (uns_key in names(ad$uns)) {
 
 test_that("as_Seurat retains pca dimred", {
   msg <- message_if_known(
-    backend = "to_Seurat",
+    backend = "as_seurat",
     slot = c("obsm"),
     dtype = "pca",
     process = "convert",
@@ -125,16 +125,16 @@ test_that("as_Seurat retains pca dimred", {
   skip_if(!is.null(msg), message = msg)
 
   # trackstatus: class=Seurat, feature=test_get_obsm, status=wip
-  expect_true("X_pca" %in% Reductions(seu))
+  expect_true("pca" %in% Reductions(seu))
   expect_equal(
-    Embeddings(seu, reduction = "X_pca"),
+    Embeddings(seu, reduction = "pca"),
     ad$obsm[["X_pca"]],
     ignore_attr = TRUE
   )
 
   # trackstatus: class=Seurat, feature=test_get_varm, status=wip
   expect_equal(
-    Loadings(seu, reduction = "X_pca"),
+    Loadings(seu, reduction = "pca"),
     ad$varm[["PCs"]],
     ignore_attr = TRUE
   )

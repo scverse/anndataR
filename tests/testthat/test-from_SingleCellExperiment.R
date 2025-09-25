@@ -176,16 +176,16 @@ test_that("as_AnnData (SCE) retains pca dimred", {
   # trackstatus: class=SingleCellExperiment, feature=test_set_obsm, status=wip
   expect_true("X_pca" %in% names(ad$obsm))
   expect_equal(
-    sampleFactors(reducedDims(sce)$X_pca),
+    sampleFactors(reducedDims(sce)$PCA),
     ad$obsm[["X_pca"]]
   )
 
   # trackstatus: class=SingleCellExperiment, feature=test_set_varm, status=wip
-  expect_true("X_pca" %in% names(ad$varm))
+  expect_true("PCs" %in% names(ad$varm))
   # AnnData now adds dimnames on-the-fly, but SCE doesn't preserve them
   # So we need to strip dimnames for comparison
-  actual_mat <- ad$varm[["X_pca"]]
-  expected_mat <- featureLoadings(reducedDims(sce)$X_pca)
+  actual_mat <- ad$varm[["PCs"]]
+  expected_mat <- featureLoadings(reducedDims(sce)$PCA)
   dimnames(actual_mat) <- NULL
   dimnames(expected_mat) <- NULL
   expect_equal(

@@ -292,20 +292,46 @@ as_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .as_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  purrr::map(adata$obsm_keys(), function(.obsm) {
+
+  # Get mappings keyed by AnnData obsm names from centralized location
+  obsm_mappings <- .get_dimred_mapping(from = "anndata_obsm")
+
+  # Create mapping and name pairs for each obsm key
+  results <- purrr::map(adata$obsm_keys(), function(.obsm) {
     if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
       return(NULL)
     }
 
     mapping <- c(sampleFactors = .obsm)
-    if (.obsm == "X_pca" && "PCs" %in% names(adata$varm)) {
-      mapping["featureLoadings"] <- "PCs"
+
+    # Check if this is a known dimensionality reduction with loadings
+    if (.obsm %in% names(obsm_mappings)) {
+      dimred_info <- obsm_mappings[[.obsm]]
+      if (
+        !is.null(dimred_info$anndata_varm) &&
+          dimred_info$anndata_varm %in% names(adata$varm)
+      ) {
+        mapping["featureLoadings"] <- dimred_info$anndata_varm
+      }
     }
 
-    mapping
+    # Determine the final name: use Bioconductor convention if available
+    final_name <- if (.obsm %in% names(obsm_mappings)) {
+      obsm_mappings[[.obsm]]$sce
+    } else {
+      .obsm
+    }
+
+    list(mapping = mapping, name = final_name)
   }) |>
-    setNames(adata$obsm_keys()) |>
     purrr::compact()
+
+  # Extract mappings and names, then set names
+  result_names <- purrr::map_chr(results, "name")
+  results <- purrr::map(results, "mapping")
+  names(results) <- result_names
+
+  results
 }
 
 # nolint start: object_length_linter object_name_linter
@@ -382,7 +408,9 @@ as_SingleCellExperiment <- function(
     }
 
     loadings <- adata$varm[[varm_key]]
-    rownames(loadings) <- colnames(embedding)
+    # Add rownames (variable names) and colnames to loadings matrix
+    rownames(loadings) <- adata$var_names
+    colnames(loadings) <- colnames(embedding)
   } else {
     loadings <- matrix(nrow = 0, ncol = ncol(embedding))
   }

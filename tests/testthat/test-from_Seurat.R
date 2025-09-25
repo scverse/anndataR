@@ -123,13 +123,13 @@ test_that("as_AnnData (Seurat) retains pca", {
 
   # trackstatus: class=Seurat, feature=test_set_obsm, status=wip
   expect_equal(
-    ad$obsm[["pca"]],
+    ad$obsm[["X_pca"]],
     Embeddings(obj, reduction = "pca"),
     ignore_attr = TRUE
   )
 
   # trackstatus: class=Seurat, feature=test_set_varm, status=done
-  expanded_varm_pca <- ad$varm[["pca"]]
+  expanded_varm_pca <- ad$varm[["PCs"]]
   loadings <- Loadings(obj, reduction = "pca")
 
   # check whether rows not in loadings are all zero
@@ -161,7 +161,7 @@ test_that("as_AnnData (Seurat) retains umap", {
   skip_if(!is.null(msg), message = msg)
 
   expect_equal(
-    ad$obsm[["umap"]],
+    ad$obsm[["X_umap"]],
     Embeddings(obj, reduction = "umap"),
     ignore_attr = TRUE
   )
