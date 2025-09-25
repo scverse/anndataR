@@ -7,26 +7,22 @@
 #'
 #' @param n_obs Number of observations to generate
 #' @param n_vars Number of variables to generate
-#' @param x_type Type of matrix to generate for X, see `generator_types`
-#' @param layer_types Types of matrices to generate for layers, see
-#'   `generator_types`
-#' @param obs_types Types of vectors to generate for obs, see `generator_types`
-#' @param var_types Types of vectors to generate for var, see `generator_types`
-#' @param obsm_types Types of matrices to generate for obsm, see
-#'   `generator_types`
-#' @param varm_types Types of matrices to generate for varm, see
-#'   `generator_types`
-#' @param obsp_types Types of matrices to generate for obsp, see
-#'   `generator_types`
-#' @param varp_types Types of matrices to generate for varp, see
-#'   `generator_types`
-#' @param uns_types Types of objects to generate for uns, see `generator_types`
+#' @param x_type Type of matrix to generate for `X`
+#' @param layer_types Types of matrices to generate for `layers`
+#' @param obs_types Types of vectors to generate for `obs`
+#' @param var_types Types of vectors to generate for `var`
+#' @param obsm_types Types of matrices to generate for `obsm`
+#' @param varm_types Types of matrices to generate for `varm`
+#' @param obsp_types Types of matrices to generate for `obsp`
+#' @param varp_types Types of matrices to generate for `varp`
+#' @param uns_types Types of objects to generate for `uns`
 #' @param example If `TRUE`, the types will be overridden with a small subset of
 #'   types. This is useful for documentation.
 #' @param format Object type to output, one of "list", "AnnData",
 #'   "SingleCellExperiment", or "Seurat".
 #'
-#' @return Object containing the generated dataset as defined by `output`
+#' @return For `generate_dataset()`, an object as defined by `output` containing
+#'   the generated dataset
 #' @export
 #'
 #' @details
@@ -36,7 +32,7 @@
 #'
 #' When generating `SingleCellExperiment` or `Seurat` objects, only some of the
 #' generated slots will be included in the output object. To generate a more
-#' complete object use `format = "AnnData` followed by
+#' complete object, use `format = "AnnData"` followed by
 #' `adata$as_SingleCellExperiment()` or `adata$as_Seurat()`.
 #'
 #' @examples
@@ -63,20 +59,22 @@ generate_dataset <- function(
   n_obs = 10L,
   n_vars = 20L,
   x_type = "numeric_matrix",
-  layer_types = generator_types$layers,
-  obs_types = generator_types$obs,
-  var_types = generator_types$var,
-  obsm_types = generator_types$obsm,
-  varm_types = generator_types$varm,
-  obsp_types = generator_types$obsp,
-  varp_types = generator_types$varp,
-  uns_types = generator_types$uns,
+  layer_types = get_generator_types(slot = "layers"),
+  obs_types = get_generator_types(slot = "obs"),
+  var_types = get_generator_types(slot = "var"),
+  obsm_types = get_generator_types(slot = "obsm"),
+  varm_types = get_generator_types(slot = "varm"),
+  obsp_types = get_generator_types(slot = "obsp"),
+  varp_types = get_generator_types(slot = "varp"),
+  uns_types = get_generator_types(slot = "uns"),
   example = FALSE,
   format = c("list", "AnnData", "SingleCellExperiment", "Seurat")
 ) {
   format <- match.arg(format)
 
   if (example) {
+    example_generator_types <- get_generator_types(example = TRUE)
+
     x_type <- example_generator_types$X
     layer_types <- example_generator_types$layers
     obs_types <- example_generator_types$obs

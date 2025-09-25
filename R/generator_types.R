@@ -1,36 +1,49 @@
 #' @description
-#' `generator_types` is list of available generator types for different components of a dataset
-#' that can be passed to arguments of [generate_dataset()].
+#' Use `get_generator_types()` to get the available types for each slot.
 #'
-#' @format `generator_types` is a named list with the following elements:
-#'
-#' - `X`: Types of matrices that can be used for the main data matrix
-#' - `layers`: Types of matrices that can be used for additional layers
-#' - `obs`: Types of vectors that can be used for observation metadata
-#' - `var`: Types of vectors that can be used for variable metadata
-#' - `obsm`: Types of matrices or vectors that can be used for observation
-#'   multi-dimensional annotations
-#' - `varm`: Types of matrices or vectors that can be used for variable
-#'   multi-dimensional annotations
-#' - `obsp`: Types of matrices that can be used for pairwise observation
-#'   annotations
-#' - `varp`: Types of matrices that can be used for pairwise variable
-#'   annotations
-#' - `uns`: Types of miscellaneous data that can be used for unstructured
-#'   annotations
+#' @param slot Which slot to return types for, if `NULL` a named list of all
+#'   slots is returned
 #'
 #' @details
-#' The `generator_types` list contains all available types that can be passed to
-#' arguments of `generate_dataset()` and `example_generator_types` contains only
-#' those that are used with `generate_dataset(example = TRUE)`.
+#' Use `get_generator_types()` to get a list of the available types for each
+#' slot, or for a specific slot by setting `slot`. If `example = TRUE`, only the
+#' example types are returned.
 #'
-#' @examples
-#' # All available generator types
-#' generator_types
-#'
+#' @returns For `get_generator_types()`, a named list of character vectors or a
+#'   single character vector if `slot` is not `NULL`
 #' @export
 #' @rdname generate_dataset
-generator_types <- list(
+#'
+#' @examples
+#' # Get all available generator types
+#' get_generator_types()
+#'
+#' # Get generator types for a specific slot
+#' get_generator_types(slot = "obs")
+#'
+#' # Get generator types used when example = TRUE
+#' get_generator_types(example = TRUE)
+get_generator_types <- function(example = FALSE, slot = NULL) {
+  if (example) {
+    types <- .example_generator_types
+  } else {
+    types <- .generator_types
+  }
+
+  if (!is.null(slot)) {
+    if (!(slot %in% names(types))) {
+      cli_abort(c(
+        "Invalid slot: {.val {slot}}",
+        "i" = "Must be one of {.or {.val {names(types)}}}"
+      ))
+    }
+    types <- types[[slot]]
+  }
+
+  types
+}
+
+.generator_types <- list(
   X = names(matrix_generators),
   layers = names(matrix_generators),
   obs = names(vector_generators),
@@ -48,15 +61,7 @@ generator_types <- list(
   )
 )
 
-#' @rdname generate_dataset
-#' @export
-#'
-#' @format `example_generator_types` has the same structure but only contains a subset of types
-#'
-#' @examples
-#' # Types used when example = TRUE
-#' example_generator_types
-example_generator_types <- list(
+.example_generator_types <- list(
   X = "numeric_matrix",
   layers = c("numeric_matrix", "numeric_dense", "numeric_csparse"),
   obs = c("character", "integer", "factor"),
