@@ -99,11 +99,11 @@ generate_dataset <- function(
       paste0(slot, "_types")
     }
     types <- get(types_arg)
-    if (!all(types %in% generator_types[[slot]])) {
-      invalid_types <- types[!types %in% generator_types[[slot]]] # nolint: object_use_linter
+    if (!all(types %in% .generator_types[[slot]])) {
+      invalid_types <- types[!types %in% .generator_types[[slot]]] # nolint: object_use_linter
       cli_abort(c(
         "Some {.arg {types_arg}} types are not valid: {.val {invalid_types}}.",
-        "i" = "Valid types are: {.val {generator_types[[slot]]}}"
+        "i" = "Valid types are: {.val {.generator_types[[slot]]}}"
       ))
     }
   }
@@ -143,15 +143,15 @@ generate_dataset <- function(
 .generate_dataset_as_list <- function(
   n_obs = 10L,
   n_vars = 20L,
-  x_type = generator_types$X[1],
-  layer_types = generator_types$layers,
-  obs_types = generator_types$obs,
-  var_types = generator_types$var,
-  obsm_types = generator_types$obsm,
-  varm_types = generator_types$varm,
-  obsp_types = generator_types$obsp,
-  varp_types = generator_types$varp,
-  uns_types = generator_types$uns
+  x_type = get_generator_types(slot = "X")[1],
+  layer_types = get_generator_types(slot = "layers"),
+  obs_types = get_generator_types(slot = "obs"),
+  var_types = get_generator_types(slot = "var"),
+  obsm_types = get_generator_types(slot = "obsm"),
+  varm_types = get_generator_types(slot = "varm"),
+  obsp_types = get_generator_types(slot = "obsp"),
+  varp_types = get_generator_types(slot = "varp"),
+  uns_types = get_generator_types(slot = "uns")
 ) {
   # generate X
   X <- generate_matrix(n_obs, n_vars, x_type)
