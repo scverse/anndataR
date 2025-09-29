@@ -30,7 +30,7 @@ NULL
 .as_abort_extra_args <- function(from, to, helper) {
   cli::cli_abort(
     c(
-      "Can't coerce {.cls {from}} to {.cls {to}} with {.fun as()}.",
+      "Can't coerce {.cls {from}} to {.cls {to}} with {.fun as}.",
       "i" = helper
     ),
     call = rlang::caller_env()
