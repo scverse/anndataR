@@ -32,20 +32,13 @@ This package differs from [**{zellkonverter}**](https://bioconductor.org/package
 
 ## Installation
 
-Install using either **{BiocManager}** or from GitHub using **{pak}**:
+Install using **{BiocManager}**:
 
-```{r install-BiocManager, eval = FALSE}
+```{r install, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
 BiocManager::install("anndataR")
-```
-
-```{r install-pak, eval = FALSE}
-if (!require("pak", quietly = TRUE)) {
-  install.packages("pak")
-}
-pak::pak("scverse/anndataR")
 ```
 
 ## Usage
