@@ -18,7 +18,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemoryAnnData", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -34,7 +34,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemoryAnnData", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -50,7 +50,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemoryAnnData", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 }

@@ -29,6 +29,7 @@
 - Add checks for type arguments to `generate_dataset()` (PR #354)
 - Generalise the layers created by `generate_dataset()` when `format = "Seurat"`
   (PR #354)
+- Fix inconsistency in `output_class` argument values across conversion functions (PR #xxx)
 
 ## Bug fixes
 

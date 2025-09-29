@@ -30,7 +30,7 @@ from_Seurat <- function(
   obsp_mapping = TRUE,
   varp_mapping = TRUE,
   uns_mapping = TRUE,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemoryAnnData", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
