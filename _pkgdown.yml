@@ -19,5 +19,3 @@ navbar:
       href: articles/software_design.html
     - text: Development status
       href: articles/development_status.html
-    - text: Known issues
-      href: articles/known_issues.html
