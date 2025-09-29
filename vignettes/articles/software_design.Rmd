@@ -1,6 +1,7 @@
 ---
 title: Software design
-output: rmarkdown::html_vignette
+package: anndataR
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Software design}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,23 +16,24 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Introduction
 
-`{anndataR}` is designed to offer the combined functionality of the following packages:
+`r Biocpkg("anndataR")` is designed to offer the combined functionality of the following packages:
 
-* [theislab/zellkonverter](https://github.com/theislab/zellkonverter): Convert AnnData files to/from `SingleCellExperiment` objects.
-* [mtmorgan/h5ad](https://github.com/mtmorgan/h5ad/): Read/write `*.h5ad` files natively using `rhdf5`.
-* [dynverse/anndata](https://github.com/dynverse/anndata): An R implementation of the AnnData data structures, uses `reticulate` to read/write `*.h5ad` files.
+* `r Biocpkg("zellkonverter")` ([theislab/zellkonverter](https://github.com/theislab/zellkonverter)): Convert `AnnData` files to/from `SingleCellExperiment` objects
+* `r Githubpkg("mtmorgan/h5ad")`: Read/write `*.h5ad` files natively using `rhdf5`
+* `r CRANpkg("anndataR")` ([dynverse/anndata](https://github.com/dynverse/anndata)): An R implementation of the `AnnData` data structures, uses `reticulate` to read/write `*.h5ad` files
 
-Ideally, this package will be a complete replacement for all of these packages, and will be the go-to package for working with AnnData files in R.
+Ideally, this package will be a complete replacement for all of these packages, and will be the go-to package for working with `AnnData` files in R.
 
-## Desired feature list
+# Desired feature list
 
-* Provide an `R6` class to work with AnnData objects in R (either in-memory or on-disk).
+* Provide an `R6` class to work with `AnnData` objects in R (either in-memory or on-disk).
 * Read/write `*.h5ad` files natively
 * Convert to/from `SingleCellExperiment` objects
 * Convert to/from `Seurat` objects
 
-## Class diagram
+# Class diagram
 
 Here is a diagram of the main R6 classes provided by the package:
 
@@ -44,7 +46,7 @@ Notation:
   - `as_SingleCellExperiment(): SingleCellExperiment` - function `as_SingleCellExperiment` returns object of type `SingleCellExperiment`
   - `*as_SingleCellExperiment()` - function `as_SingleCellExperiment` is abstract
 
-## Session info
+# Session info
 
 ```{r sessioninfo}
 sessionInfo()
