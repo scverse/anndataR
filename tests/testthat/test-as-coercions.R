@@ -38,21 +38,6 @@ test_that("as() refuses HDF5AnnData without extra arguments", {
   )
 })
 
-test_that("as() converts AnnData to SummarizedExperiment with warning", {
-  skip_if_not_installed("SingleCellExperiment")
-  skip_if_not_installed("SummarizedExperiment")
-
-  ad <- AnnData(X = matrix(1:4, nrow = 2))
-
-  expect_warning(
-    se <- methods::as(ad, "SummarizedExperiment"),
-    "as_SingleCellExperiment"
-  )
-
-  expect_s4_class(se, "SummarizedExperiment")
-  expect_equal(dim(se), c(2, 2))
-})
-
 test_that("as() converts AnnDataView to InMemoryAnnData with warning", {
   ad <- AnnData(X = matrix(1:4, nrow = 2))
   view <- ad[1, ]

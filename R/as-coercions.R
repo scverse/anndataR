@@ -85,7 +85,6 @@ NULL
 }
 
 # AnnData <-> AnnData coercion rules ----------------------------------------
-
 warn_ann_inmemory <- .format_control_recommendation(
   "adata$as_InMemoryAnnData(...)"
 )
@@ -166,22 +165,6 @@ if (rlang::is_installed("SingleCellExperiment")) {
       to = "SingleCellExperiment",
       handler = .make_convert_handler(
         converter = as_SingleCellExperiment,
-        warn = warn_sce
-      )
-    ),
-    list(
-      from = "AbstractAnnData",
-      to = "SummarizedExperiment",
-      handler = .make_convert_handler(
-        converter = function(from) {
-          check_requires(
-            "Coercing an AnnData object to a SummarizedExperiment",
-            "SingleCellExperiment",
-            where = "Bioc"
-          )
-          sce <- as_SingleCellExperiment(from)
-          methods::as(sce, "SummarizedExperiment")
-        },
         warn = warn_sce
       )
     )
