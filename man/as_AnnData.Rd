@@ -18,7 +18,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -34,7 +34,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -50,7 +50,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 }
@@ -220,8 +220,10 @@ Other AnnData creators:
 Other object converters: 
 \code{\link{as_HDF5AnnData}()},
 \code{\link{as_InMemoryAnnData}()},
+\code{\link{as_ReticulateAnnData}()},
 \code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}()}
+\code{\link{as_SingleCellExperiment}()},
+\code{\link{reticulate-helpers}}
 }
 \concept{AnnData creators}
 \concept{object converters}

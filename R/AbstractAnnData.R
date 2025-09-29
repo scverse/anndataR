@@ -89,8 +89,12 @@ AbstractAnnData <- R6::R6Class(
     #'
     #' @param ... Optional arguments to print method
     print = function(...) {
+      # Get the class name (can be overridden by subclasses)
+      class_name <- private$.class_name()
+
       cat(
-        "AnnData object with n_obs \u00D7 n_vars = ",
+        class_name,
+        " object with n_obs \u00D7 n_vars = ",
         self$n_obs(),
         " \u00D7 ",
         self$n_vars(),
@@ -250,6 +254,15 @@ AbstractAnnData <- R6::R6Class(
     #' @return An [InMemoryAnnData] object
     as_InMemoryAnnData = function() {
       as_InMemoryAnnData(self)
+    },
+    #' @description
+    #' Convert to a [`ReticulateAnnData`]
+    #'
+    #' See [as_ReticulateAnnData()] for more details on the conversion
+    #'
+    #' @return A [ReticulateAnnData] object
+    as_ReticulateAnnData = function() {
+      as_ReticulateAnnData(self)
     },
     #' @description
     #' Convert to an [`HDF5AnnData`]
@@ -590,6 +603,13 @@ AbstractAnnData <- R6::R6Class(
       )
 
       df
+    },
+
+    # @description Get the class name for printing
+    # Default implementation returns the first class name
+    # Can be overridden by subclasses (e.g., AnnDataView)
+    .class_name = function() {
+      class(self)[1]
     }
   )
 )

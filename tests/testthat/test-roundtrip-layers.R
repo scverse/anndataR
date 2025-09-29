@@ -1,4 +1,4 @@
-skip_if_no_anndata()
+skip_if_no_anndata_py()
 skip_if_no_dummy_anndata()
 
 library(reticulate)
@@ -62,9 +62,10 @@ for (name in test_names) {
       bi$list(adata_py$layers$keys())
     )
 
-    # check that the print output is the same
+    # check that the print output is the same (normalize class names)
     str_r <- capture.output(print(adata_r))
     str_py <- capture.output(print(adata_py))
+    str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
     expect_equal(str_r, str_py)
   })
 

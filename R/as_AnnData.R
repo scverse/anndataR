@@ -162,7 +162,7 @@ as_AnnData <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   UseMethod("as_AnnData", x)
@@ -182,7 +182,7 @@ as_AnnData.SingleCellExperiment <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   from_SingleCellExperiment(
@@ -215,7 +215,7 @@ as_AnnData.Seurat <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   from_Seurat(

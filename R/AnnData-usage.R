@@ -10,7 +10,9 @@
 #'
 #' There are different back ends for `AnnData` objects that inherit from the
 #' abstract [AbstractAnnData] class. For example, the [InMemoryAnnData] stores
-#' data in memory or the [HDF5AnnData] is backed by a H5AD file.
+#' data in memory, the [HDF5AnnData] is backed by a H5AD file, and the
+#' [ReticulateAnnData] provides direct integration with Python `AnnData` objects
+#' via reticulate.
 #'
 #' ## Usage
 #'
@@ -84,6 +86,7 @@
 #'   \item{`as_Seurat()`}{Convert to [`SeuratObject::Seurat`], see [as_Seurat()]}
 #'   \item{`as_InMemoryAnnData()`}{Convert to [`InMemoryAnnData`], as [as_InMemoryAnnData()]}
 #'   \item{`as_HDF5AnnData()`}{Convert to [`HDF5AnnData`], see [as_HDF5AnnData()]}
+#'   \item{`as_ReticulateAnnData()`}{Convert to [`ReticulateAnnData`], see [as_ReticulateAnnData()]}
 #' }
 #'
 #' ## Output methods:
@@ -116,6 +119,7 @@
 #'   inherit from
 #' @seealso [InMemoryAnnData] for the in-memory implementation of `AnnData`
 #' @seealso [HDF5AnnData] for the HDF5-backed implementation of `AnnData`
+#' @seealso [ReticulateAnnData] for the reticulate-based implementation that wraps Python AnnData objects
 #'
 #' @name AnnData-usage
 NULL

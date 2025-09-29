@@ -11,3 +11,15 @@
 #' @importFrom stats setNames
 ## usethis namespace: end
 NULL
+
+.onAttach <- function(libname, pkgname) {
+  # Check if the R anndata package is loaded and warn about conflicts
+  if ("anndata" %in% loadedNamespaces()) {
+    cli::cli_warn(c(
+      "The R {.pkg anndata} package is loaded and may interfere with {.pkg anndataR}'s Python integration.",
+      "i" = "This may cause automatic conversion of Python AnnData objects to R6 classes.",
+      "i" = "Consider restarting R and loading {.pkg anndataR} before {.pkg anndata} to avoid conflicts.",
+      "i" = "Use {.code reticulate::import('anndata', convert = FALSE)} to prevent automatic conversion."
+    ))
+  }
+}

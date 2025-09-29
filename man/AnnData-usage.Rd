@@ -15,7 +15,9 @@ annotations in \code{uns}.
 
 There are different back ends for \code{AnnData} objects that inherit from the
 abstract \link{AbstractAnnData} class. For example, the \link{InMemoryAnnData} stores
-data in memory or the \link{HDF5AnnData} is backed by a H5AD file.
+data in memory, the \link{HDF5AnnData} is backed by a H5AD file, and the
+\link{ReticulateAnnData} provides direct integration with Python \code{AnnData} objects
+via reticulate.
 }
 
 \subsection{Usage}{
@@ -118,6 +120,7 @@ Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExpe
 \item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
 \item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
 \item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+\item{\code{as_ReticulateAnnData()}}{Convert to \code{\link{ReticulateAnnData}}, see \code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}}}
 }
 }
 
@@ -160,4 +163,6 @@ inherit from
 \link{InMemoryAnnData} for the in-memory implementation of \code{AnnData}
 
 \link{HDF5AnnData} for the HDF5-backed implementation of \code{AnnData}
+
+\link{ReticulateAnnData} for the reticulate-based implementation that wraps Python AnnData objects
 }

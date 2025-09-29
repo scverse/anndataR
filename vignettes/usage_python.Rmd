@@ -1,0 +1,114 @@
+---
+title: "Python Integration with anndataR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Python Integration with anndataR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+reticulate::py_require("mudata")
+
+# Check if required Python packages are available
+python_available <- reticulate::py_available() &&
+  reticulate::py_module_available("scanpy") &&
+  reticulate::py_module_available("mudata")
+
+# Set eval based on Python package availability
+knitr::opts_chunk$set(eval = python_available)
+
+if (!python_available) {
+  message("Python packages scanpy and mudata are required to run this vignette. Code chunks will not be evaluated.")
+}
+```
+
+## Introduction
+
+anndataR works with Python AnnData objects through reticulate.
+You can load Python objects, apply Python functions to them, and
+convert to Seurat or SingleCellExperiment objects without manual conversion steps.
+
+**Note**: This vignette requires Python with the `scanpy` and `mudata` packages installed. If these are not available, the code chunks will not be evaluated but the examples remain visible.
+
+## Basic Integration with Scanpy
+
+Install required Python packages if needed:
+
+```{r python_setup, eval=FALSE}
+reticulate::py_install("scanpy")
+```
+
+```{r load_libraries}
+library(anndataR)
+library(reticulate)
+sc <- import("scanpy")
+```
+
+Load a dataset directly from scanpy:
+
+```{r load_python_data}
+adata <- sc$datasets$pbmc3k_processed()
+print(adata)
+```
+
+Apply scanpy functions directly:
+
+```{r apply_python_functions}
+sc$pp$filter_cells(adata, min_genes = 200L)
+sc$pp$normalize_total(adata, target_sum = 1e4)
+sc$pp$log1p(adata)
+```
+
+Convert to Seurat object:
+
+```{r convert_to_seurat}
+seurat_obj <- adata$as_Seurat()
+print(seurat_obj)
+```
+
+Convert to SingleCellExperiment object:
+
+```{r convert_to_sce}
+sce_obj <- adata$as_SingleCellExperiment()
+print(sce_obj)
+```
+
+## Multi-modal Data with MuData
+
+Install required Python packages if needed:
+
+```{r mudata_setup, eval=FALSE}
+reticulate::py_install("mudata")
+```
+
+```{r load_mudata}
+md <- import("mudata")
+```
+
+Load a MuData object from file:
+
+```{r load_mudata_example}
+url <- "https://github.com/gtca/h5xx-datasets/raw/b1177ac8877c89d8bb355b072164384b4e9cc81d/datasets/minipbcite.h5mu"
+path <- tempfile(fileext = ".h5mu")
+download.file(url, path)
+mdata <- md$read_h5mu(path)
+```
+
+Access individual modalities and convert them:
+
+```{r access_modalities}
+rna_mod <- mdata$mod[["rna"]]
+
+rna_seurat <- rna_mod$as_Seurat()
+print(rna_seurat)
+
+rna_sce <- rna_mod$as_SingleCellExperiment()
+print(rna_sce)
+```
+
