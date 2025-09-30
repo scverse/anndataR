@@ -73,8 +73,6 @@ Take note that you need all suggested dependencies available, and that building 
   `vignette("usage_singlecellexperiment", package = "anndataR")`
 - [**Software Design**](https://anndatar.data-intuitive.com/articles/software_design.html): An overview of the design of the package
 - [**Development Status**](https://anndatar.data-intuitive.com/articles/development_status.html): An overview of the development status of the package
-- [**Known Issues**](https://anndatar.data-intuitive.com/articles/known_issues.html): An overview of known issues with the package.  
-  `vignette("known_issues", package = "anndataR")`
   
 ## Citing **{anndataR}**
 
