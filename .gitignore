@@ -58,3 +58,5 @@ rsconnect/
 
 # Vignette data files
 vignettes/data/*.h5ad
+/doc/
+/Meta/
