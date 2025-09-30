@@ -93,11 +93,11 @@ md <- import("mudata")
 
 Load a MuData object from file:
 
-```{r load_mudata_example}
-url <- "https://github.com/gtca/h5xx-datasets/raw/b1177ac8877c89d8bb355b072164384b4e9cc81d/datasets/minipbcite.h5mu"
-path <- tempfile(fileext = ".h5mu")
-download.file(url, path)
-mdata <- md$read_h5mu(path)
+```{r load_mudata_example, eval = python_available && requireNamespace("BiocFileCache", quietly = TRUE)}
+cache <- BiocFileCache(ask = FALSE)
+h5mu_file <- bfcrpath(cache, "https://github.com/gtca/h5xx-datasets/raw/b1177ac8877c89d8bb355b072164384b4e9cc81d/datasets/minipbcite.h5mu")
+
+mdata <- md$read_h5mu(h5mu_file)
 ```
 
 Access individual modalities and convert them:
@@ -111,4 +111,3 @@ print(rna_seurat)
 rna_sce <- rna_mod$as_SingleCellExperiment()
 print(rna_sce)
 ```
-
