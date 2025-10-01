@@ -77,7 +77,7 @@ Each of the mapping arguments can be provided with one of the following:
 
 See `?as_SingleCellExperiment` for more details on how to customize the conversion process. For instance:
 
-```{r ex_mapping, eval=FALSE}
+```{r ex_mapping}
 sce_obj <- adata$as_SingleCellExperiment(
   x_mapping = "counts",
   assays_mapping = c("csc_counts"),
