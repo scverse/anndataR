@@ -1,7 +1,10 @@
 #' @title InMemoryAnnData
 #'
 #' @description
-#' Implementation of an in-memory AnnData object.
+#' Implementation of an in-memory `AnnData` object where data is stored within
+#' the R session. This is the simplest back end and will be most familiar to
+#' users. It is want you will want to use in most cases where you want to
+#' interact with an `AnnData` object.
 #'
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'

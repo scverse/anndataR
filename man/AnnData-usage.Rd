@@ -14,10 +14,14 @@ annotations in \code{uns}.
 \subsection{Back ends}{
 
 There are different back ends for \code{AnnData} objects that inherit from the
-abstract \link{AbstractAnnData} class. For example, the \link{InMemoryAnnData} stores
-data in memory, the \link{HDF5AnnData} is backed by a H5AD file, and the
-\link{ReticulateAnnData} provides direct integration with Python \code{AnnData} objects
-via reticulate.
+abstract \link{AbstractAnnData} class and store and access data in different ways:
+\itemize{
+\item \link{InMemoryAnnData} stores data in memory
+\item \link{HDF5AnnData} provides an interface to a H5AD file
+\item \link{ReticulateAnnData} wraps a Python \code{AnnData} object via \pkg{reticulate}
+}
+
+See the class documentation for details.
 }
 
 \subsection{Usage}{
