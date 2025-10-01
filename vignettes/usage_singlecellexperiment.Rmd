@@ -78,7 +78,7 @@ Each of the mapping arguments can be provided with one of the following:
 See `?as_SingleCellExperiment` for more details on how to customize the conversion process. For instance:
 
 ```{r ex_mapping}
-sce_obj <- adata$as_SingleCellExperiment(
+adata$as_SingleCellExperiment(
   x_mapping = "counts",
   assays_mapping = c("csc_counts"),
   colData_mapping = c("Int", "IntNA"),
@@ -91,7 +91,6 @@ sce_obj <- adata$as_SingleCellExperiment(
   rowPairs_mapping = FALSE,
   metadata_mapping = c(value1 = "Bool", value2 = "IntScalar")
 )
-sce_obj
 ```
 
 The mapping arguments can also be passed directly to `read_h5ad()`.
