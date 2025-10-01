@@ -18,33 +18,40 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-`r Biocpkg("anndataR")` is designed to offer the combined functionality of the following packages:
+`r Biocpkg("anndataR")` is designed to be an R native implementation of the `AnnData` object, inspired by the of the following packages:
 
+* [_anndata_](https://anndata.readthedocs.io/en/stable/) ([scverse/anndata](https://github.com/scverse/anndata)): The Python `anndata` package and on-disk specification
 * `r Biocpkg("zellkonverter")` ([theislab/zellkonverter](https://github.com/theislab/zellkonverter)): Convert `AnnData` files to/from `SingleCellExperiment` objects
-* `r Githubpkg("mtmorgan/h5ad")`: Read/write `*.h5ad` files natively using `rhdf5`
-* `r CRANpkg("anndataR")` ([dynverse/anndata](https://github.com/dynverse/anndata)): An R implementation of the `AnnData` data structures, uses `reticulate` to read/write `*.h5ad` files
+* `r Githubpkg("mtmorgan/h5ad")`: Read/write `*.h5ad` files natively using `r Biocpkg("rhdf5")`
+* `r CRANpkg("anndataR")` ([dynverse/anndata](https://github.com/dynverse/anndata)): An R implementation of the `AnnData` data structures, uses `r CRANpkg("reticulate")` to read/write `*.h5ad` files
 
 Ideally, this package will be a complete replacement for all of these packages, and will be the go-to package for working with `AnnData` files in R.
 
-# Desired feature list
+# Core features
 
-* Provide an `R6` class to work with `AnnData` objects in R (either in-memory or on-disk).
-* Read/write `*.h5ad` files natively
+* An `r CRANpkg("R6")` `AnnData` class to work with objects in R
+* In-memory (`InMemoryAnnData`), HDF5-backed (`HDF5AnnData`) and Python-backed (`ReticulateAnnData`) back ends with a consistent interface
+* Read/write `.h5ad` files natively
 * Convert to/from `SingleCellExperiment` objects
 * Convert to/from `Seurat` objects
 
+## Planned features
+
+* Zarr-backed back end (`ZarrAnnData`)
+
 # Class diagram
 
-Here is a diagram of the main R6 classes provided by the package:
+This diagram shows the main `R6` classes provided by the package:
 
 ![](diagrams/class_diagram.svg)
 
-Notation:
+**Notation:**
 
   - `X: Matrix` - variable `X` is of type `Matrix`
-  - `*X: Matrix` - variable `X` is abstract
+  - `*X: Matrix` - variable `X` is abstract (and implemented by subclasses)
   - `as_SingleCellExperiment(): SingleCellExperiment` - function `as_SingleCellExperiment` returns object of type `SingleCellExperiment`
-  - `*as_SingleCellExperiment()` - function `as_SingleCellExperiment` is abstract
+  - `*as_SingleCellExperiment()` - function `as_SingleCellExperiment` is abstract (and implemented by subclasses)
+  - Dashed borders indicate classes that are planned but not yet implemented
 
 # Session info
 
