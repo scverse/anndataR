@@ -64,7 +64,7 @@ Figure \@ref(fig:mapping) shows the structures of the `AnnData` and `Seurat` obj
 It is important to note that matrices in the two objects are transposed relative to each other.
 
 ```{r mapping, fig.cap = "Mapping between `AnnData` and `Seurat` objects", fig.wide = TRUE, echo = FALSE}
-knitr::include_graphics("AnnData-Seurat.png")
+knitr::include_graphics("../man/figures/AnnData-Seurat.png")
 ```
 
 By default, all items in most slots are converted using the same names.

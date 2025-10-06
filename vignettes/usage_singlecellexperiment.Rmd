@@ -67,7 +67,7 @@ Figure \@ref(fig:mapping) shows the structures of the `AnnData` and `SingleCellE
 It is important to note that matrices in the two objects are transposed relative to each other.
 
 ```{r mapping, fig.cap = "Mapping between `AnnData` and `SingleCellExperiment` objects", fig.wide = TRUE, echo = FALSE}
-knitr::include_graphics("AnnData-SCE.png")
+knitr::include_graphics("../man/figures/AnnData-SCE.png")
 ```
 
 By default, all items in most slots are converted using the same names.
