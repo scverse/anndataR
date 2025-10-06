@@ -95,18 +95,18 @@
 #' ## The `x_mapping` and `assays_mapping` arguments
 #'
 #' In order to specify where the data in `adata$X` will be stored in the
-#' `assays(sce)` slot of the resulting object, you can use either the `x_mapping`
-#' argument or the `assays_mapping` argument.
-#' If you use `x_mapping`, it should be a string specifying the name of the layer
-#' in `assays(sce)` where the data in `adata$X` will be stored.
-#' If you use `assays_mapping`, it should be a named vector where names are names
-#' of `assays(sce)` and values are keys of `layers` in `adata`.
-#' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
-#' The name you provide for `x_mapping` may not be a name in `assays_mapping`.
+#' `assays(sce)` slot of the resulting object, you can use either the
+#' `x_mapping` argument or the `assays_mapping` argument.
+#' If you use `x_mapping`, it should be a string specifying the name of the
+#' layer in `assays(sce)` where the data in `adata$X` will be stored.
+#' If you use `assays_mapping`, it should be a named vector where names are
+#' names of `assays(sce)` and values are keys of `layers` in `adata`.
+#' In order to indicate the `adata$X` slot, you use `NA` as the value in the
+#' vector. The name you provide for `x_mapping` may not be a name in
+#' `assays_mapping`.
 #'
 #' @return A `SingleCellExperiment` object containing the requested data from
 #'   `adata`
-#' @keywords internal
 #'
 #' @family object converters
 #'

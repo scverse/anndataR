@@ -81,8 +81,8 @@ complete object, use \code{format = "AnnData"} followed by
 \code{adata$as_SingleCellExperiment()} or \code{adata$as_Seurat()}.
 
 Use \code{get_generator_types()} to get a list of the available types for each
-slot, or for a specific slot by setting \verb{slot = }. If \code{example = TRUE}, only
-the example types are returned.
+slot, or for a specific slot by setting \code{slot}. If \code{example = TRUE}, only the
+example types are returned.
 }
 \examples{
 # Generate all types as a list

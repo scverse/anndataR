@@ -38,8 +38,8 @@
 #' cases, the default is to copy all items using the same names except where the
 #' correspondence between objects is unclear. The `reduction_mapping` argument
 #' can also accept a more complex list format, see below for details. To avoid
-#' copying anything to a slot, set the mapping argument to `FALSE`. Empt
-#'  mapping arguments (`NULL`, `c()`, `list()`) will be treated as `FALSE` with
+#' copying anything to a slot, set the mapping argument to `FALSE`. Empty
+#' mapping arguments (`NULL`, `c()`, `list()`) will be treated as `FALSE` with
 #' a warning. If an unnamed vector is provided, the values will be used as
 #' names.
 #'
@@ -63,7 +63,7 @@
 #' | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
 #' | `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #' | `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
-#' | `adata$obsm` | `Embeddings(sce)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))`  | All items that can be coerced to a numeric matrix are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
+#' | `adata$obsm` | `Reductions(seurat)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"))`  | All items that can be coerced to a numeric matrix are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
 #' | `adata$obsp` | `Graphs(seurat)` | `graph_mapping = c(nn = "connectivities")` | All items are copied by name |
 #' | `adata$varp` | _NA_  | _NA_ | There is no corresponding slot for `varp` |
 #' | `adata$uns` | `Misc(seurat)` | `misc_mapping = c(project_metadata = "metadata")` | All items are copied by name |
@@ -101,7 +101,6 @@
 #' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
 #'
 #' @return A `Seurat` object containing the requested data from `adata`
-#' @keywords internal
 #'
 #' @family object converters
 #'
