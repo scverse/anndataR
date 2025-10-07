@@ -30,7 +30,7 @@ NULL
 .as_abort_extra_args <- function(from, to, helper) {
   cli::cli_abort(
     c(
-      "Can't coerce {.cls {from}} to {.cls {to}} with {.fun as} as extra arguments are required"
+      "Can't coerce {.cls {from}} to {.cls {to}} with {.fun as} as extra arguments are required",
       "i" = helper
     ),
     call = rlang::caller_env()
@@ -81,7 +81,10 @@ NULL
 }
 
 .format_control_recommendation <- function(call_expr) {
-  sprintf("Prefer {.code %s} for fine-grained control over data mapping", call_expr)
+  sprintf(
+    "Prefer {.code %s} for fine-grained control over data mapping",
+    call_expr
+  )
 }
 
 # AnnData <-> AnnData coercion rules ----------------------------------------
