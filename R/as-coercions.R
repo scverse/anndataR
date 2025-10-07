@@ -40,7 +40,7 @@ NULL
 .warn_as_limited <- function(recommendation) {
   cli::cli_warn(
     c(
-      "Using {.fun as} limits control over data mapping.",
+      "Using {.fun as} to coerce object limits control over data mapping",
       "i" = recommendation
     ),
     call = rlang::caller_env()
@@ -81,7 +81,7 @@ NULL
 }
 
 .format_control_recommendation <- function(call_expr) {
-  sprintf("Prefer `%s` for fine-grained control over data mapping.", call_expr)
+  sprintf("Prefer {.code %s} for fine-grained control over data mapping", call_expr)
 }
 
 # AnnData <-> AnnData coercion rules ----------------------------------------
@@ -92,7 +92,7 @@ warn_ann_reticulate <- .format_control_recommendation(
   "adata$as_ReticulateAnnData(...)"
 )
 
-ann_data_rules <- list(
+anndata_rules <- list(
   list(
     from = "AbstractAnnData",
     to = "InMemoryAnnData",
@@ -115,12 +115,12 @@ ann_data_rules <- list(
     handler = .make_abort_handler(
       from_class = "AbstractAnnData",
       to_class = "HDF5AnnData",
-      helper = "Use `adata$as_HDF5AnnData(file = <path>)` to provide the output file."
+      helper = "Use {.code adata$as_HDF5AnnData(file = <path>)} to provide the output file"
     )
   )
 )
 
-.register_set_as_rules(ann_data_rules)
+.register_set_as_rules(anndata_rules)
 
 # SingleCellExperiment coercion rules ---------------------------------------
 
@@ -157,7 +157,7 @@ if (rlang::is_installed("SingleCellExperiment")) {
       handler = .make_abort_handler(
         from_class = "SingleCellExperiment",
         to_class = "HDF5AnnData",
-        helper = "Use `as_AnnData(from, output_class = \"HDF5AnnData\", filename = <path>)` to provide the output file."
+        helper = "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\", filename = <path>)} to provide the output file"
       )
     ),
     list(
@@ -206,7 +206,7 @@ if (rlang::is_installed("SeuratObject")) {
       handler = .make_abort_handler(
         from_class = "Seurat",
         to_class = "HDF5AnnData",
-        helper = "Use `as_AnnData(from, output_class = \"HDF5AnnData\", filename = <path>)` to provide the output file."
+        helper = "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\", filename = <path>)} to provide the output file"
       )
     ),
     list(
