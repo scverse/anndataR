@@ -349,7 +349,6 @@ AnnDataView <- R6::R6Class(
 #' @param context_name Name for error messages ("observations" or "variables")
 #'
 #' @return Integer vector of indices, or NULL if subset is NULL
-#' @keywords internal
 #' @noRd
 convert_to_indices <- function(
   subset,
