@@ -9,7 +9,6 @@
 #' that require them (such as writing HDF5-backed AnnData objects) raise an
 #' informative error pointing to the richer interface.
 #'
-#' @keywords internal
 #' @noRd
 NULL
 
