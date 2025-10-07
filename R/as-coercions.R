@@ -159,7 +159,10 @@ if (rlang::is_installed("SingleCellExperiment")) {
       handler = .make_abort_handler(
         from_class = "SingleCellExperiment",
         to_class = "HDF5AnnData",
-        helper = "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\", filename = <path>)} to provide the output file"
+        helper = paste(
+          "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\",",
+          "filename = <path>)} to provide the output file"
+        )
       )
     ),
     list(
@@ -208,7 +211,10 @@ if (rlang::is_installed("SeuratObject")) {
       handler = .make_abort_handler(
         from_class = "Seurat",
         to_class = "HDF5AnnData",
-        helper = "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\", filename = <path>)} to provide the output file"
+        helper = paste(
+          "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\",",
+          "filename = <path>)} to provide the output file"
+        )
       )
     ),
     list(
