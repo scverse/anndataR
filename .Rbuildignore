@@ -13,3 +13,4 @@
 ^vignettes/articles$
 ^doc$
 ^Meta$
+^man/figures/*\.svg$
