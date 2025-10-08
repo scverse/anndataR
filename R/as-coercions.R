@@ -39,7 +39,7 @@ NULL
 .warn_as_limited <- function(recommendation) {
   cli::cli_warn(
     c(
-      "Using {.fun as} to coerce object limits control over data mapping",
+      "Using {.fun as} to coerce objects limits control over data mapping",
       "i" = recommendation
     ),
     call = rlang::caller_env()
