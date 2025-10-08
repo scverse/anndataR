@@ -6,6 +6,7 @@
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
 #' @return An `HDF5AnnData` object
+#' @export
 #'
 #' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'

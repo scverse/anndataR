@@ -10,6 +10,7 @@
 #' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'
 #' @family AnnData classes
+#' @export
 #'
 #' @examples
 #' ## complete example
