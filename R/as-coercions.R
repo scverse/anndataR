@@ -74,7 +74,7 @@ NULL
       error = function(e) {
         # Silently skip if environment is locked (e.g., during devtools::document())
         if (!grepl("locked", e$message)) {
-          stop(e)  # Re-throw if it's not a locking error
+          stop(e) # Re-throw if it's not a locking error
         }
       }
     )
