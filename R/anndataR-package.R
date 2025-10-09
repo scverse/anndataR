@@ -12,6 +12,11 @@
 ## usethis namespace: end
 NULL
 
+.onLoad <- function(libname, pkgname) {
+  # Register S4 coercion methods
+  .register_as_coercions()
+}
+
 .onAttach <- function(libname, pkgname) {
   # Check if the R anndata package is loaded and warn about conflicts
   if ("anndata" %in% loadedNamespaces()) {
