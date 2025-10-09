@@ -8,6 +8,7 @@
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
 #' @return A `ReticulateAnnData` object
+#' @export
 #'
 #' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'

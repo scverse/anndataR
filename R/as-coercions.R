@@ -20,12 +20,6 @@ NULL
   }
 }
 
-.register_oldclass("AbstractAnnData", "R6")
-.register_oldclass("InMemoryAnnData", c("AbstractAnnData", "R6"))
-.register_oldclass("HDF5AnnData", c("AbstractAnnData", "R6"))
-.register_oldclass("ReticulateAnnData", c("AbstractAnnData", "R6"))
-.register_oldclass("AnnDataView", c("AbstractAnnData", "R6"))
-
 .as_abort_extra_args <- function(from, to, helper) {
   cli::cli_abort(
     c(
@@ -75,7 +69,15 @@ NULL
 
 .register_set_as_rules <- function(rules) {
   for (rule in rules) {
-    methods::setAs(rule$from, rule$to, rule$handler)
+    tryCatch(
+      methods::setAs(rule$from, rule$to, rule$handler),
+      error = function(e) {
+        # Silently skip if environment is locked (e.g., during devtools::document())
+        if (!grepl("locked", e$message)) {
+          stop(e) # Re-throw if it's not a locking error
+        }
+      }
+    )
   }
 }
 
@@ -86,146 +88,183 @@ NULL
   )
 }
 
-# AnnData <-> AnnData coercion rules ----------------------------------------
-warn_ann_inmemory <- .format_control_recommendation(
-  "adata$as_InMemoryAnnData(...)"
-)
-warn_ann_reticulate <- .format_control_recommendation(
-  "adata$as_ReticulateAnnData(...)"
-)
-
-anndata_rules <- list(
-  list(
-    from = "AbstractAnnData",
-    to = "InMemoryAnnData",
-    handler = .make_convert_handler(
-      converter = as_InMemoryAnnData,
-      warn = warn_ann_inmemory
-    )
-  ),
-  list(
-    from = "AbstractAnnData",
-    to = "ReticulateAnnData",
-    handler = .make_convert_handler(
-      converter = as_ReticulateAnnData,
-      warn = warn_ann_reticulate
-    )
-  ),
-  list(
-    from = "AbstractAnnData",
-    to = "HDF5AnnData",
-    handler = .make_abort_handler(
-      from_class = "AbstractAnnData",
-      to_class = "HDF5AnnData",
-      helper = "Use {.code adata$as_HDF5AnnData(file = <path>)} to provide the output file"
-    )
-  )
-)
-
-.register_set_as_rules(anndata_rules)
-
-# SingleCellExperiment coercion rules ---------------------------------------
-
-if (rlang::is_installed("SingleCellExperiment")) {
-  warn_customise <- .format_control_recommendation("as_AnnData(...)")
-  warn_sce <- .format_control_recommendation(
-    "adata$as_SingleCellExperiment(...)"
-  )
-
-  single_cell_rules <- list(
-    list(
-      from = "SingleCellExperiment",
-      to = "InMemoryAnnData",
-      handler = .make_convert_handler(
-        converter = function(from) {
-          as_AnnData(from, output_class = "InMemoryAnnData")
-        },
-        warn = warn_customise
-      )
-    ),
-    list(
-      from = "SingleCellExperiment",
-      to = "ReticulateAnnData",
-      handler = .make_convert_handler(
-        converter = function(from) {
-          as_AnnData(from, output_class = "ReticulateAnnData")
-        },
-        warn = warn_customise
-      )
-    ),
-    list(
-      from = "SingleCellExperiment",
-      to = "HDF5AnnData",
-      handler = .make_abort_handler(
-        from_class = "SingleCellExperiment",
-        to_class = "HDF5AnnData",
-        helper = paste(
-          "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\",",
-          "filename = <path>)} to provide the output file"
-        )
-      )
-    ),
-    list(
-      from = "AbstractAnnData",
-      to = "SingleCellExperiment",
-      handler = .make_convert_handler(
-        converter = as_SingleCellExperiment,
-        warn = warn_sce
-      )
-    )
-  )
-
-  .register_set_as_rules(single_cell_rules)
+#' Register S4 coercion methods
+#'
+#' This function registers all S4 coercion methods for converting between
+#' `AnnData` objects and other formats. It's called automatically when
+#' \pkg{anndataR} is loaded, but can also be called manually if you load
+#' \pkg{SingleCellExperiment}, \pkg{Seurat}, or \pkg{SeuratObject} after loading
+#' \pkg{anndataR}.
+#'
+#' @return NULL (invisibly). Called for its side effect of registering S4 methods.
+#' @export
+#' @examples
+#' \dontrun{
+#' # If you load suggested packages after anndataR:
+#' library(anndataR)
+#' library(SingleCellExperiment)
+#' register_anndata_coercions()  # Now as() will work
+#' }
+register_anndata_coercions <- function() {
+  .register_as_coercions()
+  invisible(NULL)
 }
 
-# Seurat coercion rules ------------------------------------------------------
+.register_as_coercions <- function() {
+  # Register old-style classes for S4 compatibility
+  .register_oldclass("AbstractAnnData", "R6")
+  .register_oldclass("InMemoryAnnData", c("AbstractAnnData", "R6"))
+  .register_oldclass("HDF5AnnData", c("AbstractAnnData", "R6"))
+  .register_oldclass("ReticulateAnnData", c("AbstractAnnData", "R6"))
+  .register_oldclass("AnnDataView", c("AbstractAnnData", "R6"))
 
-if (rlang::is_installed("SeuratObject")) {
-  warn_customise <- .format_control_recommendation("as_AnnData(...)")
-  warn_seurat <- .format_control_recommendation("adata$as_Seurat(...)")
+  # AnnData <-> AnnData coercion rules --------------------------------------
+  warn_ann_inmemory <- .format_control_recommendation(
+    "adata$as_InMemoryAnnData(...)"
+  )
+  warn_ann_reticulate <- .format_control_recommendation(
+    "adata$as_ReticulateAnnData(...)"
+  )
 
-  seurat_rules <- list(
+  anndata_rules <- list(
     list(
-      from = "Seurat",
+      from = "AbstractAnnData",
       to = "InMemoryAnnData",
       handler = .make_convert_handler(
-        converter = function(from) {
-          as_AnnData(from, output_class = "InMemoryAnnData")
-        },
-        warn = warn_customise
-      )
-    ),
-    list(
-      from = "Seurat",
-      to = "ReticulateAnnData",
-      handler = .make_convert_handler(
-        converter = function(from) {
-          as_AnnData(from, output_class = "ReticulateAnnData")
-        },
-        warn = warn_customise
-      )
-    ),
-    list(
-      from = "Seurat",
-      to = "HDF5AnnData",
-      handler = .make_abort_handler(
-        from_class = "Seurat",
-        to_class = "HDF5AnnData",
-        helper = paste(
-          "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\",",
-          "filename = <path>)} to provide the output file"
-        )
+        converter = as_InMemoryAnnData,
+        warn = warn_ann_inmemory
       )
     ),
     list(
       from = "AbstractAnnData",
-      to = "Seurat",
+      to = "ReticulateAnnData",
       handler = .make_convert_handler(
-        converter = as_Seurat,
-        warn = warn_seurat
+        converter = as_ReticulateAnnData,
+        warn = warn_ann_reticulate
+      )
+    ),
+    list(
+      from = "AbstractAnnData",
+      to = "HDF5AnnData",
+      handler = .make_abort_handler(
+        from_class = "AbstractAnnData",
+        to_class = "HDF5AnnData",
+        helper = "Use {.code adata$as_HDF5AnnData(file = <path>)} to provide the output file"
       )
     )
   )
 
-  .register_set_as_rules(seurat_rules)
+  .register_set_as_rules(anndata_rules)
+
+  # SingleCellExperiment coercion rules ---------------------------------------
+
+  # Only register coercion methods if SingleCellExperiment is available
+  # This prevents NOTEs about undefined classes during package load
+  if (rlang::is_installed("SingleCellExperiment")) {
+    warn_customise <- .format_control_recommendation("as_AnnData(...)")
+    warn_sce <- .format_control_recommendation(
+      "adata$as_SingleCellExperiment(...)"
+    )
+
+    single_cell_rules <- list(
+      list(
+        from = "SingleCellExperiment",
+        to = "InMemoryAnnData",
+        handler = .make_convert_handler(
+          converter = function(from) {
+            as_AnnData(from, output_class = "InMemoryAnnData")
+          },
+          warn = warn_customise
+        )
+      ),
+      list(
+        from = "SingleCellExperiment",
+        to = "ReticulateAnnData",
+        handler = .make_convert_handler(
+          converter = function(from) {
+            as_AnnData(from, output_class = "ReticulateAnnData")
+          },
+          warn = warn_customise
+        )
+      ),
+      list(
+        from = "SingleCellExperiment",
+        to = "HDF5AnnData",
+        handler = .make_abort_handler(
+          from_class = "SingleCellExperiment",
+          to_class = "HDF5AnnData",
+          helper = paste(
+            "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\",",
+            "filename = <path>)} to provide the output file"
+          )
+        )
+      ),
+      list(
+        from = "AbstractAnnData",
+        to = "SingleCellExperiment",
+        handler = .make_convert_handler(
+          converter = as_SingleCellExperiment,
+          warn = warn_sce
+        )
+      )
+    )
+
+    .register_set_as_rules(single_cell_rules)
+  }
+
+  # SingleCellExperiment coercion rules ---------------------------------------
+
+  # Only register coercion methods if SeuratObject is available
+  # This prevents NOTEs about undefined classes during package load
+  if (rlang::is_installed("SeuratObject")) {
+    warn_customise <- .format_control_recommendation("as_AnnData(...)")
+    warn_seurat <- .format_control_recommendation("adata$as_Seurat(...)")
+
+    seurat_rules <- list(
+      list(
+        from = "Seurat",
+        to = "InMemoryAnnData",
+        handler = .make_convert_handler(
+          converter = function(from) {
+            as_AnnData(from, output_class = "InMemoryAnnData")
+          },
+          warn = warn_customise
+        )
+      ),
+      list(
+        from = "Seurat",
+        to = "ReticulateAnnData",
+        handler = .make_convert_handler(
+          converter = function(from) {
+            as_AnnData(from, output_class = "ReticulateAnnData")
+          },
+          warn = warn_customise
+        )
+      ),
+      list(
+        from = "Seurat",
+        to = "HDF5AnnData",
+        handler = .make_abort_handler(
+          from_class = "Seurat",
+          to_class = "HDF5AnnData",
+          helper = paste(
+            "Use {.code as_AnnData(from, output_class = \"HDF5AnnData\",",
+            "filename = <path>)} to provide the output file"
+          )
+        )
+      ),
+      list(
+        from = "AbstractAnnData",
+        to = "Seurat",
+        handler = .make_convert_handler(
+          converter = as_Seurat,
+          warn = warn_seurat
+        )
+      )
+    )
+
+    .register_set_as_rules(seurat_rules)
+  }
+
+  invisible(NULL)
 }
