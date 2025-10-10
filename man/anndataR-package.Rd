@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyze your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.
+Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyse your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.
 }
 \seealso{
 Useful links:

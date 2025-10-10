@@ -23,7 +23,7 @@ Authors@R: c(
     person("scverse consortium", role = "spn")
   )
 Description: Bring the power and flexibility of AnnData to the R
-    ecosystem, allowing you to effortlessly manipulate and analyze your
+    ecosystem, allowing you to effortlessly manipulate and analyse your
     single-cell data. This package lets you work with backed h5ad and zarr
     files, directly access various slots (e.g. X, obs, var), or convert
     the data into SingleCellExperiment and Seurat objects.
@@ -54,6 +54,7 @@ Suggests:
     Seurat,
     SeuratObject,
     SingleCellExperiment,
+    spelling,
     SummarizedExperiment,
     testthat (>= 3.0.0),
     vctrs,
@@ -67,3 +68,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, r6 = TRUE)
 RoxygenNote: 7.3.3
+Language: en-GB

@@ -66,7 +66,7 @@
 - Bump required R version to 4.5 in preparation for Bioconductor submission
   (PR #309)
 - Remove deprecated functions and arguments (PR #311, PR #313)
-- Minor cleanups and improvements (PR #313).
+- Minor clean-ups and improvements (PR #313).
 - Add more tests to increase coverage (PR #315)
 
 # anndataR 0.2.0
@@ -123,7 +123,7 @@
   - Most round trip tests are now enabled and pass successfully
   - Conversion helpers have been added to assist with **{reticulate}** tests
 
-# anndataR 0.1.0 (inital release candidate)
+# anndataR 0.1.0 (initial release candidate)
 
 Initial release candidate of **{anndataR}** including:
 

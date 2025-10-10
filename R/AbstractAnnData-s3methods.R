@@ -4,15 +4,15 @@
 #' making them behave like native R objects with familiar syntax.
 #'
 #' @details
-#' **Subsetting behavior**: The `[` method supports logical, integer, and character
+#' **Subsetting behaviour**: The `[` method supports logical, integer, and character
 #' subsetting for both observations (rows) and variables (columns). However, unlike
-#' standard R behavior:
+#' standard R behaviour:
 #'
 #' - Logical vectors are **not recycled** and must have the exact same length as
 #'   the dimension being subset
 #' - **Negative indices are not supported** (R's "exclude these" syntax)
 #'
-#' These design choices ensure clear and predictable subsetting behavior for
+#' These design choices ensure clear and predictable subsetting behaviour for
 #' biological data matrices, avoiding potential confusion from accidental recycling
 #' or exclusion patterns.
 #'
@@ -111,7 +111,7 @@ dimnames.AbstractAnnData <- function(x) {
 `dimnames<-.AbstractAnnData` <- function(x, value) {
   if (is.null(value)) {
     # When dimnames(x) <- NULL, generate default sequential names
-    # This mimics Python AnnData behavior but uses 1-based indexing (R convention)
+    # This mimics Python AnnData behaviour but uses 1-based indexing (R convention)
     # instead of 0-based indexing (Python convention)
     x$obs_names <- as.character(seq_len(x$n_obs()))
     x$var_names <- as.character(seq_len(x$n_vars()))
