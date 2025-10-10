@@ -27,9 +27,26 @@ library(SingleCellExperiment)
 
 # Introduction
 
-`r Biocpkg("anndataR")` allows users to work with `.h5ad` files, access various slots in the datasets and convert these files to `SingleCellExperiment` objects or `Seurat` objects, and vice versa.
+`r Biocpkg("anndataR")` allows users to work with `.h5ad` files, interact with `AnnData` objects and convert to/from `SingleCellExperiment` or `Seurat` objects.
 This enables users to move data easily between the different programming languages and analysis ecosystems needed to perform single-cell data analysis.
-This package differs from `r Biocpkg("zellkonverter")` because it reads and writes these `.h5ad` files natively in R, and allows conversion to and from `Seurat` objects as well as `SingleCellExperiment`.
+
+This package builds on our experience developing and using other interoperability packages and aims to provide a first-class R `AnnData` experience.
+
+## Relationship to other packages
+
+Existing packages provide similar functionality to `r Biocpkg("anndataR")` but there are some important differences:
+
+- `r Biocpkg("zellkonverter")` provides conversion of `SingleCellExperiment` objects to/from `AnnData` and reading/writing of `.h5ad` files.
+  This is facilitated via `r CRANpkg("reticulate")` using `r Biocpkg("basilisk")` to manage Python environments (native reading of `.h5ad` files is also possible).
+  In contrast, `r Biocpkg("anndataR")` provides a native R H5AD interface, removing the need for Python dependencies.
+  Conversion to/from `Seurat` objects is also supported.
+- `r CRANpkg("anndata")` (on CRAN) is a wrapper around the Python _anndata_ package.
+  It provides a nicer interface from within R but still requires a Python environment.
+  `r Biocpkg("anndataR")` provides a pure R implementation of the `AnnData` data structure with different back ends and conversion to more common R objects.
+- Other interoperability packages typically also require Python dependencies, have limited features or flexibility and/or are not available from a central package repository
+
+There is significant overlap in functionality between these packages.
+We anticipate that over time they will become more specialised and work better together or be deprecated in favour of `r Biocpkg("anndataR")`.
 
 # Installation
 
