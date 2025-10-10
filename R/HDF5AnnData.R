@@ -1,7 +1,11 @@
 #' @title HDF5AnnData
 #'
 #' @description
-#' Implementation of an HDF5-backed `AnnData` object.
+#' Implementation of an HDF5-backed `AnnData` object. This class provides an
+#' interface to a H5AD file and minimal data is stored in memory until it is
+#' requested by the user. It is primarily designed as an intermediate object
+#' when reading/writing H5AD files but can be useful for accessing parts of
+#' large files.
 #'
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'

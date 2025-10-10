@@ -7,9 +7,11 @@
 A \code{ReticulateAnnData} object
 }
 \description{
-Implementation of an AnnData object that wraps a Python anndata.AnnData object
-using reticulate. This allows direct interaction with Python AnnData objects
-while maintaining the R interface.
+Implementation of an \code{AnnData} object that wraps a Python \strong{anndata}
+\code{AnnData} object using \pkg{reticulate}. This allows direct interaction with
+Python \code{AnnData} objects while maintaining the R interface. It is useful when
+you already have a Python \code{AnnData} or to access functionality that has not
+yet been implemented in \pkg{anndataR}.
 
 See \link{AnnData-usage} for details on creating and using \code{AnnData} objects.
 }

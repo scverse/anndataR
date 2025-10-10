@@ -15,12 +15,14 @@ classDiagram
     init(h5file)
   }
 
-  class ZarrAnnData["ZarrAnnData (Planned)"] {
-    init(zarrFile)
-  }
   class ReticulateAnnData["ReticulateAnnData"] {
     init(ptr)
   }
+
+  class ZarrAnnData["ZarrAnnData (Planned)"] {
+    init(zarrFile)
+  }
+  style ZarrAnnData fill:#bbf,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
 
   anndataR --> InMemoryAnnData
   anndataR --> HDF5AnnData
@@ -29,11 +31,9 @@ classDiagram
 
   HDF5AnnData --|> AbstractAnnData
   InMemoryAnnData --|> AbstractAnnData
-  ZarrAnnData --|> AbstractAnnData
   ReticulateAnnData --|> AbstractAnnData
+  ZarrAnnData --|> AbstractAnnData
   AnnDataView --|> AbstractAnnData
-
-  
 
   class AbstractAnnData {
     *X: Matrix | SparseMatrix
@@ -45,17 +45,28 @@ classDiagram
     *obsm: List[Matrix | SparseMatrix | DataFrame]
     *varm: List[Matrix | SparseMatrix | DataFrame]
     *uns: List
-    *n_obs: int
-    *n_vars: int
-    *obs_names: Array[String]
-    *var_names: Array[String]
-    *write_h5ad(): Unit
+
+    n_obs: int
+    n_vars: int
+    shape: Array[int]
+    obs_names: Array[String]
+    var_names: Array[String]
+    obs_keys: Array[String]
+    var_keys: Array[String]
+    layers_keys: Array[String]
+    obsm_keys: Array[String]
+    obsp_keys: Array[String]
+    varp_keys: Array[String]
+    uns_keys: Array[String]
+
+    write_h5ad(): Unit
 
     as_SingleCellExperiment(): SingleCellExperiment
     as_Seurat(): Seurat
 
     as_HDF5AnnData(): HDF5AnnData
     as_InMemoryAnnData(): InMemoryAnnData
+    as_ReticulateAnnData(): ReticulateAnnData
 
     .[,]: AnnDataView
   }
