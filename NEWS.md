@@ -50,6 +50,7 @@
 
 - `citation("anndataR")` now returns details of the **{anndataR}** preprint
   (PR #351)
+- Update vignettes to clarify and expand text and improve formatting (PR #360)
 
 # anndataR 0.99.2
 
