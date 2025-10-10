@@ -40,7 +40,7 @@ Existing packages provide similar functionality to `r Biocpkg("anndataR")` but t
   This is facilitated via `r CRANpkg("reticulate")` using `r Biocpkg("basilisk")` to manage Python environments (native reading of `.h5ad` files is also possible).
   In contrast, `r Biocpkg("anndataR")` provides a native R H5AD interface, removing the need for Python dependencies.
   Conversion to/from `Seurat` objects is also supported.
-- `r CRANpkg("anndata")` is a wrapper around the Python _anndata_ package.
+- `r CRANpkg("anndata")` (on CRAN) is a wrapper around the Python _anndata_ package.
   It provides a nicer interface from within R but still requires a Python environment.
   `r Biocpkg("anndataR")` provides a pure R implementation of the `AnnData` data structure with different back ends and conversion to more common R objects.
 - Other interoperability packages typically also require Python dependencies, have limited features or flexibility and/or are not available from a central package repository
