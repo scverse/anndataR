@@ -39,7 +39,7 @@ BiocManager::install("SingleCellExperiment")
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `SingleCellExperiment` object.
 
-```{r prep_h5ad_file}
+```{r prep-h5ad-file}
 library(anndataR)
 library(SingleCellExperiment)
 
@@ -48,14 +48,14 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 Read the `.h5ad` file as a `SingleCellExperiment` object:
 
-```{r read_data}
+```{r read-data}
 sce_obj <- read_h5ad(h5ad_file, as = "SingleCellExperiment")
 sce_obj
 ```
 
 This is equivalent to reading in the `.h5ad` file as an `AnnData` and explicitly converting:
 
-```{r read_h5ad}
+```{r read-h5ad}
 adata <- read_h5ad(h5ad_file)
 sce <- adata$as_SingleCellExperiment()
 sce
@@ -86,7 +86,7 @@ Each of the mapping arguments can be provided with one of the following:
 
 See `?as_SingleCellExperiment` for more details on how to customize the conversion process. For instance:
 
-```{r ex_mapping}
+```{r ex-mapping}
 adata$as_SingleCellExperiment(
   x_mapping = "counts",
   assays_mapping = c("csc_counts"),
@@ -108,13 +108,13 @@ The mapping arguments can also be passed directly to `read_h5ad()`.
 
 The reverse conversion is also possible, allowing you to convert a `SingleCellExperiment` object back to an `AnnData` object, or to just write out the `SingleCellExperiment` object as an `.h5ad` file.
 
-```{r write_Seurat}
+```{r write-sce}
 write_h5ad(sce_obj, tempfile(fileext = ".h5ad"))
 ```
 
 This is equivalent to converting the `SingleCellExperiment` object to an `AnnData` object and then writing it out:
 
-```{r convert_and_write}
+```{r convert-and-write}
 adata <- as_AnnData(sce_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
 ```
@@ -123,7 +123,7 @@ You can again customize the conversion process by providing specific mappings fo
 
 Here's an example:
 
-```{r customize_anndata_conversion}
+```{r customize-anndata-conversion}
 as_AnnData(
   sce_obj,
   x_mapping = "counts",

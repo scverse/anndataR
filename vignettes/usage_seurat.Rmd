@@ -36,7 +36,7 @@ install.packages("Seurat")
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `Seurat` object.
 
-```{r prep_file}
+```{r prep-file}
 library(anndataR)
 library(Seurat)
 
@@ -45,14 +45,14 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
 Read the `.h5ad` file as a `Seurat` object:
 
-```{r read_data}
+```{r read-data}
 seurat_obj <- read_h5ad(h5ad_file, as = "Seurat")
 seurat_obj
 ```
 
 This is equivalent to reading in the `.h5ad` file as an `AnnData` and explicitly converting:
 
-```{r convert_seurat}
+```{r convert-seurat}
 adata <- read_h5ad(h5ad_file)
 seurat_obj <- adata$as_Seurat()
 seurat_obj
@@ -85,7 +85,7 @@ Each of the mapping arguments can be provided with one of the following:
 
 See `?as_Seurat` for more details on how to customize the conversion process. For instance:
 
-```{r customize_seurat_conversion}
+```{r customize-seurat-conversion}
 seurat_obj <- adata$as_Seurat(
   layers_mapping = c("counts", "dense_counts"),
   object_metadata_mapping = c(metadata1 = "Int", metadata2 = "Float"),
@@ -106,14 +106,14 @@ The mapping arguments can also be passed directly to `read_h5ad()`.
 
 The reverse conversion is also possible, allowing you to convert the `Seurat` object back to an `AnnData` object, or to just write out the `Seurat` object as an `.h5ad` file.
 
-```{r write_seurat}
+```{r write-seurat}
 write_h5ad(seurat_obj, tempfile(fileext = ".h5ad"))
 ```
 
 This is equivalent to converting the `Seurat` object to an `AnnData` object and then writing it out:
 
-```{r convert_to_anndata}
-adata <- as_AnnData(seurat_obj)
+```{r convert-to-anndata}
+adata <- as_AnData(seurat_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
 ```
 
@@ -122,7 +122,7 @@ For more details, see `?as_AnnData`.
 
 Here's an example:
 
-```{r customize_anndata_conversion}
+```{r customize-anndata-conversion}
 adata <- as_AnnData(
   seurat_obj,
   assay_name = "RNA",

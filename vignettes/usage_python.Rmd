@@ -70,18 +70,18 @@ sc$pp$log1p(adata)
 
 # Conversion to R objects
 
-Convert to `Seurat`:
-
-```{r convert_to_seurat}
-seurat_obj <- adata$as_Seurat()
-print(seurat_obj)
-```
-
-Convert to `SingleCellExperiment`:
+Convert to `SingleCellExperiment` (see `vignette("usage_singlecellexperiment")`):
 
 ```{r convert_to_sce}
 sce_obj <- adata$as_SingleCellExperiment()
 print(sce_obj)
+```
+
+Convert to `Seurat` (see `vignette("usage_seurat")`):
+
+```{r convert_to_seurat}
+seurat_obj <- adata$as_Seurat()
+print(seurat_obj)
 ```
 
 # Multi-modal data with _mudata_

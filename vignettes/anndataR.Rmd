@@ -61,7 +61,7 @@ BiocManager::install("anndataR")
 
 # Usage
 
-These sections breifly show how to use `r Biocpkg("anndataR")`.
+These sections briefly show how to use `r Biocpkg("anndataR")`.
 
 ## Read from disk
 
@@ -79,13 +79,13 @@ By default, a H5AD is read to an in-memory `AnnData` object:
 adata <- read_h5ad(h5ad_path)
 ```
 
-It can also be read as a `SingleCellExperiment` object:
+It can also be read as a `SingleCellExperiment` object (see `vignette("usage_singlecellexperiment")`):
 
 ```{r read-as-SingleCellExperiment}
 sce <- read_h5ad(h5ad_path, as = "SingleCellExperiment")
 ```
 
-Or as a `Seurat` object:
+Or as a `Seurat` object (see `vignette("usage_seurat")`):
 
 ```{r read-as-Seurat}
 obj <- read_h5ad(h5ad_path, as = "Seurat")
@@ -96,6 +96,8 @@ There is also a HDF5-backed `AnnData` object:
 ```{r read-on-disk}
 adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
+
+See `r vignette("usage_python")` for interacting with a Python `AnnData` via `r CRANpkg("reticulate")`. 
 
 ## Using `AnnData` objects
 
@@ -118,28 +120,28 @@ See ```?`AnnData-usage` ```for more details on how to work with `AnnData` object
 
 ## Interoperability
 
-Convert the `AnnData` object to a `SingleCellExperiment` object:
+Convert the `AnnData` object to a `SingleCellExperiment` object (see `vignette("usage_singlecellexperiment")`):
 
 ```{r as-SingleCellExperiment}
 sce <- adata$as_SingleCellExperiment()
 sce
 ```
 
-Convert the `AnnData` object to a `Seurat` object:
+Convert the `AnnData` object to a `Seurat` object (see `vignette("usage_seurat")`):
 
 ```{r as-Seurat}
 obj <- adata$as_Seurat()
 obj
 ```
 
-Convert a `SingleCellExperiment` object to an `AnnData` object:
+Convert a `SingleCellExperiment` object to an `AnnData` object (see `vignette("usage_singlecellexperiment")`):
 
 ```{r as-AnnData-from-SingleCellExperiment}
 adata <- as_AnnData(sce)
 adata
 ```
 
-Convert a `Seurat` object to an `AnnData` object:
+Convert a `Seurat` object to an `AnnData` object (see `vignette("usage_seurat")`):
 
 ```{r as-AnnData-from-Seurat}
 adata <- as_AnnData(obj)
