@@ -66,7 +66,7 @@ which items to copy as described in the conversion table below. In most
 cases, the default is to copy all items using the same names except where the
 correspondence between objects is unclear. The \code{reduction_mapping} argument
 can also accept a more complex list format, see below for details. To avoid
-copying anything to a slot, set the mapping argument to \code{FALSE}. Empt
+copying anything to a slot, set the mapping argument to \code{FALSE}. Empty
 mapping arguments (\code{NULL}, \code{c()}, \code{list()}) will be treated as \code{FALSE} with
 a warning. If an unnamed vector is provided, the values will be used as
 names.
@@ -90,7 +90,7 @@ object
    \code{adata$layers} \tab \code{Layers(seurat)} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{seurat[[]]} \tab \code{object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{adata$var} \tab \code{seurat[[assay_name]][[]]} \tab \code{assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
-   \code{adata$obsm} \tab \code{Embeddings(sce)} \tab \code{reduction_mapping = c(pca = "X_pca")} \strong{OR} \code{reduction_mapping = list(pca = c(key = "PC_", obsm = "X_pca", varm = "PCs"))} \tab All items that can be coerced to a numeric matrix are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
+   \code{adata$obsm} \tab \code{Reductions(seurat)} \tab \code{reduction_mapping = c(pca = "X_pca")} \strong{OR} \code{reduction_mapping = list(pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"))} \tab All items that can be coerced to a numeric matrix are copied by name without loadings except for \code{"X_pca"} for which loadings are added from \code{"PCs"} \cr
    \code{adata$obsp} \tab \code{Graphs(seurat)} \tab \code{graph_mapping = c(nn = "connectivities")} \tab All items are copied by name \cr
    \code{adata$varp} \tab \emph{NA} \tab \emph{NA} \tab There is no corresponding slot for \code{varp} \cr
    \code{adata$uns} \tab \code{Misc(seurat)} \tab \code{misc_mapping = c(project_metadata = "metadata")} \tab All items are copied by name \cr
@@ -162,4 +162,3 @@ Other object converters:
 \code{\link{reticulate-helpers}}
 }
 \concept{object converters}
-\keyword{internal}

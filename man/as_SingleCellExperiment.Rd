@@ -126,14 +126,15 @@ with the following names used to create a
 \subsection{The \code{x_mapping} and \code{assays_mapping} arguments}{
 
 In order to specify where the data in \code{adata$X} will be stored in the
-\code{assays(sce)} slot of the resulting object, you can use either the \code{x_mapping}
-argument or the \code{assays_mapping} argument.
-If you use \code{x_mapping}, it should be a string specifying the name of the layer
-in \code{assays(sce)} where the data in \code{adata$X} will be stored.
-If you use \code{assays_mapping}, it should be a named vector where names are names
-of \code{assays(sce)} and values are keys of \code{layers} in \code{adata}.
-In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the vector.
-The name you provide for \code{x_mapping} may not be a name in \code{assays_mapping}.
+\code{assays(sce)} slot of the resulting object, you can use either the
+\code{x_mapping} argument or the \code{assays_mapping} argument.
+If you use \code{x_mapping}, it should be a string specifying the name of the
+layer in \code{assays(sce)} where the data in \code{adata$X} will be stored.
+If you use \code{assays_mapping}, it should be a named vector where names are
+names of \code{assays(sce)} and values are keys of \code{layers} in \code{adata}.
+In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the
+vector. The name you provide for \code{x_mapping} may not be a name in
+\code{assays_mapping}.
 }
 }
 \examples{
@@ -167,4 +168,3 @@ Other object converters:
 \code{\link{reticulate-helpers}}
 }
 \concept{object converters}
-\keyword{internal}

@@ -61,9 +61,18 @@ sce <- adata$as_SingleCellExperiment()
 sce
 ```
 
-Note that there is no one-to-one mapping possible between the `AnnData` and `SingleCellExperiment` data structures, so some information might be lost during conversion.
-It is recommended to carefully inspect the converted object to ensure that all necessary information has been transferred.
-See `?as_Seurat` for details on the conversion process.
+# Mapping between `AnnData` and `SingleCellExperiment`
+
+Figure \@ref(fig:mapping) shows the structures of the `AnnData` and `SingleCellExperiment` objects and how `r Biocpkg("anndataR")` maps between them.
+It is important to note that matrices in the two objects are transposed relative to each other.
+
+```{r mapping, fig.cap = "Mapping between `AnnData` and `SingleCellExperiment` objects", fig.wide = TRUE, echo = FALSE}
+knitr::include_graphics("../man/figures/AnnData-SCE.png")
+```
+
+By default, all items in most slots are converted using the same names.
+Items in the `varm` slot are only converted when they are specified in a mapping argument.
+See `?as_SingleCellExperiment` for more details on the default mapping.
 
 # Customizing the conversion
 
