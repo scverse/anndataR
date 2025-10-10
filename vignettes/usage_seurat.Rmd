@@ -113,7 +113,7 @@ write_h5ad(seurat_obj, tempfile(fileext = ".h5ad"))
 This is equivalent to converting the `Seurat` object to an `AnnData` object and then writing it out:
 
 ```{r convert-to-anndata}
-adata <- as_AnData(seurat_obj)
+adata <- as_AnnData(seurat_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
 ```
 
