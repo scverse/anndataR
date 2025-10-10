@@ -1,9 +1,11 @@
 #' @title ReticulateAnnData
 #'
 #' @description
-#' Implementation of an AnnData object that wraps a Python anndata.AnnData object
-#' using reticulate. This allows direct interaction with Python AnnData objects
-#' while maintaining the R interface.
+#' Implementation of an `AnnData` object that wraps a Python **anndata**
+#' `AnnData` object using \pkg{reticulate}. This allows direct interaction with
+#' Python `AnnData` objects while maintaining the R interface. It is useful when
+#' you already have a Python `AnnData` or to access functionality that has not
+#' yet been implemented in \pkg{anndataR}.
 #'
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'

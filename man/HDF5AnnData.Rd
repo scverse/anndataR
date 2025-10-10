@@ -7,7 +7,11 @@
 An \code{HDF5AnnData} object
 }
 \description{
-Implementation of an HDF5-backed \code{AnnData} object.
+Implementation of an HDF5-backed \code{AnnData} object. This class provides an
+interface to a H5AD file and minimal data is stored in memory until it is
+requested by the user. It is primarily designed as an intermediate object
+when reading/writing H5AD files but can be useful for accessing parts of
+large files.
 
 See \link{AnnData-usage} for details on creating and using \code{AnnData} objects.
 }
