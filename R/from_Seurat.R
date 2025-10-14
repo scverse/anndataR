@@ -254,11 +254,11 @@ from_Seurat <- function(
       expected_dims = rev(dim(adata))
     )
 
-    if (!is.null(layer_data)) {
-      to_py_matrix(layer_data)
+    if (is.null(layer_data)) {
+      return(NULL)
     }
 
-    layer_data
+    to_py_matrix(layer_data)
   })
 }
 
