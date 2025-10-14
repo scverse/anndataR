@@ -61,7 +61,7 @@
 #'
 # nolint start: line_length_linter
 #'
-#' | **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default if `NULL`** |
+#' | **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
 #' | `adata$X` | `assays(sce)` | `x_mapping = "counts"` | The data in `adata$X` is copied to the assay named `X` |
 #' | `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |

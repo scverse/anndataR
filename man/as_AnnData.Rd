@@ -58,47 +58,39 @@ as_AnnData(
 \item{x}{The object to convert}
 
 \item{x_mapping}{A string specifying the data to map to the \code{X} slot. If
-\code{NULL}, no data will be copied to the \code{X} slot.}
+\code{NULL}, no data will be copied to the \code{X} slot. See below for details.}
 
 \item{layers_mapping}{A named character vector where the names are keys of
 \code{layers} in the new \code{AnnData} object and values are the names of items in
-the corresponding slot of \code{x}. See below for default if \code{NULL} depending on
-the class of \code{x}.}
+the corresponding slot of \code{x}. See below for details.}
 
 \item{obs_mapping}{A named character vector where the names are names of
 \code{obs} columns in the new \code{AnnData} object and values are the names of
-columns in the corresponding slot of \code{x}. See below for default if \code{NULL}
-depending on the class of \code{x}.}
+columns in the corresponding slot of \code{x}. See below for details.}
 
 \item{var_mapping}{A named character vector where the names are names of
 \code{var} columns in the new \code{AnnData} object and values are the names of
-columns in the corresponding slot of \code{x}. See below for default if \code{NULL}
-depending on the class of \code{x}.}
+columns in the corresponding slot of \code{x}. See below for details.}
 
 \item{obsm_mapping}{A named character vector where the names are keys of
 \code{obsm} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{varm_mapping}{A named character vector where the names are keys of
 \code{varm} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{obsp_mapping}{A named character vector where the names are keys of
 \code{obsp} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{varp_mapping}{A named character vector where the names are keys of
 \code{varp} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{uns_mapping}{A named character vector where the names are keys of \code{uns}
 in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{assay_name}{For \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} objects, the name of the assay
 to be converted. If \code{NULL}, the default assay will be used
@@ -148,7 +140,7 @@ tables for each object type
 This table describes how slots in a
 \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}} object to the new \code{AnnData}
 object.\tabular{llll}{
-   \strong{From \code{SingleCellExperiment}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \strong{From \code{SingleCellExperiment}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{assays(x)} \tab \code{adata$X} \tab \code{x_mapping = "counts"} \tab Nothing is copied to \code{X} \cr
    \code{assays(x)} \tab \code{adata$layers} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{colData(x)} \tab \code{adata$obs} \tab \code{obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
@@ -170,7 +162,7 @@ an \code{AnnData} object at a time. This can be controlled using the
 
 This table describes how slots in a \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object to the
 new \code{AnnData} object.\tabular{llll}{
-   \strong{From \code{Seurat}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \strong{From \code{Seurat}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{Layers(x)} \tab \code{adata$X} \tab \code{x_mapping = "counts"} \tab Nothing is copied to \code{X} \cr
    \code{Layers(x)} \tab \code{adata$layers} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{x[[]]} \tab \code{adata$obs} \tab \code{obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr

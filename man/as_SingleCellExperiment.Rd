@@ -90,7 +90,7 @@ table
 }
 
 \subsection{Conversion table}{\tabular{llll}{
-   \strong{From \code{AnnData}} \tab \strong{To \code{SingleCellExperiment}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \strong{From \code{AnnData}} \tab \strong{To \code{SingleCellExperiment}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{adata$X} \tab \code{assays(sce)} \tab \code{x_mapping = "counts"} \tab The data in \code{adata$X} is copied to the assay named \code{X} \cr
    \code{adata$layers} \tab \code{assays(sce)} \tab \code{assays_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{colData(sce)} \tab \code{colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr

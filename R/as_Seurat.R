@@ -57,7 +57,7 @@
 #'
 # nolint start: line_length_linter
 #'
-#' | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default if `NULL`** |
+#' | **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default** |
 #' |--------------------|-------------------------------|------------------------------|-----------------------|
 #' | `adata$X` | `Layers(seurat)` | `x_mapping = "counts"` _OR_ `layers_mapping = c(counts = NA)` | The data in `adata$X` is copied to a layer named `X` |
 #' | `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |

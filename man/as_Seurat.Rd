@@ -85,7 +85,7 @@ object
 }
 
 \subsection{Conversion table}{\tabular{llll}{
-   \strong{From \code{AnnData}} \tab \strong{To \code{Seurat}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \strong{From \code{AnnData}} \tab \strong{To \code{Seurat}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{adata$X} \tab \code{Layers(seurat)} \tab \code{x_mapping = "counts"} \emph{OR} \code{layers_mapping = c(counts = NA)} \tab The data in \code{adata$X} is copied to a layer named \code{X} \cr
    \code{adata$layers} \tab \code{Layers(seurat)} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{seurat[[]]} \tab \code{object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr

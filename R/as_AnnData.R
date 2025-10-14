@@ -6,39 +6,31 @@
 #'
 #' @param x The object to convert
 #' @param x_mapping A string specifying the data to map to the `X` slot. If
-#'   `NULL`, no data will be copied to the `X` slot.
+#'   `NULL`, no data will be copied to the `X` slot. See below for details.
 #' @param layers_mapping A named character vector where the names are keys of
 #'   `layers` in the new `AnnData` object and values are the names of items in
-#'   the corresponding slot of `x`. See below for default if `NULL` depending on
-#'   the class of `x`.
+#'   the corresponding slot of `x`. See below for details.
 #' @param obs_mapping A named character vector where the names are names of
 #'   `obs` columns in the new `AnnData` object and values are the names of
-#'   columns in the corresponding slot of `x`. See below for default if `NULL`
-#'   depending on the class of `x`.
+#'   columns in the corresponding slot of `x`. See below for details.
 #' @param var_mapping A named character vector where the names are names of
 #'   `var` columns in the new `AnnData` object and values are the names of
-#'   columns in the corresponding slot of `x`. See below for default if `NULL`
-#'   depending on the class of `x`.
+#'   columns in the corresponding slot of `x`. See below for details.
 #' @param obsm_mapping A named character vector where the names are keys of
 #'   `obsm` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param varm_mapping A named character vector where the names are keys of
 #'   `varm` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param obsp_mapping A named character vector where the names are keys of
 #'   `obsp` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param varp_mapping A named character vector where the names are keys of
 #'   `varp` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param uns_mapping A named character vector where the names are keys of `uns`
 #'   in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param assay_name For [`SeuratObject::Seurat`] objects, the name of the assay
 #'   to be converted. If `NULL`, the default assay will be used
 #'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
@@ -75,7 +67,7 @@
 #'
 # nolint start: line_length_linter
 #'
-#'   | **From `SingleCellExperiment`** | **To `AnnData`** | **Example mapping argument** | **Default if `NULL`** |
+#'   | **From `SingleCellExperiment`** | **To `AnnData`** | **Example mapping argument** | **Default** |
 #'   |---------------------------------|------------------|------------------------------|-----------------------|
 #'   | `assays(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
 #'   | `assays(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
@@ -101,7 +93,7 @@
 #'
 # nolint start: line_length_linter
 #'
-#'   | **From `Seurat`** | **To `AnnData`** | **Example mapping argument** | **Default if `NULL`** |
+#'   | **From `Seurat`** | **To `AnnData`** | **Example mapping argument** | **Default** |
 #'   |-------------------|------------------|------------------------------|-----------------------|
 #'   | `Layers(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
 #'   | `Layers(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
