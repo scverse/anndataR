@@ -247,9 +247,18 @@ from_Seurat <- function(
   }
 
   adata$layers <- purrr::map(layers_mapping, function(.layer) {
-    to_py_matrix(
-      SeuratObject::LayerData(seurat_obj, assay = assay_name, layer = .layer)
+    layer_data <- check_dims_and_skip(
+      SeuratObject::LayerData(seurat_obj, assay = assay_name, layer = .layer),
+      "Layer",
+      .layer,
+      expected_dims = rev(dim(adata))
     )
+
+    if (!is.null(layer_data)) {
+      to_py_matrix(layer_data)
+    }
+
+    layer_data
   })
 }
 
@@ -273,7 +282,13 @@ from_Seurat <- function(
         "i" = "Available reductions: {.val {SeuratObject::Reductions(seurat_obj)}}"
       ))
     }
-    SeuratObject::Embeddings(seurat_obj, .reduction)
+
+    check_dims_and_skip(
+      SeuratObject::Embeddings(seurat_obj, .reduction),
+      "Reduction",
+      .reduction,
+      expected_rows = nrow(adata)
+    )
   })
 }
 
@@ -337,7 +352,19 @@ from_Seurat <- function(
         "i" = "Available graphs: {.val {SeuratObject::Graphs(seurat_obj)}}"
       ))
     }
-    as(seurat_obj[[.graph]], "sparseMatrix")
+
+    graph_data <- check_dims_and_skip(
+      seurat_obj[[.graph]],
+      "Graph",
+      .graph,
+      expected_dims = c(nrow(adata), nrow(adata))
+    )
+
+    if (is.null(graph_data)) {
+      return(NULL)
+    }
+
+    as(graph_data, "sparseMatrix")
   })
 }
 
@@ -362,7 +389,19 @@ from_Seurat <- function(
         "i" = "Available misc data: {.val {names(SeuratObject::Misc(seurat_obj))}}"
       ))
     }
-    SeuratObject::Misc(seurat_obj, .varp)
+
+    varp_data <- check_dims_and_skip(
+      SeuratObject::Misc(seurat_obj, .varp),
+      "Misc",
+      .varp,
+      expected_dims = c(ncol(adata), ncol(adata))
+    )
+
+    if (is.null(varp_data)) {
+      return(NULL)
+    }
+
+    as(varp_data, "sparseMatrix")
   })
 }
 

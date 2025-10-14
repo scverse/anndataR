@@ -175,7 +175,7 @@ new \code{AnnData} object.\tabular{llll}{
    \code{Layers(x)} \tab \code{adata$layers} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{x[[]]} \tab \code{adata$obs} \tab \code{obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{x[[assay_name]][[]]} \tab \code{adata$var} \tab \code{var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
-   \code{Embeddings(x)} \tab \code{adata$obsm} \tab \code{obsm_mapping = c(X_pca = "pca")} \tab All embeddings matching \code{assay_name} are copied by name \cr
+   \code{Reductions(x)} \tab \code{adata$obsm} \tab \code{obsm_mapping = c(X_pca = "pca")} \tab All embeddings matching \code{assay_name} are copied by name \cr
    \code{Loadings(x)} \tab \code{adata$varm} \tab \code{varm_mapping = c(PCs = "pca")} \tab All valid loadings are copied by name \cr
    \code{Graphs(x)} \tab \code{adata$obsp} \tab \code{obsp_mapping = c(connectivities = "RNA_nn")} \tab All graphs matching \code{assay_name} are copied by name \cr
    \code{Misc(x)} \tab \code{adata$varp} \tab \code{varp_mapping = c(similarities = "gene_overlaps")} \tab No data is copied to \code{varp} \cr
@@ -184,9 +184,9 @@ new \code{AnnData} object.\tabular{llll}{
 
 \subsection{Graph conversion}{
 
-By default, all graphs in a \code{Seurat} object that match the assay being
-converted are copied to the \code{obsp} slot of the new \code{AnnData} object. If a
-graph does not have an associated assay:
+By default, all graphs in a \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object that match the
+assay being converted are copied to the \code{obsp} slot of the new \code{AnnData}
+object. If a graph does not have an associated assay:
 \itemize{
 \item If \code{assay_name} is the default assay, they will be \emph{converted} with a
 warning
@@ -196,6 +196,14 @@ warning
 
 To override this behavior, provide a custom mapping using the
 \code{obsp_mapping} argument.
+}
+
+\subsection{Unexpected dimensions}{
+
+A \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} is more flexible in terms of the dimensions of
+items that can be stored in various slots. For example, a \code{Layer} does not
+have to match the dimensions of the whole object. If an item has
+unexpected dimensions, it will be skipped with a warning.
 }
 }
 

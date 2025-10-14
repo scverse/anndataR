@@ -107,7 +107,7 @@
 #'   | `Layers(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
 #'   | `x[[]]` | `adata$obs` | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #'   | `x[[assay_name]][[]]` | `adata$var` | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
-#'   | `Embeddings(x)` | `adata$obsm` | `obsm_mapping = c(X_pca = "pca")` | All embeddings matching `assay_name` are copied by name |
+#'   | `Reductions(x)` | `adata$obsm` | `obsm_mapping = c(X_pca = "pca")` | All embeddings matching `assay_name` are copied by name |
 #'   | `Loadings(x)` | `adata$varm` | `varm_mapping = c(PCs = "pca")` | All valid loadings are copied by name |
 #'   | `Graphs(x)` | `adata$obsp` | `obsp_mapping = c(connectivities = "RNA_nn")` | All graphs matching `assay_name` are copied by name |
 #'   | `Misc(x)` | `adata$varp` | `varp_mapping = c(similarities = "gene_overlaps")` | No data is copied to `varp` |
@@ -117,9 +117,9 @@
 #'
 #'   ## Graph conversion
 #'
-#'   By default, all graphs in a `Seurat` object that match the assay being
-#'   converted are copied to the `obsp` slot of the new `AnnData` object. If a
-#'   graph does not have an associated assay:
+#'   By default, all graphs in a [`SeuratObject::Seurat`] object that match the
+#'   assay being converted are copied to the `obsp` slot of the new `AnnData`
+#'   object. If a graph does not have an associated assay:
 #'
 #'   - If `assay_name` is the default assay, they will be _converted_ with a
 #'     warning
@@ -128,6 +128,13 @@
 #'
 #'   To override this behavior, provide a custom mapping using the
 #'   `obsp_mapping` argument.
+#'
+#'   ## Unexpected dimensions
+#'
+#'   A [`SeuratObject::Seurat`] is more flexible in terms of the dimensions of
+#'   items that can be stored in various slots. For example, a `Layer` does not
+#'   have to match the dimensions of the whole object. If an item has
+#'   unexpected dimensions, it will be skipped with a warning.
 #'
 #' @return An `AnnData` object of the class requested by `output_class`
 #'   containing the data specified in the mapping arguments.
