@@ -460,8 +460,26 @@ from_Seurat <- function(
 
   for (graph_name in SeuratObject::Graphs(seurat_obj)) {
     graph <- seurat_obj[[graph_name]]
+    graph_assay <- SeuratObject::DefaultAssay(graph)
 
-    if (SeuratObject::DefaultAssay(graph) != assay_name) {
+    # Handle graphs with missing assay information
+    if (is.null(graph_assay)) {
+      # If we are using the default assay, warn and convert
+      if (assay_name == SeuratObject::DefaultAssay(seurat_obj)) {
+        cli_warn(c(
+          "Graph {.val {graph_name}} does not have an associated assay",
+          "i" = "Assuming it belongs to the selected default assay ({.val {assay_name}})"
+        ))
+      } else {
+        # If another assay, warn and don't convert
+        cli_warn(c(
+          "Graph {.val {graph_name}} does not have an associated assay",
+          "i" = "Assuming it does not belong to the selected assay ({.val {assay_name}}) and skipping"
+        ))
+        next
+      }
+    } else if (graph_assay != assay_name) {
+      # Skip graphs from other assays
       next
     }
 

@@ -181,6 +181,22 @@ new \code{AnnData} object.\tabular{llll}{
    \code{Misc(x)} \tab \code{adata$varp} \tab \code{varp_mapping = c(similarities = "gene_overlaps")} \tab No data is copied to \code{varp} \cr
    \code{Misc(x)} \tab \code{adata$uns} \tab \code{uns_mapping = c(metadata = "project_metadata")} \tab All items are copied by name \cr
 }
+
+\subsection{Graph conversion}{
+
+By default, all graphs in a \code{Seurat} object that match the assay being
+converted are copied to the \code{obsp} slot of the new \code{AnnData} object. If a
+graph does not have an associated assay:
+\itemize{
+\item If \code{assay_name} is the default assay, they will be \emph{converted} with a
+warning
+\item if \code{assay_name} is not the default assay, they will be \emph{skipped} with a
+warning
+}
+
+To override this behavior, provide a custom mapping using the
+\code{obsp_mapping} argument.
+}
 }
 
 \examples{

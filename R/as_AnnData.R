@@ -115,6 +115,20 @@
 #'
 # nolint end: line_length_linter
 #'
+#'   ## Graph conversion
+#'
+#'   By default, all graphs in a `Seurat` object that match the assay being
+#'   converted are copied to the `obsp` slot of the new `AnnData` object. If a
+#'   graph does not have an associated assay:
+#'
+#'   - If `assay_name` is the default assay, they will be _converted_ with a
+#'     warning
+#'   - if `assay_name` is not the default assay, they will be _skipped_ with a
+#'     warning
+#'
+#'   To override this behavior, provide a custom mapping using the
+#'   `obsp_mapping` argument.
+#'
 #' @return An `AnnData` object of the class requested by `output_class`
 #'   containing the data specified in the mapping arguments.
 #' @export
