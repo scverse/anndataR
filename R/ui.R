@@ -4,7 +4,7 @@
 #'
 #' @param x The vector to style
 #' @param last The separator before the last element in the vector
-#' @param trunc The maxium number of elements to show
+#' @param trunc The maximum number of elements to show
 #' @param trunc_style The truncation style to use, either "both-ends"
 #'   (1, 2, ..., n-1, 1) or "head" (1, 2, 3, 4, ...)
 #' @param wrap Whether to wrap the output to appear as a vector, if `TRUE` then
@@ -23,6 +23,7 @@ style_vec <- function(
 
   style <- list(
     "vec-last" = last,
+    "vec-sep2" = last,
     "vec-trunc" = trunc,
     "vec-trunc-style" = trunc_style
   )
