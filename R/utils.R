@@ -159,7 +159,6 @@ check_dims_and_skip <- function(
   expected_rows = NULL,
   expected_cols = NULL
 ) {
-
   msg <- NULL
 
   if (!is.null(expected_dims) && !identical(dim(x), expected_dims)) {
