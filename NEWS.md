@@ -1,4 +1,4 @@
-# anndataR unreleased
+# anndataR 0.99.3
 
 ## New functionality
 
