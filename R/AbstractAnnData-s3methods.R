@@ -49,7 +49,7 @@
 #'
 #' @examples
 #' # Create example data
-#' ad <- generate_dataset(n_obs = 100, n_vars = 50)
+#' ad <- generate_dataset(n_obs = 100, n_vars = 50, format = "AnnnData")
 #'
 #' # Standard R methods work
 #' dim(ad)
