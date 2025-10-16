@@ -78,9 +78,8 @@ The following S3 methods are available:
 }
 }
 \examples{
-\dontrun{
 # Create example data
-ad <- generate_dataset(n_obs = 100, n_vars = 50)
+ad <- generate_dataset(n_obs = 100, n_vars = 50, format = "AnnData")
 
 # Standard R methods work
 dim(ad)
@@ -104,5 +103,4 @@ colnames(ad) <- paste0("gene_", 1:ncol(ad))
 subset_ad <- ad[1:10, 1:5]
 subset_ad <- ad[rep(c(TRUE, FALSE), length.out = nrow(ad)), ]  # logical subsetting (no recycling)
 subset_ad <- ad[c("cell_1", "cell_2"), c("gene_1", "gene_2")]  # name subsetting
-}
 }

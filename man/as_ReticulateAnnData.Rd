@@ -17,18 +17,21 @@ A \code{\link{ReticulateAnnData}} object with the same data as the input
 Convert another \code{AnnData} object to a \code{\link{ReticulateAnnData}} object
 }
 \examples{
-\dontrun{
+\donttest{
 # Requires Python anndata to be installed
-ad <- AnnData(
-  X = matrix(1:5, 3L, 5L),
-  layers = list(
-    A = matrix(5:1, 3L, 5L),
-    B = matrix(letters[1:5], 3L, 5L)
-  ),
-  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
-  var = data.frame(row.names = letters[1:5], gene = 1:5)
-)
-ad$as_ReticulateAnnData()
+if (requireNamespace("reticulate", quietly = TRUE) &&
+      reticulate::py_module_available("anndata")) {
+  ad <- AnnData(
+    X = matrix(1:5, 3L, 5L),
+    layers = list(
+      A = matrix(5:1, 3L, 5L),
+      B = matrix(letters[1:5], 3L, 5L)
+    ),
+    obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+    var = data.frame(row.names = letters[1:5], gene = 1:5)
+  )
+  ad$as_ReticulateAnnData()
+}
 }
 }
 \seealso{

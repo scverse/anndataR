@@ -9,11 +9,6 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-
 reticulate::py_require("mudata")
 
 # Check if required Python packages are available
@@ -21,8 +16,12 @@ python_available <- reticulate::py_available() &&
   reticulate::py_module_available("scanpy") &&
   reticulate::py_module_available("mudata")
 
-# Set eval based on Python package availability
-knitr::opts_chunk$set(eval = python_available)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  # Set eval based on Python package availability
+  eval = python_available
+)
 
 if (!python_available) {
   message("Python packages scanpy and mudata are required to run this vignette. Code chunks will not be evaluated.")
