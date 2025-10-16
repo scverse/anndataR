@@ -333,6 +333,12 @@ R -e 'devtools::test(filter = "roundtrip-X")'
 
 # Lint checking
 R -e 'lintr::lint_package()'
+
+# Check code formatting
+air format --check .
+
+# Reformat code
+air format .
 ```
 
 ### Lintr Configuration
@@ -385,14 +391,6 @@ as_Seurat <- function(adata, ...) {
 }
 ```
 
-**Conditional registration:**
-
-```r
-# Only register coercions if packages available
-if (rlang::is_installed("SingleCellExperiment")) {
-  .register_set_as_rules(...)
-}
-```
 
 ## Common Pitfalls
 
