@@ -48,7 +48,6 @@
 #'   * `[`: A AnnDataView object with the specified subset
 #'
 #' @examples
-#' \dontrun{
 #' # Create example data
 #' ad <- generate_dataset(n_obs = 100, n_vars = 50)
 #'
@@ -74,7 +73,6 @@
 #' subset_ad <- ad[1:10, 1:5]
 #' subset_ad <- ad[rep(c(TRUE, FALSE), length.out = nrow(ad)), ]  # logical subsetting (no recycling)
 #' subset_ad <- ad[c("cell_1", "cell_2"), c("gene_1", "gene_2")]  # name subsetting
-#' }
 NULL
 
 #' @rdname AbstractAnnData-s3methods

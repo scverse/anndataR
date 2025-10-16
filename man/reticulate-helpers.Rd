@@ -45,20 +45,23 @@ when using \code{reticulate::py_to_r()} and \code{reticulate::r_to_py()} on comp
 objects.
 }
 \examples{
-\dontrun{
+\donttest{
 # Requires Python anndata to be installed
-library(reticulate)
-library(anndataR)
+if (requireNamespace("reticulate", quietly = TRUE) &&
+      reticulate::py_module_available("anndata")) {
 
-# Create Python AnnData object
-ad_py <- import("anndata", convert = FALSE)
-py_adata <- ad_py$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
+  library(reticulate)
 
-# Automatic conversion to R (uses py_to_r.anndata._core.anndata.AnnData)
-r_adata <- py_to_r(py_adata)
+  # Create Python AnnData object
+  ad_py <- import("anndata", convert = FALSE)
+  py_adata <- ad_py$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
 
-# Automatic conversion back to Python (uses r_to_py.AbstractAnnData)
-py_adata2 <- r_to_py(r_adata)
+  # Automatic conversion to R (uses py_to_r.anndata._core.anndata.AnnData)
+  r_adata <- py_to_r(py_adata)
+
+  # Automatic conversion back to Python (uses r_to_py.AbstractAnnData)
+  py_adata2 <- r_to_py(r_adata)
+}
 }
 }
 \seealso{
