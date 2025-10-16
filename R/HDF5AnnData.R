@@ -481,19 +481,6 @@ HDF5AnnData <- R6::R6Class(
 #'
 #' @family object converters
 #'
-#' @examples
-#' ad <- AnnData(
-#'   X = matrix(1:5, 3L, 5L),
-#'   layers = list(
-#'     A = matrix(5:1, 3L, 5L),
-#'     B = matrix(letters[1:5], 3L, 5L)
-#'   ),
-#'   obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
-#'   var = data.frame(row.names = letters[1:5], gene = 1:5),
-#' )
-#' ad$as_HDF5AnnData("test.h5ad")
-#' # remove file
-#' unlink("test.h5ad")
 # nolint start: object_name_linter
 as_HDF5AnnData <- function(
   # nolint end: object_name_linter
