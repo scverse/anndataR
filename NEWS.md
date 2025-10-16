@@ -1,10 +1,16 @@
+# anndataR 0.99.4
+
+- Address minor issues from Bioconductor checks (PR #371)
+  - Combine the `opts_chunks$set()` calls in the Python usage vignette
+  - Replace `\donttrun` with `\donttest` in man pages
+
 # anndataR 0.99.3
 
 ## New functionality
 
-* Implemented an `AnnDataView` class, which provides a lazy view of an `AnnData` object without copying data (PR #1096)
-* Implemented S3 methods for `AbstractAnnData` objects: `dim`, `nrow`, `ncol`, `dimnames`, `rownames`, `colnames`, and `[` (PR #1096)
-* Add `ReticulateAnnData` class for seamless Python integration via **{reticulate}** (PR #322)
+- Implemented an `AnnDataView` class, which provides a lazy view of an `AnnData` object without copying data (PR #1096)
+- Implemented S3 methods for `AbstractAnnData` objects: `dim`, `nrow`, `ncol`, `dimnames`, `rownames`, `colnames`, and `[` (PR #1096)
+- Add `ReticulateAnnData` class for seamless Python integration via **{reticulate}** (PR #322)
 
 ## Major changes
 
