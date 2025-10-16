@@ -79,7 +79,7 @@ The following S3 methods are available:
 }
 \examples{
 # Create example data
-ad <- generate_dataset(n_obs = 100, n_vars = 50, format = "AnnnData")
+ad <- generate_dataset(n_obs = 100, n_vars = 50, format = "AnnData")
 
 # Standard R methods work
 dim(ad)
