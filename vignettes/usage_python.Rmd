@@ -10,10 +10,10 @@ vignette: >
 
 ```{r, include = FALSE}
 reticulate::py_require("mudata")
+reticulate::py_require("scanpy")
 
 # Check if required Python packages are available
-python_available <- reticulate::py_available() &&
-  reticulate::py_module_available("scanpy") &&
+python_available <- reticulate::py_module_available("scanpy") &&
   reticulate::py_module_available("mudata")
 
 knitr::opts_chunk$set(
@@ -22,16 +22,18 @@ knitr::opts_chunk$set(
   # Set eval based on Python package availability
   eval = python_available
 )
-
-if (!python_available) {
-  message("Python packages scanpy and mudata are required to run this vignette. Code chunks will not be evaluated.")
-}
 ```
 
 # Introduction
 
 `r Biocpkg("anndataR")` works with Python `AnnData` objects through `r CRANpkg("reticulate")`.
 You can load Python objects, apply Python functions to them, and convert them to `Seurat` or `SingleCellExperiment` objects.
+
+```{r python_unavailable, eval=!python_available}
+message(
+  "Python packages scanpy and mudata are required to run this vignette. Code chunks will not be evaluated."
+)
+```
 
 ## Prerequisites
 
@@ -43,7 +45,7 @@ If these are not available, the code chunks will not be evaluated but the exampl
 Install required Python packages if needed:
 
 ```{r python_setup, eval=FALSE}
-reticulate::py_install("scanpy")
+reticulate::py_require("scanpy")
 ```
 
 ```{r load_libraries}
@@ -56,7 +58,7 @@ Load a dataset directly from _scanpy_:
 
 ```{r load_python_data}
 adata <- sc$datasets$pbmc3k_processed()
-print(adata)
+adata
 ```
 
 Apply _scanpy_ functions directly:
@@ -73,14 +75,14 @@ Convert to `SingleCellExperiment` (see `vignette("usage_singlecellexperiment")`)
 
 ```{r convert_to_sce}
 sce_obj <- adata$as_SingleCellExperiment()
-print(sce_obj)
+sce_obj
 ```
 
 Convert to `Seurat` (see `vignette("usage_seurat")`):
 
 ```{r convert_to_seurat}
 seurat_obj <- adata$as_Seurat()
-print(seurat_obj)
+seurat_obj
 ```
 
 # Multi-modal data with _mudata_
