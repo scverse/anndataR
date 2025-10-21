@@ -51,10 +51,8 @@ reticulate::py_require("scanpy")
 ```{r load_libraries}
 library(anndataR)
 library(reticulate)
-sc <- import("scanpy", convert = FALSE)
+sc <- import("scanpy")
 ```
-
-Note: Make sure to import _scanpy_ with `convert = FALSE` to prevent automatic conversion of `AnnData` objects.
 
 Load a dataset directly from _scanpy_:
 
@@ -96,7 +94,7 @@ reticulate::py_install("mudata")
 ```
 
 ```{r load_mudata}
-md <- import("mudata", convert = FALSE)
+md <- import("mudata")
 ```
 
 Load a `MuData` object from file:
