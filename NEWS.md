@@ -1,3 +1,10 @@
+# anndataR 0.99.5
+
+- Use the correct mapping figure in the `SingleCellExperiment` usage vignette (PR #372)
+- Fix accessing layers keys for `ReticulateAnnData` (PR #372)
+- Minor updates to the Python usage vignette (PR #372)
+- Add the Python vignette to the **{pkgdown}** index (PR #372)
+
 # anndataR 0.99.4
 
 - Address minor issues from Bioconductor checks (PR #371)
