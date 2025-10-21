@@ -1,4 +1,4 @@
-# anndataR 0.99.5
+# anndataR 0.99.6
 
 - Use the correct mapping figure in the `SingleCellExperiment` usage vignette (PR #372)
 - Fix accessing layers keys for `ReticulateAnnData` (PR #372)
