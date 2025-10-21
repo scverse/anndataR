@@ -59,9 +59,15 @@ ReticulateAnnData <- R6::R6Class(
 
         bi <- reticulate::import_builtins()
         out <- list()
-        keys <- bi$list(reticulate::py_get_attr(private$.py_anndata, "layers")$keys())
+        keys <- bi$list(reticulate::py_get_attr(
+          private$.py_anndata,
+          "layers"
+        )$keys())
         for (name in keys) {
-          out[[name]] <- py_to_r(reticulate::py_get_attr(private$.py_anndata, "layers")[[name]])
+          out[[name]] <- py_to_r(reticulate::py_get_attr(
+            private$.py_anndata,
+            "layers"
+          )[[name]])
         }
         out
       } else {
@@ -115,10 +121,17 @@ ReticulateAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_obs_names, status=done
         bi <- reticulate::import_builtins()
-        reticulate::py_to_r(bi$list(reticulate::py_get_attr(private$.py_anndata, "obs_names")))
+        reticulate::py_to_r(bi$list(reticulate::py_get_attr(
+          private$.py_anndata,
+          "obs_names"
+        )))
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_obs_names, status=done
-        reticulate::py_set_attr(private$.py_anndata, "obs_names", reticulate::r_to_py(value))
+        reticulate::py_set_attr(
+          private$.py_anndata,
+          "obs_names",
+          reticulate::r_to_py(value)
+        )
         self
       }
     },
@@ -130,10 +143,17 @@ ReticulateAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_var_names, status=done
         bi <- reticulate::import_builtins()
-        reticulate::py_to_r(bi$list(reticulate::py_get_attr(private$.py_anndata, "var_names")))
+        reticulate::py_to_r(bi$list(reticulate::py_get_attr(
+          private$.py_anndata,
+          "var_names"
+        )))
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_var_names, status=done
-        reticulate::py_set_attr(private$.py_anndata, "var_names", reticulate::r_to_py(value))
+        reticulate::py_set_attr(
+          private$.py_anndata,
+          "var_names",
+          reticulate::r_to_py(value)
+        )
         self
       }
     },
@@ -382,13 +402,19 @@ ReticulateAnnData <- R6::R6Class(
     #' @description See the `n_obs` field in [AnnData-usage]
     n_obs = function() {
       private$.check_py_object_valid()
-      as.integer(reticulate::py_to_r(reticulate::py_get_attr(private$.py_anndata, "n_obs")))
+      as.integer(reticulate::py_to_r(reticulate::py_get_attr(
+        private$.py_anndata,
+        "n_obs"
+      )))
     },
 
     #' @description See the `n_vars` field in [AnnData-usage]
     n_vars = function() {
       private$.check_py_object_valid()
-      as.integer(reticulate::py_to_r(reticulate::py_get_attr(private$.py_anndata, "n_vars")))
+      as.integer(reticulate::py_to_r(reticulate::py_get_attr(
+        private$.py_anndata,
+        "n_vars"
+      )))
     },
 
     #' @description Get the underlying Python AnnData object
