@@ -55,9 +55,9 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_layers, status=done
-        bi <- reticulate::import_builtins()
         out <- list()
-        keys <- bi$list(private$.py_anndata$layers$keys())
+
+        keys <- names(private$.py_anndata$layers)
         for (name in keys) {
           out[[name]] <- py_to_r(private$.py_anndata$layers[[name]])
         }
