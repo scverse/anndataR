@@ -13,6 +13,8 @@ navbar:
       href: articles/usage_seurat.html
     - text: Read/write SingleCellExperiment objects
       href: articles/usage_singlecellexperiment.html
+    - text: Interact with Python AnnData objects
+      href: articles/usage_python.html
     - text: -------
     - text: Development
     - text: Software design
