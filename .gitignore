@@ -60,3 +60,4 @@ rsconnect/
 vignettes/data/*.h5ad
 /doc/
 /Meta/
+/data/
