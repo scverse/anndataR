@@ -12,19 +12,20 @@
     }
   }
   \subsection{Features}{
-  \itemize{
-    \item{
-      An \pkg{R6} class to work with \code{AnnData} objects in R (either
-      in-memory or on-disk)
-    }
-    \item{
-      Natively read/write H5AD files without needing a Python environment
-    }
-    \item{
-      Convert to/from \code{SingleCellExperiment} objects
-    }
-    \item{
-      Convert to/from \code{Seurat} objects
+    \itemize{
+      \item{
+        An \pkg{R6} class to work with \code{AnnData} objects in R (either
+        in-memory or on-disk)
+      }
+      \item{
+        Natively read/write H5AD files without needing a Python environment
+      }
+      \item{
+        Convert to/from \code{SingleCellExperiment} objects
+      }
+      \item{
+        Convert to/from \code{Seurat} objects
+      }
     }
   }
 }
