@@ -1,7 +1,7 @@
 # {anndataR}: An R package for working with AnnData objects <img src="man/figures/logo.png" align="right" alt="anndataR logo" width=120 />
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml)
 [![Bioc release status](http://www.bioconductor.org/shields/build/release/bioc/anndataR.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/anndataR)
 [![Bioc devel status](http://www.bioconductor.org/shields/build/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR)
