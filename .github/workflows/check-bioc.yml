@@ -1,24 +1,7 @@
-## Read more about GitHub actions the features of this GitHub Actions workflow
-## at https://lcolladotor.github.io/biocthis/articles/biocthis.html#use_bioc_github_action
-##
-## For more details, check the biocthis developer notes vignette at
-## https://lcolladotor.github.io/biocthis/articles/biocthis_dev_notes.html
-##
-## You can add this workflow to other packages using:
+## Modified from the {biocthis} check action
 ## > biocthis::use_bioc_github_action()
 ##
-## Using GitHub Actions exposes you to many details about how R packages are
-## compiled and installed in several operating system.s
-### If you need help, please follow the steps listed at
-## https://github.com/r-lib/actions#where-to-find-help
-##
-## If you found an issue specific to biocthis's GHA workflow, please report it
-## with the information that will make it easier for others to help you.
-## Thank you!
-
-## Acronyms:
-## * GHA: GitHub Action
-## * OS: operating system
+## More info at https://lcolladotor.github.io/biocthis/articles/biocthis.html#use_bioc_github_action
 
 on:
   push:
@@ -26,25 +9,11 @@ on:
 
 name: R-CMD-check-bioc
 
-## These environment variables control whether to run GHA code later on that is
-## specific to testthat, covr, and pkgdown.
-##
-## If you need to clear the cache of packages, update the number inside
-## cache-version as discussed at https://github.com/r-lib/actions/issues/86.
-## Note that you can always run a GHA test without the cache by using the word
-## "/nocache" in the commit message.
 env:
-  has_testthat: 'true'
   run_covr: 'true'
   run_pkgdown: 'true'
-  has_RUnit: 'false'
   cache-version: 'cache-v1'
-  run_docker: 'false'
   bioc_version: 'bioc-devel'
-  ## Valid options are:
-  ##    "bioc-release"
-  ##    "bioc-devel"
-  ##    or a specific number like "3.20"
 
 jobs:
   bioc-config:
@@ -52,41 +21,49 @@ jobs:
     outputs:
       matrix: ${{ steps.set-bioc-matrix.outputs.matrix }}
     steps:
-      ## Adapted from
-      ## https://runs-on.com/github-actions/the-matrix-strategy/#dynamic-matrix-generation
       - id: set-bioc-matrix
         run: |
-         bioc=$(curl -L https://bioconductor.org/config.yaml)
-         if [[ "$bioc_version" == "bioc-release" ]]; then
-           echo "Finding the latest BioC release version and the corresponding R version"
-           biocversion=$(echo "$bioc" | grep "release_version: " | grep -Eo "[0-9]{1}\.[0-9]{2}")
-           rversion=$(echo "$bioc" | grep "r_version_associated_with_release: " | grep -Eo "[0-9]{1}\.[0-9]{1}")
-           biocmajor=$(echo "$biocversion" | cut -c 1-1)
-           biocminor=$(echo "$biocversion" | cut -c 3-4)
-           bioccont=$(echo "bioconductor/bioconductor_docker:RELEASE_${biocmajor}_${biocminor}")
-         elif [[ "$bioc_version" == "bioc-devel" ]]; then
-           echo "Finding the latest BioC devel version and the corresponding R version"
-           biocversion=$(echo "$bioc" | grep "devel_version: " | grep -Eo "[0-9]{1}\.[0-9]{2}")
-           rversion_release=$(echo "$bioc" | grep "r_version_associated_with_release: " | grep -Eo "[0-9]{1}\.[0-9]{1}")
-           rversion_devel=$(echo "$bioc" | grep "r_version_associated_with_devel: " | grep -Eo "[0-9]{1}\.[0-9]{1}")
-           if [[ "$rversion_release" == "$rversion_devel" ]]; then
-             rversion=$(echo "$rversion_devel")
-           else
-             rversion="devel"
-           fi
-           bioccont="bioconductor/bioconductor_docker:devel"
-         else
-           echo "Finding the the R version for bioc version ${bioc_version}"
-           biocversion=$(echo "$bioc_version")
-           rversion=$(echo "$bioc" | sed -En "/r_ver_for_bioc_ver/,/release_dates/p" | grep "$bioc_version\":" | grep -Eo ": \"[0-9]{1}\.[0-9]{1}" | grep -Eo "[0-9]{1}\.[0-9]{1}")
-           biocmajor=$(echo "$biocversion" | cut -c 1-1)
-           biocminor=$(echo "$biocversion" | cut -c 3-4)
-           bioccont=$(echo "bioconductor/bioconductor_docker:RELEASE_${biocmajor}_${biocminor}")
-         fi
-         echo "Found these settings:"
-         echo "Bioconductor version: $biocversion, R version: $rversion, Bioconductor docker name: $bioccont"
-         echo "matrix={ \"config\": [{\"os\" : \"ubuntu-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\", \"cont\" : \"${bioccont}\"} , {\"os\" : \"macOS-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\"} , {\"os\" : \"windows-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\" }] }" >> "$GITHUB_OUTPUT"
-         ## If an OS is failing and you don't want to test it, manually remove it from the 'matrix' JSON entries above
+          bioc=$(curl -L https://bioconductor.org/config.yaml)
+
+          if [[ "$bioc_version" == "bioc-release" ]]; then
+            echo "Finding the latest BioC release version and the corresponding R version"
+            biocversion=$(echo "$bioc" | grep "release_version: " | grep -Eo "[0-9]{1}\.[0-9]{2}")
+            rversion=$(echo "$bioc" | grep "r_version_associated_with_release: " | grep -Eo "[0-9]{1}\.[0-9]{1}")
+            biocmajor=$(echo "$biocversion" | cut -c 1-1)
+            biocminor=$(echo "$biocversion" | cut -c 3-4)
+            bioccont=$(echo "bioconductor/bioconductor_docker:RELEASE_${biocmajor}_${biocminor}")
+          elif [[ "$bioc_version" == "bioc-devel" ]]; then
+            echo "Finding the latest BioC devel version and the corresponding R version"
+            biocversion=$(echo "$bioc" | grep "devel_version: " | grep -Eo "[0-9]{1}\.[0-9]{2}")
+            rversion_release=$(echo "$bioc" | grep "r_version_associated_with_release: " | grep -Eo "[0-9]{1}\.[0-9]{1}")
+            rversion_devel=$(echo "$bioc" | grep "r_version_associated_with_devel: " | grep -Eo "[0-9]{1}\.[0-9]{1}")
+            if [[ "$rversion_release" == "$rversion_devel" ]]; then
+              rversion=$(echo "$rversion_devel")
+            else
+              rversion="devel"
+            fi
+            bioccont="bioconductor/bioconductor_docker:devel"
+          else
+            echo "Finding the the R version for bioc version ${bioc_version}"
+            biocversion=$(echo "$bioc_version")
+            rversion=$(echo "$bioc" | sed -En "/r_ver_for_bioc_ver/,/release_dates/p" | grep "$bioc_version\":" | grep -Eo ": \"[0-9]{1}\.[0-9]{1}" | grep -Eo "[0-9]{1}\.[0-9]{1}")
+            biocmajor=$(echo "$biocversion" | cut -c 1-1)
+            biocminor=$(echo "$biocversion" | cut -c 3-4)
+            bioccont=$(echo "bioconductor/bioconductor_docker:RELEASE_${biocmajor}_${biocminor}")
+          fi
+
+          echo "Found these settings:"
+          echo "Bioconductor version: $biocversion, R version: $rversion, Bioconductor docker name: $bioccont"
+          # If an OS is failing and you don't want to test it, manually remove it from the 'matrix' JSON entries
+          cat > $GITHUB_OUTPUT << HERE
+          matrix = {
+            "config": [
+              {"os" : "ubuntu-latest", "r" : "${rversion}", "bioc" : "${biocversion}", "cont" : "${bioccont}"} ,
+              {"os" : "macOS-latest", "r" : "${rversion}", "bioc" : "${biocversion}"},
+              {"os" : "windows-latest", "r" : "${rversion}", "bioc" : "${biocversion}"}
+            ]
+          }
+          HERE
 
   build-check:
     needs: bioc-config
@@ -104,7 +81,6 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-
       ## Most of these steps are the same as the ones in
       ## https://github.com/r-lib/actions/blob/master/examples/check-standard.yaml
       ## If they update their steps, we will also need to update ours.
@@ -139,9 +115,9 @@ jobs:
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ matrix.config.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}-${{ inputs.cache-version }}
-          restore-keys: ${{ matrix.config.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}--${{ inputs.cache-version }}
+          restore-keys: ${{ matrix.config.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}-${{ inputs.cache-version }}
 
-      ## remotes is needed for isntalling the Linux system dependencies
+      ## remotes is needed for installing the Linux system dependencies
       ## as well as other R packages later on.
       - name: Install remotes
         run: |
@@ -222,13 +198,6 @@ jobs:
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE, force = TRUE)
         shell: Rscript {0}
 
-      - name: Install BiocGenerics
-        if:  env.has_RUnit == 'true'
-        run: |
-          ## Install BiocGenerics
-          BiocManager::install("BiocGenerics")
-        shell: Rscript {0}
-
       - name: Install covr
         if: github.ref == 'refs/heads/devel' && env.run_covr == 'true' && runner.os == 'Linux'
         run: |
@@ -262,16 +231,8 @@ jobs:
           )
         shell: Rscript {0}
 
-      ## Might need an to add this to the if:  && runner.os == 'Linux'
       - name: Reveal testthat details
-        if:  env.has_testthat == 'true'
         run: find . -name testthat.Rout -exec cat '{}' ';'
-
-      - name: Run RUnit tests
-        if:  env.has_RUnit == 'true'
-        run: |
-          BiocGenerics:::testPackage()
-        shell: Rscript {0}
 
       - name: Run BiocCheck
         env:
@@ -299,10 +260,6 @@ jobs:
         if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
-        ## Note that you need to run pkgdown::deploy_to_branch(new_process = FALSE)
-        ## at least one locally before this will work. This creates the gh-pages
-        ## branch (erasing anything you haven't version controlled!) and
-        ## makes the git history recognizable by pkgdown.
 
       - name: Install deploy dependencies
         if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
@@ -323,52 +280,3 @@ jobs:
         with:
           name: ${{ runner.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}-results
           path: check
-
-
-  ## Code adapted from
-  ## https://github.com/waldronlab/cBioPortalData/blob/e0440a4445f0cc731e426363a76faa22ee5e0f9d/.github/workflows/devel_check_dock.yml#L65-L92
-  docker-build-and-push:
-    runs-on: ubuntu-latest
-    needs: build-check
-    steps:
-      - name: Checkout Repository
-        if: "!contains(github.event.head_commit.message, '/nodocker') && env.run_docker == 'true' && github.ref == 'refs/heads/devel'"
-        uses: actions/checkout@v3
-
-      - name: Register repo name
-        if: "!contains(github.event.head_commit.message, '/nodocker') && env.run_docker == 'true' && github.ref == 'refs/heads/devel'"
-        id: reg_repo_name
-        run: |
-          echo CONT_IMG_NAME=$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-
-      - name: Set up QEMU
-        if: "!contains(github.event.head_commit.message, '/nodocker') && env.run_docker == 'true' && github.ref == 'refs/heads/devel'"
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Docker Buildx
-        if: "!contains(github.event.head_commit.message, '/nodocker') && env.run_docker == 'true' && github.ref == 'refs/heads/devel'"
-        uses: docker/setup-buildx-action@v2
-
-      - name: Login to Docker Hub
-        if: "!contains(github.event.head_commit.message, '/nodocker') && env.run_docker == 'true' && github.ref == 'refs/heads/devel'"
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      ## Note that DOCKERHUB_TOKEN is really a token for your dockerhub
-      ## account, not your actual dockerhub account password. You can get it
-      ## from https://hub.docker.com/settings/security.
-      ## Check https://github.com/docker/build-push-action/tree/v4.0.0
-      ## for more details.
-      ## Alternatively, try checking
-      ## https://seandavi.github.io/BuildABiocWorkshop/articles/HOWTO_BUILD_WORKSHOP.html.
-
-      - name: Build and Push Docker
-        if: "!contains(github.event.head_commit.message, '/nodocker') && env.run_docker == 'true' && github.ref == 'refs/heads/devel' && success()"
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: >
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.CONT_IMG_NAME }}:latest,
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.CONT_IMG_NAME }}:devel
