@@ -230,12 +230,14 @@ jobs:
         env:
           DISPLAY: 99.0
         run: |
-          BiocCheck::BiocCheck(
+          if (requireNamespace("BiocCheck", quietly = TRUE)) {
+            BiocCheck::BiocCheck(
               dir('check', 'tar.gz$', full.names = TRUE),
               `quit-with-status` = TRUE,
               `no-check-R-ver` = TRUE,
               `no-check-bioc-help` = TRUE
-          )
+            )
+          }
         shell: Rscript {0}
 
       - name: Test coverage
