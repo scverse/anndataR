@@ -33,6 +33,74 @@ HDF5AnnData <- R6::R6Class(
       }
     },
 
+    .get_obsm_keys = function() {
+      private$.check_file_valid()
+      rhdf5::h5ls(private$.h5obj)$name[
+        rhdf5::h5ls(private$.h5obj)$group == "/obsm"
+      ]
+    },
+
+    .set_obsm_keys = function(keys) {
+      private$.check_file_valid()
+      old_keys <- private$.get_obsm_keys()
+      if (length(old_keys) != length(keys)) {
+        cli_abort(
+          "Length of new keys ({.val {length(keys)}}) does not match existing number of obsm entries ({.val {length(old_keys)}})."
+        )
+      }
+
+      gid <- rhdf5::H5Gopen(private$.h5obj, "/obsm")
+      purrr::walk2(old_keys, keys, function(old_key, new_key) {
+        if (old_key != new_key) {
+          rhdf5::H5Lmove(gid, old_key, gid, new_key)
+        }
+      })
+      invisible()
+    },
+
+    .get_obsm_value = function(key) {
+      private$.check_file_valid()
+      read_h5ad_element(private$.h5obj, paste0("obsm/", key)) |>
+        private$.add_matrix_dimnames("obsm")
+    },
+
+    .set_obsm_value = function(key, value) {
+      private$.check_file_valid()
+      private$.validate_aligned_array(
+        value,
+        paste0("obsm[['", key, "']]"),
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      ) |>
+        write_h5ad_element(
+          private$.h5obj,
+          paste0("obsm/", key),
+          private$.compression
+        )
+      self # TODO: why return self?
+    },
+
+    # This sets all values at once, is this what we discussed?
+    .set_obsm_values = function(named_list) {
+      private$.check_file_valid()
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "obsm",
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
+        )
+        write_h5ad_element(res,
+          private$.h5obj,
+          "obsm",
+          private$.compression
+        )
+        self # TODO: why return self?
+    },
+
     #' @description Close the HDF5 file when the object is garbage collected
     finalize = function() {
       if (private$.close_on_finalize) {
@@ -86,31 +154,6 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.h5obj,
             "layers",
-            private$.compression
-          )
-      }
-    },
-    #' @field obsm See [AnnData-usage]
-    obsm = function(value) {
-      private$.check_file_valid()
-
-      if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.h5obj, "obsm") |>
-          private$.add_mapping_dimnames("obsm")
-      } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
-        private$.validate_aligned_mapping(
-          value,
-          "obsm",
-          c(self$n_obs()),
-          expected_rownames = self$obs_names,
-          strip_rownames = TRUE,
-          strip_colnames = FALSE
-        ) |>
-          write_h5ad_element(
-            private$.h5obj,
-            "obsm",
             private$.compression
           )
       }
@@ -501,7 +544,7 @@ as_HDF5AnnData <- function(
     X = adata$X,
     obs = adata$obs,
     var = adata$var,
-    obsm = adata$obsm,
+    obsm = adata$obsm[],
     varm = adata$varm,
     layers = adata$layers,
     obsp = adata$obsp,

@@ -35,8 +35,6 @@ Other AnnData classes:
 
 \item{\code{layers}}{See \link{AnnData-usage}}
 
-\item{\code{obsm}}{See \link{AnnData-usage}}
-
 \item{\code{varm}}{See \link{AnnData-usage}}
 
 \item{\code{obsp}}{See \link{AnnData-usage}}

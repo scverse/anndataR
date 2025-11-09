@@ -25,7 +25,53 @@ ReticulateAnnData <- R6::R6Class(
       if (is.null(private$.py_anndata)) {
         cli_abort("Python AnnData object is not initialized")
       }
+    },
+
+    .get_obsm_keys = function() {
+      private$.check_py_object_valid()
+      bi <- reticulate::import_builtins()
+      bi$list(
+        reticulate::py_get_attr(
+          private$.py_anndata,
+          "obsm"
+        )$keys()
+      )
+    },
+
+    .get_obsm_value = function(key) {
+      private$.check_py_object_valid()
+      py_to_r(reticulate::py_get_attr(
+        private$.py_anndata,
+        "obsm"
+      )[[key]])
+    },
+
+    .set_obsm_value = function(key, value) {
+      private$.check_py_object_valid()
+      value <- private$.validate_aligned_array(
+        value,
+        paste0("obsm[['", key, "']]"),
+        shape = c(self$n_obs(), self$n_vars()),
+        expected_rownames = rownames(self)
+      )
+      reticulate::py_get_attr(
+        private$.py_anndata, "obsm"
+      )[[key]] <- r_to_py(value)
+      invisible()
+    },
+
+    .set_obsm_values = function(named_list) {
+      value <- private$.validate_aligned_mapping(
+        named_list,
+        "obsm",
+        c(self$n_obs()),
+        expected_rownames = rownames(self)
+      )
+      reticulate::py_set_attr(private$.py_anndata, "obsm", r_to_py(value))
+      self
     }
+
+
   ),
   active = list(
     #' @field X See [AnnData-usage]
@@ -157,24 +203,24 @@ ReticulateAnnData <- R6::R6Class(
     },
 
     #' @field obsm See [AnnData-usage]
-    obsm = function(value) {
-      private$.check_py_object_valid()
+    # obsm = function(value) {
+    #   private$.check_py_object_valid()
 
-      if (missing(value)) {
-        # trackstatus: class=ReticulateAnnData, feature=get_obsm, status=done
-        py_to_r(reticulate::py_get_attr(private$.py_anndata, "obsm"))
-      } else {
-        # trackstatus: class=ReticulateAnnData, feature=set_obsm, status=done
-        value <- private$.validate_aligned_mapping(
-          value,
-          "obsm",
-          c(self$n_obs()),
-          expected_rownames = rownames(self)
-        )
-        reticulate::py_set_attr(private$.py_anndata, "obsm", r_to_py(value))
-        self
-      }
-    },
+    #   if (missing(value)) {
+    #     # trackstatus: class=ReticulateAnnData, feature=get_obsm, status=done
+    #     py_to_r(reticulate::py_get_attr(private$.py_anndata, "obsm"))
+    #   } else {
+    #     # trackstatus: class=ReticulateAnnData, feature=set_obsm, status=done
+    #     value <- private$.validate_aligned_mapping(
+    #       value,
+    #       "obsm",
+    #       c(self$n_obs()),
+    #       expected_rownames = rownames(self)
+    #     )
+    #     reticulate::py_set_attr(private$.py_anndata, "obsm", r_to_py(value))
+    #     self
+    #   }
+    # },
 
     #' @field varm See [AnnData-usage]
     varm = function(value) {
@@ -467,7 +513,7 @@ as_ReticulateAnnData <- function(adata) {
     obs = adata$obs,
     var = adata$var,
     layers = adata$layers,
-    obsm = adata$obsm,
+    obsm = adata$obsm[],
     varm = adata$varm,
     obsp = adata$obsp,
     varp = adata$varp,

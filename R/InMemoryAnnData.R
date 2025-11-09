@@ -48,7 +48,50 @@ InMemoryAnnData <- R6::R6Class(
     .varm = NULL,
     .obsp = NULL,
     .varp = NULL,
-    .uns = NULL
+    .uns = NULL,
+
+    .get_obsm_keys = function() {
+      names(private$.obsm)
+    },
+
+    .set_obsm_keys = function(keys) {
+      if (length(keys) != length(private$.obsm)) {
+        cli_abort(
+          "Length of new keys ({.val {length(keys)}}) does not match existing number of obsm entries ({.val {length(private$.obsm)}})."
+        )
+      }
+      names(private$.obsm) <- keys
+      invisible()
+    },
+
+    .get_obsm_value = function(key) {
+      private$.obsm[[key]]
+    },
+
+    .set_obsm_value = function(key, value) {
+      private$.obsm[[key]] <- private$.validate_aligned_array(
+        value,
+        paste0("obsm[['", key, "']]"), #??
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      )
+      self
+    },
+
+    .set_obsm_values = function(named_list) {
+      private$.obsm <- private$.validate_aligned_mapping(
+        named_list,
+        "obsm",
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      )
+      self
+    }
+
   ),
   active = list(
     #' @field X See [AnnData-usage]
@@ -144,24 +187,24 @@ InMemoryAnnData <- R6::R6Class(
       }
     },
     #' @field obsm See [AnnData-usage]
-    obsm = function(value) {
-      if (missing(value)) {
-        # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
-        private$.obsm |>
-          private$.add_mapping_dimnames("obsm")
-      } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=done
-        private$.obsm <- private$.validate_aligned_mapping(
-          value,
-          "obsm",
-          c(self$n_obs()),
-          expected_rownames = self$obs_names,
-          strip_rownames = TRUE,
-          strip_colnames = FALSE
-        )
-        self
-      }
-    },
+    # obsm = function(value) {
+    #   if (missing(value)) {
+    #     # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
+    #     private$.obsm |>
+    #       private$.add_mapping_dimnames("obsm")
+    #   } else {
+    #     # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=done
+    #     private$.obsm <- private$.validate_aligned_mapping(
+    #       value,
+    #       "obsm",
+    #       c(self$n_obs()),
+    #       expected_rownames = self$obs_names,
+    #       strip_rownames = TRUE,
+    #       strip_colnames = FALSE
+    #     )
+    #     self
+    #   }
+    # },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
       if (missing(value)) {

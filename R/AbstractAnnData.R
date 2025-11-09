@@ -65,7 +65,25 @@ AbstractAnnData <- R6::R6Class(
     },
     #' @field obsm See [AnnData-usage]
     obsm = function(value) {
-      .abstract_function("ad$obsm")
+      proxy <- AnnDataSlotList$new(
+        get_keys_fn = function() private$.get_obsm_keys(),
+        set_keys_fn = function(keys) private$.set_obsm_keys(keys),
+        get_value_fn = function(name) private$.get_obsm_value(name),
+        set_value_fn = function(name, value) private$.set_obsm_value(name, value),
+        set_values_fn = function(value) private$.set_obsm_values(value),
+        get_rownames_fn = function() self$obs_names
+      )
+      if (missing(value)) {
+        # if there is no value, the user is accessing adata$obsm and thus 
+        # the proxy object should be returned. It might be that they are
+        # then subsetting the obsm afterwards, e.g. `adata$obsm[["X_pca"]]`
+        # or `adata$obsm[["X_pca"]] <- ...some matrix...`.
+        proxy
+      } else {
+        # user is setting the obsm with a new named list.
+        proxy$set_values_fn(value)
+      }
+      # .abstract_function("ad$obsm")
     },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
