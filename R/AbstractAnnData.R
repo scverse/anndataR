@@ -66,9 +66,9 @@ AbstractAnnData <- R6::R6Class(
     #' @field obsm See [AnnData-usage]
     obsm = function(value) {
       proxy <- AnnDataSlotList$new(
-        get_keys_fn = function() private$.get_obsm_keys(),
-        set_keys_fn = function(keys) private$.set_obsm_keys(keys),
-        get_value_fn = function(name) private$.get_obsm_value(name),
+        get_keys_fn = function() private$.get_keys("obsm"),
+        set_keys_fn = function(keys) private$.set_keys("obsm", keys),
+        get_value_fn = function(name) private$.get_value("obsm", name),
         set_value_fn = function(name, value) private$.set_obsm_value(name, value),
         set_values_fn = function(value) private$.set_obsm_values(value),
         get_rownames_fn = function() self$obs_names
@@ -87,15 +87,53 @@ AbstractAnnData <- R6::R6Class(
     },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
-      .abstract_function("ad$varm")
+      proxy <- AnnDataSlotList$new(
+        get_keys_fn = function() private$.get_keys("varm"),
+        set_keys_fn = function(keys) private$.set_keys("varm", keys),
+        get_value_fn = function(name) private$.get_value("varm", name),
+        set_value_fn = function(name, value) private$.set_varm_value(name, value),
+        set_values_fn = function(value) private$.set_varm_values(value),
+        get_rownames_fn = function() self$var_names
+      )
+      if (missing(value)) {
+        proxy
+      } else {
+        proxy$set_values_fn(value)
+      }
     },
     #' @field obsp See [AnnData-usage]
     obsp = function(value) {
-      .abstract_function("ad$obsp")
+      proxy <- AnnDataSlotList$new(
+        get_keys_fn = function() private$.get_keys("obsp"),
+        set_keys_fn = function(keys) private$.set_keys("obsp", keys),
+        get_value_fn = function(name) private$.get_value("obsp", name),
+        set_value_fn = function(name, value) private$.set_obsp_value(name, value),
+        set_values_fn = function(value) private$.set_obsp_values(value),
+        get_rownames_fn = function() self$obs_names,
+        get_colnames_fn = function() self$obs_names
+      )
+      if (missing(value)) {
+        proxy
+      } else {
+        proxy$set_values_fn(value)
+      }
     },
     #' @field varp See [AnnData-usage]
     varp = function(value) {
-      .abstract_function("ad$varp")
+      proxy <- AnnDataSlotList$new(
+        get_keys_fn = function() private$.get_keys("varp"),
+        set_keys_fn = function(keys) private$.set_keys("varp", keys),
+        get_value_fn = function(name) private$.get_value("varp", name),
+        set_value_fn = function(name, value) private$.set_varp_value(name, value),
+        set_values_fn = function(value) private$.set_varp_values(value),
+        get_rownames_fn = function() self$var_names,
+        get_colnames_fn = function() self$var_names
+      )
+      if (missing(value)) {
+        proxy
+      } else {
+        proxy$set_values_fn(value)
+      }
     },
     #' @field uns See [AnnData-usage]
     uns = function(value) {

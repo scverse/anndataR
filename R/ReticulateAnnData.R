@@ -27,23 +27,62 @@ ReticulateAnnData <- R6::R6Class(
       }
     },
 
-    .get_obsm_keys = function() {
+    .get_keys = function(slot) {
       private$.check_py_object_valid()
       bi <- reticulate::import_builtins()
       bi$list(
         reticulate::py_get_attr(
           private$.py_anndata,
-          "obsm"
+          slot
         )$keys()
       )
     },
 
-    .get_obsm_value = function(key) {
+    .set_keys = function(slot, keys) {
+      private$.check_py_object_valid()
+
+      old_keys <- private$.get_keys(slot)
+      if (length(keys) != length(old_keys)) {
+        cli_abort(
+          "Cannot set keys for {.field {slot}}: length of new keys ({length(keys)}) does not match existing keys ({length(old_keys)})"
+        )
+      }
+
+      # iterate through current keys, rename and delete old keys
+      purrr::walk2(old_keys, keys, function(old_key, new_key) {
+        if (old_key != new_key) {
+          value <- private$.get_value(slot, old_key)
+          private$.set_value(slot, new_key, value)
+          # delete old key
+          reticulate::py_get_attr(
+            private$.py_anndata,
+            slot
+          )$pop(old_key)
+        }
+      })
+    },
+
+    .get_value = function(slot, key) {
       private$.check_py_object_valid()
       py_to_r(reticulate::py_get_attr(
         private$.py_anndata,
-        "obsm"
+        slot
       )[[key]])
+    },
+
+    .set_value = function(slot, key, value) {
+      private$.check_py_object_valid()
+      # Validation of value should be done in the specific slot function
+      reticulate::py_set_item(reticulate::py_get_attr(
+        private$.py_anndata,
+        slot
+      ), key, r_to_py(value))
+    },
+
+    .set_values = function(slot, named_list) {
+      private$.check_py_object_valid()
+      reticulate::py_set_attr(private$.py_anndata, "obsm", r_to_py(named_list))
+      self
     },
 
     .set_obsm_value = function(key, value) {
@@ -54,9 +93,7 @@ ReticulateAnnData <- R6::R6Class(
         shape = c(self$n_obs(), self$n_vars()),
         expected_rownames = rownames(self)
       )
-      reticulate::py_get_attr(
-        private$.py_anndata, "obsm"
-      )[[key]] <- r_to_py(value)
+      private$.set_value("obsm", key, value)
       invisible()
     },
 
@@ -67,10 +104,82 @@ ReticulateAnnData <- R6::R6Class(
         c(self$n_obs()),
         expected_rownames = rownames(self)
       )
-      reticulate::py_set_attr(private$.py_anndata, "obsm", r_to_py(value))
+      private$.set_values("obsm", value)
+      self
+    },
+
+    .set_varm_value = function(key, value) {
+      private$.check_py_object_valid()
+      value <- private$.validate_aligned_array(
+        value,
+        paste0("varm[['", key, "']]"),
+        shape = c(self$n_vars()),
+        expected_rownames = colnames(self)
+      )
+      private$.set_value("varm", key, value)
+      invisible()
+    },
+
+    .set_varm_values = function(named_list) {
+      value <- private$.validate_aligned_mapping(
+        named_list,
+        "varm",
+        c(self$n_vars()),
+        expected_rownames = colnames(self)
+      )
+      private$.set_values("varm", value)
+      self
+    },
+
+    .set_obsp_value = function(key, value) {
+      private$.check_py_object_valid()
+      value <- private$.validate_aligned_array(
+        value,
+        paste0("obsp[['", key, "']]"),
+        shape = c(self$n_obs(), self$n_obs()),
+        expected_rownames = rownames(self),
+        expected_colnames = rownames(self)
+      )
+      private$.set_value("obsp", key, value)
+      invisible()
+    },
+
+    .set_obsp_values = function(named_list) {
+      value <- private$.validate_aligned_mapping(
+        named_list,
+        "obsp",
+        c(self$n_obs(), self$n_obs()),
+        expected_rownames = rownames(self),
+        expected_colnames = rownames(self)
+      )
+      private$.set_values("obsp", value)
+      self
+    },
+
+    .set_varp_value = function(key, value) {
+      private$.check_py_object_valid()
+      value <- private$.validate_aligned_array(
+        value,
+        paste0("varp[['", key, "']]"),
+        shape = c(self$n_vars(), self$n_vars()),
+        expected_rownames = colnames(self),
+        expected_colnames = colnames(self)
+      )
+      private$.set_value("varp", key, value)
+      invisible()
+    },
+
+    .set_varp_values = function(named_list) {
+      value <- private$.validate_aligned_mapping(
+        named_list,
+        "varp",
+        c(self$n_vars(), self$n_vars()),
+        expected_rownames = colnames(self),
+        expected_colnames = colnames(self)
+      )
+      private$.set_values("varp", value)
       self
     }
-
 
   ),
   active = list(
@@ -514,9 +623,9 @@ as_ReticulateAnnData <- function(adata) {
     var = adata$var,
     layers = adata$layers,
     obsm = adata$obsm[],
-    varm = adata$varm,
-    obsp = adata$obsp,
-    varp = adata$varp,
+    varm = adata$varm[],
+    obsp = adata$obsp[],
+    varp = adata$varp[],
     uns = adata$uns,
     shape = adata$shape()
   )
