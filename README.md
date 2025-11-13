@@ -1,7 +1,7 @@
 # {anndataR}: An R package for working with AnnData objects <img src="man/figures/logo.png" align="right" alt="anndataR logo" width=120 />
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![R-CMD-check](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check-bioc](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check-bioc.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check-bioc.yaml)
 [![Codecov test coverage](https://codecov.io/gh/scverse/anndataR/graph/badge.svg)](https://app.codecov.io/gh/scverse/anndataR)
 <!-- badges: end -->
 
