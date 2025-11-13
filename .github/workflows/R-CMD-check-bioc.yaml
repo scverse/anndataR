@@ -64,6 +64,7 @@ jobs:
         uses: grimbough/bioc-actions/build-install-check@v1
 
       - name: Run BiocCheck
+        if: matrix.config.os == 'ubuntu-latest' && matrix.config.bioc-version == 'devel'
         uses: grimbough/bioc-actions/run-BiocCheck@v1
         with:
           error-on: 'never'
