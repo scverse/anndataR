@@ -16,3 +16,4 @@
 ^Meta$
 ^man/figures/*\.svg$
 ^data$
+^codecov\.yml$
