@@ -21,6 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-bioc-matrix.outputs.matrix }}
+      linux_cont: ${{ steps.set-bioc-matrix.outputs.linux_cont }}
+      linux_r: ${{ steps.set-bioc-matrix.outputs.linux_r }}
+      linux_bioc: ${{ steps.set-bioc-matrix.outputs.linux_bioc }}
+      linux_os: ${{ steps.set-bioc-matrix.outputs.linux_os }}
     steps:
       - id: set-bioc-matrix
         run: |
@@ -56,6 +60,11 @@ jobs:
           echo "Found these settings:"
           echo "Bioconductor version: $biocversion, R version: $rversion, Bioconductor docker name: $bioccont"
           echo "matrix={ \"config\": [{\"os\" : \"ubuntu-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\", \"cont\" : \"${bioccont}\"} , {\"os\" : \"macOS-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\"} , {\"os\" : \"windows-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\" }] }" >> "$GITHUB_OUTPUT"
+          # Emit explicit linux-specific outputs so other jobs can reference them directly
+          echo "linux_cont=${bioccont}" >> "$GITHUB_OUTPUT"
+          echo "linux_r=${rversion}" >> "$GITHUB_OUTPUT"
+          echo "linux_bioc=${biocversion}" >> "$GITHUB_OUTPUT"
+          echo "linux_os=ubuntu-latest" >> "$GITHUB_OUTPUT"
           ## If an OS is failing and you don't want to test it, manually remove it from the 'matrix' JSON entries above
 
   build-check:
@@ -241,35 +250,6 @@ jobs:
           }
         shell: Rscript {0}
 
-      - name: Test coverage
-        if: env.run_covr == 'true' && runner.os == 'Linux'
-        run: |
-          covr::codecov(coverage = covr::package_coverage(type = "all"))
-        shell: Rscript {0}
-
-      - name: Test coverage
-        if: env.run_covr == 'true' && runner.os == 'Linux'
-        run: |
-          cov <- covr::package_coverage(
-            quiet = FALSE,
-            clean = FALSE,
-            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
-          )
-          print(cov)
-          covr::to_cobertura(cov)
-        shell: Rscript {0}
-
-      - name: Upload coverage to Codecov
-        if: env.run_covr == 'true' && runner.os == 'Linux'
-        uses: codecov/codecov-action@v5
-        with:
-          # Fail if error if not on PR, or if on PR and token is given
-          fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN }}
-          files: ./cobertura.xml
-          plugins: noop
-          disable_search: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-
       - name: Install package
         if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
         run: R CMD INSTALL .
@@ -298,3 +278,91 @@ jobs:
         with:
           name: ${{ runner.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}-results
           path: check
+
+  coverage:
+    needs: bioc-config
+    name: Coverage (single matrix entry)
+    runs-on: ${{ needs.bioc-config.outputs.linux_os }}
+    container: ${{ needs.bioc-config.outputs.linux_cont }}
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      NOT_CRAN: true
+      TZ: UTC
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Create R_LIBS_USER on Linux
+        if: runner.os == 'Linux'
+        run: |
+          R_LIBS_USER=/__w/_temp/Library
+          echo "R_LIBS_USER=$R_LIBS_USER" >> "$GITHUB_ENV"
+          mkdir -p $R_LIBS_USER
+        shell: bash
+
+      - name: Install remotes
+        run: |
+          message(paste('****', Sys.time(), 'installing remotes ****'))
+          install.packages('remotes')
+        shell: Rscript {0}
+
+      - name: Install BiocManager
+        run: |
+          message(paste('****', Sys.time(), 'installing BiocManager ****'))
+          remotes::install_cran("BiocManager")
+        shell: Rscript {0}
+
+      - name: Set BiocVersion
+        run: |
+          BiocManager::install(version = "${{ needs.bioc-config.outputs.linux_bioc }}", ask = FALSE, force = TRUE)
+        shell: Rscript {0}
+
+      - name: Restore R package cache (coverage)
+        if: "!contains(github.event.head_commit.message, '/nocache')"
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ needs.bioc-config.outputs.linux_os }}-${{ needs.bioc-config.outputs.linux_r }}-${{ needs.bioc-config.outputs.linux_bioc }}-${{ inputs.cache-version }}
+          restore-keys: ${{ needs.bioc-config.outputs.linux_os }}-${{ needs.bioc-config.outputs.linux_r }}-${{ needs.bioc-config.outputs.linux_bioc }}-${{ inputs.cache-version }}
+
+      - name: Install dependencies pass 1 (coverage)
+        run: |
+          message(paste('****', Sys.time(), 'installing rcmdcheck and BiocCheck (coverage) ****'))
+          install.packages(c("rcmdcheck", "BiocCheck"), repos = BiocManager::repositories())
+          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = FALSE, upgrade = TRUE)
+        continue-on-error: true
+        shell: Rscript {0}
+
+      - name: Install dependencies pass 2 (coverage)
+        run: |
+          message(paste('****', Sys.time(), 'pass number 2 at installing dependencies (coverage) ****'))
+          remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE, force = TRUE)
+        shell: Rscript {0}
+
+      - name: Install covr
+        run: |
+          remotes::install_cran("covr")
+        shell: Rscript {0}
+
+      - name: Test coverage
+        run: |
+          cov <- covr::package_coverage(
+            quiet = FALSE,
+            clean = FALSE,
+            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
+          )
+          print(cov)
+          covr::to_cobertura(cov)
+        shell: Rscript {0}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN }}
+          files: ./cobertura.xml
+          plugins: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
