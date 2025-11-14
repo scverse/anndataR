@@ -67,7 +67,7 @@ jobs:
         run: |
           ## --------------------------------------------------------------------
           echo ::group::Show testthat output
-          find check -name 'testthat.Rout*' -exec cat '{}' \; || true
+          find ${{ steps.check-package.outputs.check-dir }} -name 'testthat.Rout*' -exec cat '{}' \; || true
           echo ::endgroup::
         shell: bash
 
