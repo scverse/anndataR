@@ -14,7 +14,7 @@
 
 **{anndataR}** aims to make the `AnnData` format a first-class citizen in the R ecosystem, and to make it easy to work with AnnData files in R, either directly or by converting them to a `SingleCellExperiment` or `Seurat` object.
 
-**{anndataR}** is an scverse® community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
+**{anndataR}** is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 
 ## Features of {anndataR}
 
@@ -23,7 +23,7 @@
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
-You can find the status of development of **{anndataR}** on the [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking) of the package website. 
+You can find the status of development of **{anndataR}** on the [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking) of the package website.
 Please [report](https://github.com/scverse/anndataR/issues) any issues you encounter.
 
 ## Installation
@@ -32,7 +32,7 @@ You can install **{anndataR}** from Bioconductor using **BiocManager**:
 
 ```r
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
+  install.packages("BiocManager")
 }
 BiocManager::install("anndataR")
 ```
@@ -66,7 +66,7 @@ The best way to get started with **{anndataR}** is to explore the package vignet
 
 In order to browse these vignettes locally, you need to build them during installation:
 
-```
+``` r
 options(pkg.build_vignettes = TRUE)
 pak::pak("scverse/anndataR")
 ```
@@ -86,21 +86,19 @@ Take note that you need all suggested dependencies available, and that building 
 
 If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
 
-```
-> citation("anndataR")
+    > citation("anndataR")
 
-Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025).
-“anndataR improves interoperability between R and Python in single-cell transcriptomics.” _bioRxiv_, 2025.08.18.669052.
-doi:10.1101/2025.08.18.669052 <https://doi.org/10.1101/2025.08.18.669052>.
+    Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025).
+    “anndataR improves interoperability between R and Python in single-cell transcriptomics.” _bioRxiv_, 2025.08.18.669052.
+    doi:10.1101/2025.08.18.669052 <https://doi.org/10.1101/2025.08.18.669052>.
 
-A BibTeX entry for LaTeX users is
+    A BibTeX entry for LaTeX users is
 
-  @Article{,
-    title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
-    author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
-    journal = {bioRxiv},
-    year = {2025},
-    pages = {2025.08.18.669052},
-    doi = {10.1101/2025.08.18.669052},
-  }
-```
+      @Article{,
+        title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
+        author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
+        journal = {bioRxiv},
+        year = {2025},
+        pages = {2025.08.18.669052},
+        doi = {10.1101/2025.08.18.669052},
+      }

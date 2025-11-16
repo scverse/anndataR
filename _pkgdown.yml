@@ -3,21 +3,37 @@ url: https://anndataR.data-intuitive.com
 template:
   bootstrap: 5
 
+authors:
+  Robrecht Cannoodt:
+    href: https://cannoodt.dev
+  Luke Zappia:
+    href: https://lazappi.id.au
+  Data Intuitive:
+    href: https://data-intuitive.com
+  Chan Zuckerberg Initiative:
+    href: https://chanzuckerberg.com
+  scverse consortium:
+    href: https://scverse.org
+
 navbar:
- components:
-   articles:
-    text: Articles
-    menu:
-    - text: Usage
-    - text: Read/write Seurat objects
-      href: articles/usage_seurat.html
-    - text: Read/write SingleCellExperiment objects
-      href: articles/usage_singlecellexperiment.html
-    - text: Interact with Python AnnData objects
-      href: articles/usage_python.html
-    - text: -------
-    - text: Development
-    - text: Software design
-      href: articles/software_design.html
-    - text: Development status
-      href: articles/development_status.html
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Usage
+      - text: Read/write Seurat objects
+        href: articles/usage_seurat.html
+      - text: Read/write SingleCellExperiment objects
+        href: articles/usage_singlecellexperiment.html
+      - text: Interact with Python AnnData objects
+        href: articles/usage_python.html
+      - text: -------
+      - text: Development
+      - text: Software design
+        href: articles/software_design.html
+      - text: Development status
+        href: articles/development_status.html
+
+# https://pkgdown.r-lib.org/reference/build_site.html#development-mode
+development:
+  mode: auto
