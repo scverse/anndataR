@@ -69,7 +69,8 @@ jobs:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
 
-      - uses: r-lib/actions/setup-pandoc@v2
+      - name: Install pandoc
+        uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -88,14 +89,14 @@ jobs:
           find . -name 'testthat.Rout*' -exec cat '{}' \; || true
           echo ::endgroup::
         shell: bash
-        working-directory: ${{ steps.set-paths.outputs.working-directory }}
+        working-directory: ${{ steps.set-paths.outputs.working-dir }}
 
       - name: Upload check results
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ format('{0}-{1}-r{2}-{3}-results', runner.os, runner.arch, matrix.config.bioc-version, matrix.config.id ) }}
-          path: ${{ steps.set-paths.outputs.pkg-dir }}
+          path: ${{ steps.set-paths.outputs.working-dir }}/${{ steps.set-paths.outputs.pkg-name }}.Rcheck
 
       - name: Run BiocCheck
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.bioc-version == 'devel'
@@ -108,6 +109,5 @@ jobs:
         run: |
           echo $(pwd)
           ls -la
-          ls -la ..
         shell: bash
-        working-directory: ${{ steps.set-paths.outputs.working-directory }}
+        working-directory: ${{ steps.set-paths.outputs.working-dir }}
