@@ -1,8 +1,16 @@
 # {anndataR}: An R package for working with AnnData objects <img src="man/figures/logo.png" align="right" alt="anndataR logo" width=120 />
+
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check-bioc](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check-bioc.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check-bioc.yaml)
 [![Codecov test coverage](https://codecov.io/gh/scverse/anndataR/graph/badge.svg)](https://app.codecov.io/gh/scverse/anndataR)
+[![Bioc release status](http://www.bioconductor.org/shields/build/release/bioc/anndataR.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/anndataR)
+[![Bioc devel status](http://www.bioconductor.org/shields/build/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR)
+[![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/anndataR.svg)](http://bioconductor.org/packages/stats/bioc/anndataR/)
+[![Bioc support](https://bioconductor.org/shields/posts/anndataR.svg)](https://support.bioconductor.org/tag/anndataR)
+[![Bioc history](https://bioconductor.org/shields/years-in-bioc/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
+[![Bioc last commit](https://bioconductor.org/shields/lastcommit/devel/bioc/anndataR.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR/)
+[![Bioc dependencies](https://bioconductor.org/shields/dependencies/release/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
 <!-- badges: end -->
 
 **{anndataR}** aims to make the `AnnData` format a first-class citizen in the R ecosystem, and to make it easy to work with AnnData files in R, either directly or by converting them to a `SingleCellExperiment` or `Seurat` object.
