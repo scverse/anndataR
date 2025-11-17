@@ -57,23 +57,25 @@ jobs:
         id: set-paths
         run: |
           current_dir <- getwd()
-          cat("Current dir:", current_dir, "\n")
+          cat("Current dir:", normalizePath(current_dir), "\n")
+
+          sep <- ifelse(.Platform$OS.type == "windows", "\\\\", "/")
 
           pkg_name <- basename(current_dir)
           cat("Package name:", pkg_name, "\n")
           cat("pkg-name=", pkg_name, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
-          working_dir <- normalizePath(file.path(current_dir, ".."))
-          cat("Working dir:", working_dir, "\n")
-          cat("working-dir=", working_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+          working_dir <- file.path(current_dir, "..")
+          cat("Working dir:", normalizePath(working_dir), "\n")
+          cat("working-dir=", normalizePath(working_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
           pkg_dir <- file.path(working_dir, pkg_name)
-          cat("Package dir:", pkg_dir, "\n")
-          cat("pkg-dir=", pkg_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+          cat("Package dir:", normalizePath(pkg_dir), "\n")
+          cat("pkg-dir=", normalizePath(pkg_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
           check_dir <- paste0(pkg_dir, ".Rcheck")
-          cat("Check dir:", check_dir, "\n")
-          cat("check-dir=", check_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+          cat("Check dir:", normalizePath(check_dir), "\n")
+          cat("check-dir=", normalizePath(check_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
         shell: Rscript {0}
 
       - name: Install pandoc
