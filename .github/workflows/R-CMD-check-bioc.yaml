@@ -63,11 +63,41 @@ jobs:
       - name: Bioc - Build, Install, Check
         uses: grimbough/bioc-actions/build-install-check@v1
 
+      - name: Discover package check directory
+        id: discover-check-dir
+        run: |
+          # Try common locations where r-lib/actions/check-r-package writes results
+          # 1) $RUNNER_TEMP/package
+          # 2) *_check (pattern in repo root)
+          set -euo pipefail
+          echo "Looking for package check directories..."
+          candidates=()
+          if [ -d "${{ runner.temp }}/package" ]; then
+            candidates+=("${{ runner.temp }}/package")
+          fi
+          # Search for directories ending with .Rcheck in repo (R CMD check output)
+          while IFS= read -r -d $'\0' d; do
+            candidates+=("$d")
+          done < <(find . -maxdepth 3 -type d -name '*.Rcheck' -print0 || true)
+
+          # If no candidates found, fallback to runner temp
+          if [ ${#candidates[@]} -eq 0 ]; then
+            echo "No explicit package check dir found, using runner temp: ${{ runner.temp }}"
+            CHECK_DIR="${{ runner.temp }}"
+          else
+            CHECK_DIR="${candidates[0]}"
+          fi
+
+          echo "::set-output name=check-dir::$CHECK_DIR"
+        shell: bash
+
       - name: Show testthat output
         run: |
           ## --------------------------------------------------------------------
           echo ::group::Show testthat output
-          find ${{ steps.check-package.outputs.check-dir }} -name 'testthat.Rout*' -exec cat '{}' \; || true
+          CHECK_DIR="${{ steps.discover-check-dir.outputs.check-dir }}"
+          echo "Using check dir: $CHECK_DIR"
+          find "$CHECK_DIR" -name 'testthat.Rout*' -exec cat '{}' \; || true
           echo ::endgroup::
         shell: bash
 
@@ -76,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ format('{0}-{1}-r{2}-{3}-results', runner.os, runner.arch, matrix.config.bioc-version, matrix.config.id ) }}
-          path: ${{ steps.check-package.outputs.check-dir }}
+          path: ${{ steps.discover-check-dir.outputs.check-dir }}
 
       - name: Run BiocCheck
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.bioc-version == 'devel'
