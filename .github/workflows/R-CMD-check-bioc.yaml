@@ -56,25 +56,26 @@ jobs:
       - name: Set paths
         id: set-paths
         run: |
-          echo "Current dir: $(pwd)"
+          current_dir <- getwd()
+          cat("Current dir:", current_dir, "\n")
 
-          PKG_NAME=$(echo ${PWD##*/})
-          echo "Package name: $PKG_NAME"
-          echo "pkg-name=$(echo $PKG_NAME)" >> $GITHUB_OUTPUT
+          pkg_name <- basename(current_dir)
+          cat("Package name:", pkg_name, "\n")
+          cat("pkg-name=", pkg_name, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
-          WORK_DIR=$(Rscript -e "cat(normalizePath('..'))")
-          echo "Working dir: $WORK_DIR"
-          echo "working-dir=$(echo $WORK_DIR)" >> $GITHUB_OUTPUT
+          working_dir <- normalizePath(file.path(current_dir, ".."))
+          cat("Working dir:", working_dir, "\n")
+          cat("working-dir=", working_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
-          PKG_DIR=$(Rscript -e "cat(file.path('$WORK_DIR', '$PKG_NAME'))")
-          echo "Package dir: $PKG_DIR"
-          echo "pkg-dir=$(echo $PKG_DIR)" >> $GITHUB_OUTPUT
+          pkg_dir <- file.path(working_dir, pkg_name)
+          cat("Package dir:", pkg_dir, "\n")
+          cat("pkg-dir=", pkg_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
-          CHECK_DIR=$(Rscript -e "cat(paste0('$PKG_DIR', '.Rcheck'))")
-          echo "Check dir: $CHECK_DIR"
-          echo "check-dir=$(echo $CHECK_DIR)" >> $GITHUB_OUTPUT
-        shell: bash
-
+          check_dir <- paste0(pkg_dir, ".Rcheck")
+          cat("Check dir:", check_dir, "\n")
+          cat("check-dir-path=", check_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+        shell: Rscript {0}
+        
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
