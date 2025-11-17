@@ -40,7 +40,19 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v5
-      
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install hdf5-tools libsz2 libaec-dev
+
+      - name: Setup R and Bioconductor
+        uses: grimbough/bioc-actions/setup-bioc@v1
+        with:
+          bioc-version: ${{ matrix.config.bioc-version }}
+          bioc-mirror: ${{ matrix.config.bioc-mirror }}
+
       - name: Set paths
         id: set-paths
         run: |
@@ -62,18 +74,6 @@ jobs:
           echo "Check dir: $CHECK_DIR"
           echo "check-dir=$(echo $CHECK_DIR)" >> $GITHUB_OUTPUT
         shell: bash
-
-      - name: Install Linux dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install hdf5-tools libsz2 libaec-dev
-
-      - name: Setup R and Bioconductor
-        uses: grimbough/bioc-actions/setup-bioc@v1
-        with:
-          bioc-version: ${{ matrix.config.bioc-version }}
-          bioc-mirror: ${{ matrix.config.bioc-mirror }}
 
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
