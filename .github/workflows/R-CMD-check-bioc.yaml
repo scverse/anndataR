@@ -73,9 +73,9 @@ jobs:
 
           check_dir <- paste0(pkg_dir, ".Rcheck")
           cat("Check dir:", check_dir, "\n")
-          cat("check-dir-path=", check_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+          cat("check-dir=", check_dir, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
         shell: Rscript {0}
-        
+
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
