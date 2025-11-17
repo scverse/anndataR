@@ -51,6 +51,7 @@ jobs:
 
       - name: Show paths
         run: |
+          echo "Current dir: $(pwd)"
           echo "Package name: ${{ steps.set-paths.outputs.pkg-name }}"
           echo "Package dir: ${{ steps.set-paths.outputs.pkg-dir }}"
           echo "Working dir: ${{ steps.set-paths.outputs.working-dir }}"
@@ -86,6 +87,7 @@ jobs:
           find . -name 'testthat.Rout*' -exec cat '{}' \; || true
           echo ::endgroup::
         shell: bash
+        working-directory: ${{ steps.set-paths.outputs.working-directory }}
 
       - name: Upload check results
         if: failure()
@@ -100,3 +102,6 @@ jobs:
         with:
           error-on: 'never'
           arguments: '--no-check-bioc-help'
+
+      - name: Show working directory
+        run: ls -la ${{ steps.set-paths.outputs.working-directory }}
