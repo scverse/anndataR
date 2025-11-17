@@ -66,11 +66,11 @@ jobs:
           echo "Working dir: $WORK_DIR"
           echo "working-dir=$(echo $WORK_DIR)" >> $GITHUB_OUTPUT
 
-          PKG_DIR=$(Rscript -e "cat(normalizePath('$WORK_DIR/$PKG_NAME'))")
+          PKG_DIR=$(Rscript -e "cat(file.path('$WORK_DIR', '$PKG_NAME'))")
           echo "Package dir: $PKG_DIR"
           echo "pkg-dir=$(echo $PKG_DIR)" >> $GITHUB_OUTPUT
 
-          CHECK_DIR=$(Rscript -e "cat(normalizePath('$PKG_DIR.Rcheck'))")
+          CHECK_DIR=$(Rscript -e "cat(paste0('$PKG_DIR', '.Rcheck'))")
           echo "Check dir: $CHECK_DIR"
           echo "check-dir=$(echo $CHECK_DIR)" >> $GITHUB_OUTPUT
         shell: bash
