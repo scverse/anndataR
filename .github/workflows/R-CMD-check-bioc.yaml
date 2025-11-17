@@ -73,7 +73,11 @@ jobs:
           cat("Package dir:", normalizePath(pkg_dir), "\n")
           cat("pkg-dir=", normalizePath(pkg_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
-          check_dir <- paste0(pkg_dir, ".Rcheck")
+          check_dir <- if (platform$OS.type == "windows") {
+            paste0(pkg_dir, ".Rcheck")
+          } else {
+            paste0(normalizePath(pkg_name), ".Rcheck"))
+          }
           cat("Check dir:", normalizePath(check_dir), "\n")
           cat("check-dir=", normalizePath(check_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
         shell: Rscript {0}
@@ -113,10 +117,3 @@ jobs:
         with:
           error-on: 'never'
           arguments: '--no-check-bioc-help'
-
-      - name: Show working directory
-        run: |
-          echo $(pwd)
-          ls -la
-        shell: bash
-        working-directory: ${{ steps.set-paths.outputs.working-dir }}
