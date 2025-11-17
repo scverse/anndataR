@@ -46,7 +46,7 @@ jobs:
         run: |
           echo "pkg-name=$(echo ${PWD##*/})" >> $GITHUB_OUTPUT
           echo "pkg-dir=$(echo ${PWD##*/})" >> $GITHUB_OUTPUT
-          echo "working-dir=$(echo '../')" >> $GITHUB_OUTPUT
+          echo "working-dir=$(realpath ../)" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Show paths
