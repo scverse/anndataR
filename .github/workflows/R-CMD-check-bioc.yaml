@@ -76,7 +76,7 @@ jobs:
           check_dir <- if (platform$OS.type == "windows") {
             paste0(pkg_dir, ".Rcheck")
           } else {
-            paste0(normalizePath(pkg_name), ".Rcheck"))
+            paste0(normalizePath(pkg_name), ".Rcheck")
           }
           cat("Check dir:", normalizePath(check_dir), "\n")
           cat("check-dir=", normalizePath(check_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
