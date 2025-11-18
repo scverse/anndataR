@@ -1,3 +1,5 @@
+# Based on workflows from https://github.com/Huber-group-EMBL/rhdf5
+# Uses steps from https://github.com/grimbough/bioc-actions
 on:
   push:
     branches:
@@ -66,20 +68,24 @@ jobs:
           cat("pkg-name=", pkg_name, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
           working_dir <- ".."
-          cat("Working dir:", normalizePath(working_dir), "\n")
-          cat("working-dir=", normalizePath(working_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+          working_dir_norm <- normalizePath(working_dir)
+          cat("Working dir:", working_dir_norm, "\n")
+          cat("working-dir=", working_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
           pkg_dir <- file.path(working_dir, pkg_name)
-          cat("Package dir:", normalizePath(pkg_dir), "\n")
-          cat("pkg-dir=", normalizePath(pkg_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+          pkg_dir_norm <- normalizePath(pkg_dir)
+          cat("Package dir:", pkg_dir_norm, "\n")
+          cat("pkg-dir=", pkg_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
 
+          # Handle different behavior of normalizePath on Windows
           check_dir <- if (.Platform$OS.type == "windows") {
             paste0(pkg_dir, ".Rcheck")
           } else {
             paste0(normalizePath(pkg_dir), ".Rcheck")
           }
-          cat("Check dir:", normalizePath(check_dir), "\n")
-          cat("check-dir=", normalizePath(check_dir), "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+          check_dir_norm <- normalizePath(check_dir)
+          cat("Check dir:", check_dir_norm, "\n")
+          cat("check-dir=", check_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
         shell: Rscript {0}
 
       - name: Install pandoc
@@ -96,16 +102,12 @@ jobs:
         
       - name: Show testthat output
         run: |
-          ## --------------------------------------------------------------------
-          echo ::group::Show testthat output
-          echo $(pwd)
           find . -name 'testthat.Rout*' -exec cat '{}' \; || true
-          echo ::endgroup::
         shell: bash
         working-directory: ${{ steps.set-paths.outputs.working-dir }}
 
       - name: Upload check results
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION ) }}
