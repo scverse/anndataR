@@ -52,8 +52,8 @@ the task you want to perform.
   `BiocManager::install("rhdf5")`
 - To convert to/from `SingleCellExperiment` objects, install [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
   `BiocManager::install("SingleCellExperiment")`
-- To convert to/from `Seurat` objects, install [SeuratObject](https://cran.r-project.org/package=SeuratObject):
-  `install.packages("SeuratObject")`  
+- To convert to/from `Seurat` objects, install [SeuratObject](https://cran.r-project.org/package=SeuratObject):  
+  `install.packages("SeuratObject")`
 
 Alternatively, you can install all suggested dependencies at once:
 
