@@ -14,7 +14,7 @@
 
 **{anndataR}** aims to make the `AnnData` format a first-class citizen in the R ecosystem, and to make it easy to work with AnnData files in R, either directly or by converting them to a `SingleCellExperiment` or `Seurat` object.
 
-**{anndataR}** is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
+**{anndataR}** is a an scverse® community project fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 
 ## Features of {anndataR}
 
