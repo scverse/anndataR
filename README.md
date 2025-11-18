@@ -86,7 +86,9 @@ Take note that you need all suggested dependencies available, and that building 
 
 If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
 
-    > citation("anndataR")
+```r
+citation("anndataR")
+```
 
     Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025).
     “anndataR improves interoperability between R and Python in single-cell transcriptomics.” _bioRxiv_, 2025.08.18.669052.
