@@ -131,6 +131,11 @@ write_h5ad_element <- function(
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
 write_h5ad_encoding <- function(file, name, encoding, version) {
+  if (!inherits(file, "H5IdComponent")) {
+    file <- rhdf5::H5Fopen(file)
+    on.exit(rhdf5::H5Fclose(file), add = TRUE)
+  }
+
   hdf5_write_attribute(
     file,
     name,
@@ -163,12 +168,14 @@ write_h5ad_null <- function(value, file, name, compression, version = "0.1.0") {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
   }
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
 
   h5s <- rhdf5::H5Screate("H5S_NULL")
   on.exit(rhdf5::H5Sclose(h5s), add = TRUE)
 
   h5d <- rhdf5::H5Dcreate(
-    file,
+    h5file,
     name = name,
     dtype_id = "H5T_IEEE_F32LE",
     h5space = h5s
@@ -286,27 +293,30 @@ write_h5ad_sparse_array <- function(
     ))
   }
 
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+
   # Write sparse matrix
-  rhdf5::h5createGroup(file, name)
+  hdf5_create_group(h5file, name)
   hdf5_write_dataset(
-    file = file,
+    file = h5file,
     name = paste0(name, "/indices"),
     value = attr(value, indices_attr),
     compression = compression
   )
   hdf5_write_dataset(
-    file = file,
+    file = h5file,
     name = paste0(name, "/indptr"),
     value = value@p,
     compression = compression
   )
   hdf5_write_dataset(
-    file = file,
+    file = h5file,
     name = paste0(name, "/data"),
     value = value@x,
     compression = compression
   )
-  write_h5ad_encoding(file, name, type, version)
+  write_h5ad_encoding(h5file, name, type, version)
 
   # Write shape attribute
   hdf5_write_attribute(
@@ -339,10 +349,10 @@ write_h5ad_nullable_boolean <- function(
   version = "0.1.0"
 ) {
   # nolint end: object_length_linter
-  rhdf5::h5createGroup(file, name)
-
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
+
+  hdf5_create_group(file, name)
 
   write_h5ad_dense_array(
     value_no_na,
@@ -383,26 +393,29 @@ write_h5ad_nullable_integer <- function(
   version = "0.1.0"
 ) {
   # nolint end: object_length_linter
-  rhdf5::h5createGroup(file, name)
-
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- 0L
 
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+
+  hdf5_create_group(file, name)
+
   write_h5ad_dense_array(
     value_no_na,
-    file,
+    h5file,
     paste0(name, "/values"),
     compression
   )
 
   write_h5ad_dense_array(
     is.na(value),
-    file,
+    h5file,
     paste0(name, "/mask"),
     compression
   )
 
-  write_h5ad_encoding(file, name, "nullable-integer", version)
+  write_h5ad_encoding(h5file, name, "nullable-integer", version)
 }
 
 #' Write H5AD string array
@@ -461,8 +474,6 @@ write_h5ad_categorical <- function(
   compression,
   version = "0.2.0"
 ) {
-  rhdf5::h5createGroup(file, name)
-
   categories <- levels(value)
 
   # Use zero-indexed values
@@ -471,18 +482,24 @@ write_h5ad_categorical <- function(
   # Set missing values to -1
   codes[is.na(codes)] <- -1L
 
-  # write values to file
+  # Create group
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+
+  hdf5_create_group(h5file, name)
+
+  # Write values to file
   write_h5ad_string_array(
     categories,
-    file,
+    h5file,
     paste0(name, "/categories"),
     compression
   )
-  write_h5ad_dense_array(codes, file, paste0(name, "/codes"), compression)
+  write_h5ad_dense_array(codes, h5file, paste0(name, "/codes"), compression)
 
   # Write encoding
   write_h5ad_encoding(
-    file = file,
+    file = h5file,
     name = name,
     encoding = "categorical",
     version = version
@@ -490,7 +507,7 @@ write_h5ad_categorical <- function(
 
   # Write ordered attribute
   hdf5_write_attribute(
-    file,
+    h5file,
     name,
     "ordered",
     is.ordered(value),
@@ -585,7 +602,7 @@ write_h5ad_mapping <- function(
   compression,
   version = "0.1.0"
 ) {
-  rhdf5::h5createGroup(file, name)
+  hdf5_create_group(file, name)
 
   # Write mapping elements
   for (key in names(value)) {
@@ -623,7 +640,7 @@ write_h5ad_data_frame <- function(
   index = NULL,
   version = "0.2.0"
 ) {
-  rhdf5::h5createGroup(file, name)
+  hdf5_create_group(file, name)
   write_h5ad_encoding(file, name, "dataframe", version)
 
   if (is.null(index)) {
@@ -714,23 +731,26 @@ write_empty_h5ad <- function(
   write_h5ad_element(obs[, integer(0)], file, "/obs", compression)
   write_h5ad_element(var[, integer(0)], file, "/var", compression)
 
-  rhdf5::h5createGroup(file, "layers")
-  write_h5ad_encoding(file, "/layers", "dict", "0.1.0")
+  h5file <- rhdf5::H5Fopen(file)
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
 
-  rhdf5::h5createGroup(file, "obsm")
-  write_h5ad_encoding(file, "/obsm", "dict", "0.1.0")
+  hdf5_create_group(h5file, "layers")
+  write_h5ad_encoding(h5file, "/layers", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "obsp")
-  write_h5ad_encoding(file, "/obsp", "dict", "0.1.0")
+  hdf5_create_group(h5file, "obsm")
+  write_h5ad_encoding(h5file, "/obsm", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "uns")
-  write_h5ad_encoding(file, "/uns", "dict", "0.1.0")
+  hdf5_create_group(h5file, "obsp")
+  write_h5ad_encoding(h5file, "/obsp", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "varm")
-  write_h5ad_encoding(file, "/varm", "dict", "0.1.0")
+  hdf5_create_group(h5file, "uns")
+  write_h5ad_encoding(h5file, "/uns", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "varp")
-  write_h5ad_encoding(file, "/varp", "dict", "0.1.0")
+  hdf5_create_group(h5file, "varm")
+  write_h5ad_encoding(h5file, "/varm", "dict", "0.1.0")
+
+  hdf5_create_group(h5file, "varp")
+  write_h5ad_encoding(h5file, "/varp", "dict", "0.1.0")
 
   invisible(NULL)
 }

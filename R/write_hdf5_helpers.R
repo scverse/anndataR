@@ -1,3 +1,42 @@
+#' HDF5 path exists
+#'
+#' Check that a path in HDF5 exists
+#'
+#' @param file Path to a HDF5 file
+#' @param target_path The path within the file to test for
+#'
+#' @return Whether `target_path` exists in `file`
+#' @noRd
+hdf5_path_exists <- function(file, target_path) {
+  tryCatch(
+    {
+      h5file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY")
+      on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+      rhdf5::H5Lexists(h5file, target_path)
+    },
+    error = function(e) {
+      FALSE
+    }
+  )
+}
+
+#' HDF5 create group
+#'
+#' Create a group in an HDF5 file
+#'
+#' @param file Path to a HDF5 file or an open HDF5 handle
+#' @param name The name of the group to create
+#'
+#' @noRd
+hdf5_create_group <- function(file, name) {
+  if (!inherits(file, "H5IdComponent")) {
+    file <- rhdf5::H5Fopen(file)
+    on.exit(rhdf5::H5Fclose(file), add = TRUE)
+  }
+
+  rhdf5::h5createGroup(file, name)
+}
+
 #' Write a dataset to a HDF5 file
 #'
 #' Write a HDF5 dataset with chosen compression (can be none)
@@ -63,6 +102,11 @@ hdf5_write_scalar <- function(
   # Missing values need to be stored as floats
   if (is.integer(value) && is.na(value)) {
     value <- as.numeric(value)
+  }
+
+  if (!inherits(file, "H5IdComponent")) {
+    file <- rhdf5::H5Fopen(file)
+    on.exit(rhdf5::H5Fclose(file), add = TRUE)
   }
 
   h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
@@ -141,6 +185,11 @@ hdf5_write_boolean_dataset <- function(
 
   value <- as.integer(value)
 
+  if (!inherits(file, "H5IdComponent")) {
+    file <- rhdf5::H5Fopen(file)
+    on.exit(rhdf5::H5Fclose(file), add = TRUE)
+  }
+
   # Create the dataspace for the data to write
   if (is_scalar) {
     h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
@@ -180,26 +229,6 @@ hdf5_write_boolean_dataset <- function(
   rhdf5::H5Dwrite(h5dataset, as.raw(value), h5type = tid)
 }
 
-#' HDF5 path exists
-#'
-#' Check that a path in HDF5 exists
-#'
-#' @param file Path to a HDF5 file
-#' @param target_path The path within the file to test for
-#'
-#' @return Whether `target_path` exists in `file`
-#' @noRd
-hdf5_path_exists <- function(file, target_path) {
-  tryCatch(
-    {
-      rhdf5::H5Lexists(file, target_path)
-    },
-    error = function(e) {
-      FALSE
-    }
-  )
-}
-
 #' Write a HDF5 attribute
 #'
 #' Write a HDF5 attribute to a HDF5 file
@@ -219,7 +248,8 @@ hdf5_write_attribute <- function(
   is_scalar = TRUE
 ) {
   if (!inherits(file, "H5IdComponent")) {
-    cli_abort("{.arg file} must be an open H5AD handle")
+    file <- rhdf5::H5Fopen(file)
+    on.exit(rhdf5::H5Fclose(file), add = TRUE)
   }
 
   if (name != "/") {

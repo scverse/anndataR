@@ -196,9 +196,12 @@ read_h5ad_sparse_array <- function(
   version <- match.arg(version)
   type <- match.arg(type)
 
-  h5group <- rhdf5::H5Gopen(file, name)
-  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
   attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
+
+  h5file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY")
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+  h5group <- rhdf5::H5Gopen(h5file, name)
+  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
   data <- as.vector(h5group$data)
   indices <- as.vector(h5group$indices)
@@ -298,7 +301,9 @@ read_h5ad_nullable_integer <- function(file, name, version = "0.1.0") {
 read_h5ad_nullable <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  h5group <- rhdf5::H5Gopen(file, name)
+  h5file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY")
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+  h5group <- rhdf5::H5Gopen(h5file, name)
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
   data <- as.vector(h5group$values)
@@ -355,7 +360,11 @@ read_h5ad_string_array <- function(file, name, version = "0.2.0") {
 read_h5ad_categorical <- function(file, name, version = "0.2.0") {
   version <- match.arg(version)
 
-  h5group <- rhdf5::H5Gopen(file, name)
+  attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
+
+  h5file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY")
+  on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+  h5group <- rhdf5::H5Gopen(h5file, name)
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
   # Get codes and convert to 1-based indexing
@@ -366,7 +375,6 @@ read_h5ad_categorical <- function(file, name, version = "0.2.0") {
 
   levels <- h5group$categories
 
-  attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
   ordered <- attrs[["ordered"]]
 
   factor(levels[codes], levels = levels, ordered = ordered)
@@ -426,9 +434,11 @@ read_h5ad_numeric_scalar <- function(file, name, version = "0.2.0") {
 read_h5ad_mapping <- function(file, name, version = "0.1.0") {
   version <- match.arg(version)
 
-  h5group <- rhdf5::H5Gopen(file, name)
-  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
+  h5file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY")
+  h5group <- rhdf5::H5Gopen(h5file, name)
   items <- rhdf5::h5ls(h5group, recursive = FALSE)$name
+  rhdf5::H5Gclose(h5group)
+  rhdf5::H5Fclose(h5file)
 
   read_h5ad_collection(file, name, items)
 }
