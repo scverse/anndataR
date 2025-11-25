@@ -10,14 +10,40 @@
 hdf5_path_exists <- function(file, target_path) {
   tryCatch(
     {
-      h5file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY")
-      on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
+      h5file <- hdf5_open_file(file, readonly = TRUE)
       rhdf5::H5Lexists(h5file, target_path)
     },
     error = function(e) {
       FALSE
     }
   )
+}
+
+#' HDF5 open file
+#'
+#' Open a HDF5 file if needed and make sure it is closed when the parent
+#' function exits
+#'
+#' @param file Path to a HDF5 file or an open HDF5 handle
+#'
+#' @noRd
+hdf5_open_file <- function(file, readonly = FALSE) {
+  if (inherits(file, "H5IdComponent")) {
+    return(file)
+  }
+
+  flags <- if (readonly) {
+    "H5F_ACC_RDONLY"
+  } else {
+    "H5F_ACC_RDWR"
+  }
+
+  file <- rhdf5::H5Fopen(file, flags = flags)
+
+  # Tell the parent function to close the file when it exits
+  withr::defer_parent(rhdf5::H5Fclose(file))
+
+  file
 }
 
 #' HDF5 create group
@@ -29,10 +55,7 @@ hdf5_path_exists <- function(file, target_path) {
 #'
 #' @noRd
 hdf5_create_group <- function(file, name) {
-  if (!inherits(file, "H5IdComponent")) {
-    file <- rhdf5::H5Fopen(file)
-    on.exit(rhdf5::H5Fclose(file), add = TRUE)
-  }
+  file <- hdf5_open_file(file)
 
   rhdf5::h5createGroup(file, name)
 }
@@ -104,10 +127,7 @@ hdf5_write_scalar <- function(
     value <- as.numeric(value)
   }
 
-  if (!inherits(file, "H5IdComponent")) {
-    file <- rhdf5::H5Fopen(file)
-    on.exit(rhdf5::H5Fclose(file), add = TRUE)
-  }
+  file <- hdf5_open_file(file)
 
   h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
   on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
@@ -185,10 +205,7 @@ hdf5_write_boolean_dataset <- function(
 
   value <- as.integer(value)
 
-  if (!inherits(file, "H5IdComponent")) {
-    file <- rhdf5::H5Fopen(file)
-    on.exit(rhdf5::H5Fclose(file), add = TRUE)
-  }
+  file <- hdf5_open_file(file)
 
   # Create the dataspace for the data to write
   if (is_scalar) {
@@ -247,10 +264,7 @@ hdf5_write_attribute <- function(
   attr_value,
   is_scalar = TRUE
 ) {
-  if (!inherits(file, "H5IdComponent")) {
-    file <- rhdf5::H5Fopen(file)
-    on.exit(rhdf5::H5Fclose(file), add = TRUE)
-  }
+  file <- hdf5_open_file(file)
 
   if (name != "/") {
     h5obj <- rhdf5::H5Oopen(file, name)
@@ -284,10 +298,7 @@ hdf5_write_attribute <- function(
 #'
 #' @noRd
 hdf5_clear_rhdf5_attributes <- function(h5file, name) {
-  if (!inherits(h5file, "H5IdComponent")) {
-    h5file <- rhdf5::H5Fopen(h5file)
-    on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
-  }
+  h5file <- hdf5_open_file(h5file)
 
   h5obj <- rhdf5::H5Oopen(h5file, name)
   h5type <- rhdf5::H5Iget_type(h5obj)
