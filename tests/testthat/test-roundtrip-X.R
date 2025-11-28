@@ -147,7 +147,7 @@ for (name in test_names) {
       write_h5ad(adata_r, file_r2, mode = "w")
 
       # Remove the rhdf5-NA.OK for comparison
-      hdf5_clear_rhdf5_attributes(file_r2, "X")
+      hdf5_clear_rhdf5_attributes(HDF5File$new(file_r2), "X")
 
       # run h5diff
       res <- processx::run(

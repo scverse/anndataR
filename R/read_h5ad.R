@@ -54,10 +54,14 @@ read_h5ad <- function(
     return(hdf5_adata)
   }
 
-  switch(
+  hdf5_adata$open(readonly = TRUE)
+  obj <- switch(
     as,
     "SingleCellExperiment" = hdf5_adata$as_SingleCellExperiment(...),
     "Seurat" = hdf5_adata$as_Seurat(...),
     "InMemoryAnnData" = hdf5_adata$as_InMemoryAnnData(...)
   )
+  hdf5_adata$close()
+
+  obj
 }

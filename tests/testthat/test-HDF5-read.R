@@ -3,37 +3,38 @@ skip_if_not_installed("rhdf5")
 requireNamespace("vctrs")
 
 filename <- system.file("extdata", "example.h5ad", package = "anndataR")
+hdf5_file <- HDF5File$new(filename)
 
 test_that("reading encoding works", {
-  encoding <- read_h5ad_encoding(filename, "obs")
+  encoding <- read_h5ad_encoding(hdf5_file, "obs")
   expect_equal(names(encoding), c("type", "version"))
 })
 
 test_that("reading dense matrices works", {
-  mat <- read_h5ad_dense_array(filename, "layers/dense_counts")
+  mat <- read_h5ad_dense_array(hdf5_file, "layers/dense_counts")
   expect_true(is.matrix(mat))
   expect_type(mat, "integer")
   expect_equal(dim(mat), c(50, 100))
 
-  mat <- read_h5ad_dense_array(filename, "layers/dense_X")
+  mat <- read_h5ad_dense_array(hdf5_file, "layers/dense_X")
   expect_true(is.matrix(mat))
   expect_type(mat, "double")
   expect_equal(dim(mat), c(50, 100))
 })
 
 test_that("reading sparse matrices works", {
-  mat <- read_h5ad_sparse_array(filename, "layers/csc_counts", type = "csc")
+  mat <- read_h5ad_sparse_array(hdf5_file, "layers/csc_counts", type = "csc")
   expect_s4_class(mat, "dgCMatrix")
   expect_equal(dim(mat), c(50, 100))
 
-  mat <- read_h5ad_sparse_array(filename, "layers/counts", type = "csr")
+  mat <- read_h5ad_sparse_array(hdf5_file, "layers/counts", type = "csr")
   expect_s4_class(mat, "dgRMatrix")
   expect_equal(dim(mat), c(50, 100))
 })
 
 test_that("reading recarrays works", {
   array_list <- read_h5ad_rec_array(
-    filename,
+    hdf5_file,
     "uns/rank_genes_groups/logfoldchanges"
   )
   expect_true(is.list(array_list))
@@ -46,66 +47,66 @@ test_that("reading recarrays works", {
 })
 
 test_that("reading 1D numeric arrays works", {
-  array_1d <- read_h5ad_dense_array(filename, "obs/Int")
+  array_1d <- read_h5ad_dense_array(hdf5_file, "obs/Int")
   expect_equal(array_1d, array(0L:49L))
 
-  array_1d <- read_h5ad_dense_array(filename, "obs/Float")
+  array_1d <- read_h5ad_dense_array(hdf5_file, "obs/Float")
   expect_equal(array_1d, array(rep(42.42, 50)))
 })
 
 test_that("reading 1D sparse numeric arrays works", {
-  array_1d <- read_h5ad_sparse_array(filename, "uns/Sparse1D", type = "csc")
+  array_1d <- read_h5ad_sparse_array(hdf5_file, "uns/Sparse1D", type = "csc")
   expect_s4_class(array_1d, "dgCMatrix")
   expect_equal(dim(array_1d), c(1, 6))
 })
 
 test_that("reading 1D nullable arrays works", {
-  array_1d <- read_h5ad_nullable_integer(filename, "obs/IntNA")
+  array_1d <- read_h5ad_nullable_integer(hdf5_file, "obs/IntNA")
   expect_vector(array_1d, ptype = integer(), size = 50)
   expect_true(any(is.na(array_1d)))
 
-  array_1d <- read_h5ad_dense_array(filename, "obs/FloatNA")
+  array_1d <- read_h5ad_dense_array(hdf5_file, "obs/FloatNA")
   expected <- array(rep(42.42, 50))
   expected[1] <- NA
   expect_equal(array_1d, expected)
 
-  array_1d <- read_h5ad_nullable_boolean(filename, "obs/Bool")
+  array_1d <- read_h5ad_nullable_boolean(hdf5_file, "obs/Bool")
   expect_vector(array_1d, ptype = logical(), size = 50)
   expect_false(any(is.na(array_1d)))
 
-  array_1d <- read_h5ad_nullable_boolean(filename, "obs/BoolNA")
+  array_1d <- read_h5ad_nullable_boolean(hdf5_file, "obs/BoolNA")
   expect_vector(array_1d, ptype = logical(), size = 50)
   expect_true(any(is.na(array_1d)))
 })
 
 test_that("reading string scalars works", {
-  scalar <- read_h5ad_string_scalar(filename, "uns/StringScalar")
+  scalar <- read_h5ad_string_scalar(hdf5_file, "uns/StringScalar")
   expect_equal(scalar, "A string")
 })
 
 test_that("reading numeric scalars works", {
-  scalar <- read_h5ad_numeric_scalar(filename, "uns/IntScalar")
+  scalar <- read_h5ad_numeric_scalar(hdf5_file, "uns/IntScalar")
   expect_equal(scalar, 1)
 })
 
 test_that("reading string arrays works", {
-  array <- read_h5ad_string_array(filename, "uns/String")
+  array <- read_h5ad_string_array(hdf5_file, "uns/String")
   expect_equal(array, array(paste0("String ", 0L:9L)))
 
-  array <- read_h5ad_string_array(filename, "uns/String2D")
+  array <- read_h5ad_string_array(hdf5_file, "uns/String2D")
   expect_true(is.matrix(array))
   expect_type(array, "character")
   expect_equal(dim(array), c(5, 10))
 })
 
 test_that("reading mappings works", {
-  mapping <- read_h5ad_mapping(filename, "uns")
+  mapping <- read_h5ad_mapping(hdf5_file, "uns")
   expect_type(mapping, "list")
   expect_type(names(mapping), "character")
 })
 
 test_that("reading dataframes works", {
-  df <- read_h5ad_data_frame(filename, "obs")
+  df <- read_h5ad_data_frame(hdf5_file, "obs")
   expect_s3_class(df, "data.frame")
   expect_equal(
     colnames(df),

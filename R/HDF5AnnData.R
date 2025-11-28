@@ -19,7 +19,7 @@ HDF5AnnData <- R6::R6Class(
   inherit = AbstractAnnData,
   cloneable = FALSE,
   private = list(
-    .file = NULL,
+    .hdf5_file = NULL,
     .mode = NULL,
     .compression = NULL,
 
@@ -31,6 +31,10 @@ HDF5AnnData <- R6::R6Class(
           )
         )
       }
+    },
+
+    finalize = function() {
+      self$close()
     }
   ),
   active = list(
@@ -38,7 +42,7 @@ HDF5AnnData <- R6::R6Class(
     X = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.file, "X") |>
+        read_h5ad_element(private$.hdf5_file, "X") |>
           private$.add_matrix_dimnames("X")
       } else {
         private$.check_mode_writeable()
@@ -52,7 +56,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$var_names
         ) |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "X",
             private$.compression
           )
@@ -62,7 +66,7 @@ HDF5AnnData <- R6::R6Class(
     layers = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(private$.file, "layers") |>
+        read_h5ad_element(private$.hdf5_file, "layers") |>
           private$.add_mapping_dimnames("layers")
       } else {
         private$.check_mode_writeable()
@@ -76,7 +80,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$var_names
         ) |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "layers",
             private$.compression
           )
@@ -86,7 +90,7 @@ HDF5AnnData <- R6::R6Class(
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.file, "obsm") |>
+        read_h5ad_element(private$.hdf5_file, "obsm") |>
           private$.add_mapping_dimnames("obsm")
       } else {
         private$.check_mode_writeable()
@@ -101,7 +105,7 @@ HDF5AnnData <- R6::R6Class(
           strip_colnames = FALSE
         ) |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "obsm",
             private$.compression
           )
@@ -111,7 +115,7 @@ HDF5AnnData <- R6::R6Class(
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.file, "varm") |>
+        read_h5ad_element(private$.hdf5_file, "varm") |>
           private$.add_mapping_dimnames("varm")
       } else {
         private$.check_mode_writeable()
@@ -126,7 +130,7 @@ HDF5AnnData <- R6::R6Class(
           strip_colnames = FALSE
         ) |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "varm",
             private$.compression
           )
@@ -136,7 +140,7 @@ HDF5AnnData <- R6::R6Class(
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.file, "obsp") |>
+        read_h5ad_element(private$.hdf5_file, "obsp") |>
           private$.add_mapping_dimnames("obsp")
       } else {
         private$.check_mode_writeable()
@@ -150,7 +154,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$obs_names
         ) |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "obsp",
             private$.compression
           )
@@ -160,7 +164,7 @@ HDF5AnnData <- R6::R6Class(
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.file, "varp") |>
+        read_h5ad_element(private$.hdf5_file, "varp") |>
           private$.add_mapping_dimnames("varp")
       } else {
         private$.check_mode_writeable()
@@ -174,7 +178,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$var_names
         ) |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "varp",
             private$.compression
           )
@@ -184,14 +188,14 @@ HDF5AnnData <- R6::R6Class(
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_h5ad_element(private$.file, "obs")
+        read_h5ad_element(private$.hdf5_file, "obs")
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         private$.validate_obsvar_dataframe(value, "obs") |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "obs",
             private$.compression
           )
@@ -201,14 +205,14 @@ HDF5AnnData <- R6::R6Class(
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_h5ad_element(private$.file, "var")
+        read_h5ad_element(private$.hdf5_file, "var")
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         private$.validate_obsvar_dataframe(value, "var") |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "var",
             private$.compression
           )
@@ -242,14 +246,14 @@ HDF5AnnData <- R6::R6Class(
     uns = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
-        read_h5ad_element(private$.file, "uns")
+        read_h5ad_element(private$.hdf5_file, "uns")
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
         private$.validate_named_list(value, "uns") |>
           write_h5ad_element(
-            private$.file,
+            private$.hdf5_file,
             "uns",
             private$.compression
           )
@@ -356,7 +360,14 @@ HDF5AnnData <- R6::R6Class(
         rhdf5::H5Fclose(h5file)
       }
 
-      is_empty <- nrow(rhdf5::h5ls(file)) == 0L
+      if (!rhdf5::H5Fis_hdf5(file)) {
+        cli_abort("File {.file {file}} is not a valid HDF5 file.")
+      }
+
+      # Set the HDF5File
+      private$.hdf5_file <- HDF5File$new(file)
+
+      is_empty <- nrow(rhdf5::h5ls(private$.hdf5_file$path)) == 0L
 
       if (!is_readonly) {
         if (!is_empty) {
@@ -370,21 +381,18 @@ HDF5AnnData <- R6::R6Class(
           shape <- get_shape(obs, var, X, shape)
           obs <- get_initial_obs(obs, X, shape)
           var <- get_initial_var(var, X, shape)
-          write_empty_h5ad(file, obs, var, compression)
+          write_empty_h5ad(private$.hdf5_file, obs, var, compression)
         }
       }
 
       # File is supposed to exist by now. Check if it is a valid H5AD file
-      attrs <- rhdf5::h5readAttributes(file, "/")
+      attrs <- rhdf5::h5readAttributes(private$.hdf5_file$path, "/")
       if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
         cli_abort(c(
           "File {.file {file}} is not a valid H5AD file.",
           i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
         ))
       }
-
-      # Set the file path
-      private$.file <- file
 
       if (is_readonly) {
         # if any of these variables are not NULL, throw an error
@@ -423,6 +431,27 @@ HDF5AnnData <- R6::R6Class(
     #' @description See the `n_vars` field in [AnnData-usage]
     n_vars = function() {
       nrow(self$var)
+    },
+
+    #' @description Open the HDF5 file handle
+    #'
+    #' @param readonly Whether to open in read-only mode
+    open = function(readonly = FALSE) {
+      if (private$.mode == "r" && !readonly) {
+        cli_abort(
+          paste(
+            "This {.cls HDF5AnnData} is opened in read-only mode,",
+            "cannot open the associated HDF5 file in read/write mode"
+          )
+        )
+      }
+
+      private$.hdf5_file$open(readonly = readonly)
+    },
+
+    #' @description Close the HDF5 file handle
+    close = function() {
+      private$.hdf5_file$close()
     }
   )
 )

@@ -59,9 +59,10 @@ Other AnnData classes:
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-HDF5AnnData-new}{\code{HDF5AnnData$new()}}
-\item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
 \item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
 \item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
+\item \href{#method-HDF5AnnData-open}{\code{HDF5AnnData$open()}}
+\item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
 }
 }
 \if{html}{\out{
@@ -90,9 +91,6 @@ Other AnnData classes:
 \if{html}{\out{<a id="method-HDF5AnnData-new"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-new}{}}}
 \subsection{Method \code{new()}}{
-Close the HDF5 file when the object is garbage collected
-
-
 \code{HDF5AnnData} constructor
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(
@@ -156,16 +154,6 @@ file will be overwritten.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-close"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-close}{}}}
-\subsection{Method \code{close()}}{
-Close the HDF5 file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$close()}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-n_obs}{}}}
 \subsection{Method \code{n_obs()}}{
@@ -182,6 +170,33 @@ See the \code{n_obs} field in \link{AnnData-usage}
 See the \code{n_vars} field in \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_vars()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-open"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-open}{}}}
+\subsection{Method \code{open()}}{
+Open the HDF5 file handle
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$open(readonly = FALSE)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{readonly}}{Whether to open in read-only mode}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-close"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-close}{}}}
+\subsection{Method \code{close()}}{
+Close the HDF5 file handle
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$close()}\if{html}{\out{</div>}}
 }
 
 }
