@@ -1,0 +1,13 @@
+bibentry(
+  bibtype = "Article",
+  title = "{anndataR} improves interoperability between R and Python in single-cell transcriptomics",
+  author = c(
+    as.person("Louise Deconinck, Luke Zappia, Robrecht Cannoodt, Martin Morgan"),
+    person(given = "scverse core"),
+    as.person("Isaac Virshup, Chananchida Sang-aram, Danila Bredikhin, Ruth Seurinck, Yvan Saeys")
+  ),
+  journal = "bioRxiv",
+  year = 2025,
+  pages = "2025.08.18.669052",
+  doi = "10.1101/2025.08.18.669052"
+)

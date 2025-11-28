@@ -90,7 +90,7 @@ table
 }
 
 \subsection{Conversion table}{\tabular{llll}{
-   \strong{From \code{AnnData}} \tab \strong{To \code{SingleCellExperiment}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \strong{From \code{AnnData}} \tab \strong{To \code{SingleCellExperiment}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{adata$X} \tab \code{assays(sce)} \tab \code{x_mapping = "counts"} \tab The data in \code{adata$X} is copied to the assay named \code{X} \cr
    \code{adata$layers} \tab \code{assays(sce)} \tab \code{assays_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{adata$obs} \tab \code{colData(sce)} \tab \code{colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
@@ -126,18 +126,19 @@ with the following names used to create a
 \subsection{The \code{x_mapping} and \code{assays_mapping} arguments}{
 
 In order to specify where the data in \code{adata$X} will be stored in the
-\code{assays(sce)} slot of the resulting object, you can use either the \code{x_mapping}
-argument or the \code{assays_mapping} argument.
-If you use \code{x_mapping}, it should be a string specifying the name of the layer
-in \code{assays(sce)} where the data in \code{adata$X} will be stored.
-If you use \code{assays_mapping}, it should be a named vector where names are names
-of \code{assays(sce)} and values are keys of \code{layers} in \code{adata}.
-In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the vector.
-The name you provide for \code{x_mapping} may not be a name in \code{assays_mapping}.
+\code{assays(sce)} slot of the resulting object, you can use either the
+\code{x_mapping} argument or the \code{assays_mapping} argument.
+If you use \code{x_mapping}, it should be a string specifying the name of the
+layer in \code{assays(sce)} where the data in \code{adata$X} will be stored.
+If you use \code{assays_mapping}, it should be a named vector where names are
+names of \code{assays(sce)} and values are keys of \code{layers} in \code{adata}.
+In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the
+vector. The name you provide for \code{x_mapping} may not be a name in
+\code{assays_mapping}.
 }
 }
 \examples{
-\dontshow{if (rlang::is_installed("SingleCellExperiment")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("SingleCellExperiment")) withAutoprint(\{ # examplesIf}
   ad <- AnnData(
     X = matrix(1:5, 3L, 5L),
     layers = list(A = matrix(5:1, 3L, 5L), B = matrix(letters[1:5], 3L, 5L)),
@@ -162,7 +163,8 @@ Other object converters:
 \code{\link{as_AnnData}()},
 \code{\link{as_HDF5AnnData}()},
 \code{\link{as_InMemoryAnnData}()},
-\code{\link{as_Seurat}()}
+\code{\link{as_ReticulateAnnData}()},
+\code{\link{as_Seurat}()},
+\code{\link{reticulate-helpers}}
 }
 \concept{object converters}
-\keyword{internal}

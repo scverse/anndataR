@@ -18,7 +18,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -34,7 +34,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -50,7 +50,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 )
 }
@@ -58,47 +58,39 @@ as_AnnData(
 \item{x}{The object to convert}
 
 \item{x_mapping}{A string specifying the data to map to the \code{X} slot. If
-\code{NULL}, no data will be copied to the \code{X} slot.}
+\code{NULL}, no data will be copied to the \code{X} slot. See below for details.}
 
 \item{layers_mapping}{A named character vector where the names are keys of
 \code{layers} in the new \code{AnnData} object and values are the names of items in
-the corresponding slot of \code{x}. See below for default if \code{NULL} depending on
-the class of \code{x}.}
+the corresponding slot of \code{x}. See below for details.}
 
 \item{obs_mapping}{A named character vector where the names are names of
 \code{obs} columns in the new \code{AnnData} object and values are the names of
-columns in the corresponding slot of \code{x}. See below for default if \code{NULL}
-depending on the class of \code{x}.}
+columns in the corresponding slot of \code{x}. See below for details.}
 
 \item{var_mapping}{A named character vector where the names are names of
 \code{var} columns in the new \code{AnnData} object and values are the names of
-columns in the corresponding slot of \code{x}. See below for default if \code{NULL}
-depending on the class of \code{x}.}
+columns in the corresponding slot of \code{x}. See below for details.}
 
 \item{obsm_mapping}{A named character vector where the names are keys of
 \code{obsm} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{varm_mapping}{A named character vector where the names are keys of
 \code{varm} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{obsp_mapping}{A named character vector where the names are keys of
 \code{obsp} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{varp_mapping}{A named character vector where the names are keys of
 \code{varp} in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{uns_mapping}{A named character vector where the names are keys of \code{uns}
 in the new \code{AnnData} object and values are the names of items in the
-corresponding slot of \code{x}. See below for default if \code{NULL} depending on the
-class of \code{x}.}
+corresponding slot of \code{x}. See below for details.}
 
 \item{assay_name}{For \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} objects, the name of the assay
 to be converted. If \code{NULL}, the default assay will be used
@@ -148,7 +140,7 @@ tables for each object type
 This table describes how slots in a
 \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}} object to the new \code{AnnData}
 object.\tabular{llll}{
-   \strong{From \code{SingleCellExperiment}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \strong{From \code{SingleCellExperiment}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{assays(x)} \tab \code{adata$X} \tab \code{x_mapping = "counts"} \tab Nothing is copied to \code{X} \cr
    \code{assays(x)} \tab \code{adata$layers} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{colData(x)} \tab \code{adata$obs} \tab \code{obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
@@ -170,21 +162,45 @@ an \code{AnnData} object at a time. This can be controlled using the
 
 This table describes how slots in a \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object to the
 new \code{AnnData} object.\tabular{llll}{
-   \strong{From \code{Seurat}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default if \code{NULL}} \cr
+   \strong{From \code{Seurat}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{Layers(x)} \tab \code{adata$X} \tab \code{x_mapping = "counts"} \tab Nothing is copied to \code{X} \cr
    \code{Layers(x)} \tab \code{adata$layers} \tab \code{layers_mapping = c(counts = "counts")} \tab All items are copied by name \cr
    \code{x[[]]} \tab \code{adata$obs} \tab \code{obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")} \tab All columns are copied by name \cr
    \code{x[[assay_name]][[]]} \tab \code{adata$var} \tab \code{var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")} \tab All columns are copied by name \cr
-   \code{Embeddings(x)} \tab \code{adata$obsm} \tab \code{obsm_mapping = c(X_pca = "pca")} \tab All embeddings matching \code{assay_name} are copied by name \cr
+   \code{Reductions(x)} \tab \code{adata$obsm} \tab \code{obsm_mapping = c(X_pca = "pca")} \tab All embeddings matching \code{assay_name} are copied by name \cr
    \code{Loadings(x)} \tab \code{adata$varm} \tab \code{varm_mapping = c(PCs = "pca")} \tab All valid loadings are copied by name \cr
    \code{Graphs(x)} \tab \code{adata$obsp} \tab \code{obsp_mapping = c(connectivities = "RNA_nn")} \tab All graphs matching \code{assay_name} are copied by name \cr
    \code{Misc(x)} \tab \code{adata$varp} \tab \code{varp_mapping = c(similarities = "gene_overlaps")} \tab No data is copied to \code{varp} \cr
    \code{Misc(x)} \tab \code{adata$uns} \tab \code{uns_mapping = c(metadata = "project_metadata")} \tab All items are copied by name \cr
 }
+
+\subsection{Graph conversion}{
+
+By default, all graphs in a \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object that match the
+assay being converted are copied to the \code{obsp} slot of the new \code{AnnData}
+object. If a graph does not have an associated assay:
+\itemize{
+\item If \code{assay_name} is the default assay, they will be \emph{converted} with a
+warning
+\item if \code{assay_name} is not the default assay, they will be \emph{skipped} with a
+warning
+}
+
+To override this behavior, provide a custom mapping using the
+\code{obsp_mapping} argument.
+}
+
+\subsection{Unexpected dimensions}{
+
+A \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} is more flexible in terms of the dimensions of
+items that can be stored in various slots. For example, a \code{Layer} does not
+have to match the dimensions of the whole object. If an item has
+unexpected dimensions, it will be skipped with a warning.
+}
 }
 
 \examples{
-\dontshow{if (rlang::is_installed("Seurat")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("Seurat")) withAutoprint(\{ # examplesIf}
 # Convert a Seurat object to an AnnData object
 library(Seurat)
 
@@ -199,7 +215,7 @@ obj <- RunUMAP(obj, dims = 1:10)
 
 as_AnnData(obj)
 \dontshow{\}) # examplesIf}
-\dontshow{if (rlang::is_installed("SingleCellExperiment")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("SingleCellExperiment")) withAutoprint(\{ # examplesIf}
 # Convert a SingleCellExperiment object to an AnnData object
 library(SingleCellExperiment)
 
@@ -220,8 +236,10 @@ Other AnnData creators:
 Other object converters: 
 \code{\link{as_HDF5AnnData}()},
 \code{\link{as_InMemoryAnnData}()},
+\code{\link{as_ReticulateAnnData}()},
 \code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}()}
+\code{\link{as_SingleCellExperiment}()},
+\code{\link{reticulate-helpers}}
 }
 \concept{AnnData creators}
 \concept{object converters}

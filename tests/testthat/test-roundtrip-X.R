@@ -1,4 +1,4 @@
-skip_if_no_anndata()
+skip_if_no_anndata_py()
 skip_if_no_dummy_anndata()
 
 library(reticulate)
@@ -58,9 +58,10 @@ for (name in test_names) {
       unlist(reticulate::py_to_r(adata_py$shape))
     )
 
-    # check that the print output is the same
+    # check that the print output is the same (normalize class names)
     str_r <- capture.output(print(adata_r))
     str_py <- capture.output(print(adata_py))
+    str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
     expect_equal(str_r, str_py)
   })
 
@@ -78,9 +79,16 @@ for (name in test_names) {
 
       adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
 
+      # Extract X matrices, removing dimnames for comparison since
+      # R AnnData adds dimnames on-the-fly but Python doesn't preserve them
+      actual_x <- adata_r$X
+      expected_x <- py_to_r(adata_py$X)
+      dimnames(actual_x) <- NULL
+      dimnames(expected_x) <- NULL
+
       expect_equal(
-        adata_r$X,
-        py_to_r(adata_py$X),
+        actual_x,
+        expected_x,
         tolerance = 1e-6
       )
     }

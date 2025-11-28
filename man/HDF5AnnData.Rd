@@ -7,7 +7,11 @@
 An \code{HDF5AnnData} object
 }
 \description{
-Implementation of an HDF5-backed \code{AnnData} object.
+Implementation of an HDF5-backed \code{AnnData} object. This class provides an
+interface to a H5AD file and minimal data is stored in memory until it is
+requested by the user. It is primarily designed as an intermediate object
+when reading/writing H5AD files but can be useful for accessing parts of
+large files.
 
 See \link{AnnData-usage} for details on creating and using \code{AnnData} objects.
 }
@@ -16,7 +20,9 @@ See \link{AnnData-usage} for details on creating and using \code{AnnData} object
 
 Other AnnData classes: 
 \code{\link{AbstractAnnData}},
-\code{\link{InMemoryAnnData}}
+\code{\link{AnnDataView}},
+\code{\link{InMemoryAnnData}},
+\code{\link{ReticulateAnnData}}
 }
 \concept{AnnData classes}
 \section{Super class}{
@@ -63,6 +69,7 @@ Other AnnData classes:
 <ul>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>anndataR::AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>anndataR::AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
+<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ReticulateAnnData'><code>anndataR::AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>anndataR::AbstractAnnData$as_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>anndataR::AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>

@@ -27,6 +27,12 @@ hdf5_write_dataset <- function(
     dims <- length(value)
   }
 
+  # Avoid segfault when creating a character dataset with LZF compression,
+  # see https://github.com/Huber-group-EMBL/rhdf5/issues/168
+  if (compression == "lzf" && (storage.mode(value) == "character")) {
+    compression <- "none"
+  }
+
   rhdf5::h5createDataset(
     file,
     name,

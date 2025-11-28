@@ -32,8 +32,10 @@ ad$as_InMemoryAnnData()
 Other object converters: 
 \code{\link{as_AnnData}()},
 \code{\link{as_HDF5AnnData}()},
+\code{\link{as_ReticulateAnnData}()},
 \code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}()}
+\code{\link{as_SingleCellExperiment}()},
+\code{\link{reticulate-helpers}}
 }
 \concept{object converters}
 \keyword{internal}

@@ -1,13 +1,17 @@
 ---
 title: Development status
-output: rmarkdown::html_vignette
+package: anndataR
+output: BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{Development status}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-The following tables show the status of the implementation of each feature in the package:
+# Introduction
+
+This vignette provides an overview of the current development status of the `r Biocpkg("anndataR")` package.
+It provides details on the current implementation of different features as well as listing known issues.
 
 ```{r impl-table, include=FALSE}
 library(tibble)
@@ -130,7 +134,9 @@ status_formatted <- status |>
   spread(prefix_formatted, status_formatted)
 ```
 
-## Objects
+# Objects
+
+These tables show the status of the implementation of different `AnnData` back ends.
 
 ```{r impl-table-objects, echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as markdown
@@ -138,7 +144,7 @@ all_classes <- unique(status_formatted$class)
 object_classes <- all_classes[!all_classes %in% c("Seurat", "SingleCellExperiment")]
 
 for (class_name in object_classes) {
-  cat("### ", class_name, "\n\n", sep = "")
+  cat("## `", class_name, "`\n\n", sep = "")
 
   df <- status_formatted |>
     filter(class == class_name) |>
@@ -150,12 +156,14 @@ for (class_name in object_classes) {
 }
 ```
 
-## Conversion
+# Conversion
+
+These tables show the implementation status of conversion between `AnnData` and other objects.
 
 ```{r impl-table-conversion, echo=FALSE, results="asis"}
 # loop over each of the classes and print the table as markdown
 for (class_name in c("SingleCellExperiment", "Seurat")) {
-  cat("### ", class_name, "\n\n", sep = "")
+  cat("## `", class_name, "`\n\n", sep = "")
 
   df <- status_formatted |>
     filter(class == class_name) |>
@@ -173,7 +181,34 @@ for (class_name in c("SingleCellExperiment", "Seurat")) {
 }
 ```
 
-## Session info
+# Known issues
+
+This section lists current known issues in `r Biocpkg("anndataR")`.
+Only certain types of issues are listed here, for additional issues see the [GitHub issue tracker](https://github.com/scverse/anndataR/issues?q=sort%3Aupdated-desc+is%3Aissue+is%3Aopen).
+
+```{r known-issues, echo=FALSE, results="asis"}
+known_issues_path <- system.file("known_issues.yaml", package = "anndataR")
+data <- yaml::read_yaml(known_issues_path)$known_issues
+
+for (i in seq_along(data)) {
+  str <- paste0(
+    "## Issue: ", data[[i]]$description, "\n\n",
+    " * Affected backend: ", paste0("`", data[[i]]$backend, "`", collapse = ", "), "\n",
+    " * Affected slot(s): ", paste0("`", data[[i]]$slot, "`", collapse = ", "), "\n",
+    " * Affected dtype(s): ", paste0("`", data[[i]]$dtype, "`", collapse = ", "), "\n",
+    " * Probable cause: ", data[[i]]$process, "\n",
+    " * To investigate: ", data[[i]]$to_investigate, "\n",
+    " * To fix: ", data[[i]]$to_fix, "\n\n",
+    "### Error message\n\n",
+    paste(paste0("    ", strsplit(data[[i]]$error_message, "\n")[[1]], "\n"), collapse = ""), "\n\n",
+    "### Proposed solution\n\n",
+    data[[i]]$proposed_solution, "\n\n"
+  )
+  cat(str)
+}
+```
+
+# Session info
 
 ```{r sessioninfo}
 sessionInfo()

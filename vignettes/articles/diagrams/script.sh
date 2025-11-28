@@ -8,5 +8,5 @@ docker run --rm \
   -v `pwd`:/pwd \
   -u $(id -u):$(id -g) \
   minlag/mermaid-cli \
-  -i /pwd/vignettes/diagrams/class_diagram.mmd \
-  -o /pwd/vignettes/diagrams/class_diagram.svg
+  -i /pwd/vignettes/articles/diagrams/class_diagram.mmd \
+  -o /pwd/vignettes/articles/diagrams/class_diagram.svg

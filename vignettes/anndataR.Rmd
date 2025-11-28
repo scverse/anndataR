@@ -25,32 +25,45 @@ library(SeuratObject)
 library(SingleCellExperiment)
 ```
 
-## Introduction
-**{anndataR}** allows users to work with `.h5ad` files, access various slots in the datasets and convert these files to `SingleCellExperiment` objects or `Seurat` objects, and vice versa.
+# Introduction
+
+`r Biocpkg("anndataR")` allows users to work with `.h5ad` files, interact with `AnnData` objects and convert to/from `SingleCellExperiment` or `Seurat` objects.
 This enables users to move data easily between the different programming languages and analysis ecosystems needed to perform single-cell data analysis.
-This package differs from [**{zellkonverter}**](https://bioconductor.org/packages/release/bioc/html/zellkonverter.html) because it reads and writes these `.h5ad` files natively in R, and allows conversion to and from `Seurat` objects as well as `SingleCellExperiment`.
 
-## Installation
+This package builds on our experience developing and using other interoperability packages and aims to provide a first-class R `AnnData` experience.
 
-Install using either **{BiocManager}** or from GitHub using **{pak}**:
+## Relationship to other packages
 
-```{r install-BiocManager, eval = FALSE}
+Existing packages provide similar functionality to `r Biocpkg("anndataR")` but there are some important differences:
+
+- `r Biocpkg("zellkonverter")` provides conversion of `SingleCellExperiment` objects to/from `AnnData` and reading/writing of `.h5ad` files.
+  This is facilitated via `r CRANpkg("reticulate")` using `r Biocpkg("basilisk")` to manage Python environments (native reading of `.h5ad` files is also possible).
+  In contrast, `r Biocpkg("anndataR")` provides a native R H5AD interface, removing the need for Python dependencies.
+  Conversion to/from `Seurat` objects is also supported.
+- `r CRANpkg("anndata")` (on CRAN) is a wrapper around the Python _anndata_ package.
+  It provides a nicer interface from within R but still requires a Python environment.
+  `r Biocpkg("anndataR")` provides a pure R implementation of the `AnnData` data structure with different back ends and conversion to more common R objects.
+- Other interoperability packages typically also require Python dependencies, have limited features or flexibility and/or are not available from a central package repository
+
+There is significant overlap in functionality between these packages.
+We anticipate that over time they will become more specialised and work better together or be deprecated in favour of `r Biocpkg("anndataR")`.
+
+# Installation
+
+Install `r Biocpkg("anndataR")` using `r CRANpkg("BiocManager")`:
+
+```{r install, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
 BiocManager::install("anndataR")
 ```
 
-```{r install-pak, eval = FALSE}
-if (!require("pak", quietly = TRUE)) {
-  install.packages("pak")
-}
-pak::pak("scverse/anndataR")
-```
+# Usage
 
-## Usage
+These sections briefly show how to use `r Biocpkg("anndataR")`.
 
-Here's a quick example of how to use **{anndataR}**.
+## Read from disk
 
 First, we fetch an example `.h5ad` file included in the package:
 
@@ -66,13 +79,13 @@ By default, a H5AD is read to an in-memory `AnnData` object:
 adata <- read_h5ad(h5ad_path)
 ```
 
-It can also be read as a `SingleCellExperiment` object:
+It can also be read as a `SingleCellExperiment` object (see `vignette("usage_singlecellexperiment")`):
 
 ```{r read-as-SingleCellExperiment}
 sce <- read_h5ad(h5ad_path, as = "SingleCellExperiment")
 ```
 
-Or as a `Seurat` object:
+Or as a `Seurat` object (see `vignette("usage_seurat")`):
 
 ```{r read-as-Seurat}
 obj <- read_h5ad(h5ad_path, as = "Seurat")
@@ -83,6 +96,10 @@ There is also a HDF5-backed `AnnData` object:
 ```{r read-on-disk}
 adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
+
+See `r vignette("usage_python")` for interacting with a Python `AnnData` via `r CRANpkg("reticulate")`. 
+
+## Using `AnnData` objects
 
 View structure:
 
@@ -98,30 +115,33 @@ adata$obs[1:5, 1:6]
 adata$var[1:5, 1:6]
 ```
 
+[Subsetting](#subsetting) `AnnData` objects is covered below.
+See ```?`AnnData-usage` ```for more details on how to work with `AnnData` objects.
+
 ## Interoperability
 
-Convert the `AnnData` object to a `SingleCellExperiment` object:
+Convert the `AnnData` object to a `SingleCellExperiment` object (see `vignette("usage_singlecellexperiment")`):
 
 ```{r as-SingleCellExperiment}
 sce <- adata$as_SingleCellExperiment()
 sce
 ```
 
-Convert the `AnnData` object to a `Seurat` object:
+Convert the `AnnData` object to a `Seurat` object (see `vignette("usage_seurat")`):
 
 ```{r as-Seurat}
 obj <- adata$as_Seurat()
 obj
 ```
 
-Convert a `SingleCellExperiment` object to an `AnnData` object:
+Convert a `SingleCellExperiment` object to an `AnnData` object (see `vignette("usage_singlecellexperiment")`):
 
 ```{r as-AnnData-from-SingleCellExperiment}
 adata <- as_AnnData(sce)
 adata
 ```
 
-Convert a `Seurat` object to an `AnnData` object:
+Convert a `Seurat` object to an `AnnData` object (see `vignette("usage_seurat")`):
 
 ```{r as-AnnData-from-Seurat}
 adata <- as_AnnData(obj)
@@ -144,13 +164,13 @@ adata <- AnnData(
 adata
 ```
 
-## Write to disk:
+## Write to disk
 
 Write an `AnnData` object to disk:
 
 ```{r write-to-disk}
 tmpfile <- tempfile(fileext = ".h5ad")
-write_h5ad(adata, tmpfile)
+adata$write_h5ad(tmpfile) # Alternatively, write_h5ad(adata, tmpfile)
 ```
 
 Write a `SingleCellExperiment` object to disk:
@@ -167,7 +187,98 @@ tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(obj, tmpfile)
 ```
 
-## Session info
+## Subsetting `AnnData` objects {#subsetting}
+
+`r Biocpkg("anndataR")` provides standard R subsetting methods that work with familiar bracket notation. These methods return `AnnDataView` objects that provide lazy evaluation for efficient memory usage.
+
+### Basic subsetting
+
+Subset observations (rows) using logical conditions:
+
+```{r subset-obs}
+# Create some sample data
+adata <- AnnData(
+  X = matrix(rnorm(50), nrow = 10, ncol = 5),
+  obs = data.frame(
+    cell_type = factor(rep(c("A", "B", "C"), c(3, 4, 3))),
+    score = runif(10)
+  ),
+  var = data.frame(
+    gene_name = paste0("gene_", 1:5),
+    highly_variable = c(TRUE, FALSE, TRUE, TRUE, FALSE)
+  )
+)
+
+# Subset to cell type "A"
+view1 <- adata[adata$obs$cell_type == "A", ]
+view1
+```
+
+Subset variables (columns) using logical conditions:
+
+```{r subset-vars}
+# Subset to highly variable genes
+view2 <- adata[, adata$var$highly_variable]
+view2
+```
+
+### Combined subsetting
+
+Subset both observations and variables simultaneously:
+
+```{r subset-both}
+# Subset to cell type "A" and highly variable genes
+view3 <- adata[adata$obs$cell_type == "A", adata$var$highly_variable]
+view3
+```
+
+### Using different index types
+
+```{r subset-types}
+# Numeric indices
+view4 <- adata[1:5, 1:3]
+view4
+
+# Character names (if available)
+rownames(adata) <- paste0("cell_", 1:10)
+colnames(adata) <- paste0("gene_", 1:5)
+view5 <- adata[c("cell_1", "cell_2"), c("gene_1", "gene_3")]
+view5
+```
+
+### Working with views
+
+Views maintain access to all original data slots:
+
+```{r view-properties}
+# Access dimensions
+dim(view3)
+nrow(view3)
+ncol(view3)
+
+# Access names
+rownames(view3)
+colnames(view3)
+
+# Access data matrices and metadata
+view3$X
+view3$obs
+view3$var
+
+# Views can be converted to concrete implementations
+concrete <- view3$as_InMemoryAnnData()
+concrete
+```
+
+# Citing _anndataR_
+
+If you use `r Biocpkg("anndataR")` in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
+
+```{r citation}
+citation("anndataR")
+```
+
+# Session info
 
 ```{r sessioninfo}
 sessionInfo()

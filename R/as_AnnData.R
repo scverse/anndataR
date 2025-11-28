@@ -6,39 +6,31 @@
 #'
 #' @param x The object to convert
 #' @param x_mapping A string specifying the data to map to the `X` slot. If
-#'   `NULL`, no data will be copied to the `X` slot.
+#'   `NULL`, no data will be copied to the `X` slot. See below for details.
 #' @param layers_mapping A named character vector where the names are keys of
 #'   `layers` in the new `AnnData` object and values are the names of items in
-#'   the corresponding slot of `x`. See below for default if `NULL` depending on
-#'   the class of `x`.
+#'   the corresponding slot of `x`. See below for details.
 #' @param obs_mapping A named character vector where the names are names of
 #'   `obs` columns in the new `AnnData` object and values are the names of
-#'   columns in the corresponding slot of `x`. See below for default if `NULL`
-#'   depending on the class of `x`.
+#'   columns in the corresponding slot of `x`. See below for details.
 #' @param var_mapping A named character vector where the names are names of
 #'   `var` columns in the new `AnnData` object and values are the names of
-#'   columns in the corresponding slot of `x`. See below for default if `NULL`
-#'   depending on the class of `x`.
+#'   columns in the corresponding slot of `x`. See below for details.
 #' @param obsm_mapping A named character vector where the names are keys of
 #'   `obsm` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param varm_mapping A named character vector where the names are keys of
 #'   `varm` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param obsp_mapping A named character vector where the names are keys of
 #'   `obsp` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param varp_mapping A named character vector where the names are keys of
 #'   `varp` in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param uns_mapping A named character vector where the names are keys of `uns`
 #'   in the new `AnnData` object and values are the names of items in the
-#'   corresponding slot of `x`. See below for default if `NULL` depending on the
-#'   class of `x`.
+#'   corresponding slot of `x`. See below for details.
 #' @param assay_name For [`SeuratObject::Seurat`] objects, the name of the assay
 #'   to be converted. If `NULL`, the default assay will be used
 #'   ([SeuratObject::DefaultAssay()]). This is ignored for other objects.
@@ -75,7 +67,7 @@
 #'
 # nolint start: line_length_linter
 #'
-#'   | **From `SingleCellExperiment`** | **To `AnnData`** | **Example mapping argument** | **Default if `NULL`** |
+#'   | **From `SingleCellExperiment`** | **To `AnnData`** | **Example mapping argument** | **Default** |
 #'   |---------------------------------|------------------|------------------------------|-----------------------|
 #'   | `assays(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
 #'   | `assays(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
@@ -101,19 +93,40 @@
 #'
 # nolint start: line_length_linter
 #'
-#'   | **From `Seurat`** | **To `AnnData`** | **Example mapping argument** | **Default if `NULL`** |
+#'   | **From `Seurat`** | **To `AnnData`** | **Example mapping argument** | **Default** |
 #'   |-------------------|------------------|------------------------------|-----------------------|
 #'   | `Layers(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
 #'   | `Layers(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
 #'   | `x[[]]` | `adata$obs` | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
 #'   | `x[[assay_name]][[]]` | `adata$var` | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
-#'   | `Embeddings(x)` | `adata$obsm` | `obsm_mapping = c(X_pca = "pca")` | All embeddings matching `assay_name` are copied by name |
+#'   | `Reductions(x)` | `adata$obsm` | `obsm_mapping = c(X_pca = "pca")` | All embeddings matching `assay_name` are copied by name |
 #'   | `Loadings(x)` | `adata$varm` | `varm_mapping = c(PCs = "pca")` | All valid loadings are copied by name |
 #'   | `Graphs(x)` | `adata$obsp` | `obsp_mapping = c(connectivities = "RNA_nn")` | All graphs matching `assay_name` are copied by name |
 #'   | `Misc(x)` | `adata$varp` | `varp_mapping = c(similarities = "gene_overlaps")` | No data is copied to `varp` |
 #'   | `Misc(x)` | `adata$uns` | `uns_mapping = c(metadata = "project_metadata")` | All items are copied by name |
 #'
 # nolint end: line_length_linter
+#'
+#'   ## Graph conversion
+#'
+#'   By default, all graphs in a [`SeuratObject::Seurat`] object that match the
+#'   assay being converted are copied to the `obsp` slot of the new `AnnData`
+#'   object. If a graph does not have an associated assay:
+#'
+#'   - If `assay_name` is the default assay, they will be _converted_ with a
+#'     warning
+#'   - if `assay_name` is not the default assay, they will be _skipped_ with a
+#'     warning
+#'
+#'   To override this behavior, provide a custom mapping using the
+#'   `obsp_mapping` argument.
+#'
+#'   ## Unexpected dimensions
+#'
+#'   A [`SeuratObject::Seurat`] is more flexible in terms of the dimensions of
+#'   items that can be stored in various slots. For example, a `Layer` does not
+#'   have to match the dimensions of the whole object. If an item has
+#'   unexpected dimensions, it will be skipped with a warning.
 #'
 #' @return An `AnnData` object of the class requested by `output_class`
 #'   containing the data specified in the mapping arguments.
@@ -162,7 +175,7 @@ as_AnnData <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   UseMethod("as_AnnData", x)
@@ -182,7 +195,7 @@ as_AnnData.SingleCellExperiment <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   from_SingleCellExperiment(
@@ -215,7 +228,7 @@ as_AnnData.Seurat <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
   ...
 ) {
   from_Seurat(

@@ -1,6 +1,86 @@
+# anndataR 1.1.0
+
+- Bioconductor 3.23 devel
+
+# anndataR 1.0.0
+
+- Bioconductor 3.22 release (October 2025)
+
+# anndataR 0.99.6
+
+- Use the correct mapping figure in the `SingleCellExperiment` usage vignette (PR #372)
+- Fix accessing layers keys for `ReticulateAnnData` (PR #372)
+- Minor updates to the Python usage vignette (PR #372)
+- Add the Python vignette to the **{pkgdown}** index (PR #372)
+
+# anndataR 0.99.4
+
+- Address minor issues from Bioconductor checks (PR #371)
+  - Combine the `opts_chunks$set()` calls in the Python usage vignette
+  - Replace `\donttrun` with `\donttest` in man pages
+
+# anndataR 0.99.3
+
+## New functionality
+
+- Implemented an `AnnDataView` class, which provides a lazy view of an `AnnData` object without copying data (PR #324)
+- Implemented S3 methods for `AbstractAnnData` objects: `dim`, `nrow`, `ncol`, `dimnames`, `rownames`, `colnames`, and `[` (PR #324)
+- Add `ReticulateAnnData` class for seamless Python integration via **{reticulate}** (PR #322)
+- Add `AGENTS.md` with instructions for developers (PR #367).
+
+## Major changes
+
+- Refactor obs/var_names handling for improved data consistency (PR #328)
+  - `InMemoryAnnData` now stores `obs_names` and `var_names` as separate private
+    fields instead of relying on rownames of `obs`/`var` data.frames
+  - `HDF5AnnData` maintains separate obs/var names management to ensure
+    consistency between obs/var data.frames and dimnames
+  - All matrix data (`X`, `layers`, `obsm`, `varm`, `obsp`, `varp`) is now
+    stored internally **without** dimnames for consistency
+  - Dimnames are added **on-the-fly** when users access data, ensuring proper
+    obs/var name display
+
+## Minor changes
+
+- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
+  operators for cleaner code (PR #328)
+- Add explanatory comments for matrix generation alignment with Python
+  **dummy-anndata** (PR #328)
+- Add `get_generator_types()` function return allowed/example types for
+  `generate_dataset()` (PR #354)
+- Add checks for type arguments to `generate_dataset()` (PR #354)
+- Generalise the layers created by `generate_dataset()` when `format = "Seurat"`
+  (PR #354)
+
+## Bug fixes
+
+- Add compression parameter to additional write operations in `HDF5AnnData` 
+  for consistency (PR #328)
+- Directly use `obs_names` and `var_names` properties instead of corresponding
+  indirect S3 methods `rownames` and `colnames` (PR #328)
+- Fix error message variable name in `.validate_aligned_array()` method 
+  (expected_colnames → expected_rownames) (PR #328)
+- Fix Seurat conversion for PCA loadings with variable feature subsets (PR #328)
+  - Seurat PCA loadings only contain variable features, not all genes
+  - Now properly expands loadings matrix to include all genes with zeros for
+    non-variable features
+  - Adds warning when rownames don't match var_names during conversion
+- Avoid writing character datasets to H5AD files with LZF compression as it
+  causes R to crash (PR #356)
+- Handle slots that may have incomplete dimensions when converting from
+  `Seurat`. These are now skipped with a warning instead of indirectly raising
+  an error. (PR #369)
+
+## Documentation
+
+- `citation("anndataR")` now returns details of the **{anndataR}** preprint
+  (PR #351)
+- Update vignettes to clarify and expand text and improve formatting (PR #360)
+
 # anndataR 0.99.2
 
-* Add `@return` to R6 object man pages to address **{BiocCheck}** warning (PR #319)
+* Add `@return` to R6 object man pages to address **{BiocCheck}** warning
+  (PR #319)
 
 # anndataR 0.99.1
 
@@ -11,7 +91,7 @@
 - Bump required R version to 4.5 in preparation for Bioconductor submission
   (PR #309)
 - Remove deprecated functions and arguments (PR #311, PR #313)
-- Minor cleanups and improvements (PR #313).
+- Minor clean-ups and improvements (PR #313).
 - Add more tests to increase coverage (PR #315)
 
 # anndataR 0.2.0
@@ -68,7 +148,7 @@
   - Most round trip tests are now enabled and pass successfully
   - Conversion helpers have been added to assist with **{reticulate}** tests
 
-# anndataR 0.1.0 (inital release candidate)
+# anndataR 0.1.0 (initial release candidate)
 
 Initial release candidate of **{anndataR}** including:
 

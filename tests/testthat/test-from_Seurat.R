@@ -12,11 +12,15 @@ obj <- FindVariableFeatures(obj, verbose = FALSE)
 obj <- ScaleData(obj, verbose = FALSE)
 obj <- RunPCA(obj, npcs = 10L, verbose = FALSE)
 obj <- FindNeighbors(obj, verbose = FALSE)
-obj <- RunUMAP(obj, dims = 1:10, verbose = FALSE)
+# Suppress Seurat UWOT warning
+withr::with_options(list("Seurat.warn.umap.uwot" = FALSE), {
+  obj <- RunUMAP(obj, dims = 1:10, verbose = FALSE)
+})
 
 active_assay <- obj[[DefaultAssay(obj)]]
 
-ad <- as_AnnData(obj)
+# converting to anndata produces warning due to hvg subsetting
+ad <- suppressWarnings(as_AnnData(obj))
 
 test_that("as_AnnData (Seurat) retains number of observations and features", {
   expect_equal(ad$n_obs(), 200L)
@@ -124,10 +128,23 @@ test_that("as_AnnData (Seurat) retains pca", {
     ignore_attr = TRUE
   )
 
-  # trackstatus: class=Seurat, feature=test_set_varm, status=wip
+  # trackstatus: class=Seurat, feature=test_set_varm, status=done
+  expanded_varm_pca <- ad$varm[["pca"]]
+  loadings <- Loadings(obj, reduction = "pca")
+
+  # check whether rows not in loadings are all zero
+  should_be_zero <- expanded_varm_pca[
+    !rownames(expanded_varm_pca) %in% rownames(loadings),
+    ,
+    drop = FALSE
+  ]
+  expect_true(all(should_be_zero == 0))
+
+  # now check the matching rows
+  matching_varm_pca <- expanded_varm_pca[rownames(loadings), , drop = FALSE]
   expect_equal(
-    ad$varm[["pca"]],
-    Loadings(obj, reduction = "pca"),
+    matching_varm_pca,
+    loadings,
     ignore_attr = TRUE
   )
 })
@@ -180,7 +197,10 @@ test_that("as_AnnData (Seurat) works with v3 Assays", {
     obj_v3_assay[["RNA"]] <- as(Seurat::GetAssay(obj, "RNA"), "Assay")
   )
 
-  adata_v3_assay <- as_AnnData(obj_v3_assay)
+  expect_warning(
+    adata_v3_assay <- as_AnnData(obj_v3_assay),
+    regexp = "Row names of .* do not match the expected var names"
+  )
 
   expect_identical(
     to_R_matrix(adata_v3_assay$layers$counts),
@@ -191,24 +211,27 @@ test_that("as_AnnData (Seurat) works with v3 Assays", {
 test_that("as_AnnData (Seurat) works with list mappings", {
   active_assay <- SeuratObject::DefaultAssay(obj)
   expect_no_error(
-    as_AnnData(
-      obj,
-      layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
-      obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
-      var_mapping = as.list(.from_Seurat_guess_var(obj, active_assay)),
-      obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
-      varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
-      obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
-      varp_mapping = if (length(as.list(.from_Seurat_guess_varps(obj))) > 0) {
-        as.list(.from_Seurat_guess_varps(obj))
-      } else {
-        FALSE
-      },
-      uns_mapping = if (length(as.list(.from_Seurat_guess_uns(obj))) > 0) {
-        as.list(.from_Seurat_guess_uns(obj))
-      } else {
-        FALSE
-      }
+    expect_warning(
+      as_AnnData(
+        obj,
+        layers_mapping = as.list(.from_Seurat_guess_layers(obj, active_assay)),
+        obs_mapping = as.list(.from_Seurat_guess_obs(obj, active_assay)),
+        var_mapping = as.list(.from_Seurat_guess_var(obj, active_assay)),
+        obsm_mapping = as.list(.from_Seurat_guess_obsms(obj, active_assay)),
+        varm_mapping = as.list(.from_Seurat_guess_varms(obj, active_assay)),
+        obsp_mapping = as.list(.from_Seurat_guess_obsps(obj, active_assay)),
+        varp_mapping = if (length(as.list(.from_Seurat_guess_varps(obj))) > 0) {
+          as.list(.from_Seurat_guess_varps(obj))
+        } else {
+          FALSE
+        },
+        uns_mapping = if (length(as.list(.from_Seurat_guess_uns(obj))) > 0) {
+          as.list(.from_Seurat_guess_uns(obj))
+        } else {
+          FALSE
+        }
+      ),
+      regexp = "Row names of .* do not match the expected var names"
     )
   )
 })
@@ -216,21 +239,30 @@ test_that("as_AnnData (Seurat) works with list mappings", {
 test_that("as_AnnData (Seurat) works with unnamed mappings", {
   active_assay <- SeuratObject::DefaultAssay(obj)
   expect_no_error(
-    as_AnnData(
-      obj,
-      layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
-      obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),
-      var_mapping = unname(.from_Seurat_guess_var(obj, active_assay)),
-      obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
-      varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
-      obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
-      varp_mapping = unname(.from_Seurat_guess_varps(obj)) %||% FALSE,
-      uns_mapping = unname(.from_Seurat_guess_uns(obj)) %||% FALSE
+    expect_warning(
+      as_AnnData(
+        obj,
+        layers_mapping = unname(.from_Seurat_guess_layers(obj, active_assay)),
+        obs_mapping = unname(.from_Seurat_guess_obs(obj, active_assay)),
+        var_mapping = unname(.from_Seurat_guess_var(obj, active_assay)),
+        obsm_mapping = unname(.from_Seurat_guess_obsms(obj, active_assay)),
+        varm_mapping = unname(.from_Seurat_guess_varms(obj, active_assay)),
+        obsp_mapping = unname(.from_Seurat_guess_obsps(obj, active_assay)),
+        varp_mapping = unname(.from_Seurat_guess_varps(obj)) %||% FALSE,
+        uns_mapping = unname(.from_Seurat_guess_uns(obj)) %||% FALSE
+      ),
+      regexp = "Row names of .* do not match the expected var names"
     )
   )
 })
 
 test_that("as_AnnData (Seurat) works with empty mappings", {
-  expect_warning(as_AnnData(obj, layers_mapping = NULL), "argument is empty")
-  expect_warning(as_AnnData(obj, layers_mapping = c()), "argument is empty")
+  expect_warning(
+    as_AnnData(obj, varm_mapping = NULL),
+    regexp = "argument is empty"
+  )
+  expect_warning(
+    as_AnnData(obj, varm_mapping = c()),
+    regexp = "argument is empty"
+  )
 })

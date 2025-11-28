@@ -134,3 +134,66 @@ get_mapping <- function(mapping, guesser, obj, name, ...) {
   # Make sure provided mapping has names
   self_name(mapping)
 }
+
+#' Check dimensions and skip
+#'
+#' Check the dimensions of a matrix-like object and return `NULL` if they do not
+#' match the expected dimensions, with a warning. For use in conversion
+#' functions to skip items that do not match the required dimensions.
+#'
+#' @param x The object to check
+#' @param field The field the object comes from, used in the warning message
+#' @param name The name of the object, used in the warning message
+#' @param expected_dims Expected dimensions
+#' @param expected_rows Expected number of rows
+#' @param expected_cols Expected number of columns
+#'
+#' @returns The object `x` if it matches the expected dimensions, otherwise
+#'   `NULL`
+#' @noRd
+check_dims_and_skip <- function(
+  x,
+  field,
+  name,
+  expected_dims = NULL,
+  expected_rows = NULL,
+  expected_cols = NULL
+) {
+  msg <- NULL
+
+  if (!is.null(expected_dims) && !identical(dim(x), expected_dims)) {
+    expected_dims <- as.integer(expected_dims)
+    msg <- c(
+      "i" = paste0(
+        "Expected [{style_vec(expected_dims)}], ",
+        "got [{style_vec(as.integer(dim(x)))}]"
+      )
+    )
+  } else if (!is.null(expected_rows) && nrow(x) != expected_rows) {
+    msg <- c(
+      "i" = paste0(
+        "Expected {.val {expected_rows}} rows, got {.val {nrow(x)}}"
+      )
+    )
+  } else if (!is.null(expected_cols) && ncol(x) != expected_cols) {
+    msg <- c(
+      "i" = paste0(
+        "Expected {.val {expected_cols}} colums, got {.val {ncol(x)}}"
+      )
+    )
+  }
+
+  if (!is.null(msg)) {
+    cli_warn(
+      c(
+        "Skipping {.field {field}} {.val {name}} with unexpected dimensions",
+        msg
+      ),
+      call = NULL
+    )
+
+    return(NULL)
+  } else {
+    return(x)
+  }
+}

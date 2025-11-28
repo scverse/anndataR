@@ -1,12 +1,20 @@
 # {anndataR}: An R package for working with AnnData objects <img src="man/figures/logo.png" align="right" alt="anndataR logo" width=120 />
+
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml)
+[![Bioc release status](http://www.bioconductor.org/shields/build/release/bioc/anndataR.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/anndataR)
+[![Bioc devel status](http://www.bioconductor.org/shields/build/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR)
+[![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/anndataR.svg)](http://bioconductor.org/packages/stats/bioc/anndataR/)
+[![Bioc support](https://bioconductor.org/shields/posts/anndataR.svg)](https://support.bioconductor.org/tag/anndataR)
+[![Bioc history](https://bioconductor.org/shields/years-in-bioc/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
+[![Bioc last commit](https://bioconductor.org/shields/lastcommit/devel/bioc/anndataR.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR/)
+[![Bioc dependencies](https://bioconductor.org/shields/dependencies/release/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
 <!-- badges: end -->
 
 **{anndataR}** aims to make the `AnnData` format a first-class citizen in the R ecosystem, and to make it easy to work with AnnData files in R, either directly or by converting them to a `SingleCellExperiment` or `Seurat` object.
 
-**{anndataR}** is an scverse® community project maintained by [Data Intuitive](https://data-intuitive.com/), and is fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
+**{anndataR}** is a an scverse® community project fiscally sponsored by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 
 ## Features of {anndataR}
 
@@ -15,7 +23,7 @@
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
-You can find the status of development of **{anndataR}** on the [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking) of the package website. 
+You can find the status of development of **{anndataR}** on the [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking) of the package website.
 Please [report](https://github.com/scverse/anndataR/issues) any issues you encounter.
 
 ## Installation
@@ -24,7 +32,7 @@ You can install **{anndataR}** from Bioconductor using **BiocManager**:
 
 ```r
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
+  install.packages("BiocManager")
 }
 BiocManager::install("anndataR")
 ```
@@ -58,7 +66,7 @@ The best way to get started with **{anndataR}** is to explore the package vignet
 
 In order to browse these vignettes locally, you need to build them during installation:
 
-```
+``` r
 options(pkg.build_vignettes = TRUE)
 pak::pak("scverse/anndataR")
 ```
@@ -73,5 +81,26 @@ Take note that you need all suggested dependencies available, and that building 
   `vignette("usage_singlecellexperiment", package = "anndataR")`
 - [**Software Design**](https://anndatar.data-intuitive.com/articles/software_design.html): An overview of the design of the package
 - [**Development Status**](https://anndatar.data-intuitive.com/articles/development_status.html): An overview of the development status of the package
-- [**Known Issues**](https://anndatar.data-intuitive.com/articles/known_issues.html): An overview of known issues with the package.  
-  `vignette("known_issues", package = "anndataR")`
+  
+## Citing **{anndataR}**
+
+If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
+
+```r
+citation("anndataR")
+```
+
+    Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025).
+    “anndataR improves interoperability between R and Python in single-cell transcriptomics.” _bioRxiv_, 2025.08.18.669052.
+    doi:10.1101/2025.08.18.669052 <https://doi.org/10.1101/2025.08.18.669052>.
+
+    A BibTeX entry for LaTeX users is
+
+      @Article{,
+        title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
+        author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
+        journal = {bioRxiv},
+        year = {2025},
+        pages = {2025.08.18.669052},
+        doi = {10.1101/2025.08.18.669052},
+      }

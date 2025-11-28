@@ -237,27 +237,24 @@ test_that("writing gzip compressed files works", {
   expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_gzip)$size)
 })
 
-# TODO: re-enable these tests
-# nolint start
-# test_that("writing lzf compressed files works", {
-#   dummy <- generate_dataset(100, 200, example = FALSE)
-#   non_random_X <- matrix(5, 100, 200) # nolint
-#
-#   adata <- AnnData(
-#     X = non_random_X,
-#     obs = dummy$obs,
-#     var = dummy$var
-#   )
-#
-#   h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
-#   h5ad_file_lzf <- tempfile(pattern = "hdf5_write_lzf_", fileext = ".h5ad")
-#
-#   write_h5ad(adata, h5ad_file_none, compression = "none")
-#   write_h5ad(adata, h5ad_file_lzf, compression = "lzf")
-#
-#   expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
-# })
-# nolint end
+test_that("writing lzf compressed files works", {
+  dummy <- generate_dataset(100, 200, example = FALSE)
+  non_random_X <- matrix(5, 100, 200) # nolint
+
+  adata <- AnnData(
+    X = non_random_X,
+    obs = dummy$obs,
+    var = dummy$var
+  )
+
+  h5ad_file_none <- tempfile(pattern = "hdf5_write_none_", fileext = ".h5ad")
+  h5ad_file_lzf <- tempfile(pattern = "hdf5_write_lzf_", fileext = ".h5ad")
+
+  write_h5ad(adata, h5ad_file_none, compression = "none")
+  write_h5ad(adata, h5ad_file_lzf, compression = "lzf")
+
+  expect_true(file.info(h5ad_file_none)$size > file.info(h5ad_file_lzf)$size)
+})
 
 test_that("write_h5ad() gives consistent hashes", {
   dummy <- generate_dataset(100, 200, example = TRUE, format = "AnnData")
