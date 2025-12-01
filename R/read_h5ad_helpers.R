@@ -124,6 +124,7 @@ read_h5ad_null <- function(hdf5_file, name, version = "0.1.0") {
 #'
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
+#' @param backed Whether to return a DelayedArray
 #' @param version Encoding version of the element to read
 #'
 #' @return a matrix or a vector if 1D
@@ -132,24 +133,45 @@ read_h5ad_null <- function(hdf5_file, name, version = "0.1.0") {
 read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.2.0") {
   version <- match.arg(version)
 
-  # dataset_type <- if (hdf5_get_dataset_type(file, name) == "H5T_INTEGER") {
-  #   "integer"
-  # } else {
-  #   NA
-  # }
-  #
-  # data <- HDF5Array::HDF5Array(file, name, type = dataset_type)
-  #
-  # if (length(dim(data)) == 2) {
-  #   data <- t(data)
-  # } else if (length(dim(data)) > 2) {
-  #   data <- aperm(data)
-  # }
-  #
-  # if (!isTRUE(backed)) {
-  #   data <- as.array(data)
-  # }
+  dataset_type <- hdf5_get_dataset_type(hdf5_file, name)
+  if (dataset_type == "H5T_INTEGER") {
+    dataset_type <- "integer"
+  } else if (dataset_type == "H5T_ENUM") {
+    # HDF5Array doesn't support this type so fall back to base rhdf5
+    return(read_h5ad_dense_array_base(hdf5_file, name, version))
+  } else {
+    dataset_type <- NA
+  }
 
+  # File handle must be closed for use by HDF5Array
+  hdf5_file$close_and_defer_open()
+  data <- HDF5Array::HDF5Array(hdf5_file$path, name, type = dataset_type)
+
+  if (length(dim(data)) == 2) {
+    data <- t(data)
+  } else if (length(dim(data)) > 2) {
+    data <- aperm(data)
+  }
+
+  if (!isTRUE(backed)) {
+    data <- as.array(data)
+  }
+
+  data
+}
+
+#' Read H5AD dense array (base)
+#'
+#' Read a dense array from an H5AD file using base {rhdf5}
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a matrix or a vector if 1D
+#'
+#' @noRd
+read_h5ad_dense_array_base <- function(hdf5_file, name, version = "0.2.0") {
   hdf5_file$open_and_defer_close(readonly = TRUE)
   data <- rhdf5::h5read(hdf5_file$handle, name, native = FALSE)
 
