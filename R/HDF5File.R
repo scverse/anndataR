@@ -105,6 +105,18 @@ HDF5File <- R6::R6Class(
       }
 
       self$open(readonly = readonly)
+    },
+    #' @description Close the HDF5 file handle and automatically open it at the
+    #' end of the calling function. If the file is already closed, it is assumed
+    #' the caller will open it and the deferred open call is not added.
+    #'
+    #' @return `TRUE` if the handle was successfully closed (invisibly)
+    close_and_defer_open = function() {
+      if (self$is_open) {
+        withr::defer_parent(self$open(readonly = self$is_readonly))
+      }
+
+      self$close()
     }
   ),
   private = list(
