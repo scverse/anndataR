@@ -127,7 +127,7 @@ read_h5ad_null <- function(hdf5_file, name, version = "0.1.0") {
 #' @param backed Whether to return a DelayedArray
 #' @param version Encoding version of the element to read
 #'
-#' @return a matrix or a vector if 1D
+#' @return a matrix/array or a DelayedArray if `backed = TRUE`
 #'
 #' @noRd
 read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.2.0") {
@@ -168,7 +168,7 @@ read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #'
-#' @return a matrix or a vector if 1D
+#' @return a matrix/array
 #'
 #' @noRd
 read_h5ad_dense_array_base <- function(hdf5_file, name, version = "0.2.0") {
@@ -222,18 +222,58 @@ read_h5ad_csc_matrix <- function(hdf5_file, name, version) {
 #'
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
+#' @param backed Whether to return a DelayedArray
 #' @param version Encoding version of the element to read
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
 #'
-#' @return a sparse matrix/DelayedArray???, or a vector if 1D
+#' @return a sparse matrix/array or a DelayedArray if `backed = TRUE`
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
 read_h5ad_sparse_array <- function(
   hdf5_file,
   name,
+  backed = FALSE,
   version = "0.1.0",
   type = c("csr_matrix", "csc_matrix")
+) {
+  version <- match.arg(version)
+  type <- match.arg(type)
+
+  hdf5_file$close_and_defer_open()
+  mtx <- t(HDF5Array::H5SparseMatrix(hdf5_file$path, name))
+
+  if (!backed) {
+    mtx <- if (type == "csc_matrix") {
+      as(mtx, "dgCMatrix")
+    } else if (type == "csr_matrix") {
+      mtx |>
+        as("COO_SparseArray") |>
+        as("dgRMatrix")
+    }
+  }
+
+  mtx
+}
+
+#' Read H5AD sparse array (base)
+#'
+#' Read a sparse array from an H5AD file using base {rhdf5}
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
+#'
+#' @return a sparse matrix
+#' @importFrom Matrix sparseMatrix
+#'
+#' @noRd
+read_h5ad_sparse_array_base <- function(
+    hdf5_file,
+    name,
+    version = "0.1.0",
+    type = c("csr_matrix", "csc_matrix")
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
