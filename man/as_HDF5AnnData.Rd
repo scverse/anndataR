@@ -8,7 +8,8 @@ as_HDF5AnnData(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,10 @@ HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults 
 \item \code{w} creates a file, truncating any existing ones
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists
 }}
+
+\item{backed}{Whether the object is disk backed and returns
+\link[DelayedArray:DelayedArray-class]{DelayedArray::DelayedArray} object for matrix data. Can only be \code{TRUE}
+when \code{mode == "r"}.}
 }
 \value{
 An \code{\link{HDF5AnnData}} object with the same data as the input \code{AnnData}

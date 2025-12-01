@@ -106,6 +106,7 @@ Other AnnData classes:
   uns = NULL,
   shape = NULL,
   mode = c("a", "r", "r+", "w", "w-", "x"),
+  backed = FALSE,
   compression = c("none", "gzip", "lzf")
 )}\if{html}{\out{</div>}}
 }
@@ -139,6 +140,9 @@ both \code{X} or \code{obs} and \code{var} are not provided.}
 
 \item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for
 details}
+
+\item{\code{backed}}{Whether the object is disk backed. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}
+for details}
 
 \item{\code{compression}}{The compression algorithm to use. See
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
