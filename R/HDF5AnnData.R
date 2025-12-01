@@ -67,7 +67,11 @@ HDF5AnnData <- R6::R6Class(
     layers = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(private$.hdf5_file, "layers", backed = private$.backed) |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "layers",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("layers")
       } else {
         private$.check_mode_writeable()
@@ -91,7 +95,11 @@ HDF5AnnData <- R6::R6Class(
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.hdf5_file, "obsm", backed = private$.backed) |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "obsm",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("obsm")
       } else {
         private$.check_mode_writeable()
@@ -116,7 +124,11 @@ HDF5AnnData <- R6::R6Class(
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.hdf5_file, "varm", backed = private$.backed) |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "varm",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("varm")
       } else {
         private$.check_mode_writeable()
@@ -141,7 +153,11 @@ HDF5AnnData <- R6::R6Class(
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.hdf5_file, "obsp", backed = private$.backed) |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "obsp",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("obsp")
       } else {
         private$.check_mode_writeable()
@@ -165,7 +181,11 @@ HDF5AnnData <- R6::R6Class(
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.hdf5_file, "varp", backed = private$.backed) |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "varp",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("varp")
       } else {
         private$.check_mode_writeable()

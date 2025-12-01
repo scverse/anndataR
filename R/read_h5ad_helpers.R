@@ -87,7 +87,13 @@ read_h5ad_element <- function(
 
   tryCatch(
     {
-      read_fun(hdf5_file = hdf5_file, name = name, version = version, backed = backed, ...)
+      read_fun(
+        hdf5_file = hdf5_file,
+        name = name,
+        version = version,
+        backed = backed,
+        ...
+      )
     },
     error = function(e) {
       msg <- cli::cli_fmt(cli::cli_bullets(c(
@@ -134,7 +140,13 @@ read_h5ad_null <- function(hdf5_file, name, version = "0.1.0", ...) {
 #' @return a matrix/array or a DelayedArray if `backed = TRUE`
 #'
 #' @noRd
-read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.2.0", ...) {
+read_h5ad_dense_array <- function(
+  hdf5_file,
+  name,
+  backed = FALSE,
+  version = "0.2.0",
+  ...
+) {
   version <- match.arg(version)
 
   dataset_type <- hdf5_get_dataset_type(hdf5_file, name)
@@ -176,7 +188,12 @@ read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.
 #' @return a matrix/array
 #'
 #' @noRd
-read_h5ad_dense_array_base <- function(hdf5_file, name, version = "0.2.0", ...) {
+read_h5ad_dense_array_base <- function(
+  hdf5_file,
+  name,
+  version = "0.2.0",
+  ...
+) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
   data <- rhdf5::h5read(hdf5_file$handle, name, native = FALSE)
 
@@ -280,11 +297,11 @@ read_h5ad_sparse_array <- function(
 #'
 #' @noRd
 read_h5ad_sparse_array_base <- function(
-    hdf5_file,
-    name,
-    version = "0.1.0",
-    type = c("csr_matrix", "csc_matrix"),
-    ...
+  hdf5_file,
+  name,
+  version = "0.1.0",
+  type = c("csr_matrix", "csc_matrix"),
+  ...
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
@@ -369,7 +386,12 @@ read_h5ad_rec_array <- function(hdf5_file, name, version = "0.2.0", ...) {
 #' @return a boolean vector
 #'
 #' @noRd
-read_h5ad_nullable_boolean <- function(hdf5_file, name, version = "0.1.0", ...) {
+read_h5ad_nullable_boolean <- function(
+  hdf5_file,
+  name,
+  version = "0.1.0",
+  ...
+) {
   as.logical(read_h5ad_nullable(hdf5_file, name, version))
 }
 
@@ -385,7 +407,12 @@ read_h5ad_nullable_boolean <- function(hdf5_file, name, version = "0.1.0", ...) 
 #' @return an integer vector
 #'
 #' @noRd
-read_h5ad_nullable_integer <- function(hdf5_file, name, version = "0.1.0", ...) {
+read_h5ad_nullable_integer <- function(
+  hdf5_file,
+  name,
+  version = "0.1.0",
+  ...
+) {
   as.integer(read_h5ad_nullable(hdf5_file, name, version))
 }
 
@@ -545,7 +572,13 @@ read_h5ad_numeric_scalar <- function(hdf5_file, name, version = "0.2.0", ...) {
 #' @return a named list
 #'
 #' @noRd
-read_h5ad_mapping <- function(hdf5_file, name, version = "0.1.0", backed = FALSE, ...) {
+read_h5ad_mapping <- function(
+  hdf5_file,
+  name,
+  version = "0.1.0",
+  backed = FALSE,
+  ...
+) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -576,7 +609,13 @@ read_h5ad_mapping <- function(hdf5_file, name, version = "0.1.0", backed = FALSE
 #' @return a data.frame
 #'
 #' @noRd
-read_h5ad_data_frame <- function(hdf5_file, name, version = "0.2.0", backed = FALSE, ...) {
+read_h5ad_data_frame <- function(
+  hdf5_file,
+  name,
+  version = "0.2.0",
+  backed = FALSE,
+  ...
+) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -587,7 +626,13 @@ read_h5ad_data_frame <- function(hdf5_file, name, version = "0.2.0", backed = FA
 
   index <- read_h5ad_element(hdf5_file, file.path(name, index_name))
   # A data frame column should not be a DelayedArray so set backed = FALSE
-  data <- read_h5ad_collection(hdf5_file, name, column_order, backed = FALSE, ...)
+  data <- read_h5ad_collection(
+    hdf5_file,
+    name,
+    column_order,
+    backed = FALSE,
+    ...
+  )
 
   as.data.frame(
     row.names = index,
@@ -608,7 +653,13 @@ read_h5ad_data_frame <- function(hdf5_file, name, version = "0.2.0", backed = FA
 #' @return a named list
 #'
 #' @noRd
-read_h5ad_collection <- function(hdf5_file, name, item_names, backed = FALSE, ...) {
+read_h5ad_collection <- function(
+  hdf5_file,
+  name,
+  item_names,
+  backed = FALSE,
+  ...
+) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
   lapply(

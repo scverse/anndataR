@@ -36,14 +36,17 @@ HDF5File <- R6::R6Class(
     #'
     #' @param ... Optional arguments to format method
     format = function(...) {
-      status <- if (self$is_open) cli::col_green("OPEN") else cli::col_red("CLOSED")
+      status <- if (self$is_open) cli::col_green("OPEN") else
+        cli::col_red("CLOSED")
       readonly <- if (!is.null(self$is_readonly) && self$is_readonly) {
         paste0("(", cli::col_yellow("read-only"), ")")
       } else {
         ""
       }
       cli::cli_format_method({
-        cli::cli_text("{.cls HDF5File} {.file {self$path}} ({status}) {readonly}")
+        cli::cli_text(
+          "{.cls HDF5File} {.file {self$path}} ({status}) {readonly}"
+        )
       })
     },
     #' @description Open the HDF5 file handle if needed

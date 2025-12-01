@@ -158,7 +158,13 @@ write_h5ad_encoding <- function(hdf5_file, name, encoding, version) {
 #' @param version Encoding version of the element to write
 #'
 #' @noRd
-write_h5ad_null <- function(value, hdf5_file, name, compression, version = "0.1.0") {
+write_h5ad_null <- function(
+  value,
+  hdf5_file,
+  name,
+  compression,
+  version = "0.1.0"
+) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
   }
