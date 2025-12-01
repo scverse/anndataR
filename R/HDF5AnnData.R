@@ -21,6 +21,7 @@ HDF5AnnData <- R6::R6Class(
   private = list(
     .hdf5_file = NULL,
     .mode = NULL,
+    .backed = NULL,
     .compression = NULL,
 
     .check_mode_writeable = function() {
@@ -42,7 +43,7 @@ HDF5AnnData <- R6::R6Class(
     X = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.hdf5_file, "X") |>
+        read_h5ad_element(private$.hdf5_file, "X", backed = private$.backed) |>
           private$.add_matrix_dimnames("X")
       } else {
         private$.check_mode_writeable()
@@ -66,7 +67,7 @@ HDF5AnnData <- R6::R6Class(
     layers = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(private$.hdf5_file, "layers") |>
+        read_h5ad_element(private$.hdf5_file, "layers", backed = private$.backed) |>
           private$.add_mapping_dimnames("layers")
       } else {
         private$.check_mode_writeable()
@@ -90,7 +91,7 @@ HDF5AnnData <- R6::R6Class(
     obsm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.hdf5_file, "obsm") |>
+        read_h5ad_element(private$.hdf5_file, "obsm", backed = private$.backed) |>
           private$.add_mapping_dimnames("obsm")
       } else {
         private$.check_mode_writeable()
@@ -115,7 +116,7 @@ HDF5AnnData <- R6::R6Class(
     varm = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.hdf5_file, "varm") |>
+        read_h5ad_element(private$.hdf5_file, "varm", backed = private$.backed) |>
           private$.add_mapping_dimnames("varm")
       } else {
         private$.check_mode_writeable()
@@ -140,7 +141,7 @@ HDF5AnnData <- R6::R6Class(
     obsp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.hdf5_file, "obsp") |>
+        read_h5ad_element(private$.hdf5_file, "obsp", backed = private$.backed) |>
           private$.add_mapping_dimnames("obsp")
       } else {
         private$.check_mode_writeable()
@@ -164,7 +165,7 @@ HDF5AnnData <- R6::R6Class(
     varp = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.hdf5_file, "varp") |>
+        read_h5ad_element(private$.hdf5_file, "varp", backed = private$.backed) |>
           private$.add_mapping_dimnames("varp")
       } else {
         private$.check_mode_writeable()
@@ -188,7 +189,7 @@ HDF5AnnData <- R6::R6Class(
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_h5ad_element(private$.hdf5_file, "obs")
+        read_h5ad_element(private$.hdf5_file, "obs", backed = private$.backed)
       } else {
         private$.check_mode_writeable()
 
@@ -205,7 +206,7 @@ HDF5AnnData <- R6::R6Class(
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_h5ad_element(private$.hdf5_file, "var")
+        read_h5ad_element(private$.hdf5_file, "var", backed = private$.backed)
       } else {
         private$.check_mode_writeable()
 
@@ -246,7 +247,7 @@ HDF5AnnData <- R6::R6Class(
     uns = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
-        read_h5ad_element(private$.hdf5_file, "uns")
+        read_h5ad_element(private$.hdf5_file, "uns", backed = private$.backed)
       } else {
         private$.check_mode_writeable()
 
@@ -279,6 +280,8 @@ HDF5AnnData <- R6::R6Class(
     #'   both `X` or `obs` and `var` are not provided.
     #' @param mode The mode to open the HDF5 file. See [as_HDF5AnnData()] for
     #'   details
+    #' @param backed Whether the object is disk backed. See [as_HDF5AnnData()]
+    #'   for details
     #' @param compression The compression algorithm to use. See
     #'   [as_HDF5AnnData()] for details
     #'
@@ -300,6 +303,7 @@ HDF5AnnData <- R6::R6Class(
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
+      backed = FALSE,
       compression = c("none", "gzip", "lzf")
     ) {
       check_requires("HDF5AnnData", c("rhdf5", "HDF5Array"), where = "Bioc")
@@ -325,6 +329,17 @@ HDF5AnnData <- R6::R6Class(
           mode <- "w-"
         }
       }
+
+      if (backed && mode != "r") {
+        cli_warn(
+          paste(
+            "{.arg backed} can only be {.val TRUE} when {.arg mode} is {.val 'r'}.",
+            "Setting {.arg backed} to {.val FALSE}."
+          )
+        )
+        backed <- FALSE
+      }
+      private$.backed <- backed
 
       # Fail is the file does not exist and in read mode
       if (!file.exists(file) && mode %in% c("r", "r+")) {
@@ -472,6 +487,9 @@ HDF5AnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#' @param backed Whether the object is disk backed and returns
+#'   [DelayedArray::DelayedArray] object for matrix data. Can only be `TRUE`
+#'   when `mode == "r"`.
 #'
 #' @return An [`HDF5AnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -485,7 +503,8 @@ as_HDF5AnnData <- function(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -507,6 +526,7 @@ as_HDF5AnnData <- function(
     uns = adata$uns,
     shape = adata$shape(),
     mode = mode,
+    backed = backed,
     compression = compression
   )
 }

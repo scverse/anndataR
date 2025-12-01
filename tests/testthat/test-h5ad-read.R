@@ -18,3 +18,14 @@ test_that("reading H5AD as InMemoryAnnData works", {
   adata <- read_h5ad(file, as = "InMemoryAnnData", mode = "r")
   expect_equal(class(adata), c("InMemoryAnnData", "AbstractAnnData", "R6"))
 })
+
+test_that("reading H5AD as HDF5AnnData works", {
+  adata <- read_h5ad(file, as = "HDF5AnnData", mode = "r")
+  expect_equal(class(adata), c("HDF5AnnData", "AbstractAnnData", "R6"))
+})
+
+test_that("reading H5AD as backed HDF5AnnData works", {
+  adata <- read_h5ad(file, as = "HDF5AnnData", backed = TRUE)
+  expect_equal(class(adata), c("HDF5AnnData", "AbstractAnnData", "R6"))
+  expect_s4_class(adata$X, "DelayedMatrix")
+})

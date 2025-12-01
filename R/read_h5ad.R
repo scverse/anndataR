@@ -48,7 +48,7 @@ read_h5ad <- function(
   as <- match.arg(as)
   mode <- match.arg(mode)
 
-  hdf5_adata <- HDF5AnnData$new(path, mode = mode)
+  hdf5_adata <- HDF5AnnData$new(path, mode = mode, ...)
 
   if (as == "HDF5AnnData") {
     return(hdf5_adata)

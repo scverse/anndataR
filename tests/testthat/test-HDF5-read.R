@@ -22,6 +22,22 @@ test_that("reading dense matrices works", {
   expect_equal(dim(mat), c(50, 100))
 })
 
+test_that("reading backed dense matrices works", {
+  mat <- read_h5ad_dense_array(hdf5_file, "layers/dense_counts", backed = TRUE)
+  expect_s4_class(mat, "DelayedMatrix")
+  seed <- DelayedArray::seed(mat)
+  expect_identical(type(seed), "integer")
+  expect_false(DelayedArray::is_sparse(seed))
+  expect_equal(dim(mat), c(50, 100))
+
+  mat <- read_h5ad_dense_array(hdf5_file, "layers/dense_X", backed = TRUE)
+  expect_s4_class(mat, "DelayedMatrix")
+  seed <- DelayedArray::seed(mat)
+  expect_identical(type(seed), "double")
+  expect_false(DelayedArray::is_sparse(seed))
+  expect_equal(dim(mat), c(50, 100))
+})
+
 test_that("reading sparse matrices works", {
   mat <- read_h5ad_sparse_array(hdf5_file, "layers/csc_counts", type = "csc")
   expect_s4_class(mat, "dgCMatrix")
@@ -29,6 +45,34 @@ test_that("reading sparse matrices works", {
 
   mat <- read_h5ad_sparse_array(hdf5_file, "layers/counts", type = "csr")
   expect_s4_class(mat, "dgRMatrix")
+  expect_equal(dim(mat), c(50, 100))
+})
+
+test_that("reading backed sparse matries works", {
+  mat <- read_h5ad_sparse_array(
+    hdf5_file,
+    "layers/csc_counts",
+    type = "csc",
+    backed = TRUE
+  )
+  expect_s4_class(mat, "DelayedMatrix")
+  seed <- DelayedArray::seed(mat)
+  expect_s4_class(seed, "CSR_H5SparseMatrixSeed")
+  expect_identical(type(seed), "double")
+  expect_true(DelayedArray::is_sparse(seed))
+  expect_equal(dim(mat), c(50, 100))
+
+  mat <- read_h5ad_sparse_array(
+    hdf5_file,
+    "layers/counts",
+    type = "csr",
+    backed = TRUE
+  )
+  expect_s4_class(mat, "DelayedMatrix")
+  seed <- DelayedArray::seed(mat)
+  expect_s4_class(seed, "CSC_H5SparseMatrixSeed")
+  expect_identical(type(seed), "double")
+  expect_true(DelayedArray::is_sparse(seed))
   expect_equal(dim(mat), c(50, 100))
 })
 

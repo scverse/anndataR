@@ -36,6 +36,7 @@ read_h5ad_encoding <- function(hdf5_file, name) {
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
 #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param backed Whether to return a DelayedArray for array/matrix types
 #' @param ... Extra arguments passed to individual reading functions
 #'
 #' @details
@@ -51,6 +52,7 @@ read_h5ad_element <- function(
   type = NULL,
   version = NULL,
   stop_on_error = FALSE,
+  backed = FALSE,
   ...
 ) {
   if (!hdf5_path_exists(hdf5_file, name)) {
@@ -85,7 +87,7 @@ read_h5ad_element <- function(
 
   tryCatch(
     {
-      read_fun(hdf5_file = hdf5_file, name = name, version = version, ...)
+      read_fun(hdf5_file = hdf5_file, name = name, version = version, backed = backed, ...)
     },
     error = function(e) {
       msg <- cli::cli_fmt(cli::cli_bullets(c(
@@ -109,10 +111,11 @@ read_h5ad_element <- function(
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return `NULL`
 #' @noRd
-read_h5ad_null <- function(hdf5_file, name, version = "0.1.0") {
+read_h5ad_null <- function(hdf5_file, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   NULL
@@ -126,11 +129,12 @@ read_h5ad_null <- function(hdf5_file, name, version = "0.1.0") {
 #' @param name Name of the element within the H5AD file
 #' @param backed Whether to return a DelayedArray
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a matrix/array or a DelayedArray if `backed = TRUE`
 #'
 #' @noRd
-read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.2.0") {
+read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   dataset_type <- hdf5_get_dataset_type(hdf5_file, name)
@@ -167,11 +171,12 @@ read_h5ad_dense_array <- function(hdf5_file, name, backed = FALSE, version = "0.
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a matrix/array
 #'
 #' @noRd
-read_h5ad_dense_array_base <- function(hdf5_file, name, version = "0.2.0") {
+read_h5ad_dense_array_base <- function(hdf5_file, name, version = "0.2.0", ...) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
   data <- rhdf5::h5read(hdf5_file$handle, name, native = FALSE)
 
@@ -198,19 +203,21 @@ read_h5ad_dense_array_base <- function(hdf5_file, name, version = "0.2.0") {
   data
 }
 
-read_h5ad_csr_matrix <- function(hdf5_file, name, version) {
+read_h5ad_csr_matrix <- function(hdf5_file, name, version, backed, ...) {
   read_h5ad_sparse_array(
     hdf5_file = hdf5_file,
     name = name,
+    backed = backed,
     version = version,
     type = "csr_matrix"
   )
 }
 
-read_h5ad_csc_matrix <- function(hdf5_file, name, version) {
+read_h5ad_csc_matrix <- function(hdf5_file, name, version, backed, ...) {
   read_h5ad_sparse_array(
     hdf5_file = hdf5_file,
     name = name,
+    backed = backed,
     version = version,
     type = "csc_matrix"
   )
@@ -225,6 +232,7 @@ read_h5ad_csc_matrix <- function(hdf5_file, name, version) {
 #' @param backed Whether to return a DelayedArray
 #' @param version Encoding version of the element to read
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a sparse matrix/array or a DelayedArray if `backed = TRUE`
 #' @importFrom Matrix sparseMatrix
@@ -235,7 +243,8 @@ read_h5ad_sparse_array <- function(
   name,
   backed = FALSE,
   version = "0.1.0",
-  type = c("csr_matrix", "csc_matrix")
+  type = c("csr_matrix", "csc_matrix"),
+  ...
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
@@ -264,6 +273,7 @@ read_h5ad_sparse_array <- function(
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a sparse matrix
 #' @importFrom Matrix sparseMatrix
@@ -273,7 +283,8 @@ read_h5ad_sparse_array_base <- function(
     hdf5_file,
     name,
     version = "0.1.0",
-    type = c("csr_matrix", "csc_matrix")
+    type = c("csr_matrix", "csc_matrix"),
+    ...
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
@@ -319,6 +330,7 @@ read_h5ad_sparse_array_base <- function(
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @details
 #' A "record array" (recarray) is a Python NumPy array type that contains
@@ -331,7 +343,7 @@ read_h5ad_sparse_array_base <- function(
 #' @return a named list of 1D arrays
 #'
 #' @noRd
-read_h5ad_rec_array <- function(hdf5_file, name, version = "0.2.0") {
+read_h5ad_rec_array <- function(hdf5_file, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -352,11 +364,12 @@ read_h5ad_rec_array <- function(hdf5_file, name, version = "0.2.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a boolean vector
 #'
 #' @noRd
-read_h5ad_nullable_boolean <- function(hdf5_file, name, version = "0.1.0") {
+read_h5ad_nullable_boolean <- function(hdf5_file, name, version = "0.1.0", ...) {
   as.logical(read_h5ad_nullable(hdf5_file, name, version))
 }
 
@@ -367,11 +380,12 @@ read_h5ad_nullable_boolean <- function(hdf5_file, name, version = "0.1.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return an integer vector
 #'
 #' @noRd
-read_h5ad_nullable_integer <- function(hdf5_file, name, version = "0.1.0") {
+read_h5ad_nullable_integer <- function(hdf5_file, name, version = "0.1.0", ...) {
   as.integer(read_h5ad_nullable(hdf5_file, name, version))
 }
 
@@ -382,11 +396,12 @@ read_h5ad_nullable_integer <- function(hdf5_file, name, version = "0.1.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a nullable vector
 #'
 #' @noRd
-read_h5ad_nullable <- function(hdf5_file, name, version = "0.1.0") {
+read_h5ad_nullable <- function(hdf5_file, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -409,11 +424,12 @@ read_h5ad_nullable <- function(hdf5_file, name, version = "0.1.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a character vector/matrix
 #'
 #' @noRd
-read_h5ad_string_array <- function(hdf5_file, name, version = "0.2.0") {
+read_h5ad_string_array <- function(hdf5_file, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -442,11 +458,12 @@ read_h5ad_string_array <- function(hdf5_file, name, version = "0.2.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a factor
 #'
 #' @noRd
-read_h5ad_categorical <- function(hdf5_file, name, version = "0.2.0") {
+read_h5ad_categorical <- function(hdf5_file, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -476,11 +493,12 @@ read_h5ad_categorical <- function(hdf5_file, name, version = "0.2.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a character vector of length 1
 #'
 #' @noRd
-read_h5ad_string_scalar <- function(hdf5_file, name, version = "0.2.0") {
+read_h5ad_string_scalar <- function(hdf5_file, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -495,11 +513,12 @@ read_h5ad_string_scalar <- function(hdf5_file, name, version = "0.2.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a numeric vector of length 1
 #'
 #' @noRd
-read_h5ad_numeric_scalar <- function(hdf5_file, name, version = "0.2.0") {
+read_h5ad_numeric_scalar <- function(hdf5_file, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -520,11 +539,13 @@ read_h5ad_numeric_scalar <- function(hdf5_file, name, version = "0.2.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param backed Whether to return DelayedArrays for array/matrix types
+#' @param ... Extra arguments for other reading functions
 #'
 #' @return a named list
 #'
 #' @noRd
-read_h5ad_mapping <- function(hdf5_file, name, version = "0.1.0") {
+read_h5ad_mapping <- function(hdf5_file, name, version = "0.1.0", backed = FALSE, ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -533,7 +554,7 @@ read_h5ad_mapping <- function(hdf5_file, name, version = "0.1.0") {
   items <- rhdf5::h5ls(h5group, recursive = FALSE)$name
   rhdf5::H5Gclose(h5group)
 
-  read_h5ad_collection(hdf5_file, name, items)
+  read_h5ad_collection(hdf5_file, name, items, backed = backed, ...)
 }
 
 #' Read H5AD data frame
@@ -543,11 +564,19 @@ read_h5ad_mapping <- function(hdf5_file, name, version = "0.1.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param version Encoding version of the element to read
+#' @param backed Whether to return DelayedArrays for array/matrix types (always
+#' `FALSE`)
+#' @param ... Extra arguments for other reading functions
+#'
+#' @details
+#' The `backed` argument is included to avoid `backed` being passed via `...`
+#' and is always overwritten to `FALSE` since data frame columns should not be
+#' DelayedArrays.
 #'
 #' @return a data.frame
 #'
 #' @noRd
-read_h5ad_data_frame <- function(hdf5_file, name, version = "0.2.0") {
+read_h5ad_data_frame <- function(hdf5_file, name, version = "0.2.0", backed = FALSE, ...) {
   version <- match.arg(version)
 
   hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -557,7 +586,8 @@ read_h5ad_data_frame <- function(hdf5_file, name, version = "0.2.0") {
   column_order <- attrs[["column-order"]]
 
   index <- read_h5ad_element(hdf5_file, file.path(name, index_name))
-  data <- read_h5ad_collection(hdf5_file, name, column_order)
+  # A data frame column should not be a DelayedArray so set backed = FALSE
+  data <- read_h5ad_collection(hdf5_file, name, column_order, backed = FALSE, ...)
 
   as.data.frame(
     row.names = index,
@@ -572,11 +602,13 @@ read_h5ad_data_frame <- function(hdf5_file, name, version = "0.2.0") {
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param item_names Vector of item names (in order)
+#' @param backed Whether to return DelayedArrays for array/matrix types
+#' @param ... Extra arguments for other reading functions
 #'
 #' @return a named list
 #'
 #' @noRd
-read_h5ad_collection <- function(hdf5_file, name, item_names) {
+read_h5ad_collection <- function(hdf5_file, name, item_names, backed = FALSE, ...) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
   lapply(
@@ -588,7 +620,9 @@ read_h5ad_collection <- function(hdf5_file, name, item_names) {
         hdf5_file = hdf5_file,
         name = new_name,
         type = encoding$type,
-        version = encoding$version
+        version = encoding$version,
+        backed = backed,
+        ...
       )
     }
   ) |>
