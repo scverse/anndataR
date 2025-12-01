@@ -302,7 +302,7 @@ HDF5AnnData <- R6::R6Class(
       mode = c("a", "r", "r+", "w", "w-", "x"),
       compression = c("none", "gzip", "lzf")
     ) {
-      check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
+      check_requires("HDF5AnnData", c("rhdf5", "HDF5Array"), where = "Bioc")
       check_requires("HDF5AnnData", "withr", where = "CRAN")
 
       compression <- match.arg(compression)
