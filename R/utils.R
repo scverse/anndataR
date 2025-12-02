@@ -65,7 +65,11 @@ to_py_matrix <- function(mat) {
 }
 
 # nolint start: object_name_linter
-to_R_matrix <- function(mat) {
+to_R_matrix <- function(mat, allow_backed = TRUE) {
+  if (inherits(mat, "DelayedMatrix") && isFALSE(allow_backed)) {
+    mat <- as(mat, "CsparseMatrix")
+  }
+
   # nolint end: object_name_linter
   if (inherits(mat, "dgRMatrix")) {
     mat <- as(mat, "CsparseMatrix")

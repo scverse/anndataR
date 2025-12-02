@@ -36,3 +36,10 @@ test_that("reading H5AD as backed SingleCellExperiment works", {
   sce <- read_h5ad(file, as = "SingleCellExperiment", backed = TRUE)
   expect_s4_class(sce, "SingleCellExperiment")
 })
+
+test_that("reading H5AD as backed Seurat works", {
+  skip_if_not_installed("SeuratObject")
+
+  sce <- read_h5ad(file, as = "Seurat", backed = TRUE)
+  expect_s4_class(sce, "Seurat")
+})
