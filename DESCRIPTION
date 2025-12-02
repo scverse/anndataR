@@ -18,7 +18,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-5949-2191", github = "bschilder")),
     person("Chananchida", "Sang-aram", role = "ctb",
            comment = c(ORCID = "0000-0002-0922-0822", github = "csangara")),
-    person("Data Intuitive", , , "info@data-intuitive.com", role = c("fnd", "cph")),
+    person("Data Intuitive", , , "info@data-intuitive.com", role = "fnd"),
     person("Chan Zuckerberg Initiative", role = "fnd"),
     person("scverse consortium", role = "spn")
   )
