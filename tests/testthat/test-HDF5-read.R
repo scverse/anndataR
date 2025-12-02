@@ -59,7 +59,7 @@ test_that("reading backed sparse matries works", {
   expect_s4_class(mat, "DelayedMatrix")
   seed <- DelayedArray::seed(mat)
   expect_s4_class(seed, "CSR_H5SparseMatrixSeed")
-  expect_identical(type(seed), "double")
+  expect_identical(DelayedArray::type(seed), "double")
   expect_true(DelayedArray::is_sparse(seed))
   expect_equal(dim(mat), c(50, 100))
 
@@ -72,7 +72,7 @@ test_that("reading backed sparse matries works", {
   expect_s4_class(mat, "DelayedMatrix")
   seed <- DelayedArray::seed(mat)
   expect_s4_class(seed, "CSC_H5SparseMatrixSeed")
-  expect_identical(type(seed), "double")
+  expect_identical(DelayedArray::type(seed), "double")
   expect_true(DelayedArray::is_sparse(seed))
   expect_equal(dim(mat), c(50, 100))
 })
