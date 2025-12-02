@@ -1,4 +1,5 @@
 skip_if_not_installed("rhdf5")
+skip_if_not_installed("HDF5Array")
 
 requireNamespace("vctrs")
 

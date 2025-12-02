@@ -263,6 +263,7 @@ test_that("S3 method [.AbstractAnnData error handling works", {
 
 test_that("S3 methods work with HDF5AnnData", {
   skip_if_not_installed("rhdf5")
+  skip_if_not_installed("HDF5Array")
 
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
   ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")
@@ -349,6 +350,7 @@ test_that("S3 methods integration: setting names and subsetting", {
 
 test_that("S3 methods are consistent across different backends", {
   skip_if_not_installed("rhdf5")
+  skip_if_not_installed("HDF5Array")
 
   # Create InMemoryAnnData
   mem_ad <- generate_dataset(n_obs = 10, n_vars = 5, format = "AnnData")

@@ -1,4 +1,5 @@
 skip_if_not_installed("rhdf5")
+skip_if_not_installed("HDF5Array")
 
 requireNamespace("vctrs")
 
@@ -26,14 +27,14 @@ test_that("reading backed dense matrices works", {
   mat <- read_h5ad_dense_array(hdf5_file, "layers/dense_counts", backed = TRUE)
   expect_s4_class(mat, "DelayedMatrix")
   seed <- DelayedArray::seed(mat)
-  expect_identical(type(seed), "integer")
+  expect_identical(DelayedArray::type(seed), "integer")
   expect_false(DelayedArray::is_sparse(seed))
   expect_equal(dim(mat), c(50, 100))
 
   mat <- read_h5ad_dense_array(hdf5_file, "layers/dense_X", backed = TRUE)
   expect_s4_class(mat, "DelayedMatrix")
   seed <- DelayedArray::seed(mat)
-  expect_identical(type(seed), "double")
+  expect_identical(DelayedArray::type(seed), "double")
   expect_false(DelayedArray::is_sparse(seed))
   expect_equal(dim(mat), c(50, 100))
 })
