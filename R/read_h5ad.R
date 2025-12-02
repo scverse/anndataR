@@ -19,6 +19,9 @@
 #'   * `r+` opens an existing file for read/write.
 #'   * `w` creates a file, truncating any existing ones.
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
+#' @param backed Whether to read the H5AD file in backed mode, returning an
+#'  object containing [DelayedArray::DelayedMatrix] matrices. Only applicable
+#'  for some values of `as`.
 #' @param ... Extra arguments provided to the `as_*` conversion function for the
 #'   object specified by `as`
 #'
@@ -43,12 +46,13 @@ read_h5ad <- function(
   path,
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
+  backed = FALSE,
   ...
 ) {
   as <- match.arg(as)
   mode <- match.arg(mode)
 
-  hdf5_adata <- HDF5AnnData$new(path, mode = mode, ...)
+  hdf5_adata <- HDF5AnnData$new(path, mode = mode, backed = backed)
 
   if (as == "HDF5AnnData") {
     return(hdf5_adata)

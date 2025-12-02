@@ -69,9 +69,8 @@ to_R_matrix <- function(mat) {
   # nolint end: object_name_linter
   if (inherits(mat, "dgRMatrix")) {
     mat <- as(mat, "CsparseMatrix")
-  } else if (!inherits(mat, "dgCMatrix")) {
-    mat <- as.matrix(mat)
   }
+
   Matrix::t(mat)
 }
 

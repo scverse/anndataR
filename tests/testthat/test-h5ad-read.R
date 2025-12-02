@@ -29,3 +29,10 @@ test_that("reading H5AD as backed HDF5AnnData works", {
   expect_equal(class(adata), c("HDF5AnnData", "AbstractAnnData", "R6"))
   expect_s4_class(adata$X, "DelayedMatrix")
 })
+
+test_that("reading H5AD as backed SingleCellExperiment works", {
+  skip_if_not_installed("SingleCellExperiment")
+
+  sce <- read_h5ad(file, as = "SingleCellExperiment", backed = TRUE)
+  expect_s4_class(sce, "SingleCellExperiment")
+})
