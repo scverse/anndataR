@@ -195,8 +195,8 @@ check_dims_and_skip <- function(
       call = NULL
     )
 
-    return(NULL)
+    NULL
   } else {
-    return(x)
+    x
   }
 }
