@@ -231,7 +231,7 @@ HDF5AnnData <- R6::R6Class(
         read_h5ad_element_keys(private$.h5obj, "obs", dim = "rows")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
-        rownames(self$obs) <- value
+        write_h5ad_data_frame_index(value, private$.h5obj, "obs", private$.compression)
       }
     },
     #' @field var_names See [AnnData-usage]
@@ -243,7 +243,7 @@ HDF5AnnData <- R6::R6Class(
         read_h5ad_element_keys(private$.h5obj, "var", dim = "rows")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
-        rownames(self$var) <- value
+        write_h5ad_data_frame_index(value, private$.h5obj, "var", private$.compression)
       }
     },
     #' @field uns See [AnnData-usage]
