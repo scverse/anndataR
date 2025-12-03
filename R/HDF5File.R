@@ -85,7 +85,7 @@ HDF5File <- R6::R6Class(
     #' @description Close the HDF5 file handle if needed
     #'
     #' @return `TRUE` if the handle was successfully closed (invisibly)
-    close = function(readonly = FALSE) {
+    close = function() {
       if (!self$is_open && !private$.handle_is_valid()) {
         return(invisible(TRUE))
       }
