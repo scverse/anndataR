@@ -483,6 +483,6 @@ as_SingleCellExperiment <- function(
       }
     }
 
-    adata[[slot]][[.item]]
+    mat
   })
 }
