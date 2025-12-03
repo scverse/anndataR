@@ -36,8 +36,8 @@ read_h5ad(
 }}
 
 \item{backed}{Whether to read the H5AD file in backed mode, returning an
-object containing \link[DelayedArray:DelayedArray-class]{DelayedArray::DelayedMatrix} matrices. Only applicable
-for some values of \code{as}.}
+object containing \link[DelayedArray:DelayedArray-class]{DelayedArray::DelayedMatrix} matrices. Which slots are
+backed depends on the value of \code{as}.}
 
 \item{...}{Extra arguments provided to the \verb{as_*} conversion function for the
 object specified by \code{as}}

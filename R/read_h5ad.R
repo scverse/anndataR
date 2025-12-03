@@ -20,8 +20,8 @@
 #'   * `w` creates a file, truncating any existing ones.
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
 #' @param backed Whether to read the H5AD file in backed mode, returning an
-#'  object containing [DelayedArray::DelayedMatrix] matrices. Only applicable
-#'  for some values of `as`.
+#'  object containing [DelayedArray::DelayedMatrix] matrices. Which slots are
+#'  backed depends on the value of `as`.
 #' @param ... Extra arguments provided to the `as_*` conversion function for the
 #'   object specified by `as`
 #'
