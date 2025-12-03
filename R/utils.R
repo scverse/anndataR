@@ -67,7 +67,14 @@ to_py_matrix <- function(mat) {
 # nolint start: object_name_linter
 to_R_matrix <- function(mat, allow_backed = TRUE) {
   if (inherits(mat, "DelayedMatrix") && isFALSE(allow_backed)) {
-    mat <- as(mat, "CsparseMatrix")
+    seed <- DelayedArray::seed(mat)
+    if (inherits(seed, "CSC_H5SparseMatrixSeed")) {
+      mat <- as(mat, "CsparseMatrix")
+    } else if (inherits(seed, "CSR_H5SparseMatrixSeed")) {
+      mat <- as(mat, "RsparseMatrix")
+    } else {
+      mat <- as.matrix(mat)
+    }
   }
 
   # nolint end: object_name_linter
