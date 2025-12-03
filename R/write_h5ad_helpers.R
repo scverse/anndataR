@@ -704,11 +704,11 @@ write_h5ad_data_frame <- function(
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_data_frame_index <- function(
-    index_value,
-    file,
-    name,
-    compression,
-    version = "0.2.0"
+  index_value,
+  file,
+  name,
+  compression,
+  version = "0.2.0"
 ) {
   attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
   index_name <- attrs[["_index"]]

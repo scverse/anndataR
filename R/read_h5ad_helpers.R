@@ -120,12 +120,12 @@ read_h5ad_element <- function(
 #'
 #' @noRd
 read_h5ad_element_keys <- function(
-    file,
-    name,
-    type = NULL,
-    version = NULL,
-    stop_on_error = FALSE,
-    ...
+  file,
+  name,
+  type = NULL,
+  version = NULL,
+  stop_on_error = FALSE,
+  ...
 ) {
   if (!hdf5_path_exists(file, name)) {
     return(NULL)
@@ -152,7 +152,9 @@ read_h5ad_element_keys <- function(
     },
     error = function(e) {
       msg <- cli::cli_fmt(cli::cli_bullets(c(
-        paste0("Error reading element keys for {.field {name}} of type {.cls {type}}"),
+        paste0(
+          "Error reading element keys for {.field {name}} of type {.cls {type}}"
+        ),
         "i" = conditionMessage(e)
       )))
       if (stop_on_error) {
@@ -553,7 +555,12 @@ read_h5ad_data_frame <- function(file, name, version = "0.2.0") {
 #' elements "rows" and "cols" if dim is "both"
 #'
 #' @noRd
-read_h5ad_data_frame_keys <- function(file, name, version = "0.2.0", dim = c("both", "rows", "cols")) {
+read_h5ad_data_frame_keys <- function(
+  file,
+  name,
+  version = "0.2.0",
+  dim = c("both", "rows", "cols")
+) {
   version <- match.arg(version)
   dim <- match.arg(dim)
 
