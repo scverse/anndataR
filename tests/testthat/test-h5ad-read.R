@@ -63,15 +63,24 @@ test_that("reading H5AD as backed SingleCellExperiment works", {
   expect_s4_class(sce, "SingleCellExperiment")
 
   for (assay_name in SummarizedExperiment::assayNames(sce)) {
-    expect_s4_class(SummarizedExperiment::assay(sce, assay_name), "DelayedArray")
+    expect_s4_class(
+      SummarizedExperiment::assay(sce, assay_name),
+      "DelayedArray"
+    )
   }
 
   for (reduced_dim_name in SingleCellExperiment::reducedDimNames(sce)) {
     reduced_dim <- SingleCellExperiment::reducedDim(sce, reduced_dim_name)
 
     if (inherits(reduced_dim, "LinearEmbeddingMatrix")) {
-      expect_s4_class(SingleCellExperiment::sampleFactors(reduced_dim), "DelayedArray")
-      expect_s4_class(SingleCellExperiment::featureLoadings(reduced_dim), "DelayedArray")
+      expect_s4_class(
+        SingleCellExperiment::sampleFactors(reduced_dim),
+        "DelayedArray"
+      )
+      expect_s4_class(
+        SingleCellExperiment::featureLoadings(reduced_dim),
+        "DelayedArray"
+      )
     } else {
       expect_s4_class(reduced_dim, "DelayedArray")
     }
@@ -79,12 +88,18 @@ test_that("reading H5AD as backed SingleCellExperiment works", {
 
   for (row_pair_name in SingleCellExperiment::rowPairNames(sce)) {
     # SingleCellExperiment does not support DelayedArray for rowPairs
-    expect_s4_class(SingleCellExperiment::rowPair(sce, row_pair_name), "SelfHits")
+    expect_s4_class(
+      SingleCellExperiment::rowPair(sce, row_pair_name),
+      "SelfHits"
+    )
   }
 
   for (col_pair_name in SingleCellExperiment::colPairNames(sce)) {
     # SingleCellExperiment does not support DelayedArray for colPairs
-    expect_s4_class(SingleCellExperiment::colPair(sce, col_pair_name), "SelfHits")
+    expect_s4_class(
+      SingleCellExperiment::colPair(sce, col_pair_name),
+      "SelfHits"
+    )
   }
 })
 
