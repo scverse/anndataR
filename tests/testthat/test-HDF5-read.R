@@ -49,7 +49,7 @@ test_that("reading sparse matrices works", {
   expect_equal(dim(mat), c(50, 100))
 })
 
-test_that("reading backed sparse matries works", {
+test_that("reading backed sparse matrices works", {
   mat <- read_h5ad_sparse_array(
     hdf5_file,
     "layers/csc_counts",

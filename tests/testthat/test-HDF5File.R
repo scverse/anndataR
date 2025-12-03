@@ -3,7 +3,7 @@ skip_if_not_installed("HDF5Array")
 
 file <- system.file("extdata", "example.h5ad", package = "anndataR")
 
-test_that("creating an HDF5File workds", {
+test_that("creating an HDF5File works", {
   h5file <- HDF5File$new(file)
   expect_r6_class(h5file, "HDF5File")
 })
