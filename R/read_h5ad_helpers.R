@@ -564,12 +564,12 @@ read_h5ad_data_frame_keys <- function(file, name, version = "0.2.0", dim = c("bo
   if (dim == "both") {
     list(
       rows = as.character(read_h5ad_element(file, file.path(name, index_name))),
-      cols = column_order
+      cols = as.character(column_order)
     )
   } else if (dim == "rows") {
     as.character(read_h5ad_element(file, file.path(name, index_name)))
   } else if (dim == "cols") {
-    column_order
+    as.character(column_order)
   }
 }
 
