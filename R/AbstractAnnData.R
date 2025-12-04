@@ -375,16 +375,6 @@ AbstractAnnData <- R6::R6Class(
         rownames(mat) <- NULL
       }
 
-      if (warn_rownames && !is.data.frame(mat) && has_row_names(mat)) {
-        cli_warn(
-          c(
-            "Row names for {.field {label}} can not be written to {.obj_type_friendly {self}}",
-            "i" = "To write row names, store as a {.cls data.frame} instead of {.obj_type_friendly {mat}}"
-          ),
-          call = rlang::caller_env()
-        )
-      }
-
       if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
           cli_abort(
@@ -403,15 +393,13 @@ AbstractAnnData <- R6::R6Class(
         colnames(mat) <- NULL
       }
 
-      if (warn_colnames && !is.data.frame(mat) && !is.null(colnames(mat))) {
-        cli_warn(
-          c(
-            "Column names for {.field {label}} can not be written to {.obj_type_friendly {self}}",
-            "i" = "To write column names, store as a {.cls data.frame} instead of {.obj_type_friendly {mat}}"
-          ),
-          call = rlang::caller_env(4)
-        )
-      }
+      warn_matrix_dimnames_not_writeable(
+        mat,
+        label,
+        to_object = self,
+        rows = warn_rownames,
+        cols = warn_colnames
+      )
 
       mat
     },
