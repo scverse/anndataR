@@ -2,7 +2,8 @@
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![R-CMD-check](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check-bioc](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check-bioc.yaml/badge.svg)](https://github.com/scverse/anndataR/actions/workflows/R-CMD-check-bioc.yaml)
+[![Codecov test coverage](https://codecov.io/gh/scverse/anndataR/graph/badge.svg)](https://app.codecov.io/gh/scverse/anndataR)
 [![Bioc release status](http://www.bioconductor.org/shields/build/release/bioc/anndataR.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/anndataR)
 [![Bioc devel status](http://www.bioconductor.org/shields/build/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR)
 [![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/anndataR.svg)](http://bioconductor.org/packages/stats/bioc/anndataR/)
@@ -77,11 +78,11 @@ Take note that you need all suggested dependencies available, and that building 
   `vignette("anndataR", package = "anndataR")`
 - [**Read/write `Seurat` objects**](https://anndatar.data-intuitive.com/articles/usage_seurat.html): How to convert between `AnnData` and `Seurat` objects.  
   `vignette("usage_seurat", package = "anndataR")`
-- [**Read/write `SingleCellExperiment` objects**](https://anndatar.data-intuitive.com/articles/usage_singlecellexperiment.html): How to convert between `AnnData` and `SingleCellExperiment` objects 
+- [**Read/write `SingleCellExperiment` objects**](https://anndatar.data-intuitive.com/articles/usage_singlecellexperiment.html): How to convert between `AnnData` and `SingleCellExperiment` objects  
   `vignette("usage_singlecellexperiment", package = "anndataR")`
 - [**Software Design**](https://anndatar.data-intuitive.com/articles/software_design.html): An overview of the design of the package
 - [**Development Status**](https://anndatar.data-intuitive.com/articles/development_status.html): An overview of the development status of the package
-  
+
 ## Citing **{anndataR}**
 
 If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
