@@ -269,3 +269,50 @@ test_that("write_h5ad() gives consistent hashes", {
 
   expect_identical(hash1, hash2)
 })
+
+test_that("write_h5ad() warns about not writing matrix dim names", {
+  dummy <- generate_dataset(100, 200, example = TRUE, format = "AnnData")
+  file <- withr::local_file(tempfile(fileext = ".h5ad"))
+
+  dummy$obsm$test <- dummy$obsm$numeric_dense
+  colnames(dummy$obsm$test) <- paste0("Test", seq_len(ncol(dummy$obsm$test)))
+
+  expect_warning(
+    write_h5ad(dummy, file, mode = "w"),
+    "Matrix column names cannot be written"
+  )
+
+  dummy$obsm$test <- dummy$obsm$numeric_csparse
+  colnames(dummy$obsm$test) <- paste0("Test", seq_len(ncol(dummy$obsm$test)))
+
+  expect_warning(
+    write_h5ad(dummy, file, mode = "w"),
+    "Matrix column names cannot be written"
+  )
+
+  dummy$obsm$test <- NULL
+  dummy$varm$test <- dummy$varm$numeric_dense
+  colnames(dummy$varm$test) <- paste0("Test", seq_len(ncol(dummy$varm$test)))
+
+  expect_warning(
+    write_h5ad(dummy, file, mode = "w"),
+    "Matrix column names cannot be written"
+  )
+
+  dummy$varm$test <- dummy$varm$numeric_csparse
+  colnames(dummy$varm$test) <- paste0("Test", seq_len(ncol(dummy$varm$test)))
+
+  expect_warning(
+    write_h5ad(dummy, file, mode = "w"),
+    "Matrix column names cannot be written"
+  )
+
+  dummy$varm$test <- NULL
+  dummy$uns$test <- dummy$uns$mat_numeric_matrix
+  rownames(dummy$uns$test) <- paste0("Test", seq_len(nrow(dummy$uns$test)))
+  colnames(dummy$uns$test) <- paste0("Test", seq_len(ncol(dummy$uns$test)))
+
+  write_h5ad(dummy, file, mode = "w") |>
+    expect_warning("Matrix row names cannot be written") |>
+    expect_warning("Matrix column names cannot be written")
+})
