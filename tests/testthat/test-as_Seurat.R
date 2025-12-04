@@ -179,3 +179,12 @@ test_that("as_Seurat works with unnamed mappings", {
     )
   )
 })
+
+test_that("as_Seurat works with a 0 dim AnnData", {
+  adata <- AnnData(X = as(matrix(nrow = 10, ncol = 0), "dgCMatrix"))
+
+  expect_error(
+    adata$as_Seurat(layers_mapping = c(counts = NA)),
+    "must have non-zero dimensions"
+  )
+})
