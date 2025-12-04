@@ -106,7 +106,8 @@ HDF5AnnData <- R6::R6Class(
           c(self$n_obs()),
           expected_rownames = self$obs_names,
           strip_rownames = TRUE,
-          strip_colnames = FALSE
+          strip_colnames = FALSE,
+          warn_colnames = TRUE
         ) |>
           write_h5ad_element(
             private$.h5obj,
@@ -131,7 +132,8 @@ HDF5AnnData <- R6::R6Class(
           c(self$n_vars()),
           expected_rownames = self$var_names,
           strip_rownames = TRUE,
-          strip_colnames = FALSE
+          strip_colnames = FALSE,
+          warn_colnames = TRUE
         ) |>
           write_h5ad_element(
             private$.h5obj,
