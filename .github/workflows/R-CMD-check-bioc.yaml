@@ -1,0 +1,119 @@
+# Based on workflows from https://github.com/Huber-group-EMBL/rhdf5
+# Uses steps from https://github.com/grimbough/bioc-actions
+on:
+  push:
+    branches:
+      - devel
+  pull_request:
+
+name: R-CMD-check-bioc
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+
+jobs:
+  R-CMD-check-bioc:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.bioc-version }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 2}
+        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 3}
+        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 3}
+        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 4}
+        - { os: ubuntu-latest,  bioc-version: 'release',  bioc-mirror: 'https://packagemanager.posit.co/bioconductor',  Ncpus: 4}
+    steps:
+
+      ## R CMD check complains about Windows line endings without this
+      - name: Configure git
+        run: |
+          git config --global core.autocrlf false
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install hdf5-tools libsz2 libaec-dev
+
+      - name: Setup R and Bioconductor
+        uses: grimbough/bioc-actions/setup-bioc@v1
+        with:
+          bioc-version: ${{ matrix.config.bioc-version }}
+          bioc-mirror: ${{ matrix.config.bioc-mirror }}
+
+      - name: Set paths
+        id: set-paths
+        run: |
+          current_dir <- getwd()
+          cat("Current dir:", normalizePath(current_dir), "\n")
+
+          sep <- ifelse(.Platform$OS.type == "windows", "\\\\", "/")
+
+          pkg_name <- basename(current_dir)
+          cat("Package name:", pkg_name, "\n")
+          cat("pkg-name=", pkg_name, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+
+          working_dir <- ".."
+          working_dir_norm <- normalizePath(working_dir)
+          cat("Working dir:", working_dir_norm, "\n")
+          cat("working-dir=", working_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+
+          pkg_dir <- file.path(working_dir, pkg_name)
+          pkg_dir_norm <- normalizePath(pkg_dir)
+          cat("Package dir:", pkg_dir_norm, "\n")
+          cat("pkg-dir=", pkg_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+
+          # Handle different behavior of normalizePath on Windows
+          check_dir <- if (.Platform$OS.type == "windows") {
+            paste0(pkg_dir, ".Rcheck")
+          } else {
+            paste0(normalizePath(pkg_dir), ".Rcheck")
+          }
+          check_dir_norm <- normalizePath(check_dir)
+          cat("Check dir:", check_dir_norm, "\n")
+          cat("check-dir=", check_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
+        shell: Rscript {0}
+
+      - name: Install pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Bioc - Build, Install, Check
+        uses: grimbough/bioc-actions/build-install-check@v1
+        
+      - name: Show testthat output
+        run: |
+          find . -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+        working-directory: ${{ steps.set-paths.outputs.working-dir }}
+
+      - name: Upload check results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION ) }}
+          path: ${{ steps.set-paths.outputs.check-dir }}
+
+      - name: Run BiocCheck
+        if: matrix.config.os == 'ubuntu-latest' && matrix.config.bioc-version == 'devel'
+        uses: grimbough/bioc-actions/run-BiocCheck@v1
+        with:
+          error-on: 'never'
+          arguments: '--no-check-bioc-help'
