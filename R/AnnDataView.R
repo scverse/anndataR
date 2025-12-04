@@ -73,7 +73,7 @@ AnnDataView <- R6::R6Class(
         return(result)
       }
 
-      return(x)
+      x
     },
 
     # Apply subsetting to vectors
@@ -90,7 +90,7 @@ AnnDataView <- R6::R6Class(
         return(x[private$.var_subset])
       }
 
-      return(x)
+      x
     },
 
     # Helper to show error for setter operations
@@ -367,7 +367,8 @@ convert_to_indices <- function(
         "Logical subset of {context_name} must have length {max_length}"
       )
     }
-    return(which(subset))
+
+    which(subset)
   } else if (is.integer(subset) || is.numeric(subset)) {
     subset <- as.integer(subset)
     if (any(subset < 1 | subset > max_length)) {
@@ -375,7 +376,8 @@ convert_to_indices <- function(
         "Integer indices for {context_name} must be between 1 and {max_length}"
       )
     }
-    return(subset)
+
+    subset
   } else if (is.character(subset)) {
     if (is.null(names_vector)) {
       cli_abort(c(
@@ -393,7 +395,8 @@ convert_to_indices <- function(
         "Names of {context_name} not found: {paste(missing_names, collapse = ', ')}"
       )
     }
-    return(indices)
+
+    indices
   } else {
     cli_abort(
       "Subset of {context_name} must be logical, integer, or character vector"
