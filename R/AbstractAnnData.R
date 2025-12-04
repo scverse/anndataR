@@ -458,7 +458,14 @@ AbstractAnnData <- R6::R6Class(
 
     # @description `.validate_named_list()` checks for whether a value
     #   is NULL or a named list and throws an error if it is not.
-    .validate_named_list = function(collection, label) {
+    #
+    # @param collection A collection to validate
+    # @param label The label of the collection, used for error messages
+    # @param warn_matrix_dimnames Whether to warn if matrix dim names are
+    #   present but cannot be written for items in `collection`
+    #
+    # @return The validated named list
+    .validate_named_list = function(collection, label, warn_matrix_dimnames = FALSE) {
       if (is.null(collection)) {
         return(collection)
       }
@@ -472,6 +479,16 @@ AbstractAnnData <- R6::R6Class(
           "{.field {label}} must be a named {.cls list}, got {.cls {class(collection)}}",
           call = rlang::caller_env()
         )
+      }
+
+      if (warn_matrix_dimnames) {
+        purrr::walk2(collection, names(collection), \(.item, .item_name) {
+          warn_matrix_dimnames_not_writeable(
+            .item,
+            label = paste0(label, "[['", .item_name, "']]"),
+            to_object = self
+          )
+        })
       }
 
       collection
