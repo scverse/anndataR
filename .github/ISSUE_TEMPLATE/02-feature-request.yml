@@ -28,6 +28,5 @@ body:
       placeholder: >
         Provide details about how you think this should work.
         Include code examples if applicable.
-      render: r
     validations:
       required: false

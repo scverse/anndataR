@@ -38,7 +38,7 @@ body:
     attributes:
       label: Suggested Improvement
       description: How would you improve this documentation?
-      placeholder: |
+      placeholder: >
         Provide specific suggestions for how to improve the documentation.
         Include proposed text, code examples, or other content if possible.
     validations:
