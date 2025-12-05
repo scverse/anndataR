@@ -465,7 +465,11 @@ AbstractAnnData <- R6::R6Class(
     #   present but cannot be written for items in `collection`
     #
     # @return The validated named list
-    .validate_named_list = function(collection, label, warn_matrix_dimnames = FALSE) {
+    .validate_named_list = function(
+      collection,
+      label,
+      warn_matrix_dimnames = FALSE
+    ) {
       if (is.null(collection)) {
         return(collection)
       }

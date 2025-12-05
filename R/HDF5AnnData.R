@@ -257,7 +257,11 @@ HDF5AnnData <- R6::R6Class(
         read_h5ad_element(private$.h5obj, "uns")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
-        private$.validate_named_list(value, "uns", warn_matrix_dimnames = TRUE) |>
+        private$.validate_named_list(
+          value,
+          "uns",
+          warn_matrix_dimnames = TRUE
+        ) |>
           write_h5ad_element(
             private$.h5obj,
             "uns",
