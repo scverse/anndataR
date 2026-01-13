@@ -48,7 +48,130 @@ InMemoryAnnData <- R6::R6Class(
     .varm = NULL,
     .obsp = NULL,
     .varp = NULL,
-    .uns = NULL
+    .uns = NULL,
+
+    .get_keys = function(slot) {
+      names(private[[paste0(".", slot)]])
+    },
+
+    .set_keys = function(slot, keys) {
+      obj <- private[[paste0(".", slot)]]
+      if (length(keys) != length(obj)) {
+        cli_abort(
+          "Length of new keys ({.val {length(keys)}}) does not match existing number of {slot} entries ({.val {length(obj)}})."
+        )
+      }
+      names(obj) <- keys
+      private[[paste0(".", slot)]] <- obj
+      invisible()
+    },
+
+    .get_value = function(slot, key) {
+      private[[paste0(".", slot)]][[key]]
+    },
+
+    .set_value = function(slot, key, value) {
+      private[[paste0(".", slot)]][[key]] <- value
+      self
+    },
+
+    .set_values = function(slot, named_list) {
+      private[[paste0(".", slot)]] <- named_list
+      self
+    },
+
+    .set_obsm_value = function(key, value) {
+      res <- private$.validate_aligned_array(
+        value,
+        paste0("obsm[['", key, "']]"),
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      )
+      private$.set_value("obsm", key, res)
+    },
+
+    .set_obsm_values = function(named_list) {
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "obsm",
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      )
+      private$.set_values("obsm", res)
+    },
+
+    .set_varm_value = function(key, value) {
+      res <- private$.validate_aligned_array(
+        value,
+        paste0("varm[['", key, "']]"),
+        c(self$n_vars()),
+        expected_rownames = self$var_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      )
+      private$.set_value("varm", key, res)
+    },
+
+    .set_varm_values = function(named_list) {
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "varm",
+        c(self$n_vars()),
+        expected_rownames = self$var_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      )
+      private$.set_values("varm", res)
+    },
+
+    .set_obsp_value = function(key, value) {
+      res <- private$.validate_aligned_array(
+        value,
+        paste0("obsp[['", key, "']]"),
+        c(self$n_obs(), self$n_obs()),
+        expected_rownames = self$obs_names,
+        expected_colnames = self$obs_names
+      )
+      private$.set_value("obsp", key, res)
+    },
+
+    .set_obsp_values = function(named_list) {
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "obsp",
+        c(self$n_obs(), self$n_obs()),
+        expected_rownames = self$obs_names,
+        expected_colnames = self$obs_names
+      )
+      private$.set_values("obsp", res)
+    },
+
+    .set_varp_value = function(key, value) {
+      res <- private$.validate_aligned_array(
+        value,
+        paste0("varp[['", key, "']]"),
+        c(self$n_vars(), self$n_vars()),
+        expected_rownames = self$var_names,
+        expected_colnames = self$var_names
+      )
+      private$.set_value("varp", key, res)
+    },
+
+    .set_varp_values = function(named_list) {
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "varp",
+        c(self$n_vars(), self$n_vars()),
+        expected_rownames = self$var_names,
+        expected_colnames = self$var_names
+      )
+      private$.set_values("varp", res)
+    }
+
   ),
   active = list(
     #' @field X See [AnnData-usage]
@@ -140,80 +263,6 @@ InMemoryAnnData <- R6::R6Class(
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_var_names, status=done
         private$.var_names <- private$.validate_obsvar_names(value, "var")
-        self
-      }
-    },
-    #' @field obsm See [AnnData-usage]
-    obsm = function(value) {
-      if (missing(value)) {
-        # trackstatus: class=InMemoryAnnData, feature=get_obsm, status=done
-        private$.obsm |>
-          private$.add_mapping_dimnames("obsm")
-      } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_obsm, status=done
-        private$.obsm <- private$.validate_aligned_mapping(
-          value,
-          "obsm",
-          c(self$n_obs()),
-          expected_rownames = self$obs_names,
-          strip_rownames = TRUE,
-          strip_colnames = FALSE
-        )
-        self
-      }
-    },
-    #' @field varm See [AnnData-usage]
-    varm = function(value) {
-      if (missing(value)) {
-        # trackstatus: class=InMemoryAnnData, feature=get_varm, status=done
-        private$.varm |>
-          private$.add_mapping_dimnames("varm")
-      } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_varm, status=done
-        private$.varm <- private$.validate_aligned_mapping(
-          value,
-          "varm",
-          c(self$n_vars()),
-          expected_rownames = self$var_names,
-          strip_rownames = TRUE,
-          strip_colnames = FALSE
-        )
-        self
-      }
-    },
-    #' @field obsp See [AnnData-usage]
-    obsp = function(value) {
-      if (missing(value)) {
-        # trackstatus: class=InMemoryAnnData, feature=get_obsp, status=done
-        private$.obsp |>
-          private$.add_mapping_dimnames("obsp")
-      } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_obsp, status=done
-        private$.obsp <- private$.validate_aligned_mapping(
-          value,
-          "obsp",
-          c(self$n_obs(), self$n_obs()),
-          expected_rownames = self$obs_names,
-          expected_colnames = self$obs_names
-        )
-        self
-      }
-    },
-    #' @field varp See [AnnData-usage]
-    varp = function(value) {
-      if (missing(value)) {
-        # trackstatus: class=InMemoryAnnData, feature=get_varp, status=done
-        private$.varp |>
-          private$.add_mapping_dimnames("varp")
-      } else {
-        # trackstatus: class=InMemoryAnnData, feature=set_varp, status=done
-        private$.varp <- private$.validate_aligned_mapping(
-          value,
-          "varp",
-          c(self$n_vars(), self$n_vars()),
-          expected_rownames = self$var_names,
-          expected_colnames = self$var_names
-        )
         self
       }
     },

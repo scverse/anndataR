@@ -62,14 +62,6 @@ Other AnnData classes:
 
 \item{\code{var_names}}{See \link{AnnData-usage}}
 
-\item{\code{obsm}}{See \link{AnnData-usage}}
-
-\item{\code{varm}}{See \link{AnnData-usage}}
-
-\item{\code{obsp}}{See \link{AnnData-usage}}
-
-\item{\code{varp}}{See \link{AnnData-usage}}
-
 \item{\code{uns}}{See \link{AnnData-usage}}
 }
 \if{html}{\out{</div>}}

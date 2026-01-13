@@ -28,6 +28,13 @@ Other AnnData classes:
 \section{Super class}{
 \code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{ReticulateAnnData}
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{obsm}}{See \link{AnnData-usage}}
+}
+\if{html}{\out{</div>}}
+}
 \section{Active bindings}{
 \if{html}{\out{<div class="r6-active-bindings">}}
 \describe{

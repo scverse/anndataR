@@ -33,6 +33,177 @@ HDF5AnnData <- R6::R6Class(
       }
     },
 
+    .get_keys = function(slot) {
+      private$.check_file_valid()
+      rhdf5::h5ls(private$.h5obj)$name[
+        rhdf5::h5ls(private$.h5obj)$group == paste0("/", slot)
+      ]
+    },
+
+    .set_keys = function(slot, keys) {
+      private$.check_file_valid()
+      old_keys <- private$.get_keys(slot)
+      if (length(old_keys) != length(keys)) {
+        cli_abort(
+          paste0(
+            "Length of new keys ({.val {length(keys)}}) does not match ",
+            "existing number of ", slot, " entries ({.val {length(old_keys)}})."
+          )
+        )
+      }
+
+      gid <- rhdf5::H5Gopen(private$.h5obj, paste0("/", slot))
+      purrr::walk2(old_keys, keys, function(old_key, new_key) {
+        if (old_key != new_key) {
+          rhdf5::H5Lmove(gid, old_key, gid, new_key)
+        }
+      })
+      invisible()
+    },
+
+    .get_value = function(slot, key) {
+      private$.check_file_valid()
+      read_h5ad_element(private$.h5obj, paste0(slot, "/", key)) |>
+        private$.add_matrix_dimnames(slot)
+    },
+
+    .set_value = function(slot, key, value) {
+      private$.check_file_valid()
+      write_h5ad_element(
+        value,
+        private$.h5obj,
+        paste0(slot, "/", key),
+        private$.compression
+      )
+      invisible()
+    },
+
+    .set_values = function(slot, named_list) {
+      private$.check_file_valid()
+      write_h5ad_element(named_list,
+        private$.h5obj,
+        slot,
+        private$.compression
+      )
+      invisible()
+    },
+
+    .set_obsm_value = function(key, value) {
+      private$.check_file_valid()
+      value <- private$.validate_aligned_array(
+        value,
+        paste0("obsm[['", key, "']]"),
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      ) 
+      private$.set_value("obsm", key, value)
+      invisible()
+    },
+
+    .set_obsm_values = function(named_list) {
+      private$.check_file_valid()
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "obsm",
+        c(self$n_obs()),
+        expected_rownames = self$obs_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
+        )
+      private$.set_values("obsm", res)
+      invisible()
+    },
+
+    .set_varm_value = function(key, value) {
+      private$.check_file_valid()
+      value <- private$.validate_aligned_array(
+        value,
+        paste0("varm[['", key, "']]"),
+        c(self$n_vars()),
+        expected_rownames = self$var_names,
+        strip_rownames = TRUE,
+        strip_colnames = FALSE
+      )
+      private$.set_value("varm", key, value)
+      invisible()
+    },
+
+    .set_varm_values = function(named_list) {
+      private$.check_file_valid()
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "varm",
+        c(self$n_vars()),
+        expected_rownames = self$var_names,
+          strip_rownames = TRUE,
+          strip_colnames = FALSE
+        )
+      private$.set_values("varm", res)
+      invisible()
+    },
+
+    .set_obsp_value = function(key, value) {
+      private$.check_file_valid()
+      value <- private$.validate_aligned_mapping(
+        value,
+        paste0("obsp[['", key, "']]"),
+        c(self$n_obs(), self$n_obs()),
+        expected_rownames = self$obs_names,
+        expected_colnames = self$obs_names,
+        strip_rownames = TRUE,
+        strip_colnames = TRUE
+      )
+      private$.set_value("obsp", key, value)
+      invisible()
+    },
+
+    .set_obsp_values = function(named_list) {
+      private$.check_file_valid()
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "obsp",
+        c(self$n_obs(), self$n_obs()),
+        expected_rownames = self$obs_names,
+        expected_colnames = self$obs_names,
+          strip_rownames = TRUE,
+          strip_colnames = TRUE
+        )
+      private$.set_values("obsp", res)
+      invisible()
+    },
+
+    .set_varp_value = function(key, value) {
+      private$.check_file_valid()
+      value <- private$.validate_aligned_mapping(
+        value,
+        paste0("varp[['", key, "']]"),
+        c(self$n_vars(), self$n_vars()),
+        expected_rownames = self$var_names,
+        expected_colnames = self$var_names,
+        strip_rownames = TRUE,
+        strip_colnames = TRUE
+      )
+      private$.set_value("varp", key, value)
+      invisible()
+    },
+
+    .set_varp_values = function(named_list) {
+      private$.check_file_valid()
+      res <- private$.validate_aligned_mapping(
+        named_list,
+        "varp",
+        c(self$n_vars(), self$n_vars()),
+        expected_rownames = self$var_names,
+        expected_colnames = self$var_names,
+          strip_rownames = TRUE,
+          strip_colnames = TRUE
+        )
+      private$.set_values("varp", res)
+      invisible()
+    },
+
     #' @description Close the HDF5 file when the object is garbage collected
     finalize = function() {
       if (private$.close_on_finalize) {
@@ -90,56 +261,6 @@ HDF5AnnData <- R6::R6Class(
           )
       }
     },
-    #' @field obsm See [AnnData-usage]
-    obsm = function(value) {
-      private$.check_file_valid()
-
-      if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.h5obj, "obsm") |>
-          private$.add_mapping_dimnames("obsm")
-      } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
-        private$.validate_aligned_mapping(
-          value,
-          "obsm",
-          c(self$n_obs()),
-          expected_rownames = self$obs_names,
-          strip_rownames = TRUE,
-          strip_colnames = FALSE
-        ) |>
-          write_h5ad_element(
-            private$.h5obj,
-            "obsm",
-            private$.compression
-          )
-      }
-    },
-    #' @field varm See [AnnData-usage]
-    varm = function(value) {
-      private$.check_file_valid()
-
-      if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.h5obj, "varm") |>
-          private$.add_mapping_dimnames("varm")
-      } else {
-        # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
-        private$.validate_aligned_mapping(
-          value,
-          "varm",
-          c(self$n_vars()),
-          expected_rownames = self$var_names,
-          strip_rownames = TRUE,
-          strip_colnames = FALSE
-        ) |>
-          write_h5ad_element(
-            private$.h5obj,
-            "varm",
-            private$.compression
-          )
-      }
-    },
     #' @field obsp See [AnnData-usage]
     obsp = function(value) {
       private$.check_file_valid()
@@ -160,30 +281,6 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.h5obj,
             "obsp",
-            private$.compression
-          )
-      }
-    },
-    #' @field varp See [AnnData-usage]
-    varp = function(value) {
-      private$.check_file_valid()
-
-      if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.h5obj, "varp") |>
-          private$.add_mapping_dimnames("varp")
-      } else {
-        # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
-        private$.validate_aligned_mapping(
-          value,
-          "varp",
-          c(self$n_vars(), self$n_vars()),
-          expected_rownames = self$var_names,
-          expected_colnames = self$var_names
-        ) |>
-          write_h5ad_element(
-            private$.h5obj,
-            "varp",
             private$.compression
           )
       }
@@ -501,11 +598,11 @@ as_HDF5AnnData <- function(
     X = adata$X,
     obs = adata$obs,
     var = adata$var,
-    obsm = adata$obsm,
-    varm = adata$varm,
+    obsm = adata$obsm[],
+    varm = adata$varm[],
     layers = adata$layers,
-    obsp = adata$obsp,
-    varp = adata$varp,
+    obsp = adata$obsp[],
+    varp = adata$varp[],
     uns = adata$uns,
     shape = adata$shape(),
     mode = mode,
