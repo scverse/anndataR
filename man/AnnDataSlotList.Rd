@@ -2,27 +2,9 @@
 % Please edit documentation in R/AnnDataSlotList.R
 \name{AnnDataSlotList}
 \alias{AnnDataSlotList}
-\title{Lazy Named List}
-\description{
-A lazy named list that loads elements on-demand to avoid
-materializing large objects unnecessarily. Used internally for efficient
-access to layers, obsm, varm, obsp, varp, uns slots.
-}
-\keyword{internal}
-\section{Methods}{
-\subsection{Public methods}{
-\itemize{
-\item \href{#method-AnnDataSlotList-new}{\code{AnnDataSlotList$new()}}
-\item \href{#method-AnnDataSlotList-clone}{\code{AnnDataSlotList$clone()}}
-}
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataSlotList-new"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataSlotList-new}{}}}
-\subsection{Method \code{new()}}{
-Create a new AnnDataSlotList
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataSlotList$new(
+\title{Lazy Named List (S3)}
+\usage{
+AnnDataSlotList(
   get_keys_fn,
   set_keys_fn,
   get_value_fn,
@@ -30,44 +12,30 @@ Create a new AnnDataSlotList
   set_values_fn,
   get_rownames_fn = NULL,
   get_colnames_fn = NULL
-)}\if{html}{\out{</div>}}
+)
 }
+\arguments{
+\item{get_keys_fn}{function() -> character()  Returns available keys (required)}
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{get_keys_fn}}{Function that returns all available keys: function() -> list of strings}
+\item{set_keys_fn}{function(keys) -> invisible()  Set available keys (optional)}
 
-\item{\code{set_keys_fn}}{Function to set all keys: function(keys) -> invisible()}
+\item{get_value_fn}{function(key) -> object  Get element by key (required)}
 
-\item{\code{get_value_fn}}{Function to get element by key: function(key) -> object}
+\item{set_value_fn}{function(key, value) -> invisible()  Set element by key (optional)}
 
-\item{\code{set_value_fn}}{Function to set element by key: function(key, value) -> invisible()}
+\item{set_values_fn}{function(named_list) -> invisible()  Set multiple elements (optional)}
 
-\item{\code{set_values_fn}}{Function to set multiple elements: function(named_list) -> invisible()}
+\item{get_rownames_fn}{function() -> character()  Optional: rownames alignment}
 
-\item{\code{get_rownames_fn}}{An optional function to get the rownames the values should be aligned to: function() -> list of strings}
-
-\item{\code{get_colnames_fn}}{An optional function to get the colnames the values should be aligned to: function() -> list of strings}
+\item{get_colnames_fn}{function() -> character()  Optional: colnames alignment}
 }
-\if{html}{\out{</div>}}
+\value{
+An object of class c("AnnDataSlotList","list")
 }
+\description{
+A lightweight S3 replacement for the previous R6-based AnnDataSlotList.
+This object is a plain list (inherits from "AnnDataSlotList" and "list")
+that holds callbacks used to implement lazy loading of AnnData slots
+(layers, obsm, varm, obsp, varp, uns).
 }
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AnnDataSlotList-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-AnnDataSlotList-clone}{}}}
-\subsection{Method \code{clone()}}{
-The objects of this class are cloneable with this method.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnnDataSlotList$clone(deep = FALSE)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{deep}}{Whether to make a deep clone.}
-}
-\if{html}{\out{</div>}}
-}
-}
-}
+\keyword{internal}

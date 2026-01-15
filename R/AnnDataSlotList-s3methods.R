@@ -46,3 +46,15 @@ names.AnnDataSlotList <- function(x) {
   x$set_value_fn(i, value)
   x
 }
+
+#' @rdname AnnDataSlotList-s3methods
+#' @method $ AnnDataSlotList
+#' @export
+# `$.AnnDataSlotList` <- function(x, name) {
+#   keys <- x$get_keys_fn()
+#   if (!(name %in% keys)) {
+#     stop(sprintf("Key '%s' not found in AnnDataSlotList (available keys: %s)",
+#                  name, paste(keys, collapse = ", ")), call. = FALSE)
+#   }
+#   x$get_value_fn(name)
+# }

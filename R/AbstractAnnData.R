@@ -65,7 +65,7 @@ AbstractAnnData <- R6::R6Class(
     },
     #' @field obsm See [AnnData-usage]
     obsm = function(value) {
-      proxy <- AnnDataSlotList$new(
+      proxy <- AnnDataSlotList(
         get_keys_fn = function() private$.get_keys("obsm"),
         set_keys_fn = function(keys) private$.set_keys("obsm", keys),
         get_value_fn = function(name) private$.get_value("obsm", name),
@@ -87,7 +87,7 @@ AbstractAnnData <- R6::R6Class(
     },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
-      proxy <- AnnDataSlotList$new(
+      proxy <- AnnDataSlotList(
         get_keys_fn = function() private$.get_keys("varm"),
         set_keys_fn = function(keys) private$.set_keys("varm", keys),
         get_value_fn = function(name) private$.get_value("varm", name),
@@ -103,7 +103,7 @@ AbstractAnnData <- R6::R6Class(
     },
     #' @field obsp See [AnnData-usage]
     obsp = function(value) {
-      proxy <- AnnDataSlotList$new(
+      proxy <- AnnDataSlotList(
         get_keys_fn = function() private$.get_keys("obsp"),
         set_keys_fn = function(keys) private$.set_keys("obsp", keys),
         get_value_fn = function(name) private$.get_value("obsp", name),
@@ -120,7 +120,7 @@ AbstractAnnData <- R6::R6Class(
     },
     #' @field varp See [AnnData-usage]
     varp = function(value) {
-      proxy <- AnnDataSlotList$new(
+      proxy <- AnnDataSlotList(
         get_keys_fn = function() private$.get_keys("varp"),
         set_keys_fn = function(keys) private$.set_keys("varp", keys),
         get_value_fn = function(name) private$.get_value("varp", name),

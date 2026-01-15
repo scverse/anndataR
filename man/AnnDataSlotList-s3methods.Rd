@@ -6,6 +6,7 @@
 \alias{[.AnnDataSlotList}
 \alias{[[.AnnDataSlotList}
 \alias{[[<-.AnnDataSlotList}
+\alias{$.AnnDataSlotList}
 \title{S3 Methods for AbstractAnnData Objects}
 \usage{
 \method{names}{AnnDataSlotList}(x)
@@ -17,6 +18,8 @@
 \method{[[}{AnnDataSlotList}(x, i, ...)
 
 \method{[[}{AnnDataSlotList}(x, i) <- value
+
+\method{$}{AnnDataSlotList}(x, name)
 }
 \description{
 S3 Methods for AbstractAnnData Objects
