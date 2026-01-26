@@ -1,3 +1,11 @@
+# anndataR 1.0.1
+
+- Fix linting issues (PR #412).
+
+# anndataR 1.0.0
+
+- Bioconductor 3.22 release (October 2025)
+
 # anndataR 0.99.6
 
 - Use the correct mapping figure in the `SingleCellExperiment` usage vignette (PR #372)
