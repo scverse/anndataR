@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Bioconductor support forum
+    url: https://support.bioconductor.org/
+    about: Ask questions on the Bioconductor support forum
+  - name: scverse Discourse
+    url: https://discourse.scverse.org/
+    about: Join our community on the scverse Discourse forum

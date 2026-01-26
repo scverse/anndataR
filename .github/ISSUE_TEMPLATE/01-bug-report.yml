@@ -1,0 +1,57 @@
+name: Bug Report
+description: Report something that is broken in anndataR
+labels: ["bug", "triage"]
+type: bug
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Thanks for taking the time to report a bug!
+        Please provide as much detail as possible to help us diagnose and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: >
+        A detailed description of the bug, including what you expected to happen versus what actually happened.
+        Please include any error messages you encountered.
+      placeholder: |
+        What were you trying to do?
+        What happened instead?
+        What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: minimal-example
+    attributes:
+      label: Minimal Reproducible Example
+      description: >
+        Please provide a minimal code example that reproduces the bug.
+        Consider using the `reprex` package to help format your example https://reprex.tidyverse.org/.
+      placeholder: |
+        ```r
+        # Your code here
+        ```
+      render: r
+    validations:
+      required: false
+
+  - type: textarea
+    id: session-info
+    attributes:
+      label: Session Information
+      description: |
+        Please provide the output of `sessioninfo::session_info()` or `sessionInfo()`
+      value: |
+        <details style="margin-bottom:10px;">
+        <summary>
+          Session info
+        </summary>
+        ```
+        # Paste session info output here
+        ```
+        </details>
+    validations:
+      required: false

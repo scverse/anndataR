@@ -12,6 +12,9 @@ vignette: >
 reticulate::py_require("mudata")
 reticulate::py_require("scanpy")
 
+# Force loading of the Python environment
+py_config <- reticulate::py_config()
+
 # Check if required Python packages are available
 python_available <- reticulate::py_module_available("scanpy") &&
   reticulate::py_module_available("mudata")
