@@ -77,10 +77,10 @@ py_to_r.anndata._core.anndata.AnnData <- function(x) {
 r_to_py.AbstractAnnData <- function(x, convert = TRUE) {
   if (inherits(x, "ReticulateAnnData")) {
     # If it's already a ReticulateAnnData, return the underlying Python object
-    return(x$py_anndata())
+    x$py_anndata()
   } else {
     # Convert other AnnData types to ReticulateAnnData first, then extract Python object
     ret_adata <- as_ReticulateAnnData(x)
-    return(ret_adata$py_anndata())
+    ret_adata$py_anndata()
   }
 }
