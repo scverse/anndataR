@@ -445,11 +445,11 @@ HDF5AnnData <- R6::R6Class(
 
     #' @description See [AnnData-usage]
     obs_keys = function() {
-      names(self$obs)
+      read_h5ad_element_keys(private$.h5obj, "obs", dim = "cols")
     },
     #' @description See [AnnData-usage]
     var_keys = function() {
-      names(self$var)
+      read_h5ad_element_keys(private$.h5obj, "var", dim = "cols")
     },
     #' @description See [AnnData-usage]
     layers_keys = function() {
