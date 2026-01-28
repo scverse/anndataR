@@ -311,6 +311,11 @@ generate_dataset <- function(
   colnames(X) <- dataset_list$obs_names
   rownames(X) <- dataset_list$var_names
 
+  # Convert to sparse matrix to avoid Seurat warning about coercing dense matrix
+  if (!inherits(X, "sparseMatrix")) {
+    X <- as(X, "CsparseMatrix")
+  }
+
   seurat <- SeuratObject::CreateSeuratObject(X)
 
   for (layer in names(dataset_list$layers)) {
