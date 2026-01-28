@@ -2,6 +2,10 @@
 
 - Bioconductor 3.23 devel
 
+# anndataR 1.0.1
+
+- Update author email address (PR #410).
+
 # anndataR 1.0.0
 
 - Bioconductor 3.22 release (October 2025)
