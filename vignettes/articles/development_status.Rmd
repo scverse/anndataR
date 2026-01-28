@@ -58,7 +58,7 @@ strip_prefix <- c(
   "set_" = "Setter",
   "test_set_" = "Setter test"
 )
-status_lines_proc <- status_lines %>%
+status_lines_proc <- status_lines |>
   mutate(
     prefix = str_extract(feature, "^(test_)?[gs]et_"),
     slot = str_replace(feature, "^(test_)?[gs]et_", "")

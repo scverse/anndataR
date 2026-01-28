@@ -1,6 +1,7 @@
 # anndataR 1.0.1
 
 - Update author email address (PR #410).
+- Fix linting issues (PR #412).
 
 # anndataR 1.0.0
 
