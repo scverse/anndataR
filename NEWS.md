@@ -2,6 +2,7 @@
 
 - Update author email address (PR #410).
 - Fix linting issues (PR #412).
+- Fix roundtrip test; ensure that `X` is always 2-dimensional (PR #413).
 
 # anndataR 1.0.0
 
