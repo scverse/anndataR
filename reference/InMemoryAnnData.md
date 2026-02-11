@@ -1,0 +1,233 @@
+# InMemoryAnnData
+
+Implementation of an in-memory `AnnData` object where data is stored
+within the R session. This is the simplest back end and will be most
+familiar to users. It is want you will want to use in most cases where
+you want to interact with an `AnnData` object.
+
+See
+[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+for details on creating and using `AnnData` objects.
+
+## Value
+
+An `InMemoryAnnData` object
+
+## See also
+
+[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+for details on creating and using `AnnData` objects
+
+Other AnnData classes:
+[`AbstractAnnData`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md),
+[`AnnDataView`](https://anndataR.data-intuitive.com/reference/AnnDataView.md),
+[`HDF5AnnData`](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md),
+[`ReticulateAnnData`](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+
+## Super class
+
+[`anndataR::AbstractAnnData`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md)
+-\> `InMemoryAnnData`
+
+## Active bindings
+
+- `X`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `layers`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `obs`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `var`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `obs_names`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `var_names`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `obsm`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `varm`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `obsp`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `varp`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `uns`:
+
+  See
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+## Methods
+
+### Public methods
+
+- [`InMemoryAnnData$new()`](#method-InMemoryAnnData-new)
+
+- [`InMemoryAnnData$clone()`](#method-InMemoryAnnData-clone)
+
+Inherited methods
+
+- [`anndataR::AbstractAnnData$as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-as_HDF5AnnData)
+- [`anndataR::AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
+- [`anndataR::AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
+- [`anndataR::AbstractAnnData$as_Seurat()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-as_Seurat)
+- [`anndataR::AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
+- [`anndataR::AbstractAnnData$layers_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-layers_keys)
+- [`anndataR::AbstractAnnData$n_obs()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-n_obs)
+- [`anndataR::AbstractAnnData$n_vars()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-n_vars)
+- [`anndataR::AbstractAnnData$obs_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-obs_keys)
+- [`anndataR::AbstractAnnData$obsm_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-obsm_keys)
+- [`anndataR::AbstractAnnData$obsp_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-obsp_keys)
+- [`anndataR::AbstractAnnData$print()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-print)
+- [`anndataR::AbstractAnnData$shape()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-shape)
+- [`anndataR::AbstractAnnData$uns_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-uns_keys)
+- [`anndataR::AbstractAnnData$var_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-var_keys)
+- [`anndataR::AbstractAnnData$varm_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-varm_keys)
+- [`anndataR::AbstractAnnData$varp_keys()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-varp_keys)
+- [`anndataR::AbstractAnnData$write_h5ad()`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.html#method-write_h5ad)
+
+------------------------------------------------------------------------
+
+### Method `new()`
+
+Creates a new instance of an in-memory `AnnData` object. Inherits from
+[AbstractAnnData](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md).
+
+#### Usage
+
+    InMemoryAnnData$new(
+      X = NULL,
+      obs = NULL,
+      var = NULL,
+      layers = NULL,
+      obsm = NULL,
+      varm = NULL,
+      obsp = NULL,
+      varp = NULL,
+      uns = NULL,
+      shape = NULL
+    )
+
+#### Arguments
+
+- `X`:
+
+  See the `X` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `obs`:
+
+  See the `obs` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `var`:
+
+  See the `var` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `layers`:
+
+  See the `layers` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `obsm`:
+
+  See the `obsm` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `varm`:
+
+  See the `varm` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `obsp`:
+
+  See the `obsp` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `varp`:
+
+  See the `varp` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `uns`:
+
+  See the `uns` slot in
+  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+
+- `shape`:
+
+  Shape tuple (e.g. `c(n_obs, n_vars)`). Can be provided if both `X` or
+  `obs` and `var` are not provided.
+
+------------------------------------------------------------------------
+
+### Method `clone()`
+
+The objects of this class are cloneable with this method.
+
+#### Usage
+
+    InMemoryAnnData$clone(deep = FALSE)
+
+#### Arguments
+
+- `deep`:
+
+  Whether to make a deep clone.
+
+## Examples
+
+``` r
+## complete example
+ad <- AnnData(
+  X = matrix(1:15, 3L, 5L),
+  layers = list(
+    A = matrix(5:1, 3L, 5L),
+    B = matrix(letters[1:5], 3L, 5L)
+  ),
+  obs = data.frame(row.names = LETTERS[1:3], cell = 1:3),
+  var = data.frame(row.names = letters[1:5], gene = 1:5)
+)
+ad
+#> InMemoryAnnData object with n_obs × n_vars = 3 × 5
+#>     obs: 'cell'
+#>     var: 'gene'
+#>     layers: 'A', 'B'
+
+## minimum example
+AnnData(
+  obs = data.frame(row.names = letters[1:10]),
+  var = data.frame(row.names = LETTERS[1:5])
+)
+#> InMemoryAnnData object with n_obs × n_vars = 10 × 5
+```
