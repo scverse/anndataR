@@ -70,10 +70,10 @@ AnnDataView <- R6::R6Class(
           result <- result[, private$.var_subset, drop = FALSE]
         }
 
-        return(result)
+        result
+      } else {
+        x
       }
-
-      x
     },
 
     # Apply subsetting to vectors
@@ -367,7 +367,6 @@ convert_to_indices <- function(
         "Logical subset of {context_name} must have length {max_length}"
       )
     }
-
     which(subset)
   } else if (is.integer(subset) || is.numeric(subset)) {
     subset <- as.integer(subset)
@@ -376,7 +375,6 @@ convert_to_indices <- function(
         "Integer indices for {context_name} must be between 1 and {max_length}"
       )
     }
-
     subset
   } else if (is.character(subset)) {
     if (is.null(names_vector)) {
@@ -395,7 +393,6 @@ convert_to_indices <- function(
         "Names of {context_name} not found: {paste(missing_names, collapse = ', ')}"
       )
     }
-
     indices
   } else {
     cli_abort(

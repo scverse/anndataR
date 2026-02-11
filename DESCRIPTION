@@ -2,7 +2,7 @@ Package: anndataR
 Title: AnnData interoperability in R
 Version: 1.1.0
 Authors@R: c(
-    person("Robrecht", "Cannoodt", , "robrecht@data-intuitive.com", role = c("aut", "cre"),
+    person("Robrecht", "Cannoodt", , "rcannood@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-3641-729X", github = "rcannood")),
     person("Luke", "Zappia", , "luke@lazappi.id.au", role = "aut",
            comment = c(ORCID = "0000-0001-7744-8565", github = "lazappi")),

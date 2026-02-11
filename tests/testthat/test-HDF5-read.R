@@ -150,6 +150,12 @@ test_that("reading mappings works", {
   expect_type(names(mapping), "character")
 })
 
+test_that("reading mapping keys works", {
+  keys <- read_h5ad_mapping_keys(hdf5_file, "uns")
+  expect_type(keys, "character")
+  expect_true(length(keys) > 0)
+})
+
 test_that("reading dataframes works", {
   df <- read_h5ad_data_frame(hdf5_file, "obs")
   expect_s3_class(df, "data.frame")
@@ -169,6 +175,31 @@ test_that("reading dataframes works", {
       "leiden"
     )
   )
+})
+
+test_that("reading dataframe keys works", {
+  keys <- read_h5ad_data_frame_keys(hdf5_file, "obs")
+
+  expect_type(keys$cols, "character")
+  expect_identical(
+    keys$cols,
+    c(
+      "Float",
+      "FloatNA",
+      "Int",
+      "IntNA",
+      "Bool",
+      "BoolNA",
+      "n_genes_by_counts",
+      "log1p_n_genes_by_counts",
+      "total_counts",
+      "log1p_total_counts",
+      "leiden"
+    )
+  )
+
+  expect_type(keys$rows, "character")
+  expect_length(keys$rows, 50)
 })
 
 test_that("reading H5AD as SingleCellExperiment works", {

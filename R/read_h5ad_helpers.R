@@ -110,6 +110,72 @@ read_h5ad_element <- function(
   )
 }
 
+#' Read H5AD element keys
+#'
+#' Read the keys of an element from a H5AD file
+#'
+#' @param file Path to a H5AD file or an open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param type The encoding type of the element to read
+#' @param version The encoding version of the element to read
+#' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param ... Extra arguments passed to individual reading functions
+#'
+#' @details
+#' Encoding is automatically determined from the element using
+#' `read_h5ad_encoding` and used to select the appropriate reading function.
+#'
+#' @return Value depending on the encoding
+#'
+#' @noRd
+read_h5ad_element_keys <- function(
+  file,
+  name,
+  type = NULL,
+  version = NULL,
+  stop_on_error = FALSE,
+  ...
+) {
+  if (!hdf5_path_exists(file, name)) {
+    return(NULL)
+  }
+
+  if (is.null(type)) {
+    encoding_list <- read_h5ad_encoding(file, name)
+    type <- encoding_list$type
+    version <- encoding_list$version
+  }
+
+  read_fun <- switch(
+    type,
+    "dataframe" = read_h5ad_data_frame_keys,
+    "dict" = read_h5ad_mapping_keys,
+    cli_abort(
+      "No function for reading keys for H5AD encoding {.cls {type}} for element {.val {name}}"
+    )
+  )
+
+  tryCatch(
+    {
+      read_fun(file = file, name = name, version = version, ...)
+    },
+    error = function(e) {
+      msg <- cli::cli_fmt(cli::cli_bullets(c(
+        paste0(
+          "Error reading element keys for {.field {name}} of type {.cls {type}}"
+        ),
+        "i" = conditionMessage(e)
+      )))
+      if (stop_on_error) {
+        cli_abort(msg)
+      } else {
+        cli_warn(msg)
+        NULL
+      }
+    }
+  )
+}
+
 #' Read H5AD null
 #'
 #' Read a null value from an H5AD file
@@ -581,13 +647,31 @@ read_h5ad_mapping <- function(
 ) {
   version <- match.arg(version)
 
+  items <- read_h5ad_mapping_keys(hdf5_file, name, version)
+
+  read_h5ad_collection(hdf5_file, name, items, backed = backed, ...)
+}
+
+#' Read H5AD mapping keys
+#'
+#' Read keys for a mapping from an H5AD file
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#'
+#' @return a character vector
+#'
+#' @noRd
+read_h5ad_mapping_keys <- function(hdf5_file, name, version = "0.1.0") {
+  version <- match.arg(version)
+
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
   h5group <- rhdf5::H5Gopen(hdf5_file$handle, name)
-  items <- rhdf5::h5ls(h5group, recursive = FALSE)$name
-  rhdf5::H5Gclose(h5group)
+  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
-  read_h5ad_collection(hdf5_file, name, items, backed = backed, ...)
+  rhdf5::h5ls(h5group, recursive = FALSE)$name
 }
 
 #' Read H5AD data frame
@@ -618,28 +702,55 @@ read_h5ad_data_frame <- function(
 ) {
   version <- match.arg(version)
 
+  dim_keys <- read_h5ad_data_frame_keys(hdf5_file, name, version)
+  data <- read_h5ad_collection(hdf5_file, name, dim_keys$cols)
+
+  as.data.frame(
+    row.names = dim_keys$rows,
+    data,
+    check.names = FALSE,
+    fix.empty.names = FALSE
+  )
+}
+
+#' Read H5AD data frame keys
+#'
+#' Read keys for a data frame from an H5AD file
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#' @param dim Dimension to read keys for, either "both, "rows" or "cols"
+#'
+#' @return a character vector if dim is "rows" or "cols", or a list with
+#' elements "rows" and "cols" if dim is "both"
+#'
+#' @noRd
+read_h5ad_data_frame_keys <- function(
+  hdf5_file,
+  name,
+  version = "0.2.0",
+  dim = c("both", "rows", "cols")
+) {
+  version <- match.arg(version)
+  dim <- match.arg(dim)
+
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
   attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name, native = FALSE)
   index_name <- attrs[["_index"]]
   column_order <- attrs[["column-order"]]
 
-  index <- read_h5ad_element(hdf5_file, file.path(name, index_name))
-  # A data frame column should not be a DelayedArray so set backed = FALSE
-  data <- read_h5ad_collection(
-    hdf5_file,
-    name,
-    column_order,
-    backed = FALSE,
-    ...
-  )
-
-  as.data.frame(
-    row.names = index,
-    data,
-    check.names = FALSE,
-    fix.empty.names = FALSE
-  )
+  if (dim == "both") {
+    list(
+      rows = as.character(read_h5ad_element(hdf5_file, file.path(name, index_name))),
+      cols = as.character(column_order)
+    )
+  } else if (dim == "rows") {
+    as.character(read_h5ad_element(hdf5_file, file.path(name, index_name)))
+  } else if (dim == "cols") {
+    as.character(column_order)
+  }
 }
 
 #' Read multiple H5AD datatypes

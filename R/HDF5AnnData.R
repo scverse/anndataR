@@ -245,24 +245,34 @@ HDF5AnnData <- R6::R6Class(
     obs_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-        rownames(self$obs)
+        read_h5ad_element_keys(private$.h5obj, "obs", dim = "rows")
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
-        rownames(self$obs) <- value
+        write_h5ad_data_frame_index(
+          value,
+          private$.h5obj,
+          "obs",
+          private$.compression
+        )
       }
     },
     #' @field var_names See [AnnData-usage]
     var_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        rownames(self$var)
+        read_h5ad_element_keys(private$.h5obj, "var", dim = "rows")
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
-        rownames(self$var) <- value
+        write_h5ad_data_frame_index(
+          value,
+          private$.h5obj,
+          "var",
+          private$.compression
+        )
       }
     },
     #' @field uns See [AnnData-usage]
@@ -464,14 +474,47 @@ HDF5AnnData <- R6::R6Class(
       self
     },
 
+    #' @description See [AnnData-usage]
+    obs_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "obs", dim = "cols")
+    },
+    #' @description See [AnnData-usage]
+    var_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "var", dim = "cols")
+    },
+    #' @description See [AnnData-usage]
+    layers_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "layers")
+    },
+    #' @description See [AnnData-usage]
+    obsm_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "obsm")
+    },
+    #' @description See [AnnData-usage]
+    varm_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "varm")
+    },
+    #' @description See [AnnData-usage]
+    obsp_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "obsp")
+    },
+    #' @description See [AnnData-usage]
+    varp_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "varp")
+    },
+    #' @description See [AnnData-usage]
+    uns_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "uns")
+    },
+
     #' @description See the `n_obs` field in [AnnData-usage]
     n_obs = function() {
-      nrow(self$obs)
+      length(self$obs_names)
     },
 
     #' @description See the `n_vars` field in [AnnData-usage]
     n_vars = function() {
-      nrow(self$var)
+      length(self$var_names)
     },
 
     #' @description Open the HDF5 file handle
