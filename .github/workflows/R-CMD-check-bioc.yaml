@@ -48,6 +48,16 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install hdf5-tools libsz2 libaec-dev
 
+      ## Workaround: data.table (indirect dep via Seurat) fails to compile
+      ## on macOS ARM because libintl.h is missing.
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install gettext
+          mkdir -p ~/.R
+          echo "CPPFLAGS += -I$(brew --prefix gettext)/include" >> ~/.R/Makevars
+          echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
+
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
