@@ -54,39 +54,6 @@ jobs:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
 
-      - name: Set paths
-        id: set-paths
-        run: |
-          current_dir <- getwd()
-          cat("Current dir:", normalizePath(current_dir), "\n")
-
-          sep <- ifelse(.Platform$OS.type == "windows", "\\\\", "/")
-
-          pkg_name <- basename(current_dir)
-          cat("Package name:", pkg_name, "\n")
-          cat("pkg-name=", pkg_name, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-
-          working_dir <- ".."
-          working_dir_norm <- normalizePath(working_dir)
-          cat("Working dir:", working_dir_norm, "\n")
-          cat("working-dir=", working_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-
-          pkg_dir <- file.path(working_dir, pkg_name)
-          pkg_dir_norm <- normalizePath(pkg_dir)
-          cat("Package dir:", pkg_dir_norm, "\n")
-          cat("pkg-dir=", pkg_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-
-          # Handle different behavior of normalizePath on Windows
-          check_dir <- if (.Platform$OS.type == "windows") {
-            paste0(pkg_dir, ".Rcheck")
-          } else {
-            paste0(normalizePath(pkg_dir), ".Rcheck")
-          }
-          check_dir_norm <- normalizePath(check_dir)
-          cat("Check dir:", check_dir_norm, "\n")
-          cat("check-dir=", check_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-        shell: Rscript {0}
-
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
@@ -97,20 +64,20 @@ jobs:
           needs: check
 
       - name: Bioc - Build, Install, Check
+        id: bioc-check
         uses: grimbough/bioc-actions/build-install-check@v1
-        
+
       - name: Show testthat output
-        run: |
-          find . -name 'testthat.Rout*' -exec cat '{}' \; || true
+        if: always()
+        run: find .. -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
-        working-directory: ${{ steps.set-paths.outputs.working-dir }}
 
       - name: Upload check results
         if: failure()
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION ) }}
-          path: ${{ steps.set-paths.outputs.check-dir }}
+          name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION) }}
+          path: ${{ steps.bioc-check.outputs.check-dir }}
 
       - name: Run BiocCheck
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.bioc-version == 'devel'
