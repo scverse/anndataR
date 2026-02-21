@@ -26,11 +26,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 2}
-        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 3}
-        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 3}
-        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 4}
-        - { os: ubuntu-latest,  bioc-version: 'release',  bioc-mirror: 'https://packagemanager.posit.co/bioconductor',  Ncpus: 4}
+        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/' }
+        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/' }
+        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/' }
+        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/' }
+        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://packagemanager.posit.co/bioconductor' }
+
     steps:
 
       ## R CMD check complains about Windows line endings without this
