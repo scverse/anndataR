@@ -1,6 +1,7 @@
 # anndataR 1.1.0
 
 - Bioconductor 3.23 devel
+- Fix CI (PR #418).
 
 # anndataR 1.0.1
 
