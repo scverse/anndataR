@@ -72,9 +72,14 @@ jobs:
         with:
           python-version: ${{ matrix.config.python-version }}
 
-      - name: Install Python packages for vignettes
-        continue-on-error: true
-        run: pip install scanpy mudata
+      ## Workaround: llvmlite has no pre-built wheel on macOS x86_64,
+      ## so use --only-binary to avoid source builds.
+      ## See https://github.com/numba/numba/issues/10187#issuecomment-3800836440
+      - name: Install Python packages for vignettes (macOS Intel)
+        if: matrix.config.os == 'macOS-15-intel'
+        run: |
+          pip install --only-binary=numba,llvmlite scanpy mudata
+          echo "RETICULATE_PYTHON=$(which python3)" >> "$GITHUB_ENV"
 
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
