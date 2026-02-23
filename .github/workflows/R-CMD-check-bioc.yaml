@@ -76,33 +76,21 @@ jobs:
         continue-on-error: true
         run: pip install scanpy mudata
 
+      ## Workaround for mac os 15 intel!
+      ## Point reticulate at the actions/setup-python Python so it does not
+      ## create its own virtualenv and try to install packages via uv
+      ## (which fails for llvmlite on macOS-15-intel).
+      - name: Set RETICULATE_PYTHON
+        if: matrix.config.os == 'macOS-15-intel'
+        run: echo "RETICULATE_PYTHON=$(which python3)" >> "$GITHUB_ENV"
+        shell: bash
+
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache-version: ${{ matrix.config.cache }}
           extra-packages: any::rcmdcheck
           needs: check
-
-      - name: Check Python packages are visible to reticulate
-        run: |
-          python_available <- tryCatch(
-            {
-              reticulate::py_require("mudata")
-              reticulate::py_require("scanpy")
-              reticulate::py_config()
-              reticulate::py_module_available("scanpy") &&
-                reticulate::py_module_available("mudata")
-            },
-            error = function(e) {
-              FALSE
-            }
-          )
-          if (!python_available) {
-            system('echo "::warning::Python packages scanpy/mudata are not available to reticulate. The usage_python vignette will not be evaluated."')
-          } else {
-            message("Python packages scanpy and mudata are available to reticulate.")
-          }
-        shell: Rscript {0}
 
       - name: Bioc - Build, Install, Check
         id: bioc-check
@@ -112,6 +100,27 @@ jobs:
         if: always()
         run: find .. -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
+
+      - name: Check Python packages were available for vignettes
+        if: always()
+        run: |
+          python_available <- tryCatch(
+            {
+              reticulate::py_config()
+              reticulate::py_module_available("scanpy") &&
+                reticulate::py_module_available("mudata")
+            },
+            error = function(e) FALSE
+          )
+          if (!python_available) {
+            system(paste0(
+              'echo "::error::Python packages scanpy/mudata are not available ',
+              'to reticulate. The usage_python vignette was not evaluated."'
+            ))
+            quit(status = 1)
+          }
+          message("OK: Python packages scanpy and mudata are available.")
+        shell: Rscript {0}
       
       - name: Upload check results
         if: failure() && steps.bioc-check.outputs.check-dir != ''
