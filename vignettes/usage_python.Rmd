@@ -21,7 +21,7 @@ python_available <- tryCatch(
 
     reticulate::py_require("mudata")
     reticulate::py_require("scanpy")
-    
+
     reticulate::py_module_available("scanpy") &&
       reticulate::py_module_available("mudata")
   },
