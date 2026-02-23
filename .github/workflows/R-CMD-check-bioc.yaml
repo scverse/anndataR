@@ -28,8 +28,7 @@ jobs:
         config:
         - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 1, python-version: '3.x' }
         - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 1, python-version: '3.x' }
-        ## llvmlite (numba dep via scanpy) has no wheel for Python 3.14 on macOS x86_64, pin to 3.12
-        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 2, python-version: '3.12' }
+        - { os: macos-26-large, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 2, python-version: '3.x' }
         - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 1, python-version: '3.x' }
         - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://packagemanager.posit.co/bioconductor', cache: 1, python-version: '3.x' }
 
