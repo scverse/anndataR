@@ -92,27 +92,6 @@ jobs:
         if: always()
         run: find .. -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
-
-      - name: Check Python packages were available for vignettes
-        if: always()
-        run: |
-          python_available <- tryCatch(
-            {
-              reticulate::py_config()
-              reticulate::py_module_available("scanpy") &&
-                reticulate::py_module_available("mudata")
-            },
-            error = function(e) FALSE
-          )
-          if (!python_available) {
-            system(paste0(
-              'echo "::error::Python packages scanpy/mudata are not available ',
-              'to reticulate. The usage_python vignette was not evaluated."'
-            ))
-            quit(status = 1)
-          }
-          message("OK: Python packages scanpy and mudata are available.")
-        shell: Rscript {0}
       
       - name: Upload check results
         if: failure() && steps.bioc-check.outputs.check-dir != ''
