@@ -73,14 +73,8 @@ jobs:
           python-version: '3.x'
 
       - name: Install Python packages for vignettes
-        id: install-python-pkgs
         continue-on-error: true
         run: pip install scanpy mudata
-
-      - name: Warn if Python packages are unavailable
-        if: steps.install-python-pkgs.outcome == 'failure'
-        run: |
-          echo "::warning::Python packages scanpy/mudata could not be installed. The usage_python vignette will not be evaluated."
 
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
@@ -88,6 +82,27 @@ jobs:
           cache-version: ${{ matrix.config.cache }}
           extra-packages: any::rcmdcheck
           needs: check
+
+      - name: Check Python packages are visible to reticulate
+        run: |
+          python_available <- tryCatch(
+            {
+              reticulate::py_require("mudata")
+              reticulate::py_require("scanpy")
+              reticulate::py_config()
+              reticulate::py_module_available("scanpy") &&
+                reticulate::py_module_available("mudata")
+            },
+            error = function(e) {
+              FALSE
+            }
+          )
+          if (!python_available) {
+            system('echo "::warning::Python packages scanpy/mudata are not available to reticulate. The usage_python vignette will not be evaluated."')
+          } else {
+            message("Python packages scanpy and mudata are available to reticulate.")
+          }
+        shell: Rscript {0}
 
       - name: Bioc - Build, Install, Check
         id: bioc-check
