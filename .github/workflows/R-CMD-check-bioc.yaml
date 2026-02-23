@@ -82,6 +82,13 @@ jobs:
         if: always()
         run: find .. -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
+      
+      - name: Print bioc-check outputs
+        if: always()
+        run: |
+          echo "check-dir: ${{ steps.bioc-check.outputs.check-dir }}"
+          echo "ls -l .."
+          ls -l ..
 
       - name: Upload check results
         if: failure() && steps.bioc-check.outputs.check-dir != ''
