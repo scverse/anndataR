@@ -26,11 +26,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 1, python-version: '3.x' }
-        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 1, python-version: '3.x' }
-        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 2, python-version: '3.x' }
-        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  cache: 1, python-version: '3.x' }
-        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://packagemanager.posit.co/bioconductor', cache: 1, python-version: '3.x' }
+        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 2 }
+        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://packagemanager.posit.co/bioconductor', cache: 1 }
 
     steps:
 
@@ -81,7 +81,7 @@ jobs:
         if: matrix.config.os == 'macOS-15-intel'
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.config.python-version }}
+          python-version: "3.x"
       - name: Install Python packages for vignettes (macOS Intel)
         if: matrix.config.os == 'macOS-15-intel'
         run: |
