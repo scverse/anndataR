@@ -67,19 +67,28 @@ jobs:
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
+      ## Workaround: llvmlite has no pre-built wheel on macOS x86_64,
+      ## so use pip --only-binary and set RETICULATE_PYTHON to avoid source builds
+      ## See https://github.com/numba/numba/issues/10187#issuecomment-3800836440
       - name: Setup Python
+        if: matrix.config.os != 'macOS-15-intel'
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.config.python-version }}
-
-      ## Workaround: llvmlite has no pre-built wheel on macOS x86_64,
-      ## so use --only-binary to avoid source builds.
-      ## See https://github.com/numba/numba/issues/10187#issuecomment-3800836440
       - name: Install Python packages for vignettes (macOS Intel)
         if: matrix.config.os == 'macOS-15-intel'
         run: |
           pip install --only-binary=numba,llvmlite scanpy mudata
           echo "RETICULATE_PYTHON=$(which python3)" >> "$GITHUB_ENV"
+
+      ## On other runners, let reticulate set up its own venv via uv.
+      - name: Install Python packages for vignettes
+        if: matrix.config.os != 'macOS-15-intel'
+        shell: Rscript {0}
+        run: |
+          reticulate::py_require("scanpy")
+          reticulate::py_require("mudata")
+          reticulate::py_config()
 
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
