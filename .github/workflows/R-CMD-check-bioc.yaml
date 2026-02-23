@@ -67,6 +67,21 @@ jobs:
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Python packages for vignettes
+        id: install-python-pkgs
+        continue-on-error: true
+        run: pip install scanpy mudata
+
+      - name: Warn if Python packages are unavailable
+        if: steps.install-python-pkgs.outcome == 'failure'
+        run: |
+          echo "::warning::Python packages scanpy/mudata could not be installed. The usage_python vignette will not be evaluated."
+
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
