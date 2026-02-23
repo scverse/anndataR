@@ -84,11 +84,11 @@ jobs:
         shell: bash
       
       - name: Print bioc-check outputs
-        if: always()
         run: |
           echo "check-dir: ${{ steps.bioc-check.outputs.check-dir }}"
           echo "ls -l .."
           ls -l ..
+          exit 1
 
       - name: Upload check results
         if: failure() && steps.bioc-check.outputs.check-dir != ''
