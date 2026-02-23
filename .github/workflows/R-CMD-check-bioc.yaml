@@ -67,6 +67,13 @@ jobs:
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: ${{ matrix.config.cache }}
+          extra-packages: any::rcmdcheck
+          needs: check
+
       ## Workaround: llvmlite has no pre-built wheel on macOS x86_64,
       ## so use pip --only-binary and set RETICULATE_PYTHON to avoid source builds
       ## See https://github.com/numba/numba/issues/10187#issuecomment-3800836440
@@ -89,13 +96,6 @@ jobs:
           reticulate::py_require("scanpy")
           reticulate::py_require("mudata")
           reticulate::py_config()
-
-      - name: Install R dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          cache-version: ${{ matrix.config.cache }}
-          extra-packages: any::rcmdcheck
-          needs: check
 
       - name: Bioc - Build, Install, Check
         id: bioc-check

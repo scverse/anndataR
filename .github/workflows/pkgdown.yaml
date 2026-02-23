@@ -31,18 +31,6 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install Python packages for vignettes
-        run: pip install scanpy mudata
-
-      ## Point reticulate at the setup-python Python so it doesn't
-      ## create its own virtualenv via uv.
-      - name: Set RETICULATE_PYTHON
-        run: echo "RETICULATE_PYTHON=$(which python3)" >> "$GITHUB_ENV"
-
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
@@ -52,6 +40,14 @@ jobs:
           extra-packages: local::.
           needs: website
           cache-version: 2
+
+      ## Let reticulate set up its own venv via uv.
+      - name: Install Python packages for vignettes
+        shell: Rscript {0}
+        run: |
+          reticulate::py_require("scanpy")
+          reticulate::py_require("mudata")
+          reticulate::py_config()
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
