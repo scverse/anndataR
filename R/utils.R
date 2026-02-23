@@ -210,6 +210,7 @@ check_dims_and_skip <- function(
 #' @param cols Whether to check column names
 #'
 #' @returns `NULL`, invisibly
+#' @noRd
 # nolint start: object_name_linter
 warn_matrix_dimnames_not_writeable <- function(
   mat,
