@@ -46,7 +46,17 @@ jobs:
           needs: website
           cache-version: 2
 
-      - name: Install Python dependencies via reticulate
+      - name: Install Python packages for vignettes
+        run: |
+          pip install scanpy mudata
+
+      - name: Configure reticulate
+        run: |
+          echo "RETICULATE_PYTHON=$(which python3)" >> ~/.Renviron
+          echo "RETICULATE_USE_MANAGED_VENV=no" >> ~/.Renviron
+          echo "Python configured for reticulate:" && Rscript -e 'reticulate::py_config()'
+
+      - name: Verify Python dependencies via reticulate
         shell: Rscript {0}
         run: |
           reticulate::py_require("scanpy")
