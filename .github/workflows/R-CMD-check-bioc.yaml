@@ -88,15 +88,6 @@ jobs:
           pip install --only-binary=numba,llvmlite scanpy mudata
           echo "RETICULATE_PYTHON=$(which python3)" >> "$GITHUB_ENV"
 
-      ## On other runners, let reticulate set up its own venv via uv.
-      - name: Install Python packages for vignettes
-        if: matrix.config.os != 'macOS-15-intel'
-        shell: Rscript {0}
-        run: |
-          reticulate::py_require("scanpy")
-          reticulate::py_require("mudata")
-          reticulate::py_config()
-
       - name: Bioc - Build, Install, Check
         id: bioc-check
         uses: grimbough/bioc-actions/build-install-check@v1
