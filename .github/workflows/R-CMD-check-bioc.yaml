@@ -86,8 +86,12 @@ jobs:
         if: matrix.config.os == 'macOS-15-intel'
         run: |
           pip install --only-binary=numba,llvmlite scanpy mudata
-          echo "RETICULATE_PYTHON=$(which python3)" >> "$GITHUB_ENV"
-          echo "RETICULATE_USE_MANAGED_VENV=false" >> "$GITHUB_ENV"
+
+      - name: Configure reticulate for macOS Intel
+        if: matrix.config.os == 'macOS-15-intel'
+        run: |
+          echo "RETICULATE_PYTHON=$(which python3)" >> ~/.Renviron
+          echo "Python configured for reticulate:" && Rscript -e 'reticulate::py_config()'
 
       - name: Bioc - Build, Install, Check
         id: bioc-check
