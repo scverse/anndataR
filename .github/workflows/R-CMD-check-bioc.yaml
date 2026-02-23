@@ -78,7 +78,7 @@ jobs:
       ## so use pip --only-binary and set RETICULATE_PYTHON to avoid source builds
       ## See https://github.com/numba/numba/issues/10187#issuecomment-3800836440
       - name: Setup Python
-        if: matrix.config.os != 'macOS-15-intel'
+        if: matrix.config.os == 'macOS-15-intel'
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.config.python-version }}

@@ -41,14 +41,6 @@ jobs:
           needs: website
           cache-version: 2
 
-      ## Let reticulate set up its own venv via uv.
-      - name: Install Python packages for vignettes
-        shell: Rscript {0}
-        run: |
-          reticulate::py_require("scanpy")
-          reticulate::py_require("mudata")
-          reticulate::py_config()
-
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
