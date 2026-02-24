@@ -18,6 +18,3 @@
 ^data$
 ^codecov\.yml$
 ^benchmarks$
-^performance_before\.txt$
-^performance_after\.txt$
-^performance_script\.sh$
