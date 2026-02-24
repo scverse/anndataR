@@ -79,7 +79,7 @@ jobs:
       ## See https://github.com/numba/numba/issues/10187#issuecomment-3800638403
       - name: Cache conda packages (macOS Intel)
         if: matrix.config.os == 'macOS-15-intel'
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.local/share/r-miniconda
 
