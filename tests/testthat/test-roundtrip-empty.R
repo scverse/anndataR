@@ -3,6 +3,11 @@ skip_if_no_anndata_py()
 library(reticulate)
 
 ad <- reticulate::import("anndata", convert = FALSE)
+# anndata >= 0.12 requires opting in to write nullable strings (pd.arrays.StringArray)
+# see https://github.com/scverse/anndata/issues/2221
+tryCatch(ad$settings$allow_write_nullable_strings <- TRUE, error = function(e) {
+  NULL
+})
 bi <- reticulate::import_builtins()
 
 known_issues <- read_known_issues()

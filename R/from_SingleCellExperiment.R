@@ -213,6 +213,20 @@ from_SingleCellExperiment <- function(
       object
     }
   } else {
+    if (!is.data.frame(object) && !is.list(object)) {
+      cli_warn(c(
+        paste(
+          "Converting unknown object of class {.cls {class(object)[1]}} from",
+          "{.cls SingleCellExperiment}"
+        ),
+        "!" = "It will be returned as is but this may result in other errors",
+        "i" = paste(
+          "This may be solved by converting to a {.cls matrix}/{.cls Matrix},",
+          "{.cls data.frame}/{.cls DataFrame}, or {.cls list}/{.cls SimpleList}"
+        )
+      ))
+    }
+
     object
   }
 }

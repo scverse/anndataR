@@ -13,8 +13,6 @@ jobs:
     if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') && startsWith(github.event.comment.body, '/document') }}
     name: document
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GTHB_PAT }}
     permissions:
       contents: write
     steps:
@@ -24,7 +22,7 @@ jobs:
 
       - uses: r-lib/actions/pr-fetch@v2
         with:
-          repo-token: ${{ secrets.GTHB_PAT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -48,14 +46,12 @@ jobs:
 
       - uses: r-lib/actions/pr-push@v2
         with:
-          repo-token: ${{ secrets.GTHB_PAT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
   style:
     if: ${{ github.event.issue.pull_request && (github.event.comment.author_association == 'MEMBER' || github.event.comment.author_association == 'OWNER' || github.event.comment.author_association == 'COLLABORATOR') && startsWith(github.event.comment.body, '/style') }}
     name: style
     runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GTHB_PAT }}
     permissions:
       contents: write
     steps:
@@ -65,7 +61,7 @@ jobs:
 
       - uses: r-lib/actions/pr-fetch@v2
         with:
-          repo-token: ${{ secrets.GTHB_PAT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: r-lib/actions/setup-r@v2
 
@@ -98,4 +94,4 @@ jobs:
 
       - uses: r-lib/actions/pr-push@v2
         with:
-          repo-token: ${{ secrets.GTHB_PAT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

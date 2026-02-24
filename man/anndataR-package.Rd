@@ -13,14 +13,14 @@ Bring the power and flexibility of AnnData to the R ecosystem, allowing you to e
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://anndatar.data-intuitive.com}
+  \item \url{https://anndatar.scverse.org}
   \item \url{https://github.com/scverse/anndataR}
   \item Report bugs at \url{https://github.com/scverse/anndataR/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Robrecht Cannoodt \email{robrecht@data-intuitive.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
+\strong{Maintainer}: Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
 
 Authors:
 \itemize{
