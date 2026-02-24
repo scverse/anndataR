@@ -9,27 +9,13 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-# Check if required Python packages are available.
-python_available <- tryCatch(
-  {
-    # check if scanpy and mudata are already available before trying to install them
-    are_available <- reticulate::py_module_available("scanpy") &&
-      reticulate::py_module_available("mudata")
-    
-    if (are_available) {
-      TRUE
-    } else {
-      reticulate::py_require("mudata")
-      reticulate::py_require("scanpy")
+# Set up reticulate and check for required Python packages.
+reticulate::py_require("mudata")
+reticulate::py_require("scanpy")
 
-      reticulate::py_module_available("scanpy") &&
-        reticulate::py_module_available("mudata")
-    }
-  },
-  error = function(e) {
-    FALSE
-  }
-)
+# Check if required Python packages are available.
+python_available <- reticulate::py_module_available("scanpy") &&
+  reticulate::py_module_available("mudata")
 
 # On CI, fail the vignette build if Python packages are not available
 if (!python_available && nzchar(Sys.getenv("CI"))) {
