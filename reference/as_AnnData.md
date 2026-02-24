@@ -225,7 +225,7 @@ assay:
 - if `assay_name` is not the default assay, they will be *skipped* with
   a warning
 
-To override this behavior, provide a custom mapping using the
+To override this behaviour, provide a custom mapping using the
 `obsp_mapping` argument.
 
 ### Unexpected dimensions
@@ -319,10 +319,10 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 #> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 #> This message will be shown once per session
-#> 07:54:39 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 07:54:39 Read 200 rows and found 10 numeric columns
-#> 07:54:39 Using Annoy for neighbor search, n_neighbors = 30
-#> 07:54:39 Building Annoy index with metric = cosine, n_trees = 50
+#> 10:18:05 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 10:18:05 Read 200 rows and found 10 numeric columns
+#> 10:18:05 Using Annoy for neighbor search, n_neighbors = 30
+#> 10:18:05 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -376,15 +376,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 07:54:39 Writing NN index file to temp file /tmp/Rtmp3MJOGR/file1e48393f3ebf
-#> 07:54:39 Searching Annoy index using 1 thread, search_k = 3000
-#> 07:54:39 Annoy recall = 100%
-#> 07:54:40 Commencing smooth kNN distance calibration using 1 thread
+#> 10:18:05 Writing NN index file to temp file /tmp/RtmpnkWo8p/file1ed1271e3ac4
+#> 10:18:05 Searching Annoy index using 1 thread, search_k = 3000
+#> 10:18:05 Annoy recall = 100%
+#> 10:18:05 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 07:54:41 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 07:54:41 Commencing optimization for 500 epochs, with 6160 positive edges
-#> 07:54:41 Using rng type: pcg
-#> 07:54:42 Optimization finished
+#> 10:18:06 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 10:18:06 Commencing optimization for 500 epochs, with 6160 positive edges
+#> 10:18:06 Using rng type: pcg
+#> 10:18:07 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names

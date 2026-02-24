@@ -51,7 +51,7 @@ if (requireNamespace("reticulate", quietly = TRUE) &&
   )
   ad$as_ReticulateAnnData()
 }
-#> Downloading uv...
-#> Done!
+#> ReticulateAnnData object with n_obs × n_vars = 3 × 5
+#>     layers: 'A', 'B'
 # }
 ```

@@ -83,8 +83,7 @@ objects.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Python packages scanpy and mudata are required to run this vignette. Code chunks will not be evaluated."</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Python packages scanpy and mudata are required to run this vignette. Code chunks will not be evaluated.</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
 </h3>
@@ -100,13 +99,20 @@ chunks will not be evaluated but the examples remain visible.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_require.html" class="external-link">py_require</a></span><span class="op">(</span><span class="st">"scanpy"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://anndatar.data-intuitive.com" class="external-link">anndataR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://anndatar.scverse.org" class="external-link">anndataR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/reticulate/" class="external-link">reticulate</a></span><span class="op">)</span></span>
 <span><span class="va">sc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/reticulate/reference/import.html" class="external-link">import</a></span><span class="op">(</span><span class="st">"scanpy"</span><span class="op">)</span></span></code></pre></div>
 <p>Load a dataset directly from <em>scanpy</em>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">adata</span> <span class="op">&lt;-</span> <span class="va">sc</span><span class="op">$</span><span class="va">datasets</span><span class="op">$</span><span class="fu">pbmc3k_processed</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">adata</span></span></code></pre></div>
+<span><span class="va">adata</span></span>
+<span><span class="co">#&gt; ReticulateAnnData object with n_obs × n_vars = 2638 × 1838</span></span>
+<span><span class="co">#&gt;     obs: 'n_genes', 'percent_mito', 'n_counts', 'louvain'</span></span>
+<span><span class="co">#&gt;     var: 'n_cells'</span></span>
+<span><span class="co">#&gt;     uns: 'draw_graph', 'louvain', 'louvain_colors', 'neighbors', 'pca', 'rank_genes_groups'</span></span>
+<span><span class="co">#&gt;     obsm: 'X_pca', 'X_tsne', 'X_umap', 'X_draw_graph_fr'</span></span>
+<span><span class="co">#&gt;     varm: 'PCs'</span></span>
+<span><span class="co">#&gt;     obsp: 'distances', 'connectivities'</span></span></code></pre></div>
 <p>Apply <em>scanpy</em> functions directly:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sc</span><span class="op">$</span><span class="va">pp</span><span class="op">$</span><span class="fu">filter_cells</span><span class="op">(</span><span class="va">adata</span>, min_genes <span class="op">=</span> <span class="fl">200L</span><span class="op">)</span></span>
@@ -120,12 +126,32 @@ chunks will not be evaluated but the examples remain visible.</p>
 <code><a href="../articles/usage_singlecellexperiment.html">vignette("usage_singlecellexperiment")</a></code>):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sce_obj</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">$</span><span class="fu">as_SingleCellExperiment</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">sce_obj</span></span></code></pre></div>
+<span><span class="va">sce_obj</span></span>
+<span><span class="co">#&gt; class: SingleCellExperiment </span></span>
+<span><span class="co">#&gt; dim: 1838 538 </span></span>
+<span><span class="co">#&gt; metadata(7): draw_graph louvain ... rank_genes_groups log1p</span></span>
+<span><span class="co">#&gt; assays(1): X</span></span>
+<span><span class="co">#&gt; rownames(1838): TNFRSF4 CPSF3L ... S100B PRMT2</span></span>
+<span><span class="co">#&gt; rowData names(1): n_cells</span></span>
+<span><span class="co">#&gt; colnames(538): AAACATTGAGCTAC-1 AAACATTGATCAGC-1 ... TTTCGAACTCTCAT-1</span></span>
+<span><span class="co">#&gt;   TTTCTACTGAGGCA-1</span></span>
+<span><span class="co">#&gt; colData names(4): n_genes percent_mito n_counts louvain</span></span>
+<span><span class="co">#&gt; reducedDimNames(4): X_pca X_tsne X_umap X_draw_graph_fr</span></span>
+<span><span class="co">#&gt; mainExpName: NULL</span></span>
+<span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
 <p>Convert to <code>Seurat</code> (see
 <code><a href="../articles/usage_seurat.html">vignette("usage_seurat")</a></code>):</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">$</span><span class="fu">as_Seurat</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">seurat_obj</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: No <span style="color: #0000BB;">"counts"</span> or <span style="color: #0000BB;">"data"</span> layer found in `names(layers_mapping)`, this may lead to</span></span>
+<span><span class="co">#&gt; unexpected results when using the resulting <span style="color: #0000BB;">&lt;Seurat&gt;</span> object.</span></span>
+<span><span class="co">#&gt; Warning: Data is of class matrix. Coercing to dgCMatrix.</span></span>
+<span><span class="va">seurat_obj</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 1838 features across 538 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: RNA (1838 features, 0 variable features)</span></span>
+<span><span class="co">#&gt;  1 layer present: X</span></span>
+<span><span class="co">#&gt;  4 dimensional reductions calculated: X_pca, X_tsne, X_umap, X_draw_graph_fr</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="multi-modal-data-with-mudata">Multi-modal data with <em>mudata</em><a class="anchor" aria-label="anchor" href="#multi-modal-data-with-mudata"></a>
@@ -142,6 +168,7 @@ chunks will not be evaluated but the examples remain visible.</p>
 <span>  <span class="va">cache</span>,</span>
 <span>  <span class="st">"https://github.com/gtca/h5xx-datasets/raw/b1177ac8877c89d8bb355b072164384b4e9cc81d/datasets/minipbcite.h5mu"</span></span>
 <span><span class="op">)</span></span>
+<span><span class="co">#&gt; adding rname 'https://github.com/gtca/h5xx-datasets/raw/b1177ac8877c89d8bb355b072164384b4e9cc81d/datasets/minipbcite.h5mu'</span></span>
 <span></span>
 <span><span class="va">mdata</span> <span class="op">&lt;-</span> <span class="va">md</span><span class="op">$</span><span class="fu">read_h5mu</span><span class="op">(</span><span class="va">h5mu_file</span><span class="op">)</span></span></code></pre></div>
 <p>Access individual modalities and convert them:</p>
@@ -149,10 +176,30 @@ chunks will not be evaluated but the examples remain visible.</p>
 <code class="sourceCode R"><span><span class="va">rna_mod</span> <span class="op">&lt;-</span> <span class="va">mdata</span><span class="op">$</span><span class="va">mod</span><span class="op">[[</span><span class="st">"rna"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">rna_seurat</span> <span class="op">&lt;-</span> <span class="va">rna_mod</span><span class="op">$</span><span class="fu">as_Seurat</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No <span style="color: #0000BB;">"counts"</span> or <span style="color: #0000BB;">"data"</span> layer found in `names(layers_mapping)`, this may lead to</span></span>
+<span><span class="co">#&gt; unexpected results when using the resulting <span style="color: #0000BB;">&lt;Seurat&gt;</span> object.</span></span>
+<span><span class="co">#&gt; Warning: Data is of class matrix. Coercing to dgCMatrix.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rna_seurat</span><span class="op">)</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 27 features across 411 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: RNA (27 features, 0 variable features)</span></span>
+<span><span class="co">#&gt;  1 layer present: X</span></span>
+<span><span class="co">#&gt;  2 dimensional reductions calculated: X_pca, X_umap</span></span>
 <span></span>
 <span><span class="va">rna_sce</span> <span class="op">&lt;-</span> <span class="va">rna_mod</span><span class="op">$</span><span class="fu">as_SingleCellExperiment</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rna_sce</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">rna_sce</span><span class="op">)</span></span>
+<span><span class="co">#&gt; class: SingleCellExperiment </span></span>
+<span><span class="co">#&gt; dim: 27 411 </span></span>
+<span><span class="co">#&gt; metadata(8): celltype_colors hvg ... rank_genes_groups umap</span></span>
+<span><span class="co">#&gt; assays(1): X</span></span>
+<span><span class="co">#&gt; rownames(27): NKG7 KLRC2 ... MS4A1 KLF4</span></span>
+<span><span class="co">#&gt; rowData names(13): gene_ids feature_types ... mean std</span></span>
+<span><span class="co">#&gt; colnames(411): CAGCCAGGTCTCGACG-1 TTCTTCCTCTCGGTAA-1 ...</span></span>
+<span><span class="co">#&gt;   GACTCTCCAGCTCTGG-1 GAAATGACAAGCACCC-1</span></span>
+<span><span class="co">#&gt; colData names(6): n_genes_by_counts total_counts ... leiden celltype</span></span>
+<span><span class="co">#&gt; reducedDimNames(2): X_pca X_umap</span></span>
+<span><span class="co">#&gt; mainExpName: NULL</span></span>
+<span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
@@ -161,15 +208,165 @@ chunks will not be evaluated but the examples remain visible.</p>
 <h3 id="r">R<a class="anchor" aria-label="anchor" href="#r"></a>
 </h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.5.2 (2025-10-31)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.3 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       </span></span>
+<span><span class="co">#&gt;  [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          </span></span>
+<span><span class="co">#&gt; [10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: UTC</span></span>
+<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] reticulate_1.45.0 anndataR_1.1.0    BiocStyle_2.38.0 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             </span></span>
+<span><span class="co">#&gt;   [3] magrittr_2.0.4              spatstat.utils_3.2-1       </span></span>
+<span><span class="co">#&gt;   [5] farver_2.1.2                rmarkdown_2.30             </span></span>
+<span><span class="co">#&gt;   [7] fs_1.6.6                    ragg_1.5.0                 </span></span>
+<span><span class="co">#&gt;   [9] vctrs_0.7.1                 ROCR_1.0-12                </span></span>
+<span><span class="co">#&gt;  [11] memoise_2.0.1               spatstat.explore_3.7-0     </span></span>
+<span><span class="co">#&gt;  [13] htmltools_0.5.9             S4Arrays_1.10.1            </span></span>
+<span><span class="co">#&gt;  [15] curl_7.0.0                  SparseArray_1.10.8         </span></span>
+<span><span class="co">#&gt;  [17] sass_0.4.10                 sctransform_0.4.3          </span></span>
+<span><span class="co">#&gt;  [19] parallelly_1.46.1           KernSmooth_2.23-26         </span></span>
+<span><span class="co">#&gt;  [21] bslib_0.10.0                htmlwidgets_1.6.4          </span></span>
+<span><span class="co">#&gt;  [23] desc_1.4.3                  ica_1.0-3                  </span></span>
+<span><span class="co">#&gt;  [25] httr2_1.2.2                 plyr_1.8.9                 </span></span>
+<span><span class="co">#&gt;  [27] plotly_4.12.0               zoo_1.8-15                 </span></span>
+<span><span class="co">#&gt;  [29] cachem_1.1.0                igraph_2.2.2               </span></span>
+<span><span class="co">#&gt;  [31] mime_0.13                   lifecycle_1.0.5            </span></span>
+<span><span class="co">#&gt;  [33] pkgconfig_2.0.3             Matrix_1.7-4               </span></span>
+<span><span class="co">#&gt;  [35] R6_2.6.1                    fastmap_1.2.0              </span></span>
+<span><span class="co">#&gt;  [37] MatrixGenerics_1.22.0       fitdistrplus_1.2-6         </span></span>
+<span><span class="co">#&gt;  [39] future_1.69.0               shiny_1.13.0               </span></span>
+<span><span class="co">#&gt;  [41] digest_0.6.39               patchwork_1.3.2            </span></span>
+<span><span class="co">#&gt;  [43] S4Vectors_0.48.0            Seurat_5.4.0               </span></span>
+<span><span class="co">#&gt;  [45] tensor_1.5.1                RSpectra_0.16-2            </span></span>
+<span><span class="co">#&gt;  [47] irlba_2.3.7                 RSQLite_2.4.6              </span></span>
+<span><span class="co">#&gt;  [49] textshaping_1.0.4           GenomicRanges_1.62.1       </span></span>
+<span><span class="co">#&gt;  [51] filelock_1.0.3              progressr_0.18.0           </span></span>
+<span><span class="co">#&gt;  [53] spatstat.sparse_3.1-0       polyclip_1.10-7            </span></span>
+<span><span class="co">#&gt;  [55] httr_1.4.8                  abind_1.4-8                </span></span>
+<span><span class="co">#&gt;  [57] compiler_4.5.2              withr_3.0.2                </span></span>
+<span><span class="co">#&gt;  [59] bit64_4.6.0-1               S7_0.2.1                   </span></span>
+<span><span class="co">#&gt;  [61] DBI_1.2.3                   fastDummies_1.7.5          </span></span>
+<span><span class="co">#&gt;  [63] MASS_7.3-65                 rappdirs_0.3.4             </span></span>
+<span><span class="co">#&gt;  [65] DelayedArray_0.36.0         tools_4.5.2                </span></span>
+<span><span class="co">#&gt;  [67] lmtest_0.9-40               otel_0.2.0                 </span></span>
+<span><span class="co">#&gt;  [69] httpuv_1.6.16               future.apply_1.20.2        </span></span>
+<span><span class="co">#&gt;  [71] goftest_1.2-3               glue_1.8.0                 </span></span>
+<span><span class="co">#&gt;  [73] nlme_3.1-168                promises_1.5.0             </span></span>
+<span><span class="co">#&gt;  [75] grid_4.5.2                  Rtsne_0.17                 </span></span>
+<span><span class="co">#&gt;  [77] cluster_2.1.8.1             reshape2_1.4.5             </span></span>
+<span><span class="co">#&gt;  [79] generics_0.1.4              gtable_0.3.6               </span></span>
+<span><span class="co">#&gt;  [81] spatstat.data_3.1-9         tidyr_1.3.2                </span></span>
+<span><span class="co">#&gt;  [83] data.table_1.18.2.1         sp_2.2-1                   </span></span>
+<span><span class="co">#&gt;  [85] XVector_0.50.0              BiocGenerics_0.56.0        </span></span>
+<span><span class="co">#&gt;  [87] spatstat.geom_3.7-0         RcppAnnoy_0.0.23           </span></span>
+<span><span class="co">#&gt;  [89] ggrepel_0.9.6               RANN_2.6.2                 </span></span>
+<span><span class="co">#&gt;  [91] pillar_1.11.1               stringr_1.6.0              </span></span>
+<span><span class="co">#&gt;  [93] spam_2.11-3                 RcppHNSW_0.6.0             </span></span>
+<span><span class="co">#&gt;  [95] later_1.4.6                 splines_4.5.2              </span></span>
+<span><span class="co">#&gt;  [97] dplyr_1.2.0                 BiocFileCache_3.0.0        </span></span>
+<span><span class="co">#&gt;  [99] lattice_0.22-7              bit_4.6.0                  </span></span>
+<span><span class="co">#&gt; [101] deldir_2.0-4                survival_3.8-3             </span></span>
+<span><span class="co">#&gt; [103] tidyselect_1.2.1            SingleCellExperiment_1.32.0</span></span>
+<span><span class="co">#&gt; [105] miniUI_0.1.2                pbapply_1.7-4              </span></span>
+<span><span class="co">#&gt; [107] knitr_1.51                  gridExtra_2.3              </span></span>
+<span><span class="co">#&gt; [109] bookdown_0.46               IRanges_2.44.0             </span></span>
+<span><span class="co">#&gt; [111] Seqinfo_1.0.0               SummarizedExperiment_1.40.0</span></span>
+<span><span class="co">#&gt; [113] scattermore_1.2             stats4_4.5.2               </span></span>
+<span><span class="co">#&gt; [115] xfun_0.56                   Biobase_2.70.0             </span></span>
+<span><span class="co">#&gt; [117] matrixStats_1.5.0           stringi_1.8.7              </span></span>
+<span><span class="co">#&gt; [119] lazyeval_0.2.2              yaml_2.3.12                </span></span>
+<span><span class="co">#&gt; [121] evaluate_1.0.5              codetools_0.2-20           </span></span>
+<span><span class="co">#&gt; [123] tibble_3.3.1                BiocManager_1.30.27        </span></span>
+<span><span class="co">#&gt; [125] cli_3.6.5                   uwot_0.2.4                 </span></span>
+<span><span class="co">#&gt; [127] xtable_1.8-8                systemfonts_1.3.1          </span></span>
+<span><span class="co">#&gt; [129] jquerylib_0.1.4             Rcpp_1.1.1                 </span></span>
+<span><span class="co">#&gt; [131] spatstat.random_3.4-4       globals_0.19.0             </span></span>
+<span><span class="co">#&gt; [133] dbplyr_2.5.2                png_0.1-8                  </span></span>
+<span><span class="co">#&gt; [135] spatstat.univar_3.1-6       parallel_4.5.2             </span></span>
+<span><span class="co">#&gt; [137] blob_1.3.0                  pkgdown_2.2.0              </span></span>
+<span><span class="co">#&gt; [139] ggplot2_4.0.2               dotCall64_1.2              </span></span>
+<span><span class="co">#&gt; [141] listenv_0.10.0              viridisLite_0.4.3          </span></span>
+<span><span class="co">#&gt; [143] scales_1.4.0                ggridges_0.5.7             </span></span>
+<span><span class="co">#&gt; [145] SeuratObject_5.3.0          purrr_1.2.1                </span></span>
+<span><span class="co">#&gt; [147] rlang_1.1.7                 cowplot_1.2.0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="python">Python<a class="anchor" aria-label="anchor" href="#python"></a>
 </h3>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_config.html" class="external-link">py_config</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; python:         /opt/hostedtoolcache/Python/3.14.2/x64/bin/python3</span></span>
+<span><span class="co">#&gt; libpython:      /opt/hostedtoolcache/Python/3.14.2/x64/lib/libpython3.14.so</span></span>
+<span><span class="co">#&gt; pythonhome:     /opt/hostedtoolcache/Python/3.14.2/x64:/opt/hostedtoolcache/Python/3.14.2/x64</span></span>
+<span><span class="co">#&gt; version:        3.14.2 (main, Dec  8 2025, 02:53:13) [GCC 13.3.0]</span></span>
+<span><span class="co">#&gt; numpy:          /opt/hostedtoolcache/Python/3.14.2/x64/lib/python3.14/site-packages/numpy</span></span>
+<span><span class="co">#&gt; numpy_version:  2.4.2</span></span>
+<span><span class="co">#&gt; scanpy:         /opt/hostedtoolcache/Python/3.14.2/x64/lib/python3.14/site-packages/scanpy</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; NOTE: Python version was forced by RETICULATE_PYTHON</span></span>
 <span></span>
-<span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_list_packages.html" class="external-link">py_list_packages</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_list_packages.html" class="external-link">py_list_packages</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;              package     version                  requirement</span></span>
+<span><span class="co">#&gt; 1            anndata     0.12.10             anndata==0.12.10</span></span>
+<span><span class="co">#&gt; 2   array-api-compat      1.13.0     array-api-compat==1.13.0</span></span>
+<span><span class="co">#&gt; 3          contourpy       1.3.3             contourpy==1.3.3</span></span>
+<span><span class="co">#&gt; 4             cycler      0.12.1               cycler==0.12.1</span></span>
+<span><span class="co">#&gt; 5             donfig 0.8.1.post1          donfig==0.8.1.post1</span></span>
+<span><span class="co">#&gt; 6   fast-array-utils       1.3.1      fast-array-utils==1.3.1</span></span>
+<span><span class="co">#&gt; 7          fonttools      4.61.1            fonttools==4.61.1</span></span>
+<span><span class="co">#&gt; 8      google-crc32c       1.8.0         google-crc32c==1.8.0</span></span>
+<span><span class="co">#&gt; 9               h5py      3.15.1                 h5py==3.15.1</span></span>
+<span><span class="co">#&gt; 10            joblib       1.5.3                joblib==1.5.3</span></span>
+<span><span class="co">#&gt; 11        kiwisolver       1.4.9            kiwisolver==1.4.9</span></span>
+<span><span class="co">#&gt; 12   legacy-api-wrap         1.5         legacy-api-wrap==1.5</span></span>
+<span><span class="co">#&gt; 13          llvmlite      0.46.0             llvmlite==0.46.0</span></span>
+<span><span class="co">#&gt; 14        matplotlib      3.10.8           matplotlib==3.10.8</span></span>
+<span><span class="co">#&gt; 15            mudata       0.3.3                mudata==0.3.3</span></span>
+<span><span class="co">#&gt; 16           natsort       8.4.0               natsort==8.4.0</span></span>
+<span><span class="co">#&gt; 17          networkx       3.6.1              networkx==3.6.1</span></span>
+<span><span class="co">#&gt; 18             numba      0.64.0                numba==0.64.0</span></span>
+<span><span class="co">#&gt; 19         numcodecs      0.16.5            numcodecs==0.16.5</span></span>
+<span><span class="co">#&gt; 20             numpy       2.4.2                 numpy==2.4.2</span></span>
+<span><span class="co">#&gt; 21         packaging        26.0              packaging==26.0</span></span>
+<span><span class="co">#&gt; 22            pandas       2.3.3                pandas==2.3.3</span></span>
+<span><span class="co">#&gt; 23             patsy       1.0.2                 patsy==1.0.2</span></span>
+<span><span class="co">#&gt; 24            pillow      12.1.1               pillow==12.1.1</span></span>
+<span><span class="co">#&gt; 25       pynndescent       0.6.0           pynndescent==0.6.0</span></span>
+<span><span class="co">#&gt; 26         pyparsing       3.3.2             pyparsing==3.3.2</span></span>
+<span><span class="co">#&gt; 27   python-dateutil 2.9.0.post0 python-dateutil==2.9.0.post0</span></span>
+<span><span class="co">#&gt; 28              pytz      2025.2                 pytz==2025.2</span></span>
+<span><span class="co">#&gt; 29            PyYAML       6.0.3                PyYAML==6.0.3</span></span>
+<span><span class="co">#&gt; 30            scanpy        1.12                 scanpy==1.12</span></span>
+<span><span class="co">#&gt; 31      scikit-learn       1.8.0          scikit-learn==1.8.0</span></span>
+<span><span class="co">#&gt; 32             scipy      1.17.1                scipy==1.17.1</span></span>
+<span><span class="co">#&gt; 33           seaborn      0.13.2              seaborn==0.13.2</span></span>
+<span><span class="co">#&gt; 34     session-info2         0.4           session-info2==0.4</span></span>
+<span><span class="co">#&gt; 35               six      1.17.0                  six==1.17.0</span></span>
+<span><span class="co">#&gt; 36       statsmodels      0.14.6          statsmodels==0.14.6</span></span>
+<span><span class="co">#&gt; 37     threadpoolctl       3.6.0         threadpoolctl==3.6.0</span></span>
+<span><span class="co">#&gt; 38              tqdm      4.67.3                 tqdm==4.67.3</span></span>
+<span><span class="co">#&gt; 39 typing_extensions      4.15.0    typing_extensions==4.15.0</span></span>
+<span><span class="co">#&gt; 40            tzdata      2025.3               tzdata==2025.3</span></span>
+<span><span class="co">#&gt; 41        umap-learn      0.5.11           umap-learn==0.5.11</span></span>
+<span><span class="co">#&gt; 42              zarr       3.1.5                  zarr==3.1.5</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

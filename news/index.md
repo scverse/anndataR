@@ -3,6 +3,7 @@
 ## anndataR 1.1.0
 
 - Bioconductor 3.23 devel
+- Fix CI (PR [\#418](https://github.com/scverse/anndataR/issues/418)).
 
 ## anndataR 1.0.1
 

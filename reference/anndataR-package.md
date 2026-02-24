@@ -10,7 +10,7 @@ SingleCellExperiment and Seurat objects.
 
 Useful links:
 
-- <https://anndatar.data-intuitive.com>
+- <https://anndatar.scverse.org>
 
 - <https://github.com/scverse/anndataR>
 
@@ -18,7 +18,7 @@ Useful links:
 
 ## Author
 
-**Maintainer**: Robrecht Cannoodt <robrecht@data-intuitive.com>
+**Maintainer**: Robrecht Cannoodt <rcannood@gmail.com>
 ([ORCID](https://orcid.org/0000-0003-3641-729X)) (rcannood)
 
 Authors:
