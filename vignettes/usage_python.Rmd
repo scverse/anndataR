@@ -19,9 +19,13 @@ python_available <- reticulate::py_module_available("scanpy") &&
 
 # On CI, fail the vignette build if Python packages are not available
 if (!python_available && nzchar(Sys.getenv("CI"))) {
+  conf <- reticulate::py_config()
+  print_out <- capture.output(print(conf))
+
   stop(
     "Python packages scanpy/mudata are not available. ",
-    "The usage_python vignette cannot be rendered on CI without them."
+    "The usage_python vignette cannot be rendered on CI without them.",
+    "\n\nPython configuration:\n", paste(print_out, collapse = "\n")
   )
 }
 
