@@ -743,7 +743,10 @@ read_h5ad_data_frame_keys <- function(
 
   if (dim == "both") {
     list(
-      rows = as.character(read_h5ad_element(hdf5_file, file.path(name, index_name))),
+      rows = as.character(read_h5ad_element(
+        hdf5_file,
+        file.path(name, index_name)
+      )),
       cols = as.character(column_order)
     )
   } else if (dim == "rows") {

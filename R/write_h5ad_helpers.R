@@ -735,7 +735,7 @@ write_h5ad_data_frame_index <- function(
   version = "0.2.0"
 ) {
   hdf5_file$open_and_defer_close()
-  
+
   attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name, native = FALSE)
   index_name <- attrs[["_index"]]
 
