@@ -15,15 +15,16 @@ python_available <- tryCatch(
     # check if scanpy and mudata are already available before trying to install them
     are_available <- reticulate::py_module_available("scanpy") &&
       reticulate::py_module_available("mudata")
+    
     if (are_available) {
-      return(TRUE)
+      TRUE
+    } else {
+      reticulate::py_require("mudata")
+      reticulate::py_require("scanpy")
+
+      reticulate::py_module_available("scanpy") &&
+        reticulate::py_module_available("mudata")
     }
-
-    reticulate::py_require("mudata")
-    reticulate::py_require("scanpy")
-
-    reticulate::py_module_available("scanpy") &&
-      reticulate::py_module_available("mudata")
   },
   error = function(e) {
     FALSE
