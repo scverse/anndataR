@@ -94,8 +94,10 @@ jobs:
             method = "conda",
             channel = "conda-forge"
           )
+          # need to store this in Renviron because there's no easy way of
+          # passing env vars to bioc-actions/build-install-check
           writeLines(
-            "RETICULATE_PYTHON_ENV=r-miniconda",
+            paste0("RETICULATE_PYTHON=", reticulate::conda_python("r-reticulate")),
             "~/.Renviron"
           )
 
