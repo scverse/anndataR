@@ -21,6 +21,10 @@ style_vec <- function(
 ) {
   trunc_style <- match.arg(trunc_style)
 
+  if (is.null(x)) {
+    return(cli::col_blue("NULL"))
+  }
+
   style <- list(
     "vec-last" = last,
     "vec-sep2" = last,
