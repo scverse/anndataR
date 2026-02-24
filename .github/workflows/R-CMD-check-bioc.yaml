@@ -99,10 +99,7 @@ jobs:
 
           # Write to ~/.Renviron so R subprocesses (bioc-actions) see these
           writeLines(
-            c(
-              paste0("RETICULATE_PYTHON=", conda_python),
-              "RETICULATE_USE_MANAGED_VENV=no"
-            ),
+            paste0("RETICULATE_PYTHON=", conda_python),
             "~/.Renviron"
           )
 
