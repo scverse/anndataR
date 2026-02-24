@@ -31,10 +31,11 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: "3.x"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          cache: "pip"
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -46,22 +47,11 @@ jobs:
           needs: website
           cache-version: 2
 
-      # - name: Install Python packages for vignettes
-      #   run: |
-      #     pip install scanpy mudata
-
-      # - name: Configure reticulate
-      #   run: |
-      #     echo "RETICULATE_PYTHON=$(which python3)" >> ~/.Renviron
-      #     echo "RETICULATE_USE_MANAGED_VENV=no" >> ~/.Renviron
-      #     echo "Python configured for reticulate:" && Rscript -e 'reticulate::py_config()'
-
-      # - name: Verify Python dependencies via reticulate
-      #   shell: Rscript {0}
-      #   run: |
-      #     reticulate::py_require("scanpy")
-      #     reticulate::py_require("mudata")
-      #     reticulate::py_config()
+      - name: Configure python dependencies and reticulate
+        run: |
+          pip install scanpy mudata
+          echo "RETICULATE_PYTHON=$(which python3)" >> ~/.Renviron
+          echo "Python configured for reticulate:" && Rscript -e 'reticulate::py_config()'
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
