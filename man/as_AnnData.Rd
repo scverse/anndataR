@@ -186,7 +186,7 @@ warning
 warning
 }
 
-To override this behavior, provide a custom mapping using the
+To override this behaviour, provide a custom mapping using the
 \code{obsp_mapping} argument.
 }
 

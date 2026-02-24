@@ -73,7 +73,7 @@ test_that("S3 method rownames<-.AbstractAnnData works", {
   rownames(ad) <- new_names2
   expect_equal(rownames(ad), new_names2)
 
-  # Test assignment result (R's standard behavior for assignment operators)
+  # Test assignment result (R's standard behaviour for assignment operators)
   result <- rownames(ad) <- paste0("final_obs_", 1:10)
   expect_equal(result, paste0("final_obs_", 1:10))
   expect_equal(rownames(ad), paste0("final_obs_", 1:10))
@@ -103,7 +103,7 @@ test_that("S3 method colnames<-.AbstractAnnData works", {
   colnames(ad) <- new_names2
   expect_equal(colnames(ad), new_names2)
 
-  # Test assignment result (R's standard behavior for assignment operators)
+  # Test assignment result (R's standard behaviour for assignment operators)
   result <- colnames(ad) <- paste0("final_var_", 1:5)
   expect_equal(result, paste0("final_var_", 1:5))
   expect_equal(colnames(ad), paste0("final_var_", 1:5))
