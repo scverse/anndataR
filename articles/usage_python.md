@@ -228,7 +228,7 @@ sessionInfo()
 #>  [89] ggrepel_0.9.6               RANN_2.6.2                 
 #>  [91] pillar_1.11.1               stringr_1.6.0              
 #>  [93] spam_2.11-3                 RcppHNSW_0.6.0             
-#>  [95] later_1.4.6                 splines_4.5.2              
+#>  [95] later_1.4.7                 splines_4.5.2              
 #>  [97] dplyr_1.2.0                 BiocFileCache_3.0.0        
 #>  [99] lattice_0.22-7              bit_4.6.0                  
 #> [101] deldir_2.0-4                survival_3.8-3             
