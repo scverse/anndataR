@@ -21,16 +21,10 @@ test_that("generating dummy SingleCellExperiment works", {
 test_that("generating dummy Seurat works", {
   skip_if_not_installed("SeuratObject")
 
-  expect_warning(
-    dummy <- generate_dataset(format = "Seurat"),
-    "Data is of class matrix"
-  )
+  dummy <- generate_dataset(format = "Seurat")
   expect_s4_class(dummy, "Seurat")
 
-  expect_warning(
-    dummy <- generate_dataset(format = "Seurat", example = TRUE),
-    "Data is of class matrix"
-  )
+  dummy <- generate_dataset(format = "Seurat", example = TRUE)
   expect_s4_class(dummy, "Seurat")
 })
 

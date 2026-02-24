@@ -26,11 +26,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 2}
-        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 3}
-        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 3}
-        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/',  Ncpus: 4}
-        - { os: ubuntu-latest,  bioc-version: 'release',  bioc-mirror: 'https://packagemanager.posit.co/bioconductor',  Ncpus: 4}
+        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 2 }
+        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://packagemanager.posit.co/bioconductor', cache: 1 }
+
     steps:
 
       ## R CMD check complains about Windows line endings without this
@@ -47,44 +48,21 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install hdf5-tools libsz2 libaec-dev
 
+      ## Workaround: data.table (indirect dep via Seurat) fails to compile
+      ## on macOS ARM because libintl.h is missing.
+      - name: Install macOS dependencies
+        if: runner.os == 'macOS'
+        run: |
+          brew install gettext
+          mkdir -p ~/.R
+          echo "CPPFLAGS += -I$(brew --prefix gettext)/include" >> ~/.R/Makevars
+          echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
+
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
-
-      - name: Set paths
-        id: set-paths
-        run: |
-          current_dir <- getwd()
-          cat("Current dir:", normalizePath(current_dir), "\n")
-
-          sep <- ifelse(.Platform$OS.type == "windows", "\\\\", "/")
-
-          pkg_name <- basename(current_dir)
-          cat("Package name:", pkg_name, "\n")
-          cat("pkg-name=", pkg_name, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-
-          working_dir <- ".."
-          working_dir_norm <- normalizePath(working_dir)
-          cat("Working dir:", working_dir_norm, "\n")
-          cat("working-dir=", working_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-
-          pkg_dir <- file.path(working_dir, pkg_name)
-          pkg_dir_norm <- normalizePath(pkg_dir)
-          cat("Package dir:", pkg_dir_norm, "\n")
-          cat("pkg-dir=", pkg_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-
-          # Handle different behavior of normalizePath on Windows
-          check_dir <- if (.Platform$OS.type == "windows") {
-            paste0(pkg_dir, ".Rcheck")
-          } else {
-            paste0(normalizePath(pkg_dir), ".Rcheck")
-          }
-          check_dir_norm <- normalizePath(check_dir)
-          cat("Check dir:", check_dir_norm, "\n")
-          cat("check-dir=", check_dir_norm, "\n", file = Sys.getenv("GITHUB_OUTPUT"), sep = "", append = TRUE)
-        shell: Rscript {0}
 
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -92,24 +70,60 @@ jobs:
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          cache-version: ${{ matrix.config.cache }}
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Bioc - Build, Install, Check
-        uses: grimbough/bioc-actions/build-install-check@v1
-        
-      - name: Show testthat output
-        run: |
-          find . -name 'testthat.Rout*' -exec cat '{}' \; || true
-        shell: bash
-        working-directory: ${{ steps.set-paths.outputs.working-dir }}
-
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@v4
+      ## Workaround: llvmlite has no pre-built pip wheel on macOS x86_64,
+      ## but conda-forge does have a build. Use reticulate + conda to install.
+      ## See https://github.com/numba/numba/issues/10187#issuecomment-3800638403
+      - name: Cache conda packages (macOS Intel)
+        if: matrix.config.os == 'macOS-15-intel'
+        uses: actions/cache@v3
         with:
-          name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION ) }}
-          path: ${{ steps.set-paths.outputs.check-dir }}
+          path: ~/.local/share/r-miniconda
+
+      - name: Install Python packages via conda (macOS Intel)
+        id: install-conda
+        if: matrix.config.os == 'macOS-15-intel'
+        shell: Rscript {0}
+        run: |
+          reticulate::install_miniconda()
+          reticulate::py_install(
+            c("scanpy", "mudata"),
+            method = "conda",
+            channel = "conda-forge"
+          )
+          # need to store this in Renviron because there's no easy way of
+          # passing env vars to bioc-actions/build-install-check
+          writeLines(
+            paste0("RETICULATE_PYTHON=", reticulate::conda_python("r-reticulate")),
+            "~/.Renviron"
+          )
+
+      - name: Verify conda installation (macOS Intel)
+        if: matrix.config.os == 'macOS-15-intel'
+        shell: Rscript {0}
+        run: |
+          stopifnot(reticulate::py_module_available("scanpy"))
+          stopifnot(reticulate::py_module_available("mudata"))
+          cat("Python packages verified successfully\n")
+
+      - name: Bioc - Build, Install, Check
+        id: bioc-check
+        uses: grimbough/bioc-actions/build-install-check@v1
+
+      - name: Show testthat output
+        if: always()
+        run: find .. -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+      
+      - name: Upload check results
+        if: failure() && steps.bioc-check.outputs.check-dir != ''
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION) }}
+          path: ${{ steps.bioc-check.outputs.check-dir }}
 
       - name: Run BiocCheck
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.bioc-version == 'devel'

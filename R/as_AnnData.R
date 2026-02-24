@@ -118,7 +118,7 @@
 #'   - if `assay_name` is not the default assay, they will be _skipped_ with a
 #'     warning
 #'
-#'   To override this behavior, provide a custom mapping using the
+#'   To override this behaviour, provide a custom mapping using the
 #'   `obsp_mapping` argument.
 #'
 #'   ## Unexpected dimensions

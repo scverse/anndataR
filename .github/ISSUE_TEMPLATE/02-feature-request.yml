@@ -1,0 +1,32 @@
+name: Feature Request
+description: Suggest an idea to improve anndataR
+labels: ["enhancement", "triage"]
+type: feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your interest in improving anndataR! We'd love to hear your ideas.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A detailed description of the feature you'd like to see
+      placeholder: |
+        What problem does this feature solve?
+        Who would benefit from this feature?
+        Why is this important?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe how you envision this feature working
+      placeholder: >
+        Provide details about how you think this should work.
+        Include code examples if applicable.
+    validations:
+      required: false

@@ -145,6 +145,16 @@ as_Seurat <- function(
     )
   }
 
+  if (any(dim(adata) == 0)) {
+    cli_abort(c(
+      paste(
+        "{.arg adata} must have non-zero dimensions in both axes",
+        "to be converted to a {.cls Seurat} object"
+      ),
+      "i" = "Dimensions are: [{adata$n_obs()}, {adata$n_vars()}]"
+    ))
+  }
+
   object_metadata_mapping <- get_mapping(
     object_metadata_mapping,
     .as_Seurat_guess_object_metadata,

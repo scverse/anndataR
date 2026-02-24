@@ -13,14 +13,14 @@ Bring the power and flexibility of AnnData to the R ecosystem, allowing you to e
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://anndatar.data-intuitive.com}
+  \item \url{https://anndatar.scverse.org}
   \item \url{https://github.com/scverse/anndataR}
   \item Report bugs at \url{https://github.com/scverse/anndataR/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Robrecht Cannoodt \email{robrecht@data-intuitive.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
+\strong{Maintainer}: Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
 
 Authors:
 \itemize{
@@ -35,7 +35,7 @@ Other contributors:
   \item Isaac Virshup (\href{https://orcid.org/0000-0002-1710-8945}{ORCID}) (ivirshup) [contributor]
   \item Brian Schilder \email{brian_schilder@alumni.brown.edu} (\href{https://orcid.org/0000-0001-5949-2191}{ORCID}) (bschilder) [contributor]
   \item Chananchida Sang-aram (\href{https://orcid.org/0000-0002-0922-0822}{ORCID}) (csangara) [contributor]
-  \item Data Intuitive \email{info@data-intuitive.com} [funder, copyright holder]
+  \item Data Intuitive \email{info@data-intuitive.com} [funder]
   \item Chan Zuckerberg Initiative [funder]
   \item scverse consortium [sponsor]
 }

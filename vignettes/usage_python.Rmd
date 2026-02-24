@@ -9,12 +9,24 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+# Set up reticulate and check for required Python packages.
 reticulate::py_require("mudata")
 reticulate::py_require("scanpy")
 
-# Check if required Python packages are available
+# Check if required Python packages are available.
 python_available <- reticulate::py_module_available("scanpy") &&
   reticulate::py_module_available("mudata")
+
+# On CI, fail the vignette build if Python packages are not available
+if (!python_available && nzchar(Sys.getenv("CI"))) {
+  conf <- reticulate::py_config()
+  conf_str <- paste(capture.output(print(conf)), collapse = "\n")
+  stop(
+    "Python packages scanpy/mudata are not available. ",
+    "The usage_python vignette cannot be rendered on CI without them.",
+    "\n\nPython configuration:\n", conf_str
+  )
+}
 
 knitr::opts_chunk$set(
   collapse = TRUE,

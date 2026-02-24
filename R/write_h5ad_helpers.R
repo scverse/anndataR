@@ -656,21 +656,21 @@ write_h5ad_data_frame <- function(
     )
   }
 
-  # write index
-  write_h5ad_element(
-    index_value,
-    file,
-    paste0(name, "/", index_name),
-    compression
-  )
-
-  # Write additional data frame attributes
+  # Write index name
   hdf5_write_attribute(
     file,
     name,
     "_index",
     index_name,
     is_scalar = TRUE
+  )
+
+  # Write index
+  write_h5ad_data_frame_index(
+    index_value,
+    file,
+    name,
+    compression
   )
 
   col_order <- colnames(value)
@@ -681,12 +681,43 @@ write_h5ad_data_frame <- function(
     col_order <- numeric()
   }
 
+  # Write column order
   hdf5_write_attribute(
     file,
     name,
     "column-order",
     col_order,
     is_scalar = FALSE
+  )
+}
+
+#' Write H5AD data frame index
+#'
+#' Write a data frame index to an H5AD file
+#'
+#' @noRd
+#'
+#' @param index_value Value to write
+#' @param file An open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be
+#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param version Encoding version of the element to write
+write_h5ad_data_frame_index <- function(
+  index_value,
+  file,
+  name,
+  compression,
+  version = "0.2.0"
+) {
+  attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
+  index_name <- attrs[["_index"]]
+
+  write_h5ad_element(
+    index_value,
+    file,
+    paste0(name, "/", index_name),
+    compression
   )
 }
 

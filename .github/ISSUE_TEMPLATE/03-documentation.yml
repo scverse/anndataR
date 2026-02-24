@@ -1,0 +1,45 @@
+name: Documentation Issue
+description: Report an issue with documentation, examples, or tutorials
+labels: ["documentation", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Thanks for helping us improve our documentation!
+        This includes man pages, vignettes, README, comments, or any other documentation.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs improvement?
+      options:
+        - Function/method documentation (man pages)
+        - Vignette or tutorial
+        - README
+        - Code comments
+        - Website/pkgdown site
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: Issue Description
+      description: What is wrong or missing in the documentation?
+      placeholder: |
+        Describe what is unclear, incorrect, missing, or could be improved.
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested Improvement
+      description: How would you improve this documentation?
+      placeholder: >
+        Provide specific suggestions for how to improve the documentation.
+        Include proposed text, code examples, or other content if possible.
+    validations:
+      required: false

@@ -197,3 +197,66 @@ check_dims_and_skip <- function(
     x
   }
 }
+
+#' Warn matrix dim names not writeable
+#'
+#' Warn that matrix dim names can not be written to a given object
+#'
+#' @param mat The object to check, if not a matrix-like object nothing is
+#' checked
+#' @param label A label for `mat` to use in warning messages
+#' @param to_object The object to which `mat` would be written
+#' @param rows Whether to check row names
+#' @param cols Whether to check column names
+#'
+#' @returns `NULL`, invisibly
+#' @noRd
+# nolint start: object_name_linter
+warn_matrix_dimnames_not_writeable <- function(
+  mat,
+  label,
+  to_object,
+  rows = TRUE,
+  cols = TRUE
+) {
+  # nolint end: object_name_linter
+  if (!is.matrix(mat) && !inherits(mat, "Matrix")) {
+    return(invisible())
+  }
+
+  if (rows && !is.null(rownames(mat))) {
+    cli_warn(
+      c(
+        paste(
+          "Matrix row names cannot be written to {.obj_type_friendly {to_object}},",
+          "they will be lost"
+        ),
+        "i" = paste(
+          "To write row names for {.field {label}}, store it as",
+          "{.cls data.frame} instead of {.obj_type_friendly {mat}}"
+        ),
+        "i" = "{.strong NOTE:} {.field obs_names} and {.field var_names} are stored separately"
+      ),
+      call = NULL
+    )
+  }
+
+  if (cols && !is.null(colnames(mat))) {
+    cli_warn(
+      c(
+        paste(
+          "Matrix column names cannot be written to {.obj_type_friendly {to_object}},",
+          "they will be lost"
+        ),
+        "i" = paste(
+          "To write column names for {.field {label}}, store it as",
+          "{.cls data.frame} instead of {.obj_type_friendly {mat}}"
+        ),
+        "i" = "{.strong NOTE:} {.field obs_names} and {.field var_names} are stored separately"
+      ),
+      call = NULL
+    )
+  }
+
+  invisible()
+}

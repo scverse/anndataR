@@ -306,14 +306,23 @@ AbstractAnnData <- R6::R6Class(
   ),
   private = list(
     # @description `.validate_aligned_array()` checks that dimensions are
-    #   consistent with the anndata object.
+    #   consistent with the AnnData object.
     #
-    # @param mat A matrix to validate
-    # @param label Must be `"X"` or `"layer[[...]]"` where `...` is
-    #   the name of a layer.
-    # @param shape Expected dimensions of matrix
+    # @param mat A matrix (or data frame) to validate
+    # @param label Must be `"X"` or `"<<slot>>[[...]]"` where `<<slot>>` is the
+    #   name of an AnnData slot and `...` is an item in that slot
+    # @param shape Expected dimensions of `mat`, if shorter than `dim(mat)`,
+    #   only the first `length(shape)` dimensions are checked
     # @param expected_rownames Expected row names
     # @param expected_colnames Expected column names
+    # @param strip_rownames Whether to strip row names after validation
+    # @param strip_colnames Whether to strip column names after validation
+    # @param warn_rownames Whether to warn if row names are present but can not
+    #   be written
+    # @param warn_colnames Whether to warn if column names are present but can
+    #   not be written
+    #
+    # @return The validated matrix
     .validate_aligned_array = function(
       mat,
       label,
@@ -321,7 +330,9 @@ AbstractAnnData <- R6::R6Class(
       expected_rownames = NULL,
       expected_colnames = NULL,
       strip_rownames = TRUE,
-      strip_colnames = TRUE
+      strip_colnames = TRUE,
+      warn_rownames = FALSE,
+      warn_colnames = FALSE
     ) {
       if (is.null(mat)) {
         return(mat)
@@ -347,7 +358,7 @@ AbstractAnnData <- R6::R6Class(
         )
       }
 
-      if (!is.null(expected_rownames) & has_row_names(mat)) {
+      if (!is.null(expected_rownames) && has_row_names(mat)) {
         if (!identical(rownames(mat), expected_rownames)) {
           cli_abort(
             c(
@@ -376,10 +387,19 @@ AbstractAnnData <- R6::R6Class(
           )
         }
       }
+
       # Strip colnames for storage if requested
       if (strip_colnames) {
         colnames(mat) <- NULL
       }
+
+      warn_matrix_dimnames_not_writeable(
+        mat,
+        label,
+        to_object = self,
+        rows = warn_rownames,
+        cols = warn_colnames
+      )
 
       mat
     },
@@ -389,9 +409,17 @@ AbstractAnnData <- R6::R6Class(
     # @param collection A named list of 0 or more matrix elements with
     #   whose entries will be validated
     # @param label The label of the collection, used for error messages
-    # @param shape Expected dimensions of arrays. Arrays may have more dimensions than specified here
+    # @param shape Expected dimensions of items in `collection`
     # @param expected_rownames Expected row names
     # @param expected_colnames Expected column names
+    # @param strip_rownames Whether to strip row names after validation
+    # @param strip_colnames Whether to strip column names after validation
+    # @param warn_rownames Whether to warn if row names are present but can not
+    #   be written
+    # @param warn_colnames Whether to warn if column names are present but can
+    #   not be written
+    #
+    # @return The validated mapping
     .validate_aligned_mapping = function(
       collection,
       label,
@@ -399,7 +427,9 @@ AbstractAnnData <- R6::R6Class(
       expected_rownames = NULL,
       expected_colnames = NULL,
       strip_rownames = TRUE,
-      strip_colnames = TRUE
+      strip_colnames = TRUE,
+      warn_rownames = FALSE,
+      warn_colnames = FALSE
     ) {
       if (is.null(collection)) {
         return(collection)
@@ -417,7 +447,9 @@ AbstractAnnData <- R6::R6Class(
           expected_rownames = expected_rownames,
           expected_colnames = expected_colnames,
           strip_rownames = strip_rownames,
-          strip_colnames = strip_colnames
+          strip_colnames = strip_colnames,
+          warn_rownames = warn_rownames,
+          warn_colnames = warn_colnames
         )
       }
 
@@ -426,7 +458,18 @@ AbstractAnnData <- R6::R6Class(
 
     # @description `.validate_named_list()` checks for whether a value
     #   is NULL or a named list and throws an error if it is not.
-    .validate_named_list = function(collection, label) {
+    #
+    # @param collection A collection to validate
+    # @param label The label of the collection, used for error messages
+    # @param warn_matrix_dimnames Whether to warn if matrix dim names are
+    #   present but cannot be written for items in `collection`
+    #
+    # @return The validated named list
+    .validate_named_list = function(
+      collection,
+      label,
+      warn_matrix_dimnames = FALSE
+    ) {
       if (is.null(collection)) {
         return(collection)
       }
@@ -440,6 +483,16 @@ AbstractAnnData <- R6::R6Class(
           "{.field {label}} must be a named {.cls list}, got {.cls {class(collection)}}",
           call = rlang::caller_env()
         )
+      }
+
+      if (warn_matrix_dimnames) {
+        purrr::walk2(collection, names(collection), \(.item, .item_name) {
+          warn_matrix_dimnames_not_writeable(
+            .item,
+            label = paste0(label, "[['", .item_name, "']]"),
+            to_object = self
+          )
+        })
       }
 
       collection

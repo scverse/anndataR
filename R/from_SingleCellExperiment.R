@@ -173,6 +173,13 @@ from_SingleCellExperiment <- function(
     reduction <- SingleCellExperiment::reducedDim(sce, reduction_name)
     if (inherits(reduction, "LinearEmbeddingMatrix")) {
       varm_mapping[reduction_name] <- reduction_name
+    } else if ("rotation" %in% names(attributes(reduction))) {
+      cli_warn(paste(
+        "Reduction {.val {reduction_name}} in SCE object has a {.attr rotation} attribute,",
+        "but is not a {.cls LinearEmbeddingMatrix}.",
+        "To include the {.attr rotation} information in {.code varm},",
+        "convert it to a {.cls LinearEmbeddingMatrix} first."
+      ))
     }
   }
 

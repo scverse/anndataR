@@ -106,7 +106,8 @@ HDF5AnnData <- R6::R6Class(
           c(self$n_obs()),
           expected_rownames = self$obs_names,
           strip_rownames = TRUE,
-          strip_colnames = FALSE
+          strip_colnames = FALSE,
+          warn_colnames = TRUE
         ) |>
           write_h5ad_element(
             private$.h5obj,
@@ -131,7 +132,8 @@ HDF5AnnData <- R6::R6Class(
           c(self$n_vars()),
           expected_rownames = self$var_names,
           strip_rownames = TRUE,
-          strip_colnames = FALSE
+          strip_colnames = FALSE,
+          warn_colnames = TRUE
         ) |>
           write_h5ad_element(
             private$.h5obj,
@@ -228,10 +230,15 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-        rownames(self$obs)
+        read_h5ad_element_keys(private$.h5obj, "obs", dim = "rows")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
-        rownames(self$obs) <- value
+        write_h5ad_data_frame_index(
+          value,
+          private$.h5obj,
+          "obs",
+          private$.compression
+        )
       }
     },
     #' @field var_names See [AnnData-usage]
@@ -240,10 +247,15 @@ HDF5AnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        rownames(self$var)
+        read_h5ad_element_keys(private$.h5obj, "var", dim = "rows")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
-        rownames(self$var) <- value
+        write_h5ad_data_frame_index(
+          value,
+          private$.h5obj,
+          "var",
+          private$.compression
+        )
       }
     },
     #' @field uns See [AnnData-usage]
@@ -255,7 +267,11 @@ HDF5AnnData <- R6::R6Class(
         read_h5ad_element(private$.h5obj, "uns")
       } else {
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
-        private$.validate_named_list(value, "uns") |>
+        private$.validate_named_list(
+          value,
+          "uns",
+          warn_matrix_dimnames = TRUE
+        ) |>
           write_h5ad_element(
             private$.h5obj,
             "uns",
@@ -433,6 +449,39 @@ HDF5AnnData <- R6::R6Class(
       self
     },
 
+    #' @description See [AnnData-usage]
+    obs_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "obs", dim = "cols")
+    },
+    #' @description See [AnnData-usage]
+    var_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "var", dim = "cols")
+    },
+    #' @description See [AnnData-usage]
+    layers_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "layers")
+    },
+    #' @description See [AnnData-usage]
+    obsm_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "obsm")
+    },
+    #' @description See [AnnData-usage]
+    varm_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "varm")
+    },
+    #' @description See [AnnData-usage]
+    obsp_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "obsp")
+    },
+    #' @description See [AnnData-usage]
+    varp_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "varp")
+    },
+    #' @description See [AnnData-usage]
+    uns_keys = function() {
+      read_h5ad_element_keys(private$.h5obj, "uns")
+    },
+
     #' @description Close the HDF5 file
     close = function() {
       if (rhdf5::H5Iis_valid(private$.h5obj)) {
@@ -448,12 +497,12 @@ HDF5AnnData <- R6::R6Class(
 
     #' @description See the `n_obs` field in [AnnData-usage]
     n_obs = function() {
-      nrow(self$obs)
+      length(self$obs_names)
     },
 
     #' @description See the `n_vars` field in [AnnData-usage]
     n_vars = function() {
-      nrow(self$var)
+      length(self$var_names)
     }
   )
 )
