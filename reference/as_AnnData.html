@@ -217,7 +217,17 @@ tables for each object type</p></li>
 
 <p>This table describes how slots in a
 <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment::SingleCellExperiment</a></code> object to the new <code>AnnData</code>
-object.</p><table class="table table"><tr><td><strong>From <code>SingleCellExperiment</code></strong></td><td><strong>To <code>AnnData</code></strong></td><td><strong>Example mapping argument</strong></td><td><strong>Default</strong></td></tr><tr><td><code>assays(x)</code></td><td><code>adata$X</code></td><td><code>x_mapping = "counts"</code></td><td>Nothing is copied to <code>X</code></td></tr><tr><td><code>assays(x)</code></td><td><code>adata$layers</code></td><td><code>layers_mapping = c(counts = "counts")</code></td><td>All items are copied by name</td></tr><tr><td><code>colData(x)</code></td><td><code>adata$obs</code></td><td><code>obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")</code></td><td>All columns are copied by name</td></tr><tr><td><code>rowData(x)</code></td><td><code>adata$var</code></td><td><code>var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")</code></td><td>All columns are copied by name</td></tr><tr><td><code>reducedDims(x)</code></td><td><code>adata$obsm</code></td><td><code>obsm_mapping = c(X_pca = "pca")</code></td><td>All items are copied by name</td></tr><tr><td><code>featureLoadings(reducedDims(x))</code></td><td><code>adata$varm</code></td><td><code>varm_mapping = c(PCs = "pca")</code></td><td>Feature loadings from all <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/LinearEmbeddingMatrix.html" class="external-link">SingleCellExperiment::LinearEmbeddingMatrix</a></code> objects in <code>reducedDims(x)</code></td></tr><tr><td><code>colPairs(x)</code></td><td><code>adata$obsp</code></td><td><code>obsp_mapping = c(connectivities = "RNA_nn")</code></td><td>All items are copied by name</td></tr><tr><td><code>rowPairs(x)</code></td><td><code>adata$varp</code></td><td><code>varp_mapping = c(similarities = "gene_overlaps")</code></td><td>All items are copied by name</td></tr><tr><td><code>metadata(x)</code></td><td><code>adata$uns</code></td><td><code>uns_mapping = c(metadata = "project_metadata")</code></td><td>All items are copied by name</td></tr></table></div>
+object.</p><table class="table table"><tr><td><strong>From <code>SingleCellExperiment</code></strong></td><td><strong>To <code>AnnData</code></strong></td><td><strong>Example mapping argument</strong></td><td><strong>Default</strong></td></tr><tr><td><code>assays(x)</code></td><td><code>adata$X</code></td><td><code>x_mapping = "counts"</code></td><td>Nothing is copied to <code>X</code></td></tr><tr><td><code>assays(x)</code></td><td><code>adata$layers</code></td><td><code>layers_mapping = c(counts = "counts")</code></td><td>All items are copied by name</td></tr><tr><td><code>colData(x)</code></td><td><code>adata$obs</code></td><td><code>obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")</code></td><td>All columns are copied by name</td></tr><tr><td><code>rowData(x)</code></td><td><code>adata$var</code></td><td><code>var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")</code></td><td>All columns are copied by name</td></tr><tr><td><code>reducedDims(x)</code></td><td><code>adata$obsm</code></td><td><code>obsm_mapping = c(X_pca = "pca")</code></td><td>All items are copied by name</td></tr><tr><td><code>featureLoadings(reducedDims(x))</code></td><td><code>adata$varm</code></td><td><code>varm_mapping = c(PCs = "pca")</code></td><td>Feature loadings from all <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/LinearEmbeddingMatrix.html" class="external-link">SingleCellExperiment::LinearEmbeddingMatrix</a></code> objects in <code>reducedDims(x)</code></td></tr><tr><td><code>colPairs(x)</code></td><td><code>adata$obsp</code></td><td><code>obsp_mapping = c(connectivities = "RNA_nn")</code></td><td>All items are copied by name</td></tr><tr><td><code>rowPairs(x)</code></td><td><code>adata$varp</code></td><td><code>varp_mapping = c(similarities = "gene_overlaps")</code></td><td>All items are copied by name</td></tr><tr><td><code>metadata(x)</code></td><td><code>adata$uns</code></td><td><code>uns_mapping = c(metadata = "project_metadata")</code></td><td>All items are copied by name</td></tr></table><div class="section">
+<h3 id="unnamed-assays">Unnamed assays<a class="anchor" aria-label="anchor" href="#unnamed-assays"></a></h3>
+
+
+<p>If <code>assayNames(x)</code> is <code>NULL</code> or any assay names are empty they will
+automatically be named with a warning:</p>
+<p><strong>Examples:</strong></p><ul><li><p>Old names: <code>NULL</code> -&gt; New names: <code>"assay1", "assay2", ...</code></p></li>
+<li><p>Old names: <code>"counts"</code> -&gt; New names: <code>"counts", "assay2"</code></p></li>
+</ul></div>
+
+    </div>
     <div class="section level2">
     <h2 id="converting-from-a-seurat-object">Converting from a <code>Seurat</code> object<a class="anchor" aria-label="anchor" href="#converting-from-a-seurat-object"></a></h2>
 
@@ -333,10 +343,10 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> This message will be shown once per session</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 UMAP embedding parameters a = 0.9922 b = 1.112</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 Read 200 rows and found 10 numeric columns</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 Using Annoy for neighbor search, n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 Building Annoy index with metric = cosine, n_trees = 50</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:16 UMAP embedding parameters a = 0.9922 b = 1.112</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:16 Read 200 rows and found 10 numeric columns</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:16 Using Annoy for neighbor search, n_neighbors = 30</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:16 Building Annoy index with metric = cosine, n_trees = 50</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0%   10   20   30   40   50   60   70   80   90   100%</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [----|----|----|----|----|----|----|----|----|----|</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
@@ -390,15 +400,15 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> |</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 Writing NN index file to temp file /tmp/Rtmp6OL7QT/file1e9a37b3a98</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 Searching Annoy index using 1 thread, search_k = 3000</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 Annoy recall = 100%</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:47 Commencing smooth kNN distance calibration using 1 thread</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:16 Writing NN index file to temp file /tmp/RtmpH2Y58k/file1ec81aed2b25</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:16 Searching Annoy index using 1 thread, search_k = 3000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:16 Annoy recall = 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:17 Commencing smooth kNN distance calibration using 1 thread</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  with target n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:48 Initializing from normalized Laplacian + noise (using RSpectra)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:48 Commencing optimization for 500 epochs, with 6160 positive edges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:48 Using rng type: pcg</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 06:30:49 Optimization finished</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:18 Initializing from normalized Laplacian + noise (using RSpectra)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:18 Commencing optimization for 500 epochs, with 6160 positive edges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:18 Using rng type: pcg</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 07:54:18 Optimization finished</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">as_AnnData</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Row names of `Loadings(seurat_obj, <span style="color: #0000BB;">"pca"</span>)` do not match the expected var names</span>

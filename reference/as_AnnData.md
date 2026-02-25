@@ -186,6 +186,17 @@ object to the new `AnnData` object.
 | `rowPairs(x)`                     | `adata$varp`     | `varp_mapping = c(similarities = "gene_overlaps")`               | All items are copied by name                                                                                                                                                   |
 | `metadata(x)`                     | `adata$uns`      | `uns_mapping = c(metadata = "project_metadata")`                 | All items are copied by name                                                                                                                                                   |
 
+### Unnamed assays
+
+If `assayNames(x)` is `NULL` or any assay names are empty they will
+automatically be named with a warning:
+
+**Examples:**
+
+- Old names: `NULL` -\> New names: `"assay1", "assay2", ...`
+
+- Old names: `"counts"` -\> New names: `"counts", "assay2"`
+
 ## Converting from a `Seurat` object
 
 Only one assay can be converted from a
@@ -319,10 +330,10 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 #> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 #> This message will be shown once per session
-#> 06:30:47 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 06:30:47 Read 200 rows and found 10 numeric columns
-#> 06:30:47 Using Annoy for neighbor search, n_neighbors = 30
-#> 06:30:47 Building Annoy index with metric = cosine, n_trees = 50
+#> 07:54:16 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 07:54:16 Read 200 rows and found 10 numeric columns
+#> 07:54:16 Using Annoy for neighbor search, n_neighbors = 30
+#> 07:54:16 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -376,15 +387,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 06:30:47 Writing NN index file to temp file /tmp/Rtmp6OL7QT/file1e9a37b3a98
-#> 06:30:47 Searching Annoy index using 1 thread, search_k = 3000
-#> 06:30:47 Annoy recall = 100%
-#> 06:30:47 Commencing smooth kNN distance calibration using 1 thread
+#> 07:54:16 Writing NN index file to temp file /tmp/RtmpH2Y58k/file1ec81aed2b25
+#> 07:54:16 Searching Annoy index using 1 thread, search_k = 3000
+#> 07:54:16 Annoy recall = 100%
+#> 07:54:17 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 06:30:48 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 06:30:48 Commencing optimization for 500 epochs, with 6160 positive edges
-#> 06:30:48 Using rng type: pcg
-#> 06:30:49 Optimization finished
+#> 07:54:18 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 07:54:18 Commencing optimization for 500 epochs, with 6160 positive edges
+#> 07:54:18 Using rng type: pcg
+#> 07:54:18 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names

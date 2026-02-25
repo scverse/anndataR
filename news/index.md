@@ -6,6 +6,10 @@
 - Add continuous benchmarking using bencher (PR
   [\#423](https://github.com/scverse/anndataR/issues/423), PR
   [\#425](https://github.com/scverse/anndataR/issues/425)).
+- Handle unnamed `SingleCellExperiment` assays in
+  [`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md)
+  by automatically assigning names with a warning (PR
+  [\#420](https://github.com/scverse/anndataR/issues/420)).
 
 ## anndataR 1.1.0
 
