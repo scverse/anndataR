@@ -160,7 +160,7 @@ automatically be named with a warning:
 \strong{Examples:}
 \itemize{
 \item Old names: \code{NULL} -> New names: \verb{"assay1", "assay2", ...}
-\item Old names: \code{"counts"} -> New names: \verb{"counts", "asssay2"}
+\item Old names: \code{"counts"} -> New names: \verb{"counts", "assay2"}
 }
 }
 }

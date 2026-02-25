@@ -90,7 +90,7 @@
 #'   **Examples:**
 #'
 #'   - Old names: `NULL` -> New names: `"assay1", "assay2", ...`
-#'   - Old names: `"counts"` -> New names: `"counts", "asssay2"`
+#'   - Old names: `"counts"` -> New names: `"counts", "assay2"`
 #'
 #' @section Converting from a `Seurat` object:
 #'
