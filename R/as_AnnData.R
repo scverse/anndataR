@@ -82,6 +82,16 @@
 #'
 # nolint end: line_length_linter
 #'
+#'   ## Unnamed assays
+#'
+#'   If `assayNames(x)` is `NULL` or any assay names are empty they will
+#'   automatically be named with a warning:
+#'
+#'   **Examples:**
+#'
+#'   - Old names: `NULL` -> New names: `"assay1", "assay2", ...`
+#'   - Old names: `"counts"` -> New names: `"counts", "assay2"`
+#'
 #' @section Converting from a `Seurat` object:
 #'
 #'   Only one assay can be converted from a [`SeuratObject::Seurat`] object to
