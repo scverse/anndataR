@@ -9,6 +9,7 @@ write_h5ad(
   object,
   path,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   ...
 )
@@ -32,6 +33,15 @@ write_h5ad(
 
   The compression algorithm to use when writing the HDF5 file. Can be
   one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+
+- chunk_size:
+
+  The target chunk size in bytes to use when writing HDF5 datasets. When
+  `"auto"` (default), the chunk size is determined automatically using
+  an algorithm that mimics h5py's auto-chunking behaviour. Set to `NULL`
+  to disable chunking (contiguous storage, the rhdf5 default), or a
+  number to use a specific target size in bytes. This only affects
+  array-like datasets; scalar values are unaffected.
 
 - mode:
 

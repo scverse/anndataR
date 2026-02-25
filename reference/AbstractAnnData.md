@@ -459,6 +459,7 @@ for more details on the conversion
     AbstractAnnData$as_HDF5AnnData(
       file,
       compression = c("none", "gzip", "lzf"),
+      chunk_size = "auto",
       mode = c("w-", "r", "r+", "a", "w", "x")
     )
 
@@ -470,6 +471,11 @@ for more details on the conversion
   [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
 
 - `compression`:
+
+  See
+  [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+
+- `chunk_size`:
 
   See
   [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
@@ -500,6 +506,7 @@ for details
     AbstractAnnData$write_h5ad(
       path,
       compression = c("none", "gzip", "lzf"),
+      chunk_size = "auto",
       mode = c("w-", "r", "r+", "a", "w", "x")
     )
 
@@ -511,6 +518,11 @@ for details
   [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
 
 - `compression`:
+
+  See
+  [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+
+- `chunk_size`:
 
   See
   [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)

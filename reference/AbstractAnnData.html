@@ -13,7 +13,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -398,6 +398,7 @@ intended to be used as a base class for concrete implementations of
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">as_HDF5AnnData</span><span class="op">(</span></span>
 <span>  <span class="va">file</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"lzf"</span><span class="op">)</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -409,6 +410,10 @@ intended to be used as a base class for concrete implementations of
 
 
 <dt><code>compression</code></dt>
+<dd><p>See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></p></dd>
+
+
+<dt><code>chunk_size</code></dt>
 <dd><p>See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></p></dd>
 
 
@@ -431,6 +436,7 @@ intended to be used as a base class for concrete implementations of
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">write_h5ad</span><span class="op">(</span></span>
 <span>  <span class="va">path</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"lzf"</span><span class="op">)</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -442,6 +448,10 @@ intended to be used as a base class for concrete implementations of
 
 
 <dt><code>compression</code></dt>
+<dd><p>See <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
+
+
+<dt><code>chunk_size</code></dt>
 <dd><p>See <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
 
 

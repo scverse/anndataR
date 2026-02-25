@@ -149,7 +149,8 @@ Close the HDF5 file when the object is garbage collected
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
-      compression = c("none", "gzip", "lzf")
+      compression = c("none", "gzip", "lzf"),
+      chunk_size = "auto"
     )
 
 #### Arguments
@@ -218,6 +219,12 @@ Close the HDF5 file when the object is garbage collected
 - `compression`:
 
   The compression algorithm to use. See
+  [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+  for details
+
+- `chunk_size`:
+
+  The target chunk size in bytes. See
   [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
   for details
 

@@ -14,6 +14,10 @@
   [`Matrix::sparseMatrix`](https://rdrr.io/pkg/Matrix/man/sparseMatrix.html)
   and constructing objects manually (PR
   [\#417](https://github.com/scverse/anndataR/issues/417)).
+- Allow manually setting chunk size for HDF5 writes (PR
+  [\#424](https://github.com/scverse/anndataR/issues/424)).
+- Add auto-chunking for HDF5 writes to improve performance (PR
+  [\#424](https://github.com/scverse/anndataR/issues/424)).
 
 ## anndataR 1.1.0
 

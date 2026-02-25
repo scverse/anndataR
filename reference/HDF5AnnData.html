@@ -17,7 +17,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -174,7 +174,8 @@ large files.</p>
 <span>  uns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"w"</span>, <span class="st">"w-"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
-<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"lzf"</span><span class="op">)</span></span>
+<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"lzf"</span><span class="op">)</span>,</span>
+<span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -233,6 +234,11 @@ details</p></dd>
 
 <dt><code>compression</code></dt>
 <dd><p>The compression algorithm to use. See
+<code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code> for details</p></dd>
+
+
+<dt><code>chunk_size</code></dt>
+<dd><p>The target chunk size in bytes. See
 <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code> for details</p></dd>
 
 
