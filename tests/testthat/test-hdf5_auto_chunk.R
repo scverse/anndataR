@@ -95,3 +95,16 @@ test_that("hdf5_auto_chunk handles dimension of 1", {
   expect_equal(result[1], 1L)
   expect_true(result[2] <= 1000000L)
 })
+
+test_that("hdf5_auto_chunk respects explicit target_size", {
+  dims <- c(2000L, 1000L)
+
+  # 64 KB target
+  result_64k <- hdf5_auto_chunk(dims, "double", target_size = 64L * 1024L)
+  chunk_bytes_64k <- prod(result_64k) * 8L
+  expect_true(chunk_bytes_64k <= 64L * 1024L * 1.5)
+
+  # 512 KB target should produce larger chunks than 64 KB target
+  result_512k <- hdf5_auto_chunk(dims, "double", target_size = 512L * 1024L)
+  expect_true(prod(result_512k) >= prod(result_64k))
+})

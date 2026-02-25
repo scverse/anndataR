@@ -316,3 +316,38 @@ test_that("write_h5ad() warns about not writing matrix dim names", {
     expect_warning("Matrix row names cannot be written") |>
     expect_warning("Matrix column names cannot be written")
 })
+
+test_that("write_h5ad() chunk_size = NULL disables chunking", {
+  dummy <- generate_dataset(50, 100, format = "AnnData")
+  file <- withr::local_file(tempfile(fileext = ".h5ad"))
+
+  expect_no_error(write_h5ad(dummy, file, chunk_size = NULL))
+  expect_true(file.exists(file))
+
+  # Data should round-trip correctly with no chunking
+  result <- read_h5ad(file)
+  expect_equal(result$X, dummy$X)
+})
+
+test_that("write_h5ad() chunk_size = 'auto' (default) produces a valid file", {
+  dummy <- generate_dataset(50, 100, format = "AnnData")
+  file <- withr::local_file(tempfile(fileext = ".h5ad"))
+
+  expect_no_error(write_h5ad(dummy, file, chunk_size = "auto"))
+  expect_true(file.exists(file))
+
+  result <- read_h5ad(file)
+  expect_equal(result$X, dummy$X)
+})
+
+test_that("write_h5ad() chunk_size as a number uses it as target byte size", {
+  dummy <- generate_dataset(50, 100, format = "AnnData")
+  file <- withr::local_file(tempfile(fileext = ".h5ad"))
+
+  # 64 KB target
+  expect_no_error(write_h5ad(dummy, file, chunk_size = 64L * 1024L))
+  expect_true(file.exists(file))
+
+  result <- read_h5ad(file)
+  expect_equal(result$X, dummy$X)
+})
