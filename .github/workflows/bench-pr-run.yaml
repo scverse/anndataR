@@ -1,0 +1,66 @@
+# Run benchmarks on pull requests (fork-safe: no secrets needed)
+# Results are uploaded as artifacts and tracked by bench-pr-track.yaml
+name: Benchmarks (PR run)
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install hdf5-tools libsz2 libaec-dev
+
+      - name: Setup R and Bioconductor
+        uses: grimbough/bioc-actions/setup-bioc@v1
+        with:
+          bioc-version: devel
+
+      - name: Install R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::bench
+            any::devtools
+            any::jsonlite
+            any::reticulate
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
+        run: pip install anndata dummy-anndata
+
+      - name: Configure reticulate
+        run: echo "RETICULATE_PYTHON=$(which python)" >> $GITHUB_ENV
+
+      - name: Run benchmarks
+        run: Rscript benchmarks/run_benchmarks.R --output benchmark_results.json
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v6
+        with:
+          name: benchmark_results.json
+          path: ./benchmark_results.json
+
+      - name: Upload PR event
+        uses: actions/upload-artifact@v6
+        with:
+          name: event.json
+          path: ${{ github.event_path }}
