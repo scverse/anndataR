@@ -45,6 +45,32 @@ from_SingleCellExperiment <- function(
     )
   }
 
+  assay_names <- SummarizedExperiment::assayNames(sce)
+  if (
+    length(SummarizedExperiment::assays(sce)) > 0 &&
+      (is.null(assay_names) || any(assay_names == ""))
+  ) {
+    if (is.null(assay_names)) {
+      assay_names <- paste0(
+        "assay",
+        seq_along(SummarizedExperiment::assays(sce))
+      )
+    } else {
+      empty_names <- which(assay_names == "")
+      assay_names[empty_names] <- paste0("assay", empty_names)
+    }
+
+    cli_warn(c(
+      paste(
+        "Some {.field assays} in {.arg sce} are missing names.",
+        "They will automatically be named for conversion."
+      ),
+      "!" = "Old assay names: {style_vec(SummarizedExperiment::assayNames(sce))}",
+      "i" = "New assay names: {style_vec(assay_names)}"
+    ))
+    SummarizedExperiment::assayNames(sce) <- assay_names
+  }
+
   layers_mapping <- get_mapping(
     layers_mapping,
     .from_SCE_guess_layers,

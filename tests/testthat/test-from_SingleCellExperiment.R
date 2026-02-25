@@ -289,7 +289,7 @@ for (var_key in names(var_mapping)) {
   })
 }
 
-test_that(paste0("as_AnnData (SCE) does not copy unmapped structs"), {
+test_that("as_AnnData (SCE) does not copy unmapped structs", {
   msg <- message_if_known(
     backend = "from_SCE",
     slot = c("obsm", "varm", "obsp", "varp", "uns"),
@@ -304,4 +304,16 @@ test_that(paste0("as_AnnData (SCE) does not copy unmapped structs"), {
   expect_true(is.null(ad_partial$obsp))
   expect_true(is.null(ad_partial$varp))
   expect_true(is.null(ad_partial$uns))
+})
+
+test_that("as_AnnData (SCE) handles unnamed assays", {
+  mat <- matrix(1:20, nrow = 5, ncol = 4)
+  sce <- SingleCellExperiment(assays = list(mat))
+
+  expect_warning(ad <- as_AnnData(sce), "missing names")
+  expect_identical(ad$layers_keys(), "assay1")
+
+  sce <- SingleCellExperiment(assays = list("mat" = mat, mat))
+  expect_warning(ad <- as_AnnData(sce), "missing names")
+  expect_identical(ad$layers_keys(), c("mat", "assay2"))
 })

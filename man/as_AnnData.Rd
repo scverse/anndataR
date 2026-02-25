@@ -151,6 +151,18 @@ object.\tabular{llll}{
    \code{rowPairs(x)} \tab \code{adata$varp} \tab \code{varp_mapping = c(similarities = "gene_overlaps")} \tab All items are copied by name \cr
    \code{metadata(x)} \tab \code{adata$uns} \tab \code{uns_mapping = c(metadata = "project_metadata")} \tab All items are copied by name \cr
 }
+
+\subsection{Unnamed assays}{
+
+If \code{assayNames(x)} is \code{NULL} or any assay names are empty they will
+automatically be named with a warning:
+
+\strong{Examples:}
+\itemize{
+\item Old names: \code{NULL} -> New names: \verb{"assay1", "assay2", ...}
+\item Old names: \code{"counts"} -> New names: \verb{"counts", "assay2"}
+}
+}
 }
 
 \section{Converting from a \code{Seurat} object}{
