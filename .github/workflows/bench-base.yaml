@@ -37,6 +37,7 @@ jobs:
         with:
           extra-packages: |
             any::bench
+            any::devtools
             any::jsonlite
             any::reticulate
 
