@@ -8,6 +8,10 @@
 #' @param H5type Datatype to write, see [rhdf5::h5createDataset()]
 #' @param compression The compression to use when writing the element. Can be
 #'   one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param chunk_size Target chunk size in bytes. When `"auto"` (default), the
+#'   chunk size is determined automatically using `hdf5_auto_chunk()`.
+#'   When `NULL`, chunking is disabled (contiguous storage, the rhdf5 default).
+#'   When a number, it is used as the target chunk size in bytes.
 #' @param ... Other arguments passed to [rhdf5::h5write()]
 #'
 #' @noRd
@@ -17,6 +21,7 @@ hdf5_write_dataset <- function(
   value,
   H5type = NULL,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   ...
 ) {
   compression <- match.arg(compression)
@@ -33,12 +38,25 @@ hdf5_write_dataset <- function(
     compression <- "none"
   }
 
-  # Compute chunk sizes by mimicking h5py's auto-chunking algorithm
-  chunk <- hdf5_auto_chunk(dims, storage.mode(value))
+  # Compute chunk sizes
+  # - "auto"   → mimic h5py's auto-chunking algorithm
+  # - NULL     → no chunking (contiguous storage, rhdf5 default)
+  # - <number> → use provided byte size as target
+  if (identical(chunk_size, "auto")) {
+    chunk <- hdf5_auto_chunk(dims, storage.mode(value), target_size = NULL)
+  } else if (is.null(chunk_size)) {
+    chunk <- NULL
+  } else {
+    chunk <- hdf5_auto_chunk(
+      dims,
+      storage.mode(value),
+      target_size = chunk_size
+    )
+  }
 
-  # When no compression is used, set level = 0 to prevent rhdf5 from warning
-  # about "Compression (level > 0) requires chunking" when chunk is NULL
-  level <- if (compression == "none") 0L else 6L
+  # When no chunking or no compression, set level = 0 to prevent rhdf5 from
+  # warning about "Compression (level > 0) requires chunking"
+  level <- if (is.null(chunk) || compression == "none") 0L else 6L
 
   rhdf5::h5createDataset(
     file,
@@ -133,7 +151,8 @@ hdf5_write_boolean_dataset <- function(
   name,
   value,
   is_scalar = FALSE,
-  compression = c("none", "gzip", "lzf")
+  compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto"
 ) {
   # Based on https://stackoverflow.com/a/74653515/4384120
 
@@ -299,11 +318,13 @@ hdf5_clear_rhdf5_attributes <- function(h5file, name) {
 #'
 #' @param dims Integer vector of dataset dimensions
 #' @param storage_mode Storage mode of the data ("double", "integer", etc.)
+#' @param target_size The target chunk size in bytes. When `NULL` (default),
+#'   the target size is determined automatically based on the dataset size.
 #'
 #' @return Integer vector of chunk dimensions
 #'
 #' @noRd
-hdf5_auto_chunk <- function(dims, storage_mode) {
+hdf5_auto_chunk <- function(dims, storage_mode, target_size = NULL) {
   # h5py constants
   chunk_base <- 16L * 1024L # 16 KB - multiplier for target calculation
   chunk_min <- 8L * 1024L # 8 KB - soft lower limit
@@ -322,9 +343,11 @@ hdf5_auto_chunk <- function(dims, storage_mode) {
   chunk <- as.double(dims)
 
   # Compute dynamic target size using h5py's PyTables-derived expression
-  dset_size <- prod(chunk) * element_bytes
-  target_size <- chunk_base * (2^log10(dset_size / (1024 * 1024)))
-  target_size <- max(chunk_min, min(chunk_max, target_size))
+  if (is.null(target_size)) {
+    dset_size <- prod(chunk) * element_bytes
+    target_size <- chunk_base * (2^log10(dset_size / (1024 * 1024)))
+    target_size <- max(chunk_min, min(chunk_max, target_size))
+  }
 
   # Round-robin halving of dimensions until within target
   idx <- 0L

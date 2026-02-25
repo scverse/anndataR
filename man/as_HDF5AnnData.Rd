@@ -8,6 +8,7 @@ as_HDF5AnnData(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x")
 )
 }
@@ -19,6 +20,12 @@ as_HDF5AnnData(
 \item{compression}{The compression algorithm to use when writing the
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
+
+\item{chunk_size}{The target chunk size in bytes to use when writing
+HDF5 datasets. When \code{"auto"} (default), the chunk size is determined
+automatically using an algorithm that mimics h5py's auto-chunking
+behaviour. Set to \code{NULL} to disable chunking (contiguous storage,
+the rhdf5 default), or a number to use a specific target size in bytes.}
 
 \item{mode}{The mode to open the HDF5 file:
 \itemize{

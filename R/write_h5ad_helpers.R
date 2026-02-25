@@ -26,6 +26,7 @@ write_h5ad_element <- function(
   file,
   name,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   stop_on_error = FALSE,
   ...
 ) {
@@ -97,6 +98,7 @@ write_h5ad_element <- function(
         file = file,
         name = name,
         compression = compression,
+        chunk_size = chunk_size,
         ...
       )
     },
@@ -159,7 +161,14 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @param version Encoding version of the element to write
 #'
 #' @noRd
-write_h5ad_null <- function(value, file, name, compression, version = "0.1.0") {
+write_h5ad_null <- function(
+  value,
+  file,
+  name,
+  compression,
+  chunk_size = "auto",
+  version = "0.1.0"
+) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
   }
@@ -195,6 +204,7 @@ write_h5ad_dense_array <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   version <- match.arg(version)
@@ -230,7 +240,8 @@ write_h5ad_dense_array <- function(
       file = file,
       name = name,
       value = value,
-      compression = compression
+      compression = compression,
+      chunk_size = chunk_size
     )
   } else {
     hdf5_write_dataset(
@@ -238,7 +249,8 @@ write_h5ad_dense_array <- function(
       name = name,
       value = value,
       H5type = H5type,
-      compression = compression
+      compression = compression,
+      chunk_size = chunk_size
     )
   }
 
@@ -262,6 +274,7 @@ write_h5ad_sparse_array <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   version <- match.arg(version)
@@ -292,19 +305,22 @@ write_h5ad_sparse_array <- function(
     file = file,
     name = paste0(name, "/indices"),
     value = attr(value, indices_attr),
-    compression = compression
+    compression = compression,
+    chunk_size = chunk_size
   )
   hdf5_write_dataset(
     file = file,
     name = paste0(name, "/indptr"),
     value = value@p,
-    compression = compression
+    compression = compression,
+    chunk_size = chunk_size
   )
   hdf5_write_dataset(
     file = file,
     name = paste0(name, "/data"),
     value = value@x,
-    compression = compression
+    compression = compression,
+    chunk_size = chunk_size
   )
   write_h5ad_encoding(file, name, type, version)
 
@@ -336,6 +352,7 @@ write_h5ad_nullable_boolean <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   # nolint end: object_length_linter
@@ -348,14 +365,16 @@ write_h5ad_nullable_boolean <- function(
     value_no_na,
     file,
     paste0(name, "/values"),
-    compression
+    compression,
+    chunk_size
   )
 
   write_h5ad_dense_array(
     is.na(value),
     file,
     paste0(name, "/mask"),
-    compression
+    compression,
+    chunk_size
   )
 
   # set encoding
@@ -380,6 +399,7 @@ write_h5ad_nullable_integer <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   # nolint end: object_length_linter
@@ -392,14 +412,16 @@ write_h5ad_nullable_integer <- function(
     value_no_na,
     file,
     paste0(name, "/values"),
-    compression
+    compression,
+    chunk_size
   )
 
   write_h5ad_dense_array(
     is.na(value),
     file,
     paste0(name, "/mask"),
-    compression
+    compression,
+    chunk_size
   )
 
   write_h5ad_encoding(file, name, "nullable-integer", version)
@@ -422,6 +444,7 @@ write_h5ad_string_array <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   if (!is.vector(value)) {
@@ -436,7 +459,8 @@ write_h5ad_string_array <- function(
     file = file,
     name = name,
     value = value,
-    compression = compression
+    compression = compression,
+    chunk_size = chunk_size
   )
 
   write_h5ad_encoding(file, name, "string-array", version)
@@ -459,6 +483,7 @@ write_h5ad_categorical <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   rhdf5::h5createGroup(file, name)
@@ -476,9 +501,16 @@ write_h5ad_categorical <- function(
     categories,
     file,
     paste0(name, "/categories"),
-    compression
+    compression,
+    chunk_size
   )
-  write_h5ad_dense_array(codes, file, paste0(name, "/codes"), compression)
+  write_h5ad_dense_array(
+    codes,
+    file,
+    paste0(name, "/codes"),
+    compression,
+    chunk_size
+  )
 
   # Write encoding
   write_h5ad_encoding(
@@ -515,6 +547,7 @@ write_h5ad_string_scalar <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   hdf5_write_scalar(
@@ -544,6 +577,7 @@ write_h5ad_numeric_scalar <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   if (is.logical(value)) {
@@ -552,7 +586,8 @@ write_h5ad_numeric_scalar <- function(
       name = name,
       value = value,
       is_scalar = TRUE,
-      compression = compression
+      compression = compression,
+      chunk_size = chunk_size
     )
   } else {
     hdf5_write_scalar(
@@ -583,6 +618,7 @@ write_h5ad_mapping <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   rhdf5::h5createGroup(file, name)
@@ -593,7 +629,8 @@ write_h5ad_mapping <- function(
       value[[key]],
       file,
       paste0(name, "/", key),
-      compression
+      compression,
+      chunk_size = chunk_size
     )
   }
 
@@ -620,6 +657,7 @@ write_h5ad_data_frame <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   index = NULL,
   version = "0.2.0"
 ) {
@@ -652,7 +690,8 @@ write_h5ad_data_frame <- function(
       value[[col]],
       file,
       paste0(name, "/", col),
-      compression
+      compression,
+      chunk_size = chunk_size
     )
   }
 
@@ -670,7 +709,8 @@ write_h5ad_data_frame <- function(
     index_value,
     file,
     name,
-    compression
+    compression,
+    chunk_size = chunk_size
   )
 
   col_order <- colnames(value)
@@ -708,6 +748,7 @@ write_h5ad_data_frame_index <- function(
   file,
   name,
   compression,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
@@ -717,7 +758,8 @@ write_h5ad_data_frame_index <- function(
     index_value,
     file,
     paste0(name, "/", index_name),
-    compression
+    compression,
+    chunk_size = chunk_size
   )
 }
 
@@ -738,12 +780,25 @@ write_empty_h5ad <- function(
   obs,
   var,
   compression,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   write_h5ad_encoding(file, "/", "anndata", "0.1.0")
 
-  write_h5ad_element(obs[, integer(0)], file, "/obs", compression)
-  write_h5ad_element(var[, integer(0)], file, "/var", compression)
+  write_h5ad_element(
+    obs[, integer(0)],
+    file,
+    "/obs",
+    compression,
+    chunk_size = chunk_size
+  )
+  write_h5ad_element(
+    var[, integer(0)],
+    file,
+    "/var",
+    compression,
+    chunk_size = chunk_size
+  )
 
   rhdf5::h5createGroup(file, "layers")
   write_h5ad_encoding(file, "/layers", "dict", "0.1.0")

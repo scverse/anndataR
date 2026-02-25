@@ -332,6 +332,7 @@ See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for more details on the conv
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$as_HDF5AnnData(
   file,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x")
 )}\if{html}{\out{</div>}}
 }
@@ -342,6 +343,8 @@ See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for more details on the conv
 \item{\code{file}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
 \item{\code{compression}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+
+\item{\code{chunk_size}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 
 \item{\code{mode}}{See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 }
@@ -362,6 +365,7 @@ See \code{\link[=write_h5ad]{write_h5ad()}} for details
 \if{html}{\out{<div class="r">}}\preformatted{AbstractAnnData$write_h5ad(
   path,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x")
 )}\if{html}{\out{</div>}}
 }
@@ -372,6 +376,8 @@ See \code{\link[=write_h5ad]{write_h5ad()}} for details
 \item{\code{path}}{See \code{\link[=write_h5ad]{write_h5ad()}}}
 
 \item{\code{compression}}{See \code{\link[=write_h5ad]{write_h5ad()}}}
+
+\item{\code{chunk_size}}{See \code{\link[=write_h5ad]{write_h5ad()}}}
 
 \item{\code{mode}}{See \code{\link[=write_h5ad]{write_h5ad()}}}
 }

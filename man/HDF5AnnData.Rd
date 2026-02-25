@@ -108,7 +108,8 @@ Close the HDF5 file when the object is garbage collected
   uns = NULL,
   shape = NULL,
   mode = c("a", "r", "r+", "w", "w-", "x"),
-  compression = c("none", "gzip", "lzf")
+  compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto"
 )}\if{html}{\out{</div>}}
 }
 
@@ -143,6 +144,9 @@ both \code{X} or \code{obs} and \code{var} are not provided.}
 details}
 
 \item{\code{compression}}{The compression algorithm to use. See
+\code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
+
+\item{\code{chunk_size}}{The target chunk size in bytes. See
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
 }
 \if{html}{\out{</div>}}

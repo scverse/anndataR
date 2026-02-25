@@ -8,6 +8,12 @@
 #' @param path Path of the file to write to
 #' @param compression The compression algorithm to use when writing the HDF5
 #'   file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param chunk_size The target chunk size in bytes to use when writing HDF5
+#'   datasets. When `"auto"` (default), the chunk size is determined
+#'   automatically using an algorithm that mimics h5py's auto-chunking
+#'   behaviour. Set to `NULL` to disable chunking (contiguous storage,
+#'   the rhdf5 default), or a number to use a specific target size in bytes.
+#'   This only affects array-like datasets; scalar values are unaffected.
 #' @param mode The mode to open the HDF5 file.
 #'
 #'   * `a` creates a new file or opens an existing one for read/write
@@ -94,6 +100,7 @@ write_h5ad <- function(
   object,
   path,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   ...
 ) {
@@ -102,6 +109,7 @@ write_h5ad <- function(
     object$as_HDF5AnnData(
       path,
       compression = compression,
+      chunk_size = chunk_size,
       mode = mode
     )
   } else {
@@ -110,6 +118,7 @@ write_h5ad <- function(
       output_class = "HDF5AnnData",
       file = path,
       compression = compression,
+      chunk_size = chunk_size,
       mode = mode,
       ...
     )
