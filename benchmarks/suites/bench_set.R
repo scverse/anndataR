@@ -30,7 +30,9 @@ bench_set <- function(h5ad_paths, iterations) {
       if (backend == "HDF5AnnData") {
         tmp <- tempfile(fileext = ".h5ad")
         file.copy(path, tmp)
-        ad <- read_h5ad(tmp, as = "HDF5AnnData", mode = "r+")
+        ad <- suppressWarnings(
+          read_h5ad(tmp, as = "HDF5AnnData", mode = "r+")
+        )
       } else {
         ad <- read_h5ad(path, as = "InMemoryAnnData")
       }

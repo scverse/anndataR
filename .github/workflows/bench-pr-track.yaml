@@ -57,6 +57,15 @@ jobs:
             --start-point-clone-thresholds \
             --start-point-reset \
             --testbed ubuntu-latest \
+            --threshold-measure latency \
+            --threshold-test t_test \
+            --threshold-max-sample-size 64 \
+            --threshold-upper-boundary 0.99 \
+            --threshold-measure memory \
+            --threshold-test t_test \
+            --threshold-max-sample-size 64 \
+            --threshold-upper-boundary 0.99 \
+            --thresholds-reset \
             --err \
             --adapter json \
             --github-actions '${{ secrets.GITHUB_TOKEN }}' \

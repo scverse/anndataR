@@ -1,7 +1,7 @@
 # anndataR 1.1.1
 
 - Fix CI (PR #418).
-- Add continuous benchmarking using bencher (PR #423).
+- Add continuous benchmarking using bencher (PR #423, PR #425).
 - Add auto-chunking for HDF5 writes to improve performance (PR #424).
 
 # anndataR 1.1.0
