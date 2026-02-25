@@ -278,12 +278,11 @@ read_h5ad_sparse_array <- function(
   # The Matrix package validity checks require that indices are sorted within
   # each major axis group (row indices within columns for CSC, column indices
   # within rows for CSR). For sparse matrices in Python order isn't guaranteed,
-  # so we sort if needed. The vectorized approach uses order(group_id, index)
-  # with radix sort, which is fast even for large matrices.
+  # so we sort if needed.
   if (length(indices) > 1L) {
     row_lengths <- diff(indptr)
     group_ids <- rep.int(seq_along(row_lengths), row_lengths)
-    ord <- order(group_ids, indices, method = "radix")
+    ord <- order(group_ids, indices)
     if (is.unsorted(ord)) {
       indices <- indices[ord]
       x_data <- x_data[ord]
