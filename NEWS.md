@@ -2,6 +2,8 @@
 
 - Fix CI (PR #418).
 - Add continuous benchmarking using bencher (PR #423, PR #425).
+- Handle unnamed `SingleCellExperiment` assays in `as_AnnData()` by
+  automatically assigning names with a warning (PR #420).
 
 # anndataR 1.1.0
 
