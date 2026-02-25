@@ -1,8 +1,12 @@
+# anndataR 1.1.1
+
+- Fix CI (PR #418).
+- Add continuous benchmarking using bencher (PR #423, PR #425).
+- Optimise performance (PR #417).
+
 # anndataR 1.1.0
 
 - Bioconductor 3.23 devel
-- Fix CI (PR #418).
-- Optimise performance (PR #417).
 
 # anndataR 1.0.1
 

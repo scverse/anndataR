@@ -79,9 +79,12 @@ jobs:
       ## See https://github.com/numba/numba/issues/10187#issuecomment-3800638403
       - name: Cache conda packages (macOS Intel)
         if: matrix.config.os == 'macOS-15-intel'
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.local/share/r-miniconda
+          key: ${{ runner.os }}-conda-${{ hashFiles('DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-
 
       - name: Install Python packages via conda (macOS Intel)
         id: install-conda
