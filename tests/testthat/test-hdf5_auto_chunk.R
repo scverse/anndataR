@@ -108,3 +108,17 @@ test_that("hdf5_auto_chunk respects explicit target_size", {
   result_512k <- hdf5_auto_chunk(dims, "double", target_size = 512L * 1024L)
   expect_true(prod(result_512k) >= prod(result_64k))
 })
+
+test_that("hdf5_auto_chunk avoids the 4 GB chunk limit (regression test for #415)", {
+  # The original report used n_obs x n_vars = 321427 x 17690 doubles.
+  # Without auto-chunking rhdf5 set chunk = dims, which at 8 bytes/element
+  # gives ~45 GB per chunk - exceeding HDF5's 4 GB hard limit.
+  # See https://github.com/scverse/anndataR/issues/415
+  dims <- c(321427L, 17690L)
+  result <- hdf5_auto_chunk(dims, "double")
+  chunk_bytes <- prod(as.numeric(result)) * 8
+  limit_4gb <- 4 * 1024^3
+  expect_true(chunk_bytes < limit_4gb)
+  # In practice it should be well within the 1 MB auto-chunk ceiling
+  expect_true(chunk_bytes <= 1024L * 1024L)
+})
