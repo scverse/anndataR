@@ -334,11 +334,9 @@ hdf5_auto_chunk <- function(dims, storage_mode) {
     # Stop when:
     # - chunk is smaller than target, OR within 50% of target, AND
     # - chunk is smaller than the hard upper limit
-    if (
-      (chunk_bytes < target_size ||
-        abs(chunk_bytes - target_size) / target_size < 0.5) &&
-        chunk_bytes < chunk_max
-    ) {
+    is_within_target <- (chunk_bytes < target_size) ||
+      (abs(chunk_bytes - target_size) / target_size < 0.5)
+    if (is_within_target && chunk_bytes < chunk_max) {
       break
     }
 
