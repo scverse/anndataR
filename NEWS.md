@@ -1,9 +1,12 @@
-# anndataR 1.1.0
+# anndataR 1.1.1
 
-- Bioconductor 3.23 devel
 - Fix CI (PR #418).
 - Add continuous benchmarking using bencher (PR #423).
 - Add auto-chunking for HDF5 writes to improve performance (PR #424).
+
+# anndataR 1.1.0
+
+- Bioconductor 3.23 devel
 
 # anndataR 1.0.1
 
