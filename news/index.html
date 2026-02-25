@@ -48,6 +48,7 @@
 <ul><li>Fix CI (PR <a href="https://github.com/scverse/anndataR/issues/418" class="external-link">#418</a>).</li>
 <li>Add continuous benchmarking using bencher (PR <a href="https://github.com/scverse/anndataR/issues/423" class="external-link">#423</a>, PR <a href="https://github.com/scverse/anndataR/issues/425" class="external-link">#425</a>).</li>
 <li>Handle unnamed <code>SingleCellExperiment</code> assays in <code><a href="../reference/as_AnnData.html">as_AnnData()</a></code> by automatically assigning names with a warning (PR <a href="https://github.com/scverse/anndataR/issues/420" class="external-link">#420</a>).</li>
+<li>Optimise sparse matrix reading performance by avoiding <code><a href="https://rdrr.io/pkg/Matrix/man/sparseMatrix.html" class="external-link">Matrix::sparseMatrix</a></code> and constructing objects manually (PR <a href="https://github.com/scverse/anndataR/issues/417" class="external-link">#417</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="anndatar-110">anndataR 1.1.0<a class="anchor" aria-label="anchor" href="#anndatar-110"></a></h2>

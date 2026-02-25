@@ -10,6 +10,10 @@
   [`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md)
   by automatically assigning names with a warning (PR
   [\#420](https://github.com/scverse/anndataR/issues/420)).
+- Optimise sparse matrix reading performance by avoiding
+  [`Matrix::sparseMatrix`](https://rdrr.io/pkg/Matrix/man/sparseMatrix.html)
+  and constructing objects manually (PR
+  [\#417](https://github.com/scverse/anndataR/issues/417)).
 
 ## anndataR 1.1.0
 
