@@ -1,9 +1,15 @@
 # Changelog
 
+## anndataR 1.1.1
+
+- Fix CI (PR [\#418](https://github.com/scverse/anndataR/issues/418)).
+- Add continuous benchmarking using bencher (PR
+  [\#423](https://github.com/scverse/anndataR/issues/423), PR
+  [\#425](https://github.com/scverse/anndataR/issues/425)).
+
 ## anndataR 1.1.0
 
 - Bioconductor 3.23 devel
-- Fix CI (PR [\#418](https://github.com/scverse/anndataR/issues/418)).
 
 ## anndataR 1.0.1
 
