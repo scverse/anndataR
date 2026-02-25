@@ -17,3 +17,4 @@
 ^man/figures/*\.svg$
 ^data$
 ^codecov\.yml$
+^benchmarks$

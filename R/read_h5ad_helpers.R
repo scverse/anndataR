@@ -266,29 +266,38 @@ read_h5ad_sparse_array <- function(
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
   attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
 
-  data <- as.vector(h5group$data)
-  indices <- as.vector(h5group$indices)
-  indptr <- as.vector(h5group$indptr)
-  shape <- as.vector(attrs[["shape"]])
+  x_data <- as.vector(h5group$data)
+  # dgCMatrix/dgRMatrix x slot must be double
+  if (!is.double(x_data)) {
+    x_data <- as.double(x_data)
+  }
+  indices <- as.integer(as.vector(h5group$indices))
+  indptr <- as.integer(as.vector(h5group$indptr))
+  shape <- as.integer(as.vector(attrs[["shape"]]))
+
+  # The Matrix package validity checks require that indices are sorted within
+  # each major axis group (row indices within columns for CSC, column indices
+  # within rows for CSR). For sparse matrices in Python order isn't guaranteed,
+  # so we sort if needed.
+  if (length(indices) > 1L) {
+    row_lengths <- diff(indptr)
+    group_ids <- rep.int(seq_along(row_lengths), row_lengths)
+    ord <- order(group_ids, indices)
+    if (is.unsorted(ord)) {
+      indices <- indices[ord]
+      x_data <- x_data[ord]
+    }
+  }
 
   if (type == "csc_matrix") {
-    mtx <- Matrix::sparseMatrix(
-      i = indices,
-      p = indptr,
-      x = data,
-      dims = shape,
-      repr = "C",
-      index1 = FALSE
-    )
+    # Directly construct dgCMatrix (CSC format) to avoid overhead of constructing
+    # a general sparseMatrix and then coercing to dgCMatrix
+    # Slots: i = row indices (0-based), p = col pointers, x = values, Dim
+    mtx <- new("dgCMatrix", i = indices, p = indptr, x = x_data, Dim = shape)
   } else if (type == "csr_matrix") {
-    mtx <- Matrix::sparseMatrix(
-      j = indices,
-      p = indptr,
-      x = data,
-      dims = shape,
-      repr = "R",
-      index1 = FALSE
-    )
+    # Directly construct dgRMatrix (CSR format)
+    # Slots: j = column indices (0-based), p = row pointers, x = values, Dim
+    mtx <- new("dgRMatrix", j = indices, p = indptr, x = x_data, Dim = shape)
   }
 
   mtx
