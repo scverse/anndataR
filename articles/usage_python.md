@@ -211,7 +211,7 @@ sessionInfo()
 #>  [55] httr_1.4.8                  abind_1.4-8                
 #>  [57] compiler_4.5.2              withr_3.0.2                
 #>  [59] bit64_4.6.0-1               S7_0.2.1                   
-#>  [61] DBI_1.2.3                   fastDummies_1.7.5          
+#>  [61] DBI_1.3.0                   fastDummies_1.7.5          
 #>  [63] MASS_7.3-65                 rappdirs_0.3.4             
 #>  [65] DelayedArray_0.36.0         tools_4.5.2                
 #>  [67] lmtest_0.9-40               otel_0.2.0                 
@@ -225,7 +225,7 @@ sessionInfo()
 #>  [83] data.table_1.18.2.1         sp_2.2-1                   
 #>  [85] XVector_0.50.0              BiocGenerics_0.56.0        
 #>  [87] spatstat.geom_3.7-0         RcppAnnoy_0.0.23           
-#>  [89] ggrepel_0.9.6               RANN_2.6.2                 
+#>  [89] ggrepel_0.9.7               RANN_2.6.2                 
 #>  [91] pillar_1.11.1               stringr_1.6.0              
 #>  [93] spam_2.11-3                 RcppHNSW_0.6.0             
 #>  [95] later_1.4.7                 splines_4.5.2              
@@ -274,7 +274,7 @@ reticulate::py_config()
 reticulate::py_list_packages()
 #>              package     version                  requirement
 #> 1            anndata     0.12.10             anndata==0.12.10
-#> 2   array-api-compat      1.13.0     array-api-compat==1.13.0
+#> 2   array-api-compat      1.14.0     array-api-compat==1.14.0
 #> 3          contourpy       1.3.3             contourpy==1.3.3
 #> 4             cycler      0.12.1               cycler==0.12.1
 #> 5             donfig 0.8.1.post1          donfig==0.8.1.post1

@@ -251,7 +251,7 @@ sessionInfo()
 #> [103] cli_3.6.5              spatstat.sparse_3.1-0  textshaping_1.0.4     
 #> [106] spam_2.11-3            viridisLite_0.4.3      dplyr_1.2.0           
 #> [109] uwot_0.2.4             gtable_0.3.6           sass_0.4.10           
-#> [112] digest_0.6.39          progressr_0.18.0       ggrepel_0.9.6         
+#> [112] digest_0.6.39          progressr_0.18.0       ggrepel_0.9.7         
 #> [115] htmlwidgets_1.6.4      farver_2.1.2           htmltools_0.5.9       
 #> [118] pkgdown_2.2.0          lifecycle_1.0.5        httr_1.4.8            
 #> [121] mime_0.13              MASS_7.3-65
