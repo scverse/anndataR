@@ -19,13 +19,13 @@ jobs:
       PR_EVENT: event.json
     steps:
       - name: Download benchmark results
-        uses: dawidd6/action-download-artifact@v15
+        uses: dawidd6/action-download-artifact@v16
         with:
           name: ${{ env.BENCHMARK_RESULTS }}
           run_id: ${{ github.event.workflow_run.id }}
 
       - name: Download PR event
-        uses: dawidd6/action-download-artifact@v15
+        uses: dawidd6/action-download-artifact@v16
         with:
           name: ${{ env.PR_EVENT }}
           run_id: ${{ github.event.workflow_run.id }}
