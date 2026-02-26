@@ -24,7 +24,7 @@
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
-You can find the status of development of **{anndataR}** on the [feature tracking page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking) of the package website.
+You can find the design concepts in the [Software Design vignette](https://anndataR.scverse.org/articles/software_design.html).
 Please [report](https://github.com/scverse/anndataR/issues) any issues you encounter.
 
 ## Installation
