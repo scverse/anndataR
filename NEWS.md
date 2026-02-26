@@ -1,3 +1,7 @@
+# anndataR 1.1.2
+
+- Fix broken links (PR #429).
+
 # anndataR 1.1.1
 
 - Fix CI (PR #418).
@@ -10,6 +14,10 @@
 # anndataR 1.1.0
 
 - Bioconductor 3.23 devel
+
+# anndataR 1.0.2
+
+- Fix broken links (PR #430).
 
 # anndataR 1.0.1
 
