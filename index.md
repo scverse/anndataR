@@ -16,12 +16,8 @@ the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
-You can find the status of development of **{anndataR}** on the [feature
-tracking
-page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking)
-of the package website. Please
-[report](https://github.com/scverse/anndataR/issues) any issues you
-encounter.
+Please [report](https://github.com/scverse/anndataR/issues) any issues
+you encounter.
 
 ## Installation
 
@@ -65,7 +61,7 @@ pak::pak("scverse/anndataR", dependencies = TRUE)
 
 The best way to get started with **{anndataR}** is to explore the
 package vignettes (available at
-<https://anndatar.data-intuitive.com/articles/>).
+<https://anndataR.scverse.org/articles/>).
 
 In order to browse these vignettes locally, you need to build them
 during installation:
@@ -79,22 +75,22 @@ Take note that you need all suggested dependencies available, and that
 building them can take some time.
 
 - [**Getting
-  started**](https://anndatar.data-intuitive.com/articles/anndataR.html):
-  An introduction to the package and its features.  
-  [`vignette("anndataR", package = "anndataR")`](https://anndataR.data-intuitive.com/articles/anndataR.md)
+  started**](https://anndataR.scverse.org/articles/anndataR.html): An
+  introduction to the package and its features.  
+  [`vignette("anndataR", package = "anndataR")`](https://anndataR.scverse.org/articles/anndataR.md)
 - [**Read/write `Seurat`
-  objects**](https://anndatar.data-intuitive.com/articles/usage_seurat.html):
+  objects**](https://anndataR.scverse.org/articles/usage_seurat.html):
   How to convert between `AnnData` and `Seurat` objects.  
-  [`vignette("usage_seurat", package = "anndataR")`](https://anndataR.data-intuitive.com/articles/usage_seurat.md)
+  [`vignette("usage_seurat", package = "anndataR")`](https://anndataR.scverse.org/articles/usage_seurat.md)
 - [**Read/write `SingleCellExperiment`
-  objects**](https://anndatar.data-intuitive.com/articles/usage_singlecellexperiment.html):
+  objects**](https://anndataR.scverse.org/articles/usage_singlecellexperiment.html):
   How to convert between `AnnData` and `SingleCellExperiment` objects  
-  [`vignette("usage_singlecellexperiment", package = "anndataR")`](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md)
+  [`vignette("usage_singlecellexperiment", package = "anndataR")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)
 - [**Software
-  Design**](https://anndatar.data-intuitive.com/articles/software_design.html):
+  Design**](https://anndataR.scverse.org/articles/software_design.html):
   An overview of the design of the package
 - [**Development
-  Status**](https://anndatar.data-intuitive.com/articles/development_status.html):
+  Status**](https://anndataR.scverse.org/articles/development_status.html):
   An overview of the development status of the package
 
 ## Citing **{anndataR}**

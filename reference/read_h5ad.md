@@ -24,11 +24,11 @@ read_h5ad(
   The type of object to return. One of:
 
   - `"InMemoryAnnData"`: Read the H5AD file into memory as an
-    [`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+    [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
     object
 
   - `"HDF5AnnData"`: Read the H5AD file as an
-    [`HDF5AnnData`](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md)
+    [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
     object
 
   - `"SingleCellExperiment"`: Read the H5AD file as a
@@ -66,8 +66,8 @@ The object specified by `as`
 ## See also
 
 Other AnnData creators:
-[`AnnData()`](https://anndataR.data-intuitive.com/reference/AnnData.md),
-[`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md)
+[`AnnData()`](https://anndataR.scverse.org/reference/AnnData.md),
+[`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
 
 ## Examples
 

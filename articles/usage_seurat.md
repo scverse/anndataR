@@ -93,8 +93,8 @@ An exception is the `varp` slot which doesn’t have a corresponding slot
 in `Seurat`. Items in the `varm` slot are only converted when they are
 specified in a mapping argument. The `Neighbors` and `Images` slots are
 not mapped when converting from `Seurat`. See
-[`?as_Seurat`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
-for more details on the default mapping.
+[`?as_Seurat`](https://anndataR.scverse.org/reference/as_Seurat.md) for
+more details on the default mapping.
 
 ## Customizing the conversion
 
@@ -109,8 +109,7 @@ Each of the mapping arguments can be provided with one of the following:
   `Seurat` object, the values are the names of the slot in the `AnnData`
   object.
 
-See
-[`?as_Seurat`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+See [`?as_Seurat`](https://anndataR.scverse.org/reference/as_Seurat.md)
 for more details on how to customize the conversion process. For
 instance:
 
@@ -135,7 +134,7 @@ seurat_obj
 ```
 
 The mapping arguments can also be passed directly to
-[`read_h5ad()`](https://anndataR.data-intuitive.com/reference/read_h5ad.md).
+[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md).
 
 ## Writing a `Seurat` object to a H5AD file
 
@@ -157,7 +156,7 @@ adata$write_h5ad(tempfile(fileext = ".h5ad"))
 
 You can again customize the conversion process by providing specific
 mappings for each slot in the `AnnData` object. For more details, see
-[`?as_AnnData`](https://anndataR.data-intuitive.com/reference/as_AnnData.md).
+[`?as_AnnData`](https://anndataR.scverse.org/reference/as_AnnData.md).
 
 Here’s an example:
 
@@ -183,7 +182,7 @@ adata
 ```
 
 The mapping arguments can also be passed directly to
-[`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md).
+[`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md).
 
 ## Session info
 
@@ -210,7 +209,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-1           anndataR_1.1.1    
+#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-1           anndataR_1.1.2    
 #> [5] BiocStyle_2.38.0  
 #> 
 #> loaded via a namespace (and not attached):

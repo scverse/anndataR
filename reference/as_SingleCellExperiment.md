@@ -163,12 +163,12 @@ The name you provide for `x_mapping` may not be a name in
 ## See also
 
 Other object converters:
-[`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md),
-[`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md),
-[`as_InMemoryAnnData()`](https://anndataR.data-intuitive.com/reference/as_InMemoryAnnData.md),
-[`as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/as_ReticulateAnnData.md),
-[`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md),
-[`reticulate-helpers`](https://anndataR.data-intuitive.com/reference/reticulate-helpers.md)
+[`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md),
+[`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md),
+[`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md),
+[`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md),
+[`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md),
+[`reticulate-helpers`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
 
 ## Examples
 

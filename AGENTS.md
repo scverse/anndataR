@@ -272,7 +272,7 @@ test_that("Dense X roundtrips correctly", {
 
 - `expect_equal_py(r_adata, py_adata)`: Compare R and Python AnnData
   objects
-- [`generate_dataset()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md):
+- [`generate_dataset()`](https://anndataR.scverse.org/reference/generate_dataset.md):
   Create test AnnData with configurable matrix types
 
 ### Mock Data Generation
@@ -657,7 +657,7 @@ result <- view$as_HDF5AnnData("output.h5ad")
     conditional tests
 3.  **Modifying validation?** → Check AbstractAnnData validators
 4.  **New matrix type?** → Add to
-    [`generate_dataset()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md)
+    [`generate_dataset()`](https://anndataR.scverse.org/reference/generate_dataset.md)
     for testing
 5.  **Changing uns handling?** → Consider Python dict requirements
 6.  **HDF5 changes?** → Verify with `h5diff` against Python output

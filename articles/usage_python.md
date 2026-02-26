@@ -59,7 +59,7 @@ sc$pp$log1p(adata)
 ## Conversion to R objects
 
 Convert to `SingleCellExperiment` (see
-[`vignette("usage_singlecellexperiment")`](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md)):
+[`vignette("usage_singlecellexperiment")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)):
 
 ``` r
 sce_obj <- adata$as_SingleCellExperiment()
@@ -79,7 +79,7 @@ sce_obj
 ```
 
 Convert to `Seurat` (see
-[`vignette("usage_seurat")`](https://anndataR.data-intuitive.com/articles/usage_seurat.md)):
+[`vignette("usage_seurat")`](https://anndataR.scverse.org/articles/usage_seurat.md)):
 
 ``` r
 seurat_obj <- adata$as_Seurat()
@@ -178,7 +178,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] reticulate_1.45.0 anndataR_1.1.1    BiocStyle_2.38.0 
+#> [1] reticulate_1.45.0 anndataR_1.1.2    BiocStyle_2.38.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             

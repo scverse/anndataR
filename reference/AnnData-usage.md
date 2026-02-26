@@ -9,16 +9,16 @@ unstructured annotations in `uns`.
 
 There are different back ends for `AnnData` objects that inherit from
 the abstract
-[AbstractAnnData](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md)
+[AbstractAnnData](https://anndataR.scverse.org/reference/AbstractAnnData.md)
 class and store and access data in different ways:
 
-- [InMemoryAnnData](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+- [InMemoryAnnData](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
   stores data in memory
 
-- [HDF5AnnData](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md)
+- [HDF5AnnData](https://anndataR.scverse.org/reference/HDF5AnnData.md)
   provides an interface to a H5AD file
 
-- [ReticulateAnnData](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+- [ReticulateAnnData](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
   wraps a Python `AnnData` object via reticulate
 
 See the class documentation for details.
@@ -41,7 +41,7 @@ For example:
 ## Value
 
 An `AnnData` object inheriting from
-[`AbstractAnnData`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md)
+[`AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
 
 ## Fields
 
@@ -158,49 +158,49 @@ An `AnnData` object inheriting from
 
 ### Conversion methods:
 
-- [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+- [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
   :
 
   Convert to
   [`SingleCellExperiment::SingleCellExperiment`](https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html),
   see
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
-- [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md):
+- [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md):
 
   Convert to
   [`SeuratObject::Seurat`](https://satijalab.github.io/seurat-object/reference/Seurat-class.html),
   see
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
-- [`as_InMemoryAnnData()`](https://anndataR.data-intuitive.com/reference/as_InMemoryAnnData.md):
+- [`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md):
 
   Convert to
-  [`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md),
+  [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md),
   as
-  [`as_InMemoryAnnData()`](https://anndataR.data-intuitive.com/reference/as_InMemoryAnnData.md)
+  [`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md)
 
-- [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md):
-
-  Convert to
-  [`HDF5AnnData`](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md),
-  see
-  [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
-
-- [`as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/as_ReticulateAnnData.md):
+- [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md):
 
   Convert to
-  [`ReticulateAnnData`](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md),
+  [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md),
   see
-  [`as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/as_ReticulateAnnData.md)
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
+
+- [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md):
+
+  Convert to
+  [`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md),
+  see
+  [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md)
 
 ### Output methods:
 
-- [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+- [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
   :
 
   Write the `AnnData` object to an HDF5 file, see
-  [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+  [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 ### General methods:
 
@@ -210,17 +210,17 @@ An `AnnData` object inheriting from
 
 ## Functions that can be used to create AnnData objects
 
-- [`AnnData()`](https://anndataR.data-intuitive.com/reference/AnnData.md):
+- [`AnnData()`](https://anndataR.scverse.org/reference/AnnData.md):
 
   Create an
-  [InMemoryAnnData](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+  [InMemoryAnnData](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
   object
 
-- [`read_h5ad()`](https://anndataR.data-intuitive.com/reference/read_h5ad.md):
+- [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md):
 
   Read an `AnnData` from a H5AD file
 
-- [`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md):
+- [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md):
 
   Convert other objects to an `AnnData` object
 
@@ -229,15 +229,15 @@ An `AnnData` object inheriting from
 The documentation for the Python `anndata` package
 <https://anndata.readthedocs.io/en/stable/>
 
-[AbstractAnnData](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md)
+[AbstractAnnData](https://anndataR.scverse.org/reference/AbstractAnnData.md)
 for the abstract class that all `AnnData` objects inherit from
 
-[InMemoryAnnData](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+[InMemoryAnnData](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
 for the in-memory implementation of `AnnData`
 
-[HDF5AnnData](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md)
-for the HDF5-backed implementation of `AnnData`
+[HDF5AnnData](https://anndataR.scverse.org/reference/HDF5AnnData.md) for
+the HDF5-backed implementation of `AnnData`
 
-[ReticulateAnnData](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+[ReticulateAnnData](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
 for the reticulate-based implementation that wraps Python AnnData
 objects

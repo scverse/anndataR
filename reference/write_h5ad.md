@@ -59,7 +59,7 @@ write_h5ad(
 - ...:
 
   Additional arguments passed to
-  [`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md)
+  [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
 
 ## Value
 

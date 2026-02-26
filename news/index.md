@@ -1,5 +1,10 @@
 # Changelog
 
+## anndataR 1.1.2
+
+- Fix broken links (PR
+  [\#429](https://github.com/scverse/anndataR/issues/429)).
+
 ## anndataR 1.1.1
 
 - Fix CI (PR [\#418](https://github.com/scverse/anndataR/issues/418)).
@@ -7,7 +12,7 @@
   [\#423](https://github.com/scverse/anndataR/issues/423), PR
   [\#425](https://github.com/scverse/anndataR/issues/425)).
 - Handle unnamed `SingleCellExperiment` assays in
-  [`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md)
+  [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
   by automatically assigning names with a warning (PR
   [\#420](https://github.com/scverse/anndataR/issues/420)).
 - Optimise sparse matrix reading performance by avoiding
@@ -22,6 +27,11 @@
 ## anndataR 1.1.0
 
 - Bioconductor 3.23 devel
+
+## anndataR 1.0.2
+
+- Fix broken links (PR
+  [\#430](https://github.com/scverse/anndataR/issues/430)).
 
 ## anndataR 1.0.1
 
@@ -95,15 +105,15 @@
   **dummy-anndata** (PR
   [\#328](https://github.com/scverse/anndataR/issues/328))
 - Add
-  [`get_generator_types()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md)
+  [`get_generator_types()`](https://anndataR.scverse.org/reference/generate_dataset.md)
   function return allowed/example types for
-  [`generate_dataset()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md)
+  [`generate_dataset()`](https://anndataR.scverse.org/reference/generate_dataset.md)
   (PR [\#354](https://github.com/scverse/anndataR/issues/354))
 - Add checks for type arguments to
-  [`generate_dataset()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md)
+  [`generate_dataset()`](https://anndataR.scverse.org/reference/generate_dataset.md)
   (PR [\#354](https://github.com/scverse/anndataR/issues/354))
 - Generalise the layers created by
-  [`generate_dataset()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md)
+  [`generate_dataset()`](https://anndataR.scverse.org/reference/generate_dataset.md)
   when `format = "Seurat"` (PR
   [\#354](https://github.com/scverse/anndataR/issues/354))
 

@@ -13,7 +13,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="AnnData interoperability in R">
 <meta name="description" content="Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyse your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.">
 <meta property="og:description" content="Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyse your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.">
-<meta property="og:image" content="https://anndataR.data-intuitive.com/logo.svg">
+<meta property="og:image" content="https://anndataR.scverse.org/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@
 <li>Convert to/from <code>SingleCellExperiment</code> objects</li>
 <li>Convert to/from <code>Seurat</code> objects</li>
 </ul>
-<p>You can find the status of development of <strong>{anndataR}</strong> on the <a href="https://anndatar.data-intuitive.com/articles/design.html#feature-tracking" class="external-link">feature tracking page</a> of the package website. Please <a href="https://github.com/scverse/anndataR/issues" class="external-link">report</a> any issues you encounter.</p>
+<p>Please <a href="https://github.com/scverse/anndataR/issues" class="external-link">report</a> any issues you encounter.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -110,7 +110,7 @@
 <div class="section level2">
 <h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>The best way to get started with <strong>{anndataR}</strong> is to explore the package vignettes (available at <a href="https://anndatar.data-intuitive.com/articles/" class="external-link uri">https://anndatar.data-intuitive.com/articles/</a>).</p>
+<p>The best way to get started with <strong>{anndataR}</strong> is to explore the package vignettes (available at <a href="https://anndataR.scverse.org/articles/" class="uri">https://anndataR.scverse.org/articles/</a>).</p>
 <p>In order to browse these vignettes locally, you need to build them during installation:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>pkg.build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -118,18 +118,18 @@
 <p>Take note that you need all suggested dependencies available, and that building them can take some time.</p>
 <ul>
 <li>
-<a href="https://anndatar.data-intuitive.com/articles/anndataR.html" class="external-link"><strong>Getting started</strong></a>: An introduction to the package and its features.<br><code><a href="articles/anndataR.html">vignette("anndataR", package = "anndataR")</a></code>
+<a href="https://anndataR.scverse.org/articles/anndataR.html"><strong>Getting started</strong></a>: An introduction to the package and its features.<br><code><a href="articles/anndataR.html">vignette("anndataR", package = "anndataR")</a></code>
 </li>
 <li>
-<a href="https://anndatar.data-intuitive.com/articles/usage_seurat.html" class="external-link"><strong>Read/write <code>Seurat</code> objects</strong></a>: How to convert between <code>AnnData</code> and <code>Seurat</code> objects.<br><code><a href="articles/usage_seurat.html">vignette("usage_seurat", package = "anndataR")</a></code>
+<a href="https://anndataR.scverse.org/articles/usage_seurat.html"><strong>Read/write <code>Seurat</code> objects</strong></a>: How to convert between <code>AnnData</code> and <code>Seurat</code> objects.<br><code><a href="articles/usage_seurat.html">vignette("usage_seurat", package = "anndataR")</a></code>
 </li>
 <li>
-<a href="https://anndatar.data-intuitive.com/articles/usage_singlecellexperiment.html" class="external-link"><strong>Read/write <code>SingleCellExperiment</code> objects</strong></a>: How to convert between <code>AnnData</code> and <code>SingleCellExperiment</code> objects<br><code><a href="articles/usage_singlecellexperiment.html">vignette("usage_singlecellexperiment", package = "anndataR")</a></code>
+<a href="https://anndataR.scverse.org/articles/usage_singlecellexperiment.html"><strong>Read/write <code>SingleCellExperiment</code> objects</strong></a>: How to convert between <code>AnnData</code> and <code>SingleCellExperiment</code> objects<br><code><a href="articles/usage_singlecellexperiment.html">vignette("usage_singlecellexperiment", package = "anndataR")</a></code>
 </li>
 <li>
-<a href="https://anndatar.data-intuitive.com/articles/software_design.html" class="external-link"><strong>Software Design</strong></a>: An overview of the design of the package</li>
+<a href="https://anndataR.scverse.org/articles/software_design.html"><strong>Software Design</strong></a>: An overview of the design of the package</li>
 <li>
-<a href="https://anndatar.data-intuitive.com/articles/development_status.html" class="external-link"><strong>Development Status</strong></a>: An overview of the development status of the package</li>
+<a href="https://anndataR.scverse.org/articles/development_status.html"><strong>Development Status</strong></a>: An overview of the development status of the package</li>
 </ul>
 </div>
 <div class="section level2">

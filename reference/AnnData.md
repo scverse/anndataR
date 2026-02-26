@@ -1,7 +1,7 @@
 # Create an in-memory AnnData object.
 
 For more information on the functionality of an AnnData object, see
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 ## Usage
 
@@ -25,47 +25,47 @@ AnnData(
 - X:
 
   See the `X` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - obs:
 
   See the `obs` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - var:
 
   See the `var` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - layers:
 
   See the `layers` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - obsm:
 
   See the `obsm` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - varm:
 
   See the `varm` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - obsp:
 
   See the `obsp` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - varp:
 
   See the `varp` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - uns:
 
   See the `uns` slot in
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - shape:
 
@@ -75,17 +75,17 @@ AnnData(
 ## Value
 
 An
-[InMemoryAnnData](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+[InMemoryAnnData](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
 object
 
 ## See also
 
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 for details of `AnnData` structure and usage
 
 Other AnnData creators:
-[`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md),
-[`read_h5ad()`](https://anndataR.data-intuitive.com/reference/read_h5ad.md)
+[`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md),
+[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md)
 
 ## Examples
 

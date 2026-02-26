@@ -31,7 +31,7 @@ r_to_py(x, convert = TRUE)
 ## Value
 
 A
-[`ReticulateAnnData`](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
 object wrapping the Python object
 
 A Python AnnData object
@@ -42,11 +42,11 @@ The main conversion functions include:
 
 - `py_to_r.anndata._core.anndata.AnnData`: Converts Python AnnData
   objects to R
-  [ReticulateAnnData](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+  [ReticulateAnnData](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
   objects
 
 - `r_to_py.AbstractAnnData`: Converts R
-  [AbstractAnnData](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md)
+  [AbstractAnnData](https://anndataR.scverse.org/reference/AbstractAnnData.md)
   objects to Python AnnData objects
 
 - `py_to_r.collections.abc.Mapping`: Converts Python mapping objects to
@@ -62,12 +62,12 @@ on compatible objects.
 ## See also
 
 Other object converters:
-[`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md),
-[`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md),
-[`as_InMemoryAnnData()`](https://anndataR.data-intuitive.com/reference/as_InMemoryAnnData.md),
-[`as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/as_ReticulateAnnData.md),
-[`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md),
-[`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+[`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md),
+[`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md),
+[`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md),
+[`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md),
+[`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md),
+[`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 ## Examples
 

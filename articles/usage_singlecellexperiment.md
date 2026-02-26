@@ -171,7 +171,7 @@ Mapping between `AnnData` and `SingleCellExperiment` objects
 By default, all items in most slots are converted using the same names.
 Items in the `varm` slot are only converted when they are specified in a
 mapping argument. See
-[`?as_SingleCellExperiment`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+[`?as_SingleCellExperiment`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 for more details on the default mapping.
 
 ## Customizing the conversion
@@ -188,7 +188,7 @@ Each of the mapping arguments can be provided with one of the following:
   the `AnnData` object.
 
 See
-[`?as_SingleCellExperiment`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+[`?as_SingleCellExperiment`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 for more details on how to customize the conversion process. For
 instance:
 
@@ -220,7 +220,7 @@ adata$as_SingleCellExperiment(
 ```
 
 The mapping arguments can also be passed directly to
-[`read_h5ad()`](https://anndataR.data-intuitive.com/reference/read_h5ad.md).
+[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md).
 
 ## Writing a `SingleCellExperiment` object to H5AD file
 
@@ -242,7 +242,7 @@ adata$write_h5ad(tempfile(fileext = ".h5ad"))
 
 You can again customize the conversion process by providing specific
 mappings for each slot in the `AnnData` object. For more details, see
-[`?as_AnnData`](https://anndataR.data-intuitive.com/reference/as_AnnData.md).
+[`?as_AnnData`](https://anndataR.scverse.org/reference/as_AnnData.md).
 
 Here’s an example:
 
@@ -268,7 +268,7 @@ as_AnnData(
 ```
 
 The mapping arguments can also be passed directly to
-[`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md).
+[`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md).
 
 ## Session info
 
@@ -301,7 +301,7 @@ sessionInfo()
 #>  [5] Seqinfo_1.0.0               IRanges_2.44.0             
 #>  [7] S4Vectors_0.48.0            BiocGenerics_0.56.0        
 #>  [9] generics_0.1.4              MatrixGenerics_1.22.0      
-#> [11] matrixStats_1.5.0           anndataR_1.1.1             
+#> [11] matrixStats_1.5.0           anndataR_1.1.2             
 #> [13] BiocStyle_2.38.0           
 #> 
 #> loaded via a namespace (and not attached):

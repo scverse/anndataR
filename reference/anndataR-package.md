@@ -10,7 +10,7 @@ SingleCellExperiment and Seurat objects.
 
 Useful links:
 
-- <https://anndatar.scverse.org>
+- <https://anndataR.scverse.org/>
 
 - <https://github.com/scverse/anndataR>
 

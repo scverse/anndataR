@@ -3,12 +3,11 @@
 This class is an abstract representation of an `AnnData` object. It is
 intended to be used as a base class for concrete implementations of
 `AnnData` objects, such as
-[InMemoryAnnData](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
-or
-[HDF5AnnData](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md).
+[InMemoryAnnData](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
+or [HDF5AnnData](https://anndataR.scverse.org/reference/HDF5AnnData.md).
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 for details on creating and using `AnnData` objects.
 
 ## Value
@@ -17,71 +16,71 @@ An `AbstractAnnData` object
 
 ## See also
 
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 for details on creating and using `AnnData` objects
 
 Other AnnData classes:
-[`AnnDataView`](https://anndataR.data-intuitive.com/reference/AnnDataView.md),
-[`HDF5AnnData`](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md),
-[`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md),
-[`ReticulateAnnData`](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+[`AnnDataView`](https://anndataR.scverse.org/reference/AnnDataView.md),
+[`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md),
+[`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md),
+[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
 
 ## Active bindings
 
 - `X`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `layers`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `obs`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `var`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `obs_names`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `var_names`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `obsm`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `varm`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `obsp`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `varp`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `uns`:
 
   See
-  [AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 ## Methods
 
@@ -130,7 +129,7 @@ Other AnnData classes:
 ### Method [`print()`](https://rdrr.io/r/base/print.html)
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -147,7 +146,7 @@ See
 ### Method `shape()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -158,7 +157,7 @@ See
 ### Method `n_obs()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -169,7 +168,7 @@ See
 ### Method `n_vars()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -180,7 +179,7 @@ See
 ### Method `obs_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -191,7 +190,7 @@ See
 ### Method `var_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -202,7 +201,7 @@ See
 ### Method `layers_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -213,7 +212,7 @@ See
 ### Method `obsm_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -224,7 +223,7 @@ See
 ### Method `varm_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -235,7 +234,7 @@ See
 ### Method `obsp_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -246,7 +245,7 @@ See
 ### Method `varp_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -257,7 +256,7 @@ See
 ### Method `uns_keys()`
 
 See
-[AnnData-usage](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
@@ -265,12 +264,12 @@ See
 
 ------------------------------------------------------------------------
 
-### Method [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+### Method [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 Convert to `SingleCellExperiment`
 
 See
-[`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+[`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 for more details on the conversion
 
 #### Usage
@@ -291,42 +290,42 @@ for more details on the conversion
 - `x_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 - `assays_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 - `colData_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 - `rowData_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 - `reducedDims_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 - `colPairs_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 - `rowPairs_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 - `metadata_mapping`:
 
   See
-  [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+  [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
 
 #### Returns
 
@@ -334,12 +333,11 @@ A `SingleCellExperiment` object
 
 ------------------------------------------------------------------------
 
-### Method [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+### Method [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 Convert to `Seurat`
 
-See
-[`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+See [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 for more details on the conversion
 
 #### Usage
@@ -360,42 +358,42 @@ for more details on the conversion
 - `assay_name`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 - `x_mapping`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 - `layers_mapping`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 - `object_metadata_mapping`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 - `assay_metadata_mapping`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 - `reduction_mapping`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 - `graph_mapping`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 - `misc_mapping`:
 
   See
-  [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
 
 #### Returns
 
@@ -403,13 +401,13 @@ A `Seurat` object
 
 ------------------------------------------------------------------------
 
-### Method [`as_InMemoryAnnData()`](https://anndataR.data-intuitive.com/reference/as_InMemoryAnnData.md)
+### Method [`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md)
 
 Convert to an
-[`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+[`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
 
 See
-[`as_InMemoryAnnData()`](https://anndataR.data-intuitive.com/reference/as_InMemoryAnnData.md)
+[`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md)
 for more details on the conversion
 
 #### Usage
@@ -419,18 +417,18 @@ for more details on the conversion
 #### Returns
 
 An
-[InMemoryAnnData](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+[InMemoryAnnData](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
 object
 
 ------------------------------------------------------------------------
 
-### Method [`as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/as_ReticulateAnnData.md)
+### Method [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md)
 
 Convert to a
-[`ReticulateAnnData`](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
 
 See
-[`as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/as_ReticulateAnnData.md)
+[`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md)
 for more details on the conversion
 
 #### Usage
@@ -440,18 +438,18 @@ for more details on the conversion
 #### Returns
 
 A
-[ReticulateAnnData](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+[ReticulateAnnData](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
 object
 
 ------------------------------------------------------------------------
 
-### Method [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+### Method [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 
 Convert to an
-[`HDF5AnnData`](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md)
+[`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
 
 See
-[`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+[`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 for more details on the conversion
 
 #### Usage
@@ -468,37 +466,37 @@ for more details on the conversion
 - `file`:
 
   See
-  [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 
 - `compression`:
 
   See
-  [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 
 - `chunk_size`:
 
   See
-  [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 
 - `mode`:
 
   See
-  [`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md)
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 
 #### Returns
 
 An
-[`HDF5AnnData`](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md)
+[`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
 object
 
 ------------------------------------------------------------------------
 
-### Method [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+### Method [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 Write the `AnnData` object to an H5AD file
 
 See
-[`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+[`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 for details
 
 #### Usage
@@ -515,22 +513,22 @@ for details
 - `path`:
 
   See
-  [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+  [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 - `compression`:
 
   See
-  [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+  [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 - `chunk_size`:
 
   See
-  [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+  [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 - `mode`:
 
   See
-  [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+  [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 #### Returns
 

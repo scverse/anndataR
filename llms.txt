@@ -16,12 +16,8 @@ the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
-You can find the status of development of **{anndataR}** on the [feature
-tracking
-page](https://anndatar.data-intuitive.com/articles/design.html#feature-tracking)
-of the package website. Please
-[report](https://github.com/scverse/anndataR/issues) any issues you
-encounter.
+Please [report](https://github.com/scverse/anndataR/issues) any issues
+you encounter.
 
 ## Installation
 
@@ -65,7 +61,7 @@ pak::pak("scverse/anndataR", dependencies = TRUE)
 
 The best way to get started with **{anndataR}** is to explore the
 package vignettes (available at
-<https://anndatar.data-intuitive.com/articles/>).
+<https://anndataR.scverse.org/articles/>).
 
 In order to browse these vignettes locally, you need to build them
 during installation:
@@ -79,22 +75,22 @@ Take note that you need all suggested dependencies available, and that
 building them can take some time.
 
 - [**Getting
-  started**](https://anndatar.data-intuitive.com/articles/anndataR.html):
-  An introduction to the package and its features.  
-  [`vignette("anndataR", package = "anndataR")`](https://anndataR.data-intuitive.com/articles/anndataR.md)
+  started**](https://anndataR.scverse.org/articles/anndataR.html): An
+  introduction to the package and its features.  
+  [`vignette("anndataR", package = "anndataR")`](https://anndataR.scverse.org/articles/anndataR.md)
 - [**Read/write `Seurat`
-  objects**](https://anndatar.data-intuitive.com/articles/usage_seurat.html):
+  objects**](https://anndataR.scverse.org/articles/usage_seurat.html):
   How to convert between `AnnData` and `Seurat` objects.  
-  [`vignette("usage_seurat", package = "anndataR")`](https://anndataR.data-intuitive.com/articles/usage_seurat.md)
+  [`vignette("usage_seurat", package = "anndataR")`](https://anndataR.scverse.org/articles/usage_seurat.md)
 - [**Read/write `SingleCellExperiment`
-  objects**](https://anndatar.data-intuitive.com/articles/usage_singlecellexperiment.html):
+  objects**](https://anndataR.scverse.org/articles/usage_singlecellexperiment.html):
   How to convert between `AnnData` and `SingleCellExperiment` objects  
-  [`vignette("usage_singlecellexperiment", package = "anndataR")`](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md)
+  [`vignette("usage_singlecellexperiment", package = "anndataR")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)
 - [**Software
-  Design**](https://anndatar.data-intuitive.com/articles/software_design.html):
+  Design**](https://anndataR.scverse.org/articles/software_design.html):
   An overview of the design of the package
 - [**Development
-  Status**](https://anndatar.data-intuitive.com/articles/development_status.html):
+  Status**](https://anndataR.scverse.org/articles/development_status.html):
   An overview of the development status of the package
 
 ## Citing **{anndataR}**
@@ -128,78 +124,76 @@ A BibTeX entry for LaTeX users is
 
 ## All functions
 
-- [`dim(`*`<AbstractAnnData>`*`)`](https://anndataR.data-intuitive.com/reference/AbstractAnnData-s3methods.md)
-  [`nrow(`*`<AbstractAnnData>`*`)`](https://anndataR.data-intuitive.com/reference/AbstractAnnData-s3methods.md)
-  [`ncol(`*`<AbstractAnnData>`*`)`](https://anndataR.data-intuitive.com/reference/AbstractAnnData-s3methods.md)
-  [`dimnames(`*`<AbstractAnnData>`*`)`](https://anndataR.data-intuitive.com/reference/AbstractAnnData-s3methods.md)
-  [`` `dimnames<-`( ``*`<AbstractAnnData>`*`)`](https://anndataR.data-intuitive.com/reference/AbstractAnnData-s3methods.md)
-  [`` `[`( ``*`<AbstractAnnData>`*`)`](https://anndataR.data-intuitive.com/reference/AbstractAnnData-s3methods.md)
+- [`dim(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/AbstractAnnData-s3methods.md)
+  [`nrow(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/AbstractAnnData-s3methods.md)
+  [`ncol(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/AbstractAnnData-s3methods.md)
+  [`dimnames(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/AbstractAnnData-s3methods.md)
+  [`` `dimnames<-`( ``*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/AbstractAnnData-s3methods.md)
+  [`` `[`( ``*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/AbstractAnnData-s3methods.md)
   : S3 Methods for AbstractAnnData Objects
 
-- [`AbstractAnnData`](https://anndataR.data-intuitive.com/reference/AbstractAnnData.md)
+- [`AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
   : Abstract AnnData class
 
-- [`AnnData-usage`](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)
+- [`AnnData-usage`](https://anndataR.scverse.org/reference/AnnData-usage.md)
   : AnnData structure and usage
 
-- [`AnnData()`](https://anndataR.data-intuitive.com/reference/AnnData.md)
-  : Create an in-memory AnnData object.
+- [`AnnData()`](https://anndataR.scverse.org/reference/AnnData.md) :
+  Create an in-memory AnnData object.
 
-- [`AnnDataView`](https://anndataR.data-intuitive.com/reference/AnnDataView.md)
+- [`AnnDataView`](https://anndataR.scverse.org/reference/AnnDataView.md)
   : A View of an AnnData Object
 
-- [`HDF5AnnData`](https://anndataR.data-intuitive.com/reference/HDF5AnnData.md)
+- [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
   : HDF5AnnData
 
-- [`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+- [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
   : InMemoryAnnData
 
-- [`ReticulateAnnData`](https://anndataR.data-intuitive.com/reference/ReticulateAnnData.md)
+- [`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
   : ReticulateAnnData
 
-- [`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md)
+- [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
   :
 
   Convert to an `AnnData` object
 
-- [`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md)
-  :
+- [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md) :
 
   Convert an `AnnData` to a `Seurat`
 
-- [`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md)
+- [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
   :
 
   Convert an `AnnData` to a `SingleCellExperiment`
 
-- [`generate_dataset()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md)
-  [`get_generator_types()`](https://anndataR.data-intuitive.com/reference/generate_dataset.md)
+- [`generate_dataset()`](https://anndataR.scverse.org/reference/generate_dataset.md)
+  [`get_generator_types()`](https://anndataR.scverse.org/reference/generate_dataset.md)
   : Generate a mock dataset
 
-- [`read_h5ad()`](https://anndataR.data-intuitive.com/reference/read_h5ad.md)
-  : Read H5AD
+- [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md) :
+  Read H5AD
 
-- [`py_to_r(`*`<collections.abc.Mapping>`*`)`](https://anndataR.data-intuitive.com/reference/reticulate-helpers.md)
-  [`py_to_r(`*`<anndata._core.anndata.AnnData>`*`)`](https://anndataR.data-intuitive.com/reference/reticulate-helpers.md)
-  [`r_to_py(`*`<AbstractAnnData>`*`)`](https://anndataR.data-intuitive.com/reference/reticulate-helpers.md)
+- [`py_to_r(`*`<collections.abc.Mapping>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
+  [`py_to_r(`*`<anndata._core.anndata.AnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
+  [`r_to_py(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   : Reticulate Helper Functions for AnnData Conversion
 
-- [`write_h5ad()`](https://anndataR.data-intuitive.com/reference/write_h5ad.md)
+- [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
   : Write H5AD
 
 # Articles
 
 ### All vignettes
 
-- [Using
-  anndataR](https://anndataR.data-intuitive.com/articles/anndataR.md):
+- [Using anndataR](https://anndataR.scverse.org/articles/anndataR.md):
 - [Development
-  status](https://anndataR.data-intuitive.com/articles/development_status.md):
+  status](https://anndataR.scverse.org/articles/development_status.md):
 - [Software
-  design](https://anndataR.data-intuitive.com/articles/software_design.md):
+  design](https://anndataR.scverse.org/articles/software_design.md):
 - [Python Integration with
-  anndataR](https://anndataR.data-intuitive.com/articles/usage_python.md):
+  anndataR](https://anndataR.scverse.org/articles/usage_python.md):
 - [Read/write Seurat objects using
-  anndataR](https://anndataR.data-intuitive.com/articles/usage_seurat.md):
+  anndataR](https://anndataR.scverse.org/articles/usage_seurat.md):
 - [Read/write SingleCellExperiment objects using
-  anndataR](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md):
+  anndataR](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md):

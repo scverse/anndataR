@@ -2,15 +2,14 @@
 
 ### All vignettes
 
-- [Using
-  anndataR](https://anndataR.data-intuitive.com/articles/anndataR.md):
+- [Using anndataR](https://anndataR.scverse.org/articles/anndataR.md):
 - [Development
-  status](https://anndataR.data-intuitive.com/articles/development_status.md):
+  status](https://anndataR.scverse.org/articles/development_status.md):
 - [Software
-  design](https://anndataR.data-intuitive.com/articles/software_design.md):
+  design](https://anndataR.scverse.org/articles/software_design.md):
 - [Python Integration with
-  anndataR](https://anndataR.data-intuitive.com/articles/usage_python.md):
+  anndataR](https://anndataR.scverse.org/articles/usage_python.md):
 - [Read/write Seurat objects using
-  anndataR](https://anndataR.data-intuitive.com/articles/usage_seurat.md):
+  anndataR](https://anndataR.scverse.org/articles/usage_seurat.md):
 - [Read/write SingleCellExperiment objects using
-  anndataR](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md):
+  anndataR](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md):

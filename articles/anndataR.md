@@ -77,14 +77,14 @@ adata <- read_h5ad(h5ad_path)
 ```
 
 It can also be read as a `SingleCellExperiment` object (see
-[`vignette("usage_singlecellexperiment")`](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md)):
+[`vignette("usage_singlecellexperiment")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)):
 
 ``` r
 sce <- read_h5ad(h5ad_path, as = "SingleCellExperiment")
 ```
 
 Or as a `Seurat` object (see
-[`vignette("usage_seurat")`](https://anndataR.data-intuitive.com/articles/usage_seurat.md)):
+[`vignette("usage_seurat")`](https://anndataR.scverse.org/articles/usage_seurat.md)):
 
 ``` r
 obj <- read_h5ad(h5ad_path, as = "Seurat")
@@ -144,13 +144,13 @@ adata$var[1:5, 1:6]
 ```
 
 [Subsetting](#subsetting) `AnnData` objects is covered below. See
-[`` ?`AnnData-usage` ``](https://anndataR.data-intuitive.com/reference/AnnData-usage.md)for
+[`` ?`AnnData-usage` ``](https://anndataR.scverse.org/reference/AnnData-usage.md)for
 more details on how to work with `AnnData` objects.
 
 ### Interoperability
 
 Convert the `AnnData` object to a `SingleCellExperiment` object (see
-[`vignette("usage_singlecellexperiment")`](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md)):
+[`vignette("usage_singlecellexperiment")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)):
 
 ``` r
 sce <- adata$as_SingleCellExperiment()
@@ -170,7 +170,7 @@ sce
 ```
 
 Convert the `AnnData` object to a `Seurat` object (see
-[`vignette("usage_seurat")`](https://anndataR.data-intuitive.com/articles/usage_seurat.md)):
+[`vignette("usage_seurat")`](https://anndataR.scverse.org/articles/usage_seurat.md)):
 
 ``` r
 obj <- adata$as_Seurat()
@@ -183,7 +183,7 @@ obj
 ```
 
 Convert a `SingleCellExperiment` object to an `AnnData` object (see
-[`vignette("usage_singlecellexperiment")`](https://anndataR.data-intuitive.com/articles/usage_singlecellexperiment.md)):
+[`vignette("usage_singlecellexperiment")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)):
 
 ``` r
 adata <- as_AnnData(sce)
@@ -200,7 +200,7 @@ adata
 ```
 
 Convert a `Seurat` object to an `AnnData` object (see
-[`vignette("usage_seurat")`](https://anndataR.data-intuitive.com/articles/usage_seurat.md)):
+[`vignette("usage_seurat")`](https://anndataR.scverse.org/articles/usage_seurat.md)):
 
 ``` r
 adata <- as_AnnData(obj)
@@ -443,7 +443,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.1.1              SingleCellExperiment_1.32.0
+#>  [1] anndataR_1.1.2              SingleCellExperiment_1.32.0
 #>  [3] SummarizedExperiment_1.40.0 Biobase_2.70.0             
 #>  [5] GenomicRanges_1.62.1        Seqinfo_1.0.0              
 #>  [7] IRanges_2.44.0              S4Vectors_0.48.0           

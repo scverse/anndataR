@@ -1,7 +1,7 @@
 # Convert an `AnnData` to an `InMemoryAnnData`
 
 Convert another `AnnData` object to an
-[`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+[`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
 object
 
 ## Usage
@@ -15,23 +15,23 @@ as_InMemoryAnnData(adata)
 - adata:
 
   An `AnnData` object to be converted to
-  [`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+  [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
 
 ## Value
 
 An
-[`InMemoryAnnData`](https://anndataR.data-intuitive.com/reference/InMemoryAnnData.md)
+[`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
 object with the same data as the input `AnnData` object
 
 ## See also
 
 Other object converters:
-[`as_AnnData()`](https://anndataR.data-intuitive.com/reference/as_AnnData.md),
-[`as_HDF5AnnData()`](https://anndataR.data-intuitive.com/reference/as_HDF5AnnData.md),
-[`as_ReticulateAnnData()`](https://anndataR.data-intuitive.com/reference/as_ReticulateAnnData.md),
-[`as_Seurat()`](https://anndataR.data-intuitive.com/reference/as_Seurat.md),
-[`as_SingleCellExperiment()`](https://anndataR.data-intuitive.com/reference/as_SingleCellExperiment.md),
-[`reticulate-helpers`](https://anndataR.data-intuitive.com/reference/reticulate-helpers.md)
+[`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md),
+[`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md),
+[`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md),
+[`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md),
+[`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md),
+[`reticulate-helpers`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
 
 ## Examples
 
