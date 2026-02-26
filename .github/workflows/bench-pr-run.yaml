@@ -54,13 +54,13 @@ jobs:
         run: Rscript benchmarks/run_benchmarks.R --output benchmark_results.json
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: benchmark_results.json
           path: ./benchmark_results.json
 
       - name: Upload PR event
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: event.json
           path: ${{ github.event_path }}

@@ -123,7 +123,7 @@ jobs:
       
       - name: Upload check results
         if: failure() && steps.bioc-check.outputs.check-dir != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION) }}
           path: ${{ steps.bioc-check.outputs.check-dir }}
