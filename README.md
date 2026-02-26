@@ -74,14 +74,14 @@ pak::pak("scverse/anndataR")
 
 Take note that you need all suggested dependencies available, and that building them can take some time.
 
-- [**Getting started**](https://scverse.org/anndataR/articles/anndataR.html): An introduction to the package and its features.  
+- [**Getting started**](https://anndataR.scverse.org/articles/anndataR.html): An introduction to the package and its features.  
   `vignette("anndataR", package = "anndataR")`
-- [**Read/write `Seurat` objects**](https://scverse.org/anndataR/articles/usage_seurat.html): How to convert between `AnnData` and `Seurat` objects.  
+- [**Read/write `Seurat` objects**](https://anndataR.scverse.org/articles/usage_seurat.html): How to convert between `AnnData` and `Seurat` objects.  
   `vignette("usage_seurat", package = "anndataR")`
-- [**Read/write `SingleCellExperiment` objects**](https://scverse.org/anndataR/articles/usage_singlecellexperiment.html): How to convert between `AnnData` and `SingleCellExperiment` objects  
+- [**Read/write `SingleCellExperiment` objects**](https://anndataR.scverse.org/articles/usage_singlecellexperiment.html): How to convert between `AnnData` and `SingleCellExperiment` objects  
   `vignette("usage_singlecellexperiment", package = "anndataR")`
-- [**Software Design**](https://scverse.org/anndataR/articles/software_design.html): An overview of the design of the package
-- [**Development Status**](https://scverse.org/anndataR/articles/development_status.html): An overview of the development status of the package
+- [**Software Design**](https://anndataR.scverse.org/articles/software_design.html): An overview of the design of the package
+- [**Development Status**](https://anndataR.scverse.org/articles/development_status.html): An overview of the development status of the package
 
 ## Citing **{anndataR}**
 

@@ -13,7 +13,7 @@ Bring the power and flexibility of AnnData to the R ecosystem, allowing you to e
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://scverse.org/anndataR/}
+  \item \url{https://anndataR.scverse.org/}
   \item \url{https://github.com/scverse/anndataR}
   \item Report bugs at \url{https://github.com/scverse/anndataR/issues}
 }
