@@ -15,7 +15,7 @@ test_names <- c(
 )
 
 # temporary workaround for
-# https://github.com/data-intuitive/dummy-anndata/issues/12
+# https://github.com/LouiseDck/dummy-anndata/issues/12
 test_names <- setdiff(
   test_names,
   c(
