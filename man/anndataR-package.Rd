@@ -20,7 +20,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Robrecht Cannoodt \email{robrecht@data-intuitive.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
+\strong{Maintainer}: Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
 
 Authors:
 \itemize{
