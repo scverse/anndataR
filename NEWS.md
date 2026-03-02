@@ -1,3 +1,7 @@
+# anndataR 1.0.2
+
+- Fix broken links (PR #430).
+
 # anndataR 1.0.1
 
 - Update author email address (PR #410).
