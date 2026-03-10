@@ -72,36 +72,34 @@ InMemoryAnnData <- R6::R6Class(
 
     .set_value = function(slot, key, value) {
       private[[paste0(".", slot)]][[key]] <- value
-      self
     },
 
     .set_values = function(slot, named_list) {
       private[[paste0(".", slot)]] <- named_list
-      self
     },
 
     .set_obsm_value = function(key, value) {
       res <- private$.validate_aligned_array(
         value,
-        paste0("obsm[['", key, "']]"),
+        paste0(".obsm[['", key, "']]"),
         c(self$n_obs()),
         expected_rownames = self$obs_names,
         strip_rownames = TRUE,
         strip_colnames = FALSE
       )
-      private$.set_value("obsm", key, res)
+      private$.set_value("obsm", key, value)
     },
 
     .set_obsm_values = function(named_list) {
       res <- private$.validate_aligned_mapping(
         named_list,
-        "obsm",
+        ".obsm",
         c(self$n_obs()),
         expected_rownames = self$obs_names,
         strip_rownames = TRUE,
         strip_colnames = FALSE
       )
-      private$.set_values("obsm", res)
+      private$.set_values("obsm", named_list)
     },
 
     .set_varm_value = function(key, value) {

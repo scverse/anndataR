@@ -81,7 +81,13 @@ AbstractAnnData <- R6::R6Class(
         proxy
       } else {
         # user is setting the obsm with a new named list.
-        proxy$set_values_fn(value)
+        if (inherits(value, "AnnDataSlotList")) {
+          # no-op: already handled in-place by [[<-.AnnDataSlotList
+          invisible(NULL)
+        } else {
+          proxy$set_values_fn(value)
+        }
+        
       }
       # .abstract_function("ad$obsm")
     },
@@ -489,7 +495,7 @@ AbstractAnnData <- R6::R6Class(
 
       collection_names <- names(collection)
       if (
-        !is.list(collection) ||
+        (!is.list(collection) && class(collection) != "AnnDataSlotList") ||
           ((length(collection) != 0) && is.null(collection_names))
       ) {
         cli_abort(
