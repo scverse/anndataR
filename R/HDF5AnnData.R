@@ -261,30 +261,6 @@ HDF5AnnData <- R6::R6Class(
           )
       }
     },
-    #' @field obsp See [AnnData-usage]
-    obsp = function(value) {
-      private$.check_file_valid()
-
-      if (missing(value)) {
-        # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.h5obj, "obsp") |>
-          private$.add_mapping_dimnames("obsp")
-      } else {
-        # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
-        private$.validate_aligned_mapping(
-          value,
-          "obsp",
-          c(self$n_obs(), self$n_obs()),
-          expected_rownames = self$obs_names,
-          expected_colnames = self$obs_names
-        ) |>
-          write_h5ad_element(
-            private$.h5obj,
-            "obsp",
-            private$.compression
-          )
-      }
-    },
     #' @field obs See [AnnData-usage]
     obs = function(value) {
       private$.check_file_valid()
