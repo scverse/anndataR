@@ -90,7 +90,7 @@ ReticulateAnnData <- R6::R6Class(
       value <- private$.validate_aligned_array(
         value,
         paste0("obsm[['", key, "']]"),
-        shape = c(self$n_obs(), self$n_vars()),
+        shape = c(self$n_obs()),
         expected_rownames = rownames(self)
       )
       private$.set_value("obsm", key, value)
@@ -444,6 +444,7 @@ ReticulateAnnData <- R6::R6Class(
       uns = NULL,
       shape = NULL
     ) {
+      reticulate::py_require("anndata")
       check_requires("ReticulateAnnData", "reticulate", where = "CRAN")
       check_requires("ReticulateAnnData", "anndata", where = "Python")
 
