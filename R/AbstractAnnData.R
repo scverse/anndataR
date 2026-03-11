@@ -79,17 +79,13 @@ AbstractAnnData <- R6::R6Class(
         # then subsetting the obsm afterwards, e.g. `adata$obsm[["X_pca"]]`
         # or `adata$obsm[["X_pca"]] <- ...some matrix...`.
         proxy
+      } else if (inherits(value, "AnnDataSlotList")) {
+        # no-op: already handled in-place by [[<-.AnnDataSlotList
+        invisible(NULL)
       } else {
         # user is setting the obsm with a new named list.
-        if (inherits(value, "AnnDataSlotList")) {
-          # no-op: already handled in-place by [[<-.AnnDataSlotList
-          invisible(NULL)
-        } else {
-          proxy$set_values_fn(value)
-        }
-        
+        proxy$set_values_fn(value)
       }
-      # .abstract_function("ad$obsm")
     },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
@@ -103,6 +99,8 @@ AbstractAnnData <- R6::R6Class(
       )
       if (missing(value)) {
         proxy
+      } else if (inherits(value, "AnnDataSlotList")) {
+        invisible(NULL)
       } else {
         proxy$set_values_fn(value)
       }
@@ -120,6 +118,8 @@ AbstractAnnData <- R6::R6Class(
       )
       if (missing(value)) {
         proxy
+      } else if (inherits(value, "AnnDataSlotList")) {
+        invisible(NULL)
       } else {
         proxy$set_values_fn(value)
       }
@@ -137,6 +137,8 @@ AbstractAnnData <- R6::R6Class(
       )
       if (missing(value)) {
         proxy
+      } else if (inherits(value, "AnnDataSlotList")) {
+        invisible(NULL)
       } else {
         proxy$set_values_fn(value)
       }
