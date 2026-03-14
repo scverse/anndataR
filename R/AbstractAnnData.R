@@ -69,8 +69,28 @@ AbstractAnnData <- R6::R6Class(
         get_keys_fn = function() private$.get_keys("obsm"),
         set_keys_fn = function(keys) private$.set_keys("obsm", keys),
         get_value_fn = function(name) private$.get_value("obsm", name),
-        set_value_fn = function(name, value) private$.set_obsm_value(name, value),
-        set_values_fn = function(value) private$.set_obsm_values(value),
+        set_value_fn = function(name, value) {
+          res <- private$.validate_aligned_array(
+            value,
+            paste0(".obsm[['", key, "']]"),
+            c(self$n_obs()),
+            expected_rownames = self$obs_names,
+            strip_rownames = TRUE,
+            strip_colnames = FALSE
+          )
+          private$.set_value("obsm", name, res)
+        },
+        set_values_fn = function(value) {
+          res <- private$.validate_aligned_mapping(
+            value,
+            ".obsm",
+            c(self$n_obs()),
+            expected_rownames = self$obs_names,
+            strip_rownames = TRUE,
+            strip_colnames = FALSE
+          )
+          private$.set_values("obsm", res)
+        },
         get_rownames_fn = function() self$obs_names
       )
       if (missing(value)) {
@@ -93,8 +113,28 @@ AbstractAnnData <- R6::R6Class(
         get_keys_fn = function() private$.get_keys("varm"),
         set_keys_fn = function(keys) private$.set_keys("varm", keys),
         get_value_fn = function(name) private$.get_value("varm", name),
-        set_value_fn = function(name, value) private$.set_varm_value(name, value),
-        set_values_fn = function(value) private$.set_varm_values(value),
+        set_value_fn = function(name, value) {
+          res <- private$.validate_aligned_array(
+            value,
+            paste0("varm[['", name, "']]"),
+            c(self$n_vars()),
+            expected_rownames = self$var_names,
+            strip_rownames = TRUE,
+            strip_colnames = FALSE
+          )
+          private$.set_value("varm", name, res)
+        },
+        set_values_fn = function(value) {
+          res <- private$.validate_aligned_mapping(
+            value,
+            "varm",
+            c(self$n_vars()),
+            expected_rownames = self$var_names,
+            strip_rownames = TRUE,
+            strip_colnames = FALSE
+          )
+          private$.set_values("varm", res)
+        },
         get_rownames_fn = function() self$var_names
       )
       if (missing(value)) {
@@ -111,8 +151,26 @@ AbstractAnnData <- R6::R6Class(
         get_keys_fn = function() private$.get_keys("obsp"),
         set_keys_fn = function(keys) private$.set_keys("obsp", keys),
         get_value_fn = function(name) private$.get_value("obsp", name),
-        set_value_fn = function(name, value) private$.set_obsp_value(name, value),
-        set_values_fn = function(value) private$.set_obsp_values(value),
+        set_value_fn = function(name, value) {
+          res <- private$.validate_aligned_array(
+            value,
+            paste0("obsp[['", name, "']]"),
+            c(self$n_obs(), self$n_obs()),
+            expected_rownames = self$obs_names,
+            expected_colnames = self$obs_names
+          )
+          private$.set_value("obsp", name, res)
+        },
+        set_values_fn = function(value) {
+          res <- private$.validate_aligned_mapping(
+            value,
+            "obsp",
+            c(self$n_obs(), self$n_obs()),
+            expected_rownames = self$obs_names,
+            expected_colnames = self$obs_names
+          )
+          private$.set_values("obsp", res)
+        },
         get_rownames_fn = function() self$obs_names,
         get_colnames_fn = function() self$obs_names
       )
@@ -130,8 +188,26 @@ AbstractAnnData <- R6::R6Class(
         get_keys_fn = function() private$.get_keys("varp"),
         set_keys_fn = function(keys) private$.set_keys("varp", keys),
         get_value_fn = function(name) private$.get_value("varp", name),
-        set_value_fn = function(name, value) private$.set_varp_value(name, value),
-        set_values_fn = function(value) private$.set_varp_values(value),
+        set_value_fn = function(name, value) {
+          res <- private$.validate_aligned_array(
+            value,
+            paste0("varp[['", value, "']]"),
+            c(self$n_vars(), self$n_vars()),
+            expected_rownames = self$var_names,
+            expected_colnames = self$var_names
+          )
+          private$.set_value("varp", name, res)
+        },
+        set_values_fn = function(value) {
+          res <- private$.validate_aligned_mapping(
+            value,
+            "varp",
+            c(self$n_vars(), self$n_vars()),
+            expected_rownames = self$var_names,
+            expected_colnames = self$var_names
+          )
+          private$.set_values("varp", res)
+        },
         get_rownames_fn = function() self$var_names,
         get_colnames_fn = function() self$var_names
       )
