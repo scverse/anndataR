@@ -221,7 +221,31 @@ AbstractAnnData <- R6::R6Class(
     },
     #' @field uns See [AnnData-usage]
     uns = function(value) {
-      .abstract_function("ad$uns")
+      proxy <- AnnDataSlotList(
+        get_keys_fn = function() private$.get_keys("uns"),
+        set_keys_fn = function(keys) private$.set_keys("uns", keys),
+        get_value_fn = function(name) private$.get_value("uns", name),
+        set_value_fn = function(name, value) private$.set_value("uns", name, res),
+        set_values_fn = function(value) {
+          res <- private$.validate_named_list(
+            value,
+            "uns",
+            c(self$n_vars(), self$n_vars()),
+            expected_rownames = self$var_names,
+            expected_colnames = self$var_names
+          )
+          private$.set_values("uns", res)
+        },
+        get_rownames_fn = function() self$var_names,
+        get_colnames_fn = function() self$var_names
+      )
+      if (missing(value)) {
+        proxy
+      } else if (inherits(value, "AnnDataSlotList")) {
+        invisible(NULL)
+      } else {
+        proxy$set_values_fn(value)
+      }
     }
   ),
   public = list(
