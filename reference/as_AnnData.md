@@ -270,7 +270,7 @@ library(Seurat)
 #> Loading required package: SeuratObject
 #> Loading required package: sp
 #> ‘SeuratObject’ was built under R 4.5.0 but the current version is
-#> 4.5.2; it is recomended that you reinstall ‘SeuratObject’ as the ABI
+#> 4.5.3; it is recomended that you reinstall ‘SeuratObject’ as the ABI
 #> for R may have changed
 #> 
 #> Attaching package: ‘SeuratObject’
@@ -289,40 +289,40 @@ obj <- ScaleData(obj)
 #> Centering and scaling data matrix
 obj <- RunPCA(obj, npcs = 10L)
 #> PC_ 1 
-#> Positive:  Feature37, Feature76, Feature85, Feature72, Feature97, Feature14, Feature83, Feature69, Feature13, Feature92 
-#>     Feature84, Feature95, Feature20, Feature5, Feature10, Feature33, Feature88, Feature32, Feature8, Feature60 
-#>     Feature29, Feature93, Feature67, Feature1, Feature55, Feature61, Feature77, Feature74, Feature23, Feature28 
-#> Negative:  Feature78, Feature9, Feature41, Feature4, Feature47, Feature66, Feature17, Feature51, Feature91, Feature46 
-#>     Feature94, Feature21, Feature62, Feature90, Feature56, Feature49, Feature81, Feature19, Feature75, Feature50 
-#>     Feature86, Feature63, Feature73, Feature48, Feature16, Feature53, Feature18, Feature15, Feature89, Feature39 
+#> Positive:  Feature14, Feature88, Feature19, Feature51, Feature57, Feature29, Feature40, Feature31, Feature76, Feature56 
+#>     Feature45, Feature17, Feature49, Feature66, Feature91, Feature83, Feature100, Feature77, Feature59, Feature54 
+#>     Feature33, Feature96, Feature72, Feature22, Feature35, Feature21, Feature38, Feature81, Feature60, Feature50 
+#> Negative:  Feature6, Feature47, Feature8, Feature82, Feature79, Feature18, Feature71, Feature95, Feature1, Feature86 
+#>     Feature13, Feature2, Feature43, Feature9, Feature42, Feature39, Feature41, Feature48, Feature94, Feature36 
+#>     Feature53, Feature69, Feature28, Feature93, Feature25, Feature30, Feature97, Feature84, Feature23, Feature74 
 #> PC_ 2 
-#> Positive:  Feature97, Feature67, Feature30, Feature5, Feature70, Feature23, Feature35, Feature22, Feature19, Feature2 
-#>     Feature48, Feature77, Feature9, Feature41, Feature88, Feature34, Feature7, Feature21, Feature47, Feature58 
-#>     Feature60, Feature78, Feature80, Feature4, Feature14, Feature62, Feature86, Feature96, Feature92, Feature12 
-#> Negative:  Feature15, Feature59, Feature100, Feature79, Feature94, Feature98, Feature84, Feature37, Feature38, Feature18 
-#>     Feature3, Feature65, Feature31, Feature64, Feature61, Feature87, Feature16, Feature24, Feature29, Feature99 
-#>     Feature13, Feature72, Feature6, Feature93, Feature63, Feature36, Feature27, Feature33, Feature46, Feature75 
+#> Positive:  Feature98, Feature77, Feature12, Feature33, Feature24, Feature70, Feature21, Feature11, Feature30, Feature65 
+#>     Feature93, Feature87, Feature23, Feature90, Feature86, Feature7, Feature95, Feature42, Feature38, Feature15 
+#>     Feature40, Feature52, Feature32, Feature35, Feature47, Feature79, Feature68, Feature1, Feature82, Feature20 
+#> Negative:  Feature8, Feature89, Feature97, Feature28, Feature76, Feature73, Feature69, Feature83, Feature61, Feature63 
+#>     Feature25, Feature27, Feature100, Feature2, Feature88, Feature59, Feature50, Feature99, Feature56, Feature4 
+#>     Feature6, Feature19, Feature26, Feature5, Feature48, Feature57, Feature64, Feature36, Feature13, Feature29 
 #> PC_ 3 
-#> Positive:  Feature62, Feature77, Feature43, Feature56, Feature94, Feature17, Feature69, Feature52, Feature48, Feature18 
-#>     Feature29, Feature85, Feature8, Feature32, Feature41, Feature11, Feature64, Feature63, Feature72, Feature42 
-#>     Feature2, Feature99, Feature35, Feature86, Feature21, Feature31, Feature89, Feature16, Feature75, Feature20 
-#> Negative:  Feature73, Feature30, Feature87, Feature49, Feature84, Feature78, Feature10, Feature40, Feature3, Feature34 
-#>     Feature22, Feature70, Feature66, Feature53, Feature59, Feature65, Feature100, Feature82, Feature24, Feature97 
-#>     Feature33, Feature28, Feature25, Feature93, Feature57, Feature81, Feature19, Feature91, Feature51, Feature4 
+#> Positive:  Feature72, Feature87, Feature66, Feature27, Feature53, Feature58, Feature6, Feature18, Feature62, Feature31 
+#>     Feature39, Feature73, Feature15, Feature28, Feature57, Feature79, Feature45, Feature51, Feature5, Feature100 
+#>     Feature52, Feature30, Feature96, Feature95, Feature17, Feature19, Feature33, Feature99, Feature42, Feature29 
+#> Negative:  Feature59, Feature40, Feature20, Feature83, Feature97, Feature88, Feature69, Feature9, Feature94, Feature13 
+#>     Feature75, Feature34, Feature23, Feature38, Feature68, Feature35, Feature44, Feature32, Feature91, Feature14 
+#>     Feature92, Feature65, Feature63, Feature50, Feature43, Feature1, Feature4, Feature47, Feature98, Feature71 
 #> PC_ 4 
-#> Positive:  Feature13, Feature55, Feature25, Feature4, Feature92, Feature39, Feature11, Feature98, Feature36, Feature94 
-#>     Feature27, Feature2, Feature71, Feature24, Feature46, Feature67, Feature60, Feature50, Feature1, Feature28 
-#>     Feature78, Feature41, Feature81, Feature80, Feature75, Feature10, Feature44, Feature58, Feature45, Feature14 
-#> Negative:  Feature8, Feature3, Feature20, Feature5, Feature26, Feature43, Feature95, Feature63, Feature79, Feature87 
-#>     Feature17, Feature70, Feature97, Feature90, Feature89, Feature18, Feature22, Feature51, Feature47, Feature61 
-#>     Feature19, Feature52, Feature82, Feature76, Feature15, Feature38, Feature34, Feature12, Feature40, Feature84 
+#> Positive:  Feature51, Feature56, Feature46, Feature23, Feature62, Feature42, Feature37, Feature81, Feature35, Feature55 
+#>     Feature66, Feature69, Feature60, Feature53, Feature82, Feature1, Feature27, Feature4, Feature61, Feature22 
+#>     Feature21, Feature86, Feature59, Feature17, Feature89, Feature25, Feature73, Feature16, Feature19, Feature31 
+#> Negative:  Feature80, Feature58, Feature3, Feature15, Feature57, Feature45, Feature64, Feature78, Feature36, Feature8 
+#>     Feature99, Feature77, Feature83, Feature63, Feature30, Feature84, Feature2, Feature96, Feature5, Feature7 
+#>     Feature90, Feature9, Feature76, Feature24, Feature40, Feature70, Feature13, Feature92, Feature72, Feature34 
 #> PC_ 5 
-#> Positive:  Feature47, Feature68, Feature29, Feature35, Feature20, Feature95, Feature86, Feature66, Feature83, Feature11 
-#>     Feature100, Feature70, Feature94, Feature1, Feature24, Feature10, Feature18, Feature62, Feature54, Feature39 
-#>     Feature55, Feature4, Feature23, Feature16, Feature57, Feature48, Feature88, Feature15, Feature60, Feature82 
-#> Negative:  Feature96, Feature32, Feature43, Feature22, Feature52, Feature59, Feature87, Feature71, Feature12, Feature56 
-#>     Feature36, Feature2, Feature17, Feature72, Feature25, Feature41, Feature49, Feature92, Feature90, Feature34 
-#>     Feature26, Feature37, Feature30, Feature69, Feature50, Feature99, Feature45, Feature79, Feature91, Feature13 
+#> Positive:  Feature92, Feature30, Feature22, Feature89, Feature13, Feature62, Feature15, Feature83, Feature94, Feature53 
+#>     Feature86, Feature18, Feature47, Feature11, Feature32, Feature38, Feature25, Feature40, Feature78, Feature31 
+#>     Feature75, Feature33, Feature97, Feature29, Feature17, Feature100, Feature73, Feature20, Feature57, Feature68 
+#> Negative:  Feature90, Feature9, Feature2, Feature58, Feature79, Feature35, Feature81, Feature14, Feature84, Feature95 
+#>     Feature85, Feature60, Feature5, Feature16, Feature65, Feature96, Feature63, Feature28, Feature77, Feature26 
+#>     Feature23, Feature34, Feature69, Feature42, Feature82, Feature49, Feature76, Feature7, Feature48, Feature51 
 obj <- FindNeighbors(obj)
 #> Computing nearest neighbor graph
 #> Computing SNN
@@ -330,10 +330,10 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 #> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 #> This message will be shown once per session
-#> 21:51:43 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 21:51:43 Read 200 rows and found 10 numeric columns
-#> 21:51:43 Using Annoy for neighbor search, n_neighbors = 30
-#> 21:51:43 Building Annoy index with metric = cosine, n_trees = 50
+#> 12:35:30 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 12:35:30 Read 200 rows and found 10 numeric columns
+#> 12:35:30 Using Annoy for neighbor search, n_neighbors = 30
+#> 12:35:30 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -387,15 +387,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 21:51:43 Writing NN index file to temp file /tmp/Rtmp3dXLDZ/file1cba64d4d113
-#> 21:51:43 Searching Annoy index using 1 thread, search_k = 3000
-#> 21:51:43 Annoy recall = 100%
-#> 21:51:43 Commencing smooth kNN distance calibration using 1 thread
+#> 12:35:30 Writing NN index file to temp file /tmp/RtmpN4mGCN/file71c032332ade
+#> 12:35:30 Searching Annoy index using 1 thread, search_k = 3000
+#> 12:35:30 Annoy recall = 100%
+#> 12:35:30 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 21:51:44 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 21:51:44 Commencing optimization for 500 epochs, with 6160 positive edges
-#> 21:51:44 Using rng type: pcg
-#> 21:51:45 Optimization finished
+#> 12:35:32 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 12:35:32 Commencing optimization for 500 epochs, with 6146 positive edges
+#> 12:35:32 Using rng type: pcg
+#> 12:35:32 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names

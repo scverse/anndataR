@@ -274,9 +274,9 @@ The mapping arguments can also be passed directly to
 
 ``` r
 sessionInfo()
-#> R version 4.5.2 (2025-10-31)
+#> R version 4.5.3 (2026-03-11)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -305,20 +305,20 @@ sessionInfo()
 #> [13] BiocStyle_2.38.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10         SparseArray_1.10.8  lattice_0.22-7     
+#>  [1] sass_0.4.10         SparseArray_1.10.9  lattice_0.22-9     
 #>  [4] digest_0.6.39       magrittr_2.0.4      evaluate_1.0.5     
-#>  [7] grid_4.5.2          bookdown_0.46       fastmap_1.2.0      
+#>  [7] grid_4.5.3          bookdown_0.46       fastmap_1.2.0      
 #> [10] jsonlite_2.0.0      Matrix_1.7-4        BiocManager_1.30.27
-#> [13] purrr_1.2.1         textshaping_1.0.4   jquerylib_0.1.4    
+#> [13] purrr_1.2.1         textshaping_1.0.5   jquerylib_0.1.4    
 #> [16] abind_1.4-8         cli_3.6.5           rlang_1.1.7        
 #> [19] XVector_0.50.0      cachem_1.1.0        DelayedArray_0.36.0
 #> [22] yaml_2.3.12         otel_0.2.0          S4Arrays_1.10.1    
-#> [25] tools_4.5.2         Rhdf5lib_1.32.0     reticulate_1.45.0  
-#> [28] vctrs_0.7.1         R6_2.6.1            png_0.1-8          
-#> [31] lifecycle_1.0.5     rhdf5_2.54.1        fs_1.6.6           
-#> [34] htmlwidgets_1.6.4   ragg_1.5.0          desc_1.4.3         
+#> [25] tools_4.5.3         Rhdf5lib_1.32.0     reticulate_1.45.0  
+#> [28] vctrs_0.7.2         R6_2.6.1            png_0.1-9          
+#> [31] lifecycle_1.0.5     rhdf5_2.54.1        fs_2.0.1           
+#> [34] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
 #> [37] pkgdown_2.2.0       bslib_0.10.0        Rcpp_1.1.1         
-#> [40] systemfonts_1.3.1   xfun_0.56           rhdf5filters_1.22.0
-#> [43] knitr_1.51          htmltools_0.5.9     rmarkdown_2.30     
-#> [46] compiler_4.5.2
+#> [40] systemfonts_1.3.2   xfun_0.57           rhdf5filters_1.22.0
+#> [43] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
+#> [46] compiler_4.5.3
 ```

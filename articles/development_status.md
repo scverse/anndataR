@@ -133,9 +133,9 @@ Investigate if this is a problem or not.
 sessionInfo()
 ```
 
-    ## R version 4.5.2 (2025-10-31)
+    ## R version 4.5.3 (2026-03-11)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.3 LTS
+    ## Running under: Ubuntu 24.04.4 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -158,16 +158,16 @@ sessionInfo()
     ## [5] rprojroot_2.1.1  knitr_1.51       tibble_3.3.1     BiocStyle_2.38.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] jsonlite_2.0.0      compiler_4.5.2      BiocManager_1.30.27
-    ##  [4] tidyselect_1.2.1    jquerylib_0.1.4     systemfonts_1.3.1  
-    ##  [7] textshaping_1.0.4   yaml_2.3.12         fastmap_1.2.0      
+    ##  [1] jsonlite_2.0.0      compiler_4.5.3      BiocManager_1.30.27
+    ##  [4] tidyselect_1.2.1    jquerylib_0.1.4     systemfonts_1.3.2  
+    ##  [7] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
     ## [10] R6_2.6.1            generics_0.1.4      htmlwidgets_1.6.4  
     ## [13] bookdown_0.46       desc_1.4.3          bslib_0.10.0       
     ## [16] pillar_1.11.1       rlang_1.1.7         cachem_1.1.0       
-    ## [19] stringi_1.8.7       xfun_0.56           fs_1.6.6           
+    ## [19] stringi_1.8.7       xfun_0.57           fs_2.0.1           
     ## [22] sass_0.4.10         otel_0.2.0          cli_3.6.5          
     ## [25] pkgdown_2.2.0       withr_3.0.2         magrittr_2.0.4     
-    ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.1        
-    ## [31] evaluate_1.0.5      glue_1.8.0          ragg_1.5.0         
-    ## [34] rmarkdown_2.30      tools_4.5.2         pkgconfig_2.0.3    
+    ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.2        
+    ## [31] evaluate_1.0.5      glue_1.8.0          ragg_1.5.2         
+    ## [34] rmarkdown_2.31      tools_4.5.3         pkgconfig_2.0.3    
     ## [37] htmltools_0.5.9

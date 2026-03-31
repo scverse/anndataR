@@ -38,7 +38,7 @@ library(Seurat)
 #> Loading required package: SeuratObject
 #> Loading required package: sp
 #> 'SeuratObject' was built under R 4.5.0 but the current version is
-#> 4.5.2; it is recomended that you reinstall 'SeuratObject' as the ABI
+#> 4.5.3; it is recomended that you reinstall 'SeuratObject' as the ABI
 #> for R may have changed
 #> 
 #> Attaching package: 'SeuratObject'
@@ -188,9 +188,9 @@ The mapping arguments can also be passed directly to
 
 ``` r
 sessionInfo()
-#> R version 4.5.2 (2025-10-31)
+#> R version 4.5.3 (2026-03-11)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -215,42 +215,42 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>   [1] deldir_2.0-4           pbapply_1.7-4          gridExtra_2.3         
 #>   [4] rlang_1.1.7            magrittr_2.0.4         RcppAnnoy_0.0.23      
-#>   [7] otel_0.2.0             spatstat.geom_3.7-0    matrixStats_1.5.0     
-#>  [10] ggridges_0.5.7         compiler_4.5.2         reshape2_1.4.5        
-#>  [13] png_0.1-8              systemfonts_1.3.1      vctrs_0.7.1           
+#>   [7] otel_0.2.0             spatstat.geom_3.7-3    matrixStats_1.5.0     
+#>  [10] ggridges_0.5.7         compiler_4.5.3         reshape2_1.4.5        
+#>  [13] png_0.1-9              systemfonts_1.3.2      vctrs_0.7.2           
 #>  [16] stringr_1.6.0          pkgconfig_2.0.3        fastmap_1.2.0         
-#>  [19] promises_1.5.0         rmarkdown_2.30         ragg_1.5.0            
-#>  [22] purrr_1.2.1            xfun_0.56              cachem_1.1.0          
-#>  [25] jsonlite_2.0.0         goftest_1.2-3          later_1.4.7           
-#>  [28] rhdf5filters_1.22.0    Rhdf5lib_1.32.0        spatstat.utils_3.2-1  
-#>  [31] irlba_2.3.7            parallel_4.5.2         cluster_2.1.8.1       
+#>  [19] promises_1.5.0         rmarkdown_2.31         ragg_1.5.2            
+#>  [22] purrr_1.2.1            xfun_0.57              cachem_1.1.0          
+#>  [25] jsonlite_2.0.0         goftest_1.2-3          later_1.4.8           
+#>  [28] rhdf5filters_1.22.0    Rhdf5lib_1.32.0        spatstat.utils_3.2-2  
+#>  [31] irlba_2.3.7            parallel_4.5.3         cluster_2.1.8.2       
 #>  [34] R6_2.6.1               ica_1.0-3              spatstat.data_3.1-9   
 #>  [37] stringi_1.8.7          bslib_0.10.0           RColorBrewer_1.1-3    
-#>  [40] reticulate_1.45.0      spatstat.univar_3.1-6  parallelly_1.46.1     
+#>  [40] reticulate_1.45.0      spatstat.univar_3.1-7  parallelly_1.46.1     
 #>  [43] scattermore_1.2        lmtest_0.9-40          jquerylib_0.1.4       
 #>  [46] Rcpp_1.1.1             bookdown_0.46          knitr_1.51            
 #>  [49] tensor_1.5.1           future.apply_1.20.2    zoo_1.8-15            
-#>  [52] sctransform_0.4.3      httpuv_1.6.16          Matrix_1.7-4          
-#>  [55] splines_4.5.2          igraph_2.2.2           tidyselect_1.2.1      
-#>  [58] abind_1.4-8            yaml_2.3.12            spatstat.random_3.4-4 
-#>  [61] spatstat.explore_3.7-0 codetools_0.2-20       miniUI_0.1.2          
-#>  [64] listenv_0.10.0         plyr_1.8.9             lattice_0.22-7        
+#>  [52] sctransform_0.4.3      httpuv_1.6.17          Matrix_1.7-4          
+#>  [55] splines_4.5.3          igraph_2.2.2           tidyselect_1.2.1      
+#>  [58] abind_1.4-8            yaml_2.3.12            spatstat.random_3.4-5 
+#>  [61] spatstat.explore_3.8-0 codetools_0.2-20       miniUI_0.1.2          
+#>  [64] listenv_0.10.1         plyr_1.8.9             lattice_0.22-9        
 #>  [67] tibble_3.3.1           shiny_1.13.0           S7_0.2.1              
 #>  [70] ROCR_1.0-12            evaluate_1.0.5         Rtsne_0.17            
-#>  [73] future_1.69.0          fastDummies_1.7.5      desc_1.4.3            
-#>  [76] survival_3.8-3         polyclip_1.10-7        fitdistrplus_1.2-6    
+#>  [73] future_1.70.0          fastDummies_1.7.5      desc_1.4.3            
+#>  [76] survival_3.8-6         polyclip_1.10-7        fitdistrplus_1.2-6    
 #>  [79] pillar_1.11.1          BiocManager_1.30.27    KernSmooth_2.23-26    
 #>  [82] plotly_4.12.0          generics_0.1.4         RcppHNSW_0.6.0        
-#>  [85] ggplot2_4.0.2          scales_1.4.0           globals_0.19.0        
+#>  [85] ggplot2_4.0.2          scales_1.4.0           globals_0.19.1        
 #>  [88] xtable_1.8-8           glue_1.8.0             lazyeval_0.2.2        
-#>  [91] tools_4.5.2            data.table_1.18.2.1    RSpectra_0.16-2       
-#>  [94] RANN_2.6.2             fs_1.6.6               dotCall64_1.2         
-#>  [97] rhdf5_2.54.1           cowplot_1.2.0          grid_4.5.2            
+#>  [91] tools_4.5.3            data.table_1.18.2.1    RSpectra_0.16-2       
+#>  [94] RANN_2.6.2             fs_2.0.1               dotCall64_1.2         
+#>  [97] rhdf5_2.54.1           cowplot_1.2.0          grid_4.5.3            
 #> [100] tidyr_1.3.2            nlme_3.1-168           patchwork_1.3.2       
-#> [103] cli_3.6.5              spatstat.sparse_3.1-0  textshaping_1.0.4     
+#> [103] cli_3.6.5              spatstat.sparse_3.1-0  textshaping_1.0.5     
 #> [106] spam_2.11-3            viridisLite_0.4.3      dplyr_1.2.0           
 #> [109] uwot_0.2.4             gtable_0.3.6           sass_0.4.10           
-#> [112] digest_0.6.39          progressr_0.18.0       ggrepel_0.9.7         
+#> [112] digest_0.6.39          progressr_0.18.0       ggrepel_0.9.8         
 #> [115] htmlwidgets_1.6.4      farver_2.1.2           htmltools_0.5.9       
 #> [118] pkgdown_2.2.0          lifecycle_1.0.5        httr_1.4.8            
 #> [121] mime_0.13              MASS_7.3-65

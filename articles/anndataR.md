@@ -421,9 +421,9 @@ citation("anndataR")
 
 ``` r
 sessionInfo()
-#> R version 4.5.2 (2025-10-31)
+#> R version 4.5.3 (2026-03-11)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -454,10 +454,10 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.4        
-#>   [4] spatstat.utils_3.2-1   farver_2.1.2           rmarkdown_2.30        
-#>   [7] fs_1.6.6               ragg_1.5.0             vctrs_0.7.1           
-#>  [10] ROCR_1.0-12            spatstat.explore_3.7-0 htmltools_0.5.9       
-#>  [13] S4Arrays_1.10.1        Rhdf5lib_1.32.0        SparseArray_1.10.8    
+#>   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        
+#>   [7] fs_2.0.1               ragg_1.5.2             vctrs_0.7.2           
+#>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
+#>  [13] S4Arrays_1.10.1        Rhdf5lib_1.32.0        SparseArray_1.10.9    
 #>  [16] rhdf5_2.54.1           sass_0.4.10            sctransform_0.4.3     
 #>  [19] parallelly_1.46.1      KernSmooth_2.23-26     bslib_0.10.0          
 #>  [22] htmlwidgets_1.6.4      desc_1.4.3             ica_1.0-3             
@@ -465,34 +465,34 @@ sessionInfo()
 #>  [28] cachem_1.1.0           igraph_2.2.2           mime_0.13             
 #>  [31] lifecycle_1.0.5        pkgconfig_2.0.3        Matrix_1.7-4          
 #>  [34] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-6    
-#>  [37] future_1.69.0          shiny_1.13.0           digest_0.6.39         
+#>  [37] future_1.70.0          shiny_1.13.0           digest_0.6.39         
 #>  [40] patchwork_1.3.2        tensor_1.5.1           Seurat_5.4.0          
-#>  [43] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.4     
+#>  [43] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
 #>  [46] progressr_0.18.0       spatstat.sparse_3.1-0  polyclip_1.10-7       
-#>  [49] httr_1.4.8             abind_1.4-8            compiler_4.5.2        
+#>  [49] httr_1.4.8             abind_1.4-8            compiler_4.5.3        
 #>  [52] S7_0.2.1               fastDummies_1.7.5      MASS_7.3-65           
-#>  [55] DelayedArray_0.36.0    tools_4.5.2            lmtest_0.9-40         
-#>  [58] otel_0.2.0             httpuv_1.6.16          future.apply_1.20.2   
+#>  [55] DelayedArray_0.36.0    tools_4.5.3            lmtest_0.9-40         
+#>  [58] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   
 #>  [61] goftest_1.2-3          glue_1.8.0             nlme_3.1-168          
-#>  [64] rhdf5filters_1.22.0    promises_1.5.0         grid_4.5.2            
-#>  [67] Rtsne_0.17             cluster_2.1.8.1        reshape2_1.4.5        
+#>  [64] rhdf5filters_1.22.0    promises_1.5.0         grid_4.5.3            
+#>  [67] Rtsne_0.17             cluster_2.1.8.2        reshape2_1.4.5        
 #>  [70] gtable_0.3.6           spatstat.data_3.1-9    tidyr_1.3.2           
-#>  [73] data.table_1.18.2.1    XVector_0.50.0         spatstat.geom_3.7-0   
-#>  [76] RcppAnnoy_0.0.23       ggrepel_0.9.7          RANN_2.6.2            
+#>  [73] data.table_1.18.2.1    XVector_0.50.0         spatstat.geom_3.7-3   
+#>  [76] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            
 #>  [79] pillar_1.11.1          stringr_1.6.0          spam_2.11-3           
-#>  [82] RcppHNSW_0.6.0         later_1.4.7            splines_4.5.2         
-#>  [85] dplyr_1.2.0            lattice_0.22-7         deldir_2.0-4          
-#>  [88] survival_3.8-3         tidyselect_1.2.1       miniUI_0.1.2          
+#>  [82] RcppHNSW_0.6.0         later_1.4.8            splines_4.5.3         
+#>  [85] dplyr_1.2.0            lattice_0.22-9         deldir_2.0-4          
+#>  [88] survival_3.8-6         tidyselect_1.2.1       miniUI_0.1.2          
 #>  [91] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         
-#>  [94] bookdown_0.46          scattermore_1.2        xfun_0.56             
+#>  [94] bookdown_0.46          scattermore_1.2        xfun_0.57             
 #>  [97] stringi_1.8.7          lazyeval_0.2.2         yaml_2.3.12           
 #> [100] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
 #> [103] BiocManager_1.30.27    cli_3.6.5              uwot_0.2.4            
-#> [106] xtable_1.8-8           reticulate_1.45.0      systemfonts_1.3.1     
-#> [109] jquerylib_0.1.4        Rcpp_1.1.1             spatstat.random_3.4-4 
-#> [112] globals_0.19.0         png_0.1-8              spatstat.univar_3.1-6 
-#> [115] parallel_4.5.2         pkgdown_2.2.0          ggplot2_4.0.2         
-#> [118] dotCall64_1.2          listenv_0.10.0         viridisLite_0.4.3     
+#> [106] xtable_1.8-8           reticulate_1.45.0      systemfonts_1.3.2     
+#> [109] jquerylib_0.1.4        Rcpp_1.1.1             spatstat.random_3.4-5 
+#> [112] globals_0.19.1         png_0.1-9              spatstat.univar_3.1-7 
+#> [115] parallel_4.5.3         pkgdown_2.2.0          ggplot2_4.0.2         
+#> [118] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     
 #> [121] scales_1.4.0           ggridges_0.5.7         purrr_1.2.1           
 #> [124] rlang_1.1.7            cowplot_1.2.0
 ```
