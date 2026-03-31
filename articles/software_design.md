@@ -4,7 +4,7 @@
 
 *[anndataR](https://bioconductor.org/packages/3.22/anndataR)* is
 designed to be an R native implementation of the `AnnData` object,
-inspired by the of the following packages:
+inspired by the following packages:
 
 - [*anndata*](https://anndata.readthedocs.io/en/stable/)
   ([scverse/anndata](https://github.com/scverse/anndata)): The Python
@@ -14,7 +14,7 @@ inspired by the of the following packages:
   Convert `AnnData` files to/from `SingleCellExperiment` objects
 - *[h5ad](https://github.com/mtmorgan/h5ad)*: Read/write `*.h5ad` files
   natively using *[rhdf5](https://bioconductor.org/packages/3.22/rhdf5)*
-- *[anndataR](https://CRAN.R-project.org/package=anndataR)*
+- *[anndata](https://CRAN.R-project.org/package=anndata)*
   ([dynverse/anndata](https://github.com/dynverse/anndata)): An R
   implementation of the `AnnData` data structures, uses
   *[reticulate](https://CRAN.R-project.org/package=reticulate)* to
@@ -52,10 +52,11 @@ and access data in different ways:
   data is stored in memory until it is requested by the user. It is
   primarily designed as an intermediate object when reading/writing H5AD
   files but can be useful for accessing parts of large files.
-- The `ReticulateAnnData` access data stored in an `AnnData` object in a
-  concurrent Python session. This comes with the overhead and complexity
-  of using *[reticulate](https://CRAN.R-project.org/package=reticulate)*
-  but is sometimes useful to access functionality that has not yet been
+- The `ReticulateAnnData` accesses data stored in an `AnnData` object in
+  a concurrent Python session. This comes with the overhead and
+  complexity of using
+  *[reticulate](https://CRAN.R-project.org/package=reticulate)* but is
+  sometimes useful to access functionality that has not yet been
   implemented in
   *[anndataR](https://bioconductor.org/packages/3.22/anndataR)*.
 - The planned `ZarrAnnData` will provide an interface to an `AnnData`
