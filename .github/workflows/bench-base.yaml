@@ -53,7 +53,7 @@ jobs:
         run: echo "RETICULATE_PYTHON=$(which python)" >> $GITHUB_ENV
 
       - name: Install Bencher CLI
-        uses: bencherdev/bencher@v0.6.0
+        uses: bencherdev/bencher@v0.6.2
 
       - name: Run benchmarks
         run: Rscript benchmarks/run_benchmarks.R --output results.json

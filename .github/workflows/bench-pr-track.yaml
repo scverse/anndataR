@@ -43,7 +43,7 @@ jobs:
             core.exportVariable("PR_NUMBER", prEvent.number);
 
       - name: Install Bencher CLI
-        uses: bencherdev/bencher@v0.6.0
+        uses: bencherdev/bencher@v0.6.2
 
       - name: Track PR benchmarks with Bencher
         run: |
