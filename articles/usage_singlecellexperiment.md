@@ -299,21 +299,21 @@ sessionInfo()
 #>  [1] SingleCellExperiment_1.32.0 SummarizedExperiment_1.40.0
 #>  [3] Biobase_2.70.0              GenomicRanges_1.62.1       
 #>  [5] Seqinfo_1.0.0               IRanges_2.44.0             
-#>  [7] S4Vectors_0.48.0            BiocGenerics_0.56.0        
+#>  [7] S4Vectors_0.48.1            BiocGenerics_0.56.0        
 #>  [9] generics_0.1.4              MatrixGenerics_1.22.0      
 #> [11] matrixStats_1.5.0           anndataR_1.1.2             
 #> [13] BiocStyle_2.38.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10         SparseArray_1.10.9  lattice_0.22-9     
-#>  [4] digest_0.6.39       magrittr_2.0.4      evaluate_1.0.5     
+#>  [1] sass_0.4.10         SparseArray_1.10.10 lattice_0.22-9     
+#>  [4] digest_0.6.39       magrittr_2.0.5      evaluate_1.0.5     
 #>  [7] grid_4.5.3          bookdown_0.46       fastmap_1.2.0      
 #> [10] jsonlite_2.0.0      Matrix_1.7-4        BiocManager_1.30.27
 #> [13] purrr_1.2.1         textshaping_1.0.5   jquerylib_0.1.4    
-#> [16] abind_1.4-8         cli_3.6.5           rlang_1.1.7        
-#> [19] XVector_0.50.0      cachem_1.1.0        DelayedArray_0.36.0
+#> [16] abind_1.4-8         cli_3.6.6           rlang_1.2.0        
+#> [19] XVector_0.50.0      cachem_1.1.0        DelayedArray_0.36.1
 #> [22] yaml_2.3.12         otel_0.2.0          S4Arrays_1.10.1    
-#> [25] tools_4.5.3         Rhdf5lib_1.32.0     reticulate_1.45.0  
+#> [25] tools_4.5.3         Rhdf5lib_1.32.0     reticulate_1.46.0  
 #> [28] vctrs_0.7.2         R6_2.6.1            png_0.1-9          
 #> [31] lifecycle_1.0.5     rhdf5_2.54.1        fs_2.0.1           
 #> [34] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
