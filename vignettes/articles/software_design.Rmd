@@ -18,13 +18,12 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-`r Biocpkg("anndataR")` is designed to be an R native implementation of the `AnnData` object, inspired by the of the following packages:
+`r Biocpkg("anndataR")` is designed to be an R native implementation of the `AnnData` object, inspired by the following packages:
 
 * [_anndata_](https://anndata.readthedocs.io/en/stable/) ([scverse/anndata](https://github.com/scverse/anndata)): The Python `anndata` package and on-disk specification
 * `r Biocpkg("zellkonverter")` ([theislab/zellkonverter](https://github.com/theislab/zellkonverter)): Convert `AnnData` files to/from `SingleCellExperiment` objects
 * `r Githubpkg("mtmorgan/h5ad")`: Read/write `*.h5ad` files natively using `r Biocpkg("rhdf5")`
-* `r Biocpkg("Rarr")`: Read/write `*.zarr` stores natively
-* `r CRANpkg("anndataR")` ([dynverse/anndata](https://github.com/dynverse/anndata)): An R implementation of the `AnnData` data structures, uses `r CRANpkg("reticulate")` to read/write `*.h5ad` files and `*.zarr` stores.
+* `r CRANpkg("anndata")` ([dynverse/anndata](https://github.com/dynverse/anndata)): An R implementation of the `AnnData` data structures, uses `r CRANpkg("reticulate")` to read/write `*.h5ad` files
 
 Ideally, this package will be a complete replacement for all of these packages, and will be the go-to package for working with `AnnData` files in R.
 
