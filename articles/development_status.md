@@ -154,7 +154,7 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] tidyr_1.3.2      dplyr_1.2.1      purrr_1.2.1      stringr_1.6.0   
+    ## [1] tidyr_1.3.2      dplyr_1.2.1      purrr_1.2.2      stringr_1.6.0   
     ## [5] rprojroot_2.1.1  knitr_1.51       tibble_3.3.1     BiocStyle_2.38.0
     ## 
     ## loaded via a namespace (and not attached):
@@ -167,7 +167,7 @@ sessionInfo()
     ## [19] stringi_1.8.7       xfun_0.57           fs_2.0.1           
     ## [22] sass_0.4.10         otel_0.2.0          cli_3.6.6          
     ## [25] pkgdown_2.2.0       withr_3.0.2         magrittr_2.0.5     
-    ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.2        
+    ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.3        
     ## [31] evaluate_1.0.5      glue_1.8.0          ragg_1.5.2         
     ## [34] rmarkdown_2.31      tools_4.5.3         pkgconfig_2.0.3    
     ## [37] htmltools_0.5.9

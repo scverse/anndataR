@@ -209,7 +209,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.4.0       SeuratObject_5.3.0 sp_2.2-1           anndataR_1.1.2    
+#> [1] Seurat_5.4.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.1.2    
 #> [5] BiocStyle_2.38.0  
 #> 
 #> loaded via a namespace (and not attached):
@@ -217,10 +217,10 @@ sessionInfo()
 #>   [4] rlang_1.2.0            magrittr_2.0.5         RcppAnnoy_0.0.23      
 #>   [7] otel_0.2.0             spatstat.geom_3.7-3    matrixStats_1.5.0     
 #>  [10] ggridges_0.5.7         compiler_4.5.3         reshape2_1.4.5        
-#>  [13] png_0.1-9              systemfonts_1.3.2      vctrs_0.7.2           
+#>  [13] png_0.1-9              systemfonts_1.3.2      vctrs_0.7.3           
 #>  [16] stringr_1.6.0          pkgconfig_2.0.3        fastmap_1.2.0         
 #>  [19] promises_1.5.0         rmarkdown_2.31         ragg_1.5.2            
-#>  [22] purrr_1.2.1            xfun_0.57              cachem_1.1.0          
+#>  [22] purrr_1.2.2            xfun_0.57              cachem_1.1.0          
 #>  [25] jsonlite_2.0.0         goftest_1.2-3          later_1.4.8           
 #>  [28] rhdf5filters_1.22.0    Rhdf5lib_1.32.0        spatstat.utils_3.2-2  
 #>  [31] irlba_2.3.7            parallel_4.5.3         cluster_2.1.8.2       

@@ -185,7 +185,7 @@ sessionInfo()
 #>   [3] magrittr_2.0.5              spatstat.utils_3.2-2       
 #>   [5] farver_2.1.2                rmarkdown_2.31             
 #>   [7] fs_2.0.1                    ragg_1.5.2                 
-#>   [9] vctrs_0.7.2                 ROCR_1.0-12                
+#>   [9] vctrs_0.7.3                 ROCR_1.0-12                
 #>  [11] memoise_2.0.1               spatstat.explore_3.8-0     
 #>  [13] htmltools_0.5.9             S4Arrays_1.10.1            
 #>  [15] curl_7.0.0                  SparseArray_1.10.10        
@@ -253,7 +253,7 @@ sessionInfo()
 #> [139] ggplot2_4.0.2               dotCall64_1.2              
 #> [141] listenv_0.10.1              viridisLite_0.4.3          
 #> [143] scales_1.4.0                ggridges_0.5.7             
-#> [145] SeuratObject_5.3.0          purrr_1.2.1                
+#> [145] SeuratObject_5.4.0          purrr_1.2.2                
 #> [147] rlang_1.2.0                 cowplot_1.2.0
 ```
 
@@ -288,7 +288,7 @@ reticulate::py_list_packages()
 #> 13   legacy-api-wrap          1.5         legacy-api-wrap==1.5
 #> 14          llvmlite       0.47.0             llvmlite==0.47.0
 #> 15        matplotlib       3.10.8           matplotlib==3.10.8
-#> 16            mudata        0.3.3                mudata==0.3.3
+#> 16            mudata        0.3.4                mudata==0.3.4
 #> 17           natsort        8.4.0               natsort==8.4.0
 #> 18          networkx        3.6.1              networkx==3.6.1
 #> 19             numba       0.65.0                numba==0.65.0
@@ -306,14 +306,15 @@ reticulate::py_list_packages()
 #> 31            scanpy       1.12.1               scanpy==1.12.1
 #> 32      scikit-learn        1.8.0          scikit-learn==1.8.0
 #> 33             scipy       1.17.1                scipy==1.17.1
-#> 34           seaborn       0.13.2              seaborn==0.13.2
-#> 35     session-info2        0.4.1         session-info2==0.4.1
-#> 36               six       1.17.0                  six==1.17.0
-#> 37       statsmodels       0.14.6          statsmodels==0.14.6
-#> 38     threadpoolctl        3.6.0         threadpoolctl==3.6.0
-#> 39              tqdm       4.67.3                 tqdm==4.67.3
-#> 40 typing_extensions       4.15.0    typing_extensions==4.15.0
-#> 41            tzdata       2026.1               tzdata==2026.1
-#> 42        umap-learn       0.5.12           umap-learn==0.5.12
-#> 43              zarr        3.1.6                  zarr==3.1.6
+#> 34      scverse-misc        0.0.3          scverse-misc==0.0.3
+#> 35           seaborn       0.13.2              seaborn==0.13.2
+#> 36     session-info2        0.4.1         session-info2==0.4.1
+#> 37               six       1.17.0                  six==1.17.0
+#> 38       statsmodels       0.14.6          statsmodels==0.14.6
+#> 39     threadpoolctl        3.6.0         threadpoolctl==3.6.0
+#> 40              tqdm       4.67.3                 tqdm==4.67.3
+#> 41 typing_extensions       4.15.0    typing_extensions==4.15.0
+#> 42            tzdata       2026.1               tzdata==2026.1
+#> 43        umap-learn       0.5.12           umap-learn==0.5.12
+#> 44              zarr        3.1.6                  zarr==3.1.6
 ```

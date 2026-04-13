@@ -449,13 +449,13 @@ sessionInfo()
 #>  [7] IRanges_2.44.0              S4Vectors_0.48.1           
 #>  [9] BiocGenerics_0.56.0         generics_0.1.4             
 #> [11] MatrixGenerics_1.22.0       matrixStats_1.5.0          
-#> [13] SeuratObject_5.3.0          sp_2.2-1                   
+#> [13] SeuratObject_5.4.0          sp_2.2-1                   
 #> [15] BiocStyle_2.38.0           
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
 #>   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        
-#>   [7] fs_2.0.1               ragg_1.5.2             vctrs_0.7.2           
+#>   [7] fs_2.0.1               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
 #>  [13] S4Arrays_1.10.1        Rhdf5lib_1.32.0        SparseArray_1.10.10   
 #>  [16] rhdf5_2.54.1           sass_0.4.10            sctransform_0.4.3     
@@ -493,6 +493,6 @@ sessionInfo()
 #> [112] globals_0.19.1         png_0.1-9              spatstat.univar_3.1-7 
 #> [115] parallel_4.5.3         pkgdown_2.2.0          ggplot2_4.0.2         
 #> [118] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     
-#> [121] scales_1.4.0           ggridges_0.5.7         purrr_1.2.1           
+#> [121] scales_1.4.0           ggridges_0.5.7         purrr_1.2.2           
 #> [124] rlang_1.2.0            cowplot_1.2.0
 ```
