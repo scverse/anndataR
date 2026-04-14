@@ -443,8 +443,8 @@ ZarrAnnData <- R6::R6Class(
 #' @param adata An `AnnData` object to be converted to [`ZarrAnnData`]
 #' @param file The file name (character) of the `.zarr` file
 #' @param compression The compression algorithm to use when writing the
-#'   Zarr file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
-#'   `"none"`.
+#'   Zarr file. Can be one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`,
+#'   `"lzma"`, `"bz2"`, `"zlib"` or `"lz4"`. Defaults to `"none"`.
 #' @param mode The mode to open the Zarr file:
 #'
 #'   * `a` creates a new file or opens an existing one for read/write
