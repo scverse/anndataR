@@ -82,7 +82,7 @@ write_zarr_element <- function(
       # Fail if unknown
       cli_abort(c(
         "Writing {.cls {class(value)}} objects to Zarr is not supported",
-        "i" = "Attempting to write to {.path {name}} in {.file {file}}"
+        "i" = "Attempting to write to {.path {name}} in {.file {store}}"
       ))
     }
 
