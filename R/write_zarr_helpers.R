@@ -7,7 +7,7 @@
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"` or `"gzip"`. Defaults to `"none"`.
-#' #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
