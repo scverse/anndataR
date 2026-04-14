@@ -30,7 +30,7 @@ Ideally, this package will be a complete replacement for all of these packages, 
 # Core features
 
 * An `r CRANpkg("R6")` `AnnData` class to work with objects in R
-* In-memory (`InMemoryAnnData`), HDF5-backed (`HDF5AnnData`), Zarr-backed (`ZarrAnnData`) Python-backed (`ReticulateAnnData`) back ends with a consistent interface
+* In-memory (`InMemoryAnnData`), HDF5-backed (`HDF5AnnData`), Zarr-backed (`ZarrAnnData`), Python-backed (`ReticulateAnnData`) back ends with a consistent interface
 * Read/write `.h5ad` files and `.zarr` stores natively
 * Convert to/from `SingleCellExperiment` objects
 * Convert to/from `Seurat` objects
