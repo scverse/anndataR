@@ -1,3 +1,6 @@
+# Zarr metadata files used to identify valid Zarr nodes (arrays or groups)
+ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
+
 #' create_zarr_group
 #'
 #' Create a Zarr group
@@ -70,7 +73,7 @@ create_zarr <- function(store, version = "v2") {
 #' @noRd
 is_zarr_empty <- function(store) {
   files <- list.files(store, recursive = FALSE, full.names = FALSE)
-  all(files %in% c(".zarray", ".zattrs", ".zgroup", "zarr.json"))
+  all(files %in% ZARR_METADATA_FILES)
 }
 
 #' Zarr path exists
@@ -93,7 +96,7 @@ zarr_path_exists <- function(store, target_path) {
       recursive = FALSE,
       all.files = TRUE
     )
-    if (any(c(".zarray", ".zattrs", ".zgroup", "zarr.json") %in% list_files)) {
+    if (any(ZARR_METADATA_FILES %in% list_files)) {
       TRUE
     } else {
       FALSE
