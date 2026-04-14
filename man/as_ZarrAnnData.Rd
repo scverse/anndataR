@@ -17,8 +17,8 @@ as_ZarrAnnData(
 \item{file}{The file name (character) of the \code{.zarr} file}
 
 \item{compression}{The compression algorithm to use when writing the
-Zarr file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
-\code{"none"}.}
+Zarr file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zstd"},
+\code{"lzma"}, \code{"bz2"}, \code{"zlib"} or \code{"lz4"}. Defaults to \code{"none"}.}
 
 \item{mode}{The mode to open the Zarr file:
 \itemize{

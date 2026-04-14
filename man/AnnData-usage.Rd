@@ -18,7 +18,7 @@ abstract \link{AbstractAnnData} class and store and access data in different way
 \itemize{
 \item \link{InMemoryAnnData} stores data in memory
 \item \link{HDF5AnnData} provides an interface to a H5AD file
-\item \link{ZarrAnnData} provides an interface to a H5AD file
+\item \link{ZarrAnnData} provides an interface to a Zarr store
 \item \link{ReticulateAnnData} wraps a Python \code{AnnData} object via \pkg{reticulate}
 }
 
