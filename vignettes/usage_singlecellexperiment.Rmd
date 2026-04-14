@@ -63,7 +63,7 @@ sce
 
 Similarly, we can read from a Zarr store which we also demonstrate with an example `.zarr` store: 
 
-```{r prep-file, eval=FALSE}
+```{r prep-file-zarr}
 # Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
 zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
 td <- tempdir(check = TRUE)
@@ -76,7 +76,7 @@ sce_zarr
 
 or 
 
-```{r read-zarr, eval=FALSE}
+```{r read-zarr}
 adata <- read_zarr(zarr_path)
 sce_zarr <- adata$as_SingleCellExperiment()
 sce_zarr

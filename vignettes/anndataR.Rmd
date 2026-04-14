@@ -99,23 +99,21 @@ adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 
 Similarly, these functionalities are provided for `.zarr` stores too. 
 
-```{r zarr-path, eval = FALSE}
-library(anndataR)
-
-zarr_path <- system.file("extdata", "example.zarr.zip", package = "anndataR")
+```{r zarr-path}
+zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
 td <- tempdir(check = TRUE)
 unzip(zarr_path, exdir = td)
-zarr_path <- file.path(td, "example.zarr")
+zarr_path <- file.path(td, "example_v2.zarr")
 ```
 
-```{r read-zarr, eval = FALSE}
+```{r read-zarr}
 # in-memory
 adata <- read_zarr(zarr_path)
 
 # as SingleCellExperiment
 sce <- read_zarr(zarr_path, as = "SingleCellExperiment")
 
-# as SingleCellExperiment
+# as Seurat
 obj <- read_zarr(zarr_path, as = "Seurat")
 
 # as Zarr-backed
@@ -214,7 +212,7 @@ write_h5ad(obj, tmpfile)
 
 Similarly, we can write `AnnData` and other objects to `.zarr` stores too.
 
-```{r write-to-disk-zarr, eval=FALSE}
+```{r write-to-disk-zarr}
 tmpfile <- tempfile(fileext = ".zarr")
 adata$write_zarr(tmpfile) # Alternatively, write_zarr(adata, tmpfile)
 
