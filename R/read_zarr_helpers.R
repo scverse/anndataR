@@ -128,7 +128,7 @@ read_zarr_null <- function(store, name, version = "0.1.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a matrix or a vector if 1D
+#' @return A matrix or a vector if 1D
 #'
 #' @noRd
 read_zarr_dense_array <- function(store, name, version = "0.2.0") {
@@ -166,7 +166,7 @@ read_zarr_csc_matrix <- function(store, name, version) {
 #' @param version Encoding version of the element to read
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
 #'
-#' @return a sparse matrix/DelayedArray???, or a vector if 1D
+#' @return A sparse matrix/DelayedArray???, or a vector if 1D
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
@@ -234,7 +234,7 @@ read_zarr_sparse_array <- function(
 #'
 #' They are used by **scanpy** to score marker gene testing results.
 #'
-#' @return a named list of 1D arrays
+#' @return A named list of 1D arrays
 #'
 #' @noRd
 read_zarr_rec_array <- function(store, name, version = "0.2.0") {
@@ -251,7 +251,7 @@ read_zarr_rec_array <- function(store, name, version = "0.2.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a boolean vector
+#' @return A boolean vector
 #'
 #' @noRd
 read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
@@ -266,7 +266,7 @@ read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return an integer vector
+#' @return An integer vector
 #'
 #' @noRd
 read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
@@ -281,7 +281,7 @@ read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a nullable vector
+#' @return A nullable vector
 #'
 #' @noRd
 read_zarr_nullable <- function(store, name, version = "0.1.0") {
@@ -305,7 +305,7 @@ read_zarr_nullable <- function(store, name, version = "0.1.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a character vector/matrix
+#' @return A character vector/matrix
 #'
 #' @noRd
 read_zarr_string_array <- function(store, name, version = "0.2.0") {
@@ -327,7 +327,7 @@ read_zarr_string_array <- function(store, name, version = "0.2.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a factor
+#' @return A factor
 #'
 #' @noRd
 read_zarr_categorical <- function(store, name, version = "0.2.0") {
@@ -361,7 +361,7 @@ read_zarr_categorical <- function(store, name, version = "0.2.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a character vector of length 1
+#' @return A character vector of length 1
 #'
 #' @noRd
 read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
@@ -377,7 +377,7 @@ read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a numeric vector of length 1
+#' @return A numeric vector of length 1
 #'
 #' @noRd
 read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
@@ -399,7 +399,7 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a named list
+#' @return A named list
 #'
 #' @noRd
 read_zarr_mapping <- function(store, name, version = "0.1.0") {
@@ -428,7 +428,7 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
 #'
-#' @return a data.frame
+#' @return A data.frame
 #'
 #' @noRd
 read_zarr_data_frame <- function(
@@ -459,7 +459,7 @@ read_zarr_data_frame <- function(
 #' @param name Name of the element within the Zarr store
 #' @param item_names Vector of item names (in order)
 #'
-#' @return a named list
+#' @return A named list
 #'
 #' @noRd
 read_zarr_collection <- function(store, name, item_names) {
