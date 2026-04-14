@@ -165,7 +165,7 @@ for (name in test_names) {
         name
       )
       expect_contains(
-        bi$list(adata_py2$obsm$keys()),
+        bi$list(adata_py2$varm$keys()),
         name
       )
 
