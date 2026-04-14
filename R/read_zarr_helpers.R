@@ -181,18 +181,9 @@ read_zarr_sparse_array <- function(
 
   attrs <- Rarr::read_zarr_attributes(file.path(store, name))
 
-  data <- as.vector(Rarr::read_zarr_array(file.path(
-    store,
-    paste0(name, "/data")
-  )))
-  indices <- as.vector(Rarr::read_zarr_array(file.path(
-    store,
-    paste0(name, "/indices")
-  )))
-  indptr <- as.vector(Rarr::read_zarr_array(file.path(
-    store,
-    paste0(name, "/indptr")
-  )))
+  data <- as.vector(Rarr::read_zarr_array(file.path(store, name, "data")))
+  indices <- as.vector(Rarr::read_zarr_array(file.path(store, name, "indices")))
+  indptr <- as.vector(Rarr::read_zarr_array(file.path(store, name, "indptr")))
   shape <- as.vector(unlist(attrs$shape, use.names = FALSE))
 
   if (type == "csc_matrix") {
