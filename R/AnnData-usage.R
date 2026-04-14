@@ -13,7 +13,7 @@
 #'
 #' - [InMemoryAnnData] stores data in memory
 #' - [HDF5AnnData] provides an interface to a H5AD file
-#' - [ZarrAnnData] provides an interface to a H5AD file
+#' - [ZarrAnnData] provides an interface to a Zarr store
 #' - [ReticulateAnnData] wraps a Python `AnnData` object via \pkg{reticulate}
 #'
 #' See the class documentation for details.
