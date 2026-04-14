@@ -42,9 +42,11 @@ The different `AnnData` classes provide a consistent interface but store and acc
 - The `InMemoryAnnData` stores data within the R session.
   This is the simplest back end and will be most familiar to users.
   It is want you will want to use in most cases where you want to interact with an `AnnData` object.
-- The `HDF5AnnData` (`ZarrAnnData`) provides an interface to a H5AD file (Zarr store) and minimal data is stored in memory until it is requested by the user.
-  It is primarily designed as an intermediate object when reading/writing H5AD/Zarr but can be useful for accessing parts of large files.
-- The `ReticulateAnnData` access data stored in an `AnnData` object in a concurrent Python session.
+- The `HDF5AnnData` provides an interface to a H5AD file and minimal data is stored in memory until it is requested by the user.
+  It is primarily designed as an intermediate object when reading/writing H5AD files but can be useful for accessing parts of large files.
+- The `ZarrAnnData` provides an interface to a Zarr store and minimal data is stored in memory until it is requested by the user.
+  It is primarily designed as an intermediate object when reading/writing Zarr stores but can be useful for accessing parts of large stores.
+- The `ReticulateAnnData` accesses data stored in an `AnnData` object in a concurrent Python session.
   This comes with the overhead and complexity of using `r CRANpkg("reticulate")` but is sometimes useful to access functionality that has not yet been implemented in `r Biocpkg("anndataR")`.
 - An `AnnDataView` is returned when subsetting an `AnnData` object and provides access to a subset of the data in the referenced object.
   Some functionality (such as setting slots) requires converting to one of the full classes.
