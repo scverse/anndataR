@@ -36,8 +36,8 @@ This package builds on our experience developing and using other interoperabilit
 
 Existing packages provide similar functionality to `r Biocpkg("anndataR")` but there are some important differences:
 
-- `r Biocpkg("zellkonverter")` provides conversion of `SingleCellExperiment` objects to/from `AnnData` and reading/writing of `.h5ad` files and `.zarr` stores.
-  This is facilitated via `r CRANpkg("reticulate")` using `r Biocpkg("basilisk")` to manage Python environments (native reading of `.h5ad` and `.zarr` is also possible).
+- `r Biocpkg("zellkonverter")` provides conversion of `SingleCellExperiment` objects to/from `AnnData` and reading/writing of `.h5ad` files.
+  This is facilitated via `r CRANpkg("reticulate")` using `r Biocpkg("basilisk")` to manage Python environments (native reading of `.h5ad` is also possible).
   In contrast, `r Biocpkg("anndataR")` provides a native R H5AD and Zarr interface, removing the need for Python dependencies.
   Conversion to/from `Seurat` objects is also supported.
 - `r CRANpkg("anndata")` (on CRAN) is a wrapper around the Python _anndata_ package.

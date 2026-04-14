@@ -9,7 +9,7 @@
 #'
 #' See [AnnData-usage] for details on creating and using `AnnData` objects.
 #'
-#' @return An `ZarrAnnData` object
+#' @return A `ZarrAnnData` object
 #'
 #' @seealso [AnnData-usage] for details on creating and using `AnnData` objects
 #'
@@ -25,9 +25,7 @@ ZarrAnnData <- R6::R6Class(
     .check_file_valid = function() {
       if (!zarr_path_exists(private$.zarrobj, "/")) {
         cli_abort(
-          paste(
-            "The Zarr file does not exist, or not a zarr file/store!"
-          )
+          "The Zarr path does not exist or is not a valid Zarr store"
         )
       }
     }
@@ -453,7 +451,7 @@ ZarrAnnData <- R6::R6Class(
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
 #'
-#' @return An [`ZarrAnnData`] object with the same data as the input `AnnData`
+#' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
 #'   object.
 #' @keywords internal
 #'
