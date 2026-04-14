@@ -261,7 +261,9 @@ warn_matrix_dimnames_not_writeable <- function(
   invisible()
 }
 
-#' Check dimensions and skip
+#' HDF5 increasing iteration order
+#'
+#' Order a character vector to mimic HDF5 increasing iteration order.
 #'
 #' see https://support.hdfgroup.org/documentation/hdf5/latest/group___h5_o.html
 #'
