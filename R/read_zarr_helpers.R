@@ -181,32 +181,13 @@ read_zarr_sparse_array <- function(
 
   attrs <- Rarr::read_zarr_attributes(file.path(store, name))
 
-  data <- as.vector(Rarr::read_zarr_array(file.path(store, name, "data")))
-  indices <- as.vector(Rarr::read_zarr_array(file.path(store, name, "indices")))
-  indptr <- as.vector(Rarr::read_zarr_array(file.path(store, name, "indptr")))
-  shape <- as.vector(unlist(attrs$shape, use.names = FALSE))
-
-  if (type == "csc_matrix") {
-    mtx <- Matrix::sparseMatrix(
-      i = indices,
-      p = indptr,
-      x = data,
-      dims = shape,
-      repr = "C",
-      index1 = FALSE
-    )
-  } else if (type == "csr_matrix") {
-    mtx <- Matrix::sparseMatrix(
-      j = indices,
-      p = indptr,
-      x = data,
-      dims = shape,
-      repr = "R",
-      index1 = FALSE
-    )
-  }
-
-  mtx
+  construct_sparse_matrix(
+    data = as.vector(Rarr::read_zarr_array(file.path(store, name, "data"))),
+    indices = as.vector(Rarr::read_zarr_array(file.path(store, name, "indices"))),
+    indptr = as.vector(Rarr::read_zarr_array(file.path(store, name, "indptr"))),
+    shape = as.vector(unlist(attrs$shape, use.names = FALSE)),
+    type = type
+  )
 }
 
 #' Read Zarr recarray

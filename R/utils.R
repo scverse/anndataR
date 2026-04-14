@@ -261,6 +261,54 @@ warn_matrix_dimnames_not_writeable <- function(
   invisible()
 }
 
+#' Construct a sparse matrix from CSR/CSC components
+#'
+#' Build a `dgCMatrix` or `dgRMatrix` from raw data, index, and pointer vectors.
+#'
+#' @param data Non-zero values. Coerced to `double`.
+#' @param indices Column indices (CSC) or row indices (CSR), 0-based. Coerced
+#'   to `integer`.
+#' @param indptr Index pointers, 0-based. Coerced to `integer`.
+#' @param shape Matrix dimensions. Coerced to `integer`.
+#' @param type Either `"csc_matrix"` or `"csr_matrix"`.
+#'
+#' @return A `dgCMatrix` (CSC) or `dgRMatrix` (CSR).
+#'
+#' @noRd
+construct_sparse_matrix <- function(data, indices, indptr, shape, type = c("csc_matrix", "csr_matrix")) {
+  type <- match.arg(type)
+
+  data <- as.double(data)
+  indices <- as.integer(indices)
+  indptr <- as.integer(indptr)
+  shape <- as.integer(shape)
+
+  # The Matrix package validity checks require that indices are sorted within
+  # each major axis group (row indices within columns for CSC, column indices
+  # within rows for CSR). For sparse matrices in Python order isn't guaranteed,
+  # so we sort if needed.
+  if (length(indices) > 1L) {
+    row_lengths <- diff(indptr)
+    group_ids <- rep.int(seq_along(row_lengths), row_lengths)
+    ord <- order(group_ids, indices)
+    if (is.unsorted(ord)) {
+      indices <- indices[ord]
+      data <- data[ord]
+    }
+  }
+
+  if (type == "csc_matrix") {
+    # Directly construct dgCMatrix (CSC format) to avoid overhead of constructing
+    # a general sparseMatrix and then coercing to dgCMatrix
+    # Slots: i = row indices (0-based), p = col pointers, x = values, Dim
+    new("dgCMatrix", i = indices, p = indptr, x = data, Dim = shape)
+  } else if (type == "csr_matrix") {
+    # Directly construct dgRMatrix (CSR format)
+    # Slots: j = column indices (0-based), p = row pointers, x = values, Dim
+    new("dgRMatrix", j = indices, p = indptr, x = data, Dim = shape)
+  }
+}
+
 #' HDF5 increasing iteration order
 #'
 #' Order a character vector to mimic HDF5 increasing iteration order.
