@@ -713,9 +713,19 @@ zarr_write_compressed <- function(
   )
 }
 
-.get_compressor <- function(x) {
+#' Get Zarr compressor
+#'
+#' Convert a compression name to the corresponding Rarr compressor object.
+#'
+#' @param compression The compression algorithm name. One of `"none"`,
+#'   `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`, `"zlib"`, `"lz4"`.
+#'
+#' @return A Rarr compressor object, or `NULL` for no compression.
+#'
+#' @noRd
+.get_compressor <- function(compression) {
   switch(
-    x,
+    compression,
     "none" = NULL,
     "zstd" = Rarr::use_zstd(),
     "blosc" = Rarr::use_blosc(),
