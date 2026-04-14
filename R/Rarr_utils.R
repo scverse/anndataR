@@ -10,14 +10,19 @@
 #'
 #' @noRd
 create_zarr_group <- function(store, name, version = "v2") {
+  # Split "a/b/c" into c("a", "b", "c")
   split_name <- strsplit(name, split = "/", fixed = TRUE)[[1]]
   if (length(split_name) > 1) {
+    # Build cumulative paths: c("a", "a/b", "a/b/c")
     split_name <- vapply(
       seq_along(split_name),
       function(x) paste(split_name[seq_len(x)], collapse = "/"),
       FUN.VALUE = character(1)
     )
+    # Keep only the target and its immediate parent:
+    # split_name[1] = "a/b/c" (target), split_name[2] = "a/b" (parent)
     split_name <- rev(tail(split_name, 2))
+    # Recursively ensure the parent group exists before creating the target
     if (!dir.exists(file.path(store, split_name[2]))) {
       create_zarr_group(store = store, name = split_name[2])
     }
