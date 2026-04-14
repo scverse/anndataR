@@ -79,7 +79,7 @@ create_zarr <- function(store, version = "v2") {
 #' is_zarr_empty(store)
 is_zarr_empty <- function(store) {
   files <- list.files(store, recursive = FALSE, full.names = FALSE)
-  all(files %in% c(".zarray", ".zattrs", ".zgroup"))
+  all(files %in% c(".zarray", ".zattrs", ".zgroup", "zarr.json"))
 }
 
 #' Zarr path exists

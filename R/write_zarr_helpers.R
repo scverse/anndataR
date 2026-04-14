@@ -158,7 +158,8 @@ write_zarr_null <- function(
     file.path(store, name),
     dim = 0,
     chunk_dim = 0,
-    data_type = "logical"
+    data_type = "logical",
+    zarr_version = 2L
   )
 
   write_zarr_encoding(store, name, "null", version)
@@ -380,7 +381,8 @@ write_zarr_string_array <- function(
       chunk_dim = dims,
       data_type = "<U",
       nchar = 1,
-      compressor = .get_compressor(compression)
+      compressor = .get_compressor(compression),
+      zarr_version = 2L
     )
   } else {
     data <- array(data = value, dim = dims)
@@ -393,7 +395,8 @@ write_zarr_string_array <- function(
       # see https://github.com/Huber-group-EMBL/Rarr/issues/98
       data_type = "<U",
       nchar = max(nchar(value)),
-      compressor = .get_compressor(compression)
+      compressor = .get_compressor(compression),
+      zarr_version = 2L
     )
   }
 
@@ -478,7 +481,8 @@ write_zarr_string_scalar <- function(
     value,
     zarr_array_path = file.path(store, name),
     chunk_dim = 1,
-    compressor = .get_compressor(compression)
+    compressor = .get_compressor(compression),
+    zarr_version = 2L
   )
 
   # Write attributes
@@ -704,7 +708,8 @@ zarr_write_compressed <- function(
     zarr_array_path = file.path(store, name),
     chunk_dim = dims,
     order = if (length(dims) > 1) "C" else "F",
-    compressor = .get_compressor(compression)
+    compressor = .get_compressor(compression),
+    zarr_version = 2L
   )
 }
 
