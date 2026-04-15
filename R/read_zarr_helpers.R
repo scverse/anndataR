@@ -86,18 +86,16 @@ read_zarr_element <- function(
       read_fun(store = store, name = name, version = version, ...)
     },
     error = function(e) {
-      message <- paste0(
-        "Error reading element '",
-        name,
-        "' of type '",
-        type,
-        "':\n",
-        conditionMessage(e)
-      )
+      msg <- cli::cli_fmt(cli::cli_bullets(c(
+        paste0(
+          "Error reading element {.field {name}} of type {.cls {type}}"
+        ),
+        "i" = conditionMessage(e)
+      )))
       if (stop_on_error) {
-        cli_abort(message)
+        cli_abort(msg)
       } else {
-        cli_warn(message)
+        cli_warn(msg)
         NULL
       }
     }
