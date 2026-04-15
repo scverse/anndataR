@@ -94,9 +94,11 @@ jobs:
               rbind(av.src[use.src, ], av.bin[use.bin, ])
             }
             tryCatch(
-              withCallingHandlers(
-                assignInNamespace(".available.both", patched, ns = "utils"),
-                warning = function(w) invokeRestart("muffleWarning")),
+              withCallingHandlers({
+                unlockBinding(".available.both", ns)
+                assign(".available.both", patched, envir = ns)
+                lockBinding(".available.both", ns)
+              }, warning = function(w) invokeRestart("muffleWarning")),
               error = function(e) invisible(NULL))
           })
           RPROFILE_EOF
