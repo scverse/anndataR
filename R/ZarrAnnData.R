@@ -217,7 +217,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obs_names, status=done
-        rownames(self$obs)
+        read_zarr_element_keys(private$.zarrobj, "obs", dim = "rows")
       } else {
         # trackstatus: class=ZarrAnnData, feature=set_obs_names, status=done
         rownames(self$obs) <- value
@@ -229,7 +229,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_var_names, status=done
-        rownames(self$var)
+        read_zarr_element_keys(private$.zarrobj, "var", dim = "rows")
       } else {
         # trackstatus: class=ZarrAnnData, feature=set_var_names, status=done
         rownames(self$var) <- value
@@ -424,12 +424,45 @@ ZarrAnnData <- R6::R6Class(
 
     #' @description See the `n_obs` field in [AnnData-usage]
     n_obs = function() {
-      nrow(self$obs)
+      length(self$obs_names)
     },
 
     #' @description See the `n_vars` field in [AnnData-usage]
     n_vars = function() {
-      nrow(self$var)
+      length(self$var_names)
+    },
+
+    #' @description See [AnnData-usage]
+    obs_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "obs", dim = "cols")
+    },
+    #' @description See [AnnData-usage]
+    var_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "var", dim = "cols")
+    },
+    #' @description See [AnnData-usage]
+    layers_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "layers")
+    },
+    #' @description See [AnnData-usage]
+    obsm_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "obsm")
+    },
+    #' @description See [AnnData-usage]
+    varm_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "varm")
+    },
+    #' @description See [AnnData-usage]
+    obsp_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "obsp")
+    },
+    #' @description See [AnnData-usage]
+    varp_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "varp")
+    },
+    #' @description See [AnnData-usage]
+    uns_keys = function() {
+      read_zarr_element_keys(private$.zarrobj, "uns")
     }
   )
 )

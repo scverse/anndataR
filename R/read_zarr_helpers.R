@@ -376,16 +376,7 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
 #' @noRd
 read_zarr_mapping <- function(store, name, version = "0.1.0") {
   version <- match.arg(version)
-
-  items <- list.dirs(
-    path = file.path(store, name),
-    recursive = FALSE,
-    full.names = FALSE
-  )
-
-  # Omit Zarr metadata files from the list of columns.
-  items <- items[!items %in% ZARR_METADATA_FILES]
-
+  items <- read_zarr_mapping_keys(store, name, version)
   read_zarr_collection(store, name, items)
 }
 
@@ -407,15 +398,11 @@ read_zarr_data_frame <- function(
 ) {
   version <- match.arg(version)
 
-  attrs <- Rarr::read_zarr_attributes(file.path(store, name))
-  index_name <- attrs[["_index"]]
-  column_order <- attrs[["column-order"]]
-
-  index <- read_zarr_element(store, file.path(name, index_name))
-  data <- read_zarr_collection(store, name, column_order)
+  dim_keys <- read_zarr_data_frame_keys(store, name, version)
+  data <- read_zarr_collection(store, name, dim_keys$cols)
 
   as.data.frame(
-    row.names = index,
+    row.names = dim_keys$rows,
     data,
     check.names = FALSE,
     fix.empty.names = FALSE
@@ -447,4 +434,127 @@ read_zarr_collection <- function(store, name, item_names) {
   )
   names(items) <- item_names
   items
+}
+
+#' Read Zarr element keys
+#'
+#' Read the keys of an element from a Zarr store
+#'
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
+#' @param type The encoding type of the element to read
+#' @param version The encoding version of the element to read
+#' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param ... Extra arguments passed to individual reading functions
+#'
+#' @return A character vector of keys
+#'
+#' @noRd
+read_zarr_element_keys <- function(
+  store,
+  name,
+  type = NULL,
+  version = NULL,
+  stop_on_error = FALSE,
+  ...
+) {
+  if (!zarr_path_exists(store, name)) {
+    return(NULL)
+  }
+
+  if (is.null(type)) {
+    encoding_list <- read_zarr_encoding(store, name)
+    type <- encoding_list$type
+    version <- encoding_list$version
+  }
+
+  read_fun <- switch(
+    type,
+    "dataframe" = read_zarr_data_frame_keys,
+    "dict" = read_zarr_mapping_keys,
+    cli_abort(
+      "No function for reading keys for Zarr encoding {.cls {type}} for element {.val {name}}"
+    )
+  )
+
+  tryCatch(
+    {
+      read_fun(store = store, name = name, version = version, ...)
+    },
+    error = function(e) {
+      msg <- cli::cli_fmt(cli::cli_bullets(c(
+        paste0(
+          "Error reading element keys for {.field {name}} of type {.cls {type}}"
+        ),
+        "i" = conditionMessage(e)
+      )))
+      if (stop_on_error) {
+        cli_abort(msg)
+      } else {
+        cli_warn(msg)
+        NULL
+      }
+    }
+  )
+}
+
+#' Read Zarr mapping keys
+#'
+#' Read keys for a mapping (dict) from a Zarr store
+#'
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
+#' @param version Encoding version of the element to read
+#'
+#' @return A character vector of item names
+#'
+#' @noRd
+read_zarr_mapping_keys <- function(store, name, version = "0.1.0") {
+  version <- match.arg(version)
+
+  items <- list.dirs(
+    path = file.path(store, name),
+    recursive = FALSE,
+    full.names = FALSE
+  )
+  items[!items %in% ZARR_METADATA_FILES]
+}
+
+#' Read Zarr data frame keys
+#'
+#' Read the row names (index) and/or column names of a data frame from a Zarr
+#' store
+#'
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
+#' @param version Encoding version of the element to read
+#' @param dim Dimension to read keys for: `"both"`, `"rows"`, or `"cols"`
+#'
+#' @return A character vector if `dim` is `"rows"` or `"cols"`, or a list with
+#'   elements `"rows"` and `"cols"` if `dim` is `"both"`
+#'
+#' @noRd
+read_zarr_data_frame_keys <- function(
+  store,
+  name,
+  version = "0.2.0",
+  dim = c("both", "rows", "cols")
+) {
+  version <- match.arg(version)
+  dim <- match.arg(dim)
+
+  attrs <- Rarr::read_zarr_attributes(file.path(store, name))
+  index_name <- attrs[["_index"]]
+  column_order <- attrs[["column-order"]]
+
+  if (dim == "both") {
+    list(
+      rows = as.vector(read_zarr_element(store, file.path(name, index_name))),
+      cols = as.character(column_order)
+    )
+  } else if (dim == "rows") {
+    as.vector(read_zarr_element(store, file.path(name, index_name)))
+  } else if (dim == "cols") {
+    as.character(column_order)
+  }
 }
