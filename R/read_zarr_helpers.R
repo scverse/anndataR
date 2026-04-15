@@ -181,7 +181,11 @@ read_zarr_sparse_array <- function(
 
   construct_sparse_matrix(
     data = as.vector(Rarr::read_zarr_array(file.path(store, name, "data"))),
-    indices = as.vector(Rarr::read_zarr_array(file.path(store, name, "indices"))),
+    indices = as.vector(Rarr::read_zarr_array(file.path(
+      store,
+      name,
+      "indices"
+    ))),
     indptr = as.vector(Rarr::read_zarr_array(file.path(store, name, "indptr"))),
     shape = as.vector(unlist(attrs$shape, use.names = FALSE)),
     type = type

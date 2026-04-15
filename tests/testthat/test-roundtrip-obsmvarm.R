@@ -63,7 +63,13 @@ for (fmt in c("h5ad", "zarr")) {
     adata_py <- ad[[fmt_config$py_read_method]](file_py)
 
     test_that(
-      paste0("Reading an AnnData with obsm and varm '", name, "' (", fmt, ") works"),
+      paste0(
+        "Reading an AnnData with obsm and varm '",
+        name,
+        "' (",
+        fmt,
+        ") works"
+      ),
       {
         msg <- message_if_known(
           backend = fmt_config$backend,
@@ -94,7 +100,13 @@ for (fmt in c("h5ad", "zarr")) {
     )
 
     test_that(
-      paste0("Comparing an anndata with obsm and varm '", name, "' (", fmt, ") with reticulate works"),
+      paste0(
+        "Comparing an anndata with obsm and varm '",
+        name,
+        "' (",
+        fmt,
+        ") with reticulate works"
+      ),
       {
         msg <- message_if_known(
           backend = fmt_config$backend,
@@ -136,7 +148,13 @@ for (fmt in c("h5ad", "zarr")) {
     gc()
 
     test_that(
-      paste0("Writing an AnnData with obsm and varm '", name, "' (", fmt, ") works"),
+      paste0(
+        "Writing an AnnData with obsm and varm '",
+        name,
+        "' (",
+        fmt,
+        ") works"
+      ),
       {
         msg <- message_if_known(
           backend = fmt_config$backend,

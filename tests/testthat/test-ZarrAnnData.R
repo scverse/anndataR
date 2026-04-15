@@ -360,7 +360,8 @@ test_that("as_ZarrAnnData() round-trip from InMemoryAnnData works", {
   expect_equal(zarr$var_names, mem$var_names)
   expect_equal(as.matrix(zarr$X), mem$X, ignore_attr = TRUE)
   expect_equal(
-    as.matrix(zarr$layers$counts), mem$layers$counts,
+    as.matrix(zarr$layers$counts),
+    mem$layers$counts,
     ignore_attr = TRUE
   )
   expect_equal(zarr$uns$foo, mem$uns$foo)

@@ -37,7 +37,7 @@ for (zarr_version in c("v2", "v3")) {
     expect_equal(dim(mat), c(50, 100))
   })
 
-#  TODO: Re-enable when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
+  #  TODO: Re-enable when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
   test_that(paste("reading Zarr", zarr_version, "recarrays works"), {
     if (zarr_version == "v3") {
       skip("Read support for Zarr v3 rec arrays is not implemented yet")
@@ -62,11 +62,14 @@ for (zarr_version in c("v2", "v3")) {
     expect_equal(array_1d, array(rep(42.42, 50)))
   })
 
-  test_that(paste("reading Zarr", zarr_version, "1D sparse numeric arrays works"), {
-    array_1d <- read_zarr_sparse_array(store, "uns/Sparse1D", type = "csc")
-    expect_s4_class(array_1d, "dgCMatrix")
-    expect_equal(dim(array_1d), c(1, 6))
-  })
+  test_that(
+    paste("reading Zarr", zarr_version, "1D sparse numeric arrays works"),
+    {
+      array_1d <- read_zarr_sparse_array(store, "uns/Sparse1D", type = "csc")
+      expect_s4_class(array_1d, "dgCMatrix")
+      expect_equal(dim(array_1d), c(1, 6))
+    }
+  )
 
   test_that(paste("reading Zarr", zarr_version, "1D nullable arrays works"), {
     array_1d <- read_zarr_nullable_integer(store, "obs/IntNA")
@@ -130,12 +133,15 @@ for (zarr_version in c("v2", "v3")) {
     )
   })
 
-  test_that(paste("reading Zarr", zarr_version, "as SingleCellExperiment works"), {
-    skip_if_not_installed("SingleCellExperiment")
+  test_that(
+    paste("reading Zarr", zarr_version, "as SingleCellExperiment works"),
+    {
+      skip_if_not_installed("SingleCellExperiment")
 
-    sce <- read_zarr(store, as = "SingleCellExperiment")
-    expect_s4_class(sce, "SingleCellExperiment")
-  })
+      sce <- read_zarr(store, as = "SingleCellExperiment")
+      expect_s4_class(sce, "SingleCellExperiment")
+    }
+  )
 
   test_that(paste("reading Zarr", zarr_version, "as Seurat works"), {
     skip_if_not_installed("SeuratObject")

@@ -40,7 +40,9 @@ test_that("reading sparse matrices is same for h5ad and zarr", {
   )
   for (mat in sparse_mats) {
     expect_equal_h5ad_zarr(
-      read_h5ad_sparse_array, read_zarr_sparse_array, mat$path,
+      read_h5ad_sparse_array,
+      read_zarr_sparse_array,
+      mat$path,
       type = mat$type
     )
   }
@@ -68,32 +70,46 @@ test_that("reading 1D numeric arrays is the same for h5ad and zarr", {
 
 test_that("reading 1D sparse numeric arrays is the same for h5ad and zarr", {
   expect_equal_h5ad_zarr(
-    read_h5ad_sparse_array, read_zarr_sparse_array, "uns/Sparse1D",
+    read_h5ad_sparse_array,
+    read_zarr_sparse_array,
+    "uns/Sparse1D",
     type = "csc"
   )
 })
 
 test_that("reading 1D nullable arrays is the same for h5ad and zarr", {
   expect_equal_h5ad_zarr(
-    read_h5ad_nullable_integer, read_zarr_nullable_integer, "obs/IntNA"
+    read_h5ad_nullable_integer,
+    read_zarr_nullable_integer,
+    "obs/IntNA"
   )
-  expect_equal_h5ad_zarr(read_h5ad_dense_array, read_zarr_dense_array, "obs/FloatNA")
+  expect_equal_h5ad_zarr(
+    read_h5ad_dense_array,
+    read_zarr_dense_array,
+    "obs/FloatNA"
+  )
   for (path in c("obs/Bool", "obs/BoolNA")) {
     expect_equal_h5ad_zarr(
-      read_h5ad_nullable_boolean, read_zarr_nullable_boolean, path
+      read_h5ad_nullable_boolean,
+      read_zarr_nullable_boolean,
+      path
     )
   }
 })
 
 test_that("reading string scalars is the same for h5ad and zarr", {
   expect_equal_h5ad_zarr(
-    read_h5ad_string_scalar, read_zarr_string_scalar, "uns/StringScalar"
+    read_h5ad_string_scalar,
+    read_zarr_string_scalar,
+    "uns/StringScalar"
   )
 })
 
 test_that("reading numeric scalars is the same for h5ad and zarr", {
   expect_equal_h5ad_zarr(
-    read_h5ad_numeric_scalar, read_zarr_numeric_scalar, "uns/IntScalar"
+    read_h5ad_numeric_scalar,
+    read_zarr_numeric_scalar,
+    "uns/IntScalar"
   )
 })
 
@@ -148,7 +164,7 @@ test_that("reading H5AD as SingleCellExperiment is the same for h5ad and zarr", 
   skip_if_not_installed("S4Vectors")
   sce_h5ad <- read_h5ad(filename, as = "SingleCellExperiment")
   sce_zarr <- read_zarr(store, as = "SingleCellExperiment")
-# TODO: Update when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
+  # TODO: Update when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
   S4Vectors::metadata(sce_zarr) <- S4Vectors::metadata(sce_h5ad)
   expect_equal(sce_h5ad, sce_zarr)
 })

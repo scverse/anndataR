@@ -46,29 +46,38 @@ for (fmt in c("h5ad", "zarr")) {
     # Read it back in to get the version as read from disk
     adata_py <- ad[[fmt_config$py_read_method]](file_py)
 
-    test_that(paste0("Reading an AnnData with uns '", name, "' (", fmt, ") works"), {
-      msg <- message_if_known(
-        backend = fmt_config$backend,
-        slot = c("uns"),
-        dtype = name,
-        process = "read",
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
+    test_that(
+      paste0("Reading an AnnData with uns '", name, "' (", fmt, ") works"),
+      {
+        msg <- message_if_known(
+          backend = fmt_config$backend,
+          slot = c("uns"),
+          dtype = name,
+          process = "read",
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
 
-      adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
+        adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
 
-      expect_equal(
-        names(adata_r$uns),
-        bi$list(adata_py$uns$keys())
-      )
+        expect_equal(
+          names(adata_r$uns),
+          bi$list(adata_py$uns$keys())
+        )
 
-      # check that the print output is the same (normalize class names)
-      expect_anndata_print_equal(adata_r, adata_py)
-    })
+        # check that the print output is the same (normalize class names)
+        expect_anndata_print_equal(adata_r, adata_py)
+      }
+    )
 
     test_that(
-      paste0("Comparing an anndata with uns '", name, "' (", fmt, ") with reticulate works"),
+      paste0(
+        "Comparing an anndata with uns '",
+        name,
+        "' (",
+        fmt,
+        ") with reticulate works"
+      ),
       {
         msg <- message_if_known(
           backend = fmt_config$backend,
@@ -92,33 +101,36 @@ for (fmt in c("h5ad", "zarr")) {
 
     gc()
 
-    test_that(paste0("Writing an AnnData with uns '", name, "' (", fmt, ") works"), {
-      msg <- message_if_known(
-        backend = fmt_config$backend,
-        slot = c("uns"),
-        dtype = name,
-        process = c("read", "write"),
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
+    test_that(
+      paste0("Writing an AnnData with uns '", name, "' (", fmt, ") works"),
+      {
+        msg <- message_if_known(
+          backend = fmt_config$backend,
+          slot = c("uns"),
+          dtype = name,
+          process = c("read", "write"),
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
 
-      adata_r <- fmt_config$r_read_fun(file_py, as = "InMemoryAnnData")
-      fmt_config$r_write_fun(adata_r, file_r)
+        adata_r <- fmt_config$r_read_fun(file_py, as = "InMemoryAnnData")
+        fmt_config$r_write_fun(adata_r, file_r)
 
-      # read from file
-      adata_py2 <- ad[[fmt_config$py_read_method]](file_r)
+        # read from file
+        adata_py2 <- ad[[fmt_config$py_read_method]](file_r)
 
-      # expect name is one of the keys
-      expect_contains(
-        bi$list(adata_py2$uns$keys()),
-        name
-      )
+        # expect name is one of the keys
+        expect_contains(
+          bi$list(adata_py2$uns$keys()),
+          name
+        )
 
-      # expect that the objects are the same
-      expect_equal_py(
-        py_get_item(adata_py2$uns, name),
-        py_get_item(adata_py$uns, name)
-      )
-    })
+        # expect that the objects are the same
+        expect_equal_py(
+          py_get_item(adata_py2$uns, name),
+          py_get_item(adata_py$uns, name)
+        )
+      }
+    )
   }
 }

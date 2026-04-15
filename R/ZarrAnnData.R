@@ -267,7 +267,11 @@ ZarrAnnData <- R6::R6Class(
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_uns, status=done
-        private$.validate_named_list(value, "uns", warn_matrix_dimnames = TRUE) |>
+        private$.validate_named_list(
+          value,
+          "uns",
+          warn_matrix_dimnames = TRUE
+        ) |>
           write_zarr_element(
             private$.zarrobj,
             "uns",

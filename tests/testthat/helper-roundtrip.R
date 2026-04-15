@@ -1,6 +1,6 @@
 #' Get format config for roundtrip tests
 #'
-#' ReturnsGet a list of backend-specific values for a given file format
+#' Get a list of backend-specific values for a given file format
 #'
 #' @param fmt Either `"h5ad"` or `"zarr"`
 #' @return A named list with elements: `backend`, `ext`, `r_read_fun`,
@@ -9,7 +9,7 @@ get_fmt_config <- function(fmt = c("h5ad", "zarr")) {
   fmt <- match.arg(fmt)
 
   if (fmt == "zarr") {
-    skip_if_no_zarr()
+    skip_if_no_zarr() # nolint: object_usage_linter
     list(
       backend = "ZarrAnnData",
       ext = ".zarr",
@@ -43,6 +43,6 @@ expect_anndata_print_equal <- function(adata_r, adata_py) {
 
   # Normalise class names in R output to match Python output
   str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
-  
+
   expect_equal(str_r, str_py)
 }

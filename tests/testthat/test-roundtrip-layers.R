@@ -45,34 +45,43 @@ for (fmt in c("h5ad", "zarr")) {
     # Read it back in to get the version as read from disk
     adata_py <- ad[[fmt_config$py_read_method]](file_py)
 
-    test_that(paste0("Reading an AnnData with layer '", name, "' (", fmt, ") works"), {
-      msg <- message_if_known(
-        backend = fmt_config$backend,
-        slot = c("layers"),
-        dtype = name,
-        process = "read",
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
+    test_that(
+      paste0("Reading an AnnData with layer '", name, "' (", fmt, ") works"),
+      {
+        msg <- message_if_known(
+          backend = fmt_config$backend,
+          slot = c("layers"),
+          dtype = name,
+          process = "read",
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
 
-      adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
-      expect_equal(
-        adata_r$shape(),
-        unlist(reticulate::py_to_r(adata_py$shape))
-      )
-      expect_equal(
-        adata_r$layers_keys(),
-        bi$list(adata_py$layers$keys())
-      )
+        adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
+        expect_equal(
+          adata_r$shape(),
+          unlist(reticulate::py_to_r(adata_py$shape))
+        )
+        expect_equal(
+          adata_r$layers_keys(),
+          bi$list(adata_py$layers$keys())
+        )
 
-      # check that the print output is the same (normalize class names)
-      expect_anndata_print_equal(adata_r, adata_py)
-    })
+        # check that the print output is the same (normalize class names)
+        expect_anndata_print_equal(adata_r, adata_py)
+      }
+    )
 
     gc()
 
     test_that(
-      paste0("Comparing an anndata with layer '", name, "' (", fmt, ") with reticulate works"),
+      paste0(
+        "Comparing an anndata with layer '",
+        name,
+        "' (",
+        fmt,
+        ") with reticulate works"
+      ),
       {
         msg <- message_if_known(
           backend = fmt_config$backend,
@@ -102,34 +111,37 @@ for (fmt in c("h5ad", "zarr")) {
 
     gc()
 
-    test_that(paste0("Writing an AnnData with layer '", name, "' (", fmt, ") works"), {
-      msg <- message_if_known(
-        backend = fmt_config$backend,
-        slot = c("layers"),
-        dtype = name,
-        process = c("read", "write"),
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
+    test_that(
+      paste0("Writing an AnnData with layer '", name, "' (", fmt, ") works"),
+      {
+        msg <- message_if_known(
+          backend = fmt_config$backend,
+          slot = c("layers"),
+          dtype = name,
+          process = c("read", "write"),
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
 
-      adata_r <- fmt_config$r_read_fun(file_py, as = "InMemoryAnnData")
-      fmt_config$r_write_fun(adata_r, file_r)
+        adata_r <- fmt_config$r_read_fun(file_py, as = "InMemoryAnnData")
+        fmt_config$r_write_fun(adata_r, file_r)
 
-      # read from file
-      adata_py2 <- ad[[fmt_config$py_read_method]](file_r)
+        # read from file
+        adata_py2 <- ad[[fmt_config$py_read_method]](file_r)
 
-      # expect name is one of the keys
-      expect_contains(
-        bi$list(adata_py2$layers$keys()),
-        name
-      )
+        # expect name is one of the keys
+        expect_contains(
+          bi$list(adata_py2$layers$keys()),
+          name
+        )
 
-      # expect that the objects are the same
-      expect_equal_py(
-        py_get_item(adata_py2$layers, name),
-        py_get_item(adata_py$layers, name)
-      )
-    })
+        # expect that the objects are the same
+        expect_equal_py(
+          py_get_item(adata_py2$layers, name),
+          py_get_item(adata_py$layers, name)
+        )
+      }
+    )
 
     gc()
 

@@ -275,7 +275,13 @@ warn_matrix_dimnames_not_writeable <- function(
 #' @return A `dgCMatrix` (CSC) or `dgRMatrix` (CSR).
 #'
 #' @noRd
-construct_sparse_matrix <- function(data, indices, indptr, shape, type = c("csc_matrix", "csr_matrix")) {
+construct_sparse_matrix <- function(
+  data,
+  indices,
+  indptr,
+  shape,
+  type = c("csc_matrix", "csr_matrix")
+) {
   type <- match.arg(type)
 
   data <- as.double(data)
@@ -308,4 +314,3 @@ construct_sparse_matrix <- function(data, indices, indptr, shape, type = c("csc_
     new("dgRMatrix", j = indices, p = indptr, x = data, Dim = shape)
   }
 }
-

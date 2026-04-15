@@ -4,7 +4,7 @@
 \alias{ZarrAnnData}
 \title{ZarrAnnData}
 \value{
-An \code{ZarrAnnData} object
+A \code{ZarrAnnData} object
 }
 \description{
 Implementation of a Zarr-backed \code{AnnData} object. This class provides an
@@ -62,6 +62,14 @@ Other AnnData classes:
 \item \href{#method-ZarrAnnData-new}{\code{ZarrAnnData$new()}}
 \item \href{#method-ZarrAnnData-n_obs}{\code{ZarrAnnData$n_obs()}}
 \item \href{#method-ZarrAnnData-n_vars}{\code{ZarrAnnData$n_vars()}}
+\item \href{#method-ZarrAnnData-obs_keys}{\code{ZarrAnnData$obs_keys()}}
+\item \href{#method-ZarrAnnData-var_keys}{\code{ZarrAnnData$var_keys()}}
+\item \href{#method-ZarrAnnData-layers_keys}{\code{ZarrAnnData$layers_keys()}}
+\item \href{#method-ZarrAnnData-obsm_keys}{\code{ZarrAnnData$obsm_keys()}}
+\item \href{#method-ZarrAnnData-varm_keys}{\code{ZarrAnnData$varm_keys()}}
+\item \href{#method-ZarrAnnData-obsp_keys}{\code{ZarrAnnData$obsp_keys()}}
+\item \href{#method-ZarrAnnData-varp_keys}{\code{ZarrAnnData$varp_keys()}}
+\item \href{#method-ZarrAnnData-uns_keys}{\code{ZarrAnnData$uns_keys()}}
 }
 }
 \if{html}{\out{
@@ -73,16 +81,8 @@ Other AnnData classes:
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>anndataR::AbstractAnnData$as_Seurat()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>anndataR::AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ZarrAnnData'><code>anndataR::AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsm_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obsm_keys'><code>anndataR::AbstractAnnData$obsm_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsp_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obsp_keys'><code>anndataR::AbstractAnnData$obsp_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="uns_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-uns_keys'><code>anndataR::AbstractAnnData$uns_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-var_keys'><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varm_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-varm_keys'><code>anndataR::AbstractAnnData$varm_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varp_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-varp_keys'><code>anndataR::AbstractAnnData$varp_keys()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_h5ad"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-write_h5ad'><code>anndataR::AbstractAnnData$write_h5ad()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-write_zarr'><code>anndataR::AbstractAnnData$write_zarr()</code></a></span></li>
 </ul>
@@ -171,6 +171,86 @@ See the \code{n_obs} field in \link{AnnData-usage}
 See the \code{n_vars} field in \link{AnnData-usage}
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$n_vars()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-obs_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-obs_keys}{}}}
+\subsection{Method \code{obs_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$obs_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-var_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-var_keys}{}}}
+\subsection{Method \code{var_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$var_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-layers_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-layers_keys}{}}}
+\subsection{Method \code{layers_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$layers_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-obsm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-obsm_keys}{}}}
+\subsection{Method \code{obsm_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$obsm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-varm_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-varm_keys}{}}}
+\subsection{Method \code{varm_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$varm_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-obsp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-obsp_keys}{}}}
+\subsection{Method \code{obsp_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$obsp_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-varp_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-varp_keys}{}}}
+\subsection{Method \code{varp_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$varp_keys()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-uns_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-uns_keys}{}}}
+\subsection{Method \code{uns_keys()}}{
+See \link{AnnData-usage}
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ZarrAnnData$uns_keys()}\if{html}{\out{</div>}}
 }
 
 }

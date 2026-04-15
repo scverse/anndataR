@@ -41,12 +41,6 @@ See \code{help("compressors", package = "Rarr")}.}
 Write a Zarr file
 }
 \details{
-\subsection{Compression}{
-
-Compression is currently not supported for Boolean arrays, they will be
-written uncompressed.
-}
-
 \subsection{\code{NULL} values}{
 
 For compatibility with changes in Python \strong{anndata} 0.12.0, \code{NULL} values

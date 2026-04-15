@@ -30,7 +30,7 @@ Zarr file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zs
 }}
 }
 \value{
-An \code{\link{ZarrAnnData}} object with the same data as the input \code{AnnData}
+A \code{\link{ZarrAnnData}} object with the same data as the input \code{AnnData}
 object.
 }
 \description{
