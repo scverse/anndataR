@@ -58,56 +58,41 @@ jobs:
           echo "CPPFLAGS += -I$(brew --prefix gettext)/include" >> ~/.R/Makevars
           echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
 
-      ## Workaround for R-devel bug (introduced 2026-04-09, commit dd03406):
-      ## .available.both() in utils/R/packages.R crashes on Windows/macOS when
-      ## a binary package has no corresponding source package. The fix is to
-      ## patch the function via ~/.Rprofile before BiocManager::install() runs.
-      ## The condition that triggers the bug is:
-      ##   type == "both" && .Platform$pkgType != "source"
-      ## .Platform$pkgType is a platform constant so options(pkgType=) doesn't
-      ## help — we must patch the broken function directly.
-      - name: Workaround for R-devel .available.both bug (Windows/macOS devel)
-        if: runner.os != 'Linux' && matrix.config.bioc-version == 'devel'
-        shell: bash
-        run: |
-          cat >> ~/.Rprofile << 'RPROFILE_EOF'
-          local({
-            ns <- asNamespace("utils")
-            if (!exists(".available.both", envir = ns, inherits = FALSE)) return()
-            patched <- function(repos, method, ...) {
-              fields <- tryCatch(
-                c(tools:::.get_standard_repository_db_fields(), "File", "Built"),
-                error = function(e) NULL)
-              av.src <- available.packages(
-                contriburl = contrib.url(repos, "source"),
-                method = method, fields = fields, ...)
-              av.bin <- available.packages(
-                contriburl = contrib.url(repos, "binary"),
-                method = method, fields = fields, ...)
-              pkg.bin <- intersect(rownames(av.bin), rownames(av.src))
-              pkg.src <- rownames(av.src)
-              bin.ver <- av.bin[pkg.bin, "Version"]
-              src.ver <- av.src[pkg.bin, "Version"]
-              use.bin <- pkg.bin[!is.na(bin.ver) & !is.na(src.ver) &
-                as.numeric_version(bin.ver) >= as.numeric_version(src.ver)]
-              use.src <- pkg.src[!pkg.src %in% use.bin]
-              rbind(av.src[use.src, ], av.bin[use.bin, ])
-            }
-            tryCatch(
-              withCallingHandlers({
-                unlockBinding(".available.both", ns)
-                assign(".available.both", patched, envir = ns)
-                lockBinding(".available.both", ns)
-              }, warning = function(w) invokeRestart("muffleWarning")),
-              error = function(e) invisible(NULL))
-          })
-          RPROFILE_EOF
-
       - name: Setup R and Bioconductor
+        if: matrix.config.os != 'windows-latest' && matrix.config.os != 'macOS-latest'
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
+
+      ## windows-latest and macOS-latest (ARM) hit a bug in R-devel (commit
+      ## dd03406, 2026-04-09) where BiocManager::install() crashes via
+      ## old.packages(type="both") -> .available.both() -> subscript out of
+      ## bounds. Work around by setting up R manually and calling
+      ## BiocManager::install(update=FALSE) to skip the old.packages() call.
+      - name: Setup R (Windows/macOS-ARM devel)
+        if: matrix.config.os == 'windows-latest' || matrix.config.os == 'macOS-latest'
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: devel
+          rtools-version: 45
+          use-public-rspm: true
+
+      - name: Setup Bioconductor (Windows/macOS-ARM devel)
+        if: matrix.config.os == 'windows-latest' || matrix.config.os == 'macOS-latest'
+        shell: Rscript {0}
+        run: |
+          download.file(
+            'https://bioconductor.org/checkResults/devel/bioc-LATEST/Renviron.bioc',
+            destfile = '~/.Renviron', mode = 'wb')
+          write(
+            'options(BioC_mirror = "${{ matrix.config.bioc-mirror }}")',
+            file = '~/.Rprofile', append = TRUE)
+          install.packages(c("BiocManager", "remotes"), quiet = TRUE)
+          ## update=FALSE avoids calling old.packages(type="both") which
+          ## triggers the R-devel bug in .available.both() (commit dd03406)
+          BiocManager::install(version = "3.23", ask = FALSE, update = FALSE)
+          cat("R_BIOC_VERSION=3.23\n", file = Sys.getenv("GITHUB_ENV"), append = TRUE)
 
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
