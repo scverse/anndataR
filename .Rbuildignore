@@ -18,3 +18,4 @@
 ^data$
 ^codecov\.yml$
 ^benchmarks$
+^\.venv$
