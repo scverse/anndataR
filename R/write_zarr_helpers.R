@@ -86,6 +86,11 @@ write_zarr_element <- function(
       ))
     }
 
+  # Delete the path if it already exists
+  if (zarr_path_exists(store, name)) {
+    unlink(file.path(store, name), recursive = TRUE)
+  }
+
   tryCatch(
     {
       write_fun(
