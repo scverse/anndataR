@@ -5,7 +5,7 @@
 # with different compression settings and X matrix types.
 # =============================================================================
 
-bench_write <- function(h5ad_paths, iterations, x_types) {
+bench_write <- function(h5ad_paths, iterations, x_types, zarr_paths) {
   results <- list()
 
   compressions <- c("none", "gzip")
@@ -54,6 +54,51 @@ bench_write <- function(h5ad_paths, iterations, x_types) {
 
       # Close HDF5 handle
       env2$.ad$close()
+    }
+  }
+
+  # Write to Zarr store
+  for (xt in x_types) {
+    path <- zarr_paths[[xt]]
+
+    for (compression in compressions) {
+      # Write from InMemoryAnnData → Zarr
+      env <- new.env(parent = globalenv())
+      env$.ad <- read_zarr(path, as = "InMemoryAnnData")
+      env$.compression <- compression
+
+      results <- c(
+        results,
+        run_one_benchmark(
+          name = paste0("write_zarr_InMemory_", xt, "_", compression),
+          expr = quote({
+            .tmp <- tempfile()
+            .ad$as_ZarrAnnData(.tmp, compression = .compression)
+            unlink(.tmp, recursive = TRUE)
+          }),
+          iterations = iterations,
+          env = env
+        )
+      )
+
+      # Write from ZarrAnnData → Zarr
+      env2 <- new.env(parent = globalenv())
+      env2$.ad <- read_zarr(path, as = "ZarrAnnData")
+      env2$.compression <- compression
+
+      results <- c(
+        results,
+        run_one_benchmark(
+          name = paste0("write_zarr_Zarr_", xt, "_", compression),
+          expr = quote({
+            .tmp <- tempfile()
+            .ad$as_ZarrAnnData(.tmp, compression = .compression)
+            unlink(.tmp, recursive = TRUE)
+          }),
+          iterations = iterations,
+          env = env2
+        )
+      )
     }
   }
 

@@ -83,6 +83,23 @@ generate_bench_h5ad <- function(x_type, n_obs, n_vars, cache_dir) {
   path
 }
 
+#' Convert an H5AD bench file to a Zarr store and cache it
+#'
+#' @param x_type Matrix type key (matches h5ad_paths names)
+#' @param h5ad_path Path to the corresponding H5AD file
+#' @param cache_dir Directory to cache generated stores
+#' @return Path to the generated Zarr store directory
+generate_bench_zarr <- function(x_type, h5ad_path, cache_dir) {
+  path <- file.path(cache_dir, paste0("bench_", x_type, ".zarr"))
+  if (dir.exists(path)) {
+    return(path)
+  }
+  ad <- reticulate::import("anndata", convert = FALSE)
+  adata_py <- ad$read_h5ad(h5ad_path)
+  adata_py$write_zarr(path)
+  path
+}
+
 # ---------------------------------------------------------------------------
 # bench::mark → BMF JSON conversion
 # ---------------------------------------------------------------------------
