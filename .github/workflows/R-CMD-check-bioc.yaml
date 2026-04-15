@@ -59,14 +59,47 @@ jobs:
           echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
 
       ## Workaround for R-devel bug (introduced 2026-04-09, commit dd03406):
-      ## .available.both() in utils/R/packages.R fails with "subscript out of
-      ## bounds" on Windows/macOS when a binary package has no corresponding
-      ## source package on the mirror. Forcing source-only type avoids the
-      ## buggy type="both" code path during BiocManager setup.
-      - name: Workaround for R-devel packages.R bug (Windows/macOS devel)
+      ## .available.both() in utils/R/packages.R crashes on Windows/macOS when
+      ## a binary package has no corresponding source package. The fix is to
+      ## patch the function via ~/.Rprofile before BiocManager::install() runs.
+      ## The condition that triggers the bug is:
+      ##   type == "both" && .Platform$pkgType != "source"
+      ## .Platform$pkgType is a platform constant so options(pkgType=) doesn't
+      ## help — we must patch the broken function directly.
+      - name: Workaround for R-devel .available.both bug (Windows/macOS devel)
         if: runner.os != 'Linux' && matrix.config.bioc-version == 'devel'
-        run: echo 'options(pkgType = "source")' >> ~/.Rprofile
         shell: bash
+        run: |
+          cat >> ~/.Rprofile << 'RPROFILE_EOF'
+          local({
+            ns <- asNamespace("utils")
+            if (!exists(".available.both", envir = ns, inherits = FALSE)) return()
+            patched <- function(repos, method, ...) {
+              fields <- tryCatch(
+                c(tools:::.get_standard_repository_db_fields(), "File", "Built"),
+                error = function(e) NULL)
+              av.src <- available.packages(
+                contriburl = contrib.url(repos, "source"),
+                method = method, fields = fields, ...)
+              av.bin <- available.packages(
+                contriburl = contrib.url(repos, "binary"),
+                method = method, fields = fields, ...)
+              pkg.bin <- intersect(rownames(av.bin), rownames(av.src))
+              pkg.src <- rownames(av.src)
+              bin.ver <- av.bin[pkg.bin, "Version"]
+              src.ver <- av.src[pkg.bin, "Version"]
+              use.bin <- pkg.bin[!is.na(bin.ver) & !is.na(src.ver) &
+                as.numeric_version(bin.ver) >= as.numeric_version(src.ver)]
+              use.src <- pkg.src[!pkg.src %in% use.bin]
+              rbind(av.src[use.src, ], av.bin[use.bin, ])
+            }
+            tryCatch(
+              withCallingHandlers(
+                assignInNamespace(".available.both", patched, ns = "utils"),
+                warning = function(w) invokeRestart("muffleWarning")),
+              error = function(e) invisible(NULL))
+          })
+          RPROFILE_EOF
 
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
