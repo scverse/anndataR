@@ -301,3 +301,67 @@ test_that("writing uns works", {
   expect_identical(zarr$uns$nested$nested_foo, "nested_bar")
   expect_equal(zarr$uns$nested$nested_baz, c(4L, 5L, 6L), ignore_attr = TRUE)
 })
+
+# ERROR HANDLING ---------------------------------------------------------
+test_that("opening a non-existent path in read mode errors", {
+  expect_error(
+    ZarrAnnData$new(tempfile(fileext = ".zarr"), mode = "r"),
+    "does not exist"
+  )
+})
+
+test_that("opening a non-existent path in r+ mode errors", {
+  expect_error(
+    ZarrAnnData$new(tempfile(fileext = ".zarr"), mode = "r+"),
+    "does not exist"
+  )
+})
+
+test_that("opening an existing file in exclusive-create mode errors", {
+  store <- tempfile(fileext = ".zarr")
+  create_zarr(store)
+  on.exit(unlink(store, recursive = TRUE))
+  expect_error(
+    ZarrAnnData$new(store, mode = "w-"),
+    "already exists"
+  )
+})
+
+test_that("writing to a read-only store errors", {
+  store <- tempfile(fileext = ".zarr")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  ZarrAnnData$new(store, obs = obs, var = var)
+  on.exit(unlink(store, recursive = TRUE))
+
+  zarr_ro <- ZarrAnnData$new(store, mode = "r")
+  expect_error(
+    zarr_ro$X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20),
+    "read-only"
+  )
+})
+
+# CONVERSION -------------------------------------------------------------
+test_that("as_ZarrAnnData() round-trip from InMemoryAnnData works", {
+  mem <- AnnData(
+    X = matrix(1:20, nrow = 4, ncol = 5),
+    obs = data.frame(a = 1:4, row.names = paste0("obs", 1:4)),
+    var = data.frame(b = 1:5, row.names = paste0("var", 1:5)),
+    layers = list(counts = matrix(21:40, nrow = 4, ncol = 5)),
+    uns = list(foo = "bar")
+  )
+
+  store <- tempfile(fileext = ".zarr")
+  on.exit(unlink(store, recursive = TRUE))
+
+  zarr <- as_ZarrAnnData(mem, file = store)
+  expect_true(inherits(zarr, "ZarrAnnData"))
+  expect_equal(zarr$obs_names, mem$obs_names)
+  expect_equal(zarr$var_names, mem$var_names)
+  expect_equal(as.matrix(zarr$X), mem$X, ignore_attr = TRUE)
+  expect_equal(
+    as.matrix(zarr$layers$counts), mem$layers$counts,
+    ignore_attr = TRUE
+  )
+  expect_equal(zarr$uns$foo, mem$uns$foo)
+})

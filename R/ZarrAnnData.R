@@ -21,11 +21,21 @@ ZarrAnnData <- R6::R6Class(
   private = list(
     .zarrobj = NULL,
     .compression = NULL,
+    .readonly = NULL,
 
     .check_file_valid = function() {
       if (!zarr_path_exists(private$.zarrobj, "/")) {
         cli_abort(
           "The Zarr path does not exist or is not a valid Zarr store"
+        )
+      }
+    },
+
+    .check_writeable = function() {
+      if (isTRUE(private$.readonly)) {
+        cli_abort(
+          "Cannot write to a Zarr store opened in read-only mode.",
+          call = rlang::caller_env()
         )
       }
     }
@@ -40,6 +50,7 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(private$.zarrobj, "X") |>
           private$.add_matrix_dimnames("X")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_X, status=done
         private$.validate_aligned_array(
           value,
@@ -64,6 +75,7 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(private$.zarrobj, "layers") |>
           private$.add_mapping_dimnames("layers")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_layers, status=done
         private$.validate_aligned_mapping(
           value,
@@ -88,6 +100,7 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(private$.zarrobj, "obsm") |>
           private$.add_mapping_dimnames("obsm")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_obsm, status=done
         private$.validate_aligned_mapping(
           value,
@@ -114,6 +127,7 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(private$.zarrobj, "varm") |>
           private$.add_mapping_dimnames("varm")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_varm, status=done
         private$.validate_aligned_mapping(
           value,
@@ -140,6 +154,7 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(private$.zarrobj, "obsp") |>
           private$.add_mapping_dimnames("obsp")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_obsp, status=done
         private$.validate_aligned_mapping(
           value,
@@ -164,6 +179,7 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(private$.zarrobj, "varp") |>
           private$.add_mapping_dimnames("varp")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_varp, status=done
         private$.validate_aligned_mapping(
           value,
@@ -187,6 +203,7 @@ ZarrAnnData <- R6::R6Class(
         # trackstatus: class=ZarrAnnData, feature=get_obs, status=done
         read_zarr_element(private$.zarrobj, "obs")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_obs, status=done
         private$.validate_obsvar_dataframe(value, "obs") |>
           write_zarr_element(
@@ -204,6 +221,7 @@ ZarrAnnData <- R6::R6Class(
         # trackstatus: class=ZarrAnnData, feature=get_var, status=done
         read_zarr_element(private$.zarrobj, "var")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_var, status=done
         private$.validate_obsvar_dataframe(value, "var") |>
           write_zarr_element(
@@ -221,6 +239,7 @@ ZarrAnnData <- R6::R6Class(
         # trackstatus: class=ZarrAnnData, feature=get_obs_names, status=done
         read_zarr_element_keys(private$.zarrobj, "obs", dim = "rows")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_obs_names, status=done
         rownames(self$obs) <- value
       }
@@ -233,6 +252,7 @@ ZarrAnnData <- R6::R6Class(
         # trackstatus: class=ZarrAnnData, feature=get_var_names, status=done
         read_zarr_element_keys(private$.zarrobj, "var", dim = "rows")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_var_names, status=done
         rownames(self$var) <- value
       }
@@ -245,6 +265,7 @@ ZarrAnnData <- R6::R6Class(
         # trackstatus: class=ZarrAnnData, feature=get_uns, status=done
         read_zarr_element(private$.zarrobj, "uns")
       } else {
+        private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_uns, status=done
         private$.validate_named_list(value, "uns", warn_matrix_dimnames = TRUE) |>
           write_zarr_element(
@@ -395,6 +416,7 @@ ZarrAnnData <- R6::R6Class(
 
       # Set the file path
       private$.zarrobj <- file
+      private$.readonly <- is_readonly
 
       if (is_readonly) {
         # if any of these variables are not NULL, throw an error

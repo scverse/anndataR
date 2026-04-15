@@ -103,8 +103,7 @@ test_that("reading string arrays is the same for h5ad and zarr", {
   }
 })
 
-# TODO: I will skip this test for now since the rec arrays are read differently
-# for some elements
+# TODO: Re-enable when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
 test_that("reading mappings is the same for h5ad and zarr", {
   skip(
     "skipping test for mappings since rec arrays are read differently
@@ -149,8 +148,7 @@ test_that("reading H5AD as SingleCellExperiment is the same for h5ad and zarr", 
   skip_if_not_installed("S4Vectors")
   sce_h5ad <- read_h5ad(filename, as = "SingleCellExperiment")
   sce_zarr <- read_zarr(store, as = "SingleCellExperiment")
-  # TODO: rec arrays are parsed differently between h5ad and zarr,
-  # so we set them equal here
+# TODO: Update when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
   S4Vectors::metadata(sce_zarr) <- S4Vectors::metadata(sce_h5ad)
   expect_equal(sce_h5ad, sce_zarr)
 })
@@ -159,13 +157,12 @@ test_that("reading H5AD as Seurat is the same for h5ad and zarr", {
   skip_if_not_installed("Seurat")
   sce_h5ad <- read_h5ad(filename, as = "Seurat")
   sce_zarr <- read_zarr(store, as = "Seurat")
-  # TODO: rec arrays are parsed differently between h5ad and zarr,
-  # so we set them equal here
+  # TODO: Update when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
   Seurat::Misc(sce_zarr, "rank_genes_groups") <-
     Seurat::Misc(sce_h5ad, "rank_genes_groups")
   # TODO: neighbors/params/random_state and
-  # leiden/params/random_state read 0 in anndata(py) but
-  # it is in fact an empty array
+  # leiden/params/random_state read as 0 in Python anndata but as an empty
+  # array in Zarr
   Seurat::Misc(sce_zarr, "neighbors") <-
     Seurat::Misc(sce_h5ad, "neighbors")
   Seurat::Misc(sce_zarr, "leiden") <-

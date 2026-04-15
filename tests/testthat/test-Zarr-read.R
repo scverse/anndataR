@@ -37,7 +37,7 @@ for (zarr_version in c("v2", "v3")) {
     expect_equal(dim(mat), c(50, 100))
   })
 
-  # TODO: zarr v3 rec arrays are not read
+#  TODO: Re-enable when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
   test_that(paste("reading Zarr", zarr_version, "recarrays works"), {
     if (zarr_version == "v3") {
       skip("Read support for Zarr v3 rec arrays is not implemented yet")
