@@ -15,113 +15,129 @@ test_names <- c(
   names(da$scalar_generators)
 )
 
-for (name in test_names) {
-  # first generate a python h5ad
-  adata_py <- da$generate_dataset(
-    x_type = NULL,
-    obs_types = list(),
-    var_types = list(),
-    layer_types = list(),
-    obsm_types = list(),
-    varm_types = list(),
-    obsp_types = list(),
-    varp_types = list(),
-    uns_types = list(),
-    nested_uns_types = list(name)
-  )
+for (fmt in c("h5ad", "zarr")) {
+  ext <- paste0(".", fmt)
 
-  # create a couple of paths
-  file_py <- withr::local_file(
-    tempfile(paste0("anndata_py_", name), fileext = ".h5ad")
-  )
-  file_r <- withr::local_file(
-    tempfile(paste0("anndata_r_", name), fileext = ".h5ad")
-  )
+  if (fmt == "zarr") {
+    skip_if_no_zarr()
 
-  # write to file
-  adata_py$write_h5ad(file_py)
-  # Read it back in to get the version as read from disk
-  adata_py <- ad$read_h5ad(file_py)
+    backend <- "ZarrAnnData"
+    r_read_fun <- read_zarr
+    r_write_fun <- write_zarr
+    py_read_method <- "read_zarr"
+    py_write_method <- "write_zarr"
+  } else {
+    backend <- "HDF5AnnData"
+    r_read_fun <- read_h5ad
+    r_write_fun <- write_h5ad
+    py_read_method <- "read_h5ad"
+    py_write_method <- "write_h5ad"
+  }
 
-  test_that(paste0("Reading an AnnData with uns_nested '", name, "' works"), {
-    msg <- message_if_known(
-      backend = "HDF5AnnData",
-      slot = c("uns_nested"),
-      dtype = name,
-      process = "read",
-      known_issues = known_issues
-    )
-    skip_if(!is.null(msg), message = msg)
-
-    adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
-
-    expect_equal(
-      names(adata_r$uns$nested),
-      bi$list(adata_py$uns$nested$keys())
+  for (name in test_names) {
+    # first generate a python adata
+    adata_py <- da$generate_dataset(
+      x_type = NULL,
+      obs_types = list(),
+      var_types = list(),
+      layer_types = list(),
+      obsm_types = list(),
+      varm_types = list(),
+      obsp_types = list(),
+      varp_types = list(),
+      uns_types = list(),
+      nested_uns_types = list(name)
     )
 
-    # check that the print output is the same (normalize class names)
-    str_r <- capture.output(print(adata_r))
-    str_py <- capture.output(print(adata_py))
-    str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
-    expect_equal(str_r, str_py)
-  })
+    # create a couple of paths
+    file_py <- withr::local_file(
+      tempfile(paste0("anndata_py_", name), fileext = ext)
+    )
+    file_r <- withr::local_file(
+      tempfile(paste0("anndata_r_", name), fileext = ext)
+    )
 
-  test_that(
-    paste0(
-      "Comparing an anndata with uns_nested '",
-      name,
-      "' with reticulate works"
-    ),
-    {
+    # write to file
+    adata_py[[py_write_method]](file_py)
+    # Read it back in to get the version as read from disk
+    adata_py <- ad[[py_read_method]](file_py)
+
+    test_that(paste0("Reading an AnnData with uns_nested '", name, "' (", fmt, ") works"), {
       msg <- message_if_known(
-        backend = "HDF5AnnData",
+        backend = backend,
         slot = c("uns_nested"),
         dtype = name,
-        process = c("read", "reticulate"),
+        process = "read",
         known_issues = known_issues
       )
       skip_if(!is.null(msg), message = msg)
 
-      adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
-
-      py_value <- convert_py_value(adata_py$uns$nested[[name]], name)
+      adata_r <- r_read_fun(file_py, as = backend)
 
       expect_equal(
-        adata_r$uns[["nested"]][[name]],
-        py_value
+        names(adata_r$uns$nested),
+        bi$list(adata_py$uns$nested$keys())
       )
-    }
-  )
 
-  gc()
+      # check that the print output is the same (normalize class names)
+      str_r <- capture.output(print(adata_r))
+      str_py <- capture.output(print(adata_py))
+      str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
+      expect_equal(str_r, str_py)
+    })
 
-  test_that(paste0("Writing an AnnData with uns_nested '", name, "' works"), {
-    msg <- message_if_known(
-      backend = "HDF5AnnData",
-      slot = c("uns_nested"),
-      dtype = name,
-      process = c("read", "write"),
-      known_issues = known_issues
+    test_that(
+      paste0("Comparing an anndata with uns_nested '", name, "' (", fmt, ") with reticulate works"),
+      {
+        msg <- message_if_known(
+          backend = backend,
+          slot = c("uns_nested"),
+          dtype = name,
+          process = c("read", "reticulate"),
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
+
+        adata_r <- r_read_fun(file_py, as = backend)
+
+        py_value <- convert_py_value(adata_py$uns$nested[[name]], name)
+
+        expect_equal(
+          adata_r$uns[["nested"]][[name]],
+          py_value
+        )
+      }
     )
-    skip_if(!is.null(msg), message = msg)
 
-    adata_r <- read_h5ad(file_py, as = "InMemoryAnnData")
-    write_h5ad(adata_r, file_r)
+    gc()
 
-    # read from file
-    adata_py2 <- ad$read_h5ad(file_r)
+    test_that(paste0("Writing an AnnData with uns_nested '", name, "' (", fmt, ") works"), {
+      msg <- message_if_known(
+        backend = backend,
+        slot = c("uns_nested"),
+        dtype = name,
+        process = c("read", "write"),
+        known_issues = known_issues
+      )
+      skip_if(!is.null(msg), message = msg)
 
-    # expect name is one of the keys
-    expect_contains(
-      bi$list(adata_py2$uns$nested$keys()),
-      name
-    )
+      adata_r <- r_read_fun(file_py, as = "InMemoryAnnData")
+      r_write_fun(adata_r, file_r)
 
-    # expect that the objects are the same
-    expect_equal_py(
-      py_get_item(adata_py2$uns$nested, name),
-      py_get_item(adata_py$uns$nested, name)
-    )
-  })
+      # read from file
+      adata_py2 <- ad[[py_read_method]](file_r)
+
+      # expect name is one of the keys
+      expect_contains(
+        bi$list(adata_py2$uns$nested$keys()),
+        name
+      )
+
+      # expect that the objects are the same
+      expect_equal_py(
+        py_get_item(adata_py2$uns$nested, name),
+        py_get_item(adata_py$uns$nested, name)
+      )
+    })
+  }
 }

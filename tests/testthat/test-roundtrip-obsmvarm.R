@@ -15,7 +15,7 @@ test_names <- c(
 )
 
 # temporary workaround for
-# https://github.com/LouiseDck/dummy-anndata/issues/12
+# https://github.com/data-intuitive/dummy-anndata/issues/12
 test_names <- setdiff(
   test_names,
   c(
@@ -28,221 +28,239 @@ test_names <- setdiff(
   )
 )
 
-for (name in test_names) {
-  # first generate a python h5ad
-  adata_py <- da$generate_dataset(
-    x_type = NULL,
-    obs_types = list(),
-    var_types = list(),
-    layer_types = list(),
-    obsm_types = list(name),
-    varm_types = list(name),
-    obsp_types = list(),
-    varp_types = list(),
-    uns_types = list(),
-    nested_uns_types = list()
-  )
+for (fmt in c("h5ad", "zarr")) {
+  ext <- paste0(".", fmt)
 
-  # create a couple of paths
-  file_py <- withr::local_file(
-    tempfile(paste0("anndata_py_", name), fileext = ".h5ad")
-  )
-  file_r <- withr::local_file(
-    tempfile(paste0("anndata_r_", name), fileext = ".h5ad")
-  )
-  file_r2 <- withr::local_file(
-    tempfile(paste0("anndata_r2_", name), fileext = ".h5ad")
-  )
+  if (fmt == "zarr") {
+    skip_if_no_zarr()
 
-  # write to file
-  adata_py$write_h5ad(file_py)
-  # Read it back in to get the version as read from disk
-  adata_py <- ad$read_h5ad(file_py)
+    backend <- "ZarrAnnData"
+    r_read_fun <- read_zarr
+    r_write_fun <- write_zarr
+    py_read_method <- "read_zarr"
+    py_write_method <- "write_zarr"
+  } else {
+    backend <- "HDF5AnnData"
+    r_read_fun <- read_h5ad
+    r_write_fun <- write_h5ad
+    py_read_method <- "read_h5ad"
+    py_write_method <- "write_h5ad"
+  }
 
-  test_that(
-    paste0("Reading an AnnData with obsm and varm '", name, "' works"),
-    {
-      msg <- message_if_known(
-        backend = "HDF5AnnData",
-        slot = c("obsm", "varm"),
-        dtype = name,
-        process = "read",
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
-
-      adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
-      expect_equal(
-        adata_r$shape(),
-        unlist(reticulate::py_to_r(adata_py$shape))
-      )
-      expect_equal(
-        adata_r$obsm_keys(),
-        bi$list(adata_py$obsm$keys())
-      )
-      expect_equal(
-        adata_r$varm_keys(),
-        bi$list(adata_py$varm$keys())
-      )
-
-      # check that the print output is the same (normalize class names)
-      str_r <- capture.output(print(adata_r))
-      str_py <- capture.output(print(adata_py))
-      str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
-      expect_equal(str_r, str_py)
-    }
-  )
-
-  test_that(
-    paste0(
-      "Comparing an anndata with obsm and varm '",
-      name,
-      "' with reticulate works"
-    ),
-    {
-      msg <- message_if_known(
-        backend = "HDF5AnnData",
-        slot = c("obsm", "varm"),
-        dtype = name,
-        process = c("read", "reticulate"),
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
-
-      adata_r <- read_h5ad(file_py, as = "HDF5AnnData")
-
-      # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
-      # So we need to strip dimnames for comparison
-      actual_obsm <- adata_r$obsm[[name]]
-      expected_obsm <- py_to_r(py_get_item(adata_py$obsm, name))
-      dimnames(actual_obsm) <- NULL
-      dimnames(expected_obsm) <- NULL
-
-      expect_equal(
-        actual_obsm,
-        expected_obsm,
-        tolerance = 1e-6
-      )
-
-      actual_varm <- adata_r$varm[[name]]
-      expected_varm <- py_to_r(py_get_item(adata_py$varm, name))
-      dimnames(actual_varm) <- NULL
-      dimnames(expected_varm) <- NULL
-
-      expect_equal(
-        actual_varm,
-        expected_varm,
-        tolerance = 1e-6
-      )
-    }
-  )
-
-  gc()
-
-  test_that(
-    paste0("Writing an AnnData with obsm and varm '", name, "' works"),
-    {
-      msg <- message_if_known(
-        backend = "HDF5AnnData",
-        slot = c("obsm", "varm"),
-        dtype = name,
-        process = c("read", "write"),
-        known_issues = known_issues
-      )
-      skip_if(!is.null(msg), message = msg)
-
-      adata_r <- read_h5ad(file_py, as = "InMemoryAnnData")
-      write_h5ad(adata_r, file_r)
-
-      # read from file
-      adata_py2 <- ad$read_h5ad(file_r)
-
-      # expect name is one of the keys
-      expect_contains(
-        bi$list(adata_py2$obsm$keys()),
-        name
-      )
-      expect_contains(
-        bi$list(adata_py2$obsm$keys()),
-        name
-      )
-
-      # expect that the objects are the same
-      expect_equal_py(
-        py_get_item(adata_py2$obsm, name),
-        py_get_item(adata_py$obsm, name)
-      )
-      expect_equal_py(
-        py_get_item(adata_py2$varm, name),
-        py_get_item(adata_py$varm, name)
-      )
-    }
-  )
-
-  skip_if_no_h5diff()
-  # Get all R datatypes that are equivalent to the python datatype (name)
-  res <- Filter(function(x) x[[1]] == name, all_equivalences)
-  r_datatypes <- vapply(res, function(x) x[[2]], character(1))
-
-  for (r_name in r_datatypes) {
-    test_msg <- paste0(
-      "Comparing a python generated .h5ad with obsm and varm '",
-      name,
-      "' with an R generated .h5ad '",
-      r_name,
-      "' works"
+  for (name in test_names) {
+    # first generate a python adata
+    adata_py <- da$generate_dataset(
+      x_type = NULL,
+      obs_types = list(),
+      var_types = list(),
+      layer_types = list(),
+      obsm_types = list(name),
+      varm_types = list(name),
+      obsp_types = list(),
+      varp_types = list(),
+      uns_types = list(),
+      nested_uns_types = list()
     )
-    test_that(test_msg, {
-      msg <- message_if_known(
-        backend = "HDF5AnnData",
-        slot = c("obsm", "varm"),
-        dtype = c(name, r_name),
-        process = c("h5diff"),
-        known_issues = known_issues
-      )
 
-      skip_if(!is.null(msg), message = msg)
-      # generate an R h5ad
-      adata_r <- r_generate_dataset(
-        10L,
-        20L,
-        obsm_types = list(r_name),
-        varm_types = list(r_name)
-      )
-      write_h5ad(adata_r, file_r2, mode = "w")
+    # create a couple of paths
+    file_py <- withr::local_file(
+      tempfile(paste0("anndata_py_", name), fileext = ext)
+    )
+    file_r <- withr::local_file(
+      tempfile(paste0("anndata_r_", name), fileext = ext)
+    )
+    file_r2 <- withr::local_file(
+      tempfile(paste0("anndata_r2_", name), fileext = ext)
+    )
 
-      # Remove the rhdf5-NA.OK for comparison
-      hdf5_clear_rhdf5_attributes(file_r2, paste0("/obsm/", r_name))
+    # write to file
+    adata_py[[py_write_method]](file_py)
+    # Read it back in to get the version as read from disk
+    adata_py <- ad[[py_read_method]](file_py)
 
-      # run h5diff
-      res_obsm <- processx::run(
-        "h5diff",
-        c(
-          "-v2",
-          file_py,
-          file_r2,
-          paste0("/obsm/", name),
-          paste0("/obsm/", r_name)
-        ),
-        error_on_status = FALSE
-      )
-      expect_equal(res_obsm$status, 0, info = res_obsm$stdout)
+    test_that(
+      paste0("Reading an AnnData with obsm and varm '", name, "' (", fmt, ") works"),
+      {
+        msg <- message_if_known(
+          backend = backend,
+          slot = c("obsm", "varm"),
+          dtype = name,
+          process = "read",
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
 
-      # Remove the rhdf5-NA.OK for comparison
-      hdf5_clear_rhdf5_attributes(file_r2, paste0("/varm/", r_name))
+        adata_r <- r_read_fun(file_py, as = backend)
+        expect_equal(
+          adata_r$shape(),
+          unlist(reticulate::py_to_r(adata_py$shape))
+        )
+        expect_equal(
+          adata_r$obsm_keys(),
+          bi$list(adata_py$obsm$keys())
+        )
+        expect_equal(
+          adata_r$varm_keys(),
+          bi$list(adata_py$varm$keys())
+        )
 
-      res_varm <- processx::run(
-        "h5diff",
-        c(
-          "-v2",
-          file_py,
-          file_r2,
-          paste0("/varm/", name),
-          paste0("/varm/", r_name)
-        ),
-        error_on_status = FALSE
-      )
-      expect_equal(res_varm$status, 0, info = res_varm$stdout)
-    })
+        # check that the print output is the same (normalize class names)
+        str_r <- capture.output(print(adata_r))
+        str_py <- capture.output(print(adata_py))
+        str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
+        expect_equal(str_r, str_py)
+      }
+    )
+
+    test_that(
+      paste0("Comparing an anndata with obsm and varm '", name, "' (", fmt, ") with reticulate works"),
+      {
+        msg <- message_if_known(
+          backend = backend,
+          slot = c("obsm", "varm"),
+          dtype = name,
+          process = c("read", "reticulate"),
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
+
+        adata_r <- r_read_fun(file_py, as = backend)
+
+        # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
+        # So we need to strip dimnames for comparison
+        actual_obsm <- adata_r$obsm[[name]]
+        expected_obsm <- py_to_r(py_get_item(adata_py$obsm, name))
+        dimnames(actual_obsm) <- NULL
+        dimnames(expected_obsm) <- NULL
+
+        expect_equal(
+          actual_obsm,
+          expected_obsm,
+          tolerance = 1e-6
+        )
+
+        actual_varm <- adata_r$varm[[name]]
+        expected_varm <- py_to_r(py_get_item(adata_py$varm, name))
+        dimnames(actual_varm) <- NULL
+        dimnames(expected_varm) <- NULL
+
+        expect_equal(
+          actual_varm,
+          expected_varm,
+          tolerance = 1e-6
+        )
+      }
+    )
+
+    gc()
+
+    test_that(
+      paste0("Writing an AnnData with obsm and varm '", name, "' (", fmt, ") works"),
+      {
+        msg <- message_if_known(
+          backend = backend,
+          slot = c("obsm", "varm"),
+          dtype = name,
+          process = c("read", "write"),
+          known_issues = known_issues
+        )
+        skip_if(!is.null(msg), message = msg)
+
+        adata_r <- r_read_fun(file_py, as = "InMemoryAnnData")
+        r_write_fun(adata_r, file_r)
+
+        # read from file
+        adata_py2 <- ad[[py_read_method]](file_r)
+
+        # expect name is one of the keys
+        expect_contains(
+          bi$list(adata_py2$obsm$keys()),
+          name
+        )
+        expect_contains(
+          bi$list(adata_py2$varm$keys()),
+          name
+        )
+
+        # expect that the objects are the same
+        expect_equal_py(
+          py_get_item(adata_py2$obsm, name),
+          py_get_item(adata_py$obsm, name)
+        )
+        expect_equal_py(
+          py_get_item(adata_py2$varm, name),
+          py_get_item(adata_py$varm, name)
+        )
+      }
+    )
+
+    if (fmt == "h5ad") {
+      skip_if_no_h5diff()
+      # Get all R datatypes that are equivalent to the python datatype (name)
+      res <- Filter(function(x) x[[1]] == name, all_equivalences)
+      r_datatypes <- vapply(res, function(x) x[[2]], character(1))
+
+      for (r_name in r_datatypes) {
+        test_msg <- paste0(
+          "Comparing a python generated .h5ad with obsm and varm '",
+          name,
+          "' with an R generated .h5ad '",
+          r_name,
+          "' works"
+        )
+        test_that(test_msg, {
+          msg <- message_if_known(
+            backend = "HDF5AnnData",
+            slot = c("obsm", "varm"),
+            dtype = c(name, r_name),
+            process = c("h5diff"),
+            known_issues = known_issues
+          )
+
+          skip_if(!is.null(msg), message = msg)
+          # generate an R h5ad
+          adata_r <- r_generate_dataset(
+            10L,
+            20L,
+            obsm_types = list(r_name),
+            varm_types = list(r_name)
+          )
+          write_h5ad(adata_r, file_r2, mode = "w")
+
+          # Remove the rhdf5-NA.OK for comparison
+          hdf5_clear_rhdf5_attributes(file_r2, paste0("/obsm/", r_name))
+
+          # run h5diff
+          res_obsm <- processx::run(
+            "h5diff",
+            c(
+              "-v2",
+              file_py,
+              file_r2,
+              paste0("/obsm/", name),
+              paste0("/obsm/", r_name)
+            ),
+            error_on_status = FALSE
+          )
+          expect_equal(res_obsm$status, 0, info = res_obsm$stdout)
+
+          # Remove the rhdf5-NA.OK for comparison
+          hdf5_clear_rhdf5_attributes(file_r2, paste0("/varm/", r_name))
+
+          res_varm <- processx::run(
+            "h5diff",
+            c(
+              "-v2",
+              file_py,
+              file_r2,
+              paste0("/varm/", name),
+              paste0("/varm/", r_name)
+            ),
+            error_on_status = FALSE
+          )
+          expect_equal(res_varm$status, 0, info = res_varm$stdout)
+        })
+      }
+    }
   }
 }
