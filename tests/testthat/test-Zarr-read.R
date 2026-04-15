@@ -107,7 +107,12 @@ for (zarr_version in c("v2", "v3")) {
   })
 
   test_that(paste("reading Zarr", zarr_version, "mappings works"), {
-    mapping <- read_zarr_mapping(store, "uns")
+    if (zarr_version == "v3") {
+      # TODO: Remove when v3 recarray support is implemented
+      mapping <- suppressWarnings(read_zarr_mapping(store, "uns"))
+    } else {
+      mapping <- read_zarr_mapping(store, "uns")
+    }
     expect_type(mapping, "list")
     expect_type(names(mapping), "character")
   })
@@ -138,7 +143,13 @@ for (zarr_version in c("v2", "v3")) {
     {
       skip_if_not_installed("SingleCellExperiment")
 
-      sce <- read_zarr(store, as = "SingleCellExperiment")
+      if (zarr_version == "v3") {
+        # TODO: Remove when v3 recarray support is implemented
+        sce <- suppressWarnings(read_zarr(store, as = "SingleCellExperiment"))
+      } else {
+        sce <- read_zarr(store, as = "SingleCellExperiment")
+      }
+
       expect_s4_class(sce, "SingleCellExperiment")
     }
   )
@@ -146,7 +157,13 @@ for (zarr_version in c("v2", "v3")) {
   test_that(paste("reading Zarr", zarr_version, "as Seurat works"), {
     skip_if_not_installed("SeuratObject")
 
-    seurat <- read_zarr(store, as = "Seurat")
+    if (zarr_version == "v3") {
+      # TODO: Remove when v3 recarray support is implemented
+      seurat <- suppressWarnings(read_zarr(store, as = "Seurat"))
+    } else {
+      seurat <- read_zarr(store, as = "Seurat")
+    }
+
     expect_s4_class(seurat, "Seurat")
   })
 }

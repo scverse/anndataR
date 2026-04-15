@@ -70,11 +70,11 @@ for (fmt in c("h5ad", "zarr")) {
         )
         expect_equal(
           adata_r$obs_keys(),
-          bi$list(adata_py$obs_keys())
+          reticulate::py_to_r(adata_py$obs$columns$tolist())
         )
         expect_equal(
           adata_r$var_keys(),
-          bi$list(adata_py$var_keys())
+          reticulate::py_to_r(adata_py$obs$columns$tolist())
         )
 
         # check that the print output is the same (normalize class names)

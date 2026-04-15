@@ -174,15 +174,24 @@ test_that("reading H5AD as Seurat is the same for h5ad and zarr", {
   sce_h5ad <- read_h5ad(filename, as = "Seurat")
   sce_zarr <- read_zarr(store, as = "Seurat")
   # TODO: Update when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
-  Seurat::Misc(sce_zarr, "rank_genes_groups") <-
-    Seurat::Misc(sce_h5ad, "rank_genes_groups")
+  expect_warning(
+    Seurat::Misc(sce_zarr, "rank_genes_groups") <-
+      Seurat::Misc(sce_h5ad, "rank_genes_groups"),
+    "Overwriting miscellanous"
+  )
   # TODO: neighbors/params/random_state and
   # leiden/params/random_state read as 0 in Python anndata but as an empty
   # array in Zarr
-  Seurat::Misc(sce_zarr, "neighbors") <-
-    Seurat::Misc(sce_h5ad, "neighbors")
-  Seurat::Misc(sce_zarr, "leiden") <-
-    Seurat::Misc(sce_h5ad, "leiden")
+  expect_warning(
+    Seurat::Misc(sce_zarr, "neighbors") <-
+      Seurat::Misc(sce_h5ad, "neighbors"),
+    "Overwriting miscellanous"
+  )
+  expect_warning(
+    Seurat::Misc(sce_zarr, "leiden") <-
+      Seurat::Misc(sce_h5ad, "leiden"),
+    "Overwriting miscellanous"
+  )
   # Sort Misc by name to make comparison order-agnostic
   sce_h5ad@misc <- sce_h5ad@misc[sort(names(sce_h5ad@misc))]
   sce_zarr@misc <- sce_zarr@misc[sort(names(sce_zarr@misc))]

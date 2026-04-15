@@ -7,4 +7,8 @@ skip_if_no_zarr <- function() {
     reticulate::py_module_available("zarr"),
     message = "Python zarr module not available for testing"
   )
+
+  # TODO: Remove when this warning is removed from anndata
+  wn <- reticulate::import("warnings")
+  wn$filterwarnings("ignore", message="Writing zarr v2 data will no longer be the default")
 }
