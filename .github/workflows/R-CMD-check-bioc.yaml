@@ -58,6 +58,16 @@ jobs:
           echo "CPPFLAGS += -I$(brew --prefix gettext)/include" >> ~/.R/Makevars
           echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
 
+      ## Workaround for R-devel bug (introduced 2026-04-09, commit dd03406):
+      ## .available.both() in utils/R/packages.R fails with "subscript out of
+      ## bounds" on Windows/macOS when a binary package has no corresponding
+      ## source package on the mirror. Forcing source-only type avoids the
+      ## buggy type="both" code path during BiocManager setup.
+      - name: Workaround for R-devel packages.R bug (Windows/macOS devel)
+        if: runner.os != 'Linux' && matrix.config.bioc-version == 'devel'
+        run: echo 'options(pkgType = "source")' >> ~/.Rprofile
+        shell: bash
+
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
