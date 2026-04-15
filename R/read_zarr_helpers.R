@@ -322,7 +322,7 @@ read_zarr_categorical <- function(store, name, version = "0.2.0") {
   attributes <- Rarr::read_zarr_attributes(file.path(store, name))
   ordered <- attributes[["ordered"]]
 
-  factor(codes, labels = levels, ordered = ordered)
+  factor(levels[codes], levels = levels, ordered = ordered)
 }
 
 #' Read Zarr string scalar
