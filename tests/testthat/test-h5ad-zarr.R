@@ -11,6 +11,11 @@ td <- tempdir(check = TRUE)
 unzip(zarr_dir, exdir = td)
 store <- file.path(td, "example_v2.zarr")
 
+# helper to compare h5ad and zarr reads for the same path
+expect_equal_h5ad_zarr <- function(h5ad_fn, zarr_fn, path, ...) {
+  expect_equal(h5ad_fn(file, path, ...), zarr_fn(store, path, ...))
+}
+
 # compare rec arrays of h5ad and zarr
 compare_rec_array <- function(rec_array_h5ad, rec_array_zarr, test_fun) {
   test_fun(length(rec_array_h5ad), length(rec_array_zarr[[1]]))
@@ -22,27 +27,26 @@ compare_rec_array <- function(rec_array_h5ad, rec_array_zarr, test_fun) {
   })
 }
 
-test_that("reading dense matrices is same for h5ad and zarr", {
-  mat_h5ad <- read_h5ad_dense_array(file, "layers/dense_counts")
-  mat_zarr <- read_zarr_dense_array(store, "layers/dense_counts")
-  expect_equal(mat_h5ad, mat_zarr)
-
-  mat_h5ad <- read_h5ad_dense_array(file, "layers/dense_X")
-  mat_zarr <- read_zarr_dense_array(store, "layers/dense_X")
-  expect_equal(mat_h5ad, mat_zarr)
+test_that("reading dense matrices is the same for h5ad and zarr", {
+  for (path in c("layers/dense_counts", "layers/dense_X")) {
+    expect_equal_h5ad_zarr(read_h5ad_dense_array, read_zarr_dense_array, path)
+  }
 })
 
 test_that("reading sparse matrices is same for h5ad and zarr", {
-  mat_h5ad <- read_h5ad_sparse_array(file, "layers/csc_counts", type = "csc")
-  mat_zarr <- read_zarr_sparse_array(store, "layers/csc_counts", type = "csc")
-  expect_equal(mat_h5ad, mat_zarr)
-
-  mat_h5ad <- read_h5ad_sparse_array(file, "layers/counts", type = "csr")
-  mat_zarr <- read_zarr_sparse_array(store, "layers/counts", type = "csr")
-  expect_equal(mat_h5ad, mat_zarr)
+  sparse_mats <- list(
+    list(path = "layers/csc_counts", type = "csc"),
+    list(path = "layers/counts", type = "csr")
+  )
+  for (mat in sparse_mats) {
+    expect_equal_h5ad_zarr(
+      read_h5ad_sparse_array, read_zarr_sparse_array, mat$path,
+      type = mat$type
+    )
+  }
 })
 
-test_that("reading recarrays is the same for h5ad and zarr", {
+test_that("reading recarrays is the the same for h5ad and zarr", {
   # h5ad returns a list of 6 arrays of length 100
   array_list_h5ad <- read_h5ad_rec_array(
     file,
@@ -56,67 +60,54 @@ test_that("reading recarrays is the same for h5ad and zarr", {
   compare_rec_array(array_list_h5ad, array_list_zarr, expect_equal)
 })
 
-test_that("reading 1D numeric arrays is same for h5ad and zarr", {
-  array_1d_h5ad <- read_h5ad_dense_array(file, "obs/Int")
-  array_1d_zarr <- read_zarr_dense_array(store, "obs/Int")
-  expect_equal(array_1d_h5ad, array_1d_zarr)
-
-  array_1d_h5ad <- read_h5ad_dense_array(file, "obs/Float")
-  array_1d_zarr <- read_zarr_dense_array(store, "obs/Float")
-  expect_equal(array_1d_h5ad, array_1d_zarr)
+test_that("reading 1D numeric arrays is the same for h5ad and zarr", {
+  for (path in c("obs/Int", "obs/Float")) {
+    expect_equal_h5ad_zarr(read_h5ad_dense_array, read_zarr_dense_array, path)
+  }
 })
 
-test_that("reading 1D sparse numeric arrays is same for h5ad and zarr", {
-  array_1d_h5ad <- read_h5ad_sparse_array(file, "uns/Sparse1D", type = "csc")
-  array_1d_zarr <- read_zarr_sparse_array(store, "uns/Sparse1D", type = "csc")
-  expect_equal(array_1d_h5ad, array_1d_zarr)
+test_that("reading 1D sparse numeric arrays is the same for h5ad and zarr", {
+  expect_equal_h5ad_zarr(
+    read_h5ad_sparse_array, read_zarr_sparse_array, "uns/Sparse1D",
+    type = "csc"
+  )
 })
 
-test_that("reading 1D nullable arrays is same for h5ad and zarr", {
-  array_1d_h5ad <- read_h5ad_nullable_integer(file, "obs/IntNA")
-  array_1d_zarr <- read_zarr_nullable_integer(store, "obs/IntNA")
-  expect_equal(array_1d_h5ad, array_1d_zarr)
-
-  array_1d_h5ad <- read_h5ad_dense_array(file, "obs/FloatNA")
-  array_1d_zarr <- read_zarr_dense_array(store, "obs/FloatNA")
-  expect_equal(array_1d_h5ad, array_1d_zarr)
-
-  array_1d_h5ad <- read_h5ad_nullable_boolean(file, "obs/Bool")
-  array_1d_zarr <- read_zarr_nullable_boolean(store, "obs/Bool")
-  expect_equal(array_1d_h5ad, array_1d_zarr)
-
-  array_1d_h5ad <- read_h5ad_nullable_boolean(file, "obs/BoolNA")
-  array_1d_zarr <- read_zarr_nullable_boolean(store, "obs/BoolNA")
-  expect_equal(array_1d_h5ad, array_1d_zarr)
+test_that("reading 1D nullable arrays is the same for h5ad and zarr", {
+  expect_equal_h5ad_zarr(
+    read_h5ad_nullable_integer, read_zarr_nullable_integer, "obs/IntNA"
+  )
+  expect_equal_h5ad_zarr(read_h5ad_dense_array, read_zarr_dense_array, "obs/FloatNA")
+  for (path in c("obs/Bool", "obs/BoolNA")) {
+    expect_equal_h5ad_zarr(
+      read_h5ad_nullable_boolean, read_zarr_nullable_boolean, path
+    )
+  }
 })
 
-test_that("reading string scalars is same for h5ad and zarr", {
-  scalar_h5ad <- read_h5ad_string_scalar(file, "uns/StringScalar")
-  scalar_zarr <- read_zarr_string_scalar(store, "uns/StringScalar")
-  expect_equal(scalar_h5ad, scalar_zarr)
+test_that("reading string scalars is the same for h5ad and zarr", {
+  expect_equal_h5ad_zarr(
+    read_h5ad_string_scalar, read_zarr_string_scalar, "uns/StringScalar"
+  )
 })
 
-test_that("reading numeric scalars is same for h5ad and zarr", {
-  scalar_h5ad <- read_h5ad_numeric_scalar(file, "uns/IntScalar")
-  scalar_zarr <- read_zarr_numeric_scalar(store, "uns/IntScalar")
-  expect_equal(scalar_h5ad, scalar_zarr)
+test_that("reading numeric scalars is the same for h5ad and zarr", {
+  expect_equal_h5ad_zarr(
+    read_h5ad_numeric_scalar, read_zarr_numeric_scalar, "uns/IntScalar"
+  )
 })
 
-test_that("reading string arrays is same for h5ad and zarr", {
-  array_h5ad <- read_h5ad_string_array(file, "uns/String")
-  array_zarr <- read_zarr_string_array(store, "uns/String")
-  expect_equal(array_h5ad, array_zarr)
-
-  array_h5ad <- read_h5ad_string_array(file, "uns/String2D")
-  array_zarr <- read_zarr_string_array(store, "uns/String2D")
-  expect_equal(array_h5ad, array_zarr)
+test_that("reading string arrays is the same for h5ad and zarr", {
+  for (path in c("uns/String", "uns/String2D")) {
+    expect_equal_h5ad_zarr(read_h5ad_string_array, read_zarr_string_array, path)
+  }
 })
 
 # TODO: I will skip this test for now since the rec arrays are read differently
 # for some elements
-test_that("reading mappings is same for h5ad and zarr", {
+test_that("reading mappings is the same for h5ad and zarr", {
   skip(
-    "skipping test for mappings since rec arrays are read differently 
+    "skipping test for mappings since rec arrays are read differently
        across h5ad and zarr"
   )
   # since rec arrays are read differently across h5ad and zarr,
@@ -147,15 +138,13 @@ test_that("reading mappings is same for h5ad and zarr", {
 tmp <- read_zarr_element(store, "uns/neighbors/params/random_state")
 tmp2 <- read_h5ad_element(file, "uns/neighbors/params/random_state")
 
-test_that("reading dataframes is the same for h5ad and zarr", {
-  df_h5ad <- read_h5ad_data_frame(file, "obs")
-  df_zarr <- read_zarr_data_frame(store, "obs")
-  expect_equal(df_h5ad, df_zarr)
+test_that("reading dataframes is the the same for h5ad and zarr", {
+  expect_equal_h5ad_zarr(read_h5ad_data_frame, read_zarr_data_frame, "obs")
 })
 
 rhdf5::H5Fclose(file)
 
-test_that("reading H5AD as SingleCellExperiment is same for h5ad and zarr", {
+test_that("reading H5AD as SingleCellExperiment is the same for h5ad and zarr", {
   skip_if_not_installed("SingleCellExperiment")
   skip_if_not_installed("S4Vectors")
   sce_h5ad <- read_h5ad(filename, as = "SingleCellExperiment")
@@ -166,7 +155,7 @@ test_that("reading H5AD as SingleCellExperiment is same for h5ad and zarr", {
   expect_equal(sce_h5ad, sce_zarr)
 })
 
-test_that("reading H5AD as Seurat is same for h5ad and zarr", {
+test_that("reading H5AD as Seurat is the same for h5ad and zarr", {
   skip_if_not_installed("Seurat")
   sce_h5ad <- read_h5ad(filename, as = "Seurat")
   sce_zarr <- read_zarr(store, as = "Seurat")
