@@ -309,34 +309,3 @@ construct_sparse_matrix <- function(data, indices, indptr, shape, type = c("csc_
   }
 }
 
-#' HDF5 increasing iteration order
-#'
-#' Order a character vector to mimic HDF5 increasing iteration order.
-#'
-#' see https://support.hdfgroup.org/documentation/hdf5/latest/group___h5_o.html
-#'
-#' @param x a character vector
-#'
-#' @returns a character vector
-#'
-#' @noRd
-H5_ITER_INC_ORDERING <- function(x) {
-  prefix <- sub("_.*$", "", x)
-  suffix <- ifelse(grepl("_", x), sub("^[^_]*_", "", x), NA)
-
-  # rules
-  starts_capital <- grepl("^[A-Z]", x)
-  has_suffix <- !is.na(suffix)
-  suffix_capital <- has_suffix & grepl("^[A-Z]", suffix)
-
-  # stable prefix grouping
-  prefix_id <- match(prefix, unique(prefix))
-
-  x[order(
-    !starts_capital,
-    prefix_id,
-    has_suffix,
-    !suffix_capital,
-    seq_along(x)
-  )]
-}

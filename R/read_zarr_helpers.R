@@ -386,9 +386,6 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
   # Omit Zarr metadata files from the list of columns.
   items <- items[!items %in% ZARR_METADATA_FILES]
 
-  # h5ad like ordering, see H5_ITER_INC
-  items <- H5_ITER_INC_ORDERING(items)
-
   read_zarr_collection(store, name, items)
 }
 

@@ -170,5 +170,8 @@ test_that("reading H5AD as Seurat is the same for h5ad and zarr", {
     Seurat::Misc(sce_h5ad, "neighbors")
   Seurat::Misc(sce_zarr, "leiden") <-
     Seurat::Misc(sce_h5ad, "leiden")
+  # Sort Misc by name to make comparison order-agnostic
+  sce_h5ad@misc <- sce_h5ad@misc[sort(names(sce_h5ad@misc))]
+  sce_zarr@misc <- sce_zarr@misc[sort(names(sce_zarr@misc))]
   expect_equal(sce_h5ad, sce_zarr)
 })
