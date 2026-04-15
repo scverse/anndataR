@@ -20,11 +20,6 @@
 #'
 #' @details
 #'
-#' ## Compression
-#'
-#' Compression is currently not supported for Boolean arrays, they will be
-#' written uncompressed.
-#'
 #' ## `NULL` values
 #'
 #' For compatibility with changes in Python **anndata** 0.12.0, `NULL` values
