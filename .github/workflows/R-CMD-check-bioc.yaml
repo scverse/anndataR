@@ -59,10 +59,41 @@ jobs:
           echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
 
       - name: Setup R and Bioconductor
+        # todo: remove this workaround line once it is working for windows and/or mac os x
+        if: matrix.config.os != 'windows-latest' && matrix.config.os != 'macOS-latest'
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
+
+      ## windows-latest and macOS-latest (ARM) hit a bug in R-devel (commit
+      ## dd03406, 2026-04-09) where BiocManager::install() crashes via
+      ## old.packages(type="both") -> .available.both() -> subscript out of
+      ## bounds. Work around by setting up R manually and calling
+      ## BiocManager::install(update=FALSE) to skip the old.packages() call.
+      - name: Setup R (Windows/macOS-ARM devel)
+        if: matrix.config.os == 'windows-latest' || matrix.config.os == 'macOS-latest'
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: devel
+          rtools-version: 45
+          use-public-rspm: true
+
+      - name: Setup Bioconductor (Windows/macOS-ARM devel)
+        if: matrix.config.os == 'windows-latest' || matrix.config.os == 'macOS-latest'
+        shell: Rscript {0}
+        run: |
+          download.file(
+            'https://bioconductor.org/checkResults/devel/bioc-LATEST/Renviron.bioc',
+            destfile = '~/.Renviron', mode = 'wb')
+          write(
+            'options(BioC_mirror = "${{ matrix.config.bioc-mirror }}")',
+            file = '~/.Rprofile', append = TRUE)
+          install.packages(c("BiocManager", "remotes"), quiet = TRUE)
+          ## update=FALSE avoids calling old.packages(type="both") which
+          ## triggers the R-devel bug in .available.both() (commit dd03406)
+          BiocManager::install(version = "3.23", ask = FALSE, update = FALSE)
+          cat("R_BIOC_VERSION=3.23\n", file = Sys.getenv("GITHUB_ENV"), append = TRUE)
 
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
