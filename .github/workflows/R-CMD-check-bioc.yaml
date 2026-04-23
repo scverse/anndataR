@@ -59,6 +59,7 @@ jobs:
           echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
 
       - name: Setup R and Bioconductor
+        # todo: remove this workaround line once it is working for windows and/or mac os x
         if: matrix.config.os != 'windows-latest' && matrix.config.os != 'macOS-latest'
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
