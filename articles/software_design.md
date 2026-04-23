@@ -122,5 +122,5 @@ loaded via a namespace (and not attached):
 [19] tools_4.5.3         ragg_1.5.2          bslib_0.10.0       
 [22] evaluate_1.0.5      yaml_2.3.12         BiocManager_1.30.27
 [25] otel_0.2.0          jsonlite_2.0.0      rlang_1.2.0        
-[28] fs_2.0.1            htmlwidgets_1.6.4  
+[28] fs_2.1.0            htmlwidgets_1.6.4  
 ```

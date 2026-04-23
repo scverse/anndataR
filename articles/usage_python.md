@@ -184,18 +184,18 @@ sessionInfo()
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
 #>   [3] magrittr_2.0.5              spatstat.utils_3.2-2       
 #>   [5] farver_2.1.2                rmarkdown_2.31             
-#>   [7] fs_2.0.1                    ragg_1.5.2                 
+#>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
 #>  [11] memoise_2.0.1               spatstat.explore_3.8-0     
 #>  [13] htmltools_0.5.9             S4Arrays_1.10.1            
 #>  [15] curl_7.0.0                  SparseArray_1.10.10        
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
-#>  [19] parallelly_1.46.1           KernSmooth_2.23-26         
+#>  [19] parallelly_1.47.0           KernSmooth_2.23-26         
 #>  [21] bslib_0.10.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] httr2_1.2.2                 plyr_1.8.9                 
 #>  [27] plotly_4.12.0               zoo_1.8-15                 
-#>  [29] cachem_1.1.0                igraph_2.2.3               
+#>  [29] cachem_1.1.0                igraph_2.3.0               
 #>  [31] mime_0.13                   lifecycle_1.0.5            
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-4               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
@@ -210,13 +210,13 @@ sessionInfo()
 #>  [53] spatstat.sparse_3.1-0       polyclip_1.10-7            
 #>  [55] httr_1.4.8                  abind_1.4-8                
 #>  [57] compiler_4.5.3              withr_3.0.2                
-#>  [59] bit64_4.6.0-1               S7_0.2.1                   
+#>  [59] bit64_4.8.0                 S7_0.2.1-1                 
 #>  [61] DBI_1.3.0                   fastDummies_1.7.5          
 #>  [63] MASS_7.3-65                 rappdirs_0.3.4             
 #>  [65] DelayedArray_0.36.1         tools_4.5.3                
 #>  [67] lmtest_0.9-40               otel_0.2.0                 
 #>  [69] httpuv_1.6.17               future.apply_1.20.2        
-#>  [71] goftest_1.2-3               glue_1.8.0                 
+#>  [71] goftest_1.2-3               glue_1.8.1                 
 #>  [73] nlme_3.1-168                promises_1.5.0             
 #>  [75] grid_4.5.3                  Rtsne_0.17                 
 #>  [77] cluster_2.1.8.2             reshape2_1.4.5             
@@ -245,7 +245,7 @@ sessionInfo()
 #> [123] tibble_3.3.1                BiocManager_1.30.27        
 #> [125] cli_3.6.6                   uwot_0.2.4                 
 #> [127] xtable_1.8-8                systemfonts_1.3.2          
-#> [129] jquerylib_0.1.4             Rcpp_1.1.1                 
+#> [129] jquerylib_0.1.4             Rcpp_1.1.1-1               
 #> [131] spatstat.random_3.4-5       globals_0.19.1             
 #> [133] dbplyr_2.5.2                png_0.1-9                  
 #> [135] spatstat.univar_3.1-7       parallel_4.5.3             
@@ -261,21 +261,21 @@ sessionInfo()
 
 ``` r
 reticulate::py_config()
-#> python:         /opt/hostedtoolcache/Python/3.14.3/x64/bin/python3
-#> libpython:      /opt/hostedtoolcache/Python/3.14.3/x64/lib/libpython3.14.so
-#> pythonhome:     /opt/hostedtoolcache/Python/3.14.3/x64:/opt/hostedtoolcache/Python/3.14.3/x64
-#> version:        3.14.3 (main, Feb  4 2026, 13:50:59) [GCC 13.3.0]
-#> numpy:          /opt/hostedtoolcache/Python/3.14.3/x64/lib/python3.14/site-packages/numpy
+#> python:         /opt/hostedtoolcache/Python/3.14.4/x64/bin/python3
+#> libpython:      /opt/hostedtoolcache/Python/3.14.4/x64/lib/libpython3.14.so
+#> pythonhome:     /opt/hostedtoolcache/Python/3.14.4/x64:/opt/hostedtoolcache/Python/3.14.4/x64
+#> version:        3.14.4 (main, Apr  8 2026, 02:27:22) [GCC 13.3.0]
+#> numpy:          /opt/hostedtoolcache/Python/3.14.4/x64/lib/python3.14/site-packages/numpy
 #> numpy_version:  2.4.4
-#> scanpy:         /opt/hostedtoolcache/Python/3.14.3/x64/lib/python3.14/site-packages/scanpy
+#> scanpy:         /opt/hostedtoolcache/Python/3.14.4/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
 
 reticulate::py_list_packages()
 #>              package      version                  requirement
-#> 1            anndata      0.12.10             anndata==0.12.10
+#> 1            anndata      0.12.11             anndata==0.12.11
 #> 2   array-api-compat       1.14.0     array-api-compat==1.14.0
-#> 3            certifi    2026.2.25           certifi==2026.2.25
+#> 3            certifi    2026.4.22           certifi==2026.4.22
 #> 4          contourpy        1.3.3             contourpy==1.3.3
 #> 5             cycler       0.12.1               cycler==0.12.1
 #> 6             donfig  0.8.1.post1          donfig==0.8.1.post1
@@ -288,13 +288,13 @@ reticulate::py_list_packages()
 #> 13   legacy-api-wrap          1.5         legacy-api-wrap==1.5
 #> 14          llvmlite       0.47.0             llvmlite==0.47.0
 #> 15        matplotlib       3.10.8           matplotlib==3.10.8
-#> 16            mudata        0.3.4                mudata==0.3.4
+#> 16            mudata        0.3.6                mudata==0.3.6
 #> 17           natsort        8.4.0               natsort==8.4.0
 #> 18          networkx        3.6.1              networkx==3.6.1
 #> 19             numba       0.65.0                numba==0.65.0
 #> 20         numcodecs       0.16.5            numcodecs==0.16.5
 #> 21             numpy        2.4.4                 numpy==2.4.4
-#> 22         packaging         26.0              packaging==26.0
+#> 22         packaging         26.1              packaging==26.1
 #> 23            pandas        2.3.3                pandas==2.3.3
 #> 24             patsy        1.0.2                 patsy==1.0.2
 #> 25            pillow       12.2.0               pillow==12.2.0

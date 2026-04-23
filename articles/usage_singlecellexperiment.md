@@ -315,9 +315,9 @@ sessionInfo()
 #> [22] yaml_2.3.12         otel_0.2.0          S4Arrays_1.10.1    
 #> [25] tools_4.5.3         Rhdf5lib_1.32.0     reticulate_1.46.0  
 #> [28] vctrs_0.7.3         R6_2.6.1            png_0.1-9          
-#> [31] lifecycle_1.0.5     rhdf5_2.54.1        fs_2.0.1           
+#> [31] lifecycle_1.0.5     rhdf5_2.54.1        fs_2.1.0           
 #> [34] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
-#> [37] pkgdown_2.2.0       bslib_0.10.0        Rcpp_1.1.1         
+#> [37] pkgdown_2.2.0       bslib_0.10.0        Rcpp_1.1.1-1       
 #> [40] systemfonts_1.3.2   xfun_0.57           rhdf5filters_1.22.0
 #> [43] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
 #> [46] compiler_4.5.3
