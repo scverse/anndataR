@@ -157,7 +157,7 @@ print(rna_sce)
 
 ``` r
 sessionInfo()
-#> R Under development (unstable) (2026-04-22 r89950)
+#> R Under development (unstable) (2026-04-23 r89955)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -314,7 +314,7 @@ reticulate::py_list_packages()
 #> 39     threadpoolctl        3.6.0         threadpoolctl==3.6.0
 #> 40              tqdm       4.67.3                 tqdm==4.67.3
 #> 41 typing_extensions       4.15.0    typing_extensions==4.15.0
-#> 42            tzdata       2026.1               tzdata==2026.1
+#> 42            tzdata       2026.2               tzdata==2026.2
 #> 43        umap-learn       0.5.12           umap-learn==0.5.12
 #> 44              zarr        3.1.6                  zarr==3.1.6
 ```

@@ -50,7 +50,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/scverse/anndataR/blob/devel/inst/CITATION)
+[`inst/CITATION`](https://github.com/scverse/anndataR/blob/v1.1.3/inst/CITATION)
 
 Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I,
 Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025). “anndataR improves
