@@ -85,7 +85,8 @@ for details of `AnnData` structure and usage
 
 Other AnnData creators:
 [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md),
-[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md)
+[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md),
+[`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md)
 
 ## Examples
 

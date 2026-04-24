@@ -68,7 +68,7 @@ functionality of an <code>AnnData</code> object, see <a href="AnnData-usage.html
 <span>  varp_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  uns_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  assay_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  output_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"InMemory"</span>, <span class="st">"HDF5AnnData"</span>, <span class="st">"ReticulateAnnData"</span><span class="op">)</span>,</span>
+<span>  output_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"InMemory"</span>, <span class="st">"HDF5AnnData"</span>, <span class="st">"ZarrAnnData"</span>, <span class="st">"ReticulateAnnData"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -85,7 +85,7 @@ functionality of an <code>AnnData</code> object, see <a href="AnnData-usage.html
 <span>  varp_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  uns_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  assay_name <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  output_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"InMemory"</span>, <span class="st">"HDF5AnnData"</span>, <span class="st">"ReticulateAnnData"</span><span class="op">)</span>,</span>
+<span>  output_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"InMemory"</span>, <span class="st">"HDF5AnnData"</span>, <span class="st">"ZarrAnnData"</span>, <span class="st">"ReticulateAnnData"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -102,7 +102,7 @@ functionality of an <code>AnnData</code> object, see <a href="AnnData-usage.html
 <span>  varp_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  uns_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  assay_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  output_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"InMemory"</span>, <span class="st">"HDF5AnnData"</span>, <span class="st">"ReticulateAnnData"</span><span class="op">)</span>,</span>
+<span>  output_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"InMemory"</span>, <span class="st">"HDF5AnnData"</span>, <span class="st">"ZarrAnnData"</span>, <span class="st">"ReticulateAnnData"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -266,13 +266,15 @@ unexpected dimensions, it will be skipped with a warning.</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other AnnData creators:
 <code><a href="AnnData.html">AnnData()</a></code>,
-<code><a href="read_h5ad.html">read_h5ad()</a></code></p>
+<code><a href="read_h5ad.html">read_h5ad()</a></code>,
+<code><a href="read_zarr.html">read_zarr()</a></code></p>
 <p>Other object converters:
 <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code>,
 <code><a href="as_InMemoryAnnData.html">as_InMemoryAnnData()</a></code>,
 <code><a href="as_ReticulateAnnData.html">as_ReticulateAnnData()</a></code>,
 <code><a href="as_Seurat.html">as_Seurat()</a></code>,
 <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code>,
+<code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code>,
 <code><a href="reticulate-helpers.html">reticulate-helpers</a></code></p></div>
     </div>
 
@@ -282,9 +284,6 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: SeuratObject</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: sp</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ‘SeuratObject’ was built under R 4.5.0 but the current version is</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 4.5.3; it is recomended that you reinstall ‘SeuratObject’ as the ABI</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> for R may have changed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘SeuratObject’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
@@ -343,10 +342,10 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> This message will be shown once per session</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:37 UMAP embedding parameters a = 0.9922 b = 1.112</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:37 Read 200 rows and found 10 numeric columns</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:37 Using Annoy for neighbor search, n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:37 Building Annoy index with metric = cosine, n_trees = 50</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:25 UMAP embedding parameters a = 0.9922 b = 1.112</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:25 Read 200 rows and found 10 numeric columns</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:25 Using Annoy for neighbor search, n_neighbors = 30</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:25 Building Annoy index with metric = cosine, n_trees = 50</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0%   10   20   30   40   50   60   70   80   90   100%</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [----|----|----|----|----|----|----|----|----|----|</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
@@ -400,15 +399,15 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> |</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:37 Writing NN index file to temp file /tmp/RtmpW4pevd/file1cee31bfedca</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:37 Searching Annoy index using 1 thread, search_k = 3000</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:37 Annoy recall = 100%</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:38 Commencing smooth kNN distance calibration using 1 thread</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:25 Writing NN index file to temp file /tmp/RtmpOSqdDd/file95ff2abc2bdc</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:25 Searching Annoy index using 1 thread, search_k = 3000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:26 Annoy recall = 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:26 Commencing smooth kNN distance calibration using 1 thread</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  with target n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:39 Initializing from normalized Laplacian + noise (using RSpectra)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:39 Commencing optimization for 500 epochs, with 6146 positive edges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:39 Using rng type: pcg</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:19:40 Optimization finished</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:27 Initializing from normalized Laplacian + noise (using RSpectra)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:27 Commencing optimization for 500 epochs, with 6146 positive edges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:27 Using rng type: pcg</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 14:03:28 Optimization finished</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">as_AnnData</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Row names of `Loadings(seurat_obj, <span style="color: #0000BB;">"pca"</span>)` do not match the expected var names</span>

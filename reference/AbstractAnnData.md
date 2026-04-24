@@ -23,7 +23,8 @@ Other AnnData classes:
 [`AnnDataView`](https://anndataR.scverse.org/reference/AnnDataView.md),
 [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md),
 [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md),
-[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
+[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md),
+[`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
 
 ## Active bindings
 
@@ -120,7 +121,11 @@ Other AnnData classes:
 
 - [`AbstractAnnData$as_HDF5AnnData()`](#method-AbstractAnnData-as_HDF5AnnData)
 
+- [`AbstractAnnData$as_ZarrAnnData()`](#method-AbstractAnnData-as_ZarrAnnData)
+
 - [`AbstractAnnData$write_h5ad()`](#method-AbstractAnnData-write_h5ad)
+
+- [`AbstractAnnData$write_zarr()`](#method-AbstractAnnData-write_zarr)
 
 - [`AbstractAnnData$clone()`](#method-AbstractAnnData-clone)
 
@@ -491,6 +496,47 @@ object
 
 ------------------------------------------------------------------------
 
+### Method [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+
+Convert to a
+[`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
+
+See
+[`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+for more details on the conversion
+
+#### Usage
+
+    AbstractAnnData$as_ZarrAnnData(
+      file,
+      compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+      mode = c("w-", "r", "r+", "a", "w", "x")
+    )
+
+#### Arguments
+
+- `file`:
+
+  See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+
+- `compression`:
+
+  See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+
+- `mode`:
+
+  See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+
+#### Returns
+
+A [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
+object
+
+------------------------------------------------------------------------
+
 ### Method [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 Write the `AnnData` object to an H5AD file
@@ -529,6 +575,45 @@ for details
 
   See
   [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
+
+#### Returns
+
+`path` invisibly
+
+------------------------------------------------------------------------
+
+### Method [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+
+Write the `AnnData` object to a Zarr file
+
+See
+[`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+for details
+
+#### Usage
+
+    AbstractAnnData$write_zarr(
+      path,
+      compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+      mode = c("w-", "r", "r+", "a", "w", "x")
+    )
+
+#### Arguments
+
+- `path`:
+
+  See
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+
+- `compression`:
+
+  See
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+
+- `mode`:
+
+  See
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
 
 #### Returns
 

@@ -69,7 +69,8 @@ intended to be used as a base class for concrete implementations of
 <code><a href="AnnDataView.html">AnnDataView</a></code>,
 <code><a href="HDF5AnnData.html">HDF5AnnData</a></code>,
 <code><a href="InMemoryAnnData.html">InMemoryAnnData</a></code>,
-<code><a href="ReticulateAnnData.html">ReticulateAnnData</a></code></p></div>
+<code><a href="ReticulateAnnData.html">ReticulateAnnData</a></code>,
+<code><a href="ZarrAnnData.html">ZarrAnnData</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
@@ -142,7 +143,9 @@ intended to be used as a base class for concrete implementations of
 <li><p><a href="#method-AbstractAnnData-as_InMemoryAnnData"><code>AbstractAnnData$as_InMemoryAnnData()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-as_ReticulateAnnData"><code>AbstractAnnData$as_ReticulateAnnData()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-as_HDF5AnnData"><code>AbstractAnnData$as_HDF5AnnData()</code></a></p></li>
+<li><p><a href="#method-AbstractAnnData-as_ZarrAnnData"><code>AbstractAnnData$as_ZarrAnnData()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-write_h5ad"><code>AbstractAnnData$write_h5ad()</code></a></p></li>
+<li><p><a href="#method-AbstractAnnData-write_zarr"><code>AbstractAnnData$write_zarr()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-clone"><code>AbstractAnnData$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-AbstractAnnData-print"></a><div class="section">
 <h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
@@ -428,11 +431,44 @@ intended to be used as a base class for concrete implementations of
 <p>An <code><a href="HDF5AnnData.html">HDF5AnnData</a></code> object</p>
 </div>
 
+</div><p></p><hr><a id="method-AbstractAnnData-as_ZarrAnnData"></a><div class="section">
+<h3 id="method-as-zarranndata-">Method <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code><a class="anchor" aria-label="anchor" href="#method-as-zarranndata-"></a></h3>
+<p>Convert to a <code><a href="ZarrAnnData.html">ZarrAnnData</a></code></p>
+<p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code> for more details on the conversion</p><div class="section">
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">as_ZarrAnnData</span><span class="op">(</span></span>
+<span>  <span class="va">file</span>,</span>
+<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>file</code></dt>
+<dd><p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
+
+
+<dt><code>compression</code></dt>
+<dd><p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
+
+
+<dt><code>mode</code></dt>
+<dd><p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<p>A <code><a href="ZarrAnnData.html">ZarrAnnData</a></code> object</p>
+</div>
+
 </div><p></p><hr><a id="method-AbstractAnnData-write_h5ad"></a><div class="section">
 <h3 id="method-write-h-ad-">Method <code><a href="write_h5ad.html">write_h5ad()</a></code><a class="anchor" aria-label="anchor" href="#method-write-h-ad-"></a></h3>
 <p>Write the <code>AnnData</code> object to an H5AD file</p>
 <p>See <code><a href="write_h5ad.html">write_h5ad()</a></code> for details</p><div class="section">
-<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">write_h5ad</span><span class="op">(</span></span>
 <span>  <span class="va">path</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"lzf"</span><span class="op">)</span>,</span>
@@ -442,7 +478,7 @@ intended to be used as a base class for concrete implementations of
 </div>
 
 <div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
+<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>path</code></dt>
 <dd><p>See <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
 
@@ -462,19 +498,52 @@ intended to be used as a base class for concrete implementations of
 </dl><p></p></div>
 </div>
 <div class="section">
-<h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
+<h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
+<p><code>path</code> invisibly</p>
+</div>
+
+</div><p></p><hr><a id="method-AbstractAnnData-write_zarr"></a><div class="section">
+<h3 id="method-write-zarr-">Method <code><a href="write_zarr.html">write_zarr()</a></code><a class="anchor" aria-label="anchor" href="#method-write-zarr-"></a></h3>
+<p>Write the <code>AnnData</code> object to a Zarr file</p>
+<p>See <code><a href="write_zarr.html">write_zarr()</a></code> for details</p><div class="section">
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span></span>
+<span>  <span class="va">path</span>,</span>
+<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>path</code></dt>
+<dd><p>See <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
+
+
+<dt><code>compression</code></dt>
+<dd><p>See <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
+
+
+<dt><code>mode</code></dt>
+<dd><p>See <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
 <p><code>path</code> invisibly</p>
 </div>
 
 </div><p></p><hr><a id="method-AbstractAnnData-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
+<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

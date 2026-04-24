@@ -2,11 +2,12 @@
 
 ## Introduction
 
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* allows
-users to work with `.h5ad` files, interact with `AnnData` objects and
-convert to/from `SingleCellExperiment` or `Seurat` objects. This enables
-users to move data easily between the different programming languages
-and analysis ecosystems needed to perform single-cell data analysis.
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* allows
+users to work with `.h5ad` files and `.zarr` stores, interact with
+`AnnData` objects and convert to/from `SingleCellExperiment` or `Seurat`
+objects. This enables users to move data easily between the different
+programming languages and analysis ecosystems needed to perform
+single-cell data analysis.
 
 This package builds on our experience developing and using other
 interoperability packages and aims to provide a first-class R `AnnData`
@@ -15,23 +16,23 @@ experience.
 ### Relationship to other packages
 
 Existing packages provide similar functionality to
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* but there
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* but there
 are some important differences:
 
-- *[zellkonverter](https://bioconductor.org/packages/3.22/zellkonverter)*
+- *[zellkonverter](https://bioconductor.org/packages/3.23/zellkonverter)*
   provides conversion of `SingleCellExperiment` objects to/from
   `AnnData` and reading/writing of `.h5ad` files. This is facilitated
   via *[reticulate](https://CRAN.R-project.org/package=reticulate)*
-  using *[basilisk](https://bioconductor.org/packages/3.22/basilisk)* to
-  manage Python environments (native reading of `.h5ad` files is also
+  using *[basilisk](https://bioconductor.org/packages/3.23/basilisk)* to
+  manage Python environments (native reading of `.h5ad` is also
   possible). In contrast,
-  *[anndataR](https://bioconductor.org/packages/3.22/anndataR)* provides
-  a native R H5AD interface, removing the need for Python dependencies.
-  Conversion to/from `Seurat` objects is also supported.
+  *[anndataR](https://bioconductor.org/packages/3.23/anndataR)* provides
+  a native R H5AD and Zarr interface, removing the need for Python
+  dependencies. Conversion to/from `Seurat` objects is also supported.
 - *[anndata](https://CRAN.R-project.org/package=anndata)* (on CRAN) is a
   wrapper around the Python *anndata* package. It provides a nicer
   interface from within R but still requires a Python environment.
-  *[anndataR](https://bioconductor.org/packages/3.22/anndataR)* provides
+  *[anndataR](https://bioconductor.org/packages/3.23/anndataR)* provides
   a pure R implementation of the `AnnData` data structure with different
   back ends and conversion to more common R objects.
 - Other interoperability packages typically also require Python
@@ -41,11 +42,11 @@ are some important differences:
 There is significant overlap in functionality between these packages. We
 anticipate that over time they will become more specialised and work
 better together or be deprecated in favour of
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)*.
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)*.
 
 ## Installation
 
-Install *[anndataR](https://bioconductor.org/packages/3.22/anndataR)*
+Install *[anndataR](https://bioconductor.org/packages/3.23/anndataR)*
 using *[BiocManager](https://CRAN.R-project.org/package=BiocManager)*:
 
 ``` r
@@ -58,7 +59,7 @@ BiocManager::install("anndataR")
 ## Usage
 
 These sections briefly show how to use
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)*.
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)*.
 
 ### Read from disk
 
@@ -96,6 +97,29 @@ There is also a HDF5-backed `AnnData` object:
 adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
 
+Similarly, these functionalities are provided for `.zarr` stores too.
+
+``` r
+zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_path, exdir = td)
+zarr_path <- file.path(td, "example_v2.zarr")
+```
+
+``` r
+# in-memory
+adata <- read_zarr(zarr_path)
+
+# as SingleCellExperiment
+sce <- read_zarr(zarr_path, as = "SingleCellExperiment")
+
+# as Seurat
+obj <- read_zarr(zarr_path, as = "Seurat")
+
+# as Zarr-backed
+adata <- read_zarr(zarr_path, as = "ZarrAnnData")
+```
+
 See for interacting with a Python `AnnData` via
 *[reticulate](https://CRAN.R-project.org/package=reticulate)*.
 
@@ -105,13 +129,13 @@ View structure:
 
 ``` r
 adata
-#> HDF5AnnData object with n_obs × n_vars = 50 × 100
+#> ZarrAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'Int', 'IntNA', 'IntScalar', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'hvg', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     varm: 'PCs'
-#>     layers: 'counts', 'csc_counts', 'dense_X', 'dense_counts'
+#>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X'
 #>     obsp: 'connectivities', 'distances'
 #>     varp: 'test_varp'
 ```
@@ -157,8 +181,8 @@ sce <- adata$as_SingleCellExperiment()
 sce
 #> class: SingleCellExperiment 
 #> dim: 100 50 
-#> metadata(18): Bool BoolNA ... rank_genes_groups umap
-#> assays(5): counts csc_counts dense_X dense_counts X
+#> metadata(18): Bool BoolNA ... StringScalar umap
+#> assays(5): counts csc_counts dense_counts dense_X X
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
 #> rowData names(11): String n_cells_by_counts ... dispersions
 #>   dispersions_norm
@@ -178,7 +202,7 @@ obj
 #> An object of class Seurat 
 #> 100 features across 50 samples within 1 assay 
 #> Active assay: RNA (100 features, 0 variable features)
-#>  5 layers present: counts, csc_counts, dense_X, dense_counts, X
+#>  5 layers present: counts, csc_counts, dense_counts, dense_X, X
 #>  2 dimensional reductions calculated: X_pca, X_umap
 ```
 
@@ -191,10 +215,10 @@ adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'Int', 'IntNA', 'IntScalar', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'hvg', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     varm: 'X_pca'
-#>     layers: 'counts', 'csc_counts', 'dense_X', 'dense_counts', 'X'
+#>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'
 #>     obsp: 'connectivities', 'distances'
 #>     varp: 'test_varp'
 ```
@@ -208,9 +232,9 @@ adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'orig.ident', 'nCount_RNA', 'nFeature_RNA', 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'Int', 'IntNA', 'IntScalar', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'hvg', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
-#>     layers: 'counts', 'csc_counts', 'dense_X', 'dense_counts', 'X'
+#>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'
 #>     obsp: 'connectivities', 'distances'
 ```
 
@@ -247,6 +271,15 @@ Write a `SingleCellExperiment` object to disk:
 ``` r
 tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(sce, tmpfile)
+#> Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported
+#> matrix format in obsp/connectivities ℹ Supported matrices inherit from
+#> <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element 'obsp/distances' of type 'dgTMatrix': Unsupported
+#> matrix format in obsp/distances ℹ Supported matrices inherit from
+#> <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element 'varp/test_varp' of type 'dgTMatrix': Unsupported
+#> matrix format in varp/test_varp ℹ Supported matrices inherit from
+#> <RsparseMatrix> or <CsparseMatrix>
 ```
 
 Write a `Seurat` object to disk:
@@ -266,9 +299,42 @@ write_h5ad(obj, tmpfile)
 #> ℹ NOTE: obs_names and var_names are stored separately
 ```
 
+Similarly, we can write `AnnData` and other objects to `.zarr` stores
+too.
+
+``` r
+tmpfile <- tempfile(fileext = ".zarr")
+adata$write_zarr(tmpfile) # Alternatively, write_zarr(adata, tmpfile)
+
+tmpfile <- tempfile(fileext = ".zarr")
+write_zarr(sce, tmpfile)
+#> Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported
+#> matrix format in obsp/connectivities ℹ Supported matrices inherit from
+#> <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element 'obsp/distances' of type 'dgTMatrix': Unsupported
+#> matrix format in obsp/distances ℹ Supported matrices inherit from
+#> <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element 'varp/test_varp' of type 'dgTMatrix': Unsupported
+#> matrix format in varp/test_varp ℹ Supported matrices inherit from
+#> <RsparseMatrix> or <CsparseMatrix>
+
+tmpfile <- tempfile(fileext = ".zarr")
+write_zarr(obj, tmpfile)
+#> Warning: Matrix column names cannot be written to a <ZarrAnnData> object, they will be
+#> lost
+#> ℹ To write column names for obsm[['X_pca']], store it as <data.frame> instead
+#>   of a double matrix
+#> ℹ NOTE: obs_names and var_names are stored separately
+#> Warning: Matrix column names cannot be written to a <ZarrAnnData> object, they will be
+#> lost
+#> ℹ To write column names for obsm[['X_umap']], store it as <data.frame> instead
+#>   of a double matrix
+#> ℹ NOTE: obs_names and var_names are stored separately
+```
+
 ### Subsetting `AnnData` objects
 
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* provides
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* provides
 standard R subsetting methods that work with familiar bracket notation.
 These methods return `AnnDataView` objects that provide lazy evaluation
 for efficient memory usage.
@@ -389,7 +455,7 @@ concrete
 
 ## Citing *anndataR*
 
-If you use *[anndataR](https://bioconductor.org/packages/3.22/anndataR)*
+If you use *[anndataR](https://bioconductor.org/packages/3.23/anndataR)*
 in your work, please cite [*“anndataR improves interoperability between
 R and Python in single-cell
 transcriptomics”*](https://doi.org/10.1101/2025.08.18.669052):
@@ -421,7 +487,7 @@ citation("anndataR")
 
 ``` r
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R Under development (unstable) (2026-04-22 r89950)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -443,56 +509,59 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.1.2              SingleCellExperiment_1.32.0
-#>  [3] SummarizedExperiment_1.40.0 Biobase_2.70.0             
-#>  [5] GenomicRanges_1.62.1        Seqinfo_1.0.0              
-#>  [7] IRanges_2.44.0              S4Vectors_0.48.1           
-#>  [9] BiocGenerics_0.56.0         generics_0.1.4             
-#> [11] MatrixGenerics_1.22.0       matrixStats_1.5.0          
+#>  [1] anndataR_1.1.2              SingleCellExperiment_1.33.2
+#>  [3] SummarizedExperiment_1.41.1 Biobase_2.71.0             
+#>  [5] GenomicRanges_1.63.2        Seqinfo_1.1.0              
+#>  [7] IRanges_2.45.0              S4Vectors_0.49.2           
+#>  [9] BiocGenerics_0.57.1         generics_0.1.4             
+#> [11] MatrixGenerics_1.23.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-1                   
-#> [15] BiocStyle_2.38.0           
+#> [15] BiocStyle_2.39.0           
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
 #>   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
-#>  [13] S4Arrays_1.10.1        Rhdf5lib_1.32.0        SparseArray_1.10.10   
-#>  [16] rhdf5_2.54.1           sass_0.4.10            sctransform_0.4.3     
-#>  [19] parallelly_1.47.0      KernSmooth_2.23-26     bslib_0.10.0          
-#>  [22] htmlwidgets_1.6.4      desc_1.4.3             ica_1.0-3             
-#>  [25] plyr_1.8.9             plotly_4.12.0          zoo_1.8-15            
-#>  [28] cachem_1.1.0           igraph_2.3.0           mime_0.13             
-#>  [31] lifecycle_1.0.5        pkgconfig_2.0.3        Matrix_1.7-4          
-#>  [34] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-6    
-#>  [37] future_1.70.0          shiny_1.13.0           digest_0.6.39         
-#>  [40] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.0          
-#>  [43] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [46] progressr_0.19.0       spatstat.sparse_3.1-0  polyclip_1.10-7       
-#>  [49] httr_1.4.8             abind_1.4-8            compiler_4.5.3        
-#>  [52] S7_0.2.2               fastDummies_1.7.6      MASS_7.3-65           
-#>  [55] DelayedArray_0.36.1    tools_4.5.3            lmtest_0.9-40         
-#>  [58] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   
-#>  [61] goftest_1.2-3          glue_1.8.1             nlme_3.1-168          
-#>  [64] rhdf5filters_1.22.0    promises_1.5.0         grid_4.5.3            
-#>  [67] Rtsne_0.17             cluster_2.1.8.2        reshape2_1.4.5        
-#>  [70] gtable_0.3.6           spatstat.data_3.1-9    tidyr_1.3.2           
-#>  [73] data.table_1.18.2.1    XVector_0.50.0         spatstat.geom_3.7-3   
-#>  [76] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            
-#>  [79] pillar_1.11.1          stringr_1.6.0          spam_2.11-3           
-#>  [82] RcppHNSW_0.6.0         later_1.4.8            splines_4.5.3         
-#>  [85] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          
-#>  [88] survival_3.8-6         tidyselect_1.2.1       miniUI_0.1.2          
-#>  [91] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         
-#>  [94] bookdown_0.46          scattermore_1.2        xfun_0.57             
-#>  [97] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           
-#> [100] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
-#> [103] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            
-#> [106] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     
-#> [109] jquerylib_0.1.4        Rcpp_1.1.1-1           spatstat.random_3.4-5 
-#> [112] globals_0.19.1         png_0.1-9              spatstat.univar_3.1-7 
-#> [115] parallel_4.5.3         pkgdown_2.2.0          ggplot2_4.0.3         
-#> [118] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     
-#> [121] scales_1.4.0           ggridges_0.5.7         purrr_1.2.2           
-#> [124] rlang_1.2.0            cowplot_1.2.0
+#>  [13] S4Arrays_1.11.1        curl_7.1.0             Rhdf5lib_1.99.6       
+#>  [16] SparseArray_1.11.13    rhdf5_2.55.16          sass_0.4.10           
+#>  [19] sctransform_0.4.3      parallelly_1.47.0      KernSmooth_2.23-26    
+#>  [22] bslib_0.10.0           htmlwidgets_1.6.4      desc_1.4.3            
+#>  [25] ica_1.0-3              httr2_1.2.2            plyr_1.8.9            
+#>  [28] plotly_4.12.0          zoo_1.8-15             cachem_1.1.0          
+#>  [31] igraph_2.3.0           mime_0.13              lifecycle_1.0.5       
+#>  [34] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
+#>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.70.0         
+#>  [40] shiny_1.13.0           digest_0.6.39          paws.storage_0.9.0    
+#>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.0          
+#>  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
+#>  [49] Rarr_1.99.44           progressr_0.19.0       spatstat.sparse_3.1-0 
+#>  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           
+#>  [55] compiler_4.7.0         S7_0.2.2               fastDummies_1.7.6     
+#>  [58] R.utils_2.13.0         MASS_7.3-65            rappdirs_0.3.4        
+#>  [61] DelayedArray_0.37.1    tools_4.7.0            lmtest_0.9-40         
+#>  [64] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   
+#>  [67] goftest_1.2-3          R.oo_1.27.1            glue_1.8.1            
+#>  [70] nlme_3.1-169           rhdf5filters_1.23.3    promises_1.5.0        
+#>  [73] grid_4.7.0             Rtsne_0.17             cluster_2.1.8.2       
+#>  [76] reshape2_1.4.5         gtable_0.3.6           spatstat.data_3.1-9   
+#>  [79] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.2.1   
+#>  [82] XVector_0.51.0         spatstat.geom_3.7-3    RcppAnnoy_0.0.23      
+#>  [85] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         
+#>  [88] stringr_1.6.0          spam_2.11-3            RcppHNSW_0.6.0        
+#>  [91] later_1.4.8            splines_4.7.0          dplyr_1.2.1           
+#>  [94] lattice_0.22-9         deldir_2.0-4           survival_3.8-6        
+#>  [97] paws.common_0.8.9      tidyselect_1.2.1       miniUI_0.1.2          
+#> [100] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         
+#> [103] bookdown_0.46          scattermore_1.2        xfun_0.57             
+#> [106] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           
+#> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
+#> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            
+#> [115] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     
+#> [118] jquerylib_0.1.4        Rcpp_1.1.1-1.1         spatstat.random_3.4-5 
+#> [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.1-7 
+#> [124] parallel_4.7.0         pkgdown_2.2.0          ggplot2_4.0.3         
+#> [127] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     
+#> [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
+#> [133] purrr_1.2.2            rlang_1.2.0            cowplot_1.2.0
 ```

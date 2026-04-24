@@ -22,7 +22,8 @@ Other AnnData classes:
 [`AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md),
 [`AnnDataView`](https://anndataR.scverse.org/reference/AnnDataView.md),
 [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md),
-[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
+[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md),
+[`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
 
 ## Super class
 
@@ -101,6 +102,7 @@ Inherited methods
 - [`anndataR::AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
 - [`anndataR::AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
 - [`anndataR::AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
+- [`anndataR::AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
 - [`anndataR::AbstractAnnData$layers_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-layers_keys)
 - [`anndataR::AbstractAnnData$n_obs()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-n_obs)
 - [`anndataR::AbstractAnnData$n_vars()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-n_vars)
@@ -114,6 +116,7 @@ Inherited methods
 - [`anndataR::AbstractAnnData$varm_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varm_keys)
 - [`anndataR::AbstractAnnData$varp_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varp_keys)
 - [`anndataR::AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
+- [`anndataR::AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
 
 ------------------------------------------------------------------------
 

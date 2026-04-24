@@ -10,6 +10,7 @@ There are different back ends for AnnData objects that inherit from the
 abstract AbstractAnnData class and store and access data in different ways:
 InMemoryAnnData stores data in memory
 HDF5AnnData provides an interface to a H5AD file
+ZarrAnnData provides an interface to a Zarr store
 ReticulateAnnData wraps a Python AnnData object via reticulate
 
 
@@ -42,6 +43,7 @@ There are different back ends for AnnData objects that inherit from the
 abstract AbstractAnnData class and store and access data in different ways:
 InMemoryAnnData stores data in memory
 HDF5AnnData provides an interface to a H5AD file
+ZarrAnnData provides an interface to a Zarr store
 ReticulateAnnData wraps a Python AnnData object via reticulate
 
 
@@ -119,6 +121,7 @@ annotations in <code>uns</code>.</p><div class="section">
 <p>There are different back ends for <code>AnnData</code> objects that inherit from the
 abstract <a href="AbstractAnnData.html">AbstractAnnData</a> class and store and access data in different ways:</p><ul><li><p><a href="InMemoryAnnData.html">InMemoryAnnData</a> stores data in memory</p></li>
 <li><p><a href="HDF5AnnData.html">HDF5AnnData</a> provides an interface to a H5AD file</p></li>
+<li><p><a href="ZarrAnnData.html">ZarrAnnData</a> provides an interface to a Zarr store</p></li>
 <li><p><a href="ReticulateAnnData.html">ReticulateAnnData</a> wraps a Python <code>AnnData</code> object via <span class="pkg">reticulate</span></p></li>
 </ul><p>See the class documentation for details.</p>
 </div>
@@ -283,6 +286,9 @@ elements with number of rows and columns equal to <code>n_vars</code>.</p></dd>
 <dt><code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></dt>
 <dd><p>Convert to <code><a href="HDF5AnnData.html">HDF5AnnData</a></code>, see <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></p></dd>
 
+<dt><code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></dt>
+<dd><p>Convert to <code><a href="ZarrAnnData.html">ZarrAnnData</a></code>, see <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
+
 <dt><code><a href="as_ReticulateAnnData.html">as_ReticulateAnnData()</a></code></dt>
 <dd><p>Convert to <code><a href="ReticulateAnnData.html">ReticulateAnnData</a></code>, see <code><a href="as_ReticulateAnnData.html">as_ReticulateAnnData()</a></code></p></dd>
 
@@ -297,6 +303,12 @@ elements with number of rows and columns equal to <code>n_vars</code>.</p></dd>
 <code><a href="write_h5ad.html">write_h5ad()</a></code>
 </dt>
 <dd><p>Write the <code>AnnData</code> object to an HDF5 file, see <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
+
+
+</dl><dl><dt>
+<code><a href="write_zarr.html">write_zarr()</a></code>
+</dt>
+<dd><p>Write the <code>AnnData</code> object to a Zarr store, see <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
 
 
 </dl></div>
@@ -323,6 +335,9 @@ elements with number of rows and columns equal to <code>n_vars</code>.</p></dd>
 <dt><code><a href="read_h5ad.html">read_h5ad()</a></code></dt>
 <dd><p>Read an <code>AnnData</code> from a H5AD file</p></dd>
 
+<dt><code><a href="read_zarr.html">read_zarr()</a></code></dt>
+<dd><p>Read an <code>AnnData</code> from a Zarr store</p></dd>
+
 <dt><code><a href="as_AnnData.html">as_AnnData()</a></code></dt>
 <dd><p>Convert other objects to an <code>AnnData</code> object</p></dd>
 
@@ -336,6 +351,7 @@ elements with number of rows and columns equal to <code>n_vars</code>.</p></dd>
 inherit from</p>
 <p><a href="InMemoryAnnData.html">InMemoryAnnData</a> for the in-memory implementation of <code>AnnData</code></p>
 <p><a href="HDF5AnnData.html">HDF5AnnData</a> for the HDF5-backed implementation of <code>AnnData</code></p>
+<p><a href="ZarrAnnData.html">ZarrAnnData</a> for the Zarr-backed implementation of <code>AnnData</code></p>
 <p><a href="ReticulateAnnData.html">ReticulateAnnData</a> for the reticulate-based implementation that wraps Python AnnData objects</p></div>
     </div>
 

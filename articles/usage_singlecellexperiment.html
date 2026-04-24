@@ -76,20 +76,20 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>This vignette demonstrates how to read and write
-<code>SingleCellExperiment</code> objects using the <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>
+<code>SingleCellExperiment</code> objects using the <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
 package, leveraging the interoperability between
 <code>SingleCellExperiment</code> and the <code>AnnData</code>
 format.</p>
 <p><code>SingleCellExperiment</code> is a widely used class for storing
-single-cell data in R, especially within the <a href="https://bioconductor.org/" class="external-link">Bioconductor</a> ecosystem. <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>
+single-cell data in R, especially within the <a href="https://bioconductor.org/" class="external-link">Bioconductor</a> ecosystem. <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
 enables conversion between <code>SingleCellExperiment</code> objects and
 <code>AnnData</code> objects, allowing you to leverage the strengths of
 both the <a href="https://scverse.org/" class="external-link">scverse</a> and <a href="https://bioconductor.org/" class="external-link">Bioconductor</a> ecosystems.</p>
 <div class="section level3">
 <h3 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
 </h3>
-<p>This vignette requires <em><a href="https://bioconductor.org/packages/3.22/SingleCellExperiment" class="external-link">SingleCellExperiment</a></em>
-in addition to <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>.
+<p>This vignette requires <em><a href="https://bioconductor.org/packages/3.23/SingleCellExperiment" class="external-link">SingleCellExperiment</a></em>
+in addition to <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>.
 You can install them using the following code:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -99,8 +99,8 @@ You can install them using the following code:</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="reading-h5ad-files-to-a-singlecellexperiment-object">Reading H5AD files to a <code>SingleCellExperiment</code>
-object<a class="anchor" aria-label="anchor" href="#reading-h5ad-files-to-a-singlecellexperiment-object"></a>
+<h2 id="reading-h5ad-files-and-zarr-stores-to-a-singlecellexperiment-object">Reading H5AD files and Zarr stores to a
+<code>SingleCellExperiment</code> object<a class="anchor" aria-label="anchor" href="#reading-h5ad-files-and-zarr-stores-to-a-singlecellexperiment-object"></a>
 </h2>
 <p>Using an example <code>.h5ad</code> file included in the package, we
 will demonstrate how to read an <code>.h5ad</code> file and convert it
@@ -215,6 +215,46 @@ to a <code>SingleCellExperiment</code> object.</p>
 <span><span class="co">#&gt; reducedDimNames(2): X_pca X_umap</span></span>
 <span><span class="co">#&gt; mainExpName: NULL</span></span>
 <span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
+<p>Similarly, we can read from a Zarr store which we also demonstrate
+with an example <code>.zarr</code> store:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3</span></span>
+<span><span class="va">zarr_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_v2.zarr.zip"</span>, package <span class="op">=</span> <span class="st">"anndataR"</span><span class="op">)</span></span>
+<span><span class="va">td</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span>check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">zarr_path</span>, exdir <span class="op">=</span> <span class="va">td</span><span class="op">)</span></span>
+<span><span class="va">zarr_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">td</span>, <span class="st">"example_v2.zarr"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sce_zarr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_zarr.html">read_zarr</a></span><span class="op">(</span><span class="va">zarr_path</span>, as <span class="op">=</span> <span class="st">"SingleCellExperiment"</span><span class="op">)</span></span>
+<span><span class="va">sce_zarr</span></span>
+<span><span class="co">#&gt; class: SingleCellExperiment </span></span>
+<span><span class="co">#&gt; dim: 100 50 </span></span>
+<span><span class="co">#&gt; metadata(18): Bool BoolNA ... StringScalar umap</span></span>
+<span><span class="co">#&gt; assays(5): counts csc_counts dense_counts dense_X X</span></span>
+<span><span class="co">#&gt; rownames(100): Gene000 Gene001 ... Gene098 Gene099</span></span>
+<span><span class="co">#&gt; rowData names(11): String n_cells_by_counts ... dispersions</span></span>
+<span><span class="co">#&gt;   dispersions_norm</span></span>
+<span><span class="co">#&gt; colnames(50): Cell000 Cell001 ... Cell048 Cell049</span></span>
+<span><span class="co">#&gt; colData names(11): Float FloatNA ... log1p_total_counts leiden</span></span>
+<span><span class="co">#&gt; reducedDimNames(2): X_pca X_umap</span></span>
+<span><span class="co">#&gt; mainExpName: NULL</span></span>
+<span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_zarr.html">read_zarr</a></span><span class="op">(</span><span class="va">zarr_path</span><span class="op">)</span></span>
+<span><span class="va">sce_zarr</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">$</span><span class="fu">as_SingleCellExperiment</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">sce_zarr</span></span>
+<span><span class="co">#&gt; class: SingleCellExperiment </span></span>
+<span><span class="co">#&gt; dim: 100 50 </span></span>
+<span><span class="co">#&gt; metadata(18): Bool BoolNA ... StringScalar umap</span></span>
+<span><span class="co">#&gt; assays(5): counts csc_counts dense_counts dense_X X</span></span>
+<span><span class="co">#&gt; rownames(100): Gene000 Gene001 ... Gene098 Gene099</span></span>
+<span><span class="co">#&gt; rowData names(11): String n_cells_by_counts ... dispersions</span></span>
+<span><span class="co">#&gt;   dispersions_norm</span></span>
+<span><span class="co">#&gt; colnames(50): Cell000 Cell001 ... Cell048 Cell049</span></span>
+<span><span class="co">#&gt; colData names(11): Float FloatNA ... log1p_total_counts leiden</span></span>
+<span><span class="co">#&gt; reducedDimNames(2): X_pca X_umap</span></span>
+<span><span class="co">#&gt; mainExpName: NULL</span></span>
+<span><span class="co">#&gt; altExpNames(0):</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="mapping-between-anndata-and-singlecellexperiment">Mapping between <code>AnnData</code> and
@@ -222,7 +262,7 @@ to a <code>SingleCellExperiment</code> object.</p>
 </h2>
 <p>Figure @ref(fig:mapping) shows the structures of the
 <code>AnnData</code> and <code>SingleCellExperiment</code> objects and
-how <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>
+how <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
 maps between them. It is important to note that matrices in the two
 objects are transposed relative to each other.</p>
 <div class="figure">
@@ -257,7 +297,7 @@ of the slot in the <code>AnnData</code> object.</li>
 </ul>
 <p>See <code><a href="../reference/as_SingleCellExperiment.html">?as_SingleCellExperiment</a></code> for more details on how to
 customize the conversion process. For instance:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">adata</span><span class="op">$</span><span class="fu">as_SingleCellExperiment</span><span class="op">(</span></span>
 <span>  x_mapping <span class="op">=</span> <span class="st">"counts"</span>,</span>
 <span>  assays_mapping <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"csc_counts"</span><span class="op">)</span>,</span>
@@ -286,25 +326,28 @@ customize the conversion process. For instance:</p>
 <code><a href="../reference/read_h5ad.html">read_h5ad()</a></code>.</p>
 </div>
 <div class="section level2">
-<h2 id="writing-a-singlecellexperiment-object-to-h5ad-file">Writing a <code>SingleCellExperiment</code> object to H5AD file<a class="anchor" aria-label="anchor" href="#writing-a-singlecellexperiment-object-to-h5ad-file"></a>
+<h2 id="writing-a-singlecellexperiment-object-to-a-h5ad-file-or-zarr-store">Writing a <code>SingleCellExperiment</code> object to a H5AD file or
+Zarr store<a class="anchor" aria-label="anchor" href="#writing-a-singlecellexperiment-object-to-a-h5ad-file-or-zarr-store"></a>
 </h2>
 <p>The reverse conversion is also possible, allowing you to convert a
 <code>SingleCellExperiment</code> object back to an <code>AnnData</code>
 object, or to just write out the <code>SingleCellExperiment</code>
-object as an <code>.h5ad</code> file.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_h5ad.html">write_h5ad</a></span><span class="op">(</span><span class="va">sce_obj</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+object as an <code>.h5ad</code> file or <code>.zarr</code> store.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_h5ad.html">write_h5ad</a></span><span class="op">(</span><span class="va">sce_obj</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/write_zarr.html">write_zarr</a></span><span class="op">(</span><span class="va">sce_obj</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This is equivalent to converting the
 <code>SingleCellExperiment</code> object to an <code>AnnData</code>
 object and then writing it out:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_AnnData.html">as_AnnData</a></span><span class="op">(</span><span class="va">sce_obj</span><span class="op">)</span></span>
-<span><span class="va">adata</span><span class="op">$</span><span class="fu">write_h5ad</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">adata</span><span class="op">$</span><span class="fu">write_h5ad</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">adata</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can again customize the conversion process by providing specific
 mappings for each slot in the <code>AnnData</code> object. For more
 details, see <code><a href="../reference/as_AnnData.html">?as_AnnData</a></code>.</p>
 <p>Here’s an example:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/as_AnnData.html">as_AnnData</a></span><span class="op">(</span></span>
 <span>  <span class="va">sce_obj</span>,</span>
 <span>  x_mapping <span class="op">=</span> <span class="st">"counts"</span>,</span>
@@ -324,14 +367,14 @@ details, see <code><a href="../reference/as_AnnData.html">?as_AnnData</a></code>
 <span><span class="co">#&gt;     obsp: 'connectivities', 'distances'</span></span>
 <span><span class="co">#&gt;     varp: 'test_varp'</span></span></code></pre></div>
 <p>The mapping arguments can also be passed directly to
-<code><a href="../reference/write_h5ad.html">write_h5ad()</a></code>.</p>
+<code><a href="../reference/write_h5ad.html">write_h5ad()</a></code> or <code><a href="../reference/write_zarr.html">write_zarr()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.5.3 (2026-03-11)</span></span>
+<span><span class="co">#&gt; R Under development (unstable) (2026-04-22 r89950)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -353,31 +396,34 @@ details, see <code><a href="../reference/as_AnnData.html">?as_AnnData</a></code>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] SingleCellExperiment_1.32.0 SummarizedExperiment_1.40.0</span></span>
-<span><span class="co">#&gt;  [3] Biobase_2.70.0              GenomicRanges_1.62.1       </span></span>
-<span><span class="co">#&gt;  [5] Seqinfo_1.0.0               IRanges_2.44.0             </span></span>
-<span><span class="co">#&gt;  [7] S4Vectors_0.48.1            BiocGenerics_0.56.0        </span></span>
-<span><span class="co">#&gt;  [9] generics_0.1.4              MatrixGenerics_1.22.0      </span></span>
+<span><span class="co">#&gt;  [1] SingleCellExperiment_1.33.2 SummarizedExperiment_1.41.1</span></span>
+<span><span class="co">#&gt;  [3] Biobase_2.71.0              GenomicRanges_1.63.2       </span></span>
+<span><span class="co">#&gt;  [5] Seqinfo_1.1.0               IRanges_2.45.0             </span></span>
+<span><span class="co">#&gt;  [7] S4Vectors_0.49.2            BiocGenerics_0.57.1        </span></span>
+<span><span class="co">#&gt;  [9] generics_0.1.4              MatrixGenerics_1.23.0      </span></span>
 <span><span class="co">#&gt; [11] matrixStats_1.5.0           anndataR_1.1.2             </span></span>
-<span><span class="co">#&gt; [13] BiocStyle_2.38.0           </span></span>
+<span><span class="co">#&gt; [13] BiocStyle_2.39.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] sass_0.4.10         SparseArray_1.10.10 lattice_0.22-9     </span></span>
-<span><span class="co">#&gt;  [4] digest_0.6.39       magrittr_2.0.5      evaluate_1.0.5     </span></span>
-<span><span class="co">#&gt;  [7] grid_4.5.3          bookdown_0.46       fastmap_1.2.0      </span></span>
-<span><span class="co">#&gt; [10] jsonlite_2.0.0      Matrix_1.7-4        BiocManager_1.30.27</span></span>
-<span><span class="co">#&gt; [13] purrr_1.2.2         textshaping_1.0.5   jquerylib_0.1.4    </span></span>
-<span><span class="co">#&gt; [16] abind_1.4-8         cli_3.6.6           rlang_1.2.0        </span></span>
-<span><span class="co">#&gt; [19] XVector_0.50.0      cachem_1.1.0        DelayedArray_0.36.1</span></span>
-<span><span class="co">#&gt; [22] yaml_2.3.12         otel_0.2.0          S4Arrays_1.10.1    </span></span>
-<span><span class="co">#&gt; [25] tools_4.5.3         Rhdf5lib_1.32.0     reticulate_1.46.0  </span></span>
-<span><span class="co">#&gt; [28] vctrs_0.7.3         R6_2.6.1            png_0.1-9          </span></span>
-<span><span class="co">#&gt; [31] lifecycle_1.0.5     rhdf5_2.54.1        fs_2.1.0           </span></span>
-<span><span class="co">#&gt; [34] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         </span></span>
-<span><span class="co">#&gt; [37] pkgdown_2.2.0       bslib_0.10.0        Rcpp_1.1.1-1       </span></span>
-<span><span class="co">#&gt; [40] systemfonts_1.3.2   xfun_0.57           rhdf5filters_1.22.0</span></span>
-<span><span class="co">#&gt; [43] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     </span></span>
-<span><span class="co">#&gt; [46] compiler_4.5.3</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] rappdirs_0.3.4      sass_0.4.10         SparseArray_1.11.13</span></span>
+<span><span class="co">#&gt;  [4] lattice_0.22-9      paws.common_0.8.9   digest_0.6.39      </span></span>
+<span><span class="co">#&gt;  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.7.0         </span></span>
+<span><span class="co">#&gt; [10] bookdown_0.46       fastmap_1.2.0       R.oo_1.27.1        </span></span>
+<span><span class="co">#&gt; [13] jsonlite_2.0.0      Matrix_1.7-5        R.utils_2.13.0     </span></span>
+<span><span class="co">#&gt; [16] Rarr_1.99.44        BiocManager_1.30.27 purrr_1.2.2        </span></span>
+<span><span class="co">#&gt; [19] httr2_1.2.2         textshaping_1.0.5   jquerylib_0.1.4    </span></span>
+<span><span class="co">#&gt; [22] abind_1.4-8         cli_3.6.6           crayon_1.5.3       </span></span>
+<span><span class="co">#&gt; [25] rlang_1.2.0         XVector_0.51.0      R.methodsS3_1.8.2  </span></span>
+<span><span class="co">#&gt; [28] cachem_1.1.0        DelayedArray_0.37.1 yaml_2.3.12        </span></span>
+<span><span class="co">#&gt; [31] otel_0.2.0          S4Arrays_1.11.1     tools_4.7.0        </span></span>
+<span><span class="co">#&gt; [34] Rhdf5lib_1.99.6     curl_7.1.0          reticulate_1.46.0  </span></span>
+<span><span class="co">#&gt; [37] vctrs_0.7.3         R6_2.6.1            png_0.1-9          </span></span>
+<span><span class="co">#&gt; [40] lifecycle_1.0.5     rhdf5_2.55.16       fs_2.1.0           </span></span>
+<span><span class="co">#&gt; [43] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         </span></span>
+<span><span class="co">#&gt; [46] pkgdown_2.2.0       bslib_0.10.0        glue_1.8.1         </span></span>
+<span><span class="co">#&gt; [49] Rcpp_1.1.1-1.1      systemfonts_1.3.2   xfun_0.57          </span></span>
+<span><span class="co">#&gt; [52] paws.storage_0.9.0  rhdf5filters_1.23.3 knitr_1.51         </span></span>
+<span><span class="co">#&gt; [55] htmltools_0.5.9     rmarkdown_2.31      compiler_4.7.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

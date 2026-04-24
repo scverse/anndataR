@@ -2,7 +2,7 @@
 
 ## Introduction
 
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* works with
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* works with
 Python `AnnData` objects through
 *[reticulate](https://CRAN.R-project.org/package=reticulate)*. You can
 load Python objects, apply Python functions to them, and convert them to
@@ -157,7 +157,7 @@ print(rna_sce)
 
 ``` r
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R Under development (unstable) (2026-04-22 r89950)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -178,7 +178,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] reticulate_1.46.0 anndataR_1.1.2    BiocStyle_2.38.0 
+#> [1] reticulate_1.46.0 anndataR_1.1.2    BiocStyle_2.39.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
@@ -187,8 +187,8 @@ sessionInfo()
 #>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
 #>  [11] memoise_2.0.1               spatstat.explore_3.8-0     
-#>  [13] htmltools_0.5.9             S4Arrays_1.10.1            
-#>  [15] curl_7.1.0                  SparseArray_1.10.10        
+#>  [13] htmltools_0.5.9             S4Arrays_1.11.1            
+#>  [15] curl_7.1.0                  SparseArray_1.11.13        
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
 #>  [19] parallelly_1.47.0           KernSmooth_2.23-26         
 #>  [21] bslib_0.10.0                htmlwidgets_1.6.4          
@@ -197,58 +197,58 @@ sessionInfo()
 #>  [27] plotly_4.12.0               zoo_1.8-15                 
 #>  [29] cachem_1.1.0                igraph_2.3.0               
 #>  [31] mime_0.13                   lifecycle_1.0.5            
-#>  [33] pkgconfig_2.0.3             Matrix_1.7-4               
+#>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
-#>  [37] MatrixGenerics_1.22.0       fitdistrplus_1.2-6         
+#>  [37] MatrixGenerics_1.23.0       fitdistrplus_1.2-6         
 #>  [39] future_1.70.0               shiny_1.13.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
-#>  [43] S4Vectors_0.48.1            Seurat_5.5.0               
+#>  [43] S4Vectors_0.49.2            Seurat_5.5.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
 #>  [47] irlba_2.3.7                 RSQLite_2.4.6              
-#>  [49] textshaping_1.0.5           GenomicRanges_1.62.1       
+#>  [49] textshaping_1.0.5           GenomicRanges_1.63.2       
 #>  [51] filelock_1.0.3              progressr_0.19.0           
 #>  [53] spatstat.sparse_3.1-0       polyclip_1.10-7            
 #>  [55] httr_1.4.8                  abind_1.4-8                
-#>  [57] compiler_4.5.3              withr_3.0.2                
+#>  [57] compiler_4.7.0              withr_3.0.2                
 #>  [59] bit64_4.8.0                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
 #>  [63] MASS_7.3-65                 rappdirs_0.3.4             
-#>  [65] DelayedArray_0.36.1         tools_4.5.3                
+#>  [65] DelayedArray_0.37.1         tools_4.7.0                
 #>  [67] lmtest_0.9-40               otel_0.2.0                 
 #>  [69] httpuv_1.6.17               future.apply_1.20.2        
 #>  [71] goftest_1.2-3               glue_1.8.1                 
-#>  [73] nlme_3.1-168                promises_1.5.0             
-#>  [75] grid_4.5.3                  Rtsne_0.17                 
+#>  [73] nlme_3.1-169                promises_1.5.0             
+#>  [75] grid_4.7.0                  Rtsne_0.17                 
 #>  [77] cluster_2.1.8.2             reshape2_1.4.5             
 #>  [79] generics_0.1.4              gtable_0.3.6               
 #>  [81] spatstat.data_3.1-9         tidyr_1.3.2                
 #>  [83] data.table_1.18.2.1         sp_2.2-1                   
-#>  [85] XVector_0.50.0              BiocGenerics_0.56.0        
+#>  [85] XVector_0.51.0              BiocGenerics_0.57.1        
 #>  [87] spatstat.geom_3.7-3         RcppAnnoy_0.0.23           
 #>  [89] ggrepel_0.9.8               RANN_2.6.2                 
 #>  [91] pillar_1.11.1               stringr_1.6.0              
 #>  [93] spam_2.11-3                 RcppHNSW_0.6.0             
-#>  [95] later_1.4.8                 splines_4.5.3              
-#>  [97] dplyr_1.2.1                 BiocFileCache_3.0.0        
+#>  [95] later_1.4.8                 splines_4.7.0              
+#>  [97] dplyr_1.2.1                 BiocFileCache_3.1.0        
 #>  [99] lattice_0.22-9              bit_4.6.0                  
 #> [101] deldir_2.0-4                survival_3.8-6             
-#> [103] tidyselect_1.2.1            SingleCellExperiment_1.32.0
+#> [103] tidyselect_1.2.1            SingleCellExperiment_1.33.2
 #> [105] miniUI_0.1.2                pbapply_1.7-4              
 #> [107] knitr_1.51                  gridExtra_2.3              
-#> [109] bookdown_0.46               IRanges_2.44.0             
-#> [111] Seqinfo_1.0.0               SummarizedExperiment_1.40.0
-#> [113] scattermore_1.2             stats4_4.5.3               
-#> [115] xfun_0.57                   Biobase_2.70.0             
+#> [109] bookdown_0.46               IRanges_2.45.0             
+#> [111] Seqinfo_1.1.0               SummarizedExperiment_1.41.1
+#> [113] scattermore_1.2             stats4_4.7.0               
+#> [115] xfun_0.57                   Biobase_2.71.0             
 #> [117] matrixStats_1.5.0           stringi_1.8.7              
 #> [119] lazyeval_0.2.3              yaml_2.3.12                
 #> [121] evaluate_1.0.5              codetools_0.2-20           
 #> [123] tibble_3.3.1                BiocManager_1.30.27        
 #> [125] cli_3.6.6                   uwot_0.2.4                 
 #> [127] xtable_1.8-8                systemfonts_1.3.2          
-#> [129] jquerylib_0.1.4             Rcpp_1.1.1-1               
+#> [129] jquerylib_0.1.4             Rcpp_1.1.1-1.1             
 #> [131] spatstat.random_3.4-5       globals_0.19.1             
 #> [133] dbplyr_2.5.2                png_0.1-9                  
-#> [135] spatstat.univar_3.1-7       parallel_4.5.3             
+#> [135] spatstat.univar_3.1-7       parallel_4.7.0             
 #> [137] blob_1.3.0                  pkgdown_2.2.0              
 #> [139] ggplot2_4.0.3               dotCall64_1.2              
 #> [141] listenv_0.10.1              viridisLite_0.4.3          
@@ -306,7 +306,7 @@ reticulate::py_list_packages()
 #> 31            scanpy       1.12.1               scanpy==1.12.1
 #> 32      scikit-learn        1.8.0          scikit-learn==1.8.0
 #> 33             scipy       1.17.1                scipy==1.17.1
-#> 34      scverse-misc        0.0.3          scverse-misc==0.0.3
+#> 34      scverse-misc        0.0.4          scverse-misc==0.0.4
 #> 35           seaborn       0.13.2              seaborn==0.13.2
 #> 36     session-info2        0.4.1         session-info2==0.4.1
 #> 37               six       1.17.0                  six==1.17.0

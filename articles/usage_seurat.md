@@ -3,13 +3,13 @@
 ## Introduction
 
 This vignette demonstrates how to read and write `Seurat` objects using
-the *[anndataR](https://bioconductor.org/packages/3.22/anndataR)*
+the *[anndataR](https://bioconductor.org/packages/3.23/anndataR)*
 package, leveraging the interoperability between `Seurat` and the
 `AnnData` format.
 
 *[Seurat](https://CRAN.R-project.org/package=Seurat)* is a widely used
 toolkit for single-cell analysis in R.
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* enables
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* enables
 conversion between `Seurat` objects and `AnnData` objects, allowing you
 to leverage the strengths of both the [scverse](https://scverse.org/)
 and [Seurat](https://satijalab.org/seurat/) ecosystems.
@@ -19,14 +19,14 @@ and [Seurat](https://satijalab.org/seurat/) ecosystems.
 This vignette requires the
 *[Seurat](https://CRAN.R-project.org/package=Seurat)* package in
 addition to
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)*. You can
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)*. You can
 install them using the following code:
 
 ``` r
 install.packages("Seurat")
 ```
 
-## Reading H5AD files to a `Seurat` Object
+## Reading H5AD files and Zarr stores to a `Seurat` Object
 
 Using an example `.h5ad` file included in the package, we will
 demonstrate how to read an `.h5ad` file and convert it to a `Seurat`
@@ -37,9 +37,6 @@ library(anndataR)
 library(Seurat)
 #> Loading required package: SeuratObject
 #> Loading required package: sp
-#> 'SeuratObject' was built under R 4.5.0 but the current version is
-#> 4.5.3; it is recomended that you reinstall 'SeuratObject' as the ABI
-#> for R may have changed
 #> 
 #> Attaching package: 'SeuratObject'
 #> The following objects are masked from 'package:base':
@@ -75,11 +72,43 @@ seurat_obj
 #>  2 dimensional reductions calculated: X_pca, X_umap
 ```
 
+Similarly, we can read from a Zarr store which we also demonstrate with
+an example `.zarr` store:
+
+``` r
+# Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
+zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_path, exdir = td)
+zarr_path <- file.path(td, "example_v2.zarr")
+
+seurat_obj_zarr <- read_zarr(zarr_path, as = "Seurat")
+seurat_obj_zarr
+#> An object of class Seurat 
+#> 100 features across 50 samples within 1 assay 
+#> Active assay: RNA (100 features, 0 variable features)
+#>  5 layers present: counts, csc_counts, dense_counts, dense_X, X
+#>  2 dimensional reductions calculated: X_pca, X_umap
+```
+
+or
+
+``` r
+adata <- read_zarr(zarr_path)
+seurat_obj_zarr <- adata$as_Seurat()
+seurat_obj_zarr
+#> An object of class Seurat 
+#> 100 features across 50 samples within 1 assay 
+#> Active assay: RNA (100 features, 0 variable features)
+#>  5 layers present: counts, csc_counts, dense_counts, dense_X, X
+#>  2 dimensional reductions calculated: X_pca, X_umap
+```
+
 ## Mapping between `AnnData` and `Seurat`
 
 Figure @ref(fig:mapping) shows the structures of the `AnnData` and
 `Seurat` objects and how
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* maps
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* maps
 between them. It is important to note that matrices in the two objects
 are transposed relative to each other.
 
@@ -136,14 +165,15 @@ seurat_obj
 The mapping arguments can also be passed directly to
 [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md).
 
-## Writing a `Seurat` object to a H5AD file
+## Writing a `Seurat` object to a H5AD file or Zarr store
 
 The reverse conversion is also possible, allowing you to convert the
 `Seurat` object back to an `AnnData` object, or to just write out the
-`Seurat` object as an `.h5ad` file.
+`Seurat` object as an `.h5ad` file or `.zarr` store.
 
 ``` r
 write_h5ad(seurat_obj, tempfile(fileext = ".h5ad"))
+write_zarr(seurat_obj, tempfile(fileext = ".zarr"))
 ```
 
 This is equivalent to converting the `Seurat` object to an `AnnData`
@@ -152,6 +182,7 @@ object and then writing it out:
 ``` r
 adata <- as_AnnData(seurat_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
+adata$write_zarr(tempfile(fileext = ".zarr"))
 ```
 
 You can again customize the conversion process by providing specific
@@ -182,13 +213,15 @@ adata
 ```
 
 The mapping arguments can also be passed directly to
-[`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md).
+[`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
+or
+[`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md).
 
 ## Session info
 
 ``` r
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R Under development (unstable) (2026-04-22 r89950)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -210,48 +243,51 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.1.2    
-#> [5] BiocStyle_2.38.0  
+#> [5] BiocStyle_2.39.0  
 #> 
 #> loaded via a namespace (and not attached):
-#>   [1] deldir_2.0-4           pbapply_1.7-4          gridExtra_2.3         
-#>   [4] rlang_1.2.0            magrittr_2.0.5         RcppAnnoy_0.0.23      
-#>   [7] otel_0.2.0             spatstat.geom_3.7-3    matrixStats_1.5.0     
-#>  [10] ggridges_0.5.7         compiler_4.5.3         reshape2_1.4.5        
-#>  [13] png_0.1-9              systemfonts_1.3.2      vctrs_0.7.3           
-#>  [16] stringr_1.6.0          pkgconfig_2.0.3        fastmap_1.2.0         
-#>  [19] promises_1.5.0         rmarkdown_2.31         ragg_1.5.2            
-#>  [22] purrr_1.2.2            xfun_0.57              cachem_1.1.0          
-#>  [25] jsonlite_2.0.0         goftest_1.2-3          later_1.4.8           
-#>  [28] rhdf5filters_1.22.0    Rhdf5lib_1.32.0        spatstat.utils_3.2-2  
-#>  [31] irlba_2.3.7            parallel_4.5.3         cluster_2.1.8.2       
-#>  [34] R6_2.6.1               ica_1.0-3              spatstat.data_3.1-9   
-#>  [37] stringi_1.8.7          bslib_0.10.0           RColorBrewer_1.1-3    
-#>  [40] reticulate_1.46.0      spatstat.univar_3.1-7  parallelly_1.47.0     
-#>  [43] scattermore_1.2        lmtest_0.9-40          jquerylib_0.1.4       
-#>  [46] Rcpp_1.1.1-1           bookdown_0.46          knitr_1.51            
-#>  [49] tensor_1.5.1           future.apply_1.20.2    zoo_1.8-15            
-#>  [52] sctransform_0.4.3      httpuv_1.6.17          Matrix_1.7-4          
-#>  [55] splines_4.5.3          igraph_2.3.0           tidyselect_1.2.1      
-#>  [58] abind_1.4-8            yaml_2.3.12            spatstat.random_3.4-5 
-#>  [61] spatstat.explore_3.8-0 codetools_0.2-20       miniUI_0.1.2          
-#>  [64] listenv_0.10.1         plyr_1.8.9             lattice_0.22-9        
-#>  [67] tibble_3.3.1           shiny_1.13.0           S7_0.2.2              
-#>  [70] ROCR_1.0-12            evaluate_1.0.5         Rtsne_0.17            
-#>  [73] future_1.70.0          fastDummies_1.7.6      desc_1.4.3            
-#>  [76] survival_3.8-6         polyclip_1.10-7        fitdistrplus_1.2-6    
-#>  [79] pillar_1.11.1          BiocManager_1.30.27    KernSmooth_2.23-26    
-#>  [82] plotly_4.12.0          generics_0.1.4         RcppHNSW_0.6.0        
-#>  [85] ggplot2_4.0.3          scales_1.4.0           globals_0.19.1        
-#>  [88] xtable_1.8-8           glue_1.8.1             lazyeval_0.2.3        
-#>  [91] tools_4.5.3            data.table_1.18.2.1    RSpectra_0.16-2       
-#>  [94] RANN_2.6.2             fs_2.1.0               dotCall64_1.2         
-#>  [97] rhdf5_2.54.1           cowplot_1.2.0          grid_4.5.3            
-#> [100] tidyr_1.3.2            nlme_3.1-168           patchwork_1.3.2       
-#> [103] cli_3.6.6              spatstat.sparse_3.1-0  textshaping_1.0.5     
-#> [106] spam_2.11-3            viridisLite_0.4.3      dplyr_1.2.1           
-#> [109] uwot_0.2.4             gtable_0.3.6           sass_0.4.10           
-#> [112] digest_0.6.39          progressr_0.19.0       ggrepel_0.9.8         
-#> [115] htmlwidgets_1.6.4      farver_2.1.2           htmltools_0.5.9       
-#> [118] pkgdown_2.2.0          lifecycle_1.0.5        httr_1.4.8            
-#> [121] mime_0.13              MASS_7.3-65
+#>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
+#>   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        
+#>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
+#>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
+#>  [13] curl_7.1.0             Rhdf5lib_1.99.6        rhdf5_2.55.16         
+#>  [16] sass_0.4.10            sctransform_0.4.3      parallelly_1.47.0     
+#>  [19] KernSmooth_2.23-26     bslib_0.10.0           htmlwidgets_1.6.4     
+#>  [22] desc_1.4.3             ica_1.0-3              httr2_1.2.2           
+#>  [25] plyr_1.8.9             plotly_4.12.0          zoo_1.8-15            
+#>  [28] cachem_1.1.0           igraph_2.3.0           mime_0.13             
+#>  [31] lifecycle_1.0.5        pkgconfig_2.0.3        Matrix_1.7-5          
+#>  [34] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-6    
+#>  [37] future_1.70.0          shiny_1.13.0           digest_0.6.39         
+#>  [40] paws.storage_0.9.0     patchwork_1.3.2        tensor_1.5.1          
+#>  [43] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
+#>  [46] progressr_0.19.0       Rarr_1.99.44           spatstat.sparse_3.1-0 
+#>  [49] httr_1.4.8             polyclip_1.10-7        abind_1.4-8           
+#>  [52] compiler_4.7.0         S7_0.2.2               fastDummies_1.7.6     
+#>  [55] R.utils_2.13.0         MASS_7.3-65            rappdirs_0.3.4        
+#>  [58] tools_4.7.0            lmtest_0.9-40          otel_0.2.0            
+#>  [61] httpuv_1.6.17          future.apply_1.20.2    goftest_1.2-3         
+#>  [64] R.oo_1.27.1            glue_1.8.1             nlme_3.1-169          
+#>  [67] rhdf5filters_1.23.3    promises_1.5.0         grid_4.7.0            
+#>  [70] Rtsne_0.17             cluster_2.1.8.2        reshape2_1.4.5        
+#>  [73] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-9   
+#>  [76] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.2.1   
+#>  [79] spatstat.geom_3.7-3    RcppAnnoy_0.0.23       ggrepel_0.9.8         
+#>  [82] RANN_2.6.2             pillar_1.11.1          stringr_1.6.0         
+#>  [85] spam_2.11-3            RcppHNSW_0.6.0         later_1.4.8           
+#>  [88] splines_4.7.0          dplyr_1.2.1            lattice_0.22-9        
+#>  [91] survival_3.8-6         deldir_2.0-4           paws.common_0.8.9     
+#>  [94] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         
+#>  [97] knitr_1.51             gridExtra_2.3          bookdown_0.46         
+#> [100] scattermore_1.2        xfun_0.57              matrixStats_1.5.0     
+#> [103] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           
+#> [106] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
+#> [109] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            
+#> [112] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     
+#> [115] jquerylib_0.1.4        Rcpp_1.1.1-1.1         globals_0.19.1        
+#> [118] spatstat.random_3.4-5  png_0.1-9              spatstat.univar_3.1-7 
+#> [121] parallel_4.7.0         pkgdown_2.2.0          ggplot2_4.0.3         
+#> [124] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     
+#> [127] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
+#> [130] purrr_1.2.2            rlang_1.2.0            cowplot_1.2.0
 ```

@@ -23,7 +23,8 @@ Other AnnData classes:
 [`AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md),
 [`AnnDataView`](https://anndataR.scverse.org/reference/AnnDataView.md),
 [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md),
-[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
+[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md),
+[`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
 
 ## Super class
 
@@ -122,9 +123,11 @@ Inherited methods
 - [`anndataR::AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
 - [`anndataR::AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
 - [`anndataR::AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
+- [`anndataR::AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
 - [`anndataR::AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
 - [`anndataR::AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
 - [`anndataR::AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
+- [`anndataR::AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
 
 ------------------------------------------------------------------------
 

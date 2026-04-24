@@ -20,7 +20,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -37,7 +37,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -54,7 +54,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData", "ReticulateAnnData"),
   ...
 )
 ```
@@ -252,7 +252,8 @@ will be skipped with a warning.
 
 Other AnnData creators:
 [`AnnData()`](https://anndataR.scverse.org/reference/AnnData.md),
-[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md)
+[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md),
+[`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md)
 
 Other object converters:
 [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md),
@@ -260,6 +261,7 @@ Other object converters:
 [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md),
 [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md),
 [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md),
+[`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md),
 [`reticulate-helpers`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
 
 ## Examples
@@ -269,9 +271,6 @@ Other object converters:
 library(Seurat)
 #> Loading required package: SeuratObject
 #> Loading required package: sp
-#> ‘SeuratObject’ was built under R 4.5.0 but the current version is
-#> 4.5.3; it is recomended that you reinstall ‘SeuratObject’ as the ABI
-#> for R may have changed
 #> 
 #> Attaching package: ‘SeuratObject’
 #> The following objects are masked from ‘package:base’:
@@ -330,10 +329,10 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 #> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 #> This message will be shown once per session
-#> 08:19:37 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 08:19:37 Read 200 rows and found 10 numeric columns
-#> 08:19:37 Using Annoy for neighbor search, n_neighbors = 30
-#> 08:19:37 Building Annoy index with metric = cosine, n_trees = 50
+#> 14:03:25 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 14:03:25 Read 200 rows and found 10 numeric columns
+#> 14:03:25 Using Annoy for neighbor search, n_neighbors = 30
+#> 14:03:25 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -387,15 +386,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 08:19:37 Writing NN index file to temp file /tmp/RtmpW4pevd/file1cee31bfedca
-#> 08:19:37 Searching Annoy index using 1 thread, search_k = 3000
-#> 08:19:37 Annoy recall = 100%
-#> 08:19:38 Commencing smooth kNN distance calibration using 1 thread
+#> 14:03:25 Writing NN index file to temp file /tmp/RtmpOSqdDd/file95ff2abc2bdc
+#> 14:03:25 Searching Annoy index using 1 thread, search_k = 3000
+#> 14:03:26 Annoy recall = 100%
+#> 14:03:26 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 08:19:39 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 08:19:39 Commencing optimization for 500 epochs, with 6146 positive edges
-#> 08:19:39 Using rng type: pcg
-#> 08:19:40 Optimization finished
+#> 14:03:27 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 14:03:27 Commencing optimization for 500 epochs, with 6146 positive edges
+#> 14:03:27 Using rng type: pcg
+#> 14:03:28 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names

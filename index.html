@@ -75,7 +75,7 @@
 </h2>
 <ul>
 <li>Provide an <code>R6</code> class to work with <code>AnnData</code> objects in R (either in-memory or on-disk)</li>
-<li>Read/write <code>*.h5ad</code> files natively</li>
+<li>Read/write <code>*.h5ad</code> files and <code>*.zarr</code> stores natively</li>
 <li>Convert to/from <code>SingleCellExperiment</code> objects</li>
 <li>Convert to/from <code>Seurat</code> objects</li>
 </ul>
@@ -97,6 +97,8 @@
 <p>You will need to install additional dependencies, depending on the task you want to perform.</p>
 <ul>
 <li>To read/write <code>*.h5ad</code> files, install <a href="https://www.bioconductor.org/packages/rhdf5" class="external-link">rhdf5</a>:<br><code>BiocManager::install("rhdf5")</code>
+</li>
+<li>To read/write <code>*.zarr</code> stores, install <a href="https://www.bioconductor.org/packages/Rarr" class="external-link">Rarr</a>:<br><code>BiocManager::install("Rarr")</code>
 </li>
 <li>To convert to/from <code>SingleCellExperiment</code> objects, install <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>:<br><code>BiocManager::install("SingleCellExperiment")</code>
 </li>

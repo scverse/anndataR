@@ -12,7 +12,7 @@ the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
 
 - Provide an `R6` class to work with `AnnData` objects in R (either
   in-memory or on-disk)
-- Read/write `*.h5ad` files natively
+- Read/write `*.h5ad` files and `*.zarr` stores natively
 - Convert to/from `SingleCellExperiment` objects
 - Convert to/from `Seurat` objects
 
@@ -44,6 +44,9 @@ you want to perform.
 - To read/write `*.h5ad` files, install
   [rhdf5](https://www.bioconductor.org/packages/rhdf5):  
   `BiocManager::install("rhdf5")`
+- To read/write `*.zarr` stores, install
+  [Rarr](https://www.bioconductor.org/packages/Rarr):  
+  `BiocManager::install("Rarr")`
 - To convert to/from `SingleCellExperiment` objects, install
   [SingleCellExperiment](https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html):  
   `BiocManager::install("SingleCellExperiment")`
@@ -153,6 +156,9 @@ A BibTeX entry for LaTeX users is
 - [`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
   : ReticulateAnnData
 
+- [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
+  : ZarrAnnData
+
 - [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
   :
 
@@ -174,6 +180,9 @@ A BibTeX entry for LaTeX users is
 - [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md) :
   Read H5AD
 
+- [`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md) :
+  Read Zarr
+
 - [`py_to_r(`*`<collections.abc.Mapping>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   [`py_to_r(`*`<anndata._core.anndata.AnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   [`r_to_py(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
@@ -181,6 +190,9 @@ A BibTeX entry for LaTeX users is
 
 - [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
   : Write H5AD
+
+- [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+  : Write Zarr
 
 # Articles
 

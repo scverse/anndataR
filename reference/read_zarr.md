@@ -1,13 +1,13 @@
-# Read H5AD
+# Read Zarr
 
-Read data from a H5AD file
+Read data from a Zarr store
 
 ## Usage
 
 ``` r
-read_h5ad(
+read_zarr(
   path,
-  as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
+  as = c("InMemoryAnnData", "ZarrAnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
   ...
 )
@@ -17,31 +17,31 @@ read_h5ad(
 
 - path:
 
-  Path to the H5AD file to read
+  Path to the Zarr store to read
 
 - as:
 
   The type of object to return. One of:
 
-  - `"InMemoryAnnData"`: Read the H5AD file into memory as an
+  - `"InMemoryAnnData"`: Read the Zarr store into memory as an
     [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
     object
 
-  - `"HDF5AnnData"`: Read the H5AD file as an
-    [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
+  - `"ZarrAnnData"`: Read the Zarr store as an
+    [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
     object
 
-  - `"SingleCellExperiment"`: Read the H5AD file as a
+  - `"SingleCellExperiment"`: Read the Zarr store as a
     [`SingleCellExperiment::SingleCellExperiment`](https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html)
     object
 
-  - `"Seurat"`: Read the H5AD file as a
+  - `"Seurat"`: Read the Zarr store as a
     [`SeuratObject::Seurat`](https://satijalab.github.io/seurat-object/reference/Seurat-class.html)
     object
 
 - mode:
 
-  The mode to open the HDF5 file.
+  The mode to open the Zarr file.
 
   - `a` creates a new file or opens an existing one for read/write.
 
@@ -68,20 +68,24 @@ The object specified by `as`
 Other AnnData creators:
 [`AnnData()`](https://anndataR.scverse.org/reference/AnnData.md),
 [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md),
-[`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md)
+[`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md)
 
 ## Examples
 
 ``` r
-h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
+# Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
+zarr_dir <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_dir, exdir = td)
+zarr_store <- file.path(td, "example_v2.zarr")
 
-# Read the H5AD as a SingleCellExperiment object
+# Read the Zarr as a SingleCellExperiment object
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
-  sce <- read_h5ad(h5ad_file, as = "SingleCellExperiment")
+  sce <- read_zarr(zarr_store, as = "SingleCellExperiment")
 }
 
-# Read the H5AD as a Seurat object
+# Read the Zarr as a Seurat object
 if (requireNamespace("SeuratObject", quietly = TRUE)) {
-  seurat <- read_h5ad(h5ad_file, as = "Seurat")
+  seurat <- read_zarr(zarr_store, as = "Seurat")
 }
 ```

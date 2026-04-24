@@ -76,11 +76,11 @@
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>This vignette demonstrates how to read and write <code>Seurat</code>
-objects using the <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>
+objects using the <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
 package, leveraging the interoperability between <code>Seurat</code> and
 the <code>AnnData</code> format.</p>
 <p><em><a href="https://CRAN.R-project.org/package=Seurat" class="external-link">Seurat</a></em> is a
-widely used toolkit for single-cell analysis in R. <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>
+widely used toolkit for single-cell analysis in R. <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
 enables conversion between <code>Seurat</code> objects and
 <code>AnnData</code> objects, allowing you to leverage the strengths of
 both the <a href="https://scverse.org/" class="external-link">scverse</a> and <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a> ecosystems.</p>
@@ -88,14 +88,15 @@ both the <a href="https://scverse.org/" class="external-link">scverse</a> and <a
 <h3 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
 </h3>
 <p>This vignette requires the <em><a href="https://CRAN.R-project.org/package=Seurat" class="external-link">Seurat</a></em> package
-in addition to <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>.
+in addition to <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>.
 You can install them using the following code:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"Seurat"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="reading-h5ad-files-to-a-seurat-object">Reading H5AD files to a <code>Seurat</code> Object<a class="anchor" aria-label="anchor" href="#reading-h5ad-files-to-a-seurat-object"></a>
+<h2 id="reading-h5ad-files-and-zarr-stores-to-a-seurat-object">Reading H5AD files and Zarr stores to a <code>Seurat</code>
+Object<a class="anchor" aria-label="anchor" href="#reading-h5ad-files-and-zarr-stores-to-a-seurat-object"></a>
 </h2>
 <p>Using an example <code>.h5ad</code> file included in the package, we
 will demonstrate how to read an <code>.h5ad</code> file and convert it
@@ -105,9 +106,6 @@ to a <code>Seurat</code> object.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: SeuratObject</span></span>
 <span><span class="co">#&gt; Loading required package: sp</span></span>
-<span><span class="co">#&gt; 'SeuratObject' was built under R 4.5.0 but the current version is</span></span>
-<span><span class="co">#&gt; 4.5.3; it is recomended that you reinstall 'SeuratObject' as the ABI</span></span>
-<span><span class="co">#&gt; for R may have changed</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'SeuratObject'</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
@@ -135,12 +133,38 @@ to a <code>Seurat</code> object.</p>
 <span><span class="co">#&gt; Active assay: RNA (100 features, 0 variable features)</span></span>
 <span><span class="co">#&gt;  5 layers present: counts, csc_counts, dense_X, dense_counts, X</span></span>
 <span><span class="co">#&gt;  2 dimensional reductions calculated: X_pca, X_umap</span></span></code></pre></div>
+<p>Similarly, we can read from a Zarr store which we also demonstrate
+with an example <code>.zarr</code> store:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3</span></span>
+<span><span class="va">zarr_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_v2.zarr.zip"</span>, package <span class="op">=</span> <span class="st">"anndataR"</span><span class="op">)</span></span>
+<span><span class="va">td</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span>check <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html" class="external-link">unzip</a></span><span class="op">(</span><span class="va">zarr_path</span>, exdir <span class="op">=</span> <span class="va">td</span><span class="op">)</span></span>
+<span><span class="va">zarr_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">td</span>, <span class="st">"example_v2.zarr"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">seurat_obj_zarr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_zarr.html">read_zarr</a></span><span class="op">(</span><span class="va">zarr_path</span>, as <span class="op">=</span> <span class="st">"Seurat"</span><span class="op">)</span></span>
+<span><span class="va">seurat_obj_zarr</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 100 features across 50 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: RNA (100 features, 0 variable features)</span></span>
+<span><span class="co">#&gt;  5 layers present: counts, csc_counts, dense_counts, dense_X, X</span></span>
+<span><span class="co">#&gt;  2 dimensional reductions calculated: X_pca, X_umap</span></span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_zarr.html">read_zarr</a></span><span class="op">(</span><span class="va">zarr_path</span><span class="op">)</span></span>
+<span><span class="va">seurat_obj_zarr</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">$</span><span class="fu">as_Seurat</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">seurat_obj_zarr</span></span>
+<span><span class="co">#&gt; An object of class Seurat </span></span>
+<span><span class="co">#&gt; 100 features across 50 samples within 1 assay </span></span>
+<span><span class="co">#&gt; Active assay: RNA (100 features, 0 variable features)</span></span>
+<span><span class="co">#&gt;  5 layers present: counts, csc_counts, dense_counts, dense_X, X</span></span>
+<span><span class="co">#&gt;  2 dimensional reductions calculated: X_pca, X_umap</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="mapping-between-anndata-and-seurat">Mapping between <code>AnnData</code> and <code>Seurat</code><a class="anchor" aria-label="anchor" href="#mapping-between-anndata-and-seurat"></a>
 </h2>
 <p>Figure @ref(fig:mapping) shows the structures of the
-<code>AnnData</code> and <code>Seurat</code> objects and how <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>
+<code>AnnData</code> and <code>Seurat</code> objects and how <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
 maps between them. It is important to note that matrices in the two
 objects are transposed relative to each other.</p>
 <div class="figure">
@@ -175,7 +199,7 @@ the <code>AnnData</code> object.</li>
 </ul>
 <p>See <code><a href="../reference/as_Seurat.html">?as_Seurat</a></code> for more details on how to customize the
 conversion process. For instance:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seurat_obj</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">$</span><span class="fu">as_Seurat</span><span class="op">(</span></span>
 <span>  layers_mapping <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"counts"</span>, <span class="st">"dense_counts"</span><span class="op">)</span>,</span>
 <span>  object_metadata_mapping <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>metadata1 <span class="op">=</span> <span class="st">"Int"</span>, metadata2 <span class="op">=</span> <span class="st">"Float"</span><span class="op">)</span>,</span>
@@ -197,24 +221,27 @@ conversion process. For instance:</p>
 <code><a href="../reference/read_h5ad.html">read_h5ad()</a></code>.</p>
 </div>
 <div class="section level2">
-<h2 id="writing-a-seurat-object-to-a-h5ad-file">Writing a <code>Seurat</code> object to a H5AD file<a class="anchor" aria-label="anchor" href="#writing-a-seurat-object-to-a-h5ad-file"></a>
+<h2 id="writing-a-seurat-object-to-a-h5ad-file-or-zarr-store">Writing a <code>Seurat</code> object to a H5AD file or Zarr
+store<a class="anchor" aria-label="anchor" href="#writing-a-seurat-object-to-a-h5ad-file-or-zarr-store"></a>
 </h2>
 <p>The reverse conversion is also possible, allowing you to convert the
 <code>Seurat</code> object back to an <code>AnnData</code> object, or to
 just write out the <code>Seurat</code> object as an <code>.h5ad</code>
-file.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_h5ad.html">write_h5ad</a></span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+file or <code>.zarr</code> store.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/write_h5ad.html">write_h5ad</a></span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/write_zarr.html">write_zarr</a></span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>This is equivalent to converting the <code>Seurat</code> object to an
 <code>AnnData</code> object and then writing it out:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_AnnData.html">as_AnnData</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span></span>
-<span><span class="va">adata</span><span class="op">$</span><span class="fu">write_h5ad</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">adata</span><span class="op">$</span><span class="fu">write_h5ad</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">adata</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>You can again customize the conversion process by providing specific
 mappings for each slot in the <code>AnnData</code> object. For more
 details, see <code><a href="../reference/as_AnnData.html">?as_AnnData</a></code>.</p>
 <p>Here’s an example:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_AnnData.html">as_AnnData</a></span><span class="op">(</span></span>
 <span>  <span class="va">seurat_obj</span>,</span>
 <span>  assay_name <span class="op">=</span> <span class="st">"RNA"</span>,</span>
@@ -234,14 +261,14 @@ details, see <code><a href="../reference/as_AnnData.html">?as_AnnData</a></code>
 <span><span class="co">#&gt;     layers: 'dense_counts'</span></span>
 <span><span class="co">#&gt;     obsp: 'connectivities', 'distances'</span></span></code></pre></div>
 <p>The mapping arguments can also be passed directly to
-<code><a href="../reference/write_h5ad.html">write_h5ad()</a></code>.</p>
+<code><a href="../reference/write_h5ad.html">write_h5ad()</a></code> or <code><a href="../reference/write_zarr.html">write_zarr()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R version 4.5.3 (2026-03-11)</span></span>
+<span><span class="co">#&gt; R Under development (unstable) (2026-04-22 r89950)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -263,50 +290,53 @@ details, see <code><a href="../reference/as_AnnData.html">?as_AnnData</a></code>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
 <span><span class="co">#&gt; [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.1.2    </span></span>
-<span><span class="co">#&gt; [5] BiocStyle_2.38.0  </span></span>
+<span><span class="co">#&gt; [5] BiocStyle_2.39.0  </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;   [1] deldir_2.0-4           pbapply_1.7-4          gridExtra_2.3         </span></span>
-<span><span class="co">#&gt;   [4] rlang_1.2.0            magrittr_2.0.5         RcppAnnoy_0.0.23      </span></span>
-<span><span class="co">#&gt;   [7] otel_0.2.0             spatstat.geom_3.7-3    matrixStats_1.5.0     </span></span>
-<span><span class="co">#&gt;  [10] ggridges_0.5.7         compiler_4.5.3         reshape2_1.4.5        </span></span>
-<span><span class="co">#&gt;  [13] png_0.1-9              systemfonts_1.3.2      vctrs_0.7.3           </span></span>
-<span><span class="co">#&gt;  [16] stringr_1.6.0          pkgconfig_2.0.3        fastmap_1.2.0         </span></span>
-<span><span class="co">#&gt;  [19] promises_1.5.0         rmarkdown_2.31         ragg_1.5.2            </span></span>
-<span><span class="co">#&gt;  [22] purrr_1.2.2            xfun_0.57              cachem_1.1.0          </span></span>
-<span><span class="co">#&gt;  [25] jsonlite_2.0.0         goftest_1.2-3          later_1.4.8           </span></span>
-<span><span class="co">#&gt;  [28] rhdf5filters_1.22.0    Rhdf5lib_1.32.0        spatstat.utils_3.2-2  </span></span>
-<span><span class="co">#&gt;  [31] irlba_2.3.7            parallel_4.5.3         cluster_2.1.8.2       </span></span>
-<span><span class="co">#&gt;  [34] R6_2.6.1               ica_1.0-3              spatstat.data_3.1-9   </span></span>
-<span><span class="co">#&gt;  [37] stringi_1.8.7          bslib_0.10.0           RColorBrewer_1.1-3    </span></span>
-<span><span class="co">#&gt;  [40] reticulate_1.46.0      spatstat.univar_3.1-7  parallelly_1.47.0     </span></span>
-<span><span class="co">#&gt;  [43] scattermore_1.2        lmtest_0.9-40          jquerylib_0.1.4       </span></span>
-<span><span class="co">#&gt;  [46] Rcpp_1.1.1-1           bookdown_0.46          knitr_1.51            </span></span>
-<span><span class="co">#&gt;  [49] tensor_1.5.1           future.apply_1.20.2    zoo_1.8-15            </span></span>
-<span><span class="co">#&gt;  [52] sctransform_0.4.3      httpuv_1.6.17          Matrix_1.7-4          </span></span>
-<span><span class="co">#&gt;  [55] splines_4.5.3          igraph_2.3.0           tidyselect_1.2.1      </span></span>
-<span><span class="co">#&gt;  [58] abind_1.4-8            yaml_2.3.12            spatstat.random_3.4-5 </span></span>
-<span><span class="co">#&gt;  [61] spatstat.explore_3.8-0 codetools_0.2-20       miniUI_0.1.2          </span></span>
-<span><span class="co">#&gt;  [64] listenv_0.10.1         plyr_1.8.9             lattice_0.22-9        </span></span>
-<span><span class="co">#&gt;  [67] tibble_3.3.1           shiny_1.13.0           S7_0.2.2              </span></span>
-<span><span class="co">#&gt;  [70] ROCR_1.0-12            evaluate_1.0.5         Rtsne_0.17            </span></span>
-<span><span class="co">#&gt;  [73] future_1.70.0          fastDummies_1.7.6      desc_1.4.3            </span></span>
-<span><span class="co">#&gt;  [76] survival_3.8-6         polyclip_1.10-7        fitdistrplus_1.2-6    </span></span>
-<span><span class="co">#&gt;  [79] pillar_1.11.1          BiocManager_1.30.27    KernSmooth_2.23-26    </span></span>
-<span><span class="co">#&gt;  [82] plotly_4.12.0          generics_0.1.4         RcppHNSW_0.6.0        </span></span>
-<span><span class="co">#&gt;  [85] ggplot2_4.0.3          scales_1.4.0           globals_0.19.1        </span></span>
-<span><span class="co">#&gt;  [88] xtable_1.8-8           glue_1.8.1             lazyeval_0.2.3        </span></span>
-<span><span class="co">#&gt;  [91] tools_4.5.3            data.table_1.18.2.1    RSpectra_0.16-2       </span></span>
-<span><span class="co">#&gt;  [94] RANN_2.6.2             fs_2.1.0               dotCall64_1.2         </span></span>
-<span><span class="co">#&gt;  [97] rhdf5_2.54.1           cowplot_1.2.0          grid_4.5.3            </span></span>
-<span><span class="co">#&gt; [100] tidyr_1.3.2            nlme_3.1-168           patchwork_1.3.2       </span></span>
-<span><span class="co">#&gt; [103] cli_3.6.6              spatstat.sparse_3.1-0  textshaping_1.0.5     </span></span>
-<span><span class="co">#&gt; [106] spam_2.11-3            viridisLite_0.4.3      dplyr_1.2.1           </span></span>
-<span><span class="co">#&gt; [109] uwot_0.2.4             gtable_0.3.6           sass_0.4.10           </span></span>
-<span><span class="co">#&gt; [112] digest_0.6.39          progressr_0.19.0       ggrepel_0.9.8         </span></span>
-<span><span class="co">#&gt; [115] htmlwidgets_1.6.4      farver_2.1.2           htmltools_0.5.9       </span></span>
-<span><span class="co">#&gt; [118] pkgdown_2.2.0          lifecycle_1.0.5        httr_1.4.8            </span></span>
-<span><span class="co">#&gt; [121] mime_0.13              MASS_7.3-65</span></span></code></pre></div>
+<span><span class="co">#&gt;   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        </span></span>
+<span><span class="co">#&gt;   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        </span></span>
+<span><span class="co">#&gt;   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           </span></span>
+<span><span class="co">#&gt;  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       </span></span>
+<span><span class="co">#&gt;  [13] curl_7.1.0             Rhdf5lib_1.99.6        rhdf5_2.55.16         </span></span>
+<span><span class="co">#&gt;  [16] sass_0.4.10            sctransform_0.4.3      parallelly_1.47.0     </span></span>
+<span><span class="co">#&gt;  [19] KernSmooth_2.23-26     bslib_0.10.0           htmlwidgets_1.6.4     </span></span>
+<span><span class="co">#&gt;  [22] desc_1.4.3             ica_1.0-3              httr2_1.2.2           </span></span>
+<span><span class="co">#&gt;  [25] plyr_1.8.9             plotly_4.12.0          zoo_1.8-15            </span></span>
+<span><span class="co">#&gt;  [28] cachem_1.1.0           igraph_2.3.0           mime_0.13             </span></span>
+<span><span class="co">#&gt;  [31] lifecycle_1.0.5        pkgconfig_2.0.3        Matrix_1.7-5          </span></span>
+<span><span class="co">#&gt;  [34] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-6    </span></span>
+<span><span class="co">#&gt;  [37] future_1.70.0          shiny_1.13.0           digest_0.6.39         </span></span>
+<span><span class="co">#&gt;  [40] paws.storage_0.9.0     patchwork_1.3.2        tensor_1.5.1          </span></span>
+<span><span class="co">#&gt;  [43] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     </span></span>
+<span><span class="co">#&gt;  [46] progressr_0.19.0       Rarr_1.99.44           spatstat.sparse_3.1-0 </span></span>
+<span><span class="co">#&gt;  [49] httr_1.4.8             polyclip_1.10-7        abind_1.4-8           </span></span>
+<span><span class="co">#&gt;  [52] compiler_4.7.0         S7_0.2.2               fastDummies_1.7.6     </span></span>
+<span><span class="co">#&gt;  [55] R.utils_2.13.0         MASS_7.3-65            rappdirs_0.3.4        </span></span>
+<span><span class="co">#&gt;  [58] tools_4.7.0            lmtest_0.9-40          otel_0.2.0            </span></span>
+<span><span class="co">#&gt;  [61] httpuv_1.6.17          future.apply_1.20.2    goftest_1.2-3         </span></span>
+<span><span class="co">#&gt;  [64] R.oo_1.27.1            glue_1.8.1             nlme_3.1-169          </span></span>
+<span><span class="co">#&gt;  [67] rhdf5filters_1.23.3    promises_1.5.0         grid_4.7.0            </span></span>
+<span><span class="co">#&gt;  [70] Rtsne_0.17             cluster_2.1.8.2        reshape2_1.4.5        </span></span>
+<span><span class="co">#&gt;  [73] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-9   </span></span>
+<span><span class="co">#&gt;  [76] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.2.1   </span></span>
+<span><span class="co">#&gt;  [79] spatstat.geom_3.7-3    RcppAnnoy_0.0.23       ggrepel_0.9.8         </span></span>
+<span><span class="co">#&gt;  [82] RANN_2.6.2             pillar_1.11.1          stringr_1.6.0         </span></span>
+<span><span class="co">#&gt;  [85] spam_2.11-3            RcppHNSW_0.6.0         later_1.4.8           </span></span>
+<span><span class="co">#&gt;  [88] splines_4.7.0          dplyr_1.2.1            lattice_0.22-9        </span></span>
+<span><span class="co">#&gt;  [91] survival_3.8-6         deldir_2.0-4           paws.common_0.8.9     </span></span>
+<span><span class="co">#&gt;  [94] tidyselect_1.2.1       miniUI_0.1.2           pbapply_1.7-4         </span></span>
+<span><span class="co">#&gt;  [97] knitr_1.51             gridExtra_2.3          bookdown_0.46         </span></span>
+<span><span class="co">#&gt; [100] scattermore_1.2        xfun_0.57              matrixStats_1.5.0     </span></span>
+<span><span class="co">#&gt; [103] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           </span></span>
+<span><span class="co">#&gt; [106] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          </span></span>
+<span><span class="co">#&gt; [109] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            </span></span>
+<span><span class="co">#&gt; [112] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     </span></span>
+<span><span class="co">#&gt; [115] jquerylib_0.1.4        Rcpp_1.1.1-1.1         globals_0.19.1        </span></span>
+<span><span class="co">#&gt; [118] spatstat.random_3.4-5  png_0.1-9              spatstat.univar_3.1-7 </span></span>
+<span><span class="co">#&gt; [121] parallel_4.7.0         pkgdown_2.2.0          ggplot2_4.0.3         </span></span>
+<span><span class="co">#&gt; [124] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     </span></span>
+<span><span class="co">#&gt; [127] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          </span></span>
+<span><span class="co">#&gt; [130] purrr_1.2.2            rlang_1.2.0            cowplot_1.2.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

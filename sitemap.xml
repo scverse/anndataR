@@ -21,6 +21,7 @@
 <url><loc>https://anndataR.scverse.org/reference/HDF5AnnData.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/InMemoryAnnData.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/ReticulateAnnData.html</loc></url>
+<url><loc>https://anndataR.scverse.org/reference/ZarrAnnData.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/anndataR-package.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/as_AnnData.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/as_HDF5AnnData.html</loc></url>
@@ -28,10 +29,13 @@
 <url><loc>https://anndataR.scverse.org/reference/as_ReticulateAnnData.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/as_Seurat.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/as_SingleCellExperiment.html</loc></url>
+<url><loc>https://anndataR.scverse.org/reference/as_ZarrAnnData.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/generate_dataset.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/index.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/read_h5ad.html</loc></url>
+<url><loc>https://anndataR.scverse.org/reference/read_zarr.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/reticulate-helpers.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/write_h5ad.html</loc></url>
+<url><loc>https://anndataR.scverse.org/reference/write_zarr.html</loc></url>
 </urlset>
 

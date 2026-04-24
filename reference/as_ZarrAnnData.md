@@ -1,17 +1,16 @@
-# Convert an `AnnData` to an `HDF5AnnData`
+# Convert an `AnnData` to an `ZarrAnnData`
 
 Convert another `AnnData` object to an
-[`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
+[`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
 object
 
 ## Usage
 
 ``` r
-as_HDF5AnnData(
+as_ZarrAnnData(
   adata,
   file,
-  compression = c("none", "gzip", "lzf"),
-  chunk_size = "auto",
+  compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   mode = c("w-", "r", "r+", "a", "w", "x")
 )
 ```
@@ -21,28 +20,21 @@ as_HDF5AnnData(
 - adata:
 
   An `AnnData` object to be converted to
-  [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
+  [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
 
 - file:
 
-  The file name (character) of the `.h5ad` file
+  The file name (character) of the `.zarr` file
 
 - compression:
 
-  The compression algorithm to use when writing the HDF5 file. Can be
-  one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-
-- chunk_size:
-
-  The target chunk size in bytes to use when writing HDF5 datasets. When
-  `"auto"` (default), the chunk size is determined automatically using
-  an algorithm that mimics h5py's auto-chunking behaviour. Set to `NULL`
-  to disable chunking (contiguous storage, the rhdf5 default), or a
-  number to use a specific target size in bytes.
+  The compression algorithm to use when writing the Zarr file. Can be
+  one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
+  `"zlib"` or `"lz4"`. Defaults to `"none"`.
 
 - mode:
 
-  The mode to open the HDF5 file:
+  The mode to open the Zarr file:
 
   - `a` creates a new file or opens an existing one for read/write
 
@@ -57,17 +49,16 @@ as_HDF5AnnData(
 
 ## Value
 
-An
-[`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
+A [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
 object with the same data as the input `AnnData` object.
 
 ## See also
 
 Other object converters:
 [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md),
+[`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md),
 [`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md),
 [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md),
 [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md),
 [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md),
-[`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md),
 [`reticulate-helpers`](https://anndataR.scverse.org/reference/reticulate-helpers.md)

@@ -33,6 +33,14 @@
   [](https://orcid.org/0000-0002-0922-0822)  
   csangara
 
+- **Artür Manukyan**. Contributor.
+  [](https://orcid.org/0000-0002-0441-9517)  
+  Artur-man
+
+- **Hugo Gruson**. Contributor.
+  [](https://orcid.org/0000-0002-4094-1476)  
+  Bisaloo
+
 - **[Data Intuitive](https://data-intuitive.com)**. Funder.
 
 - **[Chan Zuckerberg Initiative](https://chanzuckerberg.com)**. Funder.

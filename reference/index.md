@@ -31,6 +31,9 @@
 - [`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
   : ReticulateAnnData
 
+- [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
+  : ZarrAnnData
+
 - [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
   :
 
@@ -52,6 +55,9 @@
 - [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md) :
   Read H5AD
 
+- [`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md) :
+  Read Zarr
+
 - [`py_to_r(`*`<collections.abc.Mapping>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   [`py_to_r(`*`<anndata._core.anndata.AnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   [`r_to_py(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
@@ -59,3 +65,6 @@
 
 - [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
   : Write H5AD
+
+- [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+  : Write Zarr

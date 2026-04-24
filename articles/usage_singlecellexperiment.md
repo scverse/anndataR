@@ -4,14 +4,14 @@
 
 This vignette demonstrates how to read and write `SingleCellExperiment`
 objects using the
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* package,
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* package,
 leveraging the interoperability between `SingleCellExperiment` and the
 `AnnData` format.
 
 `SingleCellExperiment` is a widely used class for storing single-cell
 data in R, especially within the
 [Bioconductor](https://bioconductor.org/) ecosystem.
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* enables
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* enables
 conversion between `SingleCellExperiment` objects and `AnnData` objects,
 allowing you to leverage the strengths of both the
 [scverse](https://scverse.org/) and
@@ -20,9 +20,9 @@ allowing you to leverage the strengths of both the
 ### Prerequisites
 
 This vignette requires
-*[SingleCellExperiment](https://bioconductor.org/packages/3.22/SingleCellExperiment)*
+*[SingleCellExperiment](https://bioconductor.org/packages/3.23/SingleCellExperiment)*
 in addition to
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)*. You can
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)*. You can
 install them using the following code:
 
 ``` r
@@ -32,7 +32,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 BiocManager::install("SingleCellExperiment")
 ```
 
-## Reading H5AD files to a `SingleCellExperiment` object
+## Reading H5AD files and Zarr stores to a `SingleCellExperiment` object
 
 Using an example `.h5ad` file included in the package, we will
 demonstrate how to read an `.h5ad` file and convert it to a
@@ -155,11 +155,57 @@ sce
 #> altExpNames(0):
 ```
 
+Similarly, we can read from a Zarr store which we also demonstrate with
+an example `.zarr` store:
+
+``` r
+# Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
+zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_path, exdir = td)
+zarr_path <- file.path(td, "example_v2.zarr")
+
+sce_zarr <- read_zarr(zarr_path, as = "SingleCellExperiment")
+sce_zarr
+#> class: SingleCellExperiment 
+#> dim: 100 50 
+#> metadata(18): Bool BoolNA ... StringScalar umap
+#> assays(5): counts csc_counts dense_counts dense_X X
+#> rownames(100): Gene000 Gene001 ... Gene098 Gene099
+#> rowData names(11): String n_cells_by_counts ... dispersions
+#>   dispersions_norm
+#> colnames(50): Cell000 Cell001 ... Cell048 Cell049
+#> colData names(11): Float FloatNA ... log1p_total_counts leiden
+#> reducedDimNames(2): X_pca X_umap
+#> mainExpName: NULL
+#> altExpNames(0):
+```
+
+or
+
+``` r
+adata <- read_zarr(zarr_path)
+sce_zarr <- adata$as_SingleCellExperiment()
+sce_zarr
+#> class: SingleCellExperiment 
+#> dim: 100 50 
+#> metadata(18): Bool BoolNA ... StringScalar umap
+#> assays(5): counts csc_counts dense_counts dense_X X
+#> rownames(100): Gene000 Gene001 ... Gene098 Gene099
+#> rowData names(11): String n_cells_by_counts ... dispersions
+#>   dispersions_norm
+#> colnames(50): Cell000 Cell001 ... Cell048 Cell049
+#> colData names(11): Float FloatNA ... log1p_total_counts leiden
+#> reducedDimNames(2): X_pca X_umap
+#> mainExpName: NULL
+#> altExpNames(0):
+```
+
 ## Mapping between `AnnData` and `SingleCellExperiment`
 
 Figure @ref(fig:mapping) shows the structures of the `AnnData` and
 `SingleCellExperiment` objects and how
-*[anndataR](https://bioconductor.org/packages/3.22/anndataR)* maps
+*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* maps
 between them. It is important to note that matrices in the two objects
 are transposed relative to each other.
 
@@ -222,14 +268,16 @@ adata$as_SingleCellExperiment(
 The mapping arguments can also be passed directly to
 [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md).
 
-## Writing a `SingleCellExperiment` object to H5AD file
+## Writing a `SingleCellExperiment` object to a H5AD file or Zarr store
 
 The reverse conversion is also possible, allowing you to convert a
 `SingleCellExperiment` object back to an `AnnData` object, or to just
-write out the `SingleCellExperiment` object as an `.h5ad` file.
+write out the `SingleCellExperiment` object as an `.h5ad` file or
+`.zarr` store.
 
 ``` r
 write_h5ad(sce_obj, tempfile(fileext = ".h5ad"))
+write_zarr(sce_obj, tempfile(fileext = ".zarr"))
 ```
 
 This is equivalent to converting the `SingleCellExperiment` object to an
@@ -238,6 +286,7 @@ This is equivalent to converting the `SingleCellExperiment` object to an
 ``` r
 adata <- as_AnnData(sce_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
+adata$write_zarr(tempfile(fileext = ".zarr"))
 ```
 
 You can again customize the conversion process by providing specific
@@ -268,13 +317,15 @@ as_AnnData(
 ```
 
 The mapping arguments can also be passed directly to
-[`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md).
+[`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
+or
+[`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md).
 
 ## Session info
 
 ``` r
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R Under development (unstable) (2026-04-22 r89950)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -296,29 +347,32 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] SingleCellExperiment_1.32.0 SummarizedExperiment_1.40.0
-#>  [3] Biobase_2.70.0              GenomicRanges_1.62.1       
-#>  [5] Seqinfo_1.0.0               IRanges_2.44.0             
-#>  [7] S4Vectors_0.48.1            BiocGenerics_0.56.0        
-#>  [9] generics_0.1.4              MatrixGenerics_1.22.0      
+#>  [1] SingleCellExperiment_1.33.2 SummarizedExperiment_1.41.1
+#>  [3] Biobase_2.71.0              GenomicRanges_1.63.2       
+#>  [5] Seqinfo_1.1.0               IRanges_2.45.0             
+#>  [7] S4Vectors_0.49.2            BiocGenerics_0.57.1        
+#>  [9] generics_0.1.4              MatrixGenerics_1.23.0      
 #> [11] matrixStats_1.5.0           anndataR_1.1.2             
-#> [13] BiocStyle_2.38.0           
+#> [13] BiocStyle_2.39.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] sass_0.4.10         SparseArray_1.10.10 lattice_0.22-9     
-#>  [4] digest_0.6.39       magrittr_2.0.5      evaluate_1.0.5     
-#>  [7] grid_4.5.3          bookdown_0.46       fastmap_1.2.0      
-#> [10] jsonlite_2.0.0      Matrix_1.7-4        BiocManager_1.30.27
-#> [13] purrr_1.2.2         textshaping_1.0.5   jquerylib_0.1.4    
-#> [16] abind_1.4-8         cli_3.6.6           rlang_1.2.0        
-#> [19] XVector_0.50.0      cachem_1.1.0        DelayedArray_0.36.1
-#> [22] yaml_2.3.12         otel_0.2.0          S4Arrays_1.10.1    
-#> [25] tools_4.5.3         Rhdf5lib_1.32.0     reticulate_1.46.0  
-#> [28] vctrs_0.7.3         R6_2.6.1            png_0.1-9          
-#> [31] lifecycle_1.0.5     rhdf5_2.54.1        fs_2.1.0           
-#> [34] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
-#> [37] pkgdown_2.2.0       bslib_0.10.0        Rcpp_1.1.1-1       
-#> [40] systemfonts_1.3.2   xfun_0.57           rhdf5filters_1.22.0
-#> [43] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
-#> [46] compiler_4.5.3
+#>  [1] rappdirs_0.3.4      sass_0.4.10         SparseArray_1.11.13
+#>  [4] lattice_0.22-9      paws.common_0.8.9   digest_0.6.39      
+#>  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.7.0         
+#> [10] bookdown_0.46       fastmap_1.2.0       R.oo_1.27.1        
+#> [13] jsonlite_2.0.0      Matrix_1.7-5        R.utils_2.13.0     
+#> [16] Rarr_1.99.44        BiocManager_1.30.27 purrr_1.2.2        
+#> [19] httr2_1.2.2         textshaping_1.0.5   jquerylib_0.1.4    
+#> [22] abind_1.4-8         cli_3.6.6           crayon_1.5.3       
+#> [25] rlang_1.2.0         XVector_0.51.0      R.methodsS3_1.8.2  
+#> [28] cachem_1.1.0        DelayedArray_0.37.1 yaml_2.3.12        
+#> [31] otel_0.2.0          S4Arrays_1.11.1     tools_4.7.0        
+#> [34] Rhdf5lib_1.99.6     curl_7.1.0          reticulate_1.46.0  
+#> [37] vctrs_0.7.3         R6_2.6.1            png_0.1-9          
+#> [40] lifecycle_1.0.5     rhdf5_2.55.16       fs_2.1.0           
+#> [43] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
+#> [46] pkgdown_2.2.0       bslib_0.10.0        glue_1.8.1         
+#> [49] Rcpp_1.1.1-1.1      systemfonts_1.3.2   xfun_0.57          
+#> [52] paws.storage_0.9.0  rhdf5filters_1.23.3 knitr_1.51         
+#> [55] htmltools_0.5.9     rmarkdown_2.31      compiler_4.7.0
 ```

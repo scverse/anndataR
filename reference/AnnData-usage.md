@@ -18,6 +18,9 @@ class and store and access data in different ways:
 - [HDF5AnnData](https://anndataR.scverse.org/reference/HDF5AnnData.md)
   provides an interface to a H5AD file
 
+- [ZarrAnnData](https://anndataR.scverse.org/reference/ZarrAnnData.md)
+  provides an interface to a Zarr store
+
 - [ReticulateAnnData](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
   wraps a Python `AnnData` object via reticulate
 
@@ -187,6 +190,13 @@ An `AnnData` object inheriting from
   see
   [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 
+- [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md):
+
+  Convert to
+  [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md),
+  see
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+
 - [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md):
 
   Convert to
@@ -201,6 +211,14 @@ An `AnnData` object inheriting from
 
   Write the `AnnData` object to an HDF5 file, see
   [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
+
+&nbsp;
+
+- [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+  :
+
+  Write the `AnnData` object to a Zarr store, see
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
 
 ### General methods:
 
@@ -220,6 +238,10 @@ An `AnnData` object inheriting from
 
   Read an `AnnData` from a H5AD file
 
+- [`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md):
+
+  Read an `AnnData` from a Zarr store
+
 - [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md):
 
   Convert other objects to an `AnnData` object
@@ -237,6 +259,9 @@ for the in-memory implementation of `AnnData`
 
 [HDF5AnnData](https://anndataR.scverse.org/reference/HDF5AnnData.md) for
 the HDF5-backed implementation of `AnnData`
+
+[ZarrAnnData](https://anndataR.scverse.org/reference/ZarrAnnData.md) for
+the Zarr-backed implementation of `AnnData`
 
 [ReticulateAnnData](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
 for the reticulate-based implementation that wraps Python AnnData

@@ -1,10 +1,10 @@
-# ReticulateAnnData
+# ZarrAnnData
 
-Implementation of an `AnnData` object that wraps a Python **anndata**
-`AnnData` object using reticulate. This allows direct interaction with
-Python `AnnData` objects while maintaining the R interface. It is useful
-when you already have a Python `AnnData` or to access functionality that
-has not yet been implemented in anndataR.
+Implementation of a Zarr-backed `AnnData` object. This class provides an
+interface to a Zarr file and minimal data is stored in memory until it
+is requested by the user. It is primarily designed as an intermediate
+object when reading/writing Zarr files but can be useful for accessing
+parts of large files.
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -12,7 +12,7 @@ for details on creating and using `AnnData` objects.
 
 ## Value
 
-A `ReticulateAnnData` object
+A `ZarrAnnData` object
 
 ## See also
 
@@ -24,12 +24,12 @@ Other AnnData classes:
 [`AnnDataView`](https://anndataR.scverse.org/reference/AnnDataView.md),
 [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md),
 [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md),
-[`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
+[`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
 
 ## Super class
 
 [`anndataR::AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
--\> `ReticulateAnnData`
+-\> `ZarrAnnData`
 
 ## Active bindings
 
@@ -39,6 +39,26 @@ Other AnnData classes:
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 - `layers`:
+
+  See
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+- `obsm`:
+
+  See
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+- `varm`:
+
+  See
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+- `obsp`:
+
+  See
+  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+- `varp`:
 
   See
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -63,26 +83,6 @@ Other AnnData classes:
   See
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
-- `obsm`:
-
-  See
-  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-
-- `varm`:
-
-  See
-  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-
-- `obsp`:
-
-  See
-  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-
-- `varp`:
-
-  See
-  [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-
 - `uns`:
 
   See
@@ -92,13 +92,27 @@ Other AnnData classes:
 
 ### Public methods
 
-- [`ReticulateAnnData$new()`](#method-ReticulateAnnData-new)
+- [`ZarrAnnData$new()`](#method-ZarrAnnData-new)
 
-- [`ReticulateAnnData$n_obs()`](#method-ReticulateAnnData-n_obs)
+- [`ZarrAnnData$n_obs()`](#method-ZarrAnnData-n_obs)
 
-- [`ReticulateAnnData$n_vars()`](#method-ReticulateAnnData-n_vars)
+- [`ZarrAnnData$n_vars()`](#method-ZarrAnnData-n_vars)
 
-- [`ReticulateAnnData$py_anndata()`](#method-ReticulateAnnData-py_anndata)
+- [`ZarrAnnData$obs_keys()`](#method-ZarrAnnData-obs_keys)
+
+- [`ZarrAnnData$var_keys()`](#method-ZarrAnnData-var_keys)
+
+- [`ZarrAnnData$layers_keys()`](#method-ZarrAnnData-layers_keys)
+
+- [`ZarrAnnData$obsm_keys()`](#method-ZarrAnnData-obsm_keys)
+
+- [`ZarrAnnData$varm_keys()`](#method-ZarrAnnData-varm_keys)
+
+- [`ZarrAnnData$obsp_keys()`](#method-ZarrAnnData-obsp_keys)
+
+- [`ZarrAnnData$varp_keys()`](#method-ZarrAnnData-varp_keys)
+
+- [`ZarrAnnData$uns_keys()`](#method-ZarrAnnData-uns_keys)
 
 Inherited methods
 
@@ -108,16 +122,8 @@ Inherited methods
 - [`anndataR::AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
 - [`anndataR::AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
 - [`anndataR::AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
-- [`anndataR::AbstractAnnData$layers_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-layers_keys)
-- [`anndataR::AbstractAnnData$obs_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obs_keys)
-- [`anndataR::AbstractAnnData$obsm_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obsm_keys)
-- [`anndataR::AbstractAnnData$obsp_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obsp_keys)
 - [`anndataR::AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
 - [`anndataR::AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
-- [`anndataR::AbstractAnnData$uns_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-uns_keys)
-- [`anndataR::AbstractAnnData$var_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-var_keys)
-- [`anndataR::AbstractAnnData$varm_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varm_keys)
-- [`anndataR::AbstractAnnData$varp_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varp_keys)
 - [`anndataR::AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
 - [`anndataR::AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
 
@@ -125,12 +131,12 @@ Inherited methods
 
 ### Method `new()`
 
-`ReticulateAnnData` constructor
+`ZarrAnnData` constructor
 
 #### Usage
 
-    ReticulateAnnData$new(
-      py_anndata = NULL,
+    ZarrAnnData$new(
+      file,
       X = NULL,
       obs = NULL,
       var = NULL,
@@ -140,81 +146,86 @@ Inherited methods
       obsp = NULL,
       varp = NULL,
       uns = NULL,
-      shape = NULL
+      shape = NULL,
+      mode = c("a", "r", "r+", "w", "w-", "x"),
+      compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4")
     )
 
 #### Arguments
 
-- `py_anndata`:
+- `file`:
 
-  A Python AnnData object created using reticulate, or NULL to create a
-  new empty Python AnnData object
+  The file name (character) of the `.zarr` file. If this file already
+  exits, other arguments must be `NULL`.
 
 - `X`:
 
   See the `X` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `obs`:
 
   See the `obs` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `var`:
 
   See the `var` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `layers`:
 
   See the `layers` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `obsm`:
 
   See the `obsm` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `varm`:
 
   See the `varm` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `obsp`:
 
   See the `obsp` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `varp`:
 
   See the `varp` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `uns`:
 
   See the `uns` slot in
   [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
-  (only used if py_anndata is NULL)
 
 - `shape`:
 
   Shape tuple (e.g. `c(n_obs, n_vars)`). Can be provided if both `X` or
-  `obs` and `var` are not provided. (only used if py_anndata is NULL)
+  `obs` and `var` are not provided.
+
+- `mode`:
+
+  The mode to open the Zarr file. See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+  for details
+
+- `compression`:
+
+  The compression algorithm to use. See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+  for details
 
 #### Details
 
-The constructor creates a new ReticulateAnnData interface object that
-wraps a Python AnnData object. If `py_anndata` is provided, it must be a
-valid Python AnnData object. If NULL, a new Python AnnData object will
-be created using the other provided arguments.
+The constructor creates a new Zarr `AnnData` interface object. This can
+either be used to either connect to an existing `.zarr` file or to
+create a new one. If any additional slot arguments are set an existing
+file will be overwritten.
 
 ------------------------------------------------------------------------
 
@@ -225,7 +236,7 @@ See the `n_obs` field in
 
 #### Usage
 
-    ReticulateAnnData$n_obs()
+    ZarrAnnData$n_obs()
 
 ------------------------------------------------------------------------
 
@@ -236,18 +247,92 @@ See the `n_vars` field in
 
 #### Usage
 
-    ReticulateAnnData$n_vars()
+    ZarrAnnData$n_vars()
 
 ------------------------------------------------------------------------
 
-### Method `py_anndata()`
+### Method `obs_keys()`
 
-Get the underlying Python AnnData object
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
 
 #### Usage
 
-    ReticulateAnnData$py_anndata()
+    ZarrAnnData$obs_keys()
 
-#### Returns
+------------------------------------------------------------------------
 
-The Python AnnData object wrapped by this ReticulateAnnData
+### Method `var_keys()`
+
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+#### Usage
+
+    ZarrAnnData$var_keys()
+
+------------------------------------------------------------------------
+
+### Method `layers_keys()`
+
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+#### Usage
+
+    ZarrAnnData$layers_keys()
+
+------------------------------------------------------------------------
+
+### Method `obsm_keys()`
+
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+#### Usage
+
+    ZarrAnnData$obsm_keys()
+
+------------------------------------------------------------------------
+
+### Method `varm_keys()`
+
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+#### Usage
+
+    ZarrAnnData$varm_keys()
+
+------------------------------------------------------------------------
+
+### Method `obsp_keys()`
+
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+#### Usage
+
+    ZarrAnnData$obsp_keys()
+
+------------------------------------------------------------------------
+
+### Method `varp_keys()`
+
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+#### Usage
+
+    ZarrAnnData$varp_keys()
+
+------------------------------------------------------------------------
+
+### Method `uns_keys()`
+
+See
+[AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
+
+#### Usage
+
+    ZarrAnnData$uns_keys()

@@ -31,6 +31,7 @@ Other object converters:
 [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md),
 [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md),
 [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md),
+[`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md),
 [`reticulate-helpers`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
 
 ## Examples

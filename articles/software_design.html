@@ -75,7 +75,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>
+<p><em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
 is designed to be an R native implementation of the <code>AnnData</code>
 object, inspired by the following packages:</p>
 <ul>
@@ -84,13 +84,13 @@ object, inspired by the following packages:</p>
 (<a href="https://github.com/scverse/anndata" class="external-link">scverse/anndata</a>): The
 Python <code>anndata</code> package and on-disk specification</li>
 <li>
-<em><a href="https://bioconductor.org/packages/3.22/zellkonverter" class="external-link">zellkonverter</a></em>
+<em><a href="https://bioconductor.org/packages/3.23/zellkonverter" class="external-link">zellkonverter</a></em>
 (<a href="https://github.com/theislab/zellkonverter" class="external-link">theislab/zellkonverter</a>):
 Convert <code>AnnData</code> files to/from
 <code>SingleCellExperiment</code> objects</li>
 <li>
 <em><a href="https://github.com/mtmorgan/h5ad" class="external-link">h5ad</a></em>:
-Read/write <code>*.h5ad</code> files natively using <em><a href="https://bioconductor.org/packages/3.22/rhdf5" class="external-link">rhdf5</a></em>
+Read/write <code>*.h5ad</code> files natively using <em><a href="https://bioconductor.org/packages/3.23/rhdf5" class="external-link">rhdf5</a></em>
 </li>
 <li>
 <em><a href="https://CRAN.R-project.org/package=anndata" class="external-link">anndata</a></em> (<a href="https://github.com/dynverse/anndata" class="external-link">dynverse/anndata</a>): An R
@@ -108,20 +108,14 @@ packages, and will be the go-to package for working with
 <li>An <em><a href="https://CRAN.R-project.org/package=R6" class="external-link">R6</a></em>
 <code>AnnData</code> class to work with objects in R</li>
 <li>In-memory (<code>InMemoryAnnData</code>), HDF5-backed
-(<code>HDF5AnnData</code>) and Python-backed
-(<code>ReticulateAnnData</code>) back ends with a consistent
-interface</li>
-<li>Read/write <code>.h5ad</code> files natively</li>
+(<code>HDF5AnnData</code>), Zarr-backed (<code>ZarrAnnData</code>) and
+Python-backed (<code>ReticulateAnnData</code>) back ends with a
+consistent interface</li>
+<li>Read/write <code>.h5ad</code> files and <code>.zarr</code> stores
+natively</li>
 <li>Convert to/from <code>SingleCellExperiment</code> objects</li>
 <li>Convert to/from <code>Seurat</code> objects</li>
 </ul>
-<div class="section level3">
-<h3 id="planned-features">Planned features<a class="anchor" aria-label="anchor" href="#planned-features"></a>
-</h3>
-<ul>
-<li>Zarr-backed back end (<code>ZarrAnnData</code>)</li>
-</ul>
-</div>
 <div class="section level3">
 <h3 id="anndata-classes">
 <code>AnnData</code> classes<a class="anchor" aria-label="anchor" href="#anndata-classes"></a>
@@ -137,14 +131,15 @@ an <code>AnnData</code> object.</li>
 and minimal data is stored in memory until it is requested by the user.
 It is primarily designed as an intermediate object when reading/writing
 H5AD files but can be useful for accessing parts of large files.</li>
+<li>The <code>ZarrAnnData</code> provides an interface to a Zarr store
+and minimal data is stored in memory until it is requested by the user.
+It is primarily designed as an intermediate object when reading/writing
+Zarr stores but can be useful for accessing parts of large stores.</li>
 <li>The <code>ReticulateAnnData</code> accesses data stored in an
 <code>AnnData</code> object in a concurrent Python session. This comes
 with the overhead and complexity of using <em><a href="https://CRAN.R-project.org/package=reticulate" class="external-link">reticulate</a></em>
 but is sometimes useful to access functionality that has not yet been
-implemented in <em><a href="https://bioconductor.org/packages/3.22/anndataR" class="external-link">anndataR</a></em>.</li>
-<li>The planned <code>ZarrAnnData</code> will provide an interface to an
-<code>AnnData</code> Zarr store, similar to
-<code>HDF5AnnData</code>.</li>
+implemented in <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>.</li>
 <li>An <code>AnnDataView</code> is returned when subsetting an
 <code>AnnData</code> object and provides access to a subset of the data
 in the referenced object. Some functionality (such as setting slots)
@@ -184,7 +179,7 @@ implemented</li>
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>R version <span class="dv">4</span>.<span class="fl">5.3</span> (<span class="dv">2026-03-11</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>R Under <span class="fu">development</span> (unstable) (<span class="dv">2026-04-22</span> r89950)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>Platform<span class="sc">:</span> x86_64<span class="sc">-</span>pc<span class="sc">-</span>linux<span class="sc">-</span>gnu</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>Running under<span class="sc">:</span> Ubuntu <span class="dv">24</span>.<span class="fl">04.4</span> LTS</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
@@ -205,7 +200,7 @@ implemented</li>
 <span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>[<span class="dv">1</span>] stats     graphics  grDevices utils     datasets  methods   base     </span>
 <span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a></span>
 <span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>other attached packages<span class="sc">:</span></span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>[<span class="dv">1</span>] BiocStyle_2.<span class="fl">38.0</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>[<span class="dv">1</span>] BiocStyle_2.<span class="fl">39.0</span></span>
 <span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a></span>
 <span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>loaded via a <span class="fu">namespace</span> (and not attached)<span class="sc">:</span></span>
 <span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a> [<span class="dv">1</span>] digest_0.<span class="fl">6.39</span>       desc_1.<span class="fl">4.3</span>          R6_2.<span class="fl">6.1</span>           </span>
@@ -213,8 +208,8 @@ implemented</li>
 <span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a> [<span class="dv">7</span>] cachem_1.<span class="fl">1.0</span>        knitr_1<span class="fl">.51</span>          htmltools_0.<span class="fl">5.9</span>    </span>
 <span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>[<span class="dv">10</span>] rmarkdown_2<span class="fl">.31</span>      lifecycle_1.<span class="fl">0.5</span>     cli_3.<span class="fl">6.6</span>          </span>
 <span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>[<span class="dv">13</span>] sass_0.<span class="fl">4.10</span>         pkgdown_2.<span class="fl">2.0</span>       textshaping_1.<span class="fl">0.5</span>  </span>
-<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>[<span class="dv">16</span>] jquerylib_0.<span class="fl">1.4</span>     systemfonts_1.<span class="fl">3.2</span>   compiler_4.<span class="fl">5.3</span>     </span>
-<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>[<span class="dv">19</span>] tools_4.<span class="fl">5.3</span>         ragg_1.<span class="fl">5.2</span>          bslib_0.<span class="fl">10.0</span>       </span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>[<span class="dv">16</span>] jquerylib_0.<span class="fl">1.4</span>     systemfonts_1.<span class="fl">3.2</span>   compiler_4.<span class="fl">7.0</span>     </span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>[<span class="dv">19</span>] tools_4.<span class="fl">7.0</span>         ragg_1.<span class="fl">5.2</span>          bslib_0.<span class="fl">10.0</span>       </span>
 <span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>[<span class="dv">22</span>] evaluate_1.<span class="fl">0.5</span>      yaml_2.<span class="fl">3.12</span>         BiocManager_1.<span class="fl">30.27</span></span>
 <span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>[<span class="dv">25</span>] otel_0.<span class="fl">2.0</span>          jsonlite_2.<span class="fl">0.0</span>      rlang_1.<span class="fl">2.0</span>        </span>
 <span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>[<span class="dv">28</span>] fs_2.<span class="fl">1.0</span>            htmlwidgets_1.<span class="fl">6.4</span>  </span></code></pre></div>
