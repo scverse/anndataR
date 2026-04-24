@@ -13,7 +13,7 @@ store <- file.path(td, "example_v2.zarr")
 
 # helper to compare h5ad and zarr reads for the same path
 expect_equal_h5ad_zarr <- function(h5ad_fn, zarr_fn, path, ...) {
-  expect_equal(h5ad_fn(file, path, ...), zarr_fn(store, path, ...))
+  testthat::expect_equal(h5ad_fn(file, path, ...), zarr_fn(store, path, ...))
 }
 
 # compare rec arrays of h5ad and zarr

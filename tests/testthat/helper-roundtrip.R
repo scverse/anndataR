@@ -44,5 +44,5 @@ expect_anndata_print_equal <- function(adata_r, adata_py) {
   # Normalise class names in R output to match Python output
   str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
 
-  expect_equal(str_r, str_py)
+  testthat::expect_equal(str_r, str_py)
 }

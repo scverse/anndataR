@@ -10,5 +10,8 @@ skip_if_no_zarr <- function() {
 
   # TODO: Remove when this warning is removed from anndata
   wn <- reticulate::import("warnings")
-  wn$filterwarnings("ignore", message="Writing zarr v2 data will no longer be the default")
+  wn$filterwarnings(
+    "ignore",
+    message = "Writing zarr v2 data will no longer be the default"
+  )
 }
