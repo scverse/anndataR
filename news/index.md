@@ -1,5 +1,12 @@
 # Changelog
 
+## anndataR 1.1.3
+
+- Prepare for Bioconductor 3.23 release (PR
+  [\#449](https://github.com/scverse/anndataR/issues/449)).
+- Add initial Zarr support for reading and writing `.zarr` stores (PR
+  [\#190](https://github.com/scverse/anndataR/issues/190)).
+
 ## anndataR 1.1.2
 
 - Fix broken links (PR

@@ -509,7 +509,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.1.2              SingleCellExperiment_1.33.2
+#>  [1] anndataR_1.1.3              SingleCellExperiment_1.33.2
 #>  [3] SummarizedExperiment_1.41.1 Biobase_2.71.0             
 #>  [5] GenomicRanges_1.63.2        Seqinfo_1.1.0              
 #>  [7] IRanges_2.45.0              S4Vectors_0.49.2           

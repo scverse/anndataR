@@ -48,6 +48,12 @@ Other contributors:
 - Chananchida Sang-aram ([ORCID](https://orcid.org/0000-0002-0922-0822))
   (csangara) \[contributor\]
 
+- Artür Manukyan ([ORCID](https://orcid.org/0000-0002-0441-9517))
+  (Artur-man) \[contributor\]
+
+- Hugo Gruson ([ORCID](https://orcid.org/0000-0002-4094-1476)) (Bisaloo)
+  \[contributor\]
+
 - Data Intuitive <info@data-intuitive.com> \[funder\]
 
 - Chan Zuckerberg Initiative \[funder\]
