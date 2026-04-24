@@ -1,6 +1,6 @@
 # anndataR 1.1.3
 
-- Prepare for Bioconductor 3.23 release.
+- Prepare for Bioconductor 3.23 release (PR #449).
 - Add initial Zarr support for reading and writing `.zarr` stores (PR #190).
 
 # anndataR 1.1.2
