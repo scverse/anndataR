@@ -188,7 +188,7 @@ sessionInfo()
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
 #>  [11] memoise_2.0.1               spatstat.explore_3.8-0     
 #>  [13] htmltools_0.5.9             S4Arrays_1.10.1            
-#>  [15] curl_7.0.0                  SparseArray_1.10.10        
+#>  [15] curl_7.1.0                  SparseArray_1.10.10        
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
 #>  [19] parallelly_1.47.0           KernSmooth_2.23-26         
 #>  [21] bslib_0.10.0                htmlwidgets_1.6.4          
@@ -202,7 +202,7 @@ sessionInfo()
 #>  [37] MatrixGenerics_1.22.0       fitdistrplus_1.2-6         
 #>  [39] future_1.70.0               shiny_1.13.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
-#>  [43] S4Vectors_0.48.1            Seurat_5.4.0               
+#>  [43] S4Vectors_0.48.1            Seurat_5.5.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
 #>  [47] irlba_2.3.7                 RSQLite_2.4.6              
 #>  [49] textshaping_1.0.5           GenomicRanges_1.62.1       
@@ -210,8 +210,8 @@ sessionInfo()
 #>  [53] spatstat.sparse_3.1-0       polyclip_1.10-7            
 #>  [55] httr_1.4.8                  abind_1.4-8                
 #>  [57] compiler_4.5.3              withr_3.0.2                
-#>  [59] bit64_4.8.0                 S7_0.2.1-1                 
-#>  [61] DBI_1.3.0                   fastDummies_1.7.5          
+#>  [59] bit64_4.8.0                 S7_0.2.2                   
+#>  [61] DBI_1.3.0                   fastDummies_1.7.6          
 #>  [63] MASS_7.3-65                 rappdirs_0.3.4             
 #>  [65] DelayedArray_0.36.1         tools_4.5.3                
 #>  [67] lmtest_0.9-40               otel_0.2.0                 
@@ -250,7 +250,7 @@ sessionInfo()
 #> [133] dbplyr_2.5.2                png_0.1-9                  
 #> [135] spatstat.univar_3.1-7       parallel_4.5.3             
 #> [137] blob_1.3.0                  pkgdown_2.2.0              
-#> [139] ggplot2_4.0.2               dotCall64_1.2              
+#> [139] ggplot2_4.0.3               dotCall64_1.2              
 #> [141] listenv_0.10.1              viridisLite_0.4.3          
 #> [143] scales_1.4.0                ggridges_0.5.7             
 #> [145] SeuratObject_5.4.0          purrr_1.2.2                
@@ -287,11 +287,11 @@ reticulate::py_list_packages()
 #> 12        kiwisolver        1.5.0            kiwisolver==1.5.0
 #> 13   legacy-api-wrap          1.5         legacy-api-wrap==1.5
 #> 14          llvmlite       0.47.0             llvmlite==0.47.0
-#> 15        matplotlib       3.10.8           matplotlib==3.10.8
+#> 15        matplotlib       3.10.9           matplotlib==3.10.9
 #> 16            mudata        0.3.6                mudata==0.3.6
 #> 17           natsort        8.4.0               natsort==8.4.0
 #> 18          networkx        3.6.1              networkx==3.6.1
-#> 19             numba       0.65.0                numba==0.65.0
+#> 19             numba       0.65.1                numba==0.65.1
 #> 20         numcodecs       0.16.5            numcodecs==0.16.5
 #> 21             numpy        2.4.4                 numpy==2.4.4
 #> 22         packaging         26.1              packaging==26.1

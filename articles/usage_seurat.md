@@ -209,7 +209,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.4.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.1.2    
+#> [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.1.2    
 #> [5] BiocStyle_2.38.0  
 #> 
 #> loaded via a namespace (and not attached):
@@ -235,13 +235,13 @@ sessionInfo()
 #>  [58] abind_1.4-8            yaml_2.3.12            spatstat.random_3.4-5 
 #>  [61] spatstat.explore_3.8-0 codetools_0.2-20       miniUI_0.1.2          
 #>  [64] listenv_0.10.1         plyr_1.8.9             lattice_0.22-9        
-#>  [67] tibble_3.3.1           shiny_1.13.0           S7_0.2.1-1            
+#>  [67] tibble_3.3.1           shiny_1.13.0           S7_0.2.2              
 #>  [70] ROCR_1.0-12            evaluate_1.0.5         Rtsne_0.17            
-#>  [73] future_1.70.0          fastDummies_1.7.5      desc_1.4.3            
+#>  [73] future_1.70.0          fastDummies_1.7.6      desc_1.4.3            
 #>  [76] survival_3.8-6         polyclip_1.10-7        fitdistrplus_1.2-6    
 #>  [79] pillar_1.11.1          BiocManager_1.30.27    KernSmooth_2.23-26    
 #>  [82] plotly_4.12.0          generics_0.1.4         RcppHNSW_0.6.0        
-#>  [85] ggplot2_4.0.2          scales_1.4.0           globals_0.19.1        
+#>  [85] ggplot2_4.0.3          scales_1.4.0           globals_0.19.1        
 #>  [88] xtable_1.8-8           glue_1.8.1             lazyeval_0.2.3        
 #>  [91] tools_4.5.3            data.table_1.18.2.1    RSpectra_0.16-2       
 #>  [94] RANN_2.6.2             fs_2.1.0               dotCall64_1.2         
