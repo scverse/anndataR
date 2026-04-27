@@ -157,7 +157,7 @@ print(rna_sce)
 
 ``` r
 sessionInfo()
-#> R Under development (unstable) (2026-04-23 r89955)
+#> R Under development (unstable) (2026-04-24 r89961)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -294,7 +294,7 @@ reticulate::py_list_packages()
 #> 19             numba       0.65.1                numba==0.65.1
 #> 20         numcodecs       0.16.5            numcodecs==0.16.5
 #> 21             numpy        2.4.4                 numpy==2.4.4
-#> 22         packaging         26.1              packaging==26.1
+#> 22         packaging         26.2              packaging==26.2
 #> 23            pandas        2.3.3                pandas==2.3.3
 #> 24             patsy        1.0.2                 patsy==1.0.2
 #> 25            pillow       12.2.0               pillow==12.2.0
