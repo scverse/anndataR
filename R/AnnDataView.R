@@ -368,7 +368,7 @@ convert_to_indices <- function(
       )
     }
     which(subset)
-  } else if (is.integer(subset) || is.numeric(subset)) {
+  } else if (is.numeric(subset)) {
     subset <- as.integer(subset)
     if (any(subset < 1 | subset > max_length)) {
       cli_abort(
