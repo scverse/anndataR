@@ -61,7 +61,7 @@ write_h5ad_element <- function(
       if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
       } else if (
-        is.integer(value) && any(is.na(value)) && length(dim(value)) <= 1
+        is.integer(value) && anyNA(value) && length(dim(value)) <= 1
       ) {
         write_h5ad_nullable_integer
       } else {
@@ -69,7 +69,7 @@ write_h5ad_element <- function(
       }
     } else if (is.logical(value)) {
       # Logical values
-      if (any(is.na(value))) {
+      if (anyNA(value)) {
         write_h5ad_nullable_boolean
       } else if (length(value) == 1) {
         # Single Booleans should be written as numeric scalars
@@ -214,7 +214,7 @@ write_h5ad_dense_array <- function(
     value <- as.matrix(value)
   }
 
-  if (is.matrix(value) && any(is.na(value))) {
+  if (is.matrix(value) && anyNA(value)) {
     # is.na(value) <- NaN gets ignored
     na_indices <- is.na(value)
     value[na_indices] <- NaN

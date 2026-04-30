@@ -385,7 +385,7 @@ convert_to_indices <- function(
       ))
     }
     indices <- match(subset, names_vector)
-    if (any(is.na(indices))) {
+    if (anyNA(indices)) {
       # nolint start: object_usage_linter
       missing_names <- subset[is.na(indices)]
       # nolint end: object_usage_linter

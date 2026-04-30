@@ -63,14 +63,14 @@ write_zarr_element <- function(
       # Numeric values
       if (length(value) == 1 && !is.matrix(value)) {
         write_zarr_numeric_scalar
-      } else if (is.integer(value) && any(is.na(value))) {
+      } else if (is.integer(value) && anyNA(value)) {
         write_zarr_nullable_integer
       } else {
         write_zarr_dense_array
       }
     } else if (is.logical(value)) {
       # Logical values
-      if (any(is.na(value))) {
+      if (anyNA(value)) {
         write_zarr_nullable_boolean
       } else if (length(value) == 1) {
         # Single Booleans should be written as numeric scalars
