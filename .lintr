@@ -1,6 +1,7 @@
 linters: linters_with_defaults(
     line_length_linter = line_length_linter(120L),
     any_is_na_linter(),
+    any_duplicated_linter(),
     outer_negation_linter(),
     nzchar_linter(),
     fixed_regex_linter(),
