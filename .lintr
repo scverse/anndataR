@@ -3,5 +3,6 @@ linters: linters_with_defaults(
     any_is_na_linter(),
     outer_negation_linter(),
     nzchar_linter(),
+    fixed_regex_linter(),
     object_name_linter = object_name_linter(styles = c("snake_case", "symbols", "CamelCase", "SNAKE_CASE"))
   )

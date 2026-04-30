@@ -226,14 +226,14 @@ generate_dataset <- function(
       factor(NA_character_, ordered = TRUE)
     } else if (uns_type == "scalar_logical_with_nas") {
       NA_real_
-    } else if (grepl("scalar_", uns_type)) {
-      generate_vector(1L, gsub("scalar_", "", uns_type))
-    } else if (grepl("vec_", uns_type)) {
-      generate_vector(10L, gsub("vec_", "", uns_type))
-    } else if (grepl("df_", uns_type)) {
-      generate_dataframe(10L, gsub("df_", "", uns_type))
-    } else if (grepl("mat_", uns_type)) {
-      generate_matrix(10L, 10L, gsub("mat_", "", uns_type))
+    } else if (grepl("scalar_", uns_type, fixed = TRUE)) {
+      generate_vector(1L, gsub("scalar_", "", uns_type, fixed = TRUE))
+    } else if (grepl("vec_", uns_type, fixed = TRUE)) {
+      generate_vector(10L, gsub("vec_", "", uns_type, fixed = TRUE))
+    } else if (grepl("df_", uns_type, fixed = TRUE)) {
+      generate_dataframe(10L, gsub("df_", "", uns_type, fixed = TRUE))
+    } else if (grepl("mat_", uns_type, fixed = TRUE)) {
+      generate_matrix(10L, 10L, gsub("mat_", "", uns_type, fixed = TRUE))
     } else {
       cli_abort("Unknown {.field uns} type: {.val {uns_type}}")
     }
