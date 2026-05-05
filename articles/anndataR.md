@@ -50,6 +50,7 @@ Install *[anndataR](https://bioconductor.org/packages/3.23/anndataR)*
 using *[BiocManager](https://CRAN.R-project.org/package=BiocManager)*:
 
 ``` r
+
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
@@ -66,6 +67,7 @@ These sections briefly show how to use
 First, we fetch an example `.h5ad` file included in the package:
 
 ``` r
+
 library(anndataR)
 
 h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
@@ -74,6 +76,7 @@ h5ad_path <- system.file("extdata", "example.h5ad", package = "anndataR")
 By default, a H5AD is read to an in-memory `AnnData` object:
 
 ``` r
+
 adata <- read_h5ad(h5ad_path)
 ```
 
@@ -81,6 +84,7 @@ It can also be read as a `SingleCellExperiment` object (see
 [`vignette("usage_singlecellexperiment")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)):
 
 ``` r
+
 sce <- read_h5ad(h5ad_path, as = "SingleCellExperiment")
 ```
 
@@ -88,18 +92,21 @@ Or as a `Seurat` object (see
 [`vignette("usage_seurat")`](https://anndataR.scverse.org/articles/usage_seurat.md)):
 
 ``` r
+
 obj <- read_h5ad(h5ad_path, as = "Seurat")
 ```
 
 There is also a HDF5-backed `AnnData` object:
 
 ``` r
+
 adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
 
 Similarly, these functionalities are provided for `.zarr` stores too.
 
 ``` r
+
 zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
 td <- tempdir(check = TRUE)
 unzip(zarr_path, exdir = td)
@@ -107,6 +114,7 @@ zarr_path <- file.path(td, "example_v2.zarr")
 ```
 
 ``` r
+
 # in-memory
 adata <- read_zarr(zarr_path)
 
@@ -128,6 +136,7 @@ See for interacting with a Python `AnnData` via
 View structure:
 
 ``` r
+
 adata
 #> ZarrAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
@@ -143,6 +152,7 @@ adata
 Access `AnnData` slots:
 
 ``` r
+
 dim(adata$X)
 #> [1]  50 100
 adata$obs[1:5, 1:6]
@@ -177,6 +187,7 @@ Convert the `AnnData` object to a `SingleCellExperiment` object (see
 [`vignette("usage_singlecellexperiment")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)):
 
 ``` r
+
 sce <- adata$as_SingleCellExperiment()
 sce
 #> class: SingleCellExperiment 
@@ -197,6 +208,7 @@ Convert the `AnnData` object to a `Seurat` object (see
 [`vignette("usage_seurat")`](https://anndataR.scverse.org/articles/usage_seurat.md)):
 
 ``` r
+
 obj <- adata$as_Seurat()
 obj
 #> An object of class Seurat 
@@ -210,6 +222,7 @@ Convert a `SingleCellExperiment` object to an `AnnData` object (see
 [`vignette("usage_singlecellexperiment")`](https://anndataR.scverse.org/articles/usage_singlecellexperiment.md)):
 
 ``` r
+
 adata <- as_AnnData(sce)
 adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
@@ -227,6 +240,7 @@ Convert a `Seurat` object to an `AnnData` object (see
 [`vignette("usage_seurat")`](https://anndataR.scverse.org/articles/usage_seurat.md)):
 
 ``` r
+
 adata <- as_AnnData(obj)
 adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
@@ -241,6 +255,7 @@ adata
 ### Manually create an `AnnData` object
 
 ``` r
+
 adata <- AnnData(
   X = matrix(rnorm(100), nrow = 10),
   obs = data.frame(
@@ -262,6 +277,7 @@ adata
 Write an `AnnData` object to disk:
 
 ``` r
+
 tmpfile <- tempfile(fileext = ".h5ad")
 adata$write_h5ad(tmpfile) # Alternatively, write_h5ad(adata, tmpfile)
 ```
@@ -269,6 +285,7 @@ adata$write_h5ad(tmpfile) # Alternatively, write_h5ad(adata, tmpfile)
 Write a `SingleCellExperiment` object to disk:
 
 ``` r
+
 tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(sce, tmpfile)
 #> Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported
@@ -285,6 +302,7 @@ write_h5ad(sce, tmpfile)
 Write a `Seurat` object to disk:
 
 ``` r
+
 tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(obj, tmpfile)
 #> Warning: Matrix column names cannot be written to a <HDF5AnnData> object, they will be
@@ -303,6 +321,7 @@ Similarly, we can write `AnnData` and other objects to `.zarr` stores
 too.
 
 ``` r
+
 tmpfile <- tempfile(fileext = ".zarr")
 adata$write_zarr(tmpfile) # Alternatively, write_zarr(adata, tmpfile)
 
@@ -344,6 +363,7 @@ for efficient memory usage.
 Subset observations (rows) using logical conditions:
 
 ``` r
+
 # Create some sample data
 adata <- AnnData(
   X = matrix(rnorm(50), nrow = 10, ncol = 5),
@@ -368,6 +388,7 @@ view1
 Subset variables (columns) using logical conditions:
 
 ``` r
+
 # Subset to highly variable genes
 view2 <- adata[, adata$var$highly_variable]
 view2
@@ -381,6 +402,7 @@ view2
 Subset both observations and variables simultaneously:
 
 ``` r
+
 # Subset to cell type "A" and highly variable genes
 view3 <- adata[adata$obs$cell_type == "A", adata$var$highly_variable]
 view3
@@ -392,6 +414,7 @@ view3
 #### Using different index types
 
 ``` r
+
 # Numeric indices
 view4 <- adata[1:5, 1:3]
 view4
@@ -414,6 +437,7 @@ view5
 Views maintain access to all original data slots:
 
 ``` r
+
 # Access dimensions
 dim(view3)
 #> [1] 3 3
@@ -461,6 +485,7 @@ R and Python in single-cell
 transcriptomics”*](https://doi.org/10.1101/2025.08.18.669052):
 
 ``` r
+
 citation("anndataR")
 #> To cite package 'anndataR' in publications use:
 #> 
@@ -486,8 +511,9 @@ citation("anndataR")
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R Under development (unstable) (2026-04-24 r89961)
+#> R Under development (unstable) (2026-05-03 r89994)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -509,44 +535,44 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.1.3              SingleCellExperiment_1.33.2
-#>  [3] SummarizedExperiment_1.41.1 Biobase_2.71.0             
-#>  [5] GenomicRanges_1.63.2        Seqinfo_1.1.0              
-#>  [7] IRanges_2.45.0              S4Vectors_0.49.2           
-#>  [9] BiocGenerics_0.57.1         generics_0.1.4             
-#> [11] MatrixGenerics_1.23.0       matrixStats_1.5.0          
+#>  [1] anndataR_1.2.0              SingleCellExperiment_1.34.0
+#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
+#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
+#>  [7] IRanges_2.46.0              S4Vectors_0.50.0           
+#>  [9] BiocGenerics_0.58.0         generics_0.1.4             
+#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-1                   
-#> [15] BiocStyle_2.39.0           
+#> [15] BiocStyle_2.40.0           
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
 #>   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
-#>  [13] S4Arrays_1.11.1        curl_7.1.0             Rhdf5lib_1.99.6       
-#>  [16] SparseArray_1.11.13    rhdf5_2.55.16          sass_0.4.10           
+#>  [13] S4Arrays_1.12.0        curl_7.1.0             Rhdf5lib_2.0.0        
+#>  [16] SparseArray_1.12.2     rhdf5_2.56.0           sass_0.4.10           
 #>  [19] sctransform_0.4.3      parallelly_1.47.0      KernSmooth_2.23-26    
 #>  [22] bslib_0.10.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.2.2            plyr_1.8.9            
 #>  [28] plotly_4.12.0          zoo_1.8-15             cachem_1.1.0          
-#>  [31] igraph_2.3.0           mime_0.13              lifecycle_1.0.5       
+#>  [31] igraph_2.3.1           mime_0.13              lifecycle_1.0.5       
 #>  [34] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
 #>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.70.0         
 #>  [40] shiny_1.13.0           digest_0.6.39          paws.storage_0.9.0    
 #>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.0          
 #>  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [49] Rarr_1.99.44           progressr_0.19.0       spatstat.sparse_3.1-0 
+#>  [49] Rarr_2.0.0             progressr_0.19.0       spatstat.sparse_3.1-0 
 #>  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           
 #>  [55] compiler_4.7.0         S7_0.2.2               fastDummies_1.7.6     
 #>  [58] R.utils_2.13.0         MASS_7.3-65            rappdirs_0.3.4        
-#>  [61] DelayedArray_0.37.1    tools_4.7.0            lmtest_0.9-40         
+#>  [61] DelayedArray_0.38.1    tools_4.7.0            lmtest_0.9-40         
 #>  [64] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   
 #>  [67] goftest_1.2-3          R.oo_1.27.1            glue_1.8.1            
-#>  [70] nlme_3.1-169           rhdf5filters_1.23.3    promises_1.5.0        
+#>  [70] nlme_3.1-169           rhdf5filters_1.24.0    promises_1.5.0        
 #>  [73] grid_4.7.0             Rtsne_0.17             cluster_2.1.8.2       
 #>  [76] reshape2_1.4.5         gtable_0.3.6           spatstat.data_3.1-9   
 #>  [79] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.2.1   
-#>  [82] XVector_0.51.0         spatstat.geom_3.7-3    RcppAnnoy_0.0.23      
+#>  [82] XVector_0.52.0         spatstat.geom_3.7-3    RcppAnnoy_0.0.23      
 #>  [85] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         
 #>  [88] stringr_1.6.0          spam_2.11-3            RcppHNSW_0.6.0        
 #>  [91] later_1.4.8            splines_4.7.0          dplyr_1.2.1           

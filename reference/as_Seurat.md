@@ -109,17 +109,17 @@ used as names.
 
 ### Conversion table
 
-|                    |                            |                                                                                                                                        |                                                                                                                                                      |
-|--------------------|----------------------------|----------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **From `AnnData`** | **To `Seurat`**            | **Example mapping argument**                                                                                                           | **Default**                                                                                                                                          |
-| `adata$X`          | `Layers(seurat)`           | `x_mapping = "counts"` *OR* `layers_mapping = c(counts = NA)`                                                                          | The data in `adata$X` is copied to a layer named `X`                                                                                                 |
-| `adata$layers`     | `Layers(seurat)`           | `layers_mapping = c(counts = "counts")`                                                                                                | All items are copied by name                                                                                                                         |
-| `adata$obs`        | `seurat[[]]`               | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")`                                                           | All columns are copied by name                                                                                                                       |
-| `adata$var`        | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")`                                                                | All columns are copied by name                                                                                                                       |
-| `adata$obsm`       | `Reductions(seurat)`       | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"))` | All items that can be coerced to a numeric matrix are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
-| `adata$obsp`       | `Graphs(seurat)`           | `graph_mapping = c(nn = "connectivities")`                                                                                             | All items are copied by name                                                                                                                         |
-| `adata$varp`       | *NA*                       | *NA*                                                                                                                                   | There is no corresponding slot for `varp`                                                                                                            |
-| `adata$uns`        | `Misc(seurat)`             | `misc_mapping = c(project_metadata = "metadata")`                                                                                      | All items are copied by name                                                                                                                         |
+|  |  |  |  |
+|----|----|----|----|
+| **From `AnnData`** | **To `Seurat`** | **Example mapping argument** | **Default** |
+| `adata$X` | `Layers(seurat)` | `x_mapping = "counts"` *OR* `layers_mapping = c(counts = NA)` | The data in `adata$X` is copied to a layer named `X` |
+| `adata$layers` | `Layers(seurat)` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
+| `adata$obs` | `seurat[[]]` | `object_metadata_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+| `adata$var` | `seurat[[assay_name]][[]]` | `assay_metadata_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+| `adata$obsm` | `Reductions(seurat)` | `reduction_mapping = c(pca = "X_pca")` **OR** `reduction_mapping = list(pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs"))` | All items that can be coerced to a numeric matrix are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
+| `adata$obsp` | `Graphs(seurat)` | `graph_mapping = c(nn = "connectivities")` | All items are copied by name |
+| `adata$varp` | *NA* | *NA* | There is no corresponding slot for `varp` |
+| `adata$uns` | `Misc(seurat)` | `misc_mapping = c(project_metadata = "metadata")` | All items are copied by name |
 
 ### The `reduction_mapping` argument
 

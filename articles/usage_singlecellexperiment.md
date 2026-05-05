@@ -26,6 +26,7 @@ in addition to
 install them using the following code:
 
 ``` r
+
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
@@ -39,6 +40,7 @@ demonstrate how to read an `.h5ad` file and convert it to a
 `SingleCellExperiment` object.
 
 ``` r
+
 library(anndataR)
 library(SingleCellExperiment)
 #> Loading required package: SummarizedExperiment
@@ -118,6 +120,7 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 Read the `.h5ad` file as a `SingleCellExperiment` object:
 
 ``` r
+
 sce_obj <- read_h5ad(h5ad_file, as = "SingleCellExperiment")
 sce_obj
 #> class: SingleCellExperiment 
@@ -138,6 +141,7 @@ This is equivalent to reading in the `.h5ad` file as an `AnnData` and
 explicitly converting:
 
 ``` r
+
 adata <- read_h5ad(h5ad_file)
 sce <- adata$as_SingleCellExperiment()
 sce
@@ -159,6 +163,7 @@ Similarly, we can read from a Zarr store which we also demonstrate with
 an example `.zarr` store:
 
 ``` r
+
 # Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
 zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
 td <- tempdir(check = TRUE)
@@ -184,6 +189,7 @@ sce_zarr
 or
 
 ``` r
+
 adata <- read_zarr(zarr_path)
 sce_zarr <- adata$as_SingleCellExperiment()
 sce_zarr
@@ -239,6 +245,7 @@ for more details on how to customize the conversion process. For
 instance:
 
 ``` r
+
 adata$as_SingleCellExperiment(
   x_mapping = "counts",
   assays_mapping = c("csc_counts"),
@@ -276,6 +283,7 @@ write out the `SingleCellExperiment` object as an `.h5ad` file or
 `.zarr` store.
 
 ``` r
+
 write_h5ad(sce_obj, tempfile(fileext = ".h5ad"))
 write_zarr(sce_obj, tempfile(fileext = ".zarr"))
 ```
@@ -284,6 +292,7 @@ This is equivalent to converting the `SingleCellExperiment` object to an
 `AnnData` object and then writing it out:
 
 ``` r
+
 adata <- as_AnnData(sce_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
 adata$write_zarr(tempfile(fileext = ".zarr"))
@@ -296,6 +305,7 @@ mappings for each slot in the `AnnData` object. For more details, see
 Here’s an example:
 
 ``` r
+
 as_AnnData(
   sce_obj,
   x_mapping = "counts",
@@ -324,8 +334,9 @@ or
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R Under development (unstable) (2026-04-24 r89961)
+#> R Under development (unstable) (2026-05-03 r89994)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -347,32 +358,32 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] SingleCellExperiment_1.33.2 SummarizedExperiment_1.41.1
-#>  [3] Biobase_2.71.0              GenomicRanges_1.63.2       
-#>  [5] Seqinfo_1.1.0               IRanges_2.45.0             
-#>  [7] S4Vectors_0.49.2            BiocGenerics_0.57.1        
-#>  [9] generics_0.1.4              MatrixGenerics_1.23.0      
-#> [11] matrixStats_1.5.0           anndataR_1.1.3             
-#> [13] BiocStyle_2.39.0           
+#>  [1] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0
+#>  [3] Biobase_2.72.0              GenomicRanges_1.64.0       
+#>  [5] Seqinfo_1.2.0               IRanges_2.46.0             
+#>  [7] S4Vectors_0.50.0            BiocGenerics_0.58.0        
+#>  [9] generics_0.1.4              MatrixGenerics_1.24.0      
+#> [11] matrixStats_1.5.0           anndataR_1.2.0             
+#> [13] BiocStyle_2.40.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] rappdirs_0.3.4      sass_0.4.10         SparseArray_1.11.13
+#>  [1] rappdirs_0.3.4      sass_0.4.10         SparseArray_1.12.2 
 #>  [4] lattice_0.22-9      paws.common_0.8.9   digest_0.6.39      
 #>  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.7.0         
 #> [10] bookdown_0.46       fastmap_1.2.0       R.oo_1.27.1        
 #> [13] jsonlite_2.0.0      Matrix_1.7-5        R.utils_2.13.0     
-#> [16] Rarr_1.99.44        BiocManager_1.30.27 purrr_1.2.2        
+#> [16] Rarr_2.0.0          BiocManager_1.30.27 purrr_1.2.2        
 #> [19] httr2_1.2.2         textshaping_1.0.5   jquerylib_0.1.4    
 #> [22] abind_1.4-8         cli_3.6.6           crayon_1.5.3       
-#> [25] rlang_1.2.0         XVector_0.51.0      R.methodsS3_1.8.2  
-#> [28] cachem_1.1.0        DelayedArray_0.37.1 yaml_2.3.12        
-#> [31] otel_0.2.0          S4Arrays_1.11.1     tools_4.7.0        
-#> [34] Rhdf5lib_1.99.6     curl_7.1.0          reticulate_1.46.0  
+#> [25] rlang_1.2.0         XVector_0.52.0      R.methodsS3_1.8.2  
+#> [28] cachem_1.1.0        DelayedArray_0.38.1 yaml_2.3.12        
+#> [31] otel_0.2.0          S4Arrays_1.12.0     tools_4.7.0        
+#> [34] Rhdf5lib_2.0.0      curl_7.1.0          reticulate_1.46.0  
 #> [37] vctrs_0.7.3         R6_2.6.1            png_0.1-9          
-#> [40] lifecycle_1.0.5     rhdf5_2.55.16       fs_2.1.0           
+#> [40] lifecycle_1.0.5     rhdf5_2.56.0        fs_2.1.0           
 #> [43] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
 #> [46] pkgdown_2.2.0       bslib_0.10.0        glue_1.8.1         
 #> [49] Rcpp_1.1.1-1.1      systemfonts_1.3.2   xfun_0.57          
-#> [52] paws.storage_0.9.0  rhdf5filters_1.23.3 knitr_1.51         
+#> [52] paws.storage_0.9.0  rhdf5filters_1.24.0 knitr_1.51         
 #> [55] htmltools_0.5.9     rmarkdown_2.31      compiler_4.7.0
 ```

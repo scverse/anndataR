@@ -23,6 +23,7 @@ addition to
 install them using the following code:
 
 ``` r
+
 install.packages("Seurat")
 ```
 
@@ -33,6 +34,7 @@ demonstrate how to read an `.h5ad` file and convert it to a `Seurat`
 object.
 
 ``` r
+
 library(anndataR)
 library(Seurat)
 #> Loading required package: SeuratObject
@@ -49,6 +51,7 @@ h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 Read the `.h5ad` file as a `Seurat` object:
 
 ``` r
+
 seurat_obj <- read_h5ad(h5ad_file, as = "Seurat")
 seurat_obj
 #> An object of class Seurat 
@@ -62,6 +65,7 @@ This is equivalent to reading in the `.h5ad` file as an `AnnData` and
 explicitly converting:
 
 ``` r
+
 adata <- read_h5ad(h5ad_file)
 seurat_obj <- adata$as_Seurat()
 seurat_obj
@@ -76,6 +80,7 @@ Similarly, we can read from a Zarr store which we also demonstrate with
 an example `.zarr` store:
 
 ``` r
+
 # Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
 zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
 td <- tempdir(check = TRUE)
@@ -94,6 +99,7 @@ seurat_obj_zarr
 or
 
 ``` r
+
 adata <- read_zarr(zarr_path)
 seurat_obj_zarr <- adata$as_Seurat()
 seurat_obj_zarr
@@ -143,6 +149,7 @@ for more details on how to customize the conversion process. For
 instance:
 
 ``` r
+
 seurat_obj <- adata$as_Seurat(
   layers_mapping = c("counts", "dense_counts"),
   object_metadata_mapping = c(metadata1 = "Int", metadata2 = "Float"),
@@ -172,6 +179,7 @@ The reverse conversion is also possible, allowing you to convert the
 `Seurat` object as an `.h5ad` file or `.zarr` store.
 
 ``` r
+
 write_h5ad(seurat_obj, tempfile(fileext = ".h5ad"))
 write_zarr(seurat_obj, tempfile(fileext = ".zarr"))
 ```
@@ -180,6 +188,7 @@ This is equivalent to converting the `Seurat` object to an `AnnData`
 object and then writing it out:
 
 ``` r
+
 adata <- as_AnnData(seurat_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
 adata$write_zarr(tempfile(fileext = ".zarr"))
@@ -192,6 +201,7 @@ mappings for each slot in the `AnnData` object. For more details, see
 Here’s an example:
 
 ``` r
+
 adata <- as_AnnData(
   seurat_obj,
   assay_name = "RNA",
@@ -220,8 +230,9 @@ or
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R Under development (unstable) (2026-04-24 r89961)
+#> R Under development (unstable) (2026-05-03 r89994)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -242,33 +253,33 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.1.3    
-#> [5] BiocStyle_2.39.0  
+#> [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.2.0    
+#> [5] BiocStyle_2.40.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
 #>   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
-#>  [13] curl_7.1.0             Rhdf5lib_1.99.6        rhdf5_2.55.16         
+#>  [13] curl_7.1.0             Rhdf5lib_2.0.0         rhdf5_2.56.0          
 #>  [16] sass_0.4.10            sctransform_0.4.3      parallelly_1.47.0     
 #>  [19] KernSmooth_2.23-26     bslib_0.10.0           htmlwidgets_1.6.4     
 #>  [22] desc_1.4.3             ica_1.0-3              httr2_1.2.2           
 #>  [25] plyr_1.8.9             plotly_4.12.0          zoo_1.8-15            
-#>  [28] cachem_1.1.0           igraph_2.3.0           mime_0.13             
+#>  [28] cachem_1.1.0           igraph_2.3.1           mime_0.13             
 #>  [31] lifecycle_1.0.5        pkgconfig_2.0.3        Matrix_1.7-5          
 #>  [34] R6_2.6.1               fastmap_1.2.0          fitdistrplus_1.2-6    
 #>  [37] future_1.70.0          shiny_1.13.0           digest_0.6.39         
 #>  [40] paws.storage_0.9.0     patchwork_1.3.2        tensor_1.5.1          
 #>  [43] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [46] progressr_0.19.0       Rarr_1.99.44           spatstat.sparse_3.1-0 
+#>  [46] progressr_0.19.0       Rarr_2.0.0             spatstat.sparse_3.1-0 
 #>  [49] httr_1.4.8             polyclip_1.10-7        abind_1.4-8           
 #>  [52] compiler_4.7.0         S7_0.2.2               fastDummies_1.7.6     
 #>  [55] R.utils_2.13.0         MASS_7.3-65            rappdirs_0.3.4        
 #>  [58] tools_4.7.0            lmtest_0.9-40          otel_0.2.0            
 #>  [61] httpuv_1.6.17          future.apply_1.20.2    goftest_1.2-3         
 #>  [64] R.oo_1.27.1            glue_1.8.1             nlme_3.1-169          
-#>  [67] rhdf5filters_1.23.3    promises_1.5.0         grid_4.7.0            
+#>  [67] rhdf5filters_1.24.0    promises_1.5.0         grid_4.7.0            
 #>  [70] Rtsne_0.17             cluster_2.1.8.2        reshape2_1.4.5        
 #>  [73] generics_0.1.4         gtable_0.3.6           spatstat.data_3.1-9   
 #>  [76] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.2.1   

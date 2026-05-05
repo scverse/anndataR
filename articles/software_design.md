@@ -87,7 +87,7 @@ This diagram shows the main `R6` classes provided by the package:
 
 ``` r
 sessionInfo()
-R Under development (unstable) (2026-04-24 r89961)
+R Under development (unstable) (2026-05-03 r89994)
 Platform: x86_64-pc-linux-gnu
 Running under: Ubuntu 24.04.4 LTS
 
@@ -108,7 +108,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] BiocStyle_2.39.0
+[1] BiocStyle_2.40.0
 
 loaded via a namespace (and not attached):
  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           

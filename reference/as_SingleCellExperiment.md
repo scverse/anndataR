@@ -113,17 +113,17 @@ used as names.
 
 ### Conversion table
 
-|                    |                               |                                                                                                                                                                    |                                                                                                              |
-|--------------------|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument**                                                                                                                                       | **Default**                                                                                                  |
-| `adata$X`          | `assays(sce)`                 | `x_mapping = "counts"`                                                                                                                                             | The data in `adata$X` is copied to the assay named `X`                                                       |
-| `adata$layers`     | `assays(sce)`                 | `assays_mapping = c(counts = "counts")`                                                                                                                            | All items are copied by name                                                                                 |
-| `adata$obs`        | `colData(sce)`                | `colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")`                                                                                               | All columns are copied by name                                                                               |
-| `adata$var`        | `rowData(sce)`                | `rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")`                                                                                                   | All columns are copied by name                                                                               |
-| `adata$obsm`       | `reducedDims(sce)`            | `reducedDims_mapping = c(pca = "X_pca")` **OR** `reducedDims_mapping = list(pca = c(sampleFactors = "X_pca", featureLoadings = "PCs", metadata = "pca_metadata"))` | All items are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
-| `adata$obsp`       | `colPairs(sce)`               | `colPairs_mapping = c(nn = "connectivities")`                                                                                                                      | All items are copied by name                                                                                 |
-| `adata$varp`       | `rowPairs(sce)`               | `rowPairs_mapping = c(gene_overlaps = "similarities")`                                                                                                             | All items are copied by name                                                                                 |
-| `adata$uns`        | `metadata(sce)`               | `uns_mapping = c(project_metadata = "metadata")`                                                                                                                   | All items are copied by name                                                                                 |
+|  |  |  |  |
+|----|----|----|----|
+| **From `AnnData`** | **To `SingleCellExperiment`** | **Example mapping argument** | **Default** |
+| `adata$X` | `assays(sce)` | `x_mapping = "counts"` | The data in `adata$X` is copied to the assay named `X` |
+| `adata$layers` | `assays(sce)` | `assays_mapping = c(counts = "counts")` | All items are copied by name |
+| `adata$obs` | `colData(sce)` | `colData_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+| `adata$var` | `rowData(sce)` | `rowData_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+| `adata$obsm` | `reducedDims(sce)` | `reducedDims_mapping = c(pca = "X_pca")` **OR** `reducedDims_mapping = list(pca = c(sampleFactors = "X_pca", featureLoadings = "PCs", metadata = "pca_metadata"))` | All items are copied by name without loadings except for `"X_pca"` for which loadings are added from `"PCs"` |
+| `adata$obsp` | `colPairs(sce)` | `colPairs_mapping = c(nn = "connectivities")` | All items are copied by name |
+| `adata$varp` | `rowPairs(sce)` | `rowPairs_mapping = c(gene_overlaps = "similarities")` | All items are copied by name |
+| `adata$uns` | `metadata(sce)` | `uns_mapping = c(project_metadata = "metadata")` | All items are copied by name |
 
 ### The `reducedDims_mapping` argument
 

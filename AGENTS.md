@@ -66,6 +66,7 @@ obs_names and var_names are now stored separately from obs/var
 data.frames:
 
 ``` r
+
 # InMemoryAnnData and HDF5AnnData store names separately
 private$.obs_names  # Character vector of observation names
 private$.var_names  # Character vector of variable names
@@ -93,6 +94,7 @@ ad$X          # Returns matrix with dimnames from obs_names/var_names
 **Pattern for setters:**
 
 ``` r
+
 # Extract names before validation
 if (!is.null(value) && has_row_names(value)) {
   private$.obs_names <- rownames(value)
@@ -111,6 +113,7 @@ private$.obs <- private$.validate_obsvar_dataframe(value, "obs")
 `AnnDataView` provides lazy subsetting without data copying:
 
 ``` r
+
 # Create a view with S3 [ operator
 ad <- AnnData(
   X = matrix(1:15, 3L, 5L),
@@ -141,6 +144,7 @@ examples
 Standard R S3 methods now work on all AnnData objects:
 
 ``` r
+
 # Dimension methods
 dim(ad)           # [n_obs, n_vars]
 nrow(ad)          # n_obs
@@ -163,6 +167,7 @@ methods
 **Pattern:** HDF5AnnData manages file handles with lifecycle:
 
 ``` r
+
 # Automatic closure on finalization
 adata <- read_h5ad("file.h5ad")  # close_on_finalize = TRUE
 
@@ -182,6 +187,7 @@ properly.
 **Alignment validation:**
 
 ``` r
+
 # All setters use validation helpers from AbstractAnnData
 private$.validate_aligned_array(
   value,
@@ -195,6 +201,7 @@ private$.validate_aligned_array(
 **Dimension checking:**
 
 ``` r
+
 private$.validate_aligned_mapping(
   value,
   "layers",
@@ -211,6 +218,7 @@ private$.validate_aligned_mapping(
 **Pattern:** Helper functions check for optional dependencies:
 
 ``` r
+
 # tests/testthat/helper-skip_if_no_anndata.R
 skip_if_no_anndata <- function() {
   if (!rlang::is_installed("reticulate")) {
@@ -242,6 +250,7 @@ test_that("ReticulateAnnData works", {
 **Goal:** Ensure R read/write matches Python anndata behavior
 
 ``` r
+
 # tests/testthat/test-roundtrip-X.R example
 test_that("Dense X roundtrips correctly", {
   skip_if_no_dummy_anndata()
@@ -280,6 +289,7 @@ test_that("Dense X roundtrips correctly", {
 **Usage:**
 
 ``` r
+
 # R/generate_dataset.R
 adata <- generate_dataset(
   X_type = "dense",           # "dense", "sparse", "csparse", "rsparse"
@@ -297,6 +307,7 @@ adata <- generate_dataset(
 **Pattern:** `from_*()` functions for explicit conversion:
 
 ``` r
+
 # from_SingleCellExperiment.R
 adata <- from_SingleCellExperiment(
   sce,
@@ -327,6 +338,7 @@ intelligently map:
 **Pattern:** `as_*()` functions with optional parameters:
 
 ``` r
+
 # as_SingleCellExperiment.R
 sce <- as_SingleCellExperiment(
   adata,
@@ -378,6 +390,7 @@ air format .
 **Example fix:**
 
 ``` r
+
 # ❌ Too long
 expect_warning(as(adata, "Seurat"), "Consider using as_Seurat() for more control over the conversion")
 
@@ -396,6 +409,7 @@ expect_warning(
 **Pattern:** Check for optional packages before use:
 
 ``` r
+
 # R/check_requires.R
 check_requires <- function(package, reason = NULL) {
   if (!rlang::is_installed(package)) {
@@ -427,6 +441,7 @@ dedicated properties
 **Wrong:**
 
 ``` r
+
 # ❌ Internal code should not use this pattern
 obs_ids <- rownames(adata$obs)
 gene_ids <- colnames(adata$X)
@@ -435,6 +450,7 @@ gene_ids <- colnames(adata$X)
 **Correct:**
 
 ``` r
+
 # ✅ Always use dedicated properties
 obs_ids <- adata$obs_names
 gene_ids <- adata$var_names
@@ -472,6 +488,7 @@ Controlled by `options(anndataR.write_null = TRUE)`
 **Problem:** Loop variables not captured in closure
 
 ``` r
+
 # ❌ WRONG - all handlers reference final iteration value
 for (class in classes) {
   setAs(class, "Seurat", function(from) convert(from, class))
@@ -538,6 +555,7 @@ for (class in classes) {
 **Class documentation:**
 
 ``` r
+
 #' @title InMemoryAnnData
 #' @description Implementation of an in-memory AnnData object.
 #' @seealso [AnnData-usage] for details on creating and using AnnData objects
@@ -572,6 +590,7 @@ for (class in classes) {
 ### Creating AnnData Objects
 
 ``` r
+
 # In-memory (default)
 adata <- AnnData(
   X = matrix(1:15, 3L, 5L),
@@ -591,6 +610,7 @@ adata <- read_h5ad("file.h5ad")
 ### Conversion Examples
 
 ``` r
+
 # SingleCellExperiment → AnnData
 adata <- from_SingleCellExperiment(sce, X_name = "counts")
 
@@ -610,6 +630,7 @@ sce <- as(adata, "SingleCellExperiment")
 ### Accessing Data
 
 ``` r
+
 # Dimensions (using S3 methods)
 dim(adata)         # [n_obs, n_vars]
 nrow(adata)        # n_obs
@@ -640,6 +661,7 @@ adata$obsp[["distances"]]  # Pairwise matrix
 ### Subsetting with AnnDataView
 
 ``` r
+
 # Subsetting returns AnnDataView (lazy, no data copied)
 view <- adata[1:10, ]                     # Subset observations
 view <- adata[, c("gene1", "gene2")]      # Subset variables

@@ -24,6 +24,7 @@ you encounter.
 You can install **{anndataR}** from Bioconductor using **BiocManager**:
 
 ``` r
+
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
   install.packages("BiocManager")
 }
@@ -34,6 +35,7 @@ Or you can install the development version of **{anndataR}** from GitHub
 like so:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("scverse/anndataR")
 ```
@@ -57,6 +59,7 @@ you want to perform.
 Alternatively, you can install all suggested dependencies at once:
 
 ``` r
+
 pak::pak("scverse/anndataR", dependencies = TRUE)
 ```
 
@@ -70,6 +73,7 @@ In order to browse these vignettes locally, you need to build them
 during installation:
 
 ``` r
+
 options(pkg.build_vignettes = TRUE)
 pak::pak("scverse/anndataR")
 ```
@@ -103,6 +107,7 @@ interoperability between R and Python in single-cell
 transcriptomics”*](https://doi.org/10.1101/2025.08.18.669052):
 
 ``` r
+
 citation("anndataR")
 ```
 

@@ -173,18 +173,18 @@ This table describes how slots in a
 [`SingleCellExperiment::SingleCellExperiment`](https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html)
 object to the new `AnnData` object.
 
-|                                   |                  |                                                                  |                                                                                                                                                                                |
-|-----------------------------------|------------------|------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **From `SingleCellExperiment`**   | **To `AnnData`** | **Example mapping argument**                                     | **Default**                                                                                                                                                                    |
-| `assays(x)`                       | `adata$X`        | `x_mapping = "counts"`                                           | Nothing is copied to `X`                                                                                                                                                       |
-| `assays(x)`                       | `adata$layers`   | `layers_mapping = c(counts = "counts")`                          | All items are copied by name                                                                                                                                                   |
-| `colData(x)`                      | `adata$obs`      | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name                                                                                                                                                 |
-| `rowData(x)`                      | `adata$var`      | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")`     | All columns are copied by name                                                                                                                                                 |
-| `reducedDims(x)`                  | `adata$obsm`     | `obsm_mapping = c(X_pca = "pca")`                                | All items are copied by name                                                                                                                                                   |
-| `featureLoadings(reducedDims(x))` | `adata$varm`     | `varm_mapping = c(PCs = "pca")`                                  | Feature loadings from all [`SingleCellExperiment::LinearEmbeddingMatrix`](https://rdrr.io/pkg/SingleCellExperiment/man/LinearEmbeddingMatrix.html) objects in `reducedDims(x)` |
-| `colPairs(x)`                     | `adata$obsp`     | `obsp_mapping = c(connectivities = "RNA_nn")`                    | All items are copied by name                                                                                                                                                   |
-| `rowPairs(x)`                     | `adata$varp`     | `varp_mapping = c(similarities = "gene_overlaps")`               | All items are copied by name                                                                                                                                                   |
-| `metadata(x)`                     | `adata$uns`      | `uns_mapping = c(metadata = "project_metadata")`                 | All items are copied by name                                                                                                                                                   |
+|  |  |  |  |
+|----|----|----|----|
+| **From `SingleCellExperiment`** | **To `AnnData`** | **Example mapping argument** | **Default** |
+| `assays(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
+| `assays(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
+| `colData(x)` | `adata$obs` | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+| `rowData(x)` | `adata$var` | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+| `reducedDims(x)` | `adata$obsm` | `obsm_mapping = c(X_pca = "pca")` | All items are copied by name |
+| `featureLoadings(reducedDims(x))` | `adata$varm` | `varm_mapping = c(PCs = "pca")` | Feature loadings from all [`SingleCellExperiment::LinearEmbeddingMatrix`](https://rdrr.io/pkg/SingleCellExperiment/man/LinearEmbeddingMatrix.html) objects in `reducedDims(x)` |
+| `colPairs(x)` | `adata$obsp` | `obsp_mapping = c(connectivities = "RNA_nn")` | All items are copied by name |
+| `rowPairs(x)` | `adata$varp` | `varp_mapping = c(similarities = "gene_overlaps")` | All items are copied by name |
+| `metadata(x)` | `adata$uns` | `uns_mapping = c(metadata = "project_metadata")` | All items are copied by name |
 
 ### Unnamed assays
 
@@ -209,18 +209,18 @@ This table describes how slots in a
 [`SeuratObject::Seurat`](https://satijalab.github.io/seurat-object/reference/Seurat-class.html)
 object to the new `AnnData` object.
 
-|                       |                  |                                                                  |                                                         |
-|-----------------------|------------------|------------------------------------------------------------------|---------------------------------------------------------|
-| **From `Seurat`**     | **To `AnnData`** | **Example mapping argument**                                     | **Default**                                             |
-| `Layers(x)`           | `adata$X`        | `x_mapping = "counts"`                                           | Nothing is copied to `X`                                |
-| `Layers(x)`           | `adata$layers`   | `layers_mapping = c(counts = "counts")`                          | All items are copied by name                            |
-| `x[[]]`               | `adata$obs`      | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name                          |
-| `x[[assay_name]][[]]` | `adata$var`      | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")`     | All columns are copied by name                          |
-| `Reductions(x)`       | `adata$obsm`     | `obsm_mapping = c(X_pca = "pca")`                                | All embeddings matching `assay_name` are copied by name |
-| `Loadings(x)`         | `adata$varm`     | `varm_mapping = c(PCs = "pca")`                                  | All valid loadings are copied by name                   |
-| `Graphs(x)`           | `adata$obsp`     | `obsp_mapping = c(connectivities = "RNA_nn")`                    | All graphs matching `assay_name` are copied by name     |
-| `Misc(x)`             | `adata$varp`     | `varp_mapping = c(similarities = "gene_overlaps")`               | No data is copied to `varp`                             |
-| `Misc(x)`             | `adata$uns`      | `uns_mapping = c(metadata = "project_metadata")`                 | All items are copied by name                            |
+|  |  |  |  |
+|----|----|----|----|
+| **From `Seurat`** | **To `AnnData`** | **Example mapping argument** | **Default** |
+| `Layers(x)` | `adata$X` | `x_mapping = "counts"` | Nothing is copied to `X` |
+| `Layers(x)` | `adata$layers` | `layers_mapping = c(counts = "counts")` | All items are copied by name |
+| `x[[]]` | `adata$obs` | `obs_mapping = c(n_counts = "n_counts", cell_type = "CellType")` | All columns are copied by name |
+| `x[[assay_name]][[]]` | `adata$var` | `var_mapping = c(n_cells = "n_cells", pct_zero = "PctZero")` | All columns are copied by name |
+| `Reductions(x)` | `adata$obsm` | `obsm_mapping = c(X_pca = "pca")` | All embeddings matching `assay_name` are copied by name |
+| `Loadings(x)` | `adata$varm` | `varm_mapping = c(PCs = "pca")` | All valid loadings are copied by name |
+| `Graphs(x)` | `adata$obsp` | `obsp_mapping = c(connectivities = "RNA_nn")` | All graphs matching `assay_name` are copied by name |
+| `Misc(x)` | `adata$varp` | `varp_mapping = c(similarities = "gene_overlaps")` | No data is copied to `varp` |
+| `Misc(x)` | `adata$uns` | `uns_mapping = c(metadata = "project_metadata")` | All items are copied by name |
 
 ### Graph conversion
 
@@ -329,10 +329,10 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 #> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 #> This message will be shown once per session
-#> 07:08:08 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 07:08:08 Read 200 rows and found 10 numeric columns
-#> 07:08:08 Using Annoy for neighbor search, n_neighbors = 30
-#> 07:08:08 Building Annoy index with metric = cosine, n_trees = 50
+#> 17:21:27 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 17:21:27 Read 200 rows and found 10 numeric columns
+#> 17:21:27 Using Annoy for neighbor search, n_neighbors = 30
+#> 17:21:27 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -386,15 +386,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 07:08:09 Writing NN index file to temp file /tmp/RtmprCNHaM/file1e0d237cd3e4
-#> 07:08:09 Searching Annoy index using 1 thread, search_k = 3000
-#> 07:08:09 Annoy recall = 100%
-#> 07:08:09 Commencing smooth kNN distance calibration using 1 thread
+#> 17:21:27 Writing NN index file to temp file /tmp/RtmpDLpuAE/file986d3c404fee
+#> 17:21:27 Searching Annoy index using 1 thread, search_k = 3000
+#> 17:21:27 Annoy recall = 100%
+#> 17:21:28 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 07:08:10 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 07:08:10 Commencing optimization for 500 epochs, with 6146 positive edges
-#> 07:08:10 Using rng type: pcg
-#> 07:08:11 Optimization finished
+#> 17:21:29 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 17:21:29 Commencing optimization for 500 epochs, with 6146 positive edges
+#> 17:21:29 Using rng type: pcg
+#> 17:21:30 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names
