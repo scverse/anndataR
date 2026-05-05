@@ -253,7 +253,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.2.0    
+#> [1] Seurat_5.5.0       SeuratObject_5.4.0 sp_2.2-1           anndataR_1.3.0    
 #> [5] BiocStyle_2.40.0  
 #> 
 #> loaded via a namespace (and not attached):
