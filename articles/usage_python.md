@@ -234,7 +234,7 @@ sessionInfo()
 #>  [77] cluster_2.1.8.2             reshape2_1.4.5             
 #>  [79] generics_0.1.4              gtable_0.3.6               
 #>  [81] spatstat.data_3.1-9         tidyr_1.3.2                
-#>  [83] data.table_1.18.2.1         sp_2.2-1                   
+#>  [83] data.table_1.18.4           sp_2.2-1                   
 #>  [85] XVector_0.52.0              BiocGenerics_0.58.0        
 #>  [87] spatstat.geom_3.7-3         RcppAnnoy_0.0.23           
 #>  [89] ggrepel_0.9.8               RANN_2.6.2                 
@@ -286,7 +286,7 @@ reticulate::py_config()
 
 reticulate::py_list_packages()
 #>              package     version                  requirement
-#> 1            anndata     0.12.11             anndata==0.12.11
+#> 1            anndata     0.12.12             anndata==0.12.12
 #> 2   array-api-compat      1.14.0     array-api-compat==1.14.0
 #> 3            certifi   2026.4.22           certifi==2026.4.22
 #> 4          contourpy       1.3.3             contourpy==1.3.3
@@ -301,7 +301,7 @@ reticulate::py_list_packages()
 #> 13   legacy-api-wrap         1.5         legacy-api-wrap==1.5
 #> 14          llvmlite      0.47.0             llvmlite==0.47.0
 #> 15        matplotlib      3.10.9           matplotlib==3.10.9
-#> 16            mudata       0.3.7                mudata==0.3.7
+#> 16            mudata       0.3.8                mudata==0.3.8
 #> 17           natsort       8.4.0               natsort==8.4.0
 #> 18          networkx       3.6.1              networkx==3.6.1
 #> 19             numba      0.65.1                numba==0.65.1
