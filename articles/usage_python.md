@@ -169,7 +169,7 @@ print(rna_sce)
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2026-05-03 r89994)
+#> R Under development (unstable) (2026-05-09 r90030)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -194,7 +194,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
-#>   [3] magrittr_2.0.5              spatstat.utils_3.2-2       
+#>   [3] magrittr_2.0.5              spatstat.utils_3.2-3       
 #>   [5] farver_2.1.2                rmarkdown_2.31             
 #>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
@@ -216,7 +216,7 @@ sessionInfo()
 #>  [41] digest_0.6.39               patchwork_1.3.2            
 #>  [43] S4Vectors_0.50.0            Seurat_5.5.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
-#>  [47] irlba_2.3.7                 RSQLite_2.4.6              
+#>  [47] irlba_2.3.7                 RSQLite_3.52.0             
 #>  [49] textshaping_1.0.5           GenomicRanges_1.64.0       
 #>  [51] filelock_1.0.3              progressr_0.19.0           
 #>  [53] spatstat.sparse_3.1-0       polyclip_1.10-7            
@@ -286,7 +286,7 @@ reticulate::py_config()
 
 reticulate::py_list_packages()
 #>              package     version                  requirement
-#> 1            anndata     0.12.12             anndata==0.12.12
+#> 1            anndata     0.12.13             anndata==0.12.13
 #> 2   array-api-compat      1.14.0     array-api-compat==1.14.0
 #> 3            certifi   2026.4.22           certifi==2026.4.22
 #> 4          contourpy       1.3.3             contourpy==1.3.3

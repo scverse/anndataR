@@ -232,7 +232,7 @@ or
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2026-05-03 r89994)
+#> R Under development (unstable) (2026-05-09 r90030)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -258,7 +258,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
-#>   [4] spatstat.utils_3.2-2   farver_2.1.2           rmarkdown_2.31        
+#>   [4] spatstat.utils_3.2-3   farver_2.1.2           rmarkdown_2.31        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
 #>  [13] curl_7.1.0             Rhdf5lib_2.0.0         rhdf5_2.56.0          

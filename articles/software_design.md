@@ -87,7 +87,7 @@ This diagram shows the main `R6` classes provided by the package:
 
 ``` r
 sessionInfo()
-R Under development (unstable) (2026-05-03 r89994)
+R Under development (unstable) (2026-05-09 r90030)
 Platform: x86_64-pc-linux-gnu
 Running under: Ubuntu 24.04.4 LTS
 
