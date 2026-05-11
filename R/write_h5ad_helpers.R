@@ -60,9 +60,7 @@ write_h5ad_element <- function(
       # Numeric values
       if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
-      } else if (
-        is.integer(value) && anyNA(value) && length(dim(value)) <= 1
-      ) {
+      } else if (is.integer(value) && anyNA(value) && length(dim(value)) <= 1) {
         write_h5ad_nullable_integer
       } else {
         write_h5ad_dense_array
