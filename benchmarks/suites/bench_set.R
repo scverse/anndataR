@@ -23,10 +23,11 @@ bench_set <- function(h5ad_paths, iterations, zarr_paths) {
   )
 
   for (backend in c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData")) {
-    short <- switch(backend,
+    short <- switch(
+      backend,
       InMemoryAnnData = "InMemory",
-      HDF5AnnData     = "HDF5",
-      ZarrAnnData     = "Zarr"
+      HDF5AnnData = "HDF5",
+      ZarrAnnData = "Zarr"
     )
 
     for (slot in slots) {

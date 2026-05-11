@@ -10,10 +10,11 @@ bench_subset <- function(h5ad_paths, iterations, zarr_paths) {
   path <- h5ad_paths[["float_csparse"]]
 
   for (backend in c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData")) {
-    short <- switch(backend,
+    short <- switch(
+      backend,
       InMemoryAnnData = "InMemory",
-      HDF5AnnData     = "HDF5",
-      ZarrAnnData     = "Zarr"
+      HDF5AnnData = "HDF5",
+      ZarrAnnData = "Zarr"
     )
     ad <- if (backend == "ZarrAnnData") {
       read_zarr(zarr_paths[["float_csparse"]], as = "ZarrAnnData")

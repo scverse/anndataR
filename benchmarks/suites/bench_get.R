@@ -47,10 +47,11 @@ bench_get <- function(h5ad_paths, iterations, zarr_paths) {
   path <- h5ad_paths[["float_csparse"]]
 
   for (backend in c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData")) {
-    short <- switch(backend,
+    short <- switch(
+      backend,
       InMemoryAnnData = "InMemory",
-      HDF5AnnData     = "HDF5",
-      ZarrAnnData     = "Zarr"
+      HDF5AnnData = "HDF5",
+      ZarrAnnData = "Zarr"
     )
 
     # Open the AnnData
