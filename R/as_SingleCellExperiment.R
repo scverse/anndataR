@@ -216,7 +216,7 @@ as_SingleCellExperiment <- function(
   } else if (!is.null(adata$X)) {
     assays_mapping[["X"]] <- NA
   }
-  if (any(duplicated(names(assays_mapping)))) {
+  if (anyDuplicated(names(assays_mapping)) > 0) {
     cli_abort(
       "{.arg assays_mapping} or {.arg x_mapping} must not contain any duplicate names",
       "i" = "Found duplicate names: {.val {names(assays_mapping)[duplicated(names(assays_mapping))]}}"

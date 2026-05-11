@@ -368,7 +368,7 @@ convert_to_indices <- function(
       )
     }
     which(subset)
-  } else if (is.integer(subset) || is.numeric(subset)) {
+  } else if (is.numeric(subset)) {
     subset <- as.integer(subset)
     if (any(subset < 1 | subset > max_length)) {
       cli_abort(
@@ -385,7 +385,7 @@ convert_to_indices <- function(
       ))
     }
     indices <- match(subset, names_vector)
-    if (any(is.na(indices))) {
+    if (anyNA(indices)) {
       # nolint start: object_usage_linter
       missing_names <- subset[is.na(indices)]
       # nolint end: object_usage_linter
