@@ -74,7 +74,7 @@ for (zarr_version in c("v2", "v3")) {
   test_that(paste("reading Zarr", zarr_version, "1D nullable arrays works"), {
     array_1d <- read_zarr_nullable_integer(store, "obs/IntNA")
     expect_vector(array_1d, ptype = integer(), size = 50)
-    expect_true(any(is.na(array_1d)))
+    expect_true(anyNA(array_1d))
 
     array_1d <- read_zarr_dense_array(store, "obs/FloatNA")
     expected <- array(rep(42.42, 50))
@@ -83,7 +83,7 @@ for (zarr_version in c("v2", "v3")) {
 
     array_1d <- read_zarr_nullable_boolean(store, "obs/BoolNA")
     expect_vector(array_1d, ptype = logical(), size = 50)
-    expect_true(any(is.na(array_1d)))
+    expect_true(anyNA(array_1d))
   })
 
   test_that(paste("reading Zarr", zarr_version, "string scalars works"), {

@@ -350,7 +350,7 @@ ReticulateAnnData <- R6::R6Class(
           # Set proper index names if they don't exist or are auto-generated
           if (
             is.null(rownames(obs)) ||
-              all(rownames(obs) == "") ||
+              !any(nzchar(rownames(obs))) ||
               all(rownames(obs) == as.character(seq_len(nrow(obs))))
           ) {
             py_obs$index <- reticulate::r_to_py(paste0(
@@ -360,7 +360,7 @@ ReticulateAnnData <- R6::R6Class(
           }
           if (
             is.null(rownames(var)) ||
-              all(rownames(var) == "") ||
+              !any(nzchar(rownames(var))) ||
               all(rownames(var) == as.character(seq_len(nrow(var))))
           ) {
             py_var$index <- reticulate::r_to_py(paste0(

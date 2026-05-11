@@ -35,6 +35,8 @@ Other contributors:
   \item Isaac Virshup (\href{https://orcid.org/0000-0002-1710-8945}{ORCID}) (ivirshup) [contributor]
   \item Brian Schilder \email{brian_schilder@alumni.brown.edu} (\href{https://orcid.org/0000-0001-5949-2191}{ORCID}) (bschilder) [contributor]
   \item Chananchida Sang-aram (\href{https://orcid.org/0000-0002-0922-0822}{ORCID}) (csangara) [contributor]
+  \item Artür Manukyan (\href{https://orcid.org/0000-0002-0441-9517}{ORCID}) (Artur-man) [contributor]
+  \item Hugo Gruson (\href{https://orcid.org/0000-0002-4094-1476}{ORCID}) (Bisaloo) [contributor]
   \item Data Intuitive \email{info@data-intuitive.com} [funder]
   \item Chan Zuckerberg Initiative [funder]
   \item scverse consortium [sponsor]

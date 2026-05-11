@@ -28,7 +28,7 @@ source <- list.files(proj_root, pattern = "*.R$", recursive = TRUE)
 # look for trackstatus comments
 status_lines <- map_df(source, function(path) {
   lines <- readLines(paste0(proj_root, "/", path))
-  line_numbers <- grep("# trackstatus:", lines)
+  line_numbers <- grep("# trackstatus:", lines, fixed = TRUE)
 
   map_df(line_numbers, function(line_number) {
     tryCatch(
@@ -200,7 +200,7 @@ for (i in seq_along(data)) {
     " * To investigate: ", data[[i]]$to_investigate, "\n",
     " * To fix: ", data[[i]]$to_fix, "\n\n",
     "### Error message\n\n",
-    paste(paste0("    ", strsplit(data[[i]]$error_message, "\n")[[1]], "\n"), collapse = ""), "\n\n",
+    paste(paste0("    ", strsplit(data[[i]]$error_message, "\n", fixed = TRUE)[[1]], "\n"), collapse = ""), "\n\n",
     "### Proposed solution\n\n",
     data[[i]]$proposed_solution, "\n\n"
   )

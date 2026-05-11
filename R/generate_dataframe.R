@@ -18,5 +18,5 @@ generate_dataframe <- function(num_rows, types = names(vector_generators)) {
 
   data <- lapply(types, generate_vector, n = num_rows)
   names(data) <- types
-  as.data.frame(data)
+  list2DF(data)
 }

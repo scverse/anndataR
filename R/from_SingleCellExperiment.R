@@ -53,7 +53,7 @@ from_SingleCellExperiment <- function(
   assay_names <- SummarizedExperiment::assayNames(sce)
   if (
     length(SummarizedExperiment::assays(sce)) > 0 &&
-      (is.null(assay_names) || any(assay_names == ""))
+      (is.null(assay_names) || !all(nzchar(assay_names)))
   ) {
     if (is.null(assay_names)) {
       assay_names <- paste0(
@@ -61,7 +61,7 @@ from_SingleCellExperiment <- function(
         seq_along(SummarizedExperiment::assays(sce))
       )
     } else {
-      empty_names <- which(assay_names == "")
+      empty_names <- which(!nzchar(assay_names))
       assay_names[empty_names] <- paste0("assay", empty_names)
     }
 

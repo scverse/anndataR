@@ -6,6 +6,9 @@
   \subsection{New features}{
     \itemize{
       \item{
+        Add initial Zarr support for reading and writing \code{.zarr} stores
+      }
+      \item{
         Allow manually setting chunk size for HDF5 writes
       }
       \item{

@@ -78,8 +78,8 @@ to_R_matrix <- function(mat) {
 self_name <- function(x) {
   if (is.null(names(x))) {
     x <- setNames(x, x)
-  } else if (any(names(x) == "")) {
-    is_missing <- names(x) == ""
+  } else if (!all(nzchar(names(x)))) {
+    is_missing <- !nzchar(names(x))
     names(x)[is_missing] <- x[is_missing]
   }
 
