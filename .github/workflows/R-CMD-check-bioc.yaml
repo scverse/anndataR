@@ -48,15 +48,16 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install hdf5-tools libsz2 libaec-dev
 
-      ## Workaround: data.table (indirect dep via Seurat) fails to compile
-      ## on macOS ARM because libintl.h is missing.
+      ## Workaround: 
+      ## * data.table (indirect dep via Seurat) fails to compile on macOS ARM because libintl.h is missing.
+      ## * rhdf5 also fails to link because libssl/libcrypto are not on the default library search path.
       - name: Install macOS dependencies
         if: runner.os == 'macOS'
         run: |
-          brew install gettext
+          brew install gettext openssl
           mkdir -p ~/.R
-          echo "CPPFLAGS += -I$(brew --prefix gettext)/include" >> ~/.R/Makevars
-          echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
+          echo "CPPFLAGS += -I$(brew --prefix gettext)/include -I$(brew --prefix openssl)/include" >> ~/.R/Makevars
+          echo "LDFLAGS += -L$(brew --prefix gettext)/lib -L$(brew --prefix openssl)/lib" >> ~/.R/Makevars
 
       - name: Setup R and Bioconductor
         # todo: remove this workaround line once it is working for windows and/or mac os x
