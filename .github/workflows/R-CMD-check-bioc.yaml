@@ -26,12 +26,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        # revert '3.23' and '3.24' to 'release' and 'devel' at one point
-        - { os: windows-latest, bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
-        - { os: macOS-latest,   bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
-        - { os: macOS-15-intel, bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 2 }
-        - { os: ubuntu-latest,  bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
-        - { os: ubuntu-latest,  bioc-version: '3.23', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 2 }
+        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
 
     steps:
 
@@ -63,7 +62,8 @@ jobs:
       - name: Setup R and Bioconductor
         # todo: remove this workaround line once it is working for windows and/or mac os x
         if: matrix.config.os != 'windows-latest' && matrix.config.os != 'macOS-latest'
-        uses: grimbough/bioc-actions/setup-bioc@v1
+        # uses: grimbough/bioc-actions/setup-bioc@v1
+        uses: rcannood/bioc-actions/setup-bioc@remove-version-map
         with:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
