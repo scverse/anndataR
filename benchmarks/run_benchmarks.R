@@ -73,6 +73,22 @@ h5ad_paths <- setNames(
 )
 cat("\n")
 
+cat("Generating Zarr test data (converting from H5AD)...\n")
+zarr_paths <- setNames(
+  vapply(
+    x_types,
+    function(xt) {
+      cat(sprintf("  %s... ", xt))
+      path <- generate_bench_zarr(xt, h5ad_paths[[xt]], cache_dir)
+      cat("done\n")
+      path
+    },
+    character(1)
+  ),
+  x_types
+)
+cat("\n")
+
 # ---------------------------------------------------------------------------
 # Run selected suites
 # ---------------------------------------------------------------------------
@@ -88,12 +104,12 @@ for (suite in suites_to_run) {
 
   suite_results <- switch(
     suite,
-    read = bench_read(h5ad_paths, opts$iterations, x_types),
-    write = bench_write(h5ad_paths, opts$iterations, x_types),
-    get = bench_get(h5ad_paths, opts$iterations),
-    set = bench_set(h5ad_paths, opts$iterations),
-    convert = bench_convert(h5ad_paths, opts$iterations, x_types),
-    subset = bench_subset(h5ad_paths, opts$iterations),
+    read = bench_read(h5ad_paths, opts$iterations, x_types, zarr_paths),
+    write = bench_write(h5ad_paths, opts$iterations, x_types, zarr_paths),
+    get = bench_get(h5ad_paths, opts$iterations, zarr_paths),
+    set = bench_set(h5ad_paths, opts$iterations, zarr_paths),
+    convert = bench_convert(h5ad_paths, opts$iterations, x_types, zarr_paths),
+    subset = bench_subset(h5ad_paths, opts$iterations, zarr_paths),
     {
       warning("Unknown suite: ", suite)
       list()

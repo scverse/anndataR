@@ -42,15 +42,24 @@
   colnames = quote(colnames(.ad))
 )
 
-bench_get <- function(h5ad_paths, iterations) {
+bench_get <- function(h5ad_paths, iterations, zarr_paths) {
   results <- list()
   path <- h5ad_paths[["float_csparse"]]
 
-  for (backend in c("InMemoryAnnData", "HDF5AnnData")) {
-    short <- if (backend == "InMemoryAnnData") "InMemory" else "HDF5"
+  for (backend in c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData")) {
+    short <- switch(
+      backend,
+      InMemoryAnnData = "InMemory",
+      HDF5AnnData = "HDF5",
+      ZarrAnnData = "Zarr"
+    )
 
     # Open the AnnData
-    ad <- read_h5ad(path, as = backend)
+    ad <- if (backend == "ZarrAnnData") {
+      read_zarr(zarr_paths[["float_csparse"]], as = "ZarrAnnData")
+    } else {
+      read_h5ad(path, as = backend)
+    }
 
     # --- Slot getters ---
     for (slot in .bench_slots) {
