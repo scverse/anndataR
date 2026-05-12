@@ -26,11 +26,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - { os: windows-latest, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
-        - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
-        - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 2 }
-        - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
-        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://bioconductor.org/', cache: 1 }
+        # revert '3.23' and '3.24' to 'release' and 'devel' at one point
+        - { os: windows-latest, bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-latest,   bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: macOS-15-intel, bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 2 }
+        - { os: ubuntu-latest,  bioc-version: '3.24', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
+        - { os: ubuntu-latest,  bioc-version: '3.23', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
 
     steps:
 
