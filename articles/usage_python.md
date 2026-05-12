@@ -169,7 +169,7 @@ print(rna_sce)
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2026-05-09 r90030)
+#> R Under development (unstable) (2026-05-10 r90034)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -319,7 +319,7 @@ reticulate::py_list_packages()
 #> 31            scanpy      1.12.1               scanpy==1.12.1
 #> 32      scikit-learn       1.8.0          scikit-learn==1.8.0
 #> 33             scipy      1.17.1                scipy==1.17.1
-#> 34      scverse-misc       0.0.5          scverse-misc==0.0.5
+#> 34      scverse-misc       0.0.6          scverse-misc==0.0.6
 #> 35           seaborn      0.13.2              seaborn==0.13.2
 #> 36     session-info2       0.4.1         session-info2==0.4.1
 #> 37               six      1.17.0                  six==1.17.0

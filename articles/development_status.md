@@ -151,7 +151,7 @@ Investigate if this is a problem or not.
 sessionInfo()
 ```
 
-    ## R Under development (unstable) (2026-05-09 r90030)
+    ## R Under development (unstable) (2026-05-10 r90034)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
