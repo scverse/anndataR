@@ -169,7 +169,7 @@ print(rna_sce)
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2026-05-10 r90034)
+#> R Under development (unstable) (2026-05-11 r90046)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -286,7 +286,7 @@ reticulate::py_config()
 
 reticulate::py_list_packages()
 #>              package     version                  requirement
-#> 1            anndata     0.12.13             anndata==0.12.13
+#> 1            anndata     0.12.14             anndata==0.12.14
 #> 2   array-api-compat      1.14.0     array-api-compat==1.14.0
 #> 3            certifi   2026.4.22           certifi==2026.4.22
 #> 4          contourpy       1.3.3             contourpy==1.3.3
