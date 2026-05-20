@@ -311,6 +311,8 @@ ZarrAnnData <- R6::R6Class(
     #'   details
     #' @param compression The compression algorithm to use. See
     #'   [as_ZarrAnnData()] for details
+    #' @param zarr_version The Zarr data format to be used for [write_zarr()]: 
+    #'   "2" for Zarr v2, and "3" for Zarr v3
     #'
     #' @details
     #' The constructor creates a new Zarr `AnnData` interface object. This can
