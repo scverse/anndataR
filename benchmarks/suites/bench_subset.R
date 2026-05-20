@@ -5,13 +5,22 @@
 # materialization back to concrete implementations.
 # =============================================================================
 
-bench_subset <- function(h5ad_paths, iterations) {
+bench_subset <- function(h5ad_paths, iterations, zarr_paths) {
   results <- list()
   path <- h5ad_paths[["float_csparse"]]
 
-  for (backend in c("InMemoryAnnData", "HDF5AnnData")) {
-    short <- if (backend == "InMemoryAnnData") "InMemory" else "HDF5"
-    ad <- read_h5ad(path, as = backend)
+  for (backend in c("InMemoryAnnData", "HDF5AnnData", "ZarrAnnData")) {
+    short <- switch(
+      backend,
+      InMemoryAnnData = "InMemory",
+      HDF5AnnData = "HDF5",
+      ZarrAnnData = "Zarr"
+    )
+    ad <- if (backend == "ZarrAnnData") {
+      read_zarr(zarr_paths[["float_csparse"]], as = "ZarrAnnData")
+    } else {
+      read_h5ad(path, as = backend)
+    }
 
     n_obs <- ad$n_obs()
     n_vars <- ad$n_vars()
@@ -123,7 +132,22 @@ bench_subset <- function(h5ad_paths, iterations) {
       )
     )
 
-    # Clean up
+    # --- Materialize view → Zarr ---
+    results <- c(
+      results,
+      run_one_benchmark(
+        name = paste0("materialize_to_Zarr_", short),
+        expr = quote({
+          .tmp <- tempfile()
+          .result <- .view$as_ZarrAnnData(.tmp)
+          unlink(.tmp, recursive = TRUE)
+        }),
+        iterations = iterations,
+        env = env4
+      )
+    )
+
+    # Clean up (ZarrAnnData holds no persistent file handles)
     if (backend == "HDF5AnnData") {
       ad$close()
     }

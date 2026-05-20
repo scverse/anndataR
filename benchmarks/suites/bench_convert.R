@@ -5,7 +5,7 @@
 # format conversions (InMemory↔SCE, InMemory↔Seurat).
 # =============================================================================
 
-bench_convert <- function(h5ad_paths, iterations, x_types) {
+bench_convert <- function(h5ad_paths, iterations, x_types, zarr_paths) {
   results <- list()
 
   # --- Backend conversions (per X type) ---
@@ -40,6 +40,43 @@ bench_convert <- function(h5ad_paths, iterations, x_types) {
           .result <- .ad$as_HDF5AnnData(.tmp)
           .result$close()
           unlink(.tmp)
+        }),
+        iterations = iterations,
+        env = env2
+      )
+    )
+  }
+
+  # --- Zarr ↔ InMemory conversions (per X type) ---
+  for (xt in x_types) {
+    zarr_path <- zarr_paths[[xt]]
+
+    # Zarr → InMemory
+    env <- new.env(parent = globalenv())
+    env$.ad <- read_zarr(zarr_path, as = "ZarrAnnData")
+
+    results <- c(
+      results,
+      run_one_benchmark(
+        name = paste0("convert_Zarr_to_InMemory_", xt),
+        expr = quote(.ad$as_InMemoryAnnData()),
+        iterations = iterations,
+        env = env
+      )
+    )
+
+    # InMemory → Zarr
+    env2 <- new.env(parent = globalenv())
+    env2$.ad <- read_zarr(zarr_path, as = "InMemoryAnnData")
+
+    results <- c(
+      results,
+      run_one_benchmark(
+        name = paste0("convert_InMemory_to_Zarr_", xt),
+        expr = quote({
+          .tmp <- tempfile()
+          .result <- .ad$as_ZarrAnnData(.tmp)
+          unlink(.tmp, recursive = TRUE)
         }),
         iterations = iterations,
         env = env2

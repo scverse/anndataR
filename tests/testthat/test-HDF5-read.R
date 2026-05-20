@@ -63,7 +63,7 @@ test_that("reading 1D sparse numeric arrays works", {
 test_that("reading 1D nullable arrays works", {
   array_1d <- read_h5ad_nullable_integer(file, "obs/IntNA")
   expect_vector(array_1d, ptype = integer(), size = 50)
-  expect_true(any(is.na(array_1d)))
+  expect_true(anyNA(array_1d))
 
   array_1d <- read_h5ad_dense_array(file, "obs/FloatNA")
   expected <- array(rep(42.42, 50))
@@ -72,11 +72,11 @@ test_that("reading 1D nullable arrays works", {
 
   array_1d <- read_h5ad_nullable_boolean(file, "obs/Bool")
   expect_vector(array_1d, ptype = logical(), size = 50)
-  expect_false(any(is.na(array_1d)))
+  expect_false(anyNA(array_1d))
 
   array_1d <- read_h5ad_nullable_boolean(file, "obs/BoolNA")
   expect_vector(array_1d, ptype = logical(), size = 50)
-  expect_true(any(is.na(array_1d)))
+  expect_true(anyNA(array_1d))
 })
 
 test_that("reading string scalars works", {
