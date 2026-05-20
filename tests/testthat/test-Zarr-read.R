@@ -37,11 +37,7 @@ for (zarr_version in c(2, 3)) {
     expect_equal(dim(mat), c(50, 100))
   })
 
-  #  TODO: Re-enable when recarays are handled consistently, see https://github.com/scverse/anndataR/issues/409
   test_that(paste("reading Zarr", zarr_version, "recarrays works"), {
-    if (zarr_version == "v3") {
-      skip("Read support for Zarr v3 rec arrays is not implemented yet")
-    }
     array_list <- read_zarr_rec_array(
       store,
       "uns/rank_genes_groups/logfoldchanges"
@@ -107,7 +103,7 @@ for (zarr_version in c(2, 3)) {
   })
 
   test_that(paste("reading Zarr", zarr_version, "mappings works"), {
-    if (zarr_version == "v3") {
+    if (zarr_version == "3") {
       # TODO: Remove when v3 recarray support is implemented
       mapping <- suppressWarnings(read_zarr_mapping(store, "uns"))
     } else {
