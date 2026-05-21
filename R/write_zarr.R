@@ -16,7 +16,8 @@
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms creating a file and failing if it already exists
-#' @param ... Additional arguments passed to [as_AnnData()]
+#'   
+#' @param ... Additional arguments passed to [as_AnnData()] or [as_ZarrAnnData()]
 #'
 #' @details
 #'
@@ -108,7 +109,8 @@ write_zarr <- function(
     object$as_ZarrAnnData(
       path,
       compression = compression,
-      mode = mode
+      mode = mode, 
+      ...
     )
   } else {
     as_AnnData(

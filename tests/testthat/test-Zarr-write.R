@@ -242,7 +242,7 @@ for (zarr_version in c(2, 3)) {
     skip_if_not_installed("SingleCellExperiment")
     store <- tempfile(fileext = ".zarr")
     sce <- generate_dataset(format = "SingleCellExperiment")
-    write_zarr(sce, store)
+    write_zarr(sce, store, zarr_version = zarr_version)
     expect_true(dir.exists(store))
   })
 
@@ -250,7 +250,7 @@ for (zarr_version in c(2, 3)) {
     skip_if_not_installed("SeuratObject")
     store <- tempfile(fileext = ".zarr")
     sce <- generate_dataset(format = "Seurat")
-    write_zarr(sce, store)
+    write_zarr(sce, store, zarr_version = zarr_version)
     expect_true(dir.exists(store))
   })
 
@@ -272,12 +272,14 @@ for (zarr_version in c(2, 3)) {
     store_none <- tempfile(fileext = ".zarr")
     store_compressed <- tempfile(fileext = ".zarr")
 
-    write_zarr(adata, store_none, compression = "none")
+    write_zarr(adata, store_none, compression = "none", 
+               zarr_version = zarr_version)
 
     # TODO: blosc does not work for now
     comp_list <- c("gzip", "zstd", "lzma", "bz2", "zlib", "lz4")
     for (comp in comp_list) {
-      write_zarr(adata, store_compressed, compression = comp)
+      write_zarr(adata, store_compressed, compression = comp, 
+                 zarr_version = zarr_version)
       unlink(store_compressed, recursive = TRUE)
       expect_true(dir_size(store_none) > dir_size(store_compressed))
     }

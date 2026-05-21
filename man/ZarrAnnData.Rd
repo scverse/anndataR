@@ -131,8 +131,8 @@ both \code{X} or \code{obs} and \code{var} are not provided.}
 details}
       \item{\code{compression}}{The compression algorithm to use. See
 \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
-      \item{\code{zarr_version}}{The Zarr data format to be used for \code{\link[=write_zarr]{write_zarr()}}:
-"2" for Zarr v2, and "3" for Zarr v3}
+      \item{\code{zarr_version}}{The Zarr version to use. See
+\code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
     }
     \if{html}{\out{</div>}}
   }

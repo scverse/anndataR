@@ -297,6 +297,7 @@ AbstractAnnData <- R6::R6Class(
     #' @param file See [as_ZarrAnnData()]
     #' @param compression See [as_ZarrAnnData()]
     #' @param mode See [as_ZarrAnnData()]
+    #' @param zarr_version See [as_ZarrAnnData()]
     #'
     #' @return A [`ZarrAnnData`] object
     as_ZarrAnnData = function(
@@ -311,13 +312,15 @@ AbstractAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"), 
+      zarr_version = .get_zarr_version()
     ) {
       as_ZarrAnnData(
         adata = self,
         file = file,
         compression = compression,
-        mode = mode
+        mode = mode, 
+        zarr_version = zarr_version
       )
     },
     #' @description

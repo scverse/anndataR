@@ -161,14 +161,17 @@ write_zarr_null <- function(
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
   }
-
-  Rarr::create_empty_zarr_array(
-    file.path(store, name),
-    dim = 0,
-    chunk_dim = 0,
-    data_type = "logical",
-    zarr_version = zarr_version
-  )
+  # if dims is zero, fix chunk dim to 1, but raises warnings
+  # https://github.com/Huber-group-EMBL/Rarr/issues/89
+  suppressWarnings({
+    Rarr::create_empty_zarr_array(
+      file.path(store, name),
+      dim = 0,
+      chunk_dim = 1,
+      data_type = "logical",
+      zarr_version = zarr_version
+    )
+  })
 
   write_zarr_encoding(store, name, "null", version, zarr_version)
 }
@@ -391,19 +394,26 @@ write_zarr_string_array <- function(
 ) {
   dims <- dim(value) %||% length(value)
 
+  # if dims is zero, fix chunk dim to 1, but raises warnings
+  # https://github.com/Huber-group-EMBL/Rarr/issues/89
+  chunk_dims <- vapply(dims, \(.) if(.) . else 1, numeric(1))
+  
   # replace NA to "NA" (as in rhdf5:::.h5postProcessDataset)
   # to read as "NA" -> NA later after Rarr:read_zarr_array
   value[is.na(value)] <- "NA"
 
-  Rarr::create_empty_zarr_array(
-    file.path(store, name),
-    dim = dims,
-    chunk_dim = dims,
-    order = if (length(dims) > 1) "C" else "F",
-    data_type = "|O",
-    compressor = .get_compressor(compression),
-    zarr_version = zarr_version
-  )
+  # suppress chunk dim warnings
+  suppressWarnings({
+    Rarr::create_empty_zarr_array(
+      file.path(store, name),
+      dim = dims,
+      chunk_dim = chunk_dims,
+      order = if (length(dims)) "C" else "F",
+      data_type = "|O",
+      compressor = .get_compressor(compression),
+      zarr_version = zarr_version
+    )
+  })
   # Rarr doesn't yet provide an explicit interface to deal with VLen-UTF8 so
   # we patch the metadata by hand.
   # Will be resolved by https://github.com/Huber-group-EMBL/Rarr/issues/111.
@@ -822,7 +832,7 @@ zarr_write_compressed <- function(
     data,
     zarr_array_path = file.path(store, name),
     chunk_dim = dims,
-    order = if (length(dims) > 1) "C" else "F",
+    order = if (length(dims)) "C" else "F",
     compressor = .get_compressor(compression),
     zarr_version = zarr_version
   )

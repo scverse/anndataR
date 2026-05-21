@@ -311,9 +311,9 @@ ZarrAnnData <- R6::R6Class(
     #'   details
     #' @param compression The compression algorithm to use. See
     #'   [as_ZarrAnnData()] for details
-    #' @param zarr_version The Zarr data format to be used for [write_zarr()]: 
-    #'   "2" for Zarr v2, and "3" for Zarr v3
-    #'
+    #' @param zarr_version The Zarr version to use. See
+    #'   [as_ZarrAnnData()] for details
+    #'   
     #' @details
     #' The constructor creates a new Zarr `AnnData` interface object. This can
     #' either be used to either connect to an existing `.zarr` file or to
@@ -525,7 +525,9 @@ ZarrAnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
-#'
+#' @param zarr_version The Zarr data format to be used for [write_zarr()]: 
+#'   "2" for Zarr v2, and "3" for Zarr v3
+#'   
 #' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
 #'   object.
 #' @keywords internal
@@ -547,7 +549,8 @@ as_ZarrAnnData <- function(
     "zlib",
     "lz4"
   ),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  zarr_version = .get_zarr_version()
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -570,6 +573,6 @@ as_ZarrAnnData <- function(
     shape = adata$shape(),
     mode = mode,
     compression = compression,
-    zarr_version = .get_zarr_version()
+    zarr_version = zarr_version
   )
 }
