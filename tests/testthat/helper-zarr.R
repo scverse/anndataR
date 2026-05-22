@@ -1,6 +1,7 @@
 zarr_node_version <- function(store, name) {
   files <- list.files(
-    file.path(store, name), all.files = TRUE
+    file.path(store, name),
+    all.files = TRUE
   )
   if ("zarr.json" %in% files) {
     3L

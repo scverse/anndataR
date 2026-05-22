@@ -506,8 +506,13 @@ write_zarr_categorical <- function(
     compression,
     zarr_version = zarr_version
   )
-  write_zarr_dense_array(codes, store, paste0(name, "/codes"), compression,
-                         zarr_version)
+  write_zarr_dense_array(
+    codes,
+    store,
+    paste0(name, "/codes"),
+    compression,
+    zarr_version
+  )
 
   # Write encoding
   write_zarr_encoding(
@@ -782,8 +787,20 @@ write_empty_zarr <- function(
   create_zarr(store = store, zarr_version)
   write_zarr_encoding(store, "/", "anndata", "0.1.0", zarr_version)
 
-  write_zarr_element(obs[, integer(0)], store, "/obs", compression, zarr_version)
-  write_zarr_element(var[, integer(0)], store, "/var", compression, zarr_version)
+  write_zarr_element(
+    obs[, integer(0)],
+    store,
+    "/obs",
+    compression,
+    zarr_version
+  )
+  write_zarr_element(
+    var[, integer(0)],
+    store,
+    "/var",
+    compression,
+    zarr_version
+  )
 
   create_zarr_group(store, "layers", zarr_version)
   write_zarr_encoding(store, "/layers", "dict", "0.1.0", zarr_version)
@@ -823,7 +840,16 @@ zarr_write_compressed <- function(
   store,
   name,
   value,
-  compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+  compression = c(
+    "none",
+    "gzip",
+    "blosc",
+    "zstd",
+    "lzma",
+    "bz2",
+    "zlib",
+    "lz4"
+  ),
   zarr_version = .get_zarr_version()
 ) {
   dims <- dim(value) %||% length(value)

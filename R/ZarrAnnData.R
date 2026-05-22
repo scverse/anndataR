@@ -536,7 +536,7 @@ ZarrAnnData <- R6::R6Class(
 #'
 # nolint start: object_name_linter
 as_ZarrAnnData <- function(
-    # nolint end: object_name_linter
+  # nolint end: object_name_linter
   adata,
   file,
   compression = c(
