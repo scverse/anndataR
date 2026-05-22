@@ -396,8 +396,8 @@ write_zarr_string_array <- function(
 
   # if dims is zero, fix chunk dim to 1, but raises warnings
   # https://github.com/Huber-group-EMBL/Rarr/issues/89
-  chunk_dims <- vapply(dims, \(.) if(.) . else 1, numeric(1))
-  
+  chunk_dims <- vapply(dims, \(.) if (.) . else 1, numeric(1))
+
   # replace NA to "NA" (as in rhdf5:::.h5postProcessDataset)
   # to read as "NA" -> NA later after Rarr:read_zarr_array
   value[is.na(value)] <- "NA"
@@ -582,9 +582,9 @@ write_zarr_string_scalar <- function(
       zarr_json$codecs,
       function(codec) {
         if (codec$name == "bytes") {
-           list(name = "vlen-utf8")
+          list(name = "vlen-utf8")
         } else {
-           codec
+          codec
         }
       }
     )

@@ -21,7 +21,7 @@ name <- "empty"
 for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
   fmt_config <- get_fmt_config(fmt)
 
-  if (grepl("zarr", fmt_config$ext)) {
+  if (grepl("zarr", fmt_config$ext, fixed = TRUE)) {
     options(anndataR.zarr_version = fmt_config$zarr_version)
     ad$settings$zarr_write_format <- fmt_config$zarr_version
   }

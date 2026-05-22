@@ -108,6 +108,7 @@ zarr_path_exists <- function(store, target_path) {
   }
 }
 
+#' @noRd
 .get_zarr_version <- function() {
   vr <- getOption("anndataR.zarr_version")
   if (is.null(vr)) 2 else vr

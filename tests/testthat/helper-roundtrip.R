@@ -17,7 +17,7 @@ get_fmt_config <- function(fmt = c("h5ad", "zarrv2", "zarrv3")) {
       r_write_fun = write_zarr,
       py_read_method = "read_zarr",
       py_write_method = "write_zarr",
-      zarr_version = if(fmt == "zarrv2") 2L else 3L
+      zarr_version = if (fmt == "zarrv2") 2L else 3L
     )
   } else {
     list(

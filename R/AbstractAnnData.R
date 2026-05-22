@@ -312,14 +312,14 @@ AbstractAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
-      mode = c("w-", "r", "r+", "a", "w", "x"), 
+      mode = c("w-", "r", "r+", "a", "w", "x"),
       zarr_version = .get_zarr_version()
     ) {
       as_ZarrAnnData(
         adata = self,
         file = file,
         compression = compression,
-        mode = mode, 
+        mode = mode,
         zarr_version = zarr_version
       )
     },
@@ -356,6 +356,7 @@ AbstractAnnData <- R6::R6Class(
     #' @param path See [write_zarr()]
     #' @param compression See [write_zarr()]
     #' @param mode See [write_zarr()]
+    #' @param ... See [write_zarr()]
     #'
     #' @return `path` invisibly
     write_zarr = function(
@@ -370,13 +371,15 @@ AbstractAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      ...
     ) {
       write_zarr(
         object = self,
         path,
         compression = compression,
-        mode = mode
+        mode = mode,
+        ...
       )
     }
   ),

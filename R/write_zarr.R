@@ -16,7 +16,7 @@
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms creating a file and failing if it already exists
-#'   
+#'
 #' @param ... Additional arguments passed to [as_AnnData()] or [as_ZarrAnnData()]
 #'
 #' @details
@@ -44,6 +44,15 @@
 #' )
 #' zarr_store <- tempfile(fileext = ".zarr")
 #' adata$write_zarr(zarr_store)
+#'
+#' # set Zarr version to 2.
+#' options(anndataR.zarr_version = 2)
+#' zarr_store <- tempfile(fileext = ".zarr")
+#' adata$write_zarr(zarr_store)
+#'
+#' # write .zarr as version 3
+#' zarr_store <- tempfile(fileext = ".zarr")
+#' adata$write_zarr(zarr_store, zarr_version = 3)
 #'
 #' # Write a SingleCellExperiment as a Zarr store
 #' if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {
@@ -109,7 +118,7 @@ write_zarr <- function(
     object$as_ZarrAnnData(
       path,
       compression = compression,
-      mode = mode, 
+      mode = mode,
       ...
     )
   } else {

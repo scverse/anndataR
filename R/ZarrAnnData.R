@@ -313,36 +313,36 @@ ZarrAnnData <- R6::R6Class(
     #'   [as_ZarrAnnData()] for details
     #' @param zarr_version The Zarr version to use. See
     #'   [as_ZarrAnnData()] for details
-    #'   
+    #'
     #' @details
     #' The constructor creates a new Zarr `AnnData` interface object. This can
     #' either be used to either connect to an existing `.zarr` file or to
     #' create a new one. If any additional slot arguments are set an existing
     #' file will be overwritten.
     initialize = function(
-    file,
-    X = NULL,
-    obs = NULL,
-    var = NULL,
-    layers = NULL,
-    obsm = NULL,
-    varm = NULL,
-    obsp = NULL,
-    varp = NULL,
-    uns = NULL,
-    shape = NULL,
-    mode = c("a", "r", "r+", "w", "w-", "x"),
-    compression = c(
-      "none",
-      "gzip",
-      "blosc",
-      "zstd",
-      "lzma",
-      "bz2",
-      "zlib",
-      "lz4"
-    ),
-    zarr_version = .get_zarr_version()
+      file,
+      X = NULL,
+      obs = NULL,
+      var = NULL,
+      layers = NULL,
+      obsm = NULL,
+      varm = NULL,
+      obsp = NULL,
+      varp = NULL,
+      uns = NULL,
+      shape = NULL,
+      mode = c("a", "r", "r+", "w", "w-", "x"),
+      compression = c(
+        "none",
+        "gzip",
+        "blosc",
+        "zstd",
+        "lzma",
+        "bz2",
+        "zlib",
+        "lz4"
+      ),
+      zarr_version = .get_zarr_version()
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc")
 
@@ -525,9 +525,9 @@ ZarrAnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
-#' @param zarr_version The Zarr data format to be used for [write_zarr()]: 
+#' @param zarr_version The Zarr data format to be used for [write_zarr()]:
 #'   "2" for Zarr v2, and "3" for Zarr v3
-#'   
+#'
 #' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
 #'   object.
 #' @keywords internal

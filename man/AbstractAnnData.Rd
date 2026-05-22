@@ -450,7 +450,8 @@ See \code{\link[=write_zarr]{write_zarr()}} for details
     \preformatted{AbstractAnnData$write_zarr(
   path,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  ...
 )}
     \if{html}{\out{</div>}}
   }
@@ -460,6 +461,7 @@ See \code{\link[=write_zarr]{write_zarr()}} for details
       \item{\code{path}}{See \code{\link[=write_zarr]{write_zarr()}}}
       \item{\code{compression}}{See \code{\link[=write_zarr]{write_zarr()}}}
       \item{\code{mode}}{See \code{\link[=write_zarr]{write_zarr()}}}
+      \item{\code{...}}{See \code{\link[=write_zarr]{write_zarr()}}}
     }
     \if{html}{\out{</div>}}
   }
