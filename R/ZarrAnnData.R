@@ -20,7 +20,7 @@ ZarrAnnData <- R6::R6Class(
   cloneable = FALSE,
   private = list(
     .zarrobj = NULL,
-    .zarrversion = NULL,
+    .zarrformat = NULL,
     .compression = NULL,
     .readonly = NULL,
 
@@ -64,7 +64,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "X",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -90,7 +90,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "layers",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -118,7 +118,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "obsm",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -146,7 +146,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "varm",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -172,7 +172,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "obsp",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -198,7 +198,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "varp",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -217,7 +217,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "obs",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -236,7 +236,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "var",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     },
@@ -285,7 +285,7 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "uns",
             private$.compression,
-            private$.zarrversion
+            private$.zarrformat
           )
       }
     }
@@ -311,7 +311,7 @@ ZarrAnnData <- R6::R6Class(
     #'   details
     #' @param compression The compression algorithm to use. See
     #'   [as_ZarrAnnData()] for details
-    #' @param zarr_version The Zarr version to use. See
+    #' @param zarr_format The Zarr format to use. See
     #'   [as_ZarrAnnData()] for details
     #'
     #' @details
@@ -342,7 +342,7 @@ ZarrAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
-      zarr_version = .get_zarr_version()
+      zarr_format = .get_zarr_format()
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc")
 
@@ -351,7 +351,7 @@ ZarrAnnData <- R6::R6Class(
 
       private$.compression <- compression
 
-      private$.zarrversion <- zarr_version
+      private$.zarrformat <- zarr_format
       is_readonly <- FALSE
 
       if (is.character(file)) {
@@ -525,7 +525,7 @@ ZarrAnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
-#' @param zarr_version The Zarr data format to be used for [write_zarr()]:
+#' @param zarr_format The Zarr data format to be used for [write_zarr()]:
 #'   "2" for Zarr v2, and "3" for Zarr v3
 #'
 #' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
@@ -550,7 +550,7 @@ as_ZarrAnnData <- function(
     "lz4"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_version = .get_zarr_version()
+  zarr_format = .get_zarr_format()
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -573,6 +573,6 @@ as_ZarrAnnData <- function(
     shape = adata$shape(),
     mode = mode,
     compression = compression,
-    zarr_version = zarr_version
+    zarr_format = zarr_format
   )
 }

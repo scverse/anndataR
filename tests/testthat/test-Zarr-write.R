@@ -1,13 +1,13 @@
 skip_if_not_installed("Rarr")
 
-for (zarr_version in c(2, 3)) {
+for (zarr_format in c(2, 3)) {
   # set version
-  options(anndataR.zarr_version = zarr_version)
+  options(anndataR.zarr_format = zarr_format)
 
   test_that("Zarr versioning works", {
     expect_equal(
-      getOption("anndataR.zarr_version"),
-      zarr_version
+      getOption("anndataR.zarr_format"),
+      zarr_format
     )
   })
 
@@ -19,7 +19,7 @@ for (zarr_version in c(2, 3)) {
   create_zarr(store = store)
 
   test_that("Writing Zarr store works", {
-    expect_equal(zarr_node_version(store, ""), zarr_version)
+    expect_equal(zarr_node_format(store, ""), zarr_format)
   })
 
   test_that("Writing Zarr dense arrays works", {
@@ -32,7 +32,7 @@ for (zarr_version in c(2, 3)) {
       compression = "none"
     ))
     expect_true(zarr_path_exists(store, "dense_array"))
-    expect_equal(zarr_node_version(store, "dense_array"), zarr_version)
+    expect_equal(zarr_node_format(store, "dense_array"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "dense_array"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "array")
@@ -49,7 +49,7 @@ for (zarr_version in c(2, 3)) {
       )
     )
     expect_true(zarr_path_exists(store, "dense_3d_array"))
-    expect_equal(zarr_node_version(store, "dense_3d_array"), zarr_version)
+    expect_equal(zarr_node_format(store, "dense_3d_array"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "dense_3d_array"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "array")
@@ -66,7 +66,7 @@ for (zarr_version in c(2, 3)) {
       compression = "none"
     ))
     expect_true(zarr_path_exists(store, "csc_array"))
-    expect_equal(zarr_node_version(store, "csc_array"), zarr_version)
+    expect_equal(zarr_node_format(store, "csc_array"), zarr_format)
     expect_true(zarr_path_exists(store, "csc_array/data"))
     expect_true(zarr_path_exists(store, "csc_array/indices"))
     expect_true(zarr_path_exists(store, "csc_array/indptr"))
@@ -82,7 +82,7 @@ for (zarr_version in c(2, 3)) {
       compression = "none"
     ))
     expect_true(zarr_path_exists(store, "csr_array"))
-    expect_equal(zarr_node_version(store, "csr_array"), zarr_version)
+    expect_equal(zarr_node_format(store, "csr_array"), zarr_format)
     expect_true(zarr_path_exists(store, "csr_array/data"))
     expect_true(zarr_path_exists(store, "csr_array/indices"))
     expect_true(zarr_path_exists(store, "csr_array/indptr"))
@@ -101,7 +101,7 @@ for (zarr_version in c(2, 3)) {
       write_zarr_element(value, store, "dgematrix")
     )
     expect_true(zarr_path_exists(store, "dgematrix"))
-    expect_equal(zarr_node_version(store, "dgematrix"), zarr_version)
+    expect_equal(zarr_node_format(store, "dgematrix"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "dgematrix"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "array")
@@ -113,7 +113,7 @@ for (zarr_version in c(2, 3)) {
 
     expect_silent(write_zarr_element(nullable, store, "nullable_bool"))
     expect_true(zarr_path_exists(store, "nullable_bool"))
-    expect_equal(zarr_node_version(store, "nullable_bool"), zarr_version)
+    expect_equal(zarr_node_format(store, "nullable_bool"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "nullable_bool"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "nullable-boolean")
@@ -125,7 +125,7 @@ for (zarr_version in c(2, 3)) {
 
     expect_silent(write_zarr_element(nullable, store, "nullable_int"))
     expect_true(zarr_path_exists(store, "nullable_int"))
-    expect_equal(zarr_node_version(store, "nullable_int"), zarr_version)
+    expect_equal(zarr_node_format(store, "nullable_int"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "nullable_int"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "nullable-integer")
@@ -136,7 +136,7 @@ for (zarr_version in c(2, 3)) {
 
     write_zarr_element(string, store, "string_array")
     expect_true(zarr_path_exists(store, "string_array"))
-    expect_equal(zarr_node_version(store, "string_array"), zarr_version)
+    expect_equal(zarr_node_format(store, "string_array"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "string_array"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "string-array")
@@ -145,7 +145,7 @@ for (zarr_version in c(2, 3)) {
 
     expect_silent(write_zarr_element(string2d, store, "string_array2D"))
     expect_true(zarr_path_exists(store, "string_array2D"))
-    expect_equal(zarr_node_version(store, "string_array2D"), zarr_version)
+    expect_equal(zarr_node_format(store, "string_array2D"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "string_array2D"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "string-array")
@@ -156,7 +156,7 @@ for (zarr_version in c(2, 3)) {
 
     expect_no_error(write_zarr_element(categorical, store, "categorical"))
     expect_true(zarr_path_exists(store, "categorical"))
-    expect_equal(zarr_node_version(store, "categorical"), zarr_version)
+    expect_equal(zarr_node_format(store, "categorical"), zarr_format)
     expect_true(zarr_path_exists(store, "categorical/categories"))
     expect_true(zarr_path_exists(store, "categorical/codes"))
     attrs <- Rarr::read_zarr_attributes(file.path(store, "categorical"))
@@ -169,7 +169,7 @@ for (zarr_version in c(2, 3)) {
 
     expect_silent(write_zarr_element(string, store, "string_scalar"))
     expect_true(zarr_path_exists(store, "string_scalar"))
-    expect_equal(zarr_node_version(store, "string_scalar"), zarr_version)
+    expect_equal(zarr_node_format(store, "string_scalar"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "string_scalar"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "string")
@@ -180,7 +180,7 @@ for (zarr_version in c(2, 3)) {
 
     expect_silent(write_zarr_element(number, store, "numeric_scalar"))
     expect_true(zarr_path_exists(store, "numeric_scalar"))
-    expect_equal(zarr_node_version(store, "numeric_scalar"), zarr_version)
+    expect_equal(zarr_node_format(store, "numeric_scalar"), zarr_format)
     attrs <- Rarr::read_zarr_attributes(file.path(store, "numeric_scalar"))
     expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
     expect_equal(attrs[["encoding-type"]], "numeric-scalar")
@@ -202,7 +202,7 @@ for (zarr_version in c(2, 3)) {
       compression = "none"
     ))
     expect_true(zarr_path_exists(store, "mapping"))
-    expect_equal(zarr_node_version(store, "mapping"), zarr_version)
+    expect_equal(zarr_node_format(store, "mapping"), zarr_format)
     expect_true(zarr_path_exists(store, "mapping/array"))
     expect_true(zarr_path_exists(store, "mapping/sparse"))
     expect_true(zarr_path_exists(store, "mapping/sparse/data"))
@@ -224,7 +224,7 @@ for (zarr_version in c(2, 3)) {
 
     expect_silent(write_zarr_element(df, store, "dataframe"))
     expect_true(zarr_path_exists(store, "dataframe"))
-    expect_equal(zarr_node_version(store, "dataframe"), zarr_version)
+    expect_equal(zarr_node_format(store, "dataframe"), zarr_format)
     expect_true(zarr_path_exists(store, "dataframe/Letters"))
     expect_true(zarr_path_exists(store, "dataframe/Numbers"))
     expect_true(zarr_path_exists(store, "dataframe/_index"))
@@ -243,7 +243,7 @@ for (zarr_version in c(2, 3)) {
     skip_if_not_installed("SingleCellExperiment")
     store <- tempfile(fileext = ".zarr")
     sce <- generate_dataset(format = "SingleCellExperiment")
-    write_zarr(sce, store, zarr_version = zarr_version)
+    write_zarr(sce, store, zarr_format = zarr_format)
     expect_true(dir.exists(store))
   })
 
@@ -251,7 +251,7 @@ for (zarr_version in c(2, 3)) {
     skip_if_not_installed("SeuratObject")
     store <- tempfile(fileext = ".zarr")
     sce <- generate_dataset(format = "Seurat")
-    write_zarr(sce, store, zarr_version = zarr_version)
+    write_zarr(sce, store, zarr_format = zarr_format)
     expect_true(dir.exists(store))
   })
 
@@ -277,7 +277,7 @@ for (zarr_version in c(2, 3)) {
       adata,
       store_none,
       compression = "none",
-      zarr_version = zarr_version
+      zarr_format = zarr_format
     )
 
     # TODO: blosc does not work for now
@@ -287,7 +287,7 @@ for (zarr_version in c(2, 3)) {
         adata,
         store_compressed,
         compression = comp,
-        zarr_version = zarr_version
+        zarr_format = zarr_format
       )
       unlink(store_compressed, recursive = TRUE)
       expect_true(dir_size(store_none) > dir_size(store_compressed))

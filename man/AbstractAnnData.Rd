@@ -387,7 +387,7 @@ See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for more details on the conv
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_version = .get_zarr_version()
+  zarr_format = .get_zarr_format()
 )}
     \if{html}{\out{</div>}}
   }
@@ -397,7 +397,7 @@ See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for more details on the conv
       \item{\code{file}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
       \item{\code{compression}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
       \item{\code{mode}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
-      \item{\code{zarr_version}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
+      \item{\code{zarr_format}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
     }
     \if{html}{\out{</div>}}
   }

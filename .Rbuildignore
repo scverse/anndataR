@@ -19,3 +19,5 @@
 ^codecov\.yml$
 ^benchmarks$
 ^\.venv$
+^\.positai$
+^\.claude$

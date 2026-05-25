@@ -9,7 +9,7 @@ as_ZarrAnnData(
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_version = .get_zarr_version()
+  zarr_format = .get_zarr_format()
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ Zarr file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zs
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists
 }}
 
-\item{zarr_version}{The Zarr data format to be used for \code{\link[=write_zarr]{write_zarr()}}:
+\item{zarr_format}{The Zarr data format to be used for \code{\link[=write_zarr]{write_zarr()}}:
 "2" for Zarr v2, and "3" for Zarr v3}
 }
 \value{

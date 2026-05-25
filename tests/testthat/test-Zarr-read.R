@@ -1,21 +1,21 @@
 skip_if_not_installed("Rarr")
 
-for (zarr_version in c(2, 3)) {
+for (zarr_format in c(2, 3)) {
   zarr_zip <- system.file(
     "extdata",
-    paste0("example_v", zarr_version, ".zarr.zip"),
+    paste0("example_v", zarr_format, ".zarr.zip"),
     package = "anndataR"
   )
   td <- tempdir(check = TRUE)
   unzip(zarr_zip, exdir = td)
-  store <- file.path(td, paste0("example_v", zarr_version, ".zarr"))
+  store <- file.path(td, paste0("example_v", zarr_format, ".zarr"))
 
-  test_that(paste("reading Zarr", zarr_version, "encoding works"), {
+  test_that(paste("reading Zarr", zarr_format, "encoding works"), {
     encoding <- read_zarr_encoding(store, "obs")
     expect_equal(names(encoding), c("type", "version"))
   })
 
-  test_that(paste("reading Zarr", zarr_version, "dense matrices works"), {
+  test_that(paste("reading Zarr", zarr_format, "dense matrices works"), {
     mat <- read_zarr_dense_array(store, "layers/dense_counts")
     expect_true(is.matrix(mat))
     expect_type(mat, "integer")
@@ -27,7 +27,7 @@ for (zarr_version in c(2, 3)) {
     expect_equal(dim(mat), c(50, 100))
   })
 
-  test_that(paste("reading Zarr", zarr_version, "sparse matrices works"), {
+  test_that(paste("reading Zarr", zarr_format, "sparse matrices works"), {
     mat <- read_zarr_sparse_array(store, "layers/csc_counts", type = "csc")
     expect_s4_class(mat, "dgCMatrix")
     expect_equal(dim(mat), c(50, 100))
@@ -37,7 +37,7 @@ for (zarr_version in c(2, 3)) {
     expect_equal(dim(mat), c(50, 100))
   })
 
-  test_that(paste("reading Zarr", zarr_version, "recarrays works"), {
+  test_that(paste("reading Zarr", zarr_format, "recarrays works"), {
     array_list <- read_zarr_rec_array(
       store,
       "uns/rank_genes_groups/logfoldchanges"
@@ -50,7 +50,7 @@ for (zarr_version in c(2, 3)) {
     }
   })
 
-  test_that(paste("reading Zarr", zarr_version, "1D numeric arrays works"), {
+  test_that(paste("reading Zarr", zarr_format, "1D numeric arrays works"), {
     array_1d <- read_zarr_dense_array(store, "obs/Int")
     expect_equal(array_1d, array(0L:49L))
 
@@ -59,7 +59,7 @@ for (zarr_version in c(2, 3)) {
   })
 
   test_that(
-    paste("reading Zarr", zarr_version, "1D sparse numeric arrays works"),
+    paste("reading Zarr", zarr_format, "1D sparse numeric arrays works"),
     {
       array_1d <- read_zarr_sparse_array(store, "uns/Sparse1D", type = "csc")
       expect_s4_class(array_1d, "dgCMatrix")
@@ -67,7 +67,7 @@ for (zarr_version in c(2, 3)) {
     }
   )
 
-  test_that(paste("reading Zarr", zarr_version, "1D nullable arrays works"), {
+  test_that(paste("reading Zarr", zarr_format, "1D nullable arrays works"), {
     array_1d <- read_zarr_nullable_integer(store, "obs/IntNA")
     expect_vector(array_1d, ptype = integer(), size = 50)
     expect_true(anyNA(array_1d))
@@ -82,17 +82,17 @@ for (zarr_version in c(2, 3)) {
     expect_true(anyNA(array_1d))
   })
 
-  test_that(paste("reading Zarr", zarr_version, "string scalars works"), {
+  test_that(paste("reading Zarr", zarr_format, "string scalars works"), {
     scalar <- read_zarr_string_scalar(store, "uns/StringScalar")
     expect_equal(scalar, "A string")
   })
 
-  test_that(paste("reading Zarr", zarr_version, "numeric scalars works"), {
+  test_that(paste("reading Zarr", zarr_format, "numeric scalars works"), {
     scalar <- read_zarr_numeric_scalar(store, "uns/IntScalar")
     expect_equal(scalar, 1)
   })
 
-  test_that(paste("reading Zarr", zarr_version, "string arrays works"), {
+  test_that(paste("reading Zarr", zarr_format, "string arrays works"), {
     array <- read_zarr_string_array(store, "uns/String")
     expect_equal(array, array(paste0("String ", 0L:9L)))
 
@@ -102,8 +102,8 @@ for (zarr_version in c(2, 3)) {
     expect_equal(dim(array), c(5, 10))
   })
 
-  test_that(paste("reading Zarr", zarr_version, "mappings works"), {
-    if (zarr_version == "3") {
+  test_that(paste("reading Zarr", zarr_format, "mappings works"), {
+    if (zarr_format == "3") {
       # TODO: Remove when v3 recarray support is implemented
       mapping <- suppressWarnings(read_zarr_mapping(store, "uns"))
     } else {
@@ -113,7 +113,7 @@ for (zarr_version in c(2, 3)) {
     expect_type(names(mapping), "character")
   })
 
-  test_that(paste("reading Zarr", zarr_version, "dataframes works"), {
+  test_that(paste("reading Zarr", zarr_format, "dataframes works"), {
     df <- read_zarr_data_frame(store, "obs")
     expect_s3_class(df, "data.frame")
     expect_equal(
@@ -135,11 +135,11 @@ for (zarr_version in c(2, 3)) {
   })
 
   test_that(
-    paste("reading Zarr", zarr_version, "as SingleCellExperiment works"),
+    paste("reading Zarr", zarr_format, "as SingleCellExperiment works"),
     {
       skip_if_not_installed("SingleCellExperiment")
 
-      if (zarr_version == "v3") {
+      if (zarr_format == "v3") {
         # TODO: Remove when v3 recarray support is implemented
         sce <- suppressWarnings(read_zarr(store, as = "SingleCellExperiment"))
       } else {
@@ -150,10 +150,10 @@ for (zarr_version in c(2, 3)) {
     }
   )
 
-  test_that(paste("reading Zarr", zarr_version, "as Seurat works"), {
+  test_that(paste("reading Zarr", zarr_format, "as Seurat works"), {
     skip_if_not_installed("SeuratObject")
 
-    if (zarr_version == "v3") {
+    if (zarr_format == "v3") {
       # TODO: Remove when v3 recarray support is implemented
       seurat <- suppressWarnings(read_zarr(store, as = "Seurat"))
     } else {

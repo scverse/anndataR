@@ -7,12 +7,12 @@ ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 #'
 #' @param store The location of the Zarr store
 #' @param name Name of the group
-#' @param version Zarr version
+#' @param format Zarr format
 #'
 #' @return `NULL`
 #'
 #' @noRd
-create_zarr_group <- function(store, name, version = .get_zarr_version()) {
+create_zarr_group <- function(store, name, format = .get_zarr_format()) {
   # Split "a/b/c" into c("a", "b", "c")
   split_name <- strsplit(name, split = "/", fixed = TRUE)[[1]]
   if (length(split_name) > 1) {
@@ -31,9 +31,9 @@ create_zarr_group <- function(store, name, version = .get_zarr_version()) {
     }
   }
   dir.create(file.path(store, split_name[1]), showWarnings = FALSE)
-  version <- paste0("v", version)
+  format <- paste0("v", format)
   switch(
-    version,
+    format,
     v2 = {
       write(
         "{\"zarr_format\":2}",
@@ -46,7 +46,7 @@ create_zarr_group <- function(store, name, version = .get_zarr_version()) {
         file = file.path(store, split_name[1], "zarr.json")
       )
     },
-    cli_abort("Incorrect Zarr version specified. Must be '2' or '3'.")
+    cli_abort("Incorrect Zarr format specified. Must be '2' or '3'.")
   )
 }
 
@@ -55,15 +55,15 @@ create_zarr_group <- function(store, name, version = .get_zarr_version()) {
 #' Create Zarr store
 #'
 #' @param store The location of the Zarr store
-#' @param version Zarr version
+#' @param format Zarr format
 #'
 #' @return `NULL`
 #'
 #' @noRd
-create_zarr <- function(store, version = .get_zarr_version()) {
+create_zarr <- function(store, format = .get_zarr_format()) {
   prefix <- basename(store)
   dir <- gsub(paste0(prefix, "$"), "", store)
-  create_zarr_group(store = dir, name = prefix, version = version)
+  create_zarr_group(store = dir, name = prefix, format = format)
 }
 
 #' is_zarr_empty
@@ -109,7 +109,7 @@ zarr_path_exists <- function(store, target_path) {
 }
 
 #' @noRd
-.get_zarr_version <- function() {
-  vr <- getOption("anndataR.zarr_version")
+.get_zarr_format <- function() {
+  vr <- getOption("anndataR.zarr_format")
   if (is.null(vr)) 2 else vr
 }
