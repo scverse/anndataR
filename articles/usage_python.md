@@ -2,7 +2,7 @@
 
 ## Introduction
 
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* works with
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* works with
 Python `AnnData` objects through
 *[reticulate](https://CRAN.R-project.org/package=reticulate)*. You can
 load Python objects, apply Python functions to them, and convert them to
@@ -169,7 +169,7 @@ print(rna_sce)
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2026-05-11 r90046)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -190,7 +190,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] reticulate_1.46.0 anndataR_1.3.0    BiocStyle_2.40.0 
+#> [1] reticulate_1.46.0 anndataR_1.3.0    BiocStyle_2.41.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
@@ -198,12 +198,12 @@ sessionInfo()
 #>   [5] farver_2.1.2                rmarkdown_2.31             
 #>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
-#>  [11] memoise_2.0.1               spatstat.explore_3.8-0     
-#>  [13] htmltools_0.5.9             S4Arrays_1.12.0            
-#>  [15] curl_7.1.0                  SparseArray_1.12.2         
+#>  [11] memoise_2.0.1               spatstat.explore_3.8-1     
+#>  [13] htmltools_0.5.9             S4Arrays_1.13.0            
+#>  [15] curl_7.1.0                  SparseArray_1.13.2         
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
 #>  [19] parallelly_1.47.0           KernSmooth_2.23-26         
-#>  [21] bslib_0.10.0                htmlwidgets_1.6.4          
+#>  [21] bslib_0.11.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] httr2_1.2.2                 plyr_1.8.9                 
 #>  [27] plotly_4.12.0               zoo_1.8-15                 
@@ -211,46 +211,46 @@ sessionInfo()
 #>  [31] mime_0.13                   lifecycle_1.0.5            
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
-#>  [37] MatrixGenerics_1.24.0       fitdistrplus_1.2-6         
+#>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
 #>  [39] future_1.70.0               shiny_1.13.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
-#>  [43] S4Vectors_0.50.0            Seurat_5.5.0               
+#>  [43] S4Vectors_0.51.2            Seurat_5.5.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
-#>  [47] irlba_2.3.7                 RSQLite_3.52.0             
-#>  [49] textshaping_1.0.5           GenomicRanges_1.64.0       
+#>  [47] irlba_2.3.7                 RSQLite_3.53.1             
+#>  [49] textshaping_1.0.5           GenomicRanges_1.65.0       
 #>  [51] filelock_1.0.3              progressr_0.19.0           
-#>  [53] spatstat.sparse_3.1-0       polyclip_1.10-7            
+#>  [53] spatstat.sparse_3.2-0       polyclip_1.10-7            
 #>  [55] httr_1.4.8                  abind_1.4-8                
-#>  [57] compiler_4.7.0              withr_3.0.2                
-#>  [59] bit64_4.8.0                 S7_0.2.2                   
+#>  [57] compiler_4.6.0              withr_3.0.2                
+#>  [59] bit64_4.8.2                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
 #>  [63] MASS_7.3-65                 rappdirs_0.3.4             
-#>  [65] DelayedArray_0.38.1         tools_4.7.0                
+#>  [65] DelayedArray_0.39.2         tools_4.6.0                
 #>  [67] lmtest_0.9-40               otel_0.2.0                 
 #>  [69] httpuv_1.6.17               future.apply_1.20.2        
 #>  [71] goftest_1.2-3               glue_1.8.1                 
 #>  [73] nlme_3.1-169                promises_1.5.0             
-#>  [75] grid_4.7.0                  Rtsne_0.17                 
+#>  [75] grid_4.6.0                  Rtsne_0.17                 
 #>  [77] cluster_2.1.8.2             reshape2_1.4.5             
 #>  [79] generics_0.1.4              gtable_0.3.6               
 #>  [81] spatstat.data_3.1-9         tidyr_1.3.2                
 #>  [83] data.table_1.18.4           sp_2.2-1                   
-#>  [85] XVector_0.52.0              BiocGenerics_0.58.0        
-#>  [87] spatstat.geom_3.7-3         RcppAnnoy_0.0.23           
+#>  [85] XVector_0.53.0              BiocGenerics_0.59.3        
+#>  [87] spatstat.geom_3.8-1         RcppAnnoy_0.0.23           
 #>  [89] ggrepel_0.9.8               RANN_2.6.2                 
 #>  [91] pillar_1.11.1               stringr_1.6.0              
-#>  [93] spam_2.11-3                 RcppHNSW_0.6.0             
-#>  [95] later_1.4.8                 splines_4.7.0              
-#>  [97] dplyr_1.2.1                 BiocFileCache_3.2.0        
+#>  [93] spam_2.11-3                 RcppHNSW_0.7.0             
+#>  [95] later_1.4.8                 splines_4.6.0              
+#>  [97] dplyr_1.2.1                 BiocFileCache_3.3.0        
 #>  [99] lattice_0.22-9              bit_4.6.0                  
 #> [101] deldir_2.0-4                survival_3.8-6             
-#> [103] tidyselect_1.2.1            SingleCellExperiment_1.34.0
+#> [103] tidyselect_1.2.1            SingleCellExperiment_1.35.1
 #> [105] miniUI_0.1.2                pbapply_1.7-4              
 #> [107] knitr_1.51                  gridExtra_2.3              
-#> [109] bookdown_0.46               IRanges_2.46.0             
-#> [111] Seqinfo_1.2.0               SummarizedExperiment_1.42.0
-#> [113] scattermore_1.2             stats4_4.7.0               
-#> [115] xfun_0.57                   Biobase_2.72.0             
+#> [109] bookdown_0.46               IRanges_2.47.1             
+#> [111] Seqinfo_1.3.0               SummarizedExperiment_1.43.0
+#> [113] scattermore_1.2             stats4_4.6.0               
+#> [115] xfun_0.57                   Biobase_2.73.1             
 #> [117] matrixStats_1.5.0           stringi_1.8.7              
 #> [119] lazyeval_0.2.3              yaml_2.3.12                
 #> [121] evaluate_1.0.5              codetools_0.2-20           
@@ -258,9 +258,9 @@ sessionInfo()
 #> [125] cli_3.6.6                   uwot_0.2.4                 
 #> [127] xtable_1.8-8                systemfonts_1.3.2          
 #> [129] jquerylib_0.1.4             Rcpp_1.1.1-1.1             
-#> [131] spatstat.random_3.4-5       globals_0.19.1             
+#> [131] spatstat.random_3.5-0       globals_0.19.1             
 #> [133] dbplyr_2.5.2                png_0.1-9                  
-#> [135] spatstat.univar_3.1-7       parallel_4.7.0             
+#> [135] spatstat.univar_3.2-0       parallel_4.6.0             
 #> [137] blob_1.3.0                  pkgdown_2.2.0              
 #> [139] ggplot2_4.0.3               dotCall64_1.2              
 #> [141] listenv_0.10.1              viridisLite_0.4.3          
@@ -274,26 +274,26 @@ sessionInfo()
 ``` r
 
 reticulate::py_config()
-#> python:         /opt/hostedtoolcache/Python/3.14.4/x64/bin/python3
-#> libpython:      /opt/hostedtoolcache/Python/3.14.4/x64/lib/libpython3.14.so
-#> pythonhome:     /opt/hostedtoolcache/Python/3.14.4/x64:/opt/hostedtoolcache/Python/3.14.4/x64
-#> version:        3.14.4 (main, Apr  8 2026, 02:27:22) [GCC 13.3.0]
-#> numpy:          /opt/hostedtoolcache/Python/3.14.4/x64/lib/python3.14/site-packages/numpy
-#> numpy_version:  2.4.4
-#> scanpy:         /opt/hostedtoolcache/Python/3.14.4/x64/lib/python3.14/site-packages/scanpy
+#> python:         /opt/hostedtoolcache/Python/3.14.5/x64/bin/python3
+#> libpython:      /opt/hostedtoolcache/Python/3.14.5/x64/lib/libpython3.14.so
+#> pythonhome:     /opt/hostedtoolcache/Python/3.14.5/x64:/opt/hostedtoolcache/Python/3.14.5/x64
+#> version:        3.14.5 (main, May 11 2026, 02:45:53) [GCC 13.3.0]
+#> numpy:          /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/numpy
+#> numpy_version:  2.4.6
+#> scanpy:         /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
 
 reticulate::py_list_packages()
 #>              package     version                  requirement
-#> 1            anndata     0.12.14             anndata==0.12.14
+#> 1            anndata     0.12.16             anndata==0.12.16
 #> 2   array-api-compat      1.14.0     array-api-compat==1.14.0
-#> 3            certifi   2026.4.22           certifi==2026.4.22
+#> 3            certifi   2026.5.20           certifi==2026.5.20
 #> 4          contourpy       1.3.3             contourpy==1.3.3
 #> 5             cycler      0.12.1               cycler==0.12.1
 #> 6             donfig 0.8.1.post1          donfig==0.8.1.post1
 #> 7   fast-array-utils       1.4.1      fast-array-utils==1.4.1
-#> 8          fonttools      4.62.1            fonttools==4.62.1
+#> 8          fonttools      4.63.0            fonttools==4.63.0
 #> 9      google-crc32c       1.8.0         google-crc32c==1.8.0
 #> 10              h5py      3.16.0                 h5py==3.16.0
 #> 11            joblib       1.5.3                joblib==1.5.3
@@ -306,7 +306,7 @@ reticulate::py_list_packages()
 #> 18          networkx       3.6.1              networkx==3.6.1
 #> 19             numba      0.65.1                numba==0.65.1
 #> 20         numcodecs      0.16.5            numcodecs==0.16.5
-#> 21             numpy       2.4.4                 numpy==2.4.4
+#> 21             numpy       2.4.6                 numpy==2.4.6
 #> 22         packaging        26.2              packaging==26.2
 #> 23            pandas       2.3.3                pandas==2.3.3
 #> 24             patsy       1.0.2                 patsy==1.0.2
@@ -319,7 +319,7 @@ reticulate::py_list_packages()
 #> 31            scanpy      1.12.1               scanpy==1.12.1
 #> 32      scikit-learn       1.8.0          scikit-learn==1.8.0
 #> 33             scipy      1.17.1                scipy==1.17.1
-#> 34      scverse-misc       0.0.6          scverse-misc==0.0.6
+#> 34      scverse-misc       0.0.7          scverse-misc==0.0.7
 #> 35           seaborn      0.13.2              seaborn==0.13.2
 #> 36     session-info2       0.4.1         session-info2==0.4.1
 #> 37               six      1.17.0                  six==1.17.0

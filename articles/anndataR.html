@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Using anndataR • anndataR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Using anndataR">
 </head>
@@ -83,7 +83,7 @@ Deconinck</h4>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
+<p><em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>
 allows users to work with <code>.h5ad</code> files and
 <code>.zarr</code> stores, interact with <code>AnnData</code> objects
 and convert to/from <code>SingleCellExperiment</code> or
@@ -96,17 +96,17 @@ interoperability packages and aims to provide a first-class R
 <div class="section level3">
 <h3 id="relationship-to-other-packages">Relationship to other packages<a class="anchor" aria-label="anchor" href="#relationship-to-other-packages"></a>
 </h3>
-<p>Existing packages provide similar functionality to <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
+<p>Existing packages provide similar functionality to <em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>
 but there are some important differences:</p>
 <ul>
 <li>
-<em><a href="https://bioconductor.org/packages/3.23/zellkonverter" class="external-link">zellkonverter</a></em>
+<em><a href="https://bioconductor.org/packages/3.24/zellkonverter" class="external-link">zellkonverter</a></em>
 provides conversion of <code>SingleCellExperiment</code> objects to/from
 <code>AnnData</code> and reading/writing of <code>.h5ad</code> files.
 This is facilitated via <em><a href="https://CRAN.R-project.org/package=reticulate" class="external-link">reticulate</a></em>
-using <em><a href="https://bioconductor.org/packages/3.23/basilisk" class="external-link">basilisk</a></em>
+using <em><a href="https://bioconductor.org/packages/3.24/basilisk" class="external-link">basilisk</a></em>
 to manage Python environments (native reading of <code>.h5ad</code> is
-also possible). In contrast, <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
+also possible). In contrast, <em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>
 provides a native R H5AD and Zarr interface, removing the need for
 Python dependencies. Conversion to/from <code>Seurat</code> objects is
 also supported.</li>
@@ -114,7 +114,7 @@ also supported.</li>
 <em><a href="https://CRAN.R-project.org/package=anndata" class="external-link">anndata</a></em> (on
 CRAN) is a wrapper around the Python <em>anndata</em> package. It
 provides a nicer interface from within R but still requires a Python
-environment. <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
+environment. <em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>
 provides a pure R implementation of the <code>AnnData</code> data
 structure with different back ends and conversion to more common R
 objects.</li>
@@ -124,13 +124,13 @@ available from a central package repository</li>
 </ul>
 <p>There is significant overlap in functionality between these packages.
 We anticipate that over time they will become more specialised and work
-better together or be deprecated in favour of <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>.</p>
+better together or be deprecated in favour of <em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
+<p>Install <em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>
 using <em><a href="https://CRAN.R-project.org/package=BiocManager" class="external-link">BiocManager</a></em>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -141,7 +141,7 @@ using <em><a href="https://CRAN.R-project.org/package=BiocManager" class="extern
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>These sections briefly show how to use <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>.</p>
+<p>These sections briefly show how to use <em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>.</p>
 <div class="section level3">
 <h3 id="read-from-disk">Read from disk<a class="anchor" aria-label="anchor" href="#read-from-disk"></a>
 </h3>
@@ -376,7 +376,7 @@ object (see <code><a href="../articles/usage_seurat.html">vignette("usage_seurat
 <div class="section level3">
 <h3 id="subsetting">Subsetting <code>AnnData</code> objects<a class="anchor" aria-label="anchor" href="#subsetting"></a>
 </h3>
-<p><em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
+<p><em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>
 provides standard R subsetting methods that work with familiar bracket
 notation. These methods return <code>AnnDataView</code> objects that
 provide lazy evaluation for efficient memory usage.</p>
@@ -493,7 +493,7 @@ provide lazy evaluation for efficient memory usage.</p>
 <div class="section level2">
 <h2 id="citing-anndatar">Citing <em>anndataR</em><a class="anchor" aria-label="anchor" href="#citing-anndatar"></a>
 </h2>
-<p>If you use <em><a href="https://bioconductor.org/packages/3.23/anndataR" class="external-link">anndataR</a></em>
+<p>If you use <em><a href="https://bioconductor.org/packages/3.24/anndataR" class="external-link">anndataR</a></em>
 in your work, please cite <a href="https://doi.org/10.1101/2025.08.18.669052" class="external-link"><em>“anndataR improves
 interoperability between R and Python in single-cell
 transcriptomics”</em></a>:</p>
@@ -524,7 +524,7 @@ transcriptomics”</em></a>:</p>
 </h2>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R Under development (unstable) (2026-05-11 r90046)</span></span>
+<span><span class="co">#&gt; R version 4.6.0 (2026-04-24)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -546,24 +546,24 @@ transcriptomics”</em></a>:</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] anndataR_1.3.0              SingleCellExperiment_1.34.0</span></span>
-<span><span class="co">#&gt;  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             </span></span>
-<span><span class="co">#&gt;  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              </span></span>
-<span><span class="co">#&gt;  [7] IRanges_2.46.0              S4Vectors_0.50.0           </span></span>
-<span><span class="co">#&gt;  [9] BiocGenerics_0.58.0         generics_0.1.4             </span></span>
-<span><span class="co">#&gt; [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          </span></span>
+<span><span class="co">#&gt;  [1] anndataR_1.3.0              SingleCellExperiment_1.35.1</span></span>
+<span><span class="co">#&gt;  [3] SummarizedExperiment_1.43.0 Biobase_2.73.1             </span></span>
+<span><span class="co">#&gt;  [5] GenomicRanges_1.65.0        Seqinfo_1.3.0              </span></span>
+<span><span class="co">#&gt;  [7] IRanges_2.47.1              S4Vectors_0.51.2           </span></span>
+<span><span class="co">#&gt;  [9] BiocGenerics_0.59.3         generics_0.1.4             </span></span>
+<span><span class="co">#&gt; [11] MatrixGenerics_1.25.0       matrixStats_1.5.0          </span></span>
 <span><span class="co">#&gt; [13] SeuratObject_5.4.0          sp_2.2-1                   </span></span>
-<span><span class="co">#&gt; [15] BiocStyle_2.40.0           </span></span>
+<span><span class="co">#&gt; [15] BiocStyle_2.41.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        </span></span>
 <span><span class="co">#&gt;   [4] spatstat.utils_3.2-3   farver_2.1.2           rmarkdown_2.31        </span></span>
 <span><span class="co">#&gt;   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           </span></span>
-<span><span class="co">#&gt;  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       </span></span>
-<span><span class="co">#&gt;  [13] S4Arrays_1.12.0        curl_7.1.0             Rhdf5lib_2.0.0        </span></span>
-<span><span class="co">#&gt;  [16] SparseArray_1.12.2     rhdf5_2.56.0           sass_0.4.10           </span></span>
+<span><span class="co">#&gt;  [10] ROCR_1.0-12            spatstat.explore_3.8-1 htmltools_0.5.9       </span></span>
+<span><span class="co">#&gt;  [13] S4Arrays_1.13.0        curl_7.1.0             Rhdf5lib_2.1.0        </span></span>
+<span><span class="co">#&gt;  [16] SparseArray_1.13.2     rhdf5_2.57.0           sass_0.4.10           </span></span>
 <span><span class="co">#&gt;  [19] sctransform_0.4.3      parallelly_1.47.0      KernSmooth_2.23-26    </span></span>
-<span><span class="co">#&gt;  [22] bslib_0.10.0           htmlwidgets_1.6.4      desc_1.4.3            </span></span>
+<span><span class="co">#&gt;  [22] bslib_0.11.0           htmlwidgets_1.6.4      desc_1.4.3            </span></span>
 <span><span class="co">#&gt;  [25] ica_1.0-3              httr2_1.2.2            plyr_1.8.9            </span></span>
 <span><span class="co">#&gt;  [28] plotly_4.12.0          zoo_1.8-15             cachem_1.1.0          </span></span>
 <span><span class="co">#&gt;  [31] igraph_2.3.1           mime_0.13              lifecycle_1.0.5       </span></span>
@@ -572,35 +572,36 @@ transcriptomics”</em></a>:</p>
 <span><span class="co">#&gt;  [40] shiny_1.13.0           digest_0.6.39          paws.storage_0.9.0    </span></span>
 <span><span class="co">#&gt;  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.0          </span></span>
 <span><span class="co">#&gt;  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     </span></span>
-<span><span class="co">#&gt;  [49] Rarr_2.0.0             progressr_0.19.0       spatstat.sparse_3.1-0 </span></span>
+<span><span class="co">#&gt;  [49] Rarr_2.1.14            progressr_0.19.0       spatstat.sparse_3.2-0 </span></span>
 <span><span class="co">#&gt;  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           </span></span>
-<span><span class="co">#&gt;  [55] compiler_4.7.0         S7_0.2.2               fastDummies_1.7.6     </span></span>
-<span><span class="co">#&gt;  [58] R.utils_2.13.0         MASS_7.3-65            rappdirs_0.3.4        </span></span>
-<span><span class="co">#&gt;  [61] DelayedArray_0.38.1    tools_4.7.0            lmtest_0.9-40         </span></span>
-<span><span class="co">#&gt;  [64] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   </span></span>
-<span><span class="co">#&gt;  [67] goftest_1.2-3          R.oo_1.27.1            glue_1.8.1            </span></span>
-<span><span class="co">#&gt;  [70] nlme_3.1-169           rhdf5filters_1.24.0    promises_1.5.0        </span></span>
-<span><span class="co">#&gt;  [73] grid_4.7.0             Rtsne_0.17             cluster_2.1.8.2       </span></span>
-<span><span class="co">#&gt;  [76] reshape2_1.4.5         gtable_0.3.6           spatstat.data_3.1-9   </span></span>
-<span><span class="co">#&gt;  [79] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.4     </span></span>
-<span><span class="co">#&gt;  [82] XVector_0.52.0         spatstat.geom_3.7-3    RcppAnnoy_0.0.23      </span></span>
-<span><span class="co">#&gt;  [85] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         </span></span>
-<span><span class="co">#&gt;  [88] stringr_1.6.0          spam_2.11-3            RcppHNSW_0.6.0        </span></span>
-<span><span class="co">#&gt;  [91] later_1.4.8            splines_4.7.0          dplyr_1.2.1           </span></span>
-<span><span class="co">#&gt;  [94] lattice_0.22-9         deldir_2.0-4           survival_3.8-6        </span></span>
-<span><span class="co">#&gt;  [97] paws.common_0.8.9      tidyselect_1.2.1       miniUI_0.1.2          </span></span>
-<span><span class="co">#&gt; [100] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         </span></span>
-<span><span class="co">#&gt; [103] bookdown_0.46          scattermore_1.2        xfun_0.57             </span></span>
-<span><span class="co">#&gt; [106] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           </span></span>
-<span><span class="co">#&gt; [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          </span></span>
-<span><span class="co">#&gt; [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            </span></span>
-<span><span class="co">#&gt; [115] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     </span></span>
-<span><span class="co">#&gt; [118] jquerylib_0.1.4        Rcpp_1.1.1-1.1         spatstat.random_3.4-5 </span></span>
-<span><span class="co">#&gt; [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.1-7 </span></span>
-<span><span class="co">#&gt; [124] parallel_4.7.0         pkgdown_2.2.0          ggplot2_4.0.3         </span></span>
-<span><span class="co">#&gt; [127] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     </span></span>
-<span><span class="co">#&gt; [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          </span></span>
-<span><span class="co">#&gt; [133] purrr_1.2.2            rlang_1.2.0            cowplot_1.2.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [55] compiler_4.6.0         S7_0.2.2               fastDummies_1.7.6     </span></span>
+<span><span class="co">#&gt;  [58] grumpy_0.1.1           R.utils_2.13.0         MASS_7.3-65           </span></span>
+<span><span class="co">#&gt;  [61] rappdirs_0.3.4         DelayedArray_0.39.2    tools_4.6.0           </span></span>
+<span><span class="co">#&gt;  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         </span></span>
+<span><span class="co">#&gt;  [67] future.apply_1.20.2    goftest_1.2-3          R.oo_1.27.1           </span></span>
+<span><span class="co">#&gt;  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.0   </span></span>
+<span><span class="co">#&gt;  [73] promises_1.5.0         grid_4.6.0             Rtsne_0.17            </span></span>
+<span><span class="co">#&gt;  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          </span></span>
+<span><span class="co">#&gt;  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           </span></span>
+<span><span class="co">#&gt;  [82] data.table_1.18.4      XVector_0.53.0         spatstat.geom_3.8-1   </span></span>
+<span><span class="co">#&gt;  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            </span></span>
+<span><span class="co">#&gt;  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-3           </span></span>
+<span><span class="co">#&gt;  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.0         </span></span>
+<span><span class="co">#&gt;  [94] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          </span></span>
+<span><span class="co">#&gt;  [97] survival_3.8-6         paws.common_0.8.9      tidyselect_1.2.1      </span></span>
+<span><span class="co">#&gt; [100] miniUI_0.1.2           pbapply_1.7-4          knitr_1.51            </span></span>
+<span><span class="co">#&gt; [103] gridExtra_2.3          bookdown_0.46          scattermore_1.2       </span></span>
+<span><span class="co">#&gt; [106] xfun_0.57              stringi_1.8.7          lazyeval_0.2.3        </span></span>
+<span><span class="co">#&gt; [109] yaml_2.3.12            evaluate_1.0.5         codetools_0.2-20      </span></span>
+<span><span class="co">#&gt; [112] tibble_3.3.1           BiocManager_1.30.27    cli_3.6.6             </span></span>
+<span><span class="co">#&gt; [115] uwot_0.2.4             xtable_1.8-8           reticulate_1.46.0     </span></span>
+<span><span class="co">#&gt; [118] systemfonts_1.3.2      jquerylib_0.1.4        Rcpp_1.1.1-1.1        </span></span>
+<span><span class="co">#&gt; [121] spatstat.random_3.5-0  globals_0.19.1         png_0.1-9             </span></span>
+<span><span class="co">#&gt; [124] spatstat.univar_3.2-0  parallel_4.6.0         pkgdown_2.2.0         </span></span>
+<span><span class="co">#&gt; [127] ggplot2_4.0.3          dotCall64_1.2          listenv_0.10.1        </span></span>
+<span><span class="co">#&gt; [130] viridisLite_0.4.3      scales_1.4.0           ggridges_0.5.7        </span></span>
+<span><span class="co">#&gt; [133] crayon_1.5.3           purrr_1.2.2            rlang_1.2.0           </span></span>
+<span><span class="co">#&gt; [136] cowplot_1.2.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* allows
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* allows
 users to work with `.h5ad` files and `.zarr` stores, interact with
 `AnnData` objects and convert to/from `SingleCellExperiment` or `Seurat`
 objects. This enables users to move data easily between the different
@@ -16,23 +16,23 @@ experience.
 ### Relationship to other packages
 
 Existing packages provide similar functionality to
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* but there
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* but there
 are some important differences:
 
-- *[zellkonverter](https://bioconductor.org/packages/3.23/zellkonverter)*
+- *[zellkonverter](https://bioconductor.org/packages/3.24/zellkonverter)*
   provides conversion of `SingleCellExperiment` objects to/from
   `AnnData` and reading/writing of `.h5ad` files. This is facilitated
   via *[reticulate](https://CRAN.R-project.org/package=reticulate)*
-  using *[basilisk](https://bioconductor.org/packages/3.23/basilisk)* to
+  using *[basilisk](https://bioconductor.org/packages/3.24/basilisk)* to
   manage Python environments (native reading of `.h5ad` is also
   possible). In contrast,
-  *[anndataR](https://bioconductor.org/packages/3.23/anndataR)* provides
+  *[anndataR](https://bioconductor.org/packages/3.24/anndataR)* provides
   a native R H5AD and Zarr interface, removing the need for Python
   dependencies. Conversion to/from `Seurat` objects is also supported.
 - *[anndata](https://CRAN.R-project.org/package=anndata)* (on CRAN) is a
   wrapper around the Python *anndata* package. It provides a nicer
   interface from within R but still requires a Python environment.
-  *[anndataR](https://bioconductor.org/packages/3.23/anndataR)* provides
+  *[anndataR](https://bioconductor.org/packages/3.24/anndataR)* provides
   a pure R implementation of the `AnnData` data structure with different
   back ends and conversion to more common R objects.
 - Other interoperability packages typically also require Python
@@ -42,11 +42,11 @@ are some important differences:
 There is significant overlap in functionality between these packages. We
 anticipate that over time they will become more specialised and work
 better together or be deprecated in favour of
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)*.
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)*.
 
 ## Installation
 
-Install *[anndataR](https://bioconductor.org/packages/3.23/anndataR)*
+Install *[anndataR](https://bioconductor.org/packages/3.24/anndataR)*
 using *[BiocManager](https://CRAN.R-project.org/package=BiocManager)*:
 
 ``` r
@@ -60,7 +60,7 @@ BiocManager::install("anndataR")
 ## Usage
 
 These sections briefly show how to use
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)*.
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)*.
 
 ### Read from disk
 
@@ -353,7 +353,7 @@ write_zarr(obj, tmpfile)
 
 ### Subsetting `AnnData` objects
 
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* provides
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* provides
 standard R subsetting methods that work with familiar bracket notation.
 These methods return `AnnDataView` objects that provide lazy evaluation
 for efficient memory usage.
@@ -479,7 +479,7 @@ concrete
 
 ## Citing *anndataR*
 
-If you use *[anndataR](https://bioconductor.org/packages/3.23/anndataR)*
+If you use *[anndataR](https://bioconductor.org/packages/3.24/anndataR)*
 in your work, please cite [*“anndataR improves interoperability between
 R and Python in single-cell
 transcriptomics”*](https://doi.org/10.1101/2025.08.18.669052):
@@ -513,7 +513,7 @@ citation("anndataR")
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2026-05-11 r90046)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -535,24 +535,24 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.3.0              SingleCellExperiment_1.34.0
-#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
-#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
-#>  [7] IRanges_2.46.0              S4Vectors_0.50.0           
-#>  [9] BiocGenerics_0.58.0         generics_0.1.4             
-#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
+#>  [1] anndataR_1.3.0              SingleCellExperiment_1.35.1
+#>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.1             
+#>  [5] GenomicRanges_1.65.0        Seqinfo_1.3.0              
+#>  [7] IRanges_2.47.1              S4Vectors_0.51.2           
+#>  [9] BiocGenerics_0.59.3         generics_0.1.4             
+#> [11] MatrixGenerics_1.25.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-1                   
-#> [15] BiocStyle_2.40.0           
+#> [15] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
 #>   [4] spatstat.utils_3.2-3   farver_2.1.2           rmarkdown_2.31        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
-#>  [10] ROCR_1.0-12            spatstat.explore_3.8-0 htmltools_0.5.9       
-#>  [13] S4Arrays_1.12.0        curl_7.1.0             Rhdf5lib_2.0.0        
-#>  [16] SparseArray_1.12.2     rhdf5_2.56.0           sass_0.4.10           
+#>  [10] ROCR_1.0-12            spatstat.explore_3.8-1 htmltools_0.5.9       
+#>  [13] S4Arrays_1.13.0        curl_7.1.0             Rhdf5lib_2.1.0        
+#>  [16] SparseArray_1.13.2     rhdf5_2.57.0           sass_0.4.10           
 #>  [19] sctransform_0.4.3      parallelly_1.47.0      KernSmooth_2.23-26    
-#>  [22] bslib_0.10.0           htmlwidgets_1.6.4      desc_1.4.3            
+#>  [22] bslib_0.11.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.2.2            plyr_1.8.9            
 #>  [28] plotly_4.12.0          zoo_1.8-15             cachem_1.1.0          
 #>  [31] igraph_2.3.1           mime_0.13              lifecycle_1.0.5       
@@ -561,33 +561,34 @@ sessionInfo()
 #>  [40] shiny_1.13.0           digest_0.6.39          paws.storage_0.9.0    
 #>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.0          
 #>  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [49] Rarr_2.0.0             progressr_0.19.0       spatstat.sparse_3.1-0 
+#>  [49] Rarr_2.1.14            progressr_0.19.0       spatstat.sparse_3.2-0 
 #>  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           
-#>  [55] compiler_4.7.0         S7_0.2.2               fastDummies_1.7.6     
-#>  [58] R.utils_2.13.0         MASS_7.3-65            rappdirs_0.3.4        
-#>  [61] DelayedArray_0.38.1    tools_4.7.0            lmtest_0.9-40         
-#>  [64] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   
-#>  [67] goftest_1.2-3          R.oo_1.27.1            glue_1.8.1            
-#>  [70] nlme_3.1-169           rhdf5filters_1.24.0    promises_1.5.0        
-#>  [73] grid_4.7.0             Rtsne_0.17             cluster_2.1.8.2       
-#>  [76] reshape2_1.4.5         gtable_0.3.6           spatstat.data_3.1-9   
-#>  [79] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.4     
-#>  [82] XVector_0.52.0         spatstat.geom_3.7-3    RcppAnnoy_0.0.23      
-#>  [85] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         
-#>  [88] stringr_1.6.0          spam_2.11-3            RcppHNSW_0.6.0        
-#>  [91] later_1.4.8            splines_4.7.0          dplyr_1.2.1           
-#>  [94] lattice_0.22-9         deldir_2.0-4           survival_3.8-6        
-#>  [97] paws.common_0.8.9      tidyselect_1.2.1       miniUI_0.1.2          
-#> [100] pbapply_1.7-4          knitr_1.51             gridExtra_2.3         
-#> [103] bookdown_0.46          scattermore_1.2        xfun_0.57             
-#> [106] stringi_1.8.7          lazyeval_0.2.3         yaml_2.3.12           
-#> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
-#> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            
-#> [115] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     
-#> [118] jquerylib_0.1.4        Rcpp_1.1.1-1.1         spatstat.random_3.4-5 
-#> [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.1-7 
-#> [124] parallel_4.7.0         pkgdown_2.2.0          ggplot2_4.0.3         
-#> [127] dotCall64_1.2          listenv_0.10.1         viridisLite_0.4.3     
-#> [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
-#> [133] purrr_1.2.2            rlang_1.2.0            cowplot_1.2.0
+#>  [55] compiler_4.6.0         S7_0.2.2               fastDummies_1.7.6     
+#>  [58] grumpy_0.1.1           R.utils_2.13.0         MASS_7.3-65           
+#>  [61] rappdirs_0.3.4         DelayedArray_0.39.2    tools_4.6.0           
+#>  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         
+#>  [67] future.apply_1.20.2    goftest_1.2-3          R.oo_1.27.1           
+#>  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.0   
+#>  [73] promises_1.5.0         grid_4.6.0             Rtsne_0.17            
+#>  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          
+#>  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           
+#>  [82] data.table_1.18.4      XVector_0.53.0         spatstat.geom_3.8-1   
+#>  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            
+#>  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-3           
+#>  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.0         
+#>  [94] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          
+#>  [97] survival_3.8-6         paws.common_0.8.9      tidyselect_1.2.1      
+#> [100] miniUI_0.1.2           pbapply_1.7-4          knitr_1.51            
+#> [103] gridExtra_2.3          bookdown_0.46          scattermore_1.2       
+#> [106] xfun_0.57              stringi_1.8.7          lazyeval_0.2.3        
+#> [109] yaml_2.3.12            evaluate_1.0.5         codetools_0.2-20      
+#> [112] tibble_3.3.1           BiocManager_1.30.27    cli_3.6.6             
+#> [115] uwot_0.2.4             xtable_1.8-8           reticulate_1.46.0     
+#> [118] systemfonts_1.3.2      jquerylib_0.1.4        Rcpp_1.1.1-1.1        
+#> [121] spatstat.random_3.5-0  globals_0.19.1         png_0.1-9             
+#> [124] spatstat.univar_3.2-0  parallel_4.6.0         pkgdown_2.2.0         
+#> [127] ggplot2_4.0.3          dotCall64_1.2          listenv_0.10.1        
+#> [130] viridisLite_0.4.3      scales_1.4.0           ggridges_0.5.7        
+#> [133] crayon_1.5.3           purrr_1.2.2            rlang_1.2.0           
+#> [136] cowplot_1.2.0
 ```

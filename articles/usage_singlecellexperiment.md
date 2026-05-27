@@ -4,14 +4,14 @@
 
 This vignette demonstrates how to read and write `SingleCellExperiment`
 objects using the
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* package,
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* package,
 leveraging the interoperability between `SingleCellExperiment` and the
 `AnnData` format.
 
 `SingleCellExperiment` is a widely used class for storing single-cell
 data in R, especially within the
 [Bioconductor](https://bioconductor.org/) ecosystem.
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* enables
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* enables
 conversion between `SingleCellExperiment` objects and `AnnData` objects,
 allowing you to leverage the strengths of both the
 [scverse](https://scverse.org/) and
@@ -20,9 +20,9 @@ allowing you to leverage the strengths of both the
 ### Prerequisites
 
 This vignette requires
-*[SingleCellExperiment](https://bioconductor.org/packages/3.23/SingleCellExperiment)*
+*[SingleCellExperiment](https://bioconductor.org/packages/3.24/SingleCellExperiment)*
 in addition to
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)*. You can
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)*. You can
 install them using the following code:
 
 ``` r
@@ -80,6 +80,9 @@ library(SingleCellExperiment)
 #> The following objects are masked from 'package:stats':
 #> 
 #>     IQR, mad, sd, var, xtabs
+#> The following object is masked from 'package:utils':
+#> 
+#>     data
 #> The following objects are masked from 'package:base':
 #> 
 #>     anyDuplicated, aperm, append, as.data.frame, basename, cbind,
@@ -211,7 +214,7 @@ sce_zarr
 
 Figure @ref(fig:mapping) shows the structures of the `AnnData` and
 `SingleCellExperiment` objects and how
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* maps
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* maps
 between them. It is important to note that matrices in the two objects
 are transposed relative to each other.
 
@@ -336,7 +339,7 @@ or
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2026-05-11 r90046)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -358,32 +361,33 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0
-#>  [3] Biobase_2.72.0              GenomicRanges_1.64.0       
-#>  [5] Seqinfo_1.2.0               IRanges_2.46.0             
-#>  [7] S4Vectors_0.50.0            BiocGenerics_0.58.0        
-#>  [9] generics_0.1.4              MatrixGenerics_1.24.0      
+#>  [1] SingleCellExperiment_1.35.1 SummarizedExperiment_1.43.0
+#>  [3] Biobase_2.73.1              GenomicRanges_1.65.0       
+#>  [5] Seqinfo_1.3.0               IRanges_2.47.1             
+#>  [7] S4Vectors_0.51.2            BiocGenerics_0.59.3        
+#>  [9] generics_0.1.4              MatrixGenerics_1.25.0      
 #> [11] matrixStats_1.5.0           anndataR_1.3.0             
-#> [13] BiocStyle_2.40.0           
+#> [13] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] rappdirs_0.3.4      sass_0.4.10         SparseArray_1.12.2 
+#>  [1] rappdirs_0.3.4      sass_0.4.10         SparseArray_1.13.2 
 #>  [4] lattice_0.22-9      paws.common_0.8.9   digest_0.6.39      
-#>  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.7.0         
+#>  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.6.0         
 #> [10] bookdown_0.46       fastmap_1.2.0       R.oo_1.27.1        
 #> [13] jsonlite_2.0.0      Matrix_1.7-5        R.utils_2.13.0     
-#> [16] Rarr_2.0.0          BiocManager_1.30.27 purrr_1.2.2        
+#> [16] Rarr_2.1.14         BiocManager_1.30.27 purrr_1.2.2        
 #> [19] httr2_1.2.2         textshaping_1.0.5   jquerylib_0.1.4    
 #> [22] abind_1.4-8         cli_3.6.6           crayon_1.5.3       
-#> [25] rlang_1.2.0         XVector_0.52.0      R.methodsS3_1.8.2  
-#> [28] cachem_1.1.0        DelayedArray_0.38.1 yaml_2.3.12        
-#> [31] otel_0.2.0          S4Arrays_1.12.0     tools_4.7.0        
-#> [34] Rhdf5lib_2.0.0      curl_7.1.0          reticulate_1.46.0  
-#> [37] vctrs_0.7.3         R6_2.6.1            png_0.1-9          
-#> [40] lifecycle_1.0.5     rhdf5_2.56.0        fs_2.1.0           
-#> [43] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
-#> [46] pkgdown_2.2.0       bslib_0.10.0        glue_1.8.1         
-#> [49] Rcpp_1.1.1-1.1      systemfonts_1.3.2   xfun_0.57          
-#> [52] paws.storage_0.9.0  rhdf5filters_1.24.0 knitr_1.51         
-#> [55] htmltools_0.5.9     rmarkdown_2.31      compiler_4.7.0
+#> [25] rlang_1.2.0         XVector_0.53.0      R.methodsS3_1.8.2  
+#> [28] cachem_1.1.0        DelayedArray_0.39.2 yaml_2.3.12        
+#> [31] otel_0.2.0          S4Arrays_1.13.0     tools_4.6.0        
+#> [34] Rhdf5lib_2.1.0      grumpy_0.1.1        curl_7.1.0         
+#> [37] reticulate_1.46.0   vctrs_0.7.3         R6_2.6.1           
+#> [40] png_0.1-9           lifecycle_1.0.5     rhdf5_2.57.0       
+#> [43] fs_2.1.0            htmlwidgets_1.6.4   ragg_1.5.2         
+#> [46] desc_1.4.3          pkgdown_2.2.0       bslib_0.11.0       
+#> [49] glue_1.8.1          Rcpp_1.1.1-1.1      systemfonts_1.3.2  
+#> [52] xfun_0.57           paws.storage_0.9.0  rhdf5filters_1.25.0
+#> [55] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
+#> [58] compiler_4.6.0
 ```

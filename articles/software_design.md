@@ -2,18 +2,18 @@
 
 ## Introduction
 
-*[anndataR](https://bioconductor.org/packages/3.23/anndataR)* is
+*[anndataR](https://bioconductor.org/packages/3.24/anndataR)* is
 designed to be an R native implementation of the `AnnData` object,
 inspired by the following packages:
 
 - [*anndata*](https://anndata.readthedocs.io/en/stable/)
   ([scverse/anndata](https://github.com/scverse/anndata)): The Python
   `anndata` package and on-disk specification
-- *[zellkonverter](https://bioconductor.org/packages/3.23/zellkonverter)*
+- *[zellkonverter](https://bioconductor.org/packages/3.24/zellkonverter)*
   ([theislab/zellkonverter](https://github.com/theislab/zellkonverter)):
   Convert `AnnData` files to/from `SingleCellExperiment` objects
 - *[h5ad](https://github.com/mtmorgan/h5ad)*: Read/write `*.h5ad` files
-  natively using *[rhdf5](https://bioconductor.org/packages/3.23/rhdf5)*
+  natively using *[rhdf5](https://bioconductor.org/packages/3.24/rhdf5)*
 - *[anndata](https://CRAN.R-project.org/package=anndata)*
   ([dynverse/anndata](https://github.com/dynverse/anndata)): An R
   implementation of the `AnnData` data structures, uses
@@ -58,7 +58,7 @@ and access data in different ways:
   *[reticulate](https://CRAN.R-project.org/package=reticulate)* but is
   sometimes useful to access functionality that has not yet been
   implemented in
-  *[anndataR](https://bioconductor.org/packages/3.23/anndataR)*.
+  *[anndataR](https://bioconductor.org/packages/3.24/anndataR)*.
 - An `AnnDataView` is returned when subsetting an `AnnData` object and
   provides access to a subset of the data in the referenced object. Some
   functionality (such as setting slots) requires converting to one of
@@ -87,7 +87,7 @@ This diagram shows the main `R6` classes provided by the package:
 
 ``` r
 sessionInfo()
-R Under development (unstable) (2026-05-11 r90046)
+R version 4.6.0 (2026-04-24)
 Platform: x86_64-pc-linux-gnu
 Running under: Ubuntu 24.04.4 LTS
 
@@ -108,7 +108,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] BiocStyle_2.40.0
+[1] BiocStyle_2.41.0
 
 loaded via a namespace (and not attached):
  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           
@@ -116,8 +116,8 @@ loaded via a namespace (and not attached):
  [7] cachem_1.1.0        knitr_1.51          htmltools_0.5.9    
 [10] rmarkdown_2.31      lifecycle_1.0.5     cli_3.6.6          
 [13] sass_0.4.10         pkgdown_2.2.0       textshaping_1.0.5  
-[16] jquerylib_0.1.4     systemfonts_1.3.2   compiler_4.7.0     
-[19] tools_4.7.0         ragg_1.5.2          bslib_0.10.0       
+[16] jquerylib_0.1.4     systemfonts_1.3.2   compiler_4.6.0     
+[19] tools_4.6.0         ragg_1.5.2          bslib_0.11.0       
 [22] evaluate_1.0.5      yaml_2.3.12         BiocManager_1.30.27
 [25] otel_0.2.0          jsonlite_2.0.0      rlang_1.2.0        
 [28] fs_2.1.0            htmlwidgets_1.6.4  
