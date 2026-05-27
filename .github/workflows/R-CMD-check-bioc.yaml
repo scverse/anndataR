@@ -58,7 +58,7 @@ jobs:
           echo "LDFLAGS += -L$(brew --prefix gettext)/lib -L$(brew --prefix openssl)/lib" >> ~/.R/Makevars
 
       - name: Setup R and Bioconductor
-        uses: rcannood/bioc-actions/setup-bioc@remove-version-map
+        uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: ${{ matrix.config.bioc-version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
