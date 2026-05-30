@@ -49,7 +49,8 @@ for (zarr_version in c("v2", "v3")) {
     expect_true(is.list(array_list))
     for (array in array_list) {
       expect_true(is.vector(array))
-      expect_type(array, "double")
+      expect_type(array, "list")
+      expect_type(unlist(array), "double")
       expect_equal(length(array), 6)
     }
   })
