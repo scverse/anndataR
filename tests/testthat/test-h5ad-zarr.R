@@ -19,7 +19,10 @@ expect_equal_h5ad_zarr <- function(h5ad_fn, zarr_fn, path, ...) {
 # compare rec arrays of h5ad and zarr
 compare_rec_array <- function(rec_array_h5ad, rec_array_zarr, test_fun) {
   test_fun(length(rec_array_h5ad), length(rec_array_zarr[[1]]))
-  test_fun(unname(lapply(rec_array_h5ad, as.list)), purrr::transpose(rec_array_zarr))
+  test_fun(
+    unname(lapply(rec_array_h5ad, as.list)),
+    purrr::transpose(rec_array_zarr)
+  )
 }
 
 test_that("reading dense matrices is the same for h5ad and zarr", {
