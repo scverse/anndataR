@@ -89,8 +89,8 @@ library(SingleCellExperiment)
 #>     colnames, dirname, do.call, duplicated, eval, evalq, Filter, Find,
 #>     get, grep, grepl, is.unsorted, lapply, Map, mapply, match, mget,
 #>     order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-#>     rbind, Reduce, rownames, sapply, saveRDS, table, tapply, unique,
-#>     unsplit, which.max, which.min
+#>     rbind, Reduce, rownames, sapply, saveRDS, scale, sequence, table,
+#>     tapply, transform, unique, unsplit, which.max, which.min
 #> Loading required package: S4Vectors
 #> 
 #> Attaching package: 'S4Vectors'
@@ -363,8 +363,8 @@ sessionInfo()
 #> other attached packages:
 #>  [1] SingleCellExperiment_1.35.1 SummarizedExperiment_1.43.0
 #>  [3] Biobase_2.73.1              GenomicRanges_1.65.0       
-#>  [5] Seqinfo_1.3.0               IRanges_2.47.1             
-#>  [7] S4Vectors_0.51.2            BiocGenerics_0.59.3        
+#>  [5] Seqinfo_1.3.0               IRanges_2.47.2             
+#>  [7] S4Vectors_0.51.3            BiocGenerics_0.59.6        
 #>  [9] generics_0.1.4              MatrixGenerics_1.25.0      
 #> [11] matrixStats_1.5.0           anndataR_1.3.0             
 #> [13] BiocStyle_2.41.0           
@@ -375,19 +375,19 @@ sessionInfo()
 #>  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.6.0         
 #> [10] bookdown_0.46       fastmap_1.2.0       R.oo_1.27.1        
 #> [13] jsonlite_2.0.0      Matrix_1.7-5        R.utils_2.13.0     
-#> [16] Rarr_2.1.14         BiocManager_1.30.27 purrr_1.2.2        
+#> [16] Rarr_2.1.17         BiocManager_1.30.27 purrr_1.2.2        
 #> [19] httr2_1.2.2         textshaping_1.0.5   jquerylib_0.1.4    
 #> [22] abind_1.4-8         cli_3.6.6           crayon_1.5.3       
 #> [25] rlang_1.2.0         XVector_0.53.0      R.methodsS3_1.8.2  
-#> [28] cachem_1.1.0        DelayedArray_0.39.2 yaml_2.3.12        
+#> [28] cachem_1.1.0        DelayedArray_0.39.3 yaml_2.3.12        
 #> [31] otel_0.2.0          S4Arrays_1.13.0     tools_4.6.0        
 #> [34] Rhdf5lib_2.1.0      grumpy_0.1.1        curl_7.1.0         
 #> [37] reticulate_1.46.0   vctrs_0.7.3         R6_2.6.1           
-#> [40] png_0.1-9           lifecycle_1.0.5     rhdf5_2.57.0       
+#> [40] png_0.1-9           lifecycle_1.0.5     rhdf5_2.57.1       
 #> [43] fs_2.1.0            htmlwidgets_1.6.4   ragg_1.5.2         
 #> [46] desc_1.4.3          pkgdown_2.2.0       bslib_0.11.0       
 #> [49] glue_1.8.1          Rcpp_1.1.1-1.1      systemfonts_1.3.2  
-#> [52] xfun_0.57           paws.storage_0.9.0  rhdf5filters_1.25.0
+#> [52] xfun_0.58           paws.storage_0.10.0 rhdf5filters_1.25.0
 #> [55] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
 #> [58] compiler_4.6.0
 ```

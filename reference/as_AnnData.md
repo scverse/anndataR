@@ -329,10 +329,10 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 #> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 #> This message will be shown once per session
-#> 08:23:41 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 08:23:41 Read 200 rows and found 10 numeric columns
-#> 08:23:41 Using Annoy for neighbor search, n_neighbors = 30
-#> 08:23:41 Building Annoy index with metric = cosine, n_trees = 50
+#> 07:57:35 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 07:57:35 Read 200 rows and found 10 numeric columns
+#> 07:57:35 Using Annoy for neighbor search, n_neighbors = 30
+#> 07:57:35 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -386,15 +386,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 08:23:41 Writing NN index file to temp file /tmp/RtmpahZIPf/file1d18465d0b13
-#> 08:23:41 Searching Annoy index using 1 thread, search_k = 3000
-#> 08:23:41 Annoy recall = 100%
-#> 08:23:41 Commencing smooth kNN distance calibration using 1 thread
+#> 07:57:35 Writing NN index file to temp file /tmp/Rtmp4xgGwN/file25a151bd6e2a
+#> 07:57:35 Searching Annoy index using 1 thread, search_k = 3000
+#> 07:57:35 Annoy recall = 100%
+#> 07:57:36 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 08:23:43 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 08:23:43 Commencing optimization for 500 epochs, with 6146 positive edges
-#> 08:23:43 Using rng type: pcg
-#> 08:23:44 Optimization finished
+#> 07:57:38 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 07:57:38 Commencing optimization for 500 epochs, with 6146 positive edges
+#> 07:57:38 Using rng type: pcg
+#> 07:57:39 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names
@@ -454,8 +454,8 @@ library(SingleCellExperiment)
 #>     as.data.frame, basename, cbind, colnames, dirname, do.call,
 #>     duplicated, eval, evalq, get, grep, grepl, is.unsorted, lapply,
 #>     mapply, match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-#>     rank, rbind, rownames, sapply, saveRDS, table, tapply, unique,
-#>     unsplit, which.max, which.min
+#>     rank, rbind, rownames, sapply, saveRDS, scale, sequence, table,
+#>     tapply, transform, unique, unsplit, which.max, which.min
 #> Loading required package: S4Vectors
 #> 
 #> Attaching package: ‘S4Vectors’

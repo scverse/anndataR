@@ -207,14 +207,14 @@ sessionInfo()
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] httr2_1.2.2                 plyr_1.8.9                 
 #>  [27] plotly_4.12.0               zoo_1.8-15                 
-#>  [29] cachem_1.1.0                igraph_2.3.1               
+#>  [29] cachem_1.1.0                igraph_2.3.2               
 #>  [31] mime_0.13                   lifecycle_1.0.5            
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
 #>  [39] future_1.70.0               shiny_1.13.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
-#>  [43] S4Vectors_0.51.2            Seurat_5.5.0               
+#>  [43] S4Vectors_0.51.3            Seurat_5.5.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
 #>  [47] irlba_2.3.7                 RSQLite_3.53.1             
 #>  [49] textshaping_1.0.5           GenomicRanges_1.65.0       
@@ -225,7 +225,7 @@ sessionInfo()
 #>  [59] bit64_4.8.2                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
 #>  [63] MASS_7.3-65                 rappdirs_0.3.4             
-#>  [65] DelayedArray_0.39.2         tools_4.6.0                
+#>  [65] DelayedArray_0.39.3         tools_4.6.0                
 #>  [67] lmtest_0.9-40               otel_0.2.0                 
 #>  [69] httpuv_1.6.17               future.apply_1.20.2        
 #>  [71] goftest_1.2-3               glue_1.8.1                 
@@ -235,11 +235,11 @@ sessionInfo()
 #>  [79] generics_0.1.4              gtable_0.3.6               
 #>  [81] spatstat.data_3.1-9         tidyr_1.3.2                
 #>  [83] data.table_1.18.4           sp_2.2-1                   
-#>  [85] XVector_0.53.0              BiocGenerics_0.59.3        
+#>  [85] XVector_0.53.0              BiocGenerics_0.59.6        
 #>  [87] spatstat.geom_3.8-1         RcppAnnoy_0.0.23           
 #>  [89] ggrepel_0.9.8               RANN_2.6.2                 
 #>  [91] pillar_1.11.1               stringr_1.6.0              
-#>  [93] spam_2.11-3                 RcppHNSW_0.7.0             
+#>  [93] spam_2.11-4                 RcppHNSW_0.7.0             
 #>  [95] later_1.4.8                 splines_4.6.0              
 #>  [97] dplyr_1.2.1                 BiocFileCache_3.3.0        
 #>  [99] lattice_0.22-9              bit_4.6.0                  
@@ -247,10 +247,10 @@ sessionInfo()
 #> [103] tidyselect_1.2.1            SingleCellExperiment_1.35.1
 #> [105] miniUI_0.1.2                pbapply_1.7-4              
 #> [107] knitr_1.51                  gridExtra_2.3              
-#> [109] bookdown_0.46               IRanges_2.47.1             
+#> [109] bookdown_0.46               IRanges_2.47.2             
 #> [111] Seqinfo_1.3.0               SummarizedExperiment_1.43.0
 #> [113] scattermore_1.2             stats4_4.6.0               
-#> [115] xfun_0.57                   Biobase_2.73.1             
+#> [115] xfun_0.58                   Biobase_2.73.1             
 #> [117] matrixStats_1.5.0           stringi_1.8.7              
 #> [119] lazyeval_0.2.3              yaml_2.3.12                
 #> [121] evaluate_1.0.5              codetools_0.2-20           
@@ -302,32 +302,33 @@ reticulate::py_list_packages()
 #> 14          llvmlite      0.47.0             llvmlite==0.47.0
 #> 15        matplotlib      3.10.9           matplotlib==3.10.9
 #> 16            mudata       0.3.8                mudata==0.3.8
-#> 17           natsort       8.4.0               natsort==8.4.0
-#> 18          networkx       3.6.1              networkx==3.6.1
-#> 19             numba      0.65.1                numba==0.65.1
-#> 20         numcodecs      0.16.5            numcodecs==0.16.5
-#> 21             numpy       2.4.6                 numpy==2.4.6
-#> 22         packaging        26.2              packaging==26.2
-#> 23            pandas       2.3.3                pandas==2.3.3
-#> 24             patsy       1.0.2                 patsy==1.0.2
-#> 25            pillow      12.2.0               pillow==12.2.0
-#> 26       pynndescent       0.6.0           pynndescent==0.6.0
-#> 27         pyparsing       3.3.2             pyparsing==3.3.2
-#> 28   python-dateutil 2.9.0.post0 python-dateutil==2.9.0.post0
-#> 29              pytz      2026.2                 pytz==2026.2
-#> 30            PyYAML       6.0.3                PyYAML==6.0.3
-#> 31            scanpy      1.12.1               scanpy==1.12.1
-#> 32      scikit-learn       1.8.0          scikit-learn==1.8.0
-#> 33             scipy      1.17.1                scipy==1.17.1
-#> 34      scverse-misc       0.0.7          scverse-misc==0.0.7
-#> 35           seaborn      0.13.2              seaborn==0.13.2
-#> 36     session-info2       0.4.1         session-info2==0.4.1
-#> 37               six      1.17.0                  six==1.17.0
-#> 38       statsmodels      0.14.6          statsmodels==0.14.6
-#> 39     threadpoolctl       3.6.0         threadpoolctl==3.6.0
-#> 40              tqdm      4.67.3                 tqdm==4.67.3
-#> 41 typing_extensions      4.15.0    typing_extensions==4.15.0
-#> 42            tzdata      2026.2               tzdata==2026.2
-#> 43        umap-learn      0.5.12           umap-learn==0.5.12
-#> 44              zarr       3.2.1                  zarr==3.2.1
+#> 17          narwhals      2.22.0             narwhals==2.22.0
+#> 18           natsort       8.4.0               natsort==8.4.0
+#> 19          networkx       3.6.1              networkx==3.6.1
+#> 20             numba      0.65.1                numba==0.65.1
+#> 21         numcodecs      0.16.5            numcodecs==0.16.5
+#> 22             numpy       2.4.6                 numpy==2.4.6
+#> 23         packaging        26.2              packaging==26.2
+#> 24            pandas       2.3.3                pandas==2.3.3
+#> 25             patsy       1.0.2                 patsy==1.0.2
+#> 26            pillow      12.2.0               pillow==12.2.0
+#> 27       pynndescent       0.6.0           pynndescent==0.6.0
+#> 28         pyparsing       3.3.2             pyparsing==3.3.2
+#> 29   python-dateutil 2.9.0.post0 python-dateutil==2.9.0.post0
+#> 30              pytz      2026.2                 pytz==2026.2
+#> 31            PyYAML       6.0.3                PyYAML==6.0.3
+#> 32            scanpy      1.12.1               scanpy==1.12.1
+#> 33      scikit-learn       1.9.0          scikit-learn==1.9.0
+#> 34             scipy      1.17.1                scipy==1.17.1
+#> 35      scverse-misc       0.0.7          scverse-misc==0.0.7
+#> 36           seaborn      0.13.2              seaborn==0.13.2
+#> 37     session-info2       0.4.1         session-info2==0.4.1
+#> 38               six      1.17.0                  six==1.17.0
+#> 39       statsmodels      0.14.6          statsmodels==0.14.6
+#> 40     threadpoolctl       3.6.0         threadpoolctl==3.6.0
+#> 41              tqdm      4.67.3                 tqdm==4.67.3
+#> 42 typing_extensions      4.15.0    typing_extensions==4.15.0
+#> 43            tzdata      2026.2               tzdata==2026.2
+#> 44        umap-learn      0.5.12           umap-learn==0.5.12
+#> 45              zarr       3.2.1                  zarr==3.2.1
 ```
