@@ -22,13 +22,12 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
   fmt_config <- get_fmt_config(fmt)
 
   withr::with_options(
+    list("anndataR.zarr_format" = fmt_config$zarr_format),
     {
       if (grepl("zarr", fmt_config$ext, fixed = TRUE)) {
         ad$settings$zarr_write_format <- fmt_config$zarr_format
-        options(anndataR.zarr_format = fmt_config$zarr_format)
       }
-    },
-    {
+
       # first generate a python adata
       adata_py <- ad$AnnData()
 
