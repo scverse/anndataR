@@ -282,8 +282,8 @@ write_zarr_sparse_array <- function(
   write_zarr_encoding(store, name, type, version, zarr_format)
 
   # Write shape attribute
-  Rarr::write_zarr_attributes(file.path(store, name), 
-                              list(shape = dim(value)), 
+  Rarr::write_zarr_attributes(file.path(store, name),
+                              list(shape = dim(value)),
                               zarr_version = zarr_format)
 }
 
@@ -529,7 +529,7 @@ write_zarr_categorical <- function(
   # Write ordered attribute
   Rarr::write_zarr_attributes(
     file.path(store, name),
-    new.zattrs = list("ordered" = is.ordered(value)), 
+    new.zattrs = list("ordered" = is.ordered(value)),
     zarr_version = zarr_format
   )
 }
@@ -748,7 +748,7 @@ write_zarr_data_frame <- function(
   # Write additional data frame attributes
   Rarr::write_zarr_attributes(
     zarr_path = file.path(store, name),
-    new.zattrs = list("_index" = index_name), 
+    new.zattrs = list("_index" = index_name),
     zarr_version = zarr_format
   )
 
@@ -765,7 +765,7 @@ write_zarr_data_frame <- function(
 
   Rarr::write_zarr_attributes(
     zarr_path = file.path(store, name),
-    new.zattrs = list(`column-order` = col_order), 
+    new.zattrs = list(`column-order` = col_order),
     zarr_version = zarr_format
   )
 }
