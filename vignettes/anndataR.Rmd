@@ -213,8 +213,6 @@ write_h5ad(obj, tmpfile)
 Similarly, we can write `AnnData` and other objects to `.zarr` stores too.
 
 ```{r write-to-disk-zarr}
-options(anndataR.zarr_format = 2)
-
 tmpfile <- tempfile(fileext = ".zarr")
 adata$write_zarr(tmpfile) # Alternatively, write_zarr(adata, tmpfile)
 
@@ -225,10 +223,12 @@ tmpfile <- tempfile(fileext = ".zarr")
 write_zarr(obj, tmpfile)
 ```
 
-Two most recent Zarr formats are supported: Zarr v2 and v3. We can switch between two when writing objects to `.zarr` stores.
+We support reading and writing Zarr v2 and v3 where Zarr v3 is the default. 
+
+To use Zarr v2, globally set `options(anndataR.zarr_format = 2)` or use `zarr_format = 2` to set it in an individual function all. 
 
 ```{r write-zarr-format}
-options(anndataR.zarr_format = 3)
+options(anndataR.zarr_format = 2)
 
 tmpfile <- tempfile(fileext = ".zarr")
 adata$write_zarr(tmpfile)

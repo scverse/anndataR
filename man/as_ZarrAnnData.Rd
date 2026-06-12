@@ -9,7 +9,7 @@ as_ZarrAnnData(
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = .get_zarr_format()
+  zarr_format = NULL
 )
 }
 \arguments{
@@ -31,7 +31,9 @@ Zarr file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zs
 }}
 
 \item{zarr_format}{The Zarr data format to be used for \code{\link[=write_zarr]{write_zarr()}}:
-"2" for Zarr v2, and "3" for Zarr v3}
+2 or 3 for Zarr v2 or v3 formats, respectively. Unless it is specified,
+Zarr v3 will be used by default. The format can also be specificed using
+\code{anndataR.zarr_format}, e.g. \code{options(anndataR.zarr_format = 2)}.}
 }
 \value{
 A \code{\link{ZarrAnnData}} object with the same data as the input \code{AnnData}

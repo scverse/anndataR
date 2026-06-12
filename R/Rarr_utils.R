@@ -111,5 +111,5 @@ zarr_path_exists <- function(store, target_path) {
 #' @noRd
 .get_zarr_format <- function() {
   vr <- getOption("anndataR.zarr_format")
-  if (is.null(vr)) 2 else vr
+  if (is.null(vr)) 3 else vr
 }

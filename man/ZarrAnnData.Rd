@@ -107,7 +107,7 @@ Other AnnData classes:
   shape = NULL,
   mode = c("a", "r", "r+", "w", "w-", "x"),
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-  zarr_format = .get_zarr_format()
+  zarr_format = NULL
 )}
     \if{html}{\out{</div>}}
   }

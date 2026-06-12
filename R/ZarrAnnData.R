@@ -342,7 +342,7 @@ ZarrAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
-      zarr_format = .get_zarr_format()
+      zarr_format = NULL
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc")
 
@@ -351,7 +351,8 @@ ZarrAnnData <- R6::R6Class(
 
       private$.compression <- compression
 
-      private$.zarrformat <- zarr_format
+      private$.zarrformat <-
+        if (is.null(zarr_format)) .get_zarr_format() else zarr_format
       is_readonly <- FALSE
 
       if (is.character(file)) {
@@ -526,7 +527,9 @@ ZarrAnnData <- R6::R6Class(
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
 #' @param zarr_format The Zarr data format to be used for [write_zarr()]:
-#'   "2" for Zarr v2, and "3" for Zarr v3
+#'   2 or 3 for Zarr v2 or v3 formats, respectively. Unless it is specified,
+#'   Zarr v3 will be used by default. The format can also be specificed using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #'
 #' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -550,7 +553,7 @@ as_ZarrAnnData <- function(
     "lz4"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = .get_zarr_format()
+  zarr_format = NULL
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(

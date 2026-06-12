@@ -387,7 +387,7 @@ See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for more details on the conv
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = .get_zarr_format()
+  zarr_format = NULL
 )}
     \if{html}{\out{</div>}}
   }
