@@ -32,7 +32,7 @@ See \code{help("compressors", package = "Rarr")}.}
 \item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists
 }}
 
-\item{...}{Additional arguments passed to \code{\link[=as_AnnData]{as_AnnData()}} or \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
+\item{...}{Additional arguments passed to \code{\link[=as_AnnData]{as_AnnData()}}}
 }
 \value{
 \code{path} invisibly

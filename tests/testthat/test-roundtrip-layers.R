@@ -18,190 +18,211 @@ test_names <- names(da$matrix_generators)
 for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
   fmt_config <- get_fmt_config(fmt)
 
-  if (grepl("zarr", fmt_config$ext, fixed = TRUE)) {
-    options(anndataR.zarr_format = fmt_config$zarr_format)
-    ad$settings$zarr_write_format <- fmt_config$zarr_format
-  }
-
-  for (name in test_names) {
-    # first generate a python adata
-    adata_py <- da$generate_dataset(
-      x_type = NULL,
-      obs_types = list(),
-      var_types = list(),
-      layer_types = list(name),
-      obsm_types = list(),
-      varm_types = list(),
-      obsp_types = list(),
-      varp_types = list(),
-      uns_types = list(),
-      nested_uns_types = list()
-    )
-
-    # create a couple of paths
-    file_py <- withr::local_file(
-      tempfile(paste0("anndata_py_", name), fileext = fmt_config$ext)
-    )
-    file_r <- withr::local_file(
-      tempfile(paste0("anndata_r_", name), fileext = fmt_config$ext)
-    )
-    file_r2 <- withr::local_file(
-      tempfile(paste0("anndata_r2_", name), fileext = fmt_config$ext)
-    )
-
-    # write to file
-    adata_py[[fmt_config$py_write_method]](file_py)
-    # Read it back in to get the version as read from disk
-    adata_py <- ad[[fmt_config$py_read_method]](file_py)
-
-    test_that(
-      paste0("Reading an AnnData with layer '", name, "' (", fmt, ") works"),
-      {
-        msg <- message_if_known(
-          backend = fmt_config$backend,
-          slot = c("layers"),
-          dtype = name,
-          process = "read",
-          known_issues = known_issues
-        )
-        skip_if(!is.null(msg), message = msg)
-
-        adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
-        expect_equal(
-          adata_r$shape(),
-          unlist(reticulate::py_to_r(adata_py$shape))
-        )
-        expect_equal(
-          adata_r$layers_keys(),
-          bi$list(adata_py$layers$keys())
-        )
-
-        # check that the print output is the same (normalize class names)
-        expect_anndata_print_equal(adata_r, adata_py)
+  withr::with_options(
+    {
+      if (grepl("zarr", fmt_config$ext, fixed = TRUE)) {
+        ad$settings$zarr_write_format <- fmt_config$zarr_format
+        options(anndataR.zarr_format = fmt_config$zarr_format)
       }
-    )
-
-    gc()
-
-    test_that(
-      paste0(
-        "Comparing an anndata with layer '",
-        name,
-        "' (",
-        fmt,
-        ") with reticulate works"
-      ),
-      {
-        msg <- message_if_known(
-          backend = fmt_config$backend,
-          slot = c("layers"),
-          dtype = name,
-          process = c("read", "reticulate"),
-          known_issues = known_issues
-        )
-        skip_if(!is.null(msg), message = msg)
-
-        adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
-
-        # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
-        # So we need to strip dimnames for comparison
-        actual_mat <- adata_r$layers[[name]]
-        expected_mat <- py_to_r(py_get_item(adata_py$layers, name))
-        dimnames(actual_mat) <- NULL
-        dimnames(expected_mat) <- NULL
-
-        expect_equal(
-          actual_mat,
-          expected_mat,
-          tolerance = 1e-6
-        )
-      }
-    )
-
-    gc()
-
-    test_that(
-      paste0("Writing an AnnData with layer '", name, "' (", fmt, ") works"),
-      {
-        msg <- message_if_known(
-          backend = fmt_config$backend,
-          slot = c("layers"),
-          dtype = name,
-          process = c("read", "write"),
-          known_issues = known_issues
-        )
-        skip_if(!is.null(msg), message = msg)
-
-        adata_r <- fmt_config$r_read_fun(file_py, as = "InMemoryAnnData")
-        fmt_config$r_write_fun(adata_r, file_r)
-
-        # read from file
-        adata_py2 <- ad[[fmt_config$py_read_method]](file_r)
-
-        # expect name is one of the keys
-        expect_contains(
-          bi$list(adata_py2$layers$keys()),
-          name
+    },
+    {
+      for (name in test_names) {
+        # first generate a python adata
+        adata_py <- da$generate_dataset(
+          x_type = NULL,
+          obs_types = list(),
+          var_types = list(),
+          layer_types = list(name),
+          obsm_types = list(),
+          varm_types = list(),
+          obsp_types = list(),
+          varp_types = list(),
+          uns_types = list(),
+          nested_uns_types = list()
         )
 
-        # expect that the objects are the same
-        expect_equal_py(
-          py_get_item(adata_py2$layers, name),
-          py_get_item(adata_py$layers, name)
+        # create a couple of paths
+        file_py <- withr::local_file(
+          tempfile(paste0("anndata_py_", name), fileext = fmt_config$ext)
         )
-      }
-    )
-
-    gc()
-
-    if (fmt == "h5ad") {
-      skip_if_no_h5diff()
-      # Get all R datatypes that are equivalent to the python datatype (name)
-      res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
-      r_datatypes <- vapply(res, function(x) x[[2]], character(1))
-
-      for (r_name in r_datatypes) {
-        test_msg <- paste0(
-          "Comparing a python generated .h5ad with layer '",
-          name,
-          "' with an R generated .h5ad '",
-          r_name,
-          "' works"
+        file_r <- withr::local_file(
+          tempfile(paste0("anndata_r_", name), fileext = fmt_config$ext)
         )
-        test_that(test_msg, {
-          msg <- message_if_known(
-            backend = "HDF5AnnData",
-            slot = c("X"),
-            dtype = c(name, r_name),
-            process = c("h5diff"),
-            known_issues = known_issues
-          )
+        file_r2 <- withr::local_file(
+          tempfile(paste0("anndata_r2_", name), fileext = fmt_config$ext)
+        )
 
-          skip_if(!is.null(msg), message = msg)
+        # write to file
+        adata_py[[fmt_config$py_write_method]](file_py)
+        # Read it back in to get the version as read from disk
+        adata_py <- ad[[fmt_config$py_read_method]](file_py)
 
-          # generate an R h5ad
-          adata_r <- r_generate_dataset(10L, 20L, layer_types = list(r_name))
-          write_h5ad(adata_r, file_r2, mode = "w")
+        test_that(
+          paste0(
+            "Reading an AnnData with layer '",
+            name,
+            "' (",
+            fmt,
+            ") works"
+          ),
+          {
+            msg <- message_if_known(
+              backend = fmt_config$backend,
+              slot = c("layers"),
+              dtype = name,
+              process = "read",
+              known_issues = known_issues
+            )
+            skip_if(!is.null(msg), message = msg)
 
-          # Remove the rhdf5-NA.OK for comparison
-          hdf5_clear_rhdf5_attributes(file_r2, paste0("/layers/", r_name))
+            adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
+            expect_equal(
+              adata_r$shape(),
+              unlist(reticulate::py_to_r(adata_py$shape))
+            )
+            expect_equal(
+              adata_r$layers_keys(),
+              bi$list(adata_py$layers$keys())
+            )
 
-          # run h5diff
-          res <- processx::run(
-            "h5diff",
-            c(
-              "-v2",
-              file_py,
-              file_r2,
-              paste0("/layers/", name),
-              paste0("/layers/", r_name)
-            ),
-            error_on_status = FALSE
-          )
+            # check that the print output is the same (normalize class names)
+            expect_anndata_print_equal(adata_r, adata_py)
+          }
+        )
 
-          expect_equal(res$status, 0, info = res$stdout)
-        })
+        gc()
+
+        test_that(
+          paste0(
+            "Comparing an anndata with layer '",
+            name,
+            "' (",
+            fmt,
+            ") with reticulate works"
+          ),
+          {
+            msg <- message_if_known(
+              backend = fmt_config$backend,
+              slot = c("layers"),
+              dtype = name,
+              process = c("read", "reticulate"),
+              known_issues = known_issues
+            )
+            skip_if(!is.null(msg), message = msg)
+
+            adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
+
+            # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
+            # So we need to strip dimnames for comparison
+            actual_mat <- adata_r$layers[[name]]
+            expected_mat <- py_to_r(py_get_item(adata_py$layers, name))
+            dimnames(actual_mat) <- NULL
+            dimnames(expected_mat) <- NULL
+
+            expect_equal(
+              actual_mat,
+              expected_mat,
+              tolerance = 1e-6
+            )
+          }
+        )
+
+        gc()
+
+        test_that(
+          paste0(
+            "Writing an AnnData with layer '",
+            name,
+            "' (",
+            fmt,
+            ") works"
+          ),
+          {
+            msg <- message_if_known(
+              backend = fmt_config$backend,
+              slot = c("layers"),
+              dtype = name,
+              process = c("read", "write"),
+              known_issues = known_issues
+            )
+            skip_if(!is.null(msg), message = msg)
+
+            adata_r <- fmt_config$r_read_fun(file_py, as = "InMemoryAnnData")
+            fmt_config$r_write_fun(adata_r, file_r)
+
+            # read from file
+            adata_py2 <- ad[[fmt_config$py_read_method]](file_r)
+
+            # expect name is one of the keys
+            expect_contains(
+              bi$list(adata_py2$layers$keys()),
+              name
+            )
+
+            # expect that the objects are the same
+            expect_equal_py(
+              py_get_item(adata_py2$layers, name),
+              py_get_item(adata_py$layers, name)
+            )
+          }
+        )
+
+        gc()
+
+        if (fmt == "h5ad") {
+          skip_if_no_h5diff()
+          # Get all R datatypes that are equivalent to the python datatype (name)
+          res <- Filter(function(x) x[[1]] == name, matrix_equivalences)
+          r_datatypes <- vapply(res, function(x) x[[2]], character(1))
+
+          for (r_name in r_datatypes) {
+            test_msg <- paste0(
+              "Comparing a python generated .h5ad with layer '",
+              name,
+              "' with an R generated .h5ad '",
+              r_name,
+              "' works"
+            )
+            test_that(test_msg, {
+              msg <- message_if_known(
+                backend = "HDF5AnnData",
+                slot = c("X"),
+                dtype = c(name, r_name),
+                process = c("h5diff"),
+                known_issues = known_issues
+              )
+
+              skip_if(!is.null(msg), message = msg)
+
+              # generate an R h5ad
+              adata_r <- r_generate_dataset(
+                10L,
+                20L,
+                layer_types = list(r_name)
+              )
+              write_h5ad(adata_r, file_r2, mode = "w")
+
+              # Remove the rhdf5-NA.OK for comparison
+              hdf5_clear_rhdf5_attributes(file_r2, paste0("/layers/", r_name))
+
+              # run h5diff
+              res <- processx::run(
+                "h5diff",
+                c(
+                  "-v2",
+                  file_py,
+                  file_r2,
+                  paste0("/layers/", name),
+                  paste0("/layers/", r_name)
+                ),
+                error_on_status = FALSE
+              )
+
+              expect_equal(res$status, 0, info = res$stdout)
+            })
+          }
+        }
       }
     }
-  }
+  )
 }

@@ -396,7 +396,7 @@ write_zarr_string_array <- function(
 
   # if dims is zero, fix chunk dim to 1, but raises warnings
   # https://github.com/Huber-group-EMBL/Rarr/issues/89
-  chunk_dims <- vapply(dims, \(.) if (.) . else 1, numeric(1))
+  chunk_dims <- ifelse(length(dims), 1, dims)
 
   # replace NA to "NA" (as in rhdf5:::.h5postProcessDataset)
   # to read as "NA" -> NA later after Rarr:read_zarr_array
