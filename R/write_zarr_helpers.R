@@ -282,9 +282,11 @@ write_zarr_sparse_array <- function(
   write_zarr_encoding(store, name, type, version, zarr_format)
 
   # Write shape attribute
-  Rarr::write_zarr_attributes(file.path(store, name),
-                              list(shape = dim(value)),
-                              zarr_version = zarr_format)
+  Rarr::write_zarr_attributes(
+    file.path(store, name),
+    list(shape = dim(value)),
+    zarr_version = zarr_format
+  )
 }
 
 #' Write Zarr nullable boolean
