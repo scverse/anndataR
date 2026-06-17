@@ -235,7 +235,7 @@ sessionInfo()
 #>  [79] generics_0.1.4              gtable_0.3.6               
 #>  [81] spatstat.data_3.1-9         tidyr_1.3.2                
 #>  [83] data.table_1.18.4           sp_2.2-1                   
-#>  [85] XVector_0.53.0              BiocGenerics_0.59.6        
+#>  [85] XVector_0.53.0              BiocGenerics_0.59.7        
 #>  [87] spatstat.geom_3.8-1         RcppAnnoy_0.0.23           
 #>  [89] ggrepel_0.9.8               RANN_2.6.2                 
 #>  [91] pillar_1.11.1               stringr_1.6.0              
@@ -247,7 +247,7 @@ sessionInfo()
 #> [103] tidyselect_1.2.1            SingleCellExperiment_1.35.1
 #> [105] miniUI_0.1.2                pbapply_1.7-4              
 #> [107] knitr_1.51                  gridExtra_2.3              
-#> [109] bookdown_0.46               IRanges_2.47.2             
+#> [109] bookdown_0.47               IRanges_2.47.2             
 #> [111] Seqinfo_1.3.0               SummarizedExperiment_1.43.0
 #> [113] scattermore_1.2             stats4_4.6.0               
 #> [115] xfun_0.58                   Biobase_2.73.1             
@@ -274,21 +274,21 @@ sessionInfo()
 ``` r
 
 reticulate::py_config()
-#> python:         /opt/hostedtoolcache/Python/3.14.5/x64/bin/python3
-#> libpython:      /opt/hostedtoolcache/Python/3.14.5/x64/lib/libpython3.14.so
-#> pythonhome:     /opt/hostedtoolcache/Python/3.14.5/x64:/opt/hostedtoolcache/Python/3.14.5/x64
-#> version:        3.14.5 (main, May 11 2026, 02:45:53) [GCC 13.3.0]
-#> numpy:          /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/numpy
+#> python:         /opt/hostedtoolcache/Python/3.14.6/x64/bin/python3
+#> libpython:      /opt/hostedtoolcache/Python/3.14.6/x64/lib/libpython3.14.so
+#> pythonhome:     /opt/hostedtoolcache/Python/3.14.6/x64:/opt/hostedtoolcache/Python/3.14.6/x64
+#> version:        3.14.6 (main, Jun 10 2026, 14:29:35) [GCC 13.3.0]
+#> numpy:          /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/numpy
 #> numpy_version:  2.4.6
-#> scanpy:         /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/scanpy
+#> scanpy:         /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
 
 reticulate::py_list_packages()
 #>              package     version                  requirement
-#> 1            anndata     0.12.16             anndata==0.12.16
-#> 2   array-api-compat      1.14.0     array-api-compat==1.14.0
-#> 3            certifi   2026.5.20           certifi==2026.5.20
+#> 1            anndata     0.12.17             anndata==0.12.17
+#> 2   array-api-compat      1.15.0     array-api-compat==1.15.0
+#> 3            certifi   2026.6.17           certifi==2026.6.17
 #> 4          contourpy       1.3.3             contourpy==1.3.3
 #> 5             cycler      0.12.1               cycler==0.12.1
 #> 6             donfig 0.8.1.post1          donfig==0.8.1.post1
@@ -300,9 +300,9 @@ reticulate::py_list_packages()
 #> 12        kiwisolver       1.5.0            kiwisolver==1.5.0
 #> 13   legacy-api-wrap         1.5         legacy-api-wrap==1.5
 #> 14          llvmlite      0.47.0             llvmlite==0.47.0
-#> 15        matplotlib      3.10.9           matplotlib==3.10.9
+#> 15        matplotlib      3.11.0           matplotlib==3.11.0
 #> 16            mudata       0.3.8                mudata==0.3.8
-#> 17          narwhals      2.22.0             narwhals==2.22.0
+#> 17          narwhals      2.22.1             narwhals==2.22.1
 #> 18           natsort       8.4.0               natsort==8.4.0
 #> 19          networkx       3.6.1              networkx==3.6.1
 #> 20             numba      0.65.1                numba==0.65.1
@@ -320,13 +320,13 @@ reticulate::py_list_packages()
 #> 32            scanpy      1.12.1               scanpy==1.12.1
 #> 33      scikit-learn       1.9.0          scikit-learn==1.9.0
 #> 34             scipy      1.17.1                scipy==1.17.1
-#> 35      scverse-misc       0.0.7          scverse-misc==0.0.7
+#> 35      scverse-misc       0.0.8          scverse-misc==0.0.8
 #> 36           seaborn      0.13.2              seaborn==0.13.2
 #> 37     session-info2       0.4.1         session-info2==0.4.1
 #> 38               six      1.17.0                  six==1.17.0
 #> 39       statsmodels      0.14.6          statsmodels==0.14.6
 #> 40     threadpoolctl       3.6.0         threadpoolctl==3.6.0
-#> 41              tqdm      4.67.3                 tqdm==4.67.3
+#> 41              tqdm      4.68.3                 tqdm==4.68.3
 #> 42 typing_extensions      4.15.0    typing_extensions==4.15.0
 #> 43            tzdata      2026.2               tzdata==2026.2
 #> 44        umap-learn      0.5.12           umap-learn==0.5.12

@@ -112,7 +112,7 @@ other attached packages:
 
 loaded via a namespace (and not attached):
  [1] digest_0.6.39       desc_1.4.3          R6_2.6.1           
- [4] bookdown_0.46       fastmap_1.2.0       xfun_0.58          
+ [4] bookdown_0.47       fastmap_1.2.0       xfun_0.58          
  [7] cachem_1.1.0        knitr_1.51          htmltools_0.5.9    
 [10] rmarkdown_2.31      lifecycle_1.0.5     cli_3.6.6          
 [13] sass_0.4.10         pkgdown_2.2.0       textshaping_1.0.5  

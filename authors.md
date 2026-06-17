@@ -52,17 +52,20 @@
 Source:
 [`inst/CITATION`](https://github.com/scverse/anndataR/blob/devel/inst/CITATION)
 
-Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I,
-Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025). “anndataR improves
-interoperability between R and Python in single-cell transcriptomics.”
-*bioRxiv*, 2025.08.18.669052.
-[doi:10.1101/2025.08.18.669052](https://doi.org/10.1101/2025.08.18.669052).
+Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang-aram C,
+Bredikhin D, Seurinck R, Saeys Y, scverse core (2026). “anndataR
+improves interoperability between R and Python in single-cell
+transcriptomics.” *Bioinformatics*, **42**, btag288.
+[doi:10.1093/bioinformatics/btag288](https://doi.org/10.1093/bioinformatics/btag288).
 
     @Article{,
-      title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
-      author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
-      journal = {bioRxiv},
-      year = {2025},
-      pages = {2025.08.18.669052},
-      doi = {10.1101/2025.08.18.669052},
+      title = {anndataR improves interoperability between R and Python in single-cell transcriptomics},
+      author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys and {scverse core}},
+      journal = {Bioinformatics},
+      volume = {42},
+      issue = {6},
+      month = {June},
+      year = {2026},
+      pages = {btag288},
+      doi = {10.1093/bioinformatics/btag288},
     }

@@ -489,22 +489,25 @@ transcriptomics”*](https://doi.org/10.1101/2025.08.18.669052):
 citation("anndataR")
 #> To cite package 'anndataR' in publications use:
 #> 
-#>   Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I,
-#>   Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025). "anndataR
+#>   Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang-aram C,
+#>   Bredikhin D, Seurinck R, Saeys Y, scverse core (2026). "anndataR
 #>   improves interoperability between R and Python in single-cell
-#>   transcriptomics." _bioRxiv_, 2025.08.18.669052.
-#>   doi:10.1101/2025.08.18.669052
-#>   <https://doi.org/10.1101/2025.08.18.669052>.
+#>   transcriptomics." _Bioinformatics_, *42*, btag288.
+#>   doi:10.1093/bioinformatics/btag288
+#>   <https://doi.org/10.1093/bioinformatics/btag288>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Article{,
-#>     title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
-#>     author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
-#>     journal = {bioRxiv},
-#>     year = {2025},
-#>     pages = {2025.08.18.669052},
-#>     doi = {10.1101/2025.08.18.669052},
+#>     title = {anndataR improves interoperability between R and Python in single-cell transcriptomics},
+#>     author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys and {scverse core}},
+#>     journal = {Bioinformatics},
+#>     volume = {42},
+#>     issue = {6},
+#>     month = {June},
+#>     year = {2026},
+#>     pages = {btag288},
+#>     doi = {10.1093/bioinformatics/btag288},
 #>   }
 ```
 
@@ -539,7 +542,7 @@ sessionInfo()
 #>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.1             
 #>  [5] GenomicRanges_1.65.0        Seqinfo_1.3.0              
 #>  [7] IRanges_2.47.2              S4Vectors_0.51.3           
-#>  [9] BiocGenerics_0.59.6         generics_0.1.4             
+#>  [9] BiocGenerics_0.59.7         generics_0.1.4             
 #> [11] MatrixGenerics_1.25.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-1                   
 #> [15] BiocStyle_2.41.0           
@@ -561,7 +564,7 @@ sessionInfo()
 #>  [40] shiny_1.13.0           digest_0.6.39          paws.storage_0.10.0   
 #>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.0          
 #>  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [49] Rarr_2.1.17            progressr_0.19.0       spatstat.sparse_3.2-0 
+#>  [49] Rarr_2.1.18            progressr_0.19.0       spatstat.sparse_3.2-0 
 #>  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           
 #>  [55] compiler_4.6.0         S7_0.2.2               fastDummies_1.7.6     
 #>  [58] grumpy_0.1.1           R.utils_2.13.0         MASS_7.3-65           
@@ -579,7 +582,7 @@ sessionInfo()
 #>  [94] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          
 #>  [97] survival_3.8-6         paws.common_0.8.9      tidyselect_1.2.1      
 #> [100] miniUI_0.1.2           pbapply_1.7-4          knitr_1.51            
-#> [103] gridExtra_2.3          bookdown_0.46          scattermore_1.2       
+#> [103] gridExtra_2.3          bookdown_0.47          scattermore_1.2       
 #> [106] xfun_0.58              stringi_1.8.7          lazyeval_0.2.3        
 #> [109] yaml_2.3.12            evaluate_1.0.5         codetools_0.2-20      
 #> [112] tibble_3.3.1           BiocManager_1.30.27    cli_3.6.6             
