@@ -274,13 +274,13 @@ sessionInfo()
 ``` r
 
 reticulate::py_config()
-#> python:         /opt/hostedtoolcache/Python/3.14.6/x64/bin/python3
-#> libpython:      /opt/hostedtoolcache/Python/3.14.6/x64/lib/libpython3.14.so
-#> pythonhome:     /opt/hostedtoolcache/Python/3.14.6/x64:/opt/hostedtoolcache/Python/3.14.6/x64
-#> version:        3.14.6 (main, Jun 10 2026, 14:29:35) [GCC 13.3.0]
-#> numpy:          /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/numpy
+#> python:         /opt/hostedtoolcache/Python/3.14.5/x64/bin/python3
+#> libpython:      /opt/hostedtoolcache/Python/3.14.5/x64/lib/libpython3.14.so
+#> pythonhome:     /opt/hostedtoolcache/Python/3.14.5/x64:/opt/hostedtoolcache/Python/3.14.5/x64
+#> version:        3.14.5 (main, May 11 2026, 02:45:53) [GCC 13.3.0]
+#> numpy:          /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/numpy
 #> numpy_version:  2.4.6
-#> scanpy:         /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/scanpy
+#> scanpy:         /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
 
