@@ -49,8 +49,19 @@ for (zarr_version in c("v2", "v3")) {
     expect_true(is.list(array_list))
     for (array in array_list) {
       expect_true(is.vector(array))
-      expect_type(array, "list")
-      expect_type(unlist(array), "double")
+      # Rarr 2.1.0 introduced a breaking change: structured datatypes (record arrays)
+      # now return lists as their internal elements instead of vectors. The
+      # Bioconductor release (older Rarr) and devel (>= 2.1.0) therefore return
+      # recarrays in different shapes, so the relevant assertions branch on this flag.
+      # See https://github.com/scverse/anndataR/issues/409
+      if (packageVersion("Rarr") >= "2.1.0") {
+        # Rarr >= 2.1.0 (Bioc devel) returns each field as a list of scalars
+        expect_type(array, "list")
+        expect_type(unlist(array), "double")
+      } else {
+        # Older Rarr (Bioc release) returns each field as a double vector
+        expect_type(array, "double")
+      }
       expect_equal(length(array), 6)
     }
   })
