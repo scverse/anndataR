@@ -64,9 +64,9 @@ adata
 \seealso{
 \link{AnnData-usage} for details of \code{AnnData} structure and usage
 
-Other AnnData creators: 
-\code{\link{as_AnnData}()},
-\code{\link{read_h5ad}()},
-\code{\link{read_zarr}()}
+Other AnnData creators:
+\code{\link[=as_AnnData]{as_AnnData()}},
+\code{\link[=read_h5ad]{read_h5ad()}},
+\code{\link[=read_zarr]{read_zarr()}}
 }
 \concept{AnnData creators}

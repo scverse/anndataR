@@ -122,7 +122,7 @@ elements with number of rows and columns equal to \code{n_vars}.}
 Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}}, see
 \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
 }
-\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
+\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
 \item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
 \item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
 \item{\code{as_ZarrAnnData()}}{Convert to \code{\link{ZarrAnnData}}, see \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}

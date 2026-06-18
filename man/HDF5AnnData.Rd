@@ -18,7 +18,7 @@ See \link{AnnData-usage} for details on creating and using \code{AnnData} object
 \seealso{
 \link{AnnData-usage} for details on creating and using \code{AnnData} objects
 
-Other AnnData classes: 
+Other AnnData classes:
 \code{\link{AbstractAnnData}},
 \code{\link{AnnDataView}},
 \code{\link{InMemoryAnnData}},
@@ -27,78 +27,77 @@ Other AnnData classes:
 }
 \concept{AnnData classes}
 \section{Super class}{
-\code{\link[anndataR:AbstractAnnData]{anndataR::AbstractAnnData}} -> \code{HDF5AnnData}
+\code{\link[anndataR:AbstractAnnData]{AbstractAnnData}} -> \code{HDF5AnnData}
 }
 \section{Active bindings}{
-\if{html}{\out{<div class="r6-active-bindings">}}
-\describe{
-\item{\code{X}}{See \link{AnnData-usage}}
+  \if{html}{\out{<div class="r6-active-bindings">}}
+  \describe{
+    \item{\code{X}}{See \link{AnnData-usage}}
 
-\item{\code{layers}}{See \link{AnnData-usage}}
+    \item{\code{layers}}{See \link{AnnData-usage}}
 
-\item{\code{obsm}}{See \link{AnnData-usage}}
+    \item{\code{obsm}}{See \link{AnnData-usage}}
 
-\item{\code{varm}}{See \link{AnnData-usage}}
+    \item{\code{varm}}{See \link{AnnData-usage}}
 
-\item{\code{obsp}}{See \link{AnnData-usage}}
+    \item{\code{obsp}}{See \link{AnnData-usage}}
 
-\item{\code{varp}}{See \link{AnnData-usage}}
+    \item{\code{varp}}{See \link{AnnData-usage}}
 
-\item{\code{obs}}{See \link{AnnData-usage}}
+    \item{\code{obs}}{See \link{AnnData-usage}}
 
-\item{\code{var}}{See \link{AnnData-usage}}
+    \item{\code{var}}{See \link{AnnData-usage}}
 
-\item{\code{obs_names}}{See \link{AnnData-usage}}
+    \item{\code{obs_names}}{See \link{AnnData-usage}}
 
-\item{\code{var_names}}{See \link{AnnData-usage}}
+    \item{\code{var_names}}{See \link{AnnData-usage}}
 
-\item{\code{uns}}{See \link{AnnData-usage}}
-}
-\if{html}{\out{</div>}}
+    \item{\code{uns}}{See \link{AnnData-usage}}
+  }
+  \if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
-\itemize{
-\item \href{#method-HDF5AnnData-new}{\code{HDF5AnnData$new()}}
-\item \href{#method-HDF5AnnData-obs_keys}{\code{HDF5AnnData$obs_keys()}}
-\item \href{#method-HDF5AnnData-var_keys}{\code{HDF5AnnData$var_keys()}}
-\item \href{#method-HDF5AnnData-layers_keys}{\code{HDF5AnnData$layers_keys()}}
-\item \href{#method-HDF5AnnData-obsm_keys}{\code{HDF5AnnData$obsm_keys()}}
-\item \href{#method-HDF5AnnData-varm_keys}{\code{HDF5AnnData$varm_keys()}}
-\item \href{#method-HDF5AnnData-obsp_keys}{\code{HDF5AnnData$obsp_keys()}}
-\item \href{#method-HDF5AnnData-varp_keys}{\code{HDF5AnnData$varp_keys()}}
-\item \href{#method-HDF5AnnData-uns_keys}{\code{HDF5AnnData$uns_keys()}}
-\item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
-\item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
-\item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
+  \itemize{
+    \item \href{#method-HDF5AnnData-initialize}{\code{HDF5AnnData$new()}}
+    \item \href{#method-HDF5AnnData-obs_keys}{\code{HDF5AnnData$obs_keys()}}
+    \item \href{#method-HDF5AnnData-var_keys}{\code{HDF5AnnData$var_keys()}}
+    \item \href{#method-HDF5AnnData-layers_keys}{\code{HDF5AnnData$layers_keys()}}
+    \item \href{#method-HDF5AnnData-obsm_keys}{\code{HDF5AnnData$obsm_keys()}}
+    \item \href{#method-HDF5AnnData-varm_keys}{\code{HDF5AnnData$varm_keys()}}
+    \item \href{#method-HDF5AnnData-obsp_keys}{\code{HDF5AnnData$obsp_keys()}}
+    \item \href{#method-HDF5AnnData-varp_keys}{\code{HDF5AnnData$varp_keys()}}
+    \item \href{#method-HDF5AnnData-uns_keys}{\code{HDF5AnnData$uns_keys()}}
+    \item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
+    \item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
+    \item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
+  }
 }
-}
-\if{html}{\out{
-<details><summary>Inherited methods</summary>
+\if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>anndataR::AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>anndataR::AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ReticulateAnnData'><code>anndataR::AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>anndataR::AbstractAnnData$as_Seurat()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>anndataR::AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ZarrAnnData'><code>anndataR::AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>anndataR::AbstractAnnData$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_h5ad"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-write_h5ad'><code>anndataR::AbstractAnnData$write_h5ad()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-write_zarr'><code>anndataR::AbstractAnnData$write_zarr()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ReticulateAnnData'><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>AbstractAnnData$as_Seurat()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ZarrAnnData'><code>AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-print'><code>AbstractAnnData$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-shape'><code>AbstractAnnData$shape()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_h5ad"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-write_h5ad'><code>AbstractAnnData$write_h5ad()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-write_zarr'><code>AbstractAnnData$write_zarr()</code></a></span></li>
 </ul>
-</details>
-}}
+</details>}}
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-new"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-new}{}}}
-\subsection{Method \code{new()}}{
-Close the HDF5 file when the object is garbage collected
+\if{html}{\out{<a id="method-HDF5AnnData-initialize"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-initialize}{}}}
+\subsection{\code{HDF5AnnData$new()}}{
+  Close the HDF5 file when the object is garbage collected
 
 
-\code{HDF5AnnData} constructor
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$new(
+  \code{HDF5AnnData} constructor
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$new(
   file,
   X = NULL,
   obs = NULL,
@@ -113,163 +112,172 @@ Close the HDF5 file when the object is garbage collected
   mode = c("a", "r", "r+", "w", "w-", "x"),
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto"
-)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{file}}{The file name (character) of the \code{.h5ad} file. If this file
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{file}}{The file name (character) of the \code{.h5ad} file. If this file
 already exits, other arguments must be \code{NULL}.}
-
-\item{\code{X}}{See the \code{X} slot in \link{AnnData-usage}}
-
-\item{\code{obs}}{See the \code{obs} slot in \link{AnnData-usage}}
-
-\item{\code{var}}{See the \code{var} slot in \link{AnnData-usage}}
-
-\item{\code{layers}}{See the \code{layers} slot in \link{AnnData-usage}}
-
-\item{\code{obsm}}{See the \code{obsm} slot in \link{AnnData-usage}}
-
-\item{\code{varm}}{See the \code{varm} slot in \link{AnnData-usage}}
-
-\item{\code{obsp}}{See the \code{obsp} slot in \link{AnnData-usage}}
-
-\item{\code{varp}}{See the \code{varp} slot in \link{AnnData-usage}}
-
-\item{\code{uns}}{See the \code{uns} slot in \link{AnnData-usage}}
-
-\item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
+      \item{\code{X}}{See the \code{X} slot in \link{AnnData-usage}}
+      \item{\code{obs}}{See the \code{obs} slot in \link{AnnData-usage}}
+      \item{\code{var}}{See the \code{var} slot in \link{AnnData-usage}}
+      \item{\code{layers}}{See the \code{layers} slot in \link{AnnData-usage}}
+      \item{\code{obsm}}{See the \code{obsm} slot in \link{AnnData-usage}}
+      \item{\code{varm}}{See the \code{varm} slot in \link{AnnData-usage}}
+      \item{\code{obsp}}{See the \code{obsp} slot in \link{AnnData-usage}}
+      \item{\code{varp}}{See the \code{varp} slot in \link{AnnData-usage}}
+      \item{\code{uns}}{See the \code{uns} slot in \link{AnnData-usage}}
+      \item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
 both \code{X} or \code{obs} and \code{var} are not provided.}
-
-\item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for
+      \item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for
 details}
-
-\item{\code{compression}}{The compression algorithm to use. See
+      \item{\code{compression}}{The compression algorithm to use. See
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
-
-\item{\code{chunk_size}}{The target chunk size in bytes. See
+      \item{\code{chunk_size}}{The target chunk size in bytes. See
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-The constructor creates a new HDF5 \code{AnnData} interface object. This can
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    The constructor creates a new HDF5 \code{AnnData} interface object. This can
 either be used to either connect to an existing \code{.h5ad} file or to
 create a new one. If any additional slot arguments are set an existing
 file will be overwritten.
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-obs_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-obs_keys}{}}}
-\subsection{Method \code{obs_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$obs_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$obs_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$obs_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-var_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-var_keys}{}}}
-\subsection{Method \code{var_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$var_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$var_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$var_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-layers_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-layers_keys}{}}}
-\subsection{Method \code{layers_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$layers_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$layers_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$layers_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-obsm_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-obsm_keys}{}}}
-\subsection{Method \code{obsm_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$obsm_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$obsm_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$obsm_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-varm_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-varm_keys}{}}}
-\subsection{Method \code{varm_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$varm_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$varm_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$varm_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-obsp_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-obsp_keys}{}}}
-\subsection{Method \code{obsp_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$obsp_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$obsp_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$obsp_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-varp_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-varp_keys}{}}}
-\subsection{Method \code{varp_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$varp_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$varp_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$varp_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-uns_keys"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-uns_keys}{}}}
-\subsection{Method \code{uns_keys()}}{
-See \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$uns_keys()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$uns_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$uns_keys()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-close"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-close}{}}}
-\subsection{Method \code{close()}}{
-Close the HDF5 file
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$close()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$close()}}{
+  Close the HDF5 file
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$close()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-n_obs}{}}}
-\subsection{Method \code{n_obs()}}{
-See the \code{n_obs} field in \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_obs()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$n_obs()}}{
+  See the \code{n_obs} field in \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$n_obs()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-n_vars"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-n_vars}{}}}
-\subsection{Method \code{n_vars()}}{
-See the \code{n_vars} field in \link{AnnData-usage}
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{HDF5AnnData$n_vars()}\if{html}{\out{</div>}}
+\subsection{\code{HDF5AnnData$n_vars()}}{
+  See the \code{n_vars} field in \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$n_vars()}
+    \if{html}{\out{</div>}}
+  }
 }
 
-}
 }

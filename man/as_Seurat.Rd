@@ -109,7 +109,7 @@ For more advanced mapping, use the list format where each item is a vector
 with the following names defining arguments to
 \code{\link[SeuratObject:CreateDimReducObject]{SeuratObject::CreateDimReducObject()}}:
 \itemize{
-\item \code{key}: the key of the resulting \code{\link[SeuratObject:DimReduc-class]{SeuratObject::DimReduc}} object, passed
+\item \code{key}: the key of the resulting \code{\link[SeuratObject:DimReduc]{SeuratObject::DimReduc}} object, passed
 to the \code{key} argument after processing with \code{\link[SeuratObject:Key]{SeuratObject::Key()}}
 \item \code{embeddings}: a key of the \code{obsm} slot in \code{adata},
 \code{adata$obsm[[embeddings]]} is passed to the \code{embeddings} argument
@@ -153,13 +153,13 @@ The name you provide for \code{x_mapping} may not be a name in \code{layers_mapp
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other object converters: 
-\code{\link{as_AnnData}()},
-\code{\link{as_HDF5AnnData}()},
-\code{\link{as_InMemoryAnnData}()},
-\code{\link{as_ReticulateAnnData}()},
-\code{\link{as_SingleCellExperiment}()},
-\code{\link{as_ZarrAnnData}()},
+Other object converters:
+\code{\link[=as_AnnData]{as_AnnData()}},
+\code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}},
+\code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}},
+\code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}},
+\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}},
+\code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}},
 \code{\link{reticulate-helpers}}
 }
 \concept{object converters}

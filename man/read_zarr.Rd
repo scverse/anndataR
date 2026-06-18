@@ -22,7 +22,7 @@ read_zarr(
 \item \code{"SingleCellExperiment"}: Read the Zarr store as a
 \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}} object
 \item \code{"Seurat"}: Read the Zarr store as a
-\code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object
+\code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object
 }}
 
 \item{mode}{The mode to open the Zarr file.
@@ -61,9 +61,9 @@ if (requireNamespace("SeuratObject", quietly = TRUE)) {
 }
 }
 \seealso{
-Other AnnData creators: 
-\code{\link{AnnData}()},
-\code{\link{as_AnnData}()},
-\code{\link{read_h5ad}()}
+Other AnnData creators:
+\code{\link[=AnnData]{AnnData()}},
+\code{\link[=as_AnnData]{as_AnnData()}},
+\code{\link[=read_h5ad]{read_h5ad()}}
 }
 \concept{AnnData creators}

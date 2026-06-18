@@ -15,7 +15,7 @@ write_zarr(
 \arguments{
 \item{object}{The object to write, either a
 \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}} or a
-\code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object}
+\code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object}
 
 \item{path}{Path of the file to write to}
 

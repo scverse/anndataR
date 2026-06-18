@@ -22,7 +22,7 @@ read_h5ad(
 \item \code{"SingleCellExperiment"}: Read the H5AD file as a
 \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}} object
 \item \code{"Seurat"}: Read the H5AD file as a
-\code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object
+\code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object
 }}
 
 \item{mode}{The mode to open the HDF5 file.
@@ -57,9 +57,9 @@ if (requireNamespace("SeuratObject", quietly = TRUE)) {
 }
 }
 \seealso{
-Other AnnData creators: 
-\code{\link{AnnData}()},
-\code{\link{as_AnnData}()},
-\code{\link{read_zarr}()}
+Other AnnData creators:
+\code{\link[=AnnData]{AnnData()}},
+\code{\link[=as_AnnData]{as_AnnData()}},
+\code{\link[=read_zarr]{read_zarr()}}
 }
 \concept{AnnData creators}

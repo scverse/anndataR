@@ -6,7 +6,7 @@
 \alias{anndataR-package}
 \title{anndataR: AnnData interoperability in R}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
 
 Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyse your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.
 }
@@ -20,23 +20,24 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (rcannood)
+\strong{Maintainer}: Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (github: rcannood)
 
 Authors:
 \itemize{
-  \item Luke Zappia \email{luke@lazappi.id.au} (\href{https://orcid.org/0000-0001-7744-8565}{ORCID}) (lazappi)
-  \item Martin Morgan \email{mtmorgan.bioc@gmail.com} (\href{https://orcid.org/0000-0002-5874-8148}{ORCID}) (mtmorgan)
-  \item Louise Deconinck \email{louise.deconinck@gmail.com} (\href{https://orcid.org/0000-0001-8100-6823}{ORCID}) (LouiseDck)
+  \item Robrecht Cannoodt \email{rcannood@gmail.com} (\href{https://orcid.org/0000-0003-3641-729X}{ORCID}) (github: rcannood)
+  \item Luke Zappia \email{luke@lazappi.id.au} (\href{https://orcid.org/0000-0001-7744-8565}{ORCID}) (github: lazappi)
+  \item Martin Morgan \email{mtmorgan.bioc@gmail.com} (\href{https://orcid.org/0000-0002-5874-8148}{ORCID}) (github: mtmorgan)
+  \item Louise Deconinck \email{louise.deconinck@gmail.com} (\href{https://orcid.org/0000-0001-8100-6823}{ORCID}) (github: LouiseDck)
 }
 
 Other contributors:
 \itemize{
-  \item Danila Bredikhin \email{danila.bredikhin@embl.de} (\href{https://orcid.org/0000-0001-8089-6983}{ORCID}) (gtca) [contributor]
-  \item Isaac Virshup (\href{https://orcid.org/0000-0002-1710-8945}{ORCID}) (ivirshup) [contributor]
-  \item Brian Schilder \email{brian_schilder@alumni.brown.edu} (\href{https://orcid.org/0000-0001-5949-2191}{ORCID}) (bschilder) [contributor]
-  \item Chananchida Sang-aram (\href{https://orcid.org/0000-0002-0922-0822}{ORCID}) (csangara) [contributor]
-  \item Artür Manukyan (\href{https://orcid.org/0000-0002-0441-9517}{ORCID}) (Artur-man) [contributor]
-  \item Hugo Gruson (\href{https://orcid.org/0000-0002-4094-1476}{ORCID}) (Bisaloo) [contributor]
+  \item Danila Bredikhin \email{danila.bredikhin@embl.de} (\href{https://orcid.org/0000-0001-8089-6983}{ORCID}) (github: gtca) [contributor]
+  \item Isaac Virshup (\href{https://orcid.org/0000-0002-1710-8945}{ORCID}) (github: ivirshup) [contributor]
+  \item Brian Schilder \email{brian_schilder@alumni.brown.edu} (\href{https://orcid.org/0000-0001-5949-2191}{ORCID}) (github: bschilder) [contributor]
+  \item Chananchida Sang-aram (\href{https://orcid.org/0000-0002-0922-0822}{ORCID}) (github: csangara) [contributor]
+  \item Artür Manukyan (\href{https://orcid.org/0000-0002-0441-9517}{ORCID}) (github: Artur-man) [contributor]
+  \item Hugo Gruson (\href{https://orcid.org/0000-0002-4094-1476}{ORCID}) (github: Bisaloo) [contributor]
   \item Data Intuitive \email{info@data-intuitive.com} [funder]
   \item Chan Zuckerberg Initiative [funder]
   \item scverse consortium [sponsor]

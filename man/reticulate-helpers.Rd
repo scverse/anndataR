@@ -65,13 +65,13 @@ if (requireNamespace("reticulate", quietly = TRUE) &&
 }
 }
 \seealso{
-Other object converters: 
-\code{\link{as_AnnData}()},
-\code{\link{as_HDF5AnnData}()},
-\code{\link{as_InMemoryAnnData}()},
-\code{\link{as_ReticulateAnnData}()},
-\code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}()},
-\code{\link{as_ZarrAnnData}()}
+Other object converters:
+\code{\link[=as_AnnData]{as_AnnData()}},
+\code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}},
+\code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}},
+\code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}},
+\code{\link[=as_Seurat]{as_Seurat()}},
+\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}},
+\code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}
 }
 \concept{object converters}
