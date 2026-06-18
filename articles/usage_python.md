@@ -216,7 +216,7 @@ sessionInfo()
 #>  [41] digest_0.6.39               patchwork_1.3.2            
 #>  [43] S4Vectors_0.51.3            Seurat_5.5.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
-#>  [47] irlba_2.3.7                 RSQLite_3.53.1             
+#>  [47] irlba_2.3.7                 RSQLite_3.53.2             
 #>  [49] textshaping_1.0.5           GenomicRanges_1.65.0       
 #>  [51] filelock_1.0.3              progressr_0.19.0           
 #>  [53] spatstat.sparse_3.2-0       polyclip_1.10-7            
@@ -259,7 +259,7 @@ sessionInfo()
 #> [127] xtable_1.8-8                systemfonts_1.3.2          
 #> [129] jquerylib_0.1.4             Rcpp_1.1.1-1.1             
 #> [131] spatstat.random_3.5-0       globals_0.19.1             
-#> [133] dbplyr_2.5.2                png_0.1-9                  
+#> [133] dbplyr_2.6.0                png_0.1-9                  
 #> [135] spatstat.univar_3.2-0       parallel_4.6.0             
 #> [137] blob_1.3.0                  pkgdown_2.2.0              
 #> [139] ggplot2_4.0.3               dotCall64_1.2              
@@ -274,13 +274,13 @@ sessionInfo()
 ``` r
 
 reticulate::py_config()
-#> python:         /opt/hostedtoolcache/Python/3.14.5/x64/bin/python3
-#> libpython:      /opt/hostedtoolcache/Python/3.14.5/x64/lib/libpython3.14.so
-#> pythonhome:     /opt/hostedtoolcache/Python/3.14.5/x64:/opt/hostedtoolcache/Python/3.14.5/x64
-#> version:        3.14.5 (main, May 11 2026, 02:45:53) [GCC 13.3.0]
-#> numpy:          /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/numpy
+#> python:         /opt/hostedtoolcache/Python/3.14.6/x64/bin/python3
+#> libpython:      /opt/hostedtoolcache/Python/3.14.6/x64/lib/libpython3.14.so
+#> pythonhome:     /opt/hostedtoolcache/Python/3.14.6/x64:/opt/hostedtoolcache/Python/3.14.6/x64
+#> version:        3.14.6 (main, Jun 10 2026, 14:29:35) [GCC 13.3.0]
+#> numpy:          /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/numpy
 #> numpy_version:  2.4.6
-#> scanpy:         /opt/hostedtoolcache/Python/3.14.5/x64/lib/python3.14/site-packages/scanpy
+#> scanpy:         /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
 

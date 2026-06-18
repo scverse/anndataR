@@ -371,7 +371,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] rappdirs_0.3.4      sass_0.4.10         SparseArray_1.13.2 
-#>  [4] lattice_0.22-9      paws.common_0.8.9   digest_0.6.39      
+#>  [4] lattice_0.22-9      paws.common_0.8.10  digest_0.6.39      
 #>  [7] magrittr_2.0.5      evaluate_1.0.5      grid_4.6.0         
 #> [10] bookdown_0.47       fastmap_1.2.0       R.oo_1.27.1        
 #> [13] jsonlite_2.0.0      Matrix_1.7-5        R.utils_2.13.0     
