@@ -65,3 +65,6 @@ vignettes/data/*.h5ad
 /Meta/
 /data/
 .positai
+
+# Scratch / working files
+temp/
