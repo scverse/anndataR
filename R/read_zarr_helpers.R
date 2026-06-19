@@ -214,7 +214,7 @@ read_zarr_sparse_array <- function(
 read_zarr_rec_array <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
   Rarr::read_zarr_array(file.path(store, name)) |>
-    lapply(unlist)
+    lapply(as.vector)
 }
 
 #' Read Zarr nullable boolean
