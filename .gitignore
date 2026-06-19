@@ -64,3 +64,6 @@ vignettes/data/*.h5ad
 /doc/
 /Meta/
 /data/
+
+# Scratch / working files
+temp/
