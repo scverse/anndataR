@@ -12,7 +12,11 @@ ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 #' @return `NULL`
 #'
 #' @noRd
-create_zarr_group <- function(store, name, format = getOption("anndataR.zarr_format", 3L)) {
+create_zarr_group <- function(
+  store,
+  name,
+  format = getOption("anndataR.zarr_format", 3L)
+) {
   # Split "a/b/c" into c("a", "b", "c")
   split_name <- strsplit(name, split = "/", fixed = TRUE)[[1]]
   if (length(split_name) > 1) {

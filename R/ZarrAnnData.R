@@ -526,8 +526,8 @@ ZarrAnnData <- R6::R6Class(
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
 #' @param zarr_format The format to use when writing the Zarr file.
-#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
-#'   Unless it is specified, Zarr v3 will be used by default. 
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively.
+#'   Unless it is specified, Zarr v3 will be used by default.
 #'.  The format can also be specified using
 #'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #'
