@@ -1,13 +1,23 @@
 bibentry(
   bibtype = "Article",
-  title = "{anndataR} improves interoperability between R and Python in single-cell transcriptomics",
+  title = "anndataR improves interoperability between R and Python in single-cell transcriptomics",
   author = c(
-    as.person("Louise Deconinck, Luke Zappia, Robrecht Cannoodt, Martin Morgan"),
-    person(given = "scverse core"),
-    as.person("Isaac Virshup, Chananchida Sang-aram, Danila Bredikhin, Ruth Seurinck, Yvan Saeys")
+    as.person("Louise Deconinck"),
+    as.person("Luke Zappia"),
+    as.person("Robrecht Cannoodt"),
+    as.person("Martin Morgan"),
+    as.person("Isaac Virshup"),
+    as.person("Chananchida Sang-aram"), 
+    as.person("Danila Bredikhin"), 
+    as.person("Ruth Seurinck"), 
+    as.person("Yvan Saeys"),
+    person(given = "scverse core")
   ),
-  journal = "bioRxiv",
-  year = 2025,
-  pages = "2025.08.18.669052",
-  doi = "10.1101/2025.08.18.669052"
+  journal = "Bioinformatics",
+  volume = 42,
+  issue = 6,
+  month = "June",
+  year = 2026,
+  pages = "btag288",
+  doi = "10.1093/bioinformatics/btag288"
 )
