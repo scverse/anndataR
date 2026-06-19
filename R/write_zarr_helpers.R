@@ -7,6 +7,11 @@
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"` or `"gzip"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'
@@ -30,7 +35,7 @@ write_zarr_element <- function(
     "zlib",
     "lz4"
   ),
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   stop_on_error = FALSE,
   ...
 ) {
@@ -132,6 +137,11 @@ write_zarr_element <- function(
 #' @param name Name of the element within the Zarr store
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 write_zarr_encoding <- function(store, name, encoding, version, zarr_format) {
   Rarr::write_zarr_attributes(
     file.path(store, name),
@@ -148,6 +158,11 @@ write_zarr_encoding <- function(store, name, encoding, version, zarr_format) {
 #' @param store An open Zarr handle
 #' @param name Name of the element within the Zarr store
 #' @param compression Not used as there is no value
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 #'
 #' @noRd
@@ -156,7 +171,7 @@ write_zarr_null <- function(
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.1.0"
 ) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
@@ -188,13 +203,18 @@ write_zarr_null <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_dense_array <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.2.0"
 ) {
   version <- match.arg(version)
@@ -227,13 +247,18 @@ write_zarr_dense_array <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_sparse_array <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.1.0"
 ) {
   version <- match.arg(version)
@@ -300,13 +325,18 @@ write_zarr_sparse_array <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_nullable_boolean <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.1.0"
 ) {
   # write mask and values
@@ -344,13 +374,18 @@ write_zarr_nullable_boolean <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_nullable_integer <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.1.0"
 ) {
   # write mask and values
@@ -388,13 +423,18 @@ write_zarr_nullable_integer <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_string_array <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.2.0"
 ) {
   dims <- dim(value) %||% length(value)
@@ -484,13 +524,18 @@ write_zarr_string_array <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_categorical <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.2.0"
 ) {
   create_zarr_group(store, name)
@@ -547,13 +592,18 @@ write_zarr_categorical <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_string_scalar <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.2.0"
 ) {
   # Write scalar
@@ -628,13 +678,18 @@ write_zarr_string_scalar <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_numeric_scalar <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.2.0"
 ) {
   # Write scalar
@@ -655,13 +710,18 @@ write_zarr_numeric_scalar <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version Encoding version of the element to write
 write_zarr_mapping <- function(
   value,
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.1.0"
 ) {
   create_zarr_group(store, name, zarr_format)
@@ -673,7 +733,7 @@ write_zarr_mapping <- function(
       store,
       paste0(name, "/", key),
       compression,
-      zarr_format = .get_zarr_format()
+      zarr_format = zarr_format
     )
   }
 
@@ -691,6 +751,11 @@ write_zarr_mapping <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param index The index to write. Can either be a vector of length equal to
 #' the number of rows in `values` or a single character string giving the name
 #' of a column in `values`. If `NULL` then `rownames(value)` is used.
@@ -700,7 +765,7 @@ write_zarr_data_frame <- function(
   store,
   name,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   index = NULL,
   version = "0.2.0"
 ) {
@@ -783,13 +848,18 @@ write_zarr_data_frame <- function(
 #' @param var Data frame with variables
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"` or `"gzip"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 #' @param version The anndata on-disk format version to write
 write_empty_zarr <- function(
   store,
   obs,
   var,
   compression,
-  zarr_format = .get_zarr_format(),
+  zarr_format = getOption("anndataR.zarr_format", 3L),
   version = "0.1.0"
 ) {
   create_zarr(store = store, zarr_format)
@@ -844,6 +914,11 @@ write_empty_zarr <- function(
 #' frame.
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"` or `"gzip"`. Defaults to `"none"`.
+#' @param zarr_format The format to use when writing the Zarr file.
+#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively. 
+#'   Unless it is specified, Zarr v3 will be used by default. 
+#'.  The format can also be specified using
+#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
 zarr_write_compressed <- function(
   store,
   name,
@@ -858,7 +933,7 @@ zarr_write_compressed <- function(
     "zlib",
     "lz4"
   ),
-  zarr_format = .get_zarr_format()
+  zarr_format = getOption("anndataR.zarr_format", 3L)
 ) {
   dims <- dim(value) %||% length(value)
   data <- array(data = value, dim = dims)

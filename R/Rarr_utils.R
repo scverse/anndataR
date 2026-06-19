@@ -12,7 +12,7 @@ ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 #' @return `NULL`
 #'
 #' @noRd
-create_zarr_group <- function(store, name, format = .get_zarr_format()) {
+create_zarr_group <- function(store, name, format = getOption("anndataR.zarr_format", 3L)) {
   # Split "a/b/c" into c("a", "b", "c")
   split_name <- strsplit(name, split = "/", fixed = TRUE)[[1]]
   if (length(split_name) > 1) {
@@ -60,7 +60,7 @@ create_zarr_group <- function(store, name, format = .get_zarr_format()) {
 #' @return `NULL`
 #'
 #' @noRd
-create_zarr <- function(store, format = .get_zarr_format()) {
+create_zarr <- function(store, format = getOption("anndataR.zarr_format", 3L)) {
   prefix <- basename(store)
   dir <- gsub(paste0(prefix, "$"), "", store)
   create_zarr_group(store = dir, name = prefix, format = format)
@@ -106,10 +106,4 @@ zarr_path_exists <- function(store, target_path) {
       FALSE
     }
   }
-}
-
-#' @noRd
-.get_zarr_format <- function() {
-  vr <- getOption("anndataR.zarr_format")
-  if (is.null(vr)) 3 else vr
 }

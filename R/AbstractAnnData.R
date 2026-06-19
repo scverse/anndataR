@@ -313,7 +313,7 @@ AbstractAnnData <- R6::R6Class(
         "lz4"
       ),
       mode = c("w-", "r", "r+", "a", "w", "x"),
-      zarr_format = NULL
+      zarr_format = getOption("anndataR.zarr_format", 3L)
     ) {
       as_ZarrAnnData(
         adata = self,
