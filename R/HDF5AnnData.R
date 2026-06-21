@@ -558,6 +558,20 @@ HDF5AnnData <- R6::R6Class(
     #' @description Close the HDF5 file handle
     close = function() {
       private$.hdf5_file$close()
+    },
+
+    #' @description Convert to an [`InMemoryAnnData`]. Any backed
+    #'   (`DelayedArray`) slots are materialized into ordinary in-memory
+    #'   matrices: an in-memory object should not stay tied to an on-disk file.
+    as_InMemoryAnnData = function() {
+      if (isTRUE(private$.backed)) {
+        prev <- private$.backed
+        private$.backed <- FALSE
+        on.exit(private$.backed <- prev, add = TRUE)
+        # Hold the file open for the whole multi-slot read (single handle).
+        private$.hdf5_file$open_and_defer_close(readonly = TRUE)
+      }
+      super$as_InMemoryAnnData()
     }
   )
 )

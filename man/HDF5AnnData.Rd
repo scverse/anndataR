@@ -72,12 +72,12 @@ Other AnnData classes:
     \item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
     \item \href{#method-HDF5AnnData-open}{\code{HDF5AnnData$open()}}
     \item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
+    \item \href{#method-HDF5AnnData-as_InMemoryAnnData}{\code{HDF5AnnData$as_InMemoryAnnData()}}
   }
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ReticulateAnnData'><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>AbstractAnnData$as_Seurat()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
@@ -296,6 +296,22 @@ file will be overwritten.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{HDF5AnnData$close()}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-as_InMemoryAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-as_InMemoryAnnData}{}}}
+\subsection{\code{HDF5AnnData$as_InMemoryAnnData()}}{
+  Convert to an \code{\link{InMemoryAnnData}}. Any backed
+(\code{DelayedArray}) slots are materialized into ordinary in-memory
+matrices: an in-memory object should not stay tied to an on-disk file.
+Slots are read eagerly (via base {rhdf5}) rather than carried over as
+DelayedArrays, which is also faster than realizing them.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$as_InMemoryAnnData()}
     \if{html}{\out{</div>}}
   }
 }
