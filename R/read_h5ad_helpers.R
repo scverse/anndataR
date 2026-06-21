@@ -215,6 +215,11 @@ read_h5ad_dense_array <- function(
 ) {
   version <- match.arg(version)
 
+  # Eager reads use base {rhdf5} directly
+  if (!isTRUE(backed)) {
+    return(read_h5ad_dense_array_base(hdf5_file, name, version))
+  }
+
   dataset_type <- hdf5_get_dataset_type(hdf5_file, name)
   if (dataset_type == "H5T_INTEGER") {
     dataset_type <- "integer"
@@ -233,10 +238,6 @@ read_h5ad_dense_array <- function(
     data <- t(data)
   } else if (length(dim(data)) > 2) {
     data <- aperm(data)
-  }
-
-  if (!isTRUE(backed)) {
-    data <- as.array(data)
   }
 
   data
@@ -332,20 +333,13 @@ read_h5ad_sparse_array <- function(
   version <- match.arg(version)
   type <- match.arg(type)
 
-  hdf5_file$close_and_defer_open()
-  mtx <- t(HDF5Array::H5SparseMatrix(hdf5_file$path, name))
-
-  if (!backed) {
-    mtx <- if (type == "csc_matrix") {
-      as(mtx, "dgCMatrix")
-    } else if (type == "csr_matrix") {
-      mtx |>
-        as("COO_SparseArray") |>
-        as("dgRMatrix")
-    }
+  # Eager reads use base {rhdf5} directly
+  if (!isTRUE(backed)) {
+    return(read_h5ad_sparse_array_base(hdf5_file, name, version, type))
   }
 
-  mtx
+  hdf5_file$close_and_defer_open()
+  t(HDF5Array::H5SparseMatrix(hdf5_file$path, name))
 }
 
 #' Read H5AD sparse array (base)
