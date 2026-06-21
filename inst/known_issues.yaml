@@ -18,22 +18,6 @@ known_issues:
   - backend: backed
     slot: [X]
     dtype: [delayed]
-    process: [subset]
-    error_message: |
-      dim(vb$X) not equal to c(length(oi), length(vi)); the full, unsubset
-      matrix is returned.
-    description: >
-      Subsetting a backed AnnData returns the full matrix instead of the subset.
-      AnnDataView$.apply_subset() only recognises data.frame/matrix/Matrix, so a
-      DelayedMatrix falls through the guard unchanged.
-    proposed_solution: >
-      In AnnDataView$.apply_subset(), also handle DelayedArray (e.g. add
-      `|| inherits(x, "DelayedArray")` to the guard) so backed slots are subset.
-    to_investigate: False
-    to_fix: True
-  - backend: backed
-    slot: [X]
-    dtype: [delayed]
     process: [to_InMemory]
     error_message: |
       inherits(im$X, "DelayedArray") is TRUE; expected a materialized matrix.
