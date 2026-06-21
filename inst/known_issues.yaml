@@ -15,3 +15,65 @@ known_issues:
     proposed_solution: Investigate if this is a problem or not.
     to_investigate: True
     to_fix: False
+  - backend: backed
+    slot: [X]
+    dtype: [delayed]
+    process: [subset]
+    error_message: |
+      dim(vb$X) not equal to c(length(oi), length(vi)); the full, unsubset
+      matrix is returned.
+    description: >
+      Subsetting a backed AnnData returns the full matrix instead of the subset.
+      AnnDataView$.apply_subset() only recognises data.frame/matrix/Matrix, so a
+      DelayedMatrix falls through the guard unchanged.
+    proposed_solution: >
+      In AnnDataView$.apply_subset(), also handle DelayedArray (e.g. add
+      `|| inherits(x, "DelayedArray")` to the guard) so backed slots are subset.
+    to_investigate: False
+    to_fix: True
+  - backend: backed
+    slot: [X]
+    dtype: [delayed]
+    process: [to_InMemory]
+    error_message: |
+      inherits(im$X, "DelayedArray") is TRUE; expected a materialized matrix.
+    description: >
+      Converting a backed HDF5AnnData to InMemoryAnnData keeps DelayedArray
+      slots instead of materializing them; an in-memory object should not be
+      backed by an on-disk file.
+    proposed_solution: >
+      Override HDF5AnnData$as_InMemoryAnnData() to realize DelayedArray slots
+      (sparse stays sparse, dense becomes a base matrix) before constructing the
+      InMemoryAnnData.
+    to_investigate: False
+    to_fix: True
+  - backend: backed
+    slot: [X]
+    dtype: [delayed]
+    process: [write]
+    error_message: |
+      Writing <DelayedMatrix> objects to H5AD is not supported
+    description: >
+      Writing a backed AnnData aborts because its DelayedMatrix slots are not
+      materialized before writing.
+    proposed_solution: >
+      In write_h5ad_element(), materialize DelayedArray values (sparse to
+      CsparseMatrix, dense to base matrix) before the normal write dispatch.
+    to_investigate: False
+    to_fix: True
+  - backend: backed
+    slot: [X]
+    dtype: [delayed]
+    process: [to_AnnData]
+    error_message: |
+      Unexpected shape for layers[['counts']]
+    description: >
+      Converting a backed SingleCellExperiment back to AnnData transposes the
+      matrix and fails shape validation. The backed assay (a DelayedMatrix from
+      H5SparseMatrix/HDF5Array) is oriented transposed relative to AnnData and
+      the reverse conversion does not account for it.
+    proposed_solution: >
+      Handle DelayedArray orientation when converting a backed SCE/Seurat back to
+      AnnData (transpose/realize as needed).
+    to_investigate: False
+    to_fix: True
