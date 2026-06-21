@@ -15,17 +15,3 @@ known_issues:
     proposed_solution: Investigate if this is a problem or not.
     to_investigate: True
     to_fix: False
-  - backend: backed
-    slot: [X]
-    dtype: [delayed]
-    process: [write]
-    error_message: |
-      Writing <DelayedMatrix> objects to H5AD is not supported
-    description: >
-      Writing a backed AnnData aborts because its DelayedMatrix slots are not
-      materialized before writing.
-    proposed_solution: >
-      In write_h5ad_element(), materialize DelayedArray values (sparse to
-      CsparseMatrix, dense to base matrix) before the normal write dispatch.
-    to_investigate: False
-    to_fix: True
