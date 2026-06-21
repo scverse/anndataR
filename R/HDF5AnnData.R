@@ -448,7 +448,13 @@ HDF5AnnData <- R6::R6Class(
           shape <- get_shape(obs, var, X, shape)
           obs <- get_initial_obs(obs, X, shape)
           var <- get_initial_var(var, X, shape)
-          write_empty_h5ad(private$.hdf5_file, obs, var, compression, chunk_size)
+          write_empty_h5ad(
+            private$.hdf5_file,
+            obs,
+            var,
+            compression,
+            chunk_size
+          )
         }
       }
 
