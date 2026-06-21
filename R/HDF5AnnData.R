@@ -357,7 +357,7 @@ HDF5AnnData <- R6::R6Class(
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto"
     ) {
-      check_requires("HDF5AnnData", c("rhdf5", "HDF5Array"), where = "Bioc")
+      check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
       check_requires("HDF5AnnData", "withr", where = "CRAN")
 
       compression <- match.arg(compression)
@@ -392,6 +392,14 @@ HDF5AnnData <- R6::R6Class(
         backed <- FALSE
       }
       private$.backed <- backed
+
+      if (isTRUE(private$.backed)) {
+        check_requires(
+          "Reading a backed HDF5AnnData",
+          c("HDF5Array", "DelayedArray"),
+          where = "Bioc"
+        )
+      }
 
       # Fail is the file does not exist and in read mode
       if (!file.exists(file) && mode %in% c("r", "r+")) {
