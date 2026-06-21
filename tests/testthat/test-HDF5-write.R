@@ -3,6 +3,8 @@ skip_if_not_installed("HDF5Array")
 
 requireNamespace("vctrs")
 
+known_issues <- read_known_issues()
+
 file <- tempfile(pattern = "hdf5_write_", fileext = ".h5ad")
 if (file.exists(file)) {
   file.remove(file)
@@ -434,4 +436,29 @@ test_that("write_h5ad() chunk_size as a number uses it as target byte size", {
 
   result <- read_h5ad(file)
   expect_equal(result$X, dummy$X)
+})
+
+# BUG (PR #387): writing a backed AnnData should materialize its
+# DelayedMatrix slots
+test_that("writing a backed AnnData materializes its DelayedMatrix slots", {
+  msg <- message_if_known(
+    backend = "backed",
+    slot = "X",
+    dtype = "delayed",
+    process = "write",
+    known_issues = known_issues
+  )
+  skip_if(!is.null(msg), message = msg)
+
+  filename <- system.file("extdata", "example.h5ad", package = "anndataR")
+  backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
+  withr::defer(backed$close())
+
+  out <- withr::local_file(tempfile(fileext = ".h5ad"))
+  expect_no_error(write_h5ad(backed, out))
+
+  roundtrip <- HDF5AnnData$new(out, mode = "r")
+  withr::defer(roundtrip$close())
+  expect_false(inherits(roundtrip$X, "DelayedArray"))
+  expect_equal(as.matrix(roundtrip$X), as.matrix(backed$X))
 })
