@@ -6,8 +6,6 @@ requireNamespace("vctrs")
 filename <- system.file("extdata", "example.h5ad", package = "anndataR")
 hdf5_file <- HDF5File$new(filename)
 
-known_issues <- read_known_issues()
-
 test_that("reading encoding works", {
   encoding <- read_h5ad_encoding(hdf5_file, "obs")
   expect_equal(names(encoding), c("type", "version"))
@@ -166,20 +164,9 @@ test_that("backed matrices stay readable after the source AnnData is closed", {
   expect_equal(as.matrix(x_backed), expected)
 })
 
-# BUG #1: subsetting a backed AnnData must stay lazy AND apply the subset.
-# AnnDataView$.apply_subset() only recognises data.frame/matrix/{Matrix}, so a
-# DelayedMatrix falls through the guard and the FULL (unsubset) matrix is
-# returned.
+# Regression test: subsetting a backed AnnData must stay lazy AND apply the
+# subset.
 test_that("subsetting a backed AnnData stays lazy and subsets correctly", {
-  msg <- message_if_known(
-    backend = "backed",
-    slot = "X",
-    dtype = "delayed",
-    process = "subset",
-    known_issues = known_issues
-  )
-  skip_if(!is.null(msg), message = msg)
-
   backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
   eager <- HDF5AnnData$new(filename, mode = "r")
   withr::defer({
@@ -197,19 +184,9 @@ test_that("subsetting a backed AnnData stays lazy and subsets correctly", {
   expect_equal(as.matrix(vb$X), as.matrix(ve$X))
 })
 
-# BUG #2: converting a backed AnnData to InMemory should materialize its
-# DelayedArrays into ordinary in-memory matrices (an in-memory object backed by
-# an on-disk file makes no sense). Baseline carries the DelayedMatrix through.
+# Regression test: converting a backed AnnData to InMemory must materialize its
+# DelayedArrays into ordinary in-memory matrices
 test_that("converting a backed AnnData to InMemory materializes its matrices", {
-  msg <- message_if_known(
-    backend = "backed",
-    slot = "X",
-    dtype = "delayed",
-    process = "to_InMemory",
-    known_issues = known_issues
-  )
-  skip_if(!is.null(msg), message = msg)
-
   backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
   withr::defer(backed$close())
   im <- backed$as_InMemoryAnnData()
@@ -242,19 +219,9 @@ test_that("backed SingleCellExperiment has lazy assays equal to eager ones", {
   }
 })
 
-# BUG (issue #387, reported by LouiseDck): converting a backed SCE back to
-# AnnData transposes the matrix and fails shape validation. The backed assay (a
-# DelayedMatrix from H5SparseMatrix/HDF5Array) is oriented transposed relative to
-# AnnData and the reverse conversion does not account for it.
+# Regression test (issue #387, reported by LouiseDck): converting a backed SCE
+# back to AnnData must preserve shape.
 test_that("round-trip of a backed SCE back to AnnData preserves shape", {
-  msg <- message_if_known(
-    backend = "backed",
-    slot = "X",
-    dtype = "delayed",
-    process = "to_AnnData",
-    known_issues = known_issues
-  )
-  skip_if(!is.null(msg), message = msg)
   suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
 
   backed <- read_h5ad(filename, as = "HDF5AnnData", backed = TRUE)
