@@ -27,7 +27,7 @@ library(SingleCellExperiment)
 
 # Introduction
 
-`r Biocpkg("anndataR")` allows users to work with `.h5ad` files, interact with `AnnData` objects and convert to/from `SingleCellExperiment` or `Seurat` objects.
+`r Biocpkg("anndataR")` allows users to work with `.h5ad` files and `.zarr` stores, interact with `AnnData` objects and convert to/from `SingleCellExperiment` or `Seurat` objects.
 This enables users to move data easily between the different programming languages and analysis ecosystems needed to perform single-cell data analysis.
 
 This package builds on our experience developing and using other interoperability packages and aims to provide a first-class R `AnnData` experience.
@@ -37,8 +37,8 @@ This package builds on our experience developing and using other interoperabilit
 Existing packages provide similar functionality to `r Biocpkg("anndataR")` but there are some important differences:
 
 - `r Biocpkg("zellkonverter")` provides conversion of `SingleCellExperiment` objects to/from `AnnData` and reading/writing of `.h5ad` files.
-  This is facilitated via `r CRANpkg("reticulate")` using `r Biocpkg("basilisk")` to manage Python environments (native reading of `.h5ad` files is also possible).
-  In contrast, `r Biocpkg("anndataR")` provides a native R H5AD interface, removing the need for Python dependencies.
+  This is facilitated via `r CRANpkg("reticulate")` using `r Biocpkg("basilisk")` to manage Python environments (native reading of `.h5ad` is also possible).
+  In contrast, `r Biocpkg("anndataR")` provides a native R H5AD and Zarr interface, removing the need for Python dependencies.
   Conversion to/from `Seurat` objects is also supported.
 - `r CRANpkg("anndata")` (on CRAN) is a wrapper around the Python _anndata_ package.
   It provides a nicer interface from within R but still requires a Python environment.
@@ -95,6 +95,29 @@ There is also a HDF5-backed `AnnData` object:
 
 ```{r read-on-disk}
 adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
+```
+
+Similarly, these functionalities are provided for `.zarr` stores too. 
+
+```{r zarr-path}
+zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_path, exdir = td)
+zarr_path <- file.path(td, "example_v2.zarr")
+```
+
+```{r read-zarr}
+# in-memory
+adata <- read_zarr(zarr_path)
+
+# as SingleCellExperiment
+sce <- read_zarr(zarr_path, as = "SingleCellExperiment")
+
+# as Seurat
+obj <- read_zarr(zarr_path, as = "Seurat")
+
+# as Zarr-backed
+adata <- read_zarr(zarr_path, as = "ZarrAnnData")
 ```
 
 See `r vignette("usage_python")` for interacting with a Python `AnnData` via `r CRANpkg("reticulate")`. 
@@ -185,6 +208,19 @@ Write a `Seurat` object to disk:
 ```{r write-Seurat-to-disk}
 tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(obj, tmpfile)
+```
+
+Similarly, we can write `AnnData` and other objects to `.zarr` stores too.
+
+```{r write-to-disk-zarr}
+tmpfile <- tempfile(fileext = ".zarr")
+adata$write_zarr(tmpfile) # Alternatively, write_zarr(adata, tmpfile)
+
+tmpfile <- tempfile(fileext = ".zarr")
+write_zarr(sce, tmpfile)
+
+tmpfile <- tempfile(fileext = ".zarr")
+write_zarr(obj, tmpfile)
 ```
 
 ## Subsetting `AnnData` objects {#subsetting}

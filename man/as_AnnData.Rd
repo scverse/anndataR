@@ -18,7 +18,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -34,7 +34,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData", "ReticulateAnnData"),
   ...
 )
 
@@ -50,7 +50,7 @@ as_AnnData(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c("InMemory", "HDF5AnnData", "ZarrAnnData", "ReticulateAnnData"),
   ...
 )
 }
@@ -92,7 +92,7 @@ corresponding slot of \code{x}. See below for details.}
 in the new \code{AnnData} object and values are the names of items in the
 corresponding slot of \code{x}. See below for details.}
 
-\item{assay_name}{For \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} objects, the name of the assay
+\item{assay_name}{For \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} objects, the name of the assay
 to be converted. If \code{NULL}, the default assay will be used
 (\code{\link[SeuratObject:DefaultAssay]{SeuratObject::DefaultAssay()}}). This is ignored for other objects.}
 
@@ -151,16 +151,28 @@ object.\tabular{llll}{
    \code{rowPairs(x)} \tab \code{adata$varp} \tab \code{varp_mapping = c(similarities = "gene_overlaps")} \tab All items are copied by name \cr
    \code{metadata(x)} \tab \code{adata$uns} \tab \code{uns_mapping = c(metadata = "project_metadata")} \tab All items are copied by name \cr
 }
+
+\subsection{Unnamed assays}{
+
+If \code{assayNames(x)} is \code{NULL} or any assay names are empty they will
+automatically be named with a warning:
+
+\strong{Examples:}
+\itemize{
+\item Old names: \code{NULL} -> New names: \verb{"assay1", "assay2", ...}
+\item Old names: \code{"counts"} -> New names: \verb{"counts", "assay2"}
+}
+}
 }
 
 \section{Converting from a \code{Seurat} object}{
 
 
-Only one assay can be converted from a \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object to
+Only one assay can be converted from a \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object to
 an \code{AnnData} object at a time. This can be controlled using the
 \code{assay_name} argument. By default, the current default assay will be used.
 
-This table describes how slots in a \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object to the
+This table describes how slots in a \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object to the
 new \code{AnnData} object.\tabular{llll}{
    \strong{From \code{Seurat}} \tab \strong{To \code{AnnData}} \tab \strong{Example mapping argument} \tab \strong{Default} \cr
    \code{Layers(x)} \tab \code{adata$X} \tab \code{x_mapping = "counts"} \tab Nothing is copied to \code{X} \cr
@@ -176,7 +188,7 @@ new \code{AnnData} object.\tabular{llll}{
 
 \subsection{Graph conversion}{
 
-By default, all graphs in a \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} object that match the
+By default, all graphs in a \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object that match the
 assay being converted are copied to the \code{obsp} slot of the new \code{AnnData}
 object. If a graph does not have an associated assay:
 \itemize{
@@ -192,7 +204,7 @@ To override this behaviour, provide a custom mapping using the
 
 \subsection{Unexpected dimensions}{
 
-A \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}} is more flexible in terms of the dimensions of
+A \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} is more flexible in terms of the dimensions of
 items that can be stored in various slots. For example, a \code{Layer} does not
 have to match the dimensions of the whole object. If an item has
 unexpected dimensions, it will be skipped with a warning.
@@ -229,16 +241,18 @@ as_AnnData(sce)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-Other AnnData creators: 
-\code{\link{AnnData}()},
-\code{\link{read_h5ad}()}
+Other AnnData creators:
+\code{\link[=AnnData]{AnnData()}},
+\code{\link[=read_h5ad]{read_h5ad()}},
+\code{\link[=read_zarr]{read_zarr()}}
 
-Other object converters: 
-\code{\link{as_HDF5AnnData}()},
-\code{\link{as_InMemoryAnnData}()},
-\code{\link{as_ReticulateAnnData}()},
-\code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}()},
+Other object converters:
+\code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}},
+\code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}},
+\code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}},
+\code{\link[=as_Seurat]{as_Seurat()}},
+\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}},
+\code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}},
 \code{\link{reticulate-helpers}}
 }
 \concept{AnnData creators}

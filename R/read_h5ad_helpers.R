@@ -157,7 +157,7 @@ read_h5ad_element_keys <- function(
 
   tryCatch(
     {
-      read_fun(file = file, name = name, version = version, ...)
+      read_fun(hdf5_file = file, name = name, version = version, ...)
     },
     error = function(e) {
       msg <- cli::cli_fmt(cli::cli_bullets(c(
@@ -378,32 +378,13 @@ read_h5ad_sparse_array_base <- function(
   h5group <- rhdf5::H5Gopen(hdf5_file$handle, name)
   on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
 
-  data <- as.vector(h5group$data)
-  indices <- as.vector(h5group$indices)
-  indptr <- as.vector(h5group$indptr)
-  shape <- as.vector(attrs[["shape"]])
-
-  if (type == "csc_matrix") {
-    mtx <- Matrix::sparseMatrix(
-      i = indices,
-      p = indptr,
-      x = data,
-      dims = shape,
-      repr = "C",
-      index1 = FALSE
-    )
-  } else if (type == "csr_matrix") {
-    mtx <- Matrix::sparseMatrix(
-      j = indices,
-      p = indptr,
-      x = data,
-      dims = shape,
-      repr = "R",
-      index1 = FALSE
-    )
-  }
-
-  mtx
+  construct_sparse_matrix(
+    data = as.vector(h5group$data),
+    indices = as.vector(h5group$indices),
+    indptr = as.vector(h5group$indptr),
+    shape = as.vector(attrs[["shape"]]),
+    type = type
+  )
 }
 
 #' Read H5AD recarray

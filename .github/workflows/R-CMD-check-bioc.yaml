@@ -30,7 +30,7 @@ jobs:
         - { os: macOS-latest,   bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
         - { os: macOS-15-intel, bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 2 }
         - { os: ubuntu-latest,  bioc-version: 'devel', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
-        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://packagemanager.posit.co/bioconductor', cache: 1 }
+        - { os: ubuntu-latest,  bioc-version: 'release', bioc-mirror: 'https://bioconductor.posit.co/', cache: 1 }
 
     steps:
 
@@ -40,7 +40,7 @@ jobs:
           git config --global core.autocrlf false
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Linux dependencies
         if: runner.os == 'Linux'
@@ -48,15 +48,14 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install hdf5-tools libsz2 libaec-dev
 
-      ## Workaround: data.table (indirect dep via Seurat) fails to compile
-      ## on macOS ARM because libintl.h is missing.
+      ## Install missing libraries for macOS ARM (macOS-latest)
       - name: Install macOS dependencies
-        if: runner.os == 'macOS'
+        if: matrix.config.os == 'macOS-latest'
         run: |
-          brew install gettext
+          brew install gettext openssl
           mkdir -p ~/.R
-          echo "CPPFLAGS += -I$(brew --prefix gettext)/include" >> ~/.R/Makevars
-          echo "LDFLAGS += -L$(brew --prefix gettext)/lib" >> ~/.R/Makevars
+          echo "CPPFLAGS += -I$(brew --prefix gettext)/include -I$(brew --prefix openssl)/include" >> ~/.R/Makevars
+          echo "LDFLAGS += -L$(brew --prefix gettext)/lib -L$(brew --prefix openssl)/lib" >> ~/.R/Makevars
 
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
@@ -79,9 +78,12 @@ jobs:
       ## See https://github.com/numba/numba/issues/10187#issuecomment-3800638403
       - name: Cache conda packages (macOS Intel)
         if: matrix.config.os == 'macOS-15-intel'
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: ~/.local/share/r-miniconda
+          key: ${{ runner.os }}-conda-${{ hashFiles('DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-
 
       - name: Install Python packages via conda (macOS Intel)
         id: install-conda
@@ -120,7 +122,7 @@ jobs:
       
       - name: Upload check results
         if: failure() && steps.bioc-check.outputs.check-dir != ''
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ format('{0}-{1}-bioc-{2}-results', runner.os, runner.arch, env.R_BIOC_VERSION) }}
           path: ${{ steps.bioc-check.outputs.check-dir }}

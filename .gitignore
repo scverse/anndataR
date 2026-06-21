@@ -53,6 +53,9 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
+# Benchmark result files
+benchmarks/results_*.txt
+
 # Rproj files
 *.Rproj
 
@@ -61,3 +64,6 @@ vignettes/data/*.h5ad
 /doc/
 /Meta/
 /data/
+
+# Scratch / working files
+temp/

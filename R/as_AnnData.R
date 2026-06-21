@@ -82,6 +82,16 @@
 #'
 # nolint end: line_length_linter
 #'
+#'   ## Unnamed assays
+#'
+#'   If `assayNames(x)` is `NULL` or any assay names are empty they will
+#'   automatically be named with a warning:
+#'
+#'   **Examples:**
+#'
+#'   - Old names: `NULL` -> New names: `"assay1", "assay2", ...`
+#'   - Old names: `"counts"` -> New names: `"counts", "assay2"`
+#'
 #' @section Converting from a `Seurat` object:
 #'
 #'   Only one assay can be converted from a [`SeuratObject::Seurat`] object to
@@ -175,7 +185,12 @@ as_AnnData <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c(
+    "InMemory",
+    "HDF5AnnData",
+    "ZarrAnnData",
+    "ReticulateAnnData"
+  ),
   ...
 ) {
   UseMethod("as_AnnData", x)
@@ -195,7 +210,12 @@ as_AnnData.SingleCellExperiment <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = TRUE,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c(
+    "InMemory",
+    "HDF5AnnData",
+    "ZarrAnnData",
+    "ReticulateAnnData"
+  ),
   ...
 ) {
   from_SingleCellExperiment(
@@ -228,7 +248,12 @@ as_AnnData.Seurat <- function(
   varp_mapping = TRUE,
   uns_mapping = TRUE,
   assay_name = NULL,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c(
+    "InMemory",
+    "HDF5AnnData",
+    "ZarrAnnData",
+    "ReticulateAnnData"
+  ),
   ...
 ) {
   from_Seurat(

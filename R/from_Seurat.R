@@ -30,7 +30,12 @@ from_Seurat <- function(
   obsp_mapping = TRUE,
   varp_mapping = TRUE,
   uns_mapping = TRUE,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c(
+    "InMemory",
+    "HDF5AnnData",
+    "ZarrAnnData",
+    "ReticulateAnnData"
+  ),
   ...
 ) {
   check_requires("Converting Seurat to AnnData", c("SeuratObject", "Seurat"))
@@ -522,7 +527,7 @@ from_Seurat <- function(
       next
     }
 
-    dest_name <- gsub(paste0(assay_name, "_"), "", graph_name)
+    dest_name <- gsub(paste0(assay_name, "_"), "", graph_name, fixed = TRUE)
 
     obsp_mapping[dest_name] <- graph_name
   }

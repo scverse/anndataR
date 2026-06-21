@@ -32,7 +32,7 @@ You can install them using the following code:
 install.packages("Seurat")
 ```
 
-# Reading H5AD files to a `Seurat` Object
+# Reading H5AD files and Zarr stores to a `Seurat` Object
 
 Using an example `.h5ad` file included in the package, we will demonstrate how to read an `.h5ad` file and convert it to a `Seurat` object.
 
@@ -56,6 +56,27 @@ This is equivalent to reading in the `.h5ad` file as an `AnnData` and explicitly
 adata <- read_h5ad(h5ad_file)
 seurat_obj <- adata$as_Seurat()
 seurat_obj
+```
+
+Similarly, we can read from a Zarr store which we also demonstrate with an example `.zarr` store: 
+
+```{r prep-file-zarr}
+# Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
+zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
+td <- tempdir(check = TRUE)
+unzip(zarr_path, exdir = td)
+zarr_path <- file.path(td, "example_v2.zarr")
+
+seurat_obj_zarr <- read_zarr(zarr_path, as = "Seurat")
+seurat_obj_zarr
+```
+
+or 
+
+```{r convert-seurat-zarr}
+adata <- read_zarr(zarr_path)
+seurat_obj_zarr <- adata$as_Seurat()
+seurat_obj_zarr
 ```
 
 # Mapping between `AnnData` and `Seurat`
@@ -102,19 +123,21 @@ seurat_obj
 
 The mapping arguments can also be passed directly to `read_h5ad()`.
 
-# Writing a `Seurat` object to a H5AD file
+# Writing a `Seurat` object to a H5AD file or Zarr store
 
-The reverse conversion is also possible, allowing you to convert the `Seurat` object back to an `AnnData` object, or to just write out the `Seurat` object as an `.h5ad` file.
+The reverse conversion is also possible, allowing you to convert the `Seurat` object back to an `AnnData` object, or to just write out the `Seurat` object as an `.h5ad` file or `.zarr` store. 
 
-```{r write-seurat}
+```{r write-seurat, eval=FALSE}
 write_h5ad(seurat_obj, tempfile(fileext = ".h5ad"))
+write_zarr(seurat_obj, tempfile(fileext = ".zarr"))
 ```
 
 This is equivalent to converting the `Seurat` object to an `AnnData` object and then writing it out:
 
-```{r convert-to-anndata}
+```{r convert-to-anndata, eval=FALSE}
 adata <- as_AnnData(seurat_obj)
 adata$write_h5ad(tempfile(fileext = ".h5ad"))
+adata$write_zarr(tempfile(fileext = ".zarr"))
 ```
 
 You can again customize the conversion process by providing specific mappings for each slot in the `AnnData` object.
@@ -137,7 +160,7 @@ adata <- as_AnnData(
 adata
 ```
 
-The mapping arguments can also be passed directly to `write_h5ad()`.
+The mapping arguments can also be passed directly to `write_h5ad()` or `write_zarr()`.
 
 # Session info
 

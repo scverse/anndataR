@@ -9,6 +9,7 @@
 #' @importFrom R6 R6Class
 #' @importFrom rlang `%||%`
 #' @importFrom stats setNames
+#' @importFrom utils tail
 ## usethis namespace: end
 NULL
 

@@ -18,6 +18,7 @@ abstract \link{AbstractAnnData} class and store and access data in different way
 \itemize{
 \item \link{InMemoryAnnData} stores data in memory
 \item \link{HDF5AnnData} provides an interface to a H5AD file
+\item \link{ZarrAnnData} provides an interface to a Zarr store
 \item \link{ReticulateAnnData} wraps a Python \code{AnnData} object via \pkg{reticulate}
 }
 
@@ -121,9 +122,10 @@ elements with number of rows and columns equal to \code{n_vars}.}
 Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExperiment::SingleCellExperiment}}, see
 \code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}}
 }
-\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat-class]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
+\item{\code{as_Seurat()}}{Convert to \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}}, see \code{\link[=as_Seurat]{as_Seurat()}}}
 \item{\code{as_InMemoryAnnData()}}{Convert to \code{\link{InMemoryAnnData}}, as \code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}}}
 \item{\code{as_HDF5AnnData()}}{Convert to \code{\link{HDF5AnnData}}, see \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}}
+\item{\code{as_ZarrAnnData()}}{Convert to \code{\link{ZarrAnnData}}, see \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
 \item{\code{as_ReticulateAnnData()}}{Convert to \code{\link{ReticulateAnnData}}, see \code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}}}
 }
 }
@@ -135,6 +137,14 @@ Convert to \code{\link[SingleCellExperiment:SingleCellExperiment]{SingleCellExpe
 \code{write_h5ad()}
 }{
 Write the \code{AnnData} object to an HDF5 file, see \code{\link[=write_h5ad]{write_h5ad()}}
+}
+}
+
+\describe{
+\item{
+\code{write_zarr()}
+}{
+Write the \code{AnnData} object to a Zarr store, see \code{\link[=write_zarr]{write_zarr()}}
 }
 }
 }
@@ -153,6 +163,7 @@ Write the \code{AnnData} object to an HDF5 file, see \code{\link[=write_h5ad]{wr
 \describe{
 \item{\code{\link[=AnnData]{AnnData()}}}{Create an \link{InMemoryAnnData} object}
 \item{\code{\link[=read_h5ad]{read_h5ad()}}}{Read an \code{AnnData} from a H5AD file}
+\item{\code{\link[=read_zarr]{read_zarr()}}}{Read an \code{AnnData} from a Zarr store}
 \item{\code{\link[=as_AnnData]{as_AnnData()}}}{Convert other objects to an \code{AnnData} object}
 }
 }
@@ -167,6 +178,8 @@ inherit from
 \link{InMemoryAnnData} for the in-memory implementation of \code{AnnData}
 
 \link{HDF5AnnData} for the HDF5-backed implementation of \code{AnnData}
+
+\link{ZarrAnnData} for the Zarr-backed implementation of \code{AnnData}
 
 \link{ReticulateAnnData} for the reticulate-based implementation that wraps Python AnnData objects
 }

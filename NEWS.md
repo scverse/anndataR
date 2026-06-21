@@ -1,7 +1,36 @@
+# anndata 1.3.0
+
+- Bioconductor 3.24 devel
+
+# anndataR 1.2.0
+
+- Bioconductor 3.23 release
+
+# anndataR 1.1.3
+
+- Prepare for Bioconductor 3.23 release (PR #449).
+- Add initial Zarr support for reading and writing `.zarr` stores (PR #190).
+
+# anndataR 1.1.2
+
+- Fix broken links (PR #429).
+
+# anndataR 1.1.1
+
+- Fix CI (PR #418).
+- Add continuous benchmarking using bencher (PR #423, PR #425).
+- Handle unnamed `SingleCellExperiment` assays in `as_AnnData()` by automatically assigning names with a warning (PR #420).
+- Optimise sparse matrix reading performance by avoiding `Matrix::sparseMatrix` and constructing objects manually (PR #417).
+- Allow manually setting chunk size for HDF5 writes (PR #424).
+- Add auto-chunking for HDF5 writes to improve performance (PR #424).
+
 # anndataR 1.1.0
 
 - Bioconductor 3.23 devel
-- Fix CI (PR #418).
+
+# anndataR 1.0.2
+
+- Fix broken links (PR #430).
 
 # anndataR 1.0.1
 

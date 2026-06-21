@@ -41,7 +41,7 @@ check_python_packages <- function(what, requires) {
 
   is_available <- map_lgl(requires, reticulate::py_module_available)
 
-  if (any(!is_available)) {
+  if (!all(is_available)) {
     missing <- requires[!is_available]
     # nolint start object_usage_linter
     missing_str <- format_package_list(missing)
@@ -73,7 +73,7 @@ check_python_packages <- function(what, requires) {
 check_r_packages <- function(what, requires, where) {
   is_available <- map_lgl(requires, requireNamespace, quietly = TRUE)
 
-  if (any(!is_available)) {
+  if (!all(is_available)) {
     missing <- requires[!is_available]
     # nolint start object_usage_linter
     missing_str <- format_package_list(missing)

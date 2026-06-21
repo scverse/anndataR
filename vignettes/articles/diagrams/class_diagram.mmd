@@ -19,10 +19,9 @@ classDiagram
     init(ptr)
   }
 
-  class ZarrAnnData["ZarrAnnData (Planned)"] {
+  class ZarrAnnData["ZarrAnnData"] {
     init(zarrFile)
   }
-  style ZarrAnnData fill:#bbf,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
 
   anndataR --> InMemoryAnnData
   anndataR --> HDF5AnnData

@@ -13,6 +13,7 @@
 #'
 #' - [InMemoryAnnData] stores data in memory
 #' - [HDF5AnnData] provides an interface to a H5AD file
+#' - [ZarrAnnData] provides an interface to a Zarr store
 #' - [ReticulateAnnData] wraps a Python `AnnData` object via \pkg{reticulate}
 #'
 #' See the class documentation for details.
@@ -89,6 +90,7 @@
 #'   \item{`as_Seurat()`}{Convert to [`SeuratObject::Seurat`], see [as_Seurat()]}
 #'   \item{`as_InMemoryAnnData()`}{Convert to [`InMemoryAnnData`], as [as_InMemoryAnnData()]}
 #'   \item{`as_HDF5AnnData()`}{Convert to [`HDF5AnnData`], see [as_HDF5AnnData()]}
+#'   \item{`as_ZarrAnnData()`}{Convert to [`ZarrAnnData`], see [as_ZarrAnnData()]}
 #'   \item{`as_ReticulateAnnData()`}{Convert to [`ReticulateAnnData`], see [as_ReticulateAnnData()]}
 #' }
 #'
@@ -99,6 +101,14 @@
 #'     `write_h5ad()`
 #'   }{
 #'     Write the `AnnData` object to an HDF5 file, see [write_h5ad()]
+#'   }
+#' }
+#'
+#' \describe{
+#'   \item{
+#'     `write_zarr()`
+#'   }{
+#'     Write the `AnnData` object to a Zarr store, see [write_zarr()]
 #'   }
 #' }
 #'
@@ -113,6 +123,7 @@
 #' \describe{
 #'   \item{[AnnData()]}{Create an [InMemoryAnnData] object}
 #'   \item{[read_h5ad()]}{Read an `AnnData` from a H5AD file}
+#'   \item{[read_zarr()]}{Read an `AnnData` from a Zarr store}
 #'   \item{[as_AnnData()]}{Convert other objects to an `AnnData` object}
 #' }
 #'
@@ -122,6 +133,7 @@
 #'   inherit from
 #' @seealso [InMemoryAnnData] for the in-memory implementation of `AnnData`
 #' @seealso [HDF5AnnData] for the HDF5-backed implementation of `AnnData`
+#' @seealso [ZarrAnnData] for the Zarr-backed implementation of `AnnData`
 #' @seealso [ReticulateAnnData] for the reticulate-based implementation that wraps Python AnnData objects
 #'
 #' @name AnnData-usage

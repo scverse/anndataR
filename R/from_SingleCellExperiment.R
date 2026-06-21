@@ -28,7 +28,12 @@ from_SingleCellExperiment <- function(
   obsp_mapping = TRUE,
   varp_mapping = TRUE,
   uns_mapping = TRUE,
-  output_class = c("InMemory", "HDF5AnnData", "ReticulateAnnData"),
+  output_class = c(
+    "InMemory",
+    "HDF5AnnData",
+    "ZarrAnnData",
+    "ReticulateAnnData"
+  ),
   ...
 ) {
   check_requires(
@@ -43,6 +48,32 @@ from_SingleCellExperiment <- function(
     cli_abort(
       "{.arg sce} must be a {.cls SingleCellExperiment} but has class {.cls {sce}}"
     )
+  }
+
+  assay_names <- SummarizedExperiment::assayNames(sce)
+  if (
+    length(SummarizedExperiment::assays(sce)) > 0 &&
+      (is.null(assay_names) || !all(nzchar(assay_names)))
+  ) {
+    if (is.null(assay_names)) {
+      assay_names <- paste0(
+        "assay",
+        seq_along(SummarizedExperiment::assays(sce))
+      )
+    } else {
+      empty_names <- which(!nzchar(assay_names))
+      assay_names[empty_names] <- paste0("assay", empty_names)
+    }
+
+    cli_warn(c(
+      paste(
+        "Some {.field assays} in {.arg sce} are missing names.",
+        "They will automatically be named for conversion."
+      ),
+      "!" = "Old assay names: {style_vec(SummarizedExperiment::assayNames(sce))}",
+      "i" = "New assay names: {style_vec(assay_names)}"
+    ))
+    SummarizedExperiment::assayNames(sce) <- assay_names
   }
 
   layers_mapping <- get_mapping(
@@ -213,6 +244,20 @@ from_SingleCellExperiment <- function(
       object
     }
   } else {
+    if (!is.data.frame(object) && !is.list(object)) {
+      cli_warn(c(
+        paste(
+          "Converting unknown object of class {.cls {class(object)[1]}} from",
+          "{.cls SingleCellExperiment}"
+        ),
+        "!" = "It will be returned as is but this may result in other errors",
+        "i" = paste(
+          "This may be solved by converting to a {.cls matrix}/{.cls Matrix},",
+          "{.cls data.frame}/{.cls DataFrame}, or {.cls list}/{.cls SimpleList}"
+        )
+      ))
+    }
+
     object
   }
 }

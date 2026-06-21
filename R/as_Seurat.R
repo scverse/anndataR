@@ -211,7 +211,7 @@ as_Seurat <- function(
   } else if (!is.null(adata$X)) {
     layers_mapping[["X"]] <- NA
   }
-  if (any(duplicated(names(layers_mapping)))) {
+  if (anyDuplicated(names(layers_mapping)) > 0) {
     cli_abort(
       "{.arg layers_mapping} or {.arg x_mapping} must not contain any duplicate names",
       "i" = "Found duplicate names: {.val {names(layers_mapping)[duplicated(names(layers_mapping))]}}"

@@ -23,6 +23,7 @@ HDF5AnnData <- R6::R6Class(
     .mode = NULL,
     .backed = NULL,
     .compression = NULL,
+    .chunk_size = "auto",
 
     .check_mode_writeable = function() {
       if (!is.null(private$.mode) && private$.mode == "r") {
@@ -59,7 +60,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "X",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -87,7 +89,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "layers",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -117,7 +120,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "obsm",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -147,7 +151,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "varm",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -175,7 +180,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "obsp",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -203,7 +209,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "varp",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -220,7 +227,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "obs",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -237,7 +245,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "var",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -245,16 +254,17 @@ HDF5AnnData <- R6::R6Class(
     obs_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-        read_h5ad_element_keys(private$.h5obj, "obs", dim = "rows")
+        read_h5ad_element_keys(private$.hdf5_file, "obs", dim = "rows")
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
         write_h5ad_data_frame_index(
           value,
-          private$.h5obj,
+          private$.hdf5_file,
           "obs",
-          private$.compression
+          private$.compression,
+          chunk_size = private$.chunk_size
         )
       }
     },
@@ -262,16 +272,17 @@ HDF5AnnData <- R6::R6Class(
     var_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        read_h5ad_element_keys(private$.h5obj, "var", dim = "rows")
+        read_h5ad_element_keys(private$.hdf5_file, "var", dim = "rows")
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
         write_h5ad_data_frame_index(
           value,
-          private$.h5obj,
+          private$.hdf5_file,
           "var",
-          private$.compression
+          private$.compression,
+          chunk_size = private$.chunk_size
         )
       }
     },
@@ -292,7 +303,8 @@ HDF5AnnData <- R6::R6Class(
           write_h5ad_element(
             private$.hdf5_file,
             "uns",
-            private$.compression
+            private$.compression,
+            chunk_size = private$.chunk_size
           )
       }
     }
@@ -320,6 +332,8 @@ HDF5AnnData <- R6::R6Class(
     #'   for details
     #' @param compression The compression algorithm to use. See
     #'   [as_HDF5AnnData()] for details
+    #' @param chunk_size The target chunk size in bytes. See
+    #'   [as_HDF5AnnData()] for details
     #'
     #' @details
     #' The constructor creates a new HDF5 `AnnData` interface object. This can
@@ -340,7 +354,8 @@ HDF5AnnData <- R6::R6Class(
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
       backed = FALSE,
-      compression = c("none", "gzip", "lzf")
+      compression = c("none", "gzip", "lzf"),
+      chunk_size = "auto"
     ) {
       check_requires("HDF5AnnData", c("rhdf5", "HDF5Array"), where = "Bioc")
       check_requires("HDF5AnnData", "withr", where = "CRAN")
@@ -350,6 +365,7 @@ HDF5AnnData <- R6::R6Class(
 
       private$.mode <- mode
       private$.compression <- compression
+      private$.chunk_size <- chunk_size
 
       is_readonly <- if (mode == "r") {
         TRUE
@@ -432,7 +448,7 @@ HDF5AnnData <- R6::R6Class(
           shape <- get_shape(obs, var, X, shape)
           obs <- get_initial_obs(obs, X, shape)
           var <- get_initial_var(var, X, shape)
-          write_empty_h5ad(private$.hdf5_file, obs, var, compression)
+          write_empty_h5ad(private$.hdf5_file, obs, var, compression, chunk_size)
         }
       }
 
@@ -476,35 +492,35 @@ HDF5AnnData <- R6::R6Class(
 
     #' @description See [AnnData-usage]
     obs_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "obs", dim = "cols")
+      read_h5ad_element_keys(private$.hdf5_file, "obs", dim = "cols")
     },
     #' @description See [AnnData-usage]
     var_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "var", dim = "cols")
+      read_h5ad_element_keys(private$.hdf5_file, "var", dim = "cols")
     },
     #' @description See [AnnData-usage]
     layers_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "layers")
+      read_h5ad_element_keys(private$.hdf5_file, "layers")
     },
     #' @description See [AnnData-usage]
     obsm_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "obsm")
+      read_h5ad_element_keys(private$.hdf5_file, "obsm")
     },
     #' @description See [AnnData-usage]
     varm_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "varm")
+      read_h5ad_element_keys(private$.hdf5_file, "varm")
     },
     #' @description See [AnnData-usage]
     obsp_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "obsp")
+      read_h5ad_element_keys(private$.hdf5_file, "obsp")
     },
     #' @description See [AnnData-usage]
     varp_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "varp")
+      read_h5ad_element_keys(private$.hdf5_file, "varp")
     },
     #' @description See [AnnData-usage]
     uns_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "uns")
+      read_h5ad_element_keys(private$.hdf5_file, "uns")
     },
 
     #' @description See the `n_obs` field in [AnnData-usage]
@@ -549,6 +565,11 @@ HDF5AnnData <- R6::R6Class(
 #' @param compression The compression algorithm to use when writing the
 #'   HDF5 file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to
 #'   `"none"`.
+#' @param chunk_size The target chunk size in bytes to use when writing
+#'   HDF5 datasets. When `"auto"` (default), the chunk size is determined
+#'   automatically using an algorithm that mimics h5py's auto-chunking
+#'   behaviour. Set to `NULL` to disable chunking (contiguous storage,
+#'   the rhdf5 default), or a number to use a specific target size in bytes.
 #' @param mode The mode to open the HDF5 file:
 #'
 #'   * `a` creates a new file or opens an existing one for read/write
@@ -572,6 +593,7 @@ as_HDF5AnnData <- function(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   backed = FALSE
 ) {
@@ -595,7 +617,8 @@ as_HDF5AnnData <- function(
     uns = adata$uns,
     shape = adata$shape(),
     mode = mode,
-    backed = backed,
-    compression = compression
+    compression = compression,
+    chunk_size = chunk_size,
+    backed = backed
   )
 }

@@ -8,6 +8,7 @@ as_HDF5AnnData(
   adata,
   file,
   compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   backed = FALSE
 )
@@ -21,6 +22,12 @@ as_HDF5AnnData(
 HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults to
 \code{"none"}.}
 
+\item{chunk_size}{The target chunk size in bytes to use when writing
+HDF5 datasets. When \code{"auto"} (default), the chunk size is determined
+automatically using an algorithm that mimics h5py's auto-chunking
+behaviour. Set to \code{NULL} to disable chunking (contiguous storage,
+the rhdf5 default), or a number to use a specific target size in bytes.}
+
 \item{mode}{The mode to open the HDF5 file:
 \itemize{
 \item \code{a} creates a new file or opens an existing one for read/write
@@ -31,7 +38,7 @@ HDF5 file. Can be one of \code{"none"}, \code{"gzip"} or \code{"lzf"}. Defaults 
 }}
 
 \item{backed}{Whether the object is disk backed and returns
-\link[DelayedArray:DelayedArray-class]{DelayedArray::DelayedArray} object for matrix data. Can only be \code{TRUE}
+\link[DelayedArray:DelayedArray]{DelayedArray::DelayedArray} object for matrix data. Can only be \code{TRUE}
 when \code{mode == "r"}.}
 }
 \value{
@@ -42,12 +49,13 @@ object.
 Convert another \code{AnnData} object to an \code{\link{HDF5AnnData}} object
 }
 \seealso{
-Other object converters: 
-\code{\link{as_AnnData}()},
-\code{\link{as_InMemoryAnnData}()},
-\code{\link{as_ReticulateAnnData}()},
-\code{\link{as_Seurat}()},
-\code{\link{as_SingleCellExperiment}()},
+Other object converters:
+\code{\link[=as_AnnData]{as_AnnData()}},
+\code{\link[=as_InMemoryAnnData]{as_InMemoryAnnData()}},
+\code{\link[=as_ReticulateAnnData]{as_ReticulateAnnData()}},
+\code{\link[=as_Seurat]{as_Seurat()}},
+\code{\link[=as_SingleCellExperiment]{as_SingleCellExperiment()}},
+\code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}},
 \code{\link{reticulate-helpers}}
 }
 \concept{object converters}
