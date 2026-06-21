@@ -29,19 +29,3 @@ known_issues:
       CsparseMatrix, dense to base matrix) before the normal write dispatch.
     to_investigate: False
     to_fix: True
-  - backend: backed
-    slot: [X]
-    dtype: [delayed]
-    process: [to_AnnData]
-    error_message: |
-      Unexpected shape for layers[['counts']]
-    description: >
-      Converting a backed SingleCellExperiment back to AnnData transposes the
-      matrix and fails shape validation. The backed assay (a DelayedMatrix from
-      H5SparseMatrix/HDF5Array) is oriented transposed relative to AnnData and
-      the reverse conversion does not account for it.
-    proposed_solution: >
-      Handle DelayedArray orientation when converting a backed SCE/Seurat back to
-      AnnData (transpose/realize as needed).
-    to_investigate: False
-    to_fix: True
