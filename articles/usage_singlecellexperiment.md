@@ -387,7 +387,7 @@ sessionInfo()
 #> [43] fs_2.1.0            htmlwidgets_1.6.4   ragg_1.5.2         
 #> [46] desc_1.4.3          pkgdown_2.2.0       bslib_0.11.0       
 #> [49] glue_1.8.1          Rcpp_1.1.1-1.1      systemfonts_1.3.2  
-#> [52] xfun_0.58           paws.storage_0.10.0 rhdf5filters_1.25.0
+#> [52] xfun_0.59           paws.storage_0.10.0 rhdf5filters_1.25.0
 #> [55] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
 #> [58] compiler_4.6.0
 ```

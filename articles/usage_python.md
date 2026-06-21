@@ -221,7 +221,7 @@ sessionInfo()
 #>  [51] filelock_1.0.3              progressr_0.19.0           
 #>  [53] spatstat.sparse_3.2-0       polyclip_1.10-7            
 #>  [55] httr_1.4.8                  abind_1.4-8                
-#>  [57] compiler_4.6.0              withr_3.0.2                
+#>  [57] compiler_4.6.0              withr_3.0.3                
 #>  [59] bit64_4.8.2                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
 #>  [63] MASS_7.3-65                 rappdirs_0.3.4             
@@ -250,7 +250,7 @@ sessionInfo()
 #> [109] bookdown_0.47               IRanges_2.47.2             
 #> [111] Seqinfo_1.3.0               SummarizedExperiment_1.43.0
 #> [113] scattermore_1.2             stats4_4.6.0               
-#> [115] xfun_0.58                   Biobase_2.73.1             
+#> [115] xfun_0.59                   Biobase_2.73.1             
 #> [117] matrixStats_1.5.0           stringi_1.8.7              
 #> [119] lazyeval_0.2.3              yaml_2.3.12                
 #> [121] evaluate_1.0.5              codetools_0.2-20           
@@ -319,8 +319,8 @@ reticulate::py_list_packages()
 #> 31            PyYAML       6.0.3                PyYAML==6.0.3
 #> 32            scanpy      1.12.1               scanpy==1.12.1
 #> 33      scikit-learn       1.9.0          scikit-learn==1.9.0
-#> 34             scipy      1.17.1                scipy==1.17.1
-#> 35      scverse-misc       0.0.8          scverse-misc==0.0.8
+#> 34             scipy      1.18.0                scipy==1.18.0
+#> 35      scverse-misc       0.0.9          scverse-misc==0.0.9
 #> 36           seaborn      0.13.2              seaborn==0.13.2
 #> 37     session-info2       0.4.1         session-info2==0.4.1
 #> 38               six      1.17.0                  six==1.17.0
