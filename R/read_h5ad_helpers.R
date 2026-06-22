@@ -136,6 +136,8 @@ read_h5ad_element_keys <- function(
   stop_on_error = FALSE,
   ...
 ) {
+  file$open_and_defer_close(readonly = TRUE)
+
   if (!hdf5_path_exists(file, name)) {
     return(NULL)
   }
