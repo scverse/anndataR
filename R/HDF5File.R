@@ -58,15 +58,11 @@ HDF5File <- R6::R6Class(
     #'
     #' @return `TRUE` if the handle was successfully opened (invisibly)
     open = function(readonly = FALSE) {
-      if (
-        self$is_open &&
-          private$.handle_is_valid() &&
-          (self$is_readonly == readonly)
-      ) {
-        return(invisible(TRUE))
-      }
-
-      if (self$is_readonly != readonly) {
+      # Reuse the open handle if it already grants enough access
+      if (self$is_open && private$.handle_is_valid()) {
+        if (readonly || !self$is_readonly) {
+          return(invisible(TRUE))
+        }
         self$close()
       }
 
