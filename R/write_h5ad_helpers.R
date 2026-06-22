@@ -28,6 +28,15 @@ write_h5ad_element <- function(
 ) {
   compression <- match.arg(compression)
 
+  # Materialize on write
+  if (inherits(value, "DelayedArray")) {
+    value <- if (DelayedArray::is_sparse(value)) {
+      as(value, "CsparseMatrix")
+    } else {
+      as.matrix(value)
+    }
+  }
+
   # Sparse matrices
   write_fun <-
     if (is.null(value)) {

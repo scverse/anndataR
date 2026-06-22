@@ -234,6 +234,12 @@ from_SingleCellExperiment <- function(
     as.data.frame(object)
   } else if (inherits(object, "SimpleList")) {
     as.list(object)
+  } else if (inherits(object, "DelayedArray")) {
+    if (transpose) {
+      DelayedArray::t(object)
+    } else {
+      object
+    }
   } else if (inherits(object, "matrix") || inherits(object, "Matrix")) {
     if (inherits(object, "denseMatrix")) {
       object <- as.matrix(object)

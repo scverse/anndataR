@@ -21,6 +21,10 @@ test_that("opening an open HDF5File works", {
 })
 
 test_that("opening an HDF5File in read-only mode works", {
+  # Close first: open(readonly = TRUE) reuses an already-open read/write handle
+  # (a read/write handle can serve reads), so a fresh open is needed to get a
+  # genuinely read-only handle.
+  h5file$close()
   h5file$open(readonly = TRUE)
   expect_true(h5file$is_open)
   expect_true(h5file$is_readonly)

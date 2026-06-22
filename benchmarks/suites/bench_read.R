@@ -35,6 +35,21 @@ bench_read <- function(h5ad_paths, iterations, x_types, zarr_paths) {
         iterations = iterations
       )
     )
+
+    # Read X lazily
+    results <- c(
+      results,
+      run_one_benchmark(
+        name = paste0("read_HDF5_backed_X_", xt),
+        expr = quote({
+          ad <- read_h5ad(.path, as = "HDF5AnnData", backed = TRUE)
+          force(ad$X)
+          ad$close()
+        }),
+        setup = bquote(.path <- .(path)),
+        iterations = iterations
+      )
+    )
   }
 
   # Read from Zarr store

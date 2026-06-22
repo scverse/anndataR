@@ -357,7 +357,7 @@ HDF5AnnData <- R6::R6Class(
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto"
     ) {
-      check_requires("HDF5AnnData", c("rhdf5", "HDF5Array"), where = "Bioc")
+      check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
       check_requires("HDF5AnnData", "withr", where = "CRAN")
 
       compression <- match.arg(compression)
@@ -392,6 +392,14 @@ HDF5AnnData <- R6::R6Class(
         backed <- FALSE
       }
       private$.backed <- backed
+
+      if (isTRUE(private$.backed)) {
+        check_requires(
+          "Reading a backed HDF5AnnData",
+          c("HDF5Array", "DelayedArray"),
+          where = "Bioc"
+        )
+      }
 
       # Fail is the file does not exist and in read mode
       if (!file.exists(file) && mode %in% c("r", "r+")) {
@@ -558,6 +566,20 @@ HDF5AnnData <- R6::R6Class(
     #' @description Close the HDF5 file handle
     close = function() {
       private$.hdf5_file$close()
+    },
+
+    #' @description Convert to an [`InMemoryAnnData`]. Any backed
+    #'   (`DelayedArray`) slots are materialized into ordinary in-memory
+    #'   matrices: an in-memory object should not stay tied to an on-disk file.
+    as_InMemoryAnnData = function() {
+      if (isTRUE(private$.backed)) {
+        prev <- private$.backed
+        private$.backed <- FALSE
+        on.exit(private$.backed <- prev, add = TRUE)
+        # Hold the file open for the whole multi-slot read (single handle).
+        private$.hdf5_file$open_and_defer_close(readonly = TRUE)
+      }
+      super$as_InMemoryAnnData()
     }
   )
 )

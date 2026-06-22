@@ -77,6 +77,161 @@ test_that("reading backed sparse matrices works", {
   expect_equal(dim(mat), c(50, 100))
 })
 
+# INVARIANT: backed dense reads must equal an INDEPENDENT eager read
+test_that("backed dense reads are value-identical to independent eager reads", {
+  for (nm in c("layers/dense_counts", "layers/dense_X")) {
+    eager <- read_h5ad_dense_array_base(hdf5_file, nm)
+    backed <- read_h5ad_dense_array(hdf5_file, nm, backed = TRUE)
+    expect_s4_class(backed, "DelayedMatrix")
+    expect_equal(as.matrix(backed), eager)
+    raw <- rhdf5::h5read(filename, nm) # on-disk orientation is vars x obs
+    expect_equal(as.matrix(backed), t(raw), ignore_attr = TRUE)
+  }
+})
+
+# INVARIANT: backed sparse reads must equal independent eager reads and stay
+# sparse.
+test_that("backed sparse reads are value-identical to independent eager reads", {
+  cases <- list(
+    list(name = "layers/csc_counts", type = "csc_matrix"),
+    list(name = "layers/counts", type = "csr_matrix")
+  )
+  for (case in cases) {
+    eager <- read_h5ad_sparse_array_base(hdf5_file, case$name, type = case$type)
+    backed <- read_h5ad_sparse_array(
+      hdf5_file,
+      case$name,
+      type = case$type,
+      backed = TRUE
+    )
+    expect_s4_class(backed, "DelayedMatrix")
+    expect_true(DelayedArray::is_sparse(backed))
+    expect_equal(as.matrix(backed), as.matrix(eager))
+  }
+})
+
+# INVARIANT: a backed HDF5AnnData exposes the same matrices (values, dimnames,
+# orientation) as an eager one, for every matrix-valued slot.
+test_that("backed HDF5AnnData slots equal eager slots", {
+  eager <- HDF5AnnData$new(filename, mode = "r")
+  backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
+  withr::defer({
+    eager$close()
+    backed$close()
+  })
+
+  expect_s4_class(backed$X, "DelayedMatrix")
+  expect_equal(as.matrix(backed$X), as.matrix(eager$X))
+  expect_identical(dimnames(backed$X), dimnames(eager$X))
+
+  for (k in eager$layers_keys()) {
+    expect_equal(
+      as.matrix(backed$layers[[k]]),
+      as.matrix(eager$layers[[k]]),
+      info = paste("layer", k)
+    )
+  }
+  for (k in names(eager$obsm)) {
+    expect_equal(
+      as.matrix(backed$obsm[[k]]),
+      as.matrix(eager$obsm[[k]]),
+      info = paste("obsm", k)
+    )
+  }
+  for (k in names(eager$obsp)) {
+    expect_equal(
+      as.matrix(backed$obsp[[k]]),
+      as.matrix(eager$obsp[[k]]),
+      info = paste("obsp", k)
+    )
+  }
+})
+
+# INVARIANT: a backed matrix reads lazily by file path, so it must keep working
+# after the source AnnData is closed and garbage-collected.
+test_that("backed matrices stay readable after the source AnnData is closed", {
+  eager <- HDF5AnnData$new(filename, mode = "r")
+  expected <- as.matrix(eager$X)
+  eager$close()
+
+  backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
+  x_backed <- backed$X
+  expect_s4_class(x_backed, "DelayedMatrix")
+  backed$close()
+  rm(backed)
+  gc()
+
+  expect_equal(as.matrix(x_backed), expected)
+})
+
+# Regression test: subsetting a backed AnnData must stay lazy AND apply the
+# subset.
+test_that("subsetting a backed AnnData stays lazy and subsets correctly", {
+  backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
+  eager <- HDF5AnnData$new(filename, mode = "r")
+  withr::defer({
+    backed$close()
+    eager$close()
+  })
+
+  oi <- c(1, 3, 5, 7, 9)
+  vi <- 1:10
+  vb <- backed[oi, vi]
+  ve <- eager[oi, vi]
+
+  expect_s4_class(vb$X, "DelayedMatrix")
+  expect_equal(dim(vb$X), c(length(oi), length(vi)))
+  expect_equal(as.matrix(vb$X), as.matrix(ve$X))
+})
+
+# Regression test: converting a backed AnnData to InMemory must materialize its
+# DelayedArrays into ordinary in-memory matrices
+test_that("converting a backed AnnData to InMemory materializes its matrices", {
+  backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
+  withr::defer(backed$close())
+  im <- backed$as_InMemoryAnnData()
+
+  expect_false(inherits(im$X, "DelayedArray"))
+  expect_equal(as.matrix(im$X), as.matrix(backed$X))
+})
+
+# INVARIANT: a backed SingleCellExperiment keeps its assays lazy (DelayedMatrix)
+# and value-equal to an eager conversion.
+test_that("backed SingleCellExperiment has lazy assays equal to eager ones", {
+  suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
+
+  backed <- read_h5ad(filename, as = "HDF5AnnData", backed = TRUE)
+  eager <- read_h5ad(filename, as = "HDF5AnnData")
+  withr::defer({
+    backed$close()
+    eager$close()
+  })
+
+  sce_b <- backed$as_SingleCellExperiment()
+  sce_e <- eager$as_SingleCellExperiment()
+  for (a in SummarizedExperiment::assayNames(sce_e)) {
+    expect_s4_class(SummarizedExperiment::assay(sce_b, a), "DelayedMatrix")
+    expect_equal(
+      as.matrix(SummarizedExperiment::assay(sce_b, a)),
+      as.matrix(SummarizedExperiment::assay(sce_e, a)),
+      info = paste("assay", a)
+    )
+  }
+})
+
+# Regression test (issue #387, reported by LouiseDck): converting a backed SCE
+# back to AnnData must preserve shape.
+test_that("round-trip of a backed SCE back to AnnData preserves shape", {
+  suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
+
+  backed <- read_h5ad(filename, as = "HDF5AnnData", backed = TRUE)
+  withr::defer(backed$close())
+  sce_backed <- backed$as_SingleCellExperiment()
+
+  ad2 <- as_AnnData(sce_backed)
+  expect_equal(ad2$shape(), backed$shape())
+})
+
 test_that("reading recarrays works", {
   array_list <- read_h5ad_rec_array(
     hdf5_file,
