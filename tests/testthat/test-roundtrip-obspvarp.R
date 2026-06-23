@@ -222,7 +222,10 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
               hdf5_file_r2 <- HDF5File$new(file_r2)
 
               # Remove the rhdf5-NA.OK for comparison
-              hdf5_clear_rhdf5_attributes(hdf5_file_r2, paste0("/obsp/", r_name))
+              hdf5_clear_rhdf5_attributes(
+                hdf5_file_r2,
+                paste0("/obsp/", r_name)
+              )
 
               # run h5diff
               res_obsp <- processx::run(
@@ -239,7 +242,10 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
               expect_equal(res_obsp$status, 0, info = res_obsp$stdout)
 
               # Remove the rhdf5-NA.OK for comparison
-              hdf5_clear_rhdf5_attributes(hdf5_file_r2, paste0("/varp/", r_name))
+              hdf5_clear_rhdf5_attributes(
+                hdf5_file_r2,
+                paste0("/varp/", r_name)
+              )
 
               res_varp <- processx::run(
                 "h5diff",
