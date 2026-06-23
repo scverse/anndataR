@@ -35,6 +35,7 @@ bench_read <- function(h5ad_paths, iterations, x_types, zarr_paths) {
         iterations = iterations
       )
     )
+  }
 
   # Read from Zarr store
   for (xt in x_types) {
