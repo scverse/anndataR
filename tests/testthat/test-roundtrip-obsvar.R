@@ -190,8 +190,10 @@ for (fmt in c("h5ad", "zarr")) {
 
           write_h5ad(adata_r, file_r2)
 
+          hdf5_file_r2 <- HDF5File$new(file_r2)
+
           # Remove the rhdf5-NA.OK for comparison
-          hdf5_clear_rhdf5_attributes(file_r2, paste0("/obs/", r_name))
+          hdf5_clear_rhdf5_attributes(hdf5_file_r2, paste0("/obs/", r_name))
 
           # run h5diff
           res_obs <- processx::run(
@@ -208,7 +210,7 @@ for (fmt in c("h5ad", "zarr")) {
           expect_equal(res_obs$status, 0, info = res_obs$stdout)
 
           # Remove the rhdf5-NA.OK for comparison
-          hdf5_clear_rhdf5_attributes(file_r2, paste0("/var/", r_name))
+          hdf5_clear_rhdf5_attributes(hdf5_file_r2, paste0("/var/", r_name))
 
           res_var <- processx::run(
             "h5diff",

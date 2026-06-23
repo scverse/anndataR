@@ -1,4 +1,5 @@
 skip_if_not_installed("rhdf5")
+skip_if_not_installed("HDF5Array")
 
 requireNamespace("vctrs")
 
@@ -7,7 +8,6 @@ file <- system.file("extdata", "example.h5ad", package = "anndataR")
 test_that("opening H5AD works", {
   adata <- HDF5AnnData$new(file, mode = "r")
   expect_true(inherits(adata, "HDF5AnnData"))
-  adata$close()
 })
 
 adata <- HDF5AnnData$new(file, mode = "r")

@@ -1,8 +1,43 @@
+#' HDF5 path exists
+#'
+#' Check that a path in HDF5 exists
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param target_path The path within the file to test for
+#'
+#' @return Whether `target_path` exists in `file`
+#' @noRd
+hdf5_path_exists <- function(hdf5_file, target_path) {
+  tryCatch(
+    {
+      hdf5_file$open_and_defer_close(readonly = TRUE)
+      rhdf5::H5Lexists(hdf5_file$handle, target_path)
+    },
+    error = function(e) {
+      FALSE
+    }
+  )
+}
+
+#' HDF5 create group
+#'
+#' Create a group in an HDF5 file
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name The name of the group to create
+#'
+#' @noRd
+hdf5_create_group <- function(hdf5_file, name) {
+  hdf5_file$open_and_defer_close()
+
+  rhdf5::h5createGroup(hdf5_file$handle, name)
+}
+
 #' Write a dataset to a HDF5 file
 #'
 #' Write a HDF5 dataset with chosen compression (can be none)
 #'
-#' @param file A HDF5 file handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param value Value to write
 #' @param H5type Datatype to write, see [rhdf5::h5createDataset()]
@@ -16,7 +51,7 @@
 #'
 #' @noRd
 hdf5_write_dataset <- function(
-  file,
+  hdf5_file,
   name,
   value,
   H5type = NULL,
@@ -37,6 +72,8 @@ hdf5_write_dataset <- function(
   if (compression == "lzf" && (storage.mode(value) == "character")) {
     compression <- "none"
   }
+
+  hdf5_file$open_and_defer_close()
 
   # Compute chunk sizes
   # - "auto"   → mimic h5py's auto-chunking algorithm
@@ -59,7 +96,7 @@ hdf5_write_dataset <- function(
   level <- if (is.null(chunk) || compression == "none") 0L else 6L
 
   rhdf5::h5createDataset(
-    file,
+    hdf5_file$handle,
     name,
     dims,
     storage.mode = storage.mode(value),
@@ -70,20 +107,40 @@ hdf5_write_dataset <- function(
     native = FALSE
   )
 
-  rhdf5::h5write(value, file, name, native = FALSE, ...)
+  rhdf5::h5write(value, hdf5_file$handle, name, native = FALSE, ...)
+}
+
+#' Get HDF5 dataset type
+#'
+#' Get the type of a HDF5 dataset
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name Name of the dataset within the H5AD file
+#'
+#' @return The HDF5 datatype of the dataset
+#' @noRd
+hdf5_get_dataset_type <- function(hdf5_file, name) {
+  hdf5_file$open_and_defer_close(readonly = TRUE)
+
+  h5dataset <- rhdf5::H5Dopen(hdf5_file$handle, name)
+  on.exit(rhdf5::H5Dclose(h5dataset), add = TRUE)
+
+  tid <- rhdf5::H5Dget_type(h5dataset)
+
+  rhdf5::H5Tget_class(tid)
 }
 
 #' Write a scalar to a HDF5 file
 #'
 #' Write a HDF5 scalar
 #'
-#' @param file A HDF5 file handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param value Value to write
 #'
 #' @noRd
 hdf5_write_scalar <- function(
-  file,
+  hdf5_file,
   name,
   value
 ) {
@@ -91,6 +148,8 @@ hdf5_write_scalar <- function(
   if (is.integer(value) && is.na(value)) {
     value <- as.numeric(value)
   }
+
+  hdf5_file$open_and_defer_close()
 
   h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
   on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
@@ -122,7 +181,7 @@ hdf5_write_scalar <- function(
 
   # Create the dataset with this new datatype
   h5dataset <- rhdf5::H5Dcreate(
-    h5loc = file,
+    h5loc = hdf5_file$handle,
     name = name,
     dtype_id = tid,
     h5space = h5space,
@@ -137,7 +196,7 @@ hdf5_write_scalar <- function(
 #'
 #' Write a boolean dataset with chosen compression (can be none)
 #'
-#' @param file A HDF5 file handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param value Value to write
 #' @param is_scalar Whether to use a scalar data space
@@ -147,7 +206,7 @@ hdf5_write_scalar <- function(
 #'
 #' @noRd
 hdf5_write_boolean_dataset <- function(
-  file,
+  hdf5_file,
   name,
   value,
   is_scalar = FALSE,
@@ -168,6 +227,8 @@ hdf5_write_boolean_dataset <- function(
   # nolint end
 
   value <- as.integer(value)
+
+  hdf5_file$open_and_defer_close()
 
   # Create the dataspace for the data to write
   if (is_scalar) {
@@ -195,7 +256,7 @@ hdf5_write_boolean_dataset <- function(
 
   # Create the dataset with this new datatype
   h5dataset <- rhdf5::H5Dcreate(
-    h5loc = file,
+    h5loc = hdf5_file$handle,
     name = name,
     dtype_id = tid,
     h5space = h5space,
@@ -208,31 +269,11 @@ hdf5_write_boolean_dataset <- function(
   rhdf5::H5Dwrite(h5dataset, as.raw(value), h5type = tid)
 }
 
-#' HDF5 path exists
-#'
-#' Check that a path in HDF5 exists
-#'
-#' @param file Path to a HDF5 file
-#' @param target_path The path within the file to test for
-#'
-#' @return Whether `target_path` exists in `file`
-#' @noRd
-hdf5_path_exists <- function(file, target_path) {
-  tryCatch(
-    {
-      rhdf5::H5Lexists(file, target_path)
-    },
-    error = function(e) {
-      FALSE
-    }
-  )
-}
-
 #' Write a HDF5 attribute
 #'
 #' Write a HDF5 attribute to a HDF5 file
 #'
-#' @param file Path to a H5AD file or an open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param attr_name Name of the attribute to write
 #' @param attr_value Value of the attribute to write
@@ -240,21 +281,19 @@ hdf5_path_exists <- function(file, target_path) {
 #'
 #' @noRd
 hdf5_write_attribute <- function(
-  file,
+  hdf5_file,
   name,
   attr_name,
   attr_value,
   is_scalar = TRUE
 ) {
-  if (!inherits(file, "H5IdComponent")) {
-    cli_abort("{.arg file} must be an open H5AD handle")
-  }
+  hdf5_file$open_and_defer_close()
 
   if (name != "/") {
-    h5obj <- rhdf5::H5Oopen(file, name)
+    h5obj <- rhdf5::H5Oopen(hdf5_file$handle, name)
     on.exit(rhdf5::H5Oclose(h5obj), add = TRUE)
   } else {
-    h5obj <- file
+    h5obj <- hdf5_file$handle
   }
 
   rhdf5::h5writeAttribute(
@@ -271,7 +310,7 @@ hdf5_write_attribute <- function(
 #'
 #' Remove attributes added by rhdf5 from an element in a HDF5 file
 #'
-#' @param h5file A HDF5 file handle or a path to a HDF5 file
+#' @param hdf5_file An `HDF5File` object
 #' @name name Name of the element within the HDF5 file
 #'
 #' @details
@@ -281,28 +320,25 @@ hdf5_write_attribute <- function(
 #' comparable.
 #'
 #' @noRd
-hdf5_clear_rhdf5_attributes <- function(h5file, name) {
-  if (!inherits(h5file, "H5IdComponent")) {
-    h5file <- rhdf5::H5Fopen(h5file)
-    on.exit(rhdf5::H5Fclose(h5file), add = TRUE)
-  }
+hdf5_clear_rhdf5_attributes <- function(hdf5_file, name) {
+  hdf5_file$open_and_defer_close()
 
-  h5obj <- rhdf5::H5Oopen(h5file, name)
+  h5obj <- rhdf5::H5Oopen(hdf5_file$handle, name)
   h5type <- rhdf5::H5Iget_type(h5obj)
   rhdf5_na_ok_exists <- rhdf5::H5Aexists(h5obj, "rhdf5-NA.OK")
   rhdf5::H5Oclose(h5obj)
 
   if (rhdf5_na_ok_exists) {
-    rhdf5::h5deleteAttribute(h5file, name, "rhdf5-NA.OK")
+    rhdf5::h5deleteAttribute(hdf5_file$handle, name, "rhdf5-NA.OK")
   }
 
   if (h5type == "H5I_GROUP") {
-    h5group <- rhdf5::H5Gopen(h5file, name)
+    h5group <- rhdf5::H5Gopen(hdf5_file$handle, name)
     contents <- rhdf5::h5ls(h5group, recursive = FALSE)
     rhdf5::H5Gclose(h5group)
 
     for (item in contents$name) {
-      hdf5_clear_rhdf5_attributes(h5file, paste0(name, "/", item))
+      hdf5_clear_rhdf5_attributes(hdf5_file, paste0(name, "/", item))
     }
   }
 }

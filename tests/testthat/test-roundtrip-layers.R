@@ -175,7 +175,10 @@ for (fmt in c("h5ad", "zarr")) {
           write_h5ad(adata_r, file_r2, mode = "w")
 
           # Remove the rhdf5-NA.OK for comparison
-          hdf5_clear_rhdf5_attributes(file_r2, paste0("/layers/", r_name))
+          hdf5_clear_rhdf5_attributes(
+            HDF5File$new(file_r2),
+            paste0("/layers/", r_name)
+          )
 
           # run h5diff
           res <- processx::run(
