@@ -56,7 +56,7 @@ read_h5ad_element <- function(
   ...
 ) {
   # Optimisation: Hold the file open for multiple reads
-  hdf5_file$open_and_defer_close(readonly = TRUE)
+  # hdf5_file$open_and_defer_close(readonly = TRUE)
 
   if (!hdf5_path_exists(hdf5_file, name)) {
     return(NULL)
@@ -139,10 +139,7 @@ read_h5ad_element_keys <- function(
   stop_on_error = FALSE,
   ...
 ) {
-  if (!file$is_open) {
-    file$open(readonly = TRUE)
-    on.exit(file$close(), add = TRUE)
-  }
+  file$open_and_defer_close(readonly = TRUE)
 
   if (!hdf5_path_exists(file, name)) {
     return(NULL)
