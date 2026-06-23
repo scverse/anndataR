@@ -110,16 +110,19 @@ Other AnnData classes:
 
 - [`HDF5AnnData$uns_keys()`](#method-HDF5AnnData-uns_keys)
 
-- [`HDF5AnnData$close()`](#method-HDF5AnnData-close)
-
 - [`HDF5AnnData$n_obs()`](#method-HDF5AnnData-n_obs)
 
 - [`HDF5AnnData$n_vars()`](#method-HDF5AnnData-n_vars)
 
+- [`HDF5AnnData$open()`](#method-HDF5AnnData-open)
+
+- [`HDF5AnnData$close()`](#method-HDF5AnnData-close)
+
+- [`HDF5AnnData$as_InMemoryAnnData()`](#method-HDF5AnnData-as_InMemoryAnnData)
+
 Inherited methods
 
 - [`AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
-- [`AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
 - [`AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
 - [`AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
 - [`AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
@@ -132,8 +135,6 @@ Inherited methods
 ------------------------------------------------------------------------
 
 ### `HDF5AnnData$new()`
-
-Close the HDF5 file when the object is garbage collected
 
 `HDF5AnnData` constructor
 
@@ -152,6 +153,7 @@ Close the HDF5 file when the object is garbage collected
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
+      backed = FALSE,
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto"
     )
@@ -216,6 +218,12 @@ Close the HDF5 file when the object is garbage collected
 - `mode`:
 
   The mode to open the HDF5 file. See
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
+  for details
+
+- `backed`:
+
+  Whether the object is disk backed. See
   [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
   for details
 
@@ -328,16 +336,6 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$close()`
-
-Close the HDF5 file
-
-#### Usage
-
-    HDF5AnnData$close()
-
-------------------------------------------------------------------------
-
 ### `HDF5AnnData$n_obs()`
 
 See the `n_obs` field in
@@ -357,3 +355,44 @@ See the `n_vars` field in
 #### Usage
 
     HDF5AnnData$n_vars()
+
+------------------------------------------------------------------------
+
+### `HDF5AnnData$open()`
+
+Open the HDF5 file handle
+
+#### Usage
+
+    HDF5AnnData$open(readonly = FALSE)
+
+#### Arguments
+
+- `readonly`:
+
+  Whether to open in read-only mode
+
+------------------------------------------------------------------------
+
+### `HDF5AnnData$close()`
+
+Close the HDF5 file handle
+
+#### Usage
+
+    HDF5AnnData$close()
+
+------------------------------------------------------------------------
+
+### `HDF5AnnData$as_InMemoryAnnData()`
+
+Convert to an
+[`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md).
+Any backed (`DelayedArray`) slots are materialized into ordinary
+in-memory matrices: an in-memory object should not stay tied to an
+on-disk file. Slots are read eagerly (via base rhdf5) rather than
+carried over as DelayedArrays, which is also faster than realizing them.
+
+#### Usage
+
+    HDF5AnnData$as_InMemoryAnnData()

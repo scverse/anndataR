@@ -212,7 +212,7 @@ sessionInfo()
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
-#>  [39] future_1.70.0               shiny_1.13.0               
+#>  [39] future_1.70.0               shiny_1.14.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
 #>  [43] S4Vectors_0.51.3            Seurat_5.5.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
@@ -263,7 +263,7 @@ sessionInfo()
 #> [135] spatstat.univar_3.2-0       parallel_4.6.0             
 #> [137] blob_1.3.0                  pkgdown_2.2.0              
 #> [139] ggplot2_4.0.3               dotCall64_1.2              
-#> [141] listenv_0.10.1              viridisLite_0.4.3          
+#> [141] listenv_1.0.0               viridisLite_0.4.3          
 #> [143] scales_1.4.0                ggridges_0.5.7             
 #> [145] SeuratObject_5.4.0          purrr_1.2.2                
 #> [147] rlang_1.2.0                 cowplot_1.2.0
@@ -286,7 +286,7 @@ reticulate::py_config()
 
 reticulate::py_list_packages()
 #>              package     version                  requirement
-#> 1            anndata     0.12.17             anndata==0.12.17
+#> 1            anndata     0.12.18             anndata==0.12.18
 #> 2   array-api-compat      1.15.0     array-api-compat==1.15.0
 #> 3            certifi   2026.6.17           certifi==2026.6.17
 #> 4          contourpy       1.3.3             contourpy==1.3.3
@@ -320,7 +320,7 @@ reticulate::py_list_packages()
 #> 32            scanpy      1.12.1               scanpy==1.12.1
 #> 33      scikit-learn       1.9.0          scikit-learn==1.9.0
 #> 34             scipy      1.18.0                scipy==1.18.0
-#> 35      scverse-misc       0.0.9          scverse-misc==0.0.9
+#> 35      scverse-misc       0.1.1          scverse-misc==0.1.1
 #> 36           seaborn      0.13.2              seaborn==0.13.2
 #> 37     session-info2       0.4.1         session-info2==0.4.1
 #> 38               six      1.17.0                  six==1.17.0

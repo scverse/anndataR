@@ -144,11 +144,12 @@ large files.</p>
 <li><p><a href="#method-HDF5AnnData-obsp_keys"><code>HDF5AnnData$obsp_keys()</code></a></p></li>
 <li><p><a href="#method-HDF5AnnData-varp_keys"><code>HDF5AnnData$varp_keys()</code></a></p></li>
 <li><p><a href="#method-HDF5AnnData-uns_keys"><code>HDF5AnnData$uns_keys()</code></a></p></li>
-<li><p><a href="#method-HDF5AnnData-close"><code>HDF5AnnData$close()</code></a></p></li>
 <li><p><a href="#method-HDF5AnnData-n_obs"><code>HDF5AnnData$n_obs()</code></a></p></li>
 <li><p><a href="#method-HDF5AnnData-n_vars"><code>HDF5AnnData$n_vars()</code></a></p></li>
+<li><p><a href="#method-HDF5AnnData-open"><code>HDF5AnnData$open()</code></a></p></li>
+<li><p><a href="#method-HDF5AnnData-close"><code>HDF5AnnData$close()</code></a></p></li>
+<li><p><a href="#method-HDF5AnnData-as_InMemoryAnnData"><code>HDF5AnnData$as_InMemoryAnnData()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href="AbstractAnnData.html#method-as_HDF5AnnData"><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href="AbstractAnnData.html#method-as_InMemoryAnnData"><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href="AbstractAnnData.html#method-as_ReticulateAnnData"><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href="AbstractAnnData.html#method-as_Seurat"><code>AbstractAnnData$as_Seurat()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href="AbstractAnnData.html#method-as_SingleCellExperiment"><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
@@ -159,8 +160,6 @@ large files.</p>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href="AbstractAnnData.html#method-write_zarr"><code>AbstractAnnData$write_zarr()</code></a></span></li>
 </ul></details></p><hr><a id="method-HDF5AnnData-initialize"></a><div class="section">
 <h3 id="hdf-anndata-new-"><code>HDF5AnnData$new()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-new-"></a></h3>
-<p>Close the HDF5 file when the object is garbage collected</p>
-
 <p><code>HDF5AnnData</code> constructor</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/HDF5AnnData.html">HDF5AnnData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
@@ -176,6 +175,7 @@ large files.</p>
 <span>  uns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"w"</span>, <span class="st">"w-"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
+<span>  backed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"lzf"</span><span class="op">)</span>,</span>
 <span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -219,6 +219,10 @@ both <code>X</code> or <code>obs</code> and <code>var</code> are not provided.</
       <dt><code>mode</code></dt>
 <dd><p>The mode to open the HDF5 file. See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code> for
 details</p></dd>
+
+      <dt><code>backed</code></dt>
+<dd><p>Whether the object is disk backed. See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code>
+for details</p></dd>
 
       <dt><code>compression</code></dt>
 <dd><p>The compression algorithm to use. See
@@ -312,19 +316,10 @@ file will be overwritten.</p>
 
 </div>
 
-<p></p><hr><a id="method-HDF5AnnData-close"></a><div class="section">
-<h3 id="hdf-anndata-close-"><code>HDF5AnnData$close()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-close-"></a></h3>
-<p>Close the HDF5 file</p><div class="section">
-<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">HDF5AnnData</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-</div>
-
 <p></p><hr><a id="method-HDF5AnnData-n_obs"></a><div class="section">
 <h3 id="hdf-anndata-n-obs-"><code>HDF5AnnData$n_obs()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-n-obs-"></a></h3>
 <p>See the <code>n_obs</code> field in <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">HDF5AnnData</span><span class="op">$</span><span class="fu">n_obs</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -333,8 +328,46 @@ file will be overwritten.</p>
 <p></p><hr><a id="method-HDF5AnnData-n_vars"></a><div class="section">
 <h3 id="hdf-anndata-n-vars-"><code>HDF5AnnData$n_vars()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-n-vars-"></a></h3>
 <p>See the <code>n_vars</code> field in <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">HDF5AnnData</span><span class="op">$</span><span class="fu">n_vars</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-HDF5AnnData-open"></a><div class="section">
+<h3 id="hdf-anndata-open-"><code>HDF5AnnData$open()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-open-"></a></h3>
+<p>Open the HDF5 file handle</p><div class="section">
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">HDF5AnnData</span><span class="op">$</span><span class="fu">open</span><span class="op">(</span>readonly <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>readonly</code></dt>
+<dd><p>Whether to open in read-only mode</p></dd>
+
+
+</dl><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-HDF5AnnData-close"></a><div class="section">
+<h3 id="hdf-anndata-close-"><code>HDF5AnnData$close()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-close-"></a></h3>
+<p>Close the HDF5 file handle</p><div class="section">
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">HDF5AnnData</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-HDF5AnnData-as_InMemoryAnnData"></a><div class="section">
+<h3 id="hdf-anndata-as-inmemoryanndata-"><code>HDF5AnnData$as_InMemoryAnnData()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-as-inmemoryanndata-"></a></h3>
+<p>Convert to an <code><a href="InMemoryAnnData.html">InMemoryAnnData</a></code>. Any backed
+(<code>DelayedArray</code>) slots are materialized into ordinary in-memory
+matrices: an in-memory object should not stay tied to an on-disk file.
+Slots are read eagerly (via base rhdf5) rather than carried over as
+DelayedArrays, which is also faster than realizing them.</p><div class="section">
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">HDF5AnnData</span><span class="op">$</span><span class="fu">as_InMemoryAnnData</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 </div>

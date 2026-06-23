@@ -12,7 +12,8 @@ as_HDF5AnnData(
   file,
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE
 )
 ```
 
@@ -54,6 +55,12 @@ as_HDF5AnnData(
 
   - `w-`/`x` are synonyms, creating a file and failing if it already
     exists
+
+- backed:
+
+  Whether the object is disk backed and returns
+  [DelayedArray::DelayedArray](https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html)
+  object for matrix data. Can only be `TRUE` when `mode == "r"`.
 
 ## Value
 
