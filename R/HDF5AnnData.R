@@ -576,9 +576,9 @@ HDF5AnnData <- R6::R6Class(
         prev <- private$.backed
         private$.backed <- FALSE
         on.exit(private$.backed <- prev, add = TRUE)
-        # Hold the file open for the whole multi-slot read (single handle).
-        private$.hdf5_file$open_and_defer_close(readonly = TRUE)
       }
+      # Optimisation: Hold the file open for the whole multi-slot read
+      private$.hdf5_file$open_and_defer_close(readonly = TRUE)
       super$as_InMemoryAnnData()
     }
   )
