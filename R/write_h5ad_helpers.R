@@ -1,13 +1,9 @@
-# should take a look at
-# https://anndata.readthedocs.io/en/latest/fileformat-prose.html
-# again
-
 #' Write H5AD element
 #'
 #' Write an element to an H5AD file
 #'
 #' @param value The value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
@@ -23,7 +19,7 @@
 # nolint start: cyclocomp_linter
 write_h5ad_element <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
@@ -31,6 +27,15 @@ write_h5ad_element <- function(
   ...
 ) {
   compression <- match.arg(compression)
+
+  # Materialize on write
+  if (inherits(value, "DelayedArray")) {
+    value <- if (DelayedArray::is_sparse(value)) {
+      as(value, "CsparseMatrix")
+    } else {
+      as.matrix(value)
+    }
+  }
 
   # Sparse matrices
   write_fun <-
@@ -79,21 +84,22 @@ write_h5ad_element <- function(
       # Fail if unknown
       cli_abort(c(
         "Writing {.cls {class(value)}} objects to H5AD is not supported",
-        "i" = "Attempting to write to {.path {name}} in {.file {file}}"
+        "i" = "Attempting to write to {.path {name}} in {.file {hdf5_file$path}}"
       ))
     }
 
   # Delete the path if it already exists
   # TODO: do this here?
-  if (hdf5_path_exists(file, name)) {
-    rhdf5::h5delete(file, name)
+  if (hdf5_path_exists(hdf5_file, name)) {
+    hdf5_file$open_and_defer_close()
+    rhdf5::h5delete(hdf5_file$handle, name)
   }
 
   tryCatch(
     {
       write_fun(
         value = value,
-        file = file,
+        hdf5_file = hdf5_file,
         name = name,
         compression = compression,
         chunk_size = chunk_size,
@@ -126,13 +132,15 @@ write_h5ad_element <- function(
 #'
 #' @noRd
 #'
-#' @param file Path to a H5AD file or an open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
-write_h5ad_encoding <- function(file, name, encoding, version) {
+write_h5ad_encoding <- function(hdf5_file, name, encoding, version) {
+  hdf5_file$open_and_defer_close()
+
   hdf5_write_attribute(
-    file,
+    hdf5_file,
     name,
     "encoding-type",
     encoding,
@@ -140,7 +148,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
   )
 
   hdf5_write_attribute(
-    file,
+    hdf5_file,
     name,
     "encoding-version",
     version,
@@ -153,7 +161,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' Write a null dataset to an H5AD file
 #'
 #' @param value Value to write, not used
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression Not used as there is no value
 #' @param version Encoding version of the element to write
@@ -161,7 +169,7 @@ write_h5ad_encoding <- function(file, name, encoding, version) {
 #' @noRd
 write_h5ad_null <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
@@ -170,19 +178,20 @@ write_h5ad_null <- function(
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
   }
+  hdf5_file$open_and_defer_close()
 
   h5s <- rhdf5::H5Screate("H5S_NULL")
   on.exit(rhdf5::H5Sclose(h5s), add = TRUE)
 
   h5d <- rhdf5::H5Dcreate(
-    file,
+    hdf5_file$handle,
     name = name,
     dtype_id = "H5T_IEEE_F32LE",
     h5space = h5s
   )
   on.exit(rhdf5::H5Dclose(h5d), add = TRUE)
 
-  write_h5ad_encoding(file, name, "null", version)
+  write_h5ad_encoding(hdf5_file, name, "null", version)
 }
 
 #' Write H5AD dense array
@@ -190,7 +199,7 @@ write_h5ad_null <- function(
 #' Write a dense array to an H5AD file
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
@@ -199,7 +208,7 @@ write_h5ad_null <- function(
 #' @noRd
 write_h5ad_dense_array <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
@@ -235,7 +244,7 @@ write_h5ad_dense_array <- function(
   # Write dense array
   if (is.logical(value)) {
     hdf5_write_boolean_dataset(
-      file = file,
+      hdf5_file = hdf5_file,
       name = name,
       value = value,
       compression = compression,
@@ -243,7 +252,7 @@ write_h5ad_dense_array <- function(
     )
   } else {
     hdf5_write_dataset(
-      file = file,
+      hdf5_file = hdf5_file,
       name = name,
       value = value,
       H5type = H5type,
@@ -252,7 +261,7 @@ write_h5ad_dense_array <- function(
     )
   }
 
-  write_h5ad_encoding(file, name, "array", version)
+  write_h5ad_encoding(hdf5_file, name, "array", version)
 }
 
 #' Write H5AD sparse array
@@ -262,14 +271,14 @@ write_h5ad_dense_array <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_sparse_array <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
@@ -297,34 +306,36 @@ write_h5ad_sparse_array <- function(
     ))
   }
 
+  hdf5_file$open_and_defer_close()
+
   # Write sparse matrix
-  rhdf5::h5createGroup(file, name)
+  hdf5_create_group(hdf5_file, name)
   hdf5_write_dataset(
-    file = file,
+    hdf5_file = hdf5_file,
     name = paste0(name, "/indices"),
     value = attr(value, indices_attr),
     compression = compression,
     chunk_size = chunk_size
   )
   hdf5_write_dataset(
-    file = file,
+    hdf5_file = hdf5_file,
     name = paste0(name, "/indptr"),
     value = value@p,
     compression = compression,
     chunk_size = chunk_size
   )
   hdf5_write_dataset(
-    file = file,
+    hdf5_file = hdf5_file,
     name = paste0(name, "/data"),
     value = value@x,
     compression = compression,
     chunk_size = chunk_size
   )
-  write_h5ad_encoding(file, name, type, version)
+  write_h5ad_encoding(hdf5_file, name, type, version)
 
   # Write shape attribute
   hdf5_write_attribute(
-    file,
+    hdf5_file,
     name,
     "shape",
     dim(value),
@@ -339,7 +350,7 @@ write_h5ad_sparse_array <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
@@ -347,21 +358,23 @@ write_h5ad_sparse_array <- function(
 # nolint start: object_length_linter
 write_h5ad_nullable_boolean <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   version = "0.1.0"
 ) {
   # nolint end: object_length_linter
-  rhdf5::h5createGroup(file, name)
-
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
+  hdf5_file$open_and_defer_close()
+
+  hdf5_create_group(hdf5_file, name)
+
   write_h5ad_dense_array(
     value_no_na,
-    file,
+    hdf5_file,
     paste0(name, "/values"),
     compression,
     chunk_size
@@ -369,14 +382,14 @@ write_h5ad_nullable_boolean <- function(
 
   write_h5ad_dense_array(
     is.na(value),
-    file,
+    hdf5_file,
     paste0(name, "/mask"),
     compression,
     chunk_size
   )
 
   # set encoding
-  write_h5ad_encoding(file, name, "nullable-boolean", version)
+  write_h5ad_encoding(hdf5_file, name, "nullable-boolean", version)
 }
 
 #' Write H5AD nullable integer
@@ -386,7 +399,7 @@ write_h5ad_nullable_boolean <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
@@ -394,21 +407,23 @@ write_h5ad_nullable_boolean <- function(
 # nolint start: object_length_linter
 write_h5ad_nullable_integer <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   version = "0.1.0"
 ) {
   # nolint end: object_length_linter
-  rhdf5::h5createGroup(file, name)
-
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- 0L
 
+  hdf5_file$open_and_defer_close()
+
+  hdf5_create_group(hdf5_file, name)
+
   write_h5ad_dense_array(
     value_no_na,
-    file,
+    hdf5_file,
     paste0(name, "/values"),
     compression,
     chunk_size
@@ -416,13 +431,13 @@ write_h5ad_nullable_integer <- function(
 
   write_h5ad_dense_array(
     is.na(value),
-    file,
+    hdf5_file,
     paste0(name, "/mask"),
     compression,
     chunk_size
   )
 
-  write_h5ad_encoding(file, name, "nullable-integer", version)
+  write_h5ad_encoding(hdf5_file, name, "nullable-integer", version)
 }
 
 #' Write H5AD string array
@@ -432,14 +447,14 @@ write_h5ad_nullable_integer <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_string_array <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
@@ -453,15 +468,17 @@ write_h5ad_string_array <- function(
     }
   }
 
+  hdf5_file$open_and_defer_close()
+
   hdf5_write_dataset(
-    file = file,
+    hdf5_file = hdf5_file,
     name = name,
     value = value,
     compression = compression,
     chunk_size = chunk_size
   )
 
-  write_h5ad_encoding(file, name, "string-array", version)
+  write_h5ad_encoding(hdf5_file, name, "string-array", version)
 }
 
 #' Write H5AD categorical
@@ -471,21 +488,19 @@ write_h5ad_string_array <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_categorical <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   version = "0.2.0"
 ) {
-  rhdf5::h5createGroup(file, name)
-
   categories <- levels(value)
 
   # Use zero-indexed values
@@ -494,17 +509,21 @@ write_h5ad_categorical <- function(
   # Set missing values to -1
   codes[is.na(codes)] <- -1L
 
-  # write values to file
+  hdf5_file$open_and_defer_close()
+
+  hdf5_create_group(hdf5_file, name)
+
+  # Write values to file
   write_h5ad_string_array(
     categories,
-    file,
+    hdf5_file,
     paste0(name, "/categories"),
     compression,
     chunk_size
   )
   write_h5ad_dense_array(
     codes,
-    file,
+    hdf5_file,
     paste0(name, "/codes"),
     compression,
     chunk_size
@@ -512,7 +531,7 @@ write_h5ad_categorical <- function(
 
   # Write encoding
   write_h5ad_encoding(
-    file = file,
+    hdf5_file = hdf5_file,
     name = name,
     encoding = "categorical",
     version = version
@@ -520,7 +539,7 @@ write_h5ad_categorical <- function(
 
   # Write ordered attribute
   hdf5_write_attribute(
-    file,
+    hdf5_file,
     name,
     "ordered",
     is.ordered(value),
@@ -535,27 +554,29 @@ write_h5ad_categorical <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_string_scalar <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   version = "0.2.0"
 ) {
+  hdf5_file$open_and_defer_close()
+
   hdf5_write_scalar(
-    file = file,
+    hdf5_file = hdf5_file,
     name = name,
     value = value
   )
 
   # Write encoding
-  write_h5ad_encoding(file, name, "string", version)
+  write_h5ad_encoding(hdf5_file, name, "string", version)
 }
 
 #' Write H5AD numeric scalar
@@ -565,22 +586,24 @@ write_h5ad_string_scalar <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_numeric_scalar <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   version = "0.2.0"
 ) {
+  hdf5_file$open_and_defer_close()
+
   if (is.logical(value)) {
     hdf5_write_boolean_dataset(
-      file = file,
+      hdf5_file = hdf5_file,
       name = name,
       value = value,
       is_scalar = TRUE,
@@ -589,14 +612,14 @@ write_h5ad_numeric_scalar <- function(
     )
   } else {
     hdf5_write_scalar(
-      file = file,
+      hdf5_file = hdf5_file,
       name = name,
       value = value
     )
   }
 
   # Write encoding
-  write_h5ad_encoding(file, name, "numeric-scalar", version)
+  write_h5ad_encoding(hdf5_file, name, "numeric-scalar", version)
 }
 
 #' Write H5AD mapping
@@ -606,33 +629,35 @@ write_h5ad_numeric_scalar <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_mapping <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   version = "0.1.0"
 ) {
-  rhdf5::h5createGroup(file, name)
+  hdf5_file$open_and_defer_close()
+
+  hdf5_create_group(hdf5_file, name)
 
   # Write mapping elements
   for (key in names(value)) {
     write_h5ad_element(
       value[[key]],
-      file,
+      hdf5_file,
       paste0(name, "/", key),
       compression,
       chunk_size = chunk_size
     )
   }
 
-  write_h5ad_encoding(file, name, "dict", version)
+  write_h5ad_encoding(hdf5_file, name, "dict", version)
 }
 
 #' Write H5AD data frame
@@ -642,7 +667,7 @@ write_h5ad_mapping <- function(
 #' @noRd
 #'
 #' @param value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
@@ -652,15 +677,17 @@ write_h5ad_mapping <- function(
 #' @param version Encoding version of the element to write
 write_h5ad_data_frame <- function(
   value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   index = NULL,
   version = "0.2.0"
 ) {
-  rhdf5::h5createGroup(file, name)
-  write_h5ad_encoding(file, name, "dataframe", version)
+  hdf5_file$open_and_defer_close()
+
+  hdf5_create_group(hdf5_file, name)
+  write_h5ad_encoding(hdf5_file, name, "dataframe", version)
 
   if (is.null(index)) {
     index_name <- "_index"
@@ -686,7 +713,7 @@ write_h5ad_data_frame <- function(
   for (col in colnames(value)) {
     write_h5ad_element(
       value[[col]],
-      file,
+      hdf5_file,
       paste0(name, "/", col),
       compression,
       chunk_size = chunk_size
@@ -695,7 +722,7 @@ write_h5ad_data_frame <- function(
 
   # Write index name
   hdf5_write_attribute(
-    file,
+    hdf5_file,
     name,
     "_index",
     index_name,
@@ -705,7 +732,7 @@ write_h5ad_data_frame <- function(
   # Write index
   write_h5ad_data_frame_index(
     index_value,
-    file,
+    hdf5_file,
     name,
     compression,
     chunk_size = chunk_size
@@ -721,7 +748,7 @@ write_h5ad_data_frame <- function(
 
   # Write column order
   hdf5_write_attribute(
-    file,
+    hdf5_file,
     name,
     "column-order",
     col_order,
@@ -736,25 +763,27 @@ write_h5ad_data_frame <- function(
 #' @noRd
 #'
 #' @param index_value Value to write
-#' @param file An open H5AD handle
+#' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version Encoding version of the element to write
 write_h5ad_data_frame_index <- function(
   index_value,
-  file,
+  hdf5_file,
   name,
   compression,
   chunk_size = "auto",
   version = "0.2.0"
 ) {
-  attrs <- rhdf5::h5readAttributes(file, name, native = FALSE)
+  hdf5_file$open_and_defer_close()
+
+  attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name, native = FALSE)
   index_name <- attrs[["_index"]]
 
   write_h5ad_element(
     index_value,
-    file,
+    hdf5_file,
     paste0(name, "/", index_name),
     compression,
     chunk_size = chunk_size
@@ -767,54 +796,56 @@ write_h5ad_data_frame_index <- function(
 #'
 #' @noRd
 #'
-#' @param file Path to the H5AD file to write
+#' @param hdf5_file An `HDF5File` object
 #' @param obs Data frame with observations
 #' @param var Data frame with variables
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
 #' @param version The H5AD version to write
 write_empty_h5ad <- function(
-  file,
+  hdf5_file,
   obs,
   var,
   compression,
   chunk_size = "auto",
   version = "0.1.0"
 ) {
-  write_h5ad_encoding(file, "/", "anndata", "0.1.0")
+  hdf5_file$open_and_defer_close()
+
+  write_h5ad_encoding(hdf5_file, "/", "anndata", "0.1.0")
 
   write_h5ad_element(
     obs[, integer(0)],
-    file,
+    hdf5_file,
     "/obs",
     compression,
     chunk_size = chunk_size
   )
   write_h5ad_element(
     var[, integer(0)],
-    file,
+    hdf5_file,
     "/var",
     compression,
     chunk_size = chunk_size
   )
 
-  rhdf5::h5createGroup(file, "layers")
-  write_h5ad_encoding(file, "/layers", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, "layers")
+  write_h5ad_encoding(hdf5_file, "/layers", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "obsm")
-  write_h5ad_encoding(file, "/obsm", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, "obsm")
+  write_h5ad_encoding(hdf5_file, "/obsm", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "obsp")
-  write_h5ad_encoding(file, "/obsp", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, "obsp")
+  write_h5ad_encoding(hdf5_file, "/obsp", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "uns")
-  write_h5ad_encoding(file, "/uns", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, "uns")
+  write_h5ad_encoding(hdf5_file, "/uns", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "varm")
-  write_h5ad_encoding(file, "/varm", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, "varm")
+  write_h5ad_encoding(hdf5_file, "/varm", "dict", "0.1.0")
 
-  rhdf5::h5createGroup(file, "varp")
-  write_h5ad_encoding(file, "/varp", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, "varp")
+  write_h5ad_encoding(hdf5_file, "/varp", "dict", "0.1.0")
 
   invisible(NULL)
 }

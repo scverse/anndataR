@@ -50,6 +50,8 @@ Imports:
 Suggests:
     BiocFileCache,
     BiocStyle,
+    DelayedArray,
+    HDF5Array,
     knitr,
     processx,
     rhdf5 (>= 2.52.1),

@@ -278,7 +278,7 @@ as_Seurat <- function(
         ))
       }
 
-      obsp <- adata$obsp[[graph]]
+      obsp <- to_R_matrix(adata$obsp[[graph]], allow_backed = FALSE)
       dimnames(obsp) <- list(obs_names, obs_names)
       obsp_gr <- Seurat::as.Graph(obsp)
       SeuratObject::DefaultAssay(obsp_gr) <- assay_name

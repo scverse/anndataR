@@ -19,39 +19,36 @@ HDF5AnnData <- R6::R6Class(
   inherit = AbstractAnnData,
   cloneable = FALSE,
   private = list(
-    .h5obj = NULL,
-    .close_on_finalize = FALSE,
+    .hdf5_file = NULL,
+    .mode = NULL,
+    .backed = NULL,
     .compression = NULL,
     .chunk_size = "auto",
 
-    .check_file_valid = function() {
-      if (!rhdf5::H5Iis_valid(private$.h5obj)) {
+    .check_mode_writeable = function() {
+      if (!is.null(private$.mode) && private$.mode == "r") {
         cli_abort(
           paste(
-            "The HDF5 file handle is not valid, it has probably been closed"
+            "The object is opened in read-only mode, cannot modify data"
           )
         )
       }
     },
 
-    #' @description Close the HDF5 file when the object is garbage collected
     finalize = function() {
-      if (private$.close_on_finalize) {
-        self$close()
-      }
-      invisible(self)
+      self$close()
     }
   ),
   active = list(
     #' @field X See [AnnData-usage]
     X = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.h5obj, "X") |>
+        read_h5ad_element(private$.hdf5_file, "X", backed = private$.backed) |>
           private$.add_matrix_dimnames("X")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_X, status=done
         private$.validate_aligned_array(
           value,
@@ -61,7 +58,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$var_names
         ) |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "X",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -70,13 +67,17 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field layers See [AnnData-usage]
     layers = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(private$.h5obj, "layers") |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "layers",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("layers")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
         private$.validate_aligned_mapping(
           value,
@@ -86,7 +87,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$var_names
         ) |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "layers",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -95,13 +96,17 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obsm See [AnnData-usage]
     obsm = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
-        read_h5ad_element(private$.h5obj, "obsm") |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "obsm",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("obsm")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_obsm, status=done
         private$.validate_aligned_mapping(
           value,
@@ -113,7 +118,7 @@ HDF5AnnData <- R6::R6Class(
           warn_colnames = TRUE
         ) |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "obsm",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -122,13 +127,17 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field varm See [AnnData-usage]
     varm = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
-        read_h5ad_element(private$.h5obj, "varm") |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "varm",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("varm")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_varm, status=done
         private$.validate_aligned_mapping(
           value,
@@ -140,7 +149,7 @@ HDF5AnnData <- R6::R6Class(
           warn_colnames = TRUE
         ) |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "varm",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -149,13 +158,17 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obsp See [AnnData-usage]
     obsp = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
-        read_h5ad_element(private$.h5obj, "obsp") |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "obsp",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("obsp")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_obsp, status=done
         private$.validate_aligned_mapping(
           value,
@@ -165,7 +178,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$obs_names
         ) |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "obsp",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -174,13 +187,17 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field varp See [AnnData-usage]
     varp = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
-        read_h5ad_element(private$.h5obj, "varp") |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          "varp",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("varp")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_varp, status=done
         private$.validate_aligned_mapping(
           value,
@@ -190,7 +207,7 @@ HDF5AnnData <- R6::R6Class(
           expected_colnames = self$var_names
         ) |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "varp",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -199,16 +216,16 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obs See [AnnData-usage]
     obs = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_h5ad_element(private$.h5obj, "obs")
+        read_h5ad_element(private$.hdf5_file, "obs", backed = private$.backed)
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_obs, status=done
         private$.validate_obsvar_dataframe(value, "obs") |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "obs",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -217,16 +234,16 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field var See [AnnData-usage]
     var = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_h5ad_element(private$.h5obj, "var")
+        read_h5ad_element(private$.hdf5_file, "var", backed = private$.backed)
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_var, status=done
         private$.validate_obsvar_dataframe(value, "var") |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "var",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -235,16 +252,16 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field obs_names See [AnnData-usage]
     obs_names = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-        read_h5ad_element_keys(private$.h5obj, "obs", dim = "rows")
+        read_h5ad_element_keys(private$.hdf5_file, "obs", dim = "rows")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_obs_names, status=done
         write_h5ad_data_frame_index(
           value,
-          private$.h5obj,
+          private$.hdf5_file,
           "obs",
           private$.compression,
           chunk_size = private$.chunk_size
@@ -253,16 +270,16 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field var_names See [AnnData-usage]
     var_names = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        read_h5ad_element_keys(private$.h5obj, "var", dim = "rows")
+        read_h5ad_element_keys(private$.hdf5_file, "var", dim = "rows")
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_var_names, status=done
         write_h5ad_data_frame_index(
           value,
-          private$.h5obj,
+          private$.hdf5_file,
           "var",
           private$.compression,
           chunk_size = private$.chunk_size
@@ -271,12 +288,12 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @field uns See [AnnData-usage]
     uns = function(value) {
-      private$.check_file_valid()
-
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
-        read_h5ad_element(private$.h5obj, "uns")
+        read_h5ad_element(private$.hdf5_file, "uns", backed = private$.backed)
       } else {
+        private$.check_mode_writeable()
+
         # trackstatus: class=HDF5AnnData, feature=set_uns, status=done
         private$.validate_named_list(
           value,
@@ -284,7 +301,7 @@ HDF5AnnData <- R6::R6Class(
           warn_matrix_dimnames = TRUE
         ) |>
           write_h5ad_element(
-            private$.h5obj,
+            private$.hdf5_file,
             "uns",
             private$.compression,
             chunk_size = private$.chunk_size
@@ -311,6 +328,8 @@ HDF5AnnData <- R6::R6Class(
     #'   both `X` or `obs` and `var` are not provided.
     #' @param mode The mode to open the HDF5 file. See [as_HDF5AnnData()] for
     #'   details
+    #' @param backed Whether the object is disk backed. See [as_HDF5AnnData()]
+    #'   for details
     #' @param compression The compression algorithm to use. See
     #'   [as_HDF5AnnData()] for details
     #' @param chunk_size The target chunk size in bytes. See
@@ -334,79 +353,96 @@ HDF5AnnData <- R6::R6Class(
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
+      backed = FALSE,
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto"
     ) {
       check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
+      check_requires("HDF5AnnData", "withr", where = "CRAN")
 
       compression <- match.arg(compression)
       mode <- match.arg(mode)
 
+      private$.mode <- mode
       private$.compression <- compression
       private$.chunk_size <- chunk_size
 
-      private$.close_on_finalize <- is.character(file)
+      is_readonly <- if (mode == "r") {
+        TRUE
+      } else {
+        FALSE
+      }
 
-      # TODO: Require {rhdf5} >= 2.53.3 to get access mode from file
-      # See https://github.com/Huber-group-EMBL/rhdf5/issues/163
-      is_readonly <- FALSE
-
-      if (is.character(file)) {
-        if (mode == "a") {
-          if (file.exists(file)) {
-            mode <- "r+"
-          } else {
-            mode <- "w-"
-          }
-        }
-
-        if (!file.exists(file) && mode %in% c("r", "r+")) {
-          cli_abort(
-            paste(
-              "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
-              "If you want to create a new file, use a different mode (e.g. 'w-').",
-              "See {.help read_h5ad} or {.help write_h5ad} for more information."
-            ),
-            call = rlang::caller_env()
-          )
-        }
-
-        if (file.exists(file) && mode %in% c("w-", "x")) {
-          cli_abort(
-            paste(
-              "File {.file {file}} already exists but mode is set to {.val {mode}}.",
-              "If you want to overwrite the file, use a different mode (e.g. 'w').",
-              "See {.help read_h5ad} or {.help write_h5ad} for more information."
-            ),
-            call = rlang::caller_env()
-          )
-        }
-
-        if (mode %in% c("w", "w-", "x")) {
-          file <- rhdf5::H5Fcreate(
-            file,
-            flags = "H5F_ACC_TRUNC",
-            native = FALSE
-          )
-        } else if (mode == "r") {
-          is_readonly <- TRUE
-          file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDONLY", native = FALSE)
-        } else if (mode == "r+") {
-          file <- rhdf5::H5Fopen(file, flags = "H5F_ACC_RDWR", native = FALSE)
+      # Set the auto mode
+      if (mode == "a") {
+        if (file.exists(file)) {
+          mode <- "r+"
+        } else {
+          mode <- "w-"
         }
       }
 
-      if (!(inherits(file, "H5IdComponent") && rhdf5::H5Iis_valid(file))) {
-        cli_abort(
+      if (backed && mode != "r") {
+        cli_warn(
           paste(
-            "{.arg file} must be a {.cls character} or an open ",
-            "{.cls rhdf5::H5IdComponent} file handle object,",
-            "but is a {.cls {class(file)}}"
+            "{.arg backed} can only be {.val TRUE} when {.arg mode} is {.val 'r'}.",
+            "Setting {.arg backed} to {.val FALSE}."
           )
+        )
+        backed <- FALSE
+      }
+      private$.backed <- backed
+
+      if (isTRUE(private$.backed)) {
+        check_requires(
+          "Reading a backed HDF5AnnData",
+          c("HDF5Array", "DelayedArray"),
+          where = "Bioc"
         )
       }
 
-      is_empty <- nrow(rhdf5::h5ls(file)) == 0L
+      # Fail is the file does not exist and in read mode
+      if (!file.exists(file) && mode %in% c("r", "r+")) {
+        cli_abort(
+          paste(
+            "File {.file {file}} does not exist but mode is set to {.val {mode}}.",
+            "If you want to create a new file, use a different mode (e.g. 'w-').",
+            "See {.help read_h5ad} or {.help write_h5ad} for more information."
+          ),
+          call = rlang::caller_env()
+        )
+      }
+
+      # Fail if the file exists not allowed to overwrite
+      if (file.exists(file) && mode %in% c("w-", "x")) {
+        cli_abort(
+          paste(
+            "File {.file {file}} already exists but mode is set to {.val {mode}}.",
+            "If you want to overwrite the file, use a different mode (e.g. 'w').",
+            "See {.help read_h5ad} or {.help write_h5ad} for more information."
+          ),
+          call = rlang::caller_env()
+        )
+      }
+
+      # Create/truncate the file
+      if (mode %in% c("w", "w-", "x")) {
+        h5file <- rhdf5::H5Fcreate(
+          file,
+          flags = "H5F_ACC_TRUNC",
+          native = FALSE
+        )
+        rhdf5::H5Fclose(h5file)
+      }
+
+      if (!rhdf5::H5Fis_hdf5(file)) {
+        cli_abort("File {.file {file}} is not a valid HDF5 file.")
+      }
+
+      # Set the HDF5File
+      private$.hdf5_file <- HDF5File$new(file)
+
+      is_empty <- nrow(rhdf5::h5ls(private$.hdf5_file$path)) == 0L
 
       if (!is_readonly) {
         if (!is_empty) {
@@ -420,22 +456,24 @@ HDF5AnnData <- R6::R6Class(
           shape <- get_shape(obs, var, X, shape)
           obs <- get_initial_obs(obs, X, shape)
           var <- get_initial_var(var, X, shape)
-          write_empty_h5ad(file, obs, var, compression, chunk_size)
+          write_empty_h5ad(
+            private$.hdf5_file,
+            obs,
+            var,
+            compression,
+            chunk_size
+          )
         }
       }
 
       # File is supposed to exist by now. Check if it is a valid H5AD file
-      attrs <- rhdf5::h5readAttributes(file, "/")
+      attrs <- rhdf5::h5readAttributes(private$.hdf5_file$path, "/")
       if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-        path <- rhdf5::H5Fget_name(file)
         cli_abort(c(
-          "File {.file {path}} is not a valid H5AD file.",
+          "File {.file {file}} is not a valid H5AD file.",
           i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
         ))
       }
-
-      # Set the file path
-      private$.h5obj <- file
 
       if (is_readonly) {
         # if any of these variables are not NULL, throw an error
@@ -454,6 +492,7 @@ HDF5AnnData <- R6::R6Class(
           )
         }
       } else {
+        # Otherwise, write data to slots
         for (slot in .anndata_slots) {
           value <- get(slot)
           if (!is.null(value)) {
@@ -467,48 +506,35 @@ HDF5AnnData <- R6::R6Class(
 
     #' @description See [AnnData-usage]
     obs_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "obs", dim = "cols")
+      read_h5ad_element_keys(private$.hdf5_file, "obs", dim = "cols")
     },
     #' @description See [AnnData-usage]
     var_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "var", dim = "cols")
+      read_h5ad_element_keys(private$.hdf5_file, "var", dim = "cols")
     },
     #' @description See [AnnData-usage]
     layers_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "layers")
+      read_h5ad_element_keys(private$.hdf5_file, "layers")
     },
     #' @description See [AnnData-usage]
     obsm_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "obsm")
+      read_h5ad_element_keys(private$.hdf5_file, "obsm")
     },
     #' @description See [AnnData-usage]
     varm_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "varm")
+      read_h5ad_element_keys(private$.hdf5_file, "varm")
     },
     #' @description See [AnnData-usage]
     obsp_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "obsp")
+      read_h5ad_element_keys(private$.hdf5_file, "obsp")
     },
     #' @description See [AnnData-usage]
     varp_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "varp")
+      read_h5ad_element_keys(private$.hdf5_file, "varp")
     },
     #' @description See [AnnData-usage]
     uns_keys = function() {
-      read_h5ad_element_keys(private$.h5obj, "uns")
-    },
-
-    #' @description Close the HDF5 file
-    close = function() {
-      if (rhdf5::H5Iis_valid(private$.h5obj)) {
-        tryCatch({
-          rhdf5::H5Fclose(private$.h5obj)
-          rhdf5::H5garbage_collect()
-          gc()
-        })
-      }
-
-      invisible(NULL)
+      read_h5ad_element_keys(private$.hdf5_file, "uns")
     },
 
     #' @description See the `n_obs` field in [AnnData-usage]
@@ -519,6 +545,41 @@ HDF5AnnData <- R6::R6Class(
     #' @description See the `n_vars` field in [AnnData-usage]
     n_vars = function() {
       length(self$var_names)
+    },
+
+    #' @description Open the HDF5 file handle
+    #'
+    #' @param readonly Whether to open in read-only mode
+    open = function(readonly = FALSE) {
+      if (private$.mode == "r" && !readonly) {
+        cli_abort(
+          paste(
+            "This {.cls HDF5AnnData} is opened in read-only mode,",
+            "cannot open the associated HDF5 file in read/write mode"
+          )
+        )
+      }
+
+      private$.hdf5_file$open(readonly = readonly)
+    },
+
+    #' @description Close the HDF5 file handle
+    close = function() {
+      private$.hdf5_file$close()
+    },
+
+    #' @description Convert to an [`InMemoryAnnData`]. Any backed
+    #'   (`DelayedArray`) slots are materialized into ordinary in-memory
+    #'   matrices: an in-memory object should not stay tied to an on-disk file.
+    as_InMemoryAnnData = function() {
+      if (isTRUE(private$.backed)) {
+        prev <- private$.backed
+        private$.backed <- FALSE
+        on.exit(private$.backed <- prev, add = TRUE)
+        # Hold the file open for the whole multi-slot read (single handle).
+        private$.hdf5_file$open_and_defer_close(readonly = TRUE)
+      }
+      super$as_InMemoryAnnData()
     }
   )
 )
@@ -544,6 +605,9 @@ HDF5AnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#' @param backed Whether the object is disk backed and returns
+#'   [DelayedArray::DelayedArray] object for matrix data. Can only be `TRUE`
+#'   when `mode == "r"`.
 #'
 #' @return An [`HDF5AnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -558,7 +622,8 @@ as_HDF5AnnData <- function(
   file,
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -581,19 +646,7 @@ as_HDF5AnnData <- function(
     shape = adata$shape(),
     mode = mode,
     compression = compression,
-    chunk_size = chunk_size
+    chunk_size = chunk_size,
+    backed = backed
   )
-}
-
-# nolint start: object_name_linter
-cleanup_HDF5AnnData <- function(...) {
-  # nolint end: object_name_linter
-  args <- list(...)
-
-  if (
-    !is.null(args$file) && is.character(args$file) && file.exists(args$file)
-  ) {
-    cli::cli_alert("Removing file: ", args$file)
-    unlink(args$file)
-  }
 }

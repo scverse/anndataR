@@ -68,15 +68,16 @@ Other AnnData classes:
     \item \href{#method-HDF5AnnData-obsp_keys}{\code{HDF5AnnData$obsp_keys()}}
     \item \href{#method-HDF5AnnData-varp_keys}{\code{HDF5AnnData$varp_keys()}}
     \item \href{#method-HDF5AnnData-uns_keys}{\code{HDF5AnnData$uns_keys()}}
-    \item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
     \item \href{#method-HDF5AnnData-n_obs}{\code{HDF5AnnData$n_obs()}}
     \item \href{#method-HDF5AnnData-n_vars}{\code{HDF5AnnData$n_vars()}}
+    \item \href{#method-HDF5AnnData-open}{\code{HDF5AnnData$open()}}
+    \item \href{#method-HDF5AnnData-close}{\code{HDF5AnnData$close()}}
+    \item \href{#method-HDF5AnnData-as_InMemoryAnnData}{\code{HDF5AnnData$as_InMemoryAnnData()}}
   }
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ReticulateAnnData'><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>AbstractAnnData$as_Seurat()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
@@ -91,9 +92,6 @@ Other AnnData classes:
 \if{html}{\out{<a id="method-HDF5AnnData-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-initialize}{}}}
 \subsection{\code{HDF5AnnData$new()}}{
-  Close the HDF5 file when the object is garbage collected
-
-
   \code{HDF5AnnData} constructor
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -110,6 +108,7 @@ Other AnnData classes:
   uns = NULL,
   shape = NULL,
   mode = c("a", "r", "r+", "w", "w-", "x"),
+  backed = FALSE,
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto"
 )}
@@ -133,6 +132,8 @@ already exits, other arguments must be \code{NULL}.}
 both \code{X} or \code{obs} and \code{var} are not provided.}
       \item{\code{mode}}{The mode to open the HDF5 file. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for
 details}
+      \item{\code{backed}}{Whether the object is disk backed. See \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}
+for details}
       \item{\code{compression}}{The compression algorithm to use. See
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
       \item{\code{chunk_size}}{The target chunk size in bytes. See
@@ -245,18 +246,6 @@ file will be overwritten.
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-HDF5AnnData-close"></a>}}
-\if{latex}{\out{\hypertarget{method-HDF5AnnData-close}{}}}
-\subsection{\code{HDF5AnnData$close()}}{
-  Close the HDF5 file
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{HDF5AnnData$close()}
-    \if{html}{\out{</div>}}
-  }
-}
-
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-HDF5AnnData-n_obs"></a>}}
 \if{latex}{\out{\hypertarget{method-HDF5AnnData-n_obs}{}}}
 \subsection{\code{HDF5AnnData$n_obs()}}{
@@ -276,6 +265,53 @@ file will be overwritten.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{HDF5AnnData$n_vars()}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-open"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-open}{}}}
+\subsection{\code{HDF5AnnData$open()}}{
+  Open the HDF5 file handle
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$open(readonly = FALSE)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{readonly}}{Whether to open in read-only mode}
+    }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-close"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-close}{}}}
+\subsection{\code{HDF5AnnData$close()}}{
+  Close the HDF5 file handle
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$close()}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-HDF5AnnData-as_InMemoryAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-HDF5AnnData-as_InMemoryAnnData}{}}}
+\subsection{\code{HDF5AnnData$as_InMemoryAnnData()}}{
+  Convert to an \code{\link{InMemoryAnnData}}. Any backed
+(\code{DelayedArray}) slots are materialized into ordinary in-memory
+matrices: an in-memory object should not stay tied to an on-disk file.
+Slots are read eagerly (via base {rhdf5}) rather than carried over as
+DelayedArrays, which is also faster than realizing them.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{HDF5AnnData$as_InMemoryAnnData()}
     \if{html}{\out{</div>}}
   }
 }

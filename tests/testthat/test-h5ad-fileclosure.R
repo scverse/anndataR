@@ -22,7 +22,6 @@ test_that("reading H5AD to InMemoryAnnData closes file", {
 test_that("closing HDF5AnnData file works", {
   expect_no_condition({
     adata <- read_h5ad(file, as = "HDF5AnnData")
-    adata$close()
     write_h5ad(dummy, file, mode = "w")
   })
 })

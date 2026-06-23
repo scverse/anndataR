@@ -8,6 +8,7 @@ read_h5ad(
   path,
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
+  backed = FALSE,
   ...
 )
 }
@@ -33,6 +34,10 @@ read_h5ad(
 \item \code{w} creates a file, truncating any existing ones.
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
 }}
+
+\item{backed}{Whether to read the H5AD file in backed mode, returning an
+object containing \link[DelayedArray:DelayedMatrix]{DelayedArray::DelayedMatrix} matrices. Which slots are
+backed depends on the value of \code{as}.}
 
 \item{...}{Extra arguments provided to the \verb{as_*} conversion function for the
 object specified by \code{as}}

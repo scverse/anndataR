@@ -1,9 +1,10 @@
 skip_if_not_installed("rhdf5")
+skip_if_not_installed("HDF5Array")
 skip_if_not_installed("Rarr")
 
 # h5ad file
 filename <- system.file("extdata", "example.h5ad", package = "anndataR")
-file <- rhdf5::H5Fopen(filename, flags = "H5F_ACC_RDONLY", native = FALSE)
+file <- HDF5File$new(filename)
 
 # zarr file
 zarr_dir <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
@@ -172,7 +173,7 @@ test_that("reading dataframes is the the same for h5ad and zarr", {
   expect_equal_h5ad_zarr(read_h5ad_data_frame, read_zarr_data_frame, "obs")
 })
 
-rhdf5::H5Fclose(file)
+file$close()
 
 test_that("reading H5AD as SingleCellExperiment is the same for h5ad and zarr", {
   skip_if_not_installed("SingleCellExperiment")

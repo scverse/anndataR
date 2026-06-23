@@ -247,11 +247,11 @@ as_SingleCellExperiment <- function(
 
   # construct colPairs
   # trackstatus: class=SingleCellExperiment, feature=get_obsp, status=done
-  col_pairs <- .as_SCE_process_simple_mapping(adata, colPairs_mapping, "obsp")
+  col_pairs <- .as_SCE_process_pairs_mapping(adata, colPairs_mapping, "obsp")
 
   # construct rowPairs
   # trackstatus: class=SingleCellExperiment, feature=get_varp, status=done
-  row_pairs <- .as_SCE_process_simple_mapping(adata, rowPairs_mapping, "varp")
+  row_pairs <- .as_SCE_process_pairs_mapping(adata, rowPairs_mapping, "varp")
 
   # construct metadata
   # trackstatus: class=SingleCellExperiment, feature=get_uns, status=done
@@ -457,5 +457,32 @@ as_SingleCellExperiment <- function(
       varm_key = varm,
       uns_key = uns
     )
+  })
+}
+
+# nolint start: object_length_linter object_name_linter
+.as_SCE_process_pairs_mapping <- function(adata, mapping, slot) {
+  # nolint end: object_length_linter object_name_linter
+
+  if (rlang::is_empty(mapping)) {
+    return(list())
+  }
+
+  purrr::map(mapping, function(.item) {
+    mat <- adata[[slot]][[.item]]
+
+    # A SelfHits can not be created from a DelayedArray so we convert to a matrix
+    if (inherits(mat, "DelayedArray")) {
+      seed <- DelayedArray::seed(mat)
+      if (inherits(seed, "CSC_H5SparseMatrixSeed")) {
+        mat <- as(mat, "CsparseMatrix")
+      } else if (inherits(seed, "CSR_H5SparseMatrixSeed")) {
+        mat <- as(mat, "RsparseMatrix")
+      } else {
+        mat <- as.matrix(mat)
+      }
+    }
+
+    mat
   })
 }
