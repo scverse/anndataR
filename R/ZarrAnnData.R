@@ -386,7 +386,7 @@ ZarrAnnData <- R6::R6Class(
         }
 
         if (mode %in% c("w", "w-", "x")) {
-          create_zarr(file)
+          create_zarr(file, format = private$.zarrformat)
         } else if (mode == "r") {
           is_readonly <- TRUE
         }
@@ -420,7 +420,13 @@ ZarrAnnData <- R6::R6Class(
           shape <- get_shape(obs, var, X, shape)
           obs <- get_initial_obs(obs, X, shape)
           var <- get_initial_var(var, X, shape)
-          write_empty_zarr(file, obs, var, compression)
+          write_empty_zarr(
+            file,
+            obs,
+            var,
+            compression,
+            zarr_format = private$.zarrformat
+          )
         }
       }
 

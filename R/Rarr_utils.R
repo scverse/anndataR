@@ -15,7 +15,7 @@ ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 create_zarr_group <- function(
   store,
   name,
-  format = getOption("anndataR.zarr_format", 3L)
+  format
 ) {
   # Split "a/b/c" into c("a", "b", "c")
   split_name <- strsplit(name, split = "/", fixed = TRUE)[[1]]
@@ -31,7 +31,7 @@ create_zarr_group <- function(
     split_name <- rev(tail(split_name, 2))
     # Recursively ensure the parent group exists before creating the target
     if (!dir.exists(file.path(store, split_name[2]))) {
-      create_zarr_group(store = store, name = split_name[2])
+      create_zarr_group(store = store, name = split_name[2], format = format)
     }
   }
   dir.create(file.path(store, split_name[1]), showWarnings = FALSE)
@@ -64,7 +64,7 @@ create_zarr_group <- function(
 #' @return `NULL`
 #'
 #' @noRd
-create_zarr <- function(store, format = getOption("anndataR.zarr_format", 3L)) {
+create_zarr <- function(store, format) {
   prefix <- basename(store)
   dir <- gsub(paste0(prefix, "$"), "", store)
   create_zarr_group(store = dir, name = prefix, format = format)
