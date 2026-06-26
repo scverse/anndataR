@@ -453,7 +453,7 @@ write_zarr_string_array <- function(
       file.path(store, name),
       dim = dims,
       chunk_dim = chunk_dims,
-      order = if (length(dims)) "C" else "F",
+      order = if (length(dims) > 0) "C" else "F",
       data_type = "|O",
       compressor = .get_compressor(compression),
       zarr_version = zarr_format
@@ -941,7 +941,7 @@ zarr_write_compressed <- function(
     data,
     zarr_array_path = file.path(store, name),
     chunk_dim = dims,
-    order = if (length(dims)) "C" else "F",
+    order = if (length(dims) > 0) "C" else "F",
     compressor = .get_compressor(compression),
     zarr_version = zarr_format
   )

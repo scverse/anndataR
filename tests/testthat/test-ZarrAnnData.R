@@ -134,7 +134,7 @@ test_that("creating empty Zarr works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_X, status=done
 test_that("writing X works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -147,7 +147,7 @@ test_that("writing X works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_layers, status=done
 test_that("writing layers works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -160,7 +160,7 @@ test_that("writing layers works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_obs, status=done
 test_that("writing obs works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -178,7 +178,7 @@ test_that("writing obs works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_var, status=done
 test_that("writing var works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -196,7 +196,7 @@ test_that("writing var works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_obs_names, status=done
 test_that("writing obs names works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -209,7 +209,7 @@ test_that("writing obs names works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_var_names, status=done
 test_that("writing var names works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -222,7 +222,7 @@ test_that("writing var names works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_obsm, status=done
 test_that("writing obsm works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -237,7 +237,7 @@ test_that("writing obsm works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_varm, status=done
 test_that("writing varm works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -253,7 +253,7 @@ test_that("writing varm works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_obsp, status=done
 test_that("writing obsp works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -269,7 +269,7 @@ test_that("writing obsp works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_varp, status=done
 test_that("writing varp works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -284,7 +284,7 @@ test_that("writing varp works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_uns, status=done
 test_that("writing uns works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store)
+  create_zarr(store = store, format = 2)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -319,7 +319,7 @@ test_that("opening a non-existent path in r+ mode errors", {
 
 test_that("opening an existing file in exclusive-create mode errors", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store)
+  create_zarr(store = store, format = 2)
   on.exit(unlink(store, recursive = TRUE))
   expect_error(
     ZarrAnnData$new(store, mode = "w-"),

@@ -17,7 +17,7 @@ for (zarr_format in c(2, 3)) {
         unlink(store, recursive = TRUE)
       }
 
-      create_zarr(store = store)
+      create_zarr(store = store, format = zarr_format)
 
       test_that("Writing Zarr store works", {
         expect_equal(zarr_node_format(store, ""), zarr_format)
@@ -30,7 +30,8 @@ for (zarr_format in c(2, 3)) {
           array,
           store,
           "dense_array",
-          compression = "none"
+          compression = "none",
+          zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "dense_array"))
         expect_equal(zarr_node_format(store, "dense_array"), zarr_format)
@@ -48,7 +49,8 @@ for (zarr_format in c(2, 3)) {
           write_zarr_element(
             value,
             store,
-            "dense_3d_array"
+            "dense_3d_array",
+            zarr_format = zarr_format
           )
         )
         expect_true(zarr_path_exists(store, "dense_3d_array"))
@@ -68,7 +70,8 @@ for (zarr_format in c(2, 3)) {
           csc_array,
           store,
           "csc_array",
-          compression = "none"
+          compression = "none",
+          zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csc_array"))
         expect_equal(zarr_node_format(store, "csc_array"), zarr_format)
@@ -86,7 +89,8 @@ for (zarr_format in c(2, 3)) {
           csr_array,
           store,
           "csr_array",
-          compression = "none"
+          compression = "none",
+          zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csr_array"))
         expect_equal(zarr_node_format(store, "csr_array"), zarr_format)
@@ -107,7 +111,12 @@ for (zarr_format in c(2, 3)) {
           as("unpackedMatrix")
 
         expect_silent(
-          write_zarr_element(value, store, "dgematrix")
+          write_zarr_element(
+            value,
+            store,
+            "dgematrix",
+            zarr_format = zarr_format
+          )
         )
         expect_true(zarr_path_exists(store, "dgematrix"))
         expect_equal(zarr_node_format(store, "dgematrix"), zarr_format)
@@ -122,7 +131,12 @@ for (zarr_format in c(2, 3)) {
         nullable <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
         nullable[5] <- NA
 
-        expect_silent(write_zarr_element(nullable, store, "nullable_bool"))
+        expect_silent(write_zarr_element(
+          nullable,
+          store,
+          "nullable_bool",
+          zarr_format = zarr_format
+        ))
         expect_true(zarr_path_exists(store, "nullable_bool"))
         expect_equal(zarr_node_format(store, "nullable_bool"), zarr_format)
         attrs <- Rarr::read_zarr_attributes(file.path(store, "nullable_bool"))
@@ -136,7 +150,12 @@ for (zarr_format in c(2, 3)) {
         nullable <- as.integer(1:5)
         nullable[5] <- NA
 
-        expect_silent(write_zarr_element(nullable, store, "nullable_int"))
+        expect_silent(write_zarr_element(
+          nullable,
+          store,
+          "nullable_int",
+          zarr_format = zarr_format
+        ))
         expect_true(zarr_path_exists(store, "nullable_int"))
         expect_equal(zarr_node_format(store, "nullable_int"), zarr_format)
         attrs <- Rarr::read_zarr_attributes(file.path(store, "nullable_int"))
@@ -149,7 +168,12 @@ for (zarr_format in c(2, 3)) {
       test_that("Writing Zarr string arrays works", {
         string <- LETTERS[1:5]
 
-        write_zarr_element(string, store, "string_array")
+        write_zarr_element(
+          string,
+          store,
+          "string_array",
+          zarr_format = zarr_format
+        )
         expect_true(zarr_path_exists(store, "string_array"))
         expect_equal(zarr_node_format(store, "string_array"), zarr_format)
         attrs <- Rarr::read_zarr_attributes(file.path(store, "string_array"))
@@ -160,7 +184,12 @@ for (zarr_format in c(2, 3)) {
 
         string2d <- matrix(LETTERS[1:20], nrow = 5, ncol = 4)
 
-        expect_silent(write_zarr_element(string2d, store, "string_array2D"))
+        expect_silent(write_zarr_element(
+          string2d,
+          store,
+          "string_array2D",
+          zarr_format = zarr_format
+        ))
         expect_true(zarr_path_exists(store, "string_array2D"))
         expect_equal(zarr_node_format(store, "string_array2D"), zarr_format)
         attrs <- Rarr::read_zarr_attributes(file.path(store, "string_array2D"))
@@ -173,7 +202,12 @@ for (zarr_format in c(2, 3)) {
       test_that("Writing Zarr categoricals works", {
         categorical <- factor(LETTERS[1:5])
 
-        expect_no_error(write_zarr_element(categorical, store, "categorical"))
+        expect_no_error(write_zarr_element(
+          categorical,
+          store,
+          "categorical",
+          zarr_format = zarr_format
+        ))
         expect_true(zarr_path_exists(store, "categorical"))
         expect_equal(zarr_node_format(store, "categorical"), zarr_format)
         expect_true(zarr_path_exists(store, "categorical/categories"))
@@ -188,7 +222,12 @@ for (zarr_format in c(2, 3)) {
       test_that("Writing Zarr string scalars works", {
         string <- "A"
 
-        expect_silent(write_zarr_element(string, store, "string_scalar"))
+        expect_silent(write_zarr_element(
+          string,
+          store,
+          "string_scalar",
+          zarr_format = zarr_format
+        ))
         expect_true(zarr_path_exists(store, "string_scalar"))
         expect_equal(zarr_node_format(store, "string_scalar"), zarr_format)
         attrs <- Rarr::read_zarr_attributes(file.path(store, "string_scalar"))
@@ -201,7 +240,12 @@ for (zarr_format in c(2, 3)) {
       test_that("Writing Zarr numeric scalars works", {
         number <- 1.0
 
-        expect_silent(write_zarr_element(number, store, "numeric_scalar"))
+        expect_silent(write_zarr_element(
+          number,
+          store,
+          "numeric_scalar",
+          zarr_format = zarr_format
+        ))
         expect_true(zarr_path_exists(store, "numeric_scalar"))
         expect_equal(zarr_node_format(store, "numeric_scalar"), zarr_format)
         attrs <- Rarr::read_zarr_attributes(file.path(store, "numeric_scalar"))
@@ -224,7 +268,8 @@ for (zarr_format in c(2, 3)) {
           mapping,
           store,
           "mapping",
-          compression = "none"
+          compression = "none",
+          zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "mapping"))
         expect_equal(zarr_node_format(store, "mapping"), zarr_format)
@@ -249,7 +294,12 @@ for (zarr_format in c(2, 3)) {
           Numbers = 1:5
         )
 
-        expect_silent(write_zarr_element(df, store, "dataframe"))
+        expect_silent(write_zarr_element(
+          df,
+          store,
+          "dataframe",
+          zarr_format = zarr_format
+        ))
         expect_true(zarr_path_exists(store, "dataframe"))
         expect_equal(zarr_node_format(store, "dataframe"), zarr_format)
         expect_true(zarr_path_exists(store, "dataframe/Letters"))
