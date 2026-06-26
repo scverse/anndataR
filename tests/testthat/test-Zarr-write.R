@@ -23,6 +23,16 @@ for (zarr_format in c(2, 3)) {
         expect_equal(zarr_node_format(store, ""), zarr_format)
       })
 
+      test_that("Writing Zarr store with different version works", {
+        store_w_diff <- tempfile(fileext = ".zarr")
+        if (dir.exists(store_w_diff)) {
+          unlink(store_w_diff, recursive = TRUE)
+        }
+        zarr_format_diff <- setdiff(c(2, 3), zarr_format)
+        create_zarr(store = store_w_diff, format = zarr_format_diff)
+        expect_equal(zarr_node_format(store_w_diff, ""), zarr_format_diff)
+      })
+
       test_that("Writing Zarr dense arrays works", {
         array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 
@@ -322,16 +332,40 @@ for (zarr_format in c(2, 3)) {
         skip_if_not_installed("SingleCellExperiment")
         store <- tempfile(fileext = ".zarr")
         sce <- generate_dataset(format = "SingleCellExperiment")
-        write_zarr(sce, store, zarr_format = zarr_format)
+        write_zarr(sce, store)
         expect_true(dir.exists(store))
+        expect_equal(zarr_node_format(store, ""), zarr_format)
+      })
+
+      test_that("writing Zarr from SingleCellExperiment works for manual zarr format", {
+        skip_if_not_installed("SingleCellExperiment")
+        store <- tempfile(fileext = ".zarr")
+        sce <- generate_dataset(format = "SingleCellExperiment")
+        zarr_format_manual <- setdiff(c(2, 3), zarr_format)
+        write_zarr(sce, store, zarr_format = zarr_format_manual)
+        expect_true(dir.exists(store))
+        expect_equal(zarr_node_format(store, ""), zarr_format_manual)
+        expect_equal(getOption("anndataR.zarr_format"), zarr_format)
       })
 
       test_that("writing Zarr from Seurat works", {
         skip_if_not_installed("SeuratObject")
         store <- tempfile(fileext = ".zarr")
-        sce <- generate_dataset(format = "Seurat")
-        write_zarr(sce, store, zarr_format = zarr_format)
+        seurat <- generate_dataset(format = "Seurat")
+        write_zarr(seurat, store)
         expect_true(dir.exists(store))
+        expect_equal(zarr_node_format(store, ""), zarr_format)
+      })
+
+      test_that("writing Zarr from Seurat works for manual zarr format", {
+        skip_if_not_installed("SeuratObject")
+        store <- tempfile(fileext = ".zarr")
+        seurat <- generate_dataset(format = "Seurat")
+        zarr_format_manual <- setdiff(c(2, 3), zarr_format)
+        write_zarr(seurat, store, zarr_format = zarr_format_manual)
+        expect_true(dir.exists(store))
+        expect_equal(zarr_node_format(store, ""), zarr_format_manual)
+        expect_equal(getOption("anndataR.zarr_format"), zarr_format)
       })
 
       dir_size <- function(path) {
