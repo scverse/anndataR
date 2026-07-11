@@ -1,32 +1,3 @@
-#' Read H5AD encoding
-#'
-#' Read the encoding and version of an element in a H5AD file
-#'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#'
-#' @return A named list with names type and version
-#'
-#' @noRd
-read_h5ad_encoding <- function(hdf5_file, name) {
-  hdf5_file$open_and_defer_close(readonly = TRUE)
-
-  tryCatch(
-    {
-      attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name)
-      list(
-        type = attrs[["encoding-type"]],
-        version = attrs[["encoding-version"]]
-      )
-    },
-    error = function(e) {
-      cli_abort(
-        "Encoding attributes not found for element {.val {name}} in {.path {hdf5_file$path}}"
-      )
-    }
-  )
-}
-
 #' Read H5AD element
 #'
 #' Read an element from a H5AD file
@@ -114,12 +85,7 @@ read_h5ad_element <- function(
 #'
 #' Read the keys of an element from a H5AD file
 #'
-#' @param file Path to a H5AD file or an open H5AD handle
-#' @param name Name of the element within the H5AD file
-#' @param type The encoding type of the element to read
-#' @param version The encoding version of the element to read
-#' @param stop_on_error Whether to stop on error or generate a warning instead
-#' @param ... Extra arguments passed to individual reading functions
+#' @inheritParams read_h5ad_element
 #'
 #' @details
 #' Encoding is automatically determined from the element using
@@ -178,6 +144,34 @@ read_h5ad_element_keys <- function(
   )
 }
 
+#' Read H5AD encoding
+#'
+#' Read the encoding and version of an element in a H5AD file
+#'
+#' @inheritParams read_h5ad_element
+#'
+#' @return A named list with names type and version
+#'
+#' @noRd
+read_h5ad_encoding <- function(hdf5_file, name) {
+  hdf5_file$open_and_defer_close(readonly = TRUE)
+
+  tryCatch(
+    {
+      attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name)
+      list(
+        type = attrs[["encoding-type"]],
+        version = attrs[["encoding-version"]]
+      )
+    },
+    error = function(e) {
+      cli_abort(
+        "Encoding attributes not found for element {.val {name}} in {.path {hdf5_file$path}}"
+      )
+    }
+  )
+}
+
 #' Read H5AD null
 #'
 #' Read a null value from an H5AD file
@@ -199,11 +193,7 @@ read_h5ad_null <- function(hdf5_file, name, version = "0.1.0", ...) {
 #'
 #' Read a dense array from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param backed Whether to return a DelayedArray
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a matrix/array or a DelayedArray if `backed = TRUE`
 #'
@@ -249,10 +239,7 @@ read_h5ad_dense_array <- function(
 #'
 #' Read a dense array from an H5AD file using base {rhdf5}
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a matrix/array
 #'
@@ -313,12 +300,7 @@ read_h5ad_csc_matrix <- function(hdf5_file, name, version, backed, ...) {
 #'
 #' Read a sparse array from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param backed Whether to return a DelayedArray
-#' @param version Encoding version of the element to read
-#' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a sparse matrix/array or a DelayedArray if `backed = TRUE`
 #' @importFrom Matrix sparseMatrix
@@ -348,11 +330,8 @@ read_h5ad_sparse_array <- function(
 #'
 #' Read a sparse array from an H5AD file using base {rhdf5}
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
+#' @inheritParams read_h5ad_element
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
-#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return a sparse matrix
 #' @importFrom Matrix sparseMatrix
@@ -387,10 +366,7 @@ read_h5ad_sparse_array_base <- function(
 #'
 #' Read a recarray from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @details
 #' A "record array" (recarray) is a Python NumPy array type that contains
@@ -421,10 +397,7 @@ read_h5ad_rec_array <- function(hdf5_file, name, version = "0.2.0", ...) {
 #'
 #' Read a nullable boolean from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a boolean vector
 #'
@@ -442,10 +415,7 @@ read_h5ad_nullable_boolean <- function(
 #'
 #' Read a nullable integer from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return an integer vector
 #'
@@ -463,10 +433,7 @@ read_h5ad_nullable_integer <- function(
 #'
 #' Read a nullable vector (boolean or integer) from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a nullable vector
 #'
@@ -491,10 +458,7 @@ read_h5ad_nullable <- function(hdf5_file, name, version = "0.1.0", ...) {
 #'
 #' Read a string array from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a character vector/matrix
 #'
@@ -525,10 +489,7 @@ read_h5ad_string_array <- function(hdf5_file, name, version = "0.2.0", ...) {
 #'
 #' Read a categorical from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a factor
 #'
@@ -560,10 +521,7 @@ read_h5ad_categorical <- function(hdf5_file, name, version = "0.2.0", ...) {
 #'
 #' Read a string scalar from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a character vector of length 1
 #'
@@ -580,10 +538,7 @@ read_h5ad_string_scalar <- function(hdf5_file, name, version = "0.2.0", ...) {
 #'
 #' Read a numeric scalar from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param ... Extra arguments for other reading functions (not used)
+#' @inheritParams read_h5ad_element
 #'
 #' @return a numeric vector of length 1
 #'
@@ -606,11 +561,7 @@ read_h5ad_numeric_scalar <- function(hdf5_file, name, version = "0.2.0", ...) {
 #'
 #' Read a mapping from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
-#' @param backed Whether to return DelayedArrays for array/matrix types
-#' @param ... Extra arguments for other reading functions
+#' @inheritParams read_h5ad_element
 #'
 #' @return a named list
 #'
@@ -633,9 +584,7 @@ read_h5ad_mapping <- function(
 #'
 #' Read keys for a mapping from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
+#' @inheritParams read_h5ad_element
 #'
 #' @return a character vector
 #'
@@ -655,12 +604,9 @@ read_h5ad_mapping_keys <- function(hdf5_file, name, version = "0.1.0") {
 #'
 #' Read a data frame from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
+#' @inheritParams read_h5ad_element
 #' @param backed Whether to return DelayedArrays for array/matrix types (always
 #' `FALSE`)
-#' @param ... Extra arguments for other reading functions
 #'
 #' @details
 #' The `backed` argument is included to avoid `backed` being passed via `...`
@@ -694,9 +640,7 @@ read_h5ad_data_frame <- function(
 #'
 #' Read keys for a data frame from an H5AD file
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param version Encoding version of the element to read
+#' @inheritParams read_h5ad_element
 #' @param dim Dimension to read keys for, either "both, "rows" or "cols"
 #'
 #' @return a character vector if dim is "rows" or "cols", or a list with
@@ -735,11 +679,8 @@ read_h5ad_data_frame_keys <- function(
 
 #' Read multiple H5AD datatypes
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
+#' @inheritParams read_h5ad_element
 #' @param item_names Vector of item names (in order)
-#' @param backed Whether to return DelayedArrays for array/matrix types
-#' @param ... Extra arguments for other reading functions
 #'
 #' @return a named list
 #'

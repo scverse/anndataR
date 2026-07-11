@@ -5,8 +5,8 @@
 #' @param value The value to write
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. 
-#'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`, 
+#' @param compression The compression to use when writing the element.
+#'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
 #'   `"zlib"`, `"lz4"`.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
