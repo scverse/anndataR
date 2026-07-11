@@ -5,8 +5,9 @@
 #' @param value The value to write
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"` or `"gzip"`. Defaults to `"none"`.
+#' @param compression The compression to use when writing the element. 
+#'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`, 
+#'   `"zlib"`, `"lz4"`.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'
@@ -124,12 +125,11 @@ write_zarr_element <- function(
 #'
 #' Write Zarr encoding attributes to an element in a Zarr store
 #'
-#' @noRd
-#'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
+#' @inheritParams write_zarr_element
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
+#'
+#' @noRd
 write_zarr_encoding <- function(store, name, encoding, version) {
   Rarr::write_zarr_attributes(
     file.path(store, name),
@@ -141,11 +141,8 @@ write_zarr_encoding <- function(store, name, encoding, version) {
 #'
 #' Write a null dataset to an Zarr file
 #'
-#' @param value Value to write, not used
-#' @param store An open Zarr handle
-#' @param name Name of the element within the Zarr store
-#' @param compression Not used as there is no value
-#' @param version Encoding version of the element to write
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
 #' @noRd
 write_zarr_null <- function(
@@ -174,14 +171,10 @@ write_zarr_null <- function(
 #'
 #' Write a dense array to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_dense_array <- function(
   value,
   store,
@@ -211,14 +204,10 @@ write_zarr_dense_array <- function(
 #'
 #' Write a sparse array to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_sparse_array <- function(
   value,
   store,
@@ -276,14 +265,10 @@ write_zarr_sparse_array <- function(
 #'
 #' Write a nullable boolean to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_nullable_boolean <- function(
   value,
   store,
@@ -317,14 +302,10 @@ write_zarr_nullable_boolean <- function(
 #'
 #' Write a nullable integer to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_nullable_integer <- function(
   value,
   store,
@@ -358,14 +339,10 @@ write_zarr_nullable_integer <- function(
 #'
 #' Write a string array to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_string_array <- function(
   value,
   store,
@@ -412,14 +389,10 @@ write_zarr_string_array <- function(
 #'
 #' Write a categorical to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_categorical <- function(
   value,
   store,
@@ -465,14 +438,10 @@ write_zarr_categorical <- function(
 #'
 #' Write a string scalar to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_string_scalar <- function(
   value,
   store,
@@ -498,14 +467,10 @@ write_zarr_string_scalar <- function(
 #'
 #' Write a numeric scalar to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_numeric_scalar <- function(
   value,
   store,
@@ -524,14 +489,10 @@ write_zarr_numeric_scalar <- function(
 #'
 #' Write a mapping to a Zarr store
 #'
-#' @noRd
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_zarr_mapping <- function(
   value,
   store,
@@ -558,17 +519,13 @@ write_zarr_mapping <- function(
 #'
 #' Write a data frame to a Zarr store
 #'
-#' @noRd
-#'
-#' @param value Value to write
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #' @param index The index to write. Can either be a vector of length equal to
 #' the number of rows in `values` or a single character string giving the name
 #' of a column in `values`. If `NULL` then `rownames(value)` is used.
-#' @param version Encoding version of the element to write
+#'
+#' @noRd
 write_zarr_data_frame <- function(
   value,
   store,
@@ -645,14 +602,12 @@ write_zarr_data_frame <- function(
 #'
 #' Write a new empty Zarr store
 #'
-#' @noRd
-#'
-#' @param store Path to the Zarr store to write
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #' @param obs Data frame with observations
 #' @param var Data frame with variables
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"` or `"gzip"`. Defaults to `"none"`.
-#' @param version The anndata on-disk format version to write
+#'
+#' @noRd
 write_empty_zarr <- function(
   store,
   obs,
@@ -689,17 +644,12 @@ write_empty_zarr <- function(
 #'
 #' Write Zarr dataset with chosen compression (can be none)
 #'
-#' @return  Returns (invisibly) `TRUE` if the array is successfully written.
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
 #' @noRd
 #'
-#' @param store Path to a Zarr store
-#' @param name Name of the element within the Zarr store containing the data
-#' frame
-#' @param value Value to write. Must be a vector to the same length as the data
-#' frame.
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"` or `"gzip"`. Defaults to `"none"`.
+#' @return  Returns (invisibly) `TRUE` if the array is successfully written.
 zarr_write_compressed <- function(
   store,
   name,
@@ -722,12 +672,12 @@ zarr_write_compressed <- function(
 #'
 #' Convert a compression name to the corresponding Rarr compressor object.
 #'
-#' @param compression The compression algorithm name. One of `"none"`,
-#'   `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`, `"zlib"`, `"lz4"`.
-#'
-#' @return A Rarr compressor object, or `NULL` for no compression.
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
 #'
 #' @noRd
+#'
+#' @return A Rarr compressor object, or `NULL` for no compression.
 .get_compressor <- function(compression) {
   switch(
     compression,
