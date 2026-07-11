@@ -150,28 +150,14 @@ for (zarr_format in c(2, 3)) {
     paste("reading Zarr", zarr_format, "as SingleCellExperiment works"),
     {
       skip_if_not_installed("SingleCellExperiment")
-
-      if (zarr_format == "v3") {
-        # TODO: Remove when v3 recarray support is implemented
-        sce <- suppressWarnings(read_zarr(store, as = "SingleCellExperiment"))
-      } else {
-        sce <- read_zarr(store, as = "SingleCellExperiment")
-      }
-
+      sce <- read_zarr(store, as = "SingleCellExperiment")
       expect_s4_class(sce, "SingleCellExperiment")
     }
   )
 
   test_that(paste("reading Zarr", zarr_format, "as Seurat works"), {
     skip_if_not_installed("SeuratObject")
-
-    if (zarr_format == "v3") {
-      # TODO: Remove when v3 recarray support is implemented
-      seurat <- suppressWarnings(read_zarr(store, as = "Seurat"))
-    } else {
-      seurat <- read_zarr(store, as = "Seurat")
-    }
-
+    seurat <- read_zarr(store, as = "Seurat")
     expect_s4_class(seurat, "Seurat")
   })
 }
