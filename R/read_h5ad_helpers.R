@@ -80,6 +80,7 @@ read_h5ad_element <- function(
     "string-array" = read_h5ad_string_array,
     "nullable-integer" = read_h5ad_nullable_integer,
     "nullable-boolean" = read_h5ad_nullable_boolean,
+    "nullable-string-array" = read_h5ad_nullable_string,
     cli_abort(
       "No function for reading H5AD encoding {.cls {type}} for element {.val {name}}"
     )
@@ -457,6 +458,31 @@ read_h5ad_nullable_integer <- function(
   ...
 ) {
   as.integer(read_h5ad_nullable(hdf5_file, name, version))
+}
+
+#' Read H5AD nullable string
+#'
+#' Read a nullable string from an H5AD file
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name Name of the element within the H5AD file
+#' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
+#'
+#' @details
+#' **NOTE:** This implementation ignores the `"na-value"` attribute, see
+#' https://anndata.scverse.org/en/stable/fileformat-prose.html#nullable-string-specifications-v0-1-0
+#'
+#' @return a character vector
+#'
+#' @noRd
+read_h5ad_nullable_string <- function(
+    hdf5_file,
+    name,
+    version = "0.1.0",
+    ...
+) {
+  as.character(read_h5ad_nullable(hdf5_file, name, version))
 }
 
 #' Read H5AD nullable
