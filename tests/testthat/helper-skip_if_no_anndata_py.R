@@ -2,7 +2,7 @@
 skip_if_no_anndata_py <- function() {
   testthat::skip_if_not_installed("reticulate")
   requireNamespace("reticulate")
-  reticulate::py_require("anndata")
+  reticulate::py_require("anndata<0.13.0")
   testthat::skip_if_not(
     reticulate::py_module_available("anndata"),
     message = "Python anndata module not available for testing"
