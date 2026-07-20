@@ -96,7 +96,7 @@ test_that("reading 1D sparse numeric arrays is the same for h5ad and zarr", {
 test_that("reading 1D nullable arrays is the same for h5ad and zarr", {
   expect_equal_h5ad_zarr(
     read_h5ad_nullable_integer,
-    read_zarr_nullable_integer,
+    read_zarr_nullable,
     "obs/IntNA"
   )
   expect_equal_h5ad_zarr(
@@ -107,7 +107,7 @@ test_that("reading 1D nullable arrays is the same for h5ad and zarr", {
   for (path in c("obs/Bool", "obs/BoolNA")) {
     expect_equal_h5ad_zarr(
       read_h5ad_nullable_boolean,
-      read_zarr_nullable_boolean,
+      read_zarr_nullable,
       path
     )
   }

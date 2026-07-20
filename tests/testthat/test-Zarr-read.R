@@ -80,7 +80,7 @@ for (zarr_format in c(2, 3)) {
   )
 
   test_that(paste("reading Zarr", zarr_format, "1D nullable arrays works"), {
-    array_1d <- read_zarr_nullable_integer(store, "obs/IntNA")
+    array_1d <- read_zarr_nullable(store, "obs/IntNA")
     expect_vector(array_1d, ptype = integer(), size = 50)
     expect_true(anyNA(array_1d))
 
@@ -89,7 +89,7 @@ for (zarr_format in c(2, 3)) {
     expected[1] <- NA
     expect_equal(array_1d, expected)
 
-    array_1d <- read_zarr_nullable_boolean(store, "obs/BoolNA")
+    array_1d <- read_zarr_nullable(store, "obs/BoolNA")
     expect_vector(array_1d, ptype = logical(), size = 50)
     expect_true(anyNA(array_1d))
   })

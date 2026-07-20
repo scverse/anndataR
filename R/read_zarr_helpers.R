@@ -47,8 +47,8 @@ read_zarr_element <- function(
     "numeric-scalar" = read_zarr_numeric_scalar,
     "categorical" = read_zarr_categorical,
     "string-array" = read_zarr_string_array,
-    "nullable-integer" = read_zarr_nullable_integer,
-    "nullable-boolean" = read_zarr_nullable_boolean,
+    "nullable-integer" = read_zarr_nullable,
+    "nullable-boolean" = read_zarr_nullable,
     cli_abort(
       "No function for reading Zarr encoding {.cls {type}} for element {.val {name}}"
     )
@@ -265,32 +265,6 @@ read_zarr_rec_array <- function(store, name, version = "0.2.0") {
     lapply(as.vector)
 }
 
-#' Read Zarr nullable boolean
-#'
-#' Read a nullable boolean from a Zarr store
-#'
-#' @inheritParams read_zarr_element
-#'
-#' @return A boolean vector
-#'
-#' @noRd
-read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
-  as.logical(read_zarr_nullable(store, name, version))
-}
-
-#' Read Zarr nullable integer
-#'
-#' Read a nullable integer from a Zarr store
-#'
-#' @inheritParams read_zarr_element
-#'
-#' @return An integer vector
-#'
-#' @noRd
-read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
-  as.integer(read_zarr_nullable(store, name, version))
-}
-
 #' Read Zarr nullable
 #'
 #' Read a nullable vector (boolean or integer) from a Zarr store
@@ -310,7 +284,7 @@ read_zarr_nullable <- function(store, name, version = "0.1.0") {
   element <- values
   element[mask] <- NA
 
-  element
+  as.vector(element)
 }
 
 #' Read Zarr string array
