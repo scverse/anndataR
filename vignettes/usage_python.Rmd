@@ -12,6 +12,7 @@ vignette: >
 # Set up reticulate and check for required Python packages.
 reticulate::py_require("mudata")
 reticulate::py_require("scanpy")
+reticulate::py_require("anndata<0.13.0")
 
 # Check if required Python packages are available.
 python_available <- reticulate::py_module_available("scanpy") &&
@@ -58,6 +59,7 @@ Install required Python packages if needed:
 
 ```{r python_setup, eval=FALSE}
 reticulate::py_require("scanpy")
+reticulate::py_require("anndata<0.13.0")
 ```
 
 ```{r load_libraries}
