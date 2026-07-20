@@ -92,7 +92,7 @@ jobs:
         run: |
           reticulate::install_miniconda()
           reticulate::py_install(
-            c("scanpy", "mudata"),
+            c("scanpy", "mudata", "anndata<0.13.0"),
             method = "conda",
             channel = "conda-forge"
           )

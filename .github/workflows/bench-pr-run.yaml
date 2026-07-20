@@ -45,7 +45,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install Python dependencies
-        run: pip install anndata dummy-anndata
+        run: pip install "anndata<0.13.0" dummy-anndata
 
       - name: Configure reticulate
         run: echo "RETICULATE_PYTHON=$(which python)" >> $GITHUB_ENV
