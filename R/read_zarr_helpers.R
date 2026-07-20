@@ -229,15 +229,18 @@ read_zarr_sparse_array <- function(
 
   attrs <- Rarr::read_zarr_attributes(file.path(store, name))
 
+  data <- Rarr::read_zarr_array(file.path(store, name, "data"))
+  dim(data) <- NULL
+  indices <- Rarr::read_zarr_array(file.path(store, name, "indices"))
+  dim(indices) <- NULL
+  indptr <- Rarr::read_zarr_array(file.path(store, name, "indptr"))
+  dim(indptr) <- NULL
+
   construct_sparse_matrix(
-    data = as.vector(Rarr::read_zarr_array(file.path(store, name, "data"))),
-    indices = as.vector(Rarr::read_zarr_array(file.path(
-      store,
-      name,
-      "indices"
-    ))),
-    indptr = as.vector(Rarr::read_zarr_array(file.path(store, name, "indptr"))),
-    shape = as.vector(unlist(attrs$shape, use.names = FALSE)),
+    data = data,
+    indices = indices,
+    indptr = indptr,
+    shape = unlist(attrs$shape, use.names = FALSE),
     type = type
   )
 }
@@ -262,7 +265,10 @@ read_zarr_sparse_array <- function(
 read_zarr_rec_array <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
   Rarr::read_zarr_array(file.path(store, name)) |>
-    lapply(as.vector)
+    lapply(\(el) {
+      dim(el) <- NULL
+      el
+    })
 }
 
 #' Read Zarr nullable
@@ -283,6 +289,8 @@ read_zarr_nullable <- function(store, name, version = "0.1.0") {
   # Get values and set missing
   element <- values
   element[mask] <- NA
+
+  dim(element) <- NULL
 
   element
 }
@@ -356,7 +364,9 @@ read_zarr_categorical <- function(store, name, version = "0.2.0") {
 #' @noRd
 read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
-  as.character(Rarr::read_zarr_array(file.path(store, name)))
+  res <- Rarr::read_zarr_array(file.path(store, name))
+  dim(res) <- NULL
+  res
 }
 
 #' Read Zarr numeric scalar
@@ -374,7 +384,7 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
   value <- Rarr::read_zarr_array(file.path(store, name))
 
   # convert array to vector
-  value <- as.vector(value)
+  dim(value) <- NULL
 
   value
 }
@@ -433,7 +443,6 @@ read_zarr_collection <- function(store, name, item_names) {
   items <- lapply(
     file.path(name, item_names),
     function(new_name) {
-      new_name <- paste0(name, "/", item_name)
       encoding <- read_zarr_encoding(store, new_name)
       read_zarr_element(
         store = store,
@@ -493,12 +502,16 @@ read_zarr_data_frame_keys <- function(
   column_order <- attrs[["column-order"]]
 
   if (dim == "both") {
+    rows <- read_zarr_element(store, file.path(name, index_name))
+    dim(rows) <- NULL
     list(
-      rows = as.vector(read_zarr_element(store, file.path(name, index_name))),
+      rows = rows,
       cols = as.character(column_order)
     )
   } else if (dim == "rows") {
-    as.vector(read_zarr_element(store, file.path(name, index_name)))
+    rows <- read_zarr_element(store, file.path(name, index_name))
+    dim(rows) <- NULL
+    rows
   } else if (dim == "cols") {
     as.character(column_order)
   }
