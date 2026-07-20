@@ -431,8 +431,8 @@ read_zarr_data_frame <- function(
 #' @noRd
 read_zarr_collection <- function(store, name, item_names) {
   items <- lapply(
-    item_names,
-    function(item_name) {
+    file.path(name, item_names),
+    function(new_name) {
       new_name <- paste0(name, "/", item_name)
       encoding <- read_zarr_encoding(store, new_name)
       read_zarr_element(
