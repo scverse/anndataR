@@ -11,7 +11,7 @@ vignette: >
 ```{r, include = FALSE}
 # Set up reticulate and check for required Python packages.
 reticulate::py_require("mudata")
-reticulate::py_require("scanpy")
+reticulate::py_require("scanpy>=1.10")
 reticulate::py_require("anndata<0.13.0")
 
 # Check if required Python packages are available.
@@ -58,7 +58,7 @@ If these are not available, the code chunks will not be evaluated but the exampl
 Install required Python packages if needed:
 
 ```{r python_setup, eval=FALSE}
-reticulate::py_require("scanpy")
+reticulate::py_require("scanpy>=1.10")
 reticulate::py_require("anndata<0.13.0")
 ```
 
