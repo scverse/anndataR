@@ -1,6 +1,5 @@
-# anndataR 1.3.0
+# anndataR 1.3.1
 
-- Bioconductor 3.24 devel
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
 - Enable additional linters and optimise several suboptimal code patterns (PR #453).
 - Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
@@ -12,6 +11,10 @@
 - Upgrade to roxygen2 8.0.0.
 - Update `CITATION` with the published paper (PR #464).
 - Mark Zarr support as implemented in the class diagram (PR #460).
+
+# anndataR 1.3.0
+
+- Bioconductor 3.24 devel
 
 # anndataR 1.2.0
 
