@@ -339,7 +339,7 @@ or
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -361,33 +361,33 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] SingleCellExperiment_1.35.1 SummarizedExperiment_1.43.0
-#>  [3] Biobase_2.73.1              GenomicRanges_1.65.0       
+#>  [1] SingleCellExperiment_1.35.2 SummarizedExperiment_1.43.0
+#>  [3] Biobase_2.73.1              GenomicRanges_1.65.1       
 #>  [5] Seqinfo_1.3.0               IRanges_2.47.2             
-#>  [7] S4Vectors_0.51.3            BiocGenerics_0.59.7        
+#>  [7] S4Vectors_0.51.5            BiocGenerics_0.59.10       
 #>  [9] generics_0.1.4              MatrixGenerics_1.25.0      
 #> [11] matrixStats_1.5.0           anndataR_1.3.0             
 #> [13] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] xfun_0.59           bslib_0.11.0        httr2_1.2.2        
-#>  [4] htmlwidgets_1.6.4   rhdf5_2.57.1        lattice_0.22-9     
-#>  [7] rhdf5filters_1.25.0 vctrs_0.7.3         tools_4.6.0        
-#> [10] curl_7.1.0          paws.common_0.8.10  R.oo_1.27.1        
-#> [13] Matrix_1.7-5        desc_1.4.3          lifecycle_1.0.5    
-#> [16] compiler_4.6.0      textshaping_1.0.5   htmltools_0.5.9    
-#> [19] sass_0.4.10         yaml_2.3.12         pkgdown_2.2.0      
-#> [22] crayon_1.5.3        jquerylib_0.1.4     R.utils_2.13.0     
-#> [25] grumpy_0.1.1        DelayedArray_0.39.3 cachem_1.1.0       
-#> [28] abind_1.4-8         digest_0.6.39       paws.storage_0.10.0
-#> [31] purrr_1.2.2         bookdown_0.47       fastmap_1.2.0      
-#> [34] grid_4.6.0          cli_3.6.6           SparseArray_1.13.2 
-#> [37] Rarr_2.1.18         magrittr_2.0.5      S4Arrays_1.13.0    
-#> [40] withr_3.0.3         rappdirs_0.3.4      rmarkdown_2.31     
-#> [43] XVector_0.53.0      otel_0.2.0          reticulate_1.46.0  
-#> [46] ragg_1.5.2          png_0.1-9           R.methodsS3_1.8.2  
-#> [49] evaluate_1.0.5      knitr_1.51          rlang_1.2.0        
-#> [52] Rcpp_1.1.1-1.1      glue_1.8.1          BiocManager_1.30.27
-#> [55] jsonlite_2.0.0      R6_2.6.1            Rhdf5lib_2.1.0     
-#> [58] systemfonts_1.3.2   fs_2.1.0
+#>  [1] sass_0.4.10         SparseArray_1.13.2  lattice_0.22-9     
+#>  [4] paws.common_0.8.10  digest_0.6.39       magrittr_2.0.5     
+#>  [7] evaluate_1.0.5      grid_4.6.1          bookdown_0.47      
+#> [10] fastmap_1.2.0       R.oo_1.27.1         jsonlite_2.0.0     
+#> [13] Matrix_1.7-5        R.utils_2.13.0      Rarr_2.1.24        
+#> [16] BiocManager_1.30.27 purrr_1.2.2         httr2_1.3.0        
+#> [19] textshaping_1.0.5   jquerylib_0.1.4     abind_1.4-8        
+#> [22] cli_3.6.6           crayon_1.5.3        rlang_1.3.0        
+#> [25] XVector_0.53.0      R.methodsS3_1.8.2   withr_3.0.3        
+#> [28] cachem_1.1.0        DelayedArray_0.39.3 yaml_2.3.12        
+#> [31] otel_0.2.0          S4Arrays_1.13.0     tools_4.6.1        
+#> [34] Rhdf5lib_2.1.0      grumpy_0.1.1        curl_7.1.0         
+#> [37] reticulate_1.46.0   vctrs_0.7.3         R6_2.6.1           
+#> [40] png_0.1-9           lifecycle_1.0.5     rhdf5_2.57.1       
+#> [43] fs_2.1.0            htmlwidgets_1.6.4   ragg_1.5.2         
+#> [46] desc_1.4.3          pkgdown_2.2.1       bslib_0.11.0       
+#> [49] glue_1.8.1          Rcpp_1.1.2          systemfonts_1.3.2  
+#> [52] xfun_0.60           paws.storage_0.10.0 rhdf5filters_1.25.0
+#> [55] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
+#> [58] compiler_4.6.1
 ```

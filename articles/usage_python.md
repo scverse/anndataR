@@ -27,7 +27,9 @@ Install required Python packages if needed:
 
 ``` r
 
-reticulate::py_require("scanpy")
+# TEMP(anndata<0.13.0): anndataR does not yet support Python anndata >= 0.13.0
+reticulate::py_require("scanpy>=1.10")
+reticulate::py_require("anndata<0.13.0")
 ```
 
 ``` r
@@ -169,7 +171,7 @@ print(rna_sce)
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -194,7 +196,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
-#>   [3] magrittr_2.0.5              spatstat.utils_3.2-3       
+#>   [3] magrittr_2.0.5              spatstat.utils_3.2-4       
 #>   [5] farver_2.1.2                rmarkdown_2.31             
 #>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
@@ -202,71 +204,71 @@ sessionInfo()
 #>  [13] htmltools_0.5.9             S4Arrays_1.13.0            
 #>  [15] curl_7.1.0                  SparseArray_1.13.2         
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
-#>  [19] parallelly_1.47.0           KernSmooth_2.23-26         
+#>  [19] parallelly_1.48.0           KernSmooth_2.23-26         
 #>  [21] bslib_0.11.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
-#>  [25] httr2_1.2.2                 plyr_1.8.9                 
+#>  [25] httr2_1.3.0                 plyr_1.8.9                 
 #>  [27] plotly_4.12.0               zoo_1.8-15                 
-#>  [29] cachem_1.1.0                igraph_2.3.2               
+#>  [29] cachem_1.1.0                igraph_2.3.3               
 #>  [31] mime_0.13                   lifecycle_1.0.5            
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
 #>  [39] future_1.70.0               shiny_1.14.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
-#>  [43] S4Vectors_0.51.3            Seurat_5.5.0               
+#>  [43] S4Vectors_0.51.5            Seurat_5.5.1               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
-#>  [47] irlba_2.3.7                 RSQLite_3.53.2             
-#>  [49] textshaping_1.0.5           GenomicRanges_1.65.0       
-#>  [51] filelock_1.0.3              progressr_0.19.0           
+#>  [47] irlba_2.3.7                 RSQLite_3.53.3             
+#>  [49] textshaping_1.0.5           GenomicRanges_1.65.1       
+#>  [51] filelock_1.0.3              progressr_1.0.0            
 #>  [53] spatstat.sparse_3.2-0       polyclip_1.10-7            
 #>  [55] httr_1.4.8                  abind_1.4-8                
-#>  [57] compiler_4.6.0              withr_3.0.3                
+#>  [57] compiler_4.6.1              withr_3.0.3                
 #>  [59] bit64_4.8.2                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
-#>  [63] MASS_7.3-65                 rappdirs_0.3.4             
-#>  [65] DelayedArray_0.39.3         tools_4.6.0                
-#>  [67] lmtest_0.9-40               otel_0.2.0                 
-#>  [69] httpuv_1.6.17               future.apply_1.20.2        
-#>  [71] goftest_1.2-3               glue_1.8.1                 
-#>  [73] nlme_3.1-169                promises_1.5.0             
-#>  [75] grid_4.6.0                  Rtsne_0.17                 
-#>  [77] cluster_2.1.8.2             reshape2_1.4.5             
-#>  [79] generics_0.1.4              gtable_0.3.6               
-#>  [81] spatstat.data_3.1-9         tidyr_1.3.2                
-#>  [83] data.table_1.18.4           sp_2.2-1                   
-#>  [85] XVector_0.53.0              BiocGenerics_0.59.7        
-#>  [87] spatstat.geom_3.8-1         RcppAnnoy_0.0.23           
-#>  [89] ggrepel_0.9.8               RANN_2.6.2                 
-#>  [91] pillar_1.11.1               stringr_1.6.0              
-#>  [93] spam_2.11-4                 RcppHNSW_0.7.0             
-#>  [95] later_1.4.8                 splines_4.6.0              
-#>  [97] dplyr_1.2.1                 BiocFileCache_3.3.0        
-#>  [99] lattice_0.22-9              bit_4.6.0                  
-#> [101] deldir_2.0-4                survival_3.8-6             
-#> [103] tidyselect_1.2.1            SingleCellExperiment_1.35.1
-#> [105] miniUI_0.1.2                pbapply_1.7-4              
-#> [107] knitr_1.51                  gridExtra_2.3              
-#> [109] bookdown_0.47               IRanges_2.47.2             
-#> [111] Seqinfo_1.3.0               SummarizedExperiment_1.43.0
-#> [113] scattermore_1.2             stats4_4.6.0               
-#> [115] xfun_0.59                   Biobase_2.73.1             
-#> [117] matrixStats_1.5.0           stringi_1.8.7              
-#> [119] lazyeval_0.2.3              yaml_2.3.12                
-#> [121] evaluate_1.0.5              codetools_0.2-20           
-#> [123] tibble_3.3.1                BiocManager_1.30.27        
-#> [125] cli_3.6.6                   uwot_0.2.4                 
-#> [127] xtable_1.8-8                systemfonts_1.3.2          
-#> [129] jquerylib_0.1.4             Rcpp_1.1.1-1.1             
-#> [131] spatstat.random_3.5-0       globals_0.19.1             
-#> [133] dbplyr_2.6.0                png_0.1-9                  
-#> [135] spatstat.univar_3.2-0       parallel_4.6.0             
-#> [137] blob_1.3.0                  pkgdown_2.2.0              
-#> [139] ggplot2_4.0.3               dotCall64_1.2              
-#> [141] listenv_1.0.0               viridisLite_0.4.3          
-#> [143] scales_1.4.0                ggridges_0.5.7             
-#> [145] SeuratObject_5.4.0          purrr_1.2.2                
-#> [147] rlang_1.2.0                 cowplot_1.2.0
+#>  [63] MASS_7.3-65                 DelayedArray_0.39.3        
+#>  [65] tools_4.6.1                 lmtest_0.9-40              
+#>  [67] otel_0.2.0                  httpuv_1.6.17              
+#>  [69] future.apply_1.20.2         goftest_1.2-3              
+#>  [71] glue_1.8.1                  nlme_3.1-169               
+#>  [73] promises_1.5.0              grid_4.6.1                 
+#>  [75] Rtsne_0.17                  cluster_2.1.8.2            
+#>  [77] reshape2_1.4.5              generics_0.1.4             
+#>  [79] gtable_0.3.6                spatstat.data_3.1-9        
+#>  [81] tidyr_1.3.2                 data.table_1.18.4          
+#>  [83] sp_2.2-3                    XVector_0.53.0             
+#>  [85] BiocGenerics_0.59.10        spatstat.geom_3.8-1        
+#>  [87] RcppAnnoy_0.0.23            ggrepel_0.9.8              
+#>  [89] RANN_2.6.2                  pillar_1.11.1              
+#>  [91] stringr_1.6.0               spam_2.11-4                
+#>  [93] RcppHNSW_0.7.0              later_1.4.8                
+#>  [95] splines_4.6.1               dplyr_1.2.1                
+#>  [97] BiocFileCache_3.3.0         lattice_0.22-9             
+#>  [99] bit_4.6.0                   deldir_2.0-4               
+#> [101] survival_3.8-6              tidyselect_1.2.1           
+#> [103] SingleCellExperiment_1.35.2 miniUI_0.1.2               
+#> [105] pbapply_1.7-4               knitr_1.51                 
+#> [107] gridExtra_2.3.1             bookdown_0.47              
+#> [109] IRanges_2.47.2              Seqinfo_1.3.0              
+#> [111] SummarizedExperiment_1.43.0 scattermore_1.2            
+#> [113] stats4_4.6.1                xfun_0.60                  
+#> [115] Biobase_2.73.1              matrixStats_1.5.0          
+#> [117] stringi_1.8.7               lazyeval_0.2.3             
+#> [119] yaml_2.3.12                 evaluate_1.0.5             
+#> [121] codetools_0.2-20            tibble_3.3.1               
+#> [123] BiocManager_1.30.27         cli_3.6.6                  
+#> [125] uwot_0.2.4                  xtable_1.8-8               
+#> [127] systemfonts_1.3.2           jquerylib_0.1.4            
+#> [129] Rcpp_1.1.2                  spatstat.random_3.5-0      
+#> [131] globals_0.19.1              dbplyr_2.6.0               
+#> [133] png_0.1-9                   spatstat.univar_3.2-0      
+#> [135] parallel_4.6.1              blob_1.3.0                 
+#> [137] pkgdown_2.2.1               ggplot2_4.0.3              
+#> [139] dotCall64_1.2               listenv_1.0.0              
+#> [141] viridisLite_0.4.3           scales_1.4.0               
+#> [143] ggridges_0.5.7              SeuratObject_5.4.0         
+#> [145] purrr_1.2.2                 rlang_1.3.0                
+#> [147] cowplot_1.2.0
 ```
 
 ### Python
@@ -286,38 +288,38 @@ reticulate::py_config()
 
 reticulate::py_list_packages()
 #>              package     version                  requirement
-#> 1            anndata     0.12.18             anndata==0.12.18
+#> 1            anndata     0.12.19             anndata==0.12.19
 #> 2   array-api-compat      1.15.0     array-api-compat==1.15.0
 #> 3            certifi   2026.6.17           certifi==2026.6.17
 #> 4          contourpy       1.3.3             contourpy==1.3.3
 #> 5             cycler      0.12.1               cycler==0.12.1
 #> 6             donfig 0.8.1.post1          donfig==0.8.1.post1
-#> 7   fast-array-utils       1.4.1      fast-array-utils==1.4.1
+#> 7   fast-array-utils         1.5        fast-array-utils==1.5
 #> 8          fonttools      4.63.0            fonttools==4.63.0
 #> 9      google-crc32c       1.8.0         google-crc32c==1.8.0
 #> 10              h5py      3.16.0                 h5py==3.16.0
 #> 11            joblib       1.5.3                joblib==1.5.3
 #> 12        kiwisolver       1.5.0            kiwisolver==1.5.0
 #> 13   legacy-api-wrap         1.5         legacy-api-wrap==1.5
-#> 14          llvmlite      0.47.0             llvmlite==0.47.0
-#> 15        matplotlib      3.11.0           matplotlib==3.11.0
-#> 16            mudata       0.3.8                mudata==0.3.8
-#> 17          narwhals      2.22.1             narwhals==2.22.1
+#> 14          llvmlite      0.48.0             llvmlite==0.48.0
+#> 15        matplotlib      3.11.1           matplotlib==3.11.1
+#> 16            mudata      0.3.10               mudata==0.3.10
+#> 17          narwhals      2.24.0             narwhals==2.24.0
 #> 18           natsort       8.4.0               natsort==8.4.0
 #> 19          networkx       3.6.1              networkx==3.6.1
-#> 20             numba      0.65.1                numba==0.65.1
+#> 20             numba      0.66.0                numba==0.66.0
 #> 21         numcodecs      0.16.5            numcodecs==0.16.5
 #> 22             numpy       2.4.6                 numpy==2.4.6
 #> 23         packaging        26.2              packaging==26.2
 #> 24            pandas       2.3.3                pandas==2.3.3
 #> 25             patsy       1.0.2                 patsy==1.0.2
-#> 26            pillow      12.2.0               pillow==12.2.0
+#> 26            pillow      12.3.0               pillow==12.3.0
 #> 27       pynndescent       0.6.0           pynndescent==0.6.0
 #> 28         pyparsing       3.3.2             pyparsing==3.3.2
 #> 29   python-dateutil 2.9.0.post0 python-dateutil==2.9.0.post0
 #> 30              pytz      2026.2                 pytz==2026.2
 #> 31            PyYAML       6.0.3                PyYAML==6.0.3
-#> 32            scanpy      1.12.1               scanpy==1.12.1
+#> 32            scanpy      1.12.2               scanpy==1.12.2
 #> 33      scikit-learn       1.9.0          scikit-learn==1.9.0
 #> 34             scipy      1.18.0                scipy==1.18.0
 #> 35      scverse-misc       0.1.1          scverse-misc==0.1.1
@@ -326,9 +328,9 @@ reticulate::py_list_packages()
 #> 38               six      1.17.0                  six==1.17.0
 #> 39       statsmodels      0.14.6          statsmodels==0.14.6
 #> 40     threadpoolctl       3.6.0         threadpoolctl==3.6.0
-#> 41              tqdm      4.68.3                 tqdm==4.68.3
-#> 42 typing_extensions      4.15.0    typing_extensions==4.15.0
-#> 43            tzdata      2026.2               tzdata==2026.2
+#> 41              tqdm      4.69.0                 tqdm==4.69.0
+#> 42 typing_extensions      4.16.0    typing_extensions==4.16.0
+#> 43            tzdata      2026.3               tzdata==2026.3
 #> 44        umap-learn      0.5.12           umap-learn==0.5.12
 #> 45              zarr       3.2.1                  zarr==3.2.1
 ```

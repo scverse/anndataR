@@ -151,7 +151,7 @@ Investigate if this is a problem or not.
 sessionInfo()
 ```
 
-    ## R version 4.6.0 (2026-04-24)
+    ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 24.04.4 LTS
     ## 
@@ -176,16 +176,16 @@ sessionInfo()
     ## [5] rprojroot_2.1.1  knitr_1.51       tibble_3.3.1     BiocStyle_2.41.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] jsonlite_2.0.0      compiler_4.6.0      BiocManager_1.30.27
+    ##  [1] jsonlite_2.0.0      compiler_4.6.1      BiocManager_1.30.27
     ##  [4] tidyselect_1.2.1    jquerylib_0.1.4     systemfonts_1.3.2  
     ##  [7] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
     ## [10] R6_2.6.1            generics_0.1.4      htmlwidgets_1.6.4  
     ## [13] bookdown_0.47       desc_1.4.3          bslib_0.11.0       
-    ## [16] pillar_1.11.1       rlang_1.2.0         cachem_1.1.0       
-    ## [19] stringi_1.8.7       xfun_0.59           fs_2.1.0           
+    ## [16] pillar_1.11.1       rlang_1.3.0         cachem_1.1.0       
+    ## [19] stringi_1.8.7       xfun_0.60           fs_2.1.0           
     ## [22] sass_0.4.10         otel_0.2.0          cli_3.6.6          
-    ## [25] pkgdown_2.2.0       withr_3.0.3         magrittr_2.0.5     
+    ## [25] pkgdown_2.2.1       withr_3.0.3         magrittr_2.0.5     
     ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.3        
     ## [31] evaluate_1.0.5      glue_1.8.1          ragg_1.5.2         
-    ## [34] rmarkdown_2.31      tools_4.6.0         pkgconfig_2.0.3    
+    ## [34] rmarkdown_2.31      tools_4.6.1         pkgconfig_2.0.3    
     ## [37] htmltools_0.5.9
