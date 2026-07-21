@@ -1,7 +1,22 @@
-# anndata 1.3.0
+# anndataR 1.3.1
+
+- Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
+- Enable additional linters and optimise several suboptimal code patterns (PR #453).
+- Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
+- Fix use of `&` instead of `&&` when validating column names in `AbstractAnnData` (PR #487).
+- Update tests to take into account the `Rarr` structured datatype breaking change (PR #462).
+- Temporarily require Python `anndata < 0.13.0` in tests, workflows and the Python usage vignette (PR #481).
+- Add Zarr to the benchmarks (PR #446).
+- Add Bioconductor R-universe checks (PR #470).
+- Fix CI runners (PR #457).
+- Upgrade to roxygen2 8.0.0.
+- Simplify roxygen documentation for the H5AD and Zarr helpers by using `@inheritParams` (PR #479).
+- Update `CITATION` with the published paper (PR #464).
+- Mark Zarr support as implemented in the class diagram (PR #460).
+
+# anndataR 1.3.0
 
 - Bioconductor 3.24 devel
-- Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
 
 # anndataR 1.2.0
 
@@ -15,6 +30,8 @@
 # anndataR 1.1.2
 
 - Fix broken links (PR #429).
+- Fix the software design vignette (PR #438).
+- Fix GitHub Actions MacOS/Windows setup issue (PR #447).
 
 # anndataR 1.1.1
 
@@ -28,6 +45,19 @@
 # anndataR 1.1.0
 
 - Bioconductor 3.23 devel
+- Separate reading and writing keys in `HDF5AnnData` (PR #392).
+- Add a check for 0 dimensions when converting to `Seurat` (PR #393).
+- Warn that matrix dim names will not be written to H5AD files (PR #396).
+- Add a warning to `.from_SCE_convert()` (PR #402).
+- Warn when a rotation is provided but not stored in a `LinearEmbeddingMatrix` (PR #407).
+- Fix linting issues (PR #389).
+- Add Bioconductor badges (PR #375).
+- Update **{pkgdown}** rendering (PR #379).
+- Force loading the environment in the Python vignette (PR #394).
+- Add issue templates (PR #395).
+- Update GitHub Actions based on those used by **{rhdf5}** (PR #378).
+- Set different cache versions in GitHub Actions (PR #403).
+- Update CI (PR #416).
 
 # anndataR 1.0.2
 
