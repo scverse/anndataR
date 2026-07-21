@@ -214,7 +214,7 @@ sessionInfo()
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
-#>  [39] future_1.70.0               shiny_1.14.0               
+#>  [39] future_1.75.0               shiny_1.14.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
 #>  [43] S4Vectors_0.51.5            Seurat_5.5.1               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
