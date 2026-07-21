@@ -49,7 +49,9 @@ jobs:
 
       - name: Configure python dependencies and reticulate
         run: |
-          pip install scanpy mudata
+          # TEMP(anndata<0.13.0): pin added in PR #481, revert once anndataR
+          # supports Python anndata >= 0.13.0
+          pip install "anndata<0.13.0" scanpy mudata
           echo "RETICULATE_PYTHON=$(which python3)" >> ~/.Renviron
           echo "Python configured for reticulate:" && Rscript -e 'reticulate::py_config()'
 
