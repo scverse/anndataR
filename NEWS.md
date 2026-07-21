@@ -5,10 +5,12 @@
 - Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
 - Fix use of `&` instead of `&&` when validating column names in `AbstractAnnData` (PR #487).
 - Update tests to take into account the `Rarr` structured datatype breaking change (PR #462).
+- Temporarily require Python `anndata < 0.13.0` in tests, workflows and the Python usage vignette (PR #481).
 - Add Zarr to the benchmarks (PR #446).
 - Add Bioconductor R-universe checks (PR #470).
 - Fix CI runners (PR #457).
 - Upgrade to roxygen2 8.0.0.
+- Simplify roxygen documentation for the H5AD and Zarr helpers by using `@inheritParams` (PR #479).
 - Update `CITATION` with the published paper (PR #464).
 - Mark Zarr support as implemented in the class diagram (PR #460).
 
