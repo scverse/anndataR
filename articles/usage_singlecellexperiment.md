@@ -366,7 +366,7 @@ sessionInfo()
 #>  [5] Seqinfo_1.3.0               IRanges_2.47.2             
 #>  [7] S4Vectors_0.51.5            BiocGenerics_0.59.10       
 #>  [9] generics_0.1.4              MatrixGenerics_1.25.0      
-#> [11] matrixStats_1.5.0           anndataR_1.3.0             
+#> [11] matrixStats_1.5.0           anndataR_1.3.1             
 #> [13] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
@@ -374,7 +374,7 @@ sessionInfo()
 #>  [4] paws.common_0.8.10  digest_0.6.39       magrittr_2.0.5     
 #>  [7] evaluate_1.0.5      grid_4.6.1          bookdown_0.47      
 #> [10] fastmap_1.2.0       R.oo_1.27.1         jsonlite_2.0.0     
-#> [13] Matrix_1.7-5        R.utils_2.13.0      Rarr_2.1.24        
+#> [13] Matrix_1.7-5        R.utils_2.13.0      Rarr_2.1.26        
 #> [16] BiocManager_1.30.27 purrr_1.2.2         httr2_1.3.0        
 #> [19] textshaping_1.0.5   jquerylib_0.1.4     abind_1.4-8        
 #> [22] cli_3.6.6           crayon_1.5.3        rlang_1.3.0        

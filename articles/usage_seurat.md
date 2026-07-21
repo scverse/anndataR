@@ -256,7 +256,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_5.5.1       SeuratObject_5.4.0 sp_2.2-3           anndataR_1.3.0    
+#> [1] Seurat_5.5.1       SeuratObject_5.4.0 sp_2.2-3           anndataR_1.3.1    
 #> [5] BiocStyle_2.41.0  
 #> 
 #> loaded via a namespace (and not attached):
@@ -275,7 +275,7 @@ sessionInfo()
 #>  [37] future_1.75.0          shiny_1.14.0           digest_0.6.39         
 #>  [40] paws.storage_0.10.0    patchwork_1.3.2        tensor_1.5.1          
 #>  [43] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [46] progressr_1.0.0        Rarr_2.1.24            spatstat.sparse_3.2-0 
+#>  [46] progressr_1.0.0        Rarr_2.1.26            spatstat.sparse_3.2-0 
 #>  [49] httr_1.4.8             polyclip_1.10-7        abind_1.4-8           
 #>  [52] compiler_4.6.1         withr_3.0.3            S7_0.2.2              
 #>  [55] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        
