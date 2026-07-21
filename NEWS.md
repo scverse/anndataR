@@ -1,3 +1,11 @@
+# anndataR 1.2.1
+
+- Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
+
+# anndataR 1.2.0
+
+- Bioconductor 3.23 release
+
 # anndataR 1.1.3
 
 - Prepare for Bioconductor 3.23 release (PR #449).
