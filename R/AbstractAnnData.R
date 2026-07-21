@@ -448,7 +448,7 @@ AbstractAnnData <- R6::R6Class(
         rownames(mat) <- NULL
       }
 
-      if (!is.null(expected_colnames) & !is.null(colnames(mat))) {
+      if (!is.null(expected_colnames) && !is.null(colnames(mat))) {
         if (!identical(colnames(mat), expected_colnames)) {
           cli_abort(
             c(
