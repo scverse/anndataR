@@ -45,6 +45,8 @@ jobs:
           python-version: '3.x'
 
       - name: Install Python dependencies
+        # TEMP(anndata<0.13.0): pin added in PR #481, revert once anndataR
+        # supports Python anndata >= 0.13.0
         run: pip install "anndata<0.13.0" dummy-anndata
 
       - name: Configure reticulate
