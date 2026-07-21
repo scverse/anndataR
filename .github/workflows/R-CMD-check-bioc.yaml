@@ -91,8 +91,10 @@ jobs:
         shell: Rscript {0}
         run: |
           reticulate::install_miniconda()
+          # TEMP(anndata<0.13.0): pin added in PR #481, revert once anndataR
+          # supports Python anndata >= 0.13.0
           reticulate::py_install(
-            c("scanpy", "mudata"),
+            c("scanpy", "mudata", "anndata<0.13.0"),
             method = "conda",
             channel = "conda-forge"
           )
