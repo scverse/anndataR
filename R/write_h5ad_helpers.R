@@ -7,6 +7,10 @@
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param chunk_size Target chunk size in bytes. When `"auto"` (default), the
+#'   chunk size is determined automatically using `hdf5_auto_chunk()`.
+#'   When `NULL`, chunking is disabled (contiguous storage, the rhdf5 default).
+#'   When a number, it is used as the target chunk size in bytes.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'

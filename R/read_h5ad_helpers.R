@@ -301,6 +301,7 @@ read_h5ad_csc_matrix <- function(hdf5_file, name, version, backed, ...) {
 #' Read a sparse array from an H5AD file
 #'
 #' @inheritParams read_h5ad_element
+#' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
 #'
 #' @return a sparse matrix/array or a DelayedArray if `backed = TRUE`
 #' @importFrom Matrix sparseMatrix
@@ -331,7 +332,7 @@ read_h5ad_sparse_array <- function(
 #' Read a sparse array from an H5AD file using base {rhdf5}
 #'
 #' @inheritParams read_h5ad_element
-#' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
+#' @inheritParams read_h5ad_sparse_array type
 #'
 #' @return a sparse matrix
 #' @importFrom Matrix sparseMatrix
