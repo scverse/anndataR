@@ -290,7 +290,7 @@ reticulate::py_list_packages()
 #>              package     version                  requirement
 #> 1            anndata     0.12.19             anndata==0.12.19
 #> 2   array-api-compat      1.15.0     array-api-compat==1.15.0
-#> 3            certifi   2026.6.17           certifi==2026.6.17
+#> 3            certifi   2026.7.22           certifi==2026.7.22
 #> 4          contourpy       1.3.3             contourpy==1.3.3
 #> 5             cycler      0.12.1               cycler==0.12.1
 #> 6             donfig 0.8.1.post1          donfig==0.8.1.post1
