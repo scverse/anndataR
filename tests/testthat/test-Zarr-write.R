@@ -7,6 +7,22 @@ if (dir.exists(store)) {
 
 create_zarr(store = store)
 
+test_that("Creating a Zarr store at a relative path works", {
+  withr::with_tempdir({
+    create_zarr(store = "relative.zarr")
+    expect_true(dir.exists("relative.zarr"))
+    expect_true(file.exists(file.path("relative.zarr", ".zgroup")))
+  })
+})
+
+test_that("Creating a Zarr store with regex characters in the name works", {
+  store_regex <- tempfile(pattern = "a+b", fileext = ".zarr")
+  create_zarr(store = store_regex)
+  expect_true(file.exists(file.path(store_regex, ".zgroup")))
+  # The store must not be nested inside a directory of the same name
+  expect_false(dir.exists(file.path(store_regex, basename(store_regex))))
+})
+
 test_that("Writing Zarr dense arrays works", {
   array <- matrix(rnorm(20), nrow = 5, ncol = 4)
 

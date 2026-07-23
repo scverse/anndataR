@@ -1,30 +1,3 @@
-#' Read Zarr encoding
-#'
-#' Read the encoding and version of an element in a Zarr store
-#'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#'
-#' @return A named list with names type and version
-#'
-#' @noRd
-read_zarr_encoding <- function(store, name) {
-  tryCatch(
-    {
-      attrs <- Rarr::read_zarr_attributes(file.path(store, name))
-      list(
-        type = attrs[["encoding-type"]],
-        version = attrs[["encoding-version"]]
-      )
-    },
-    error = function(e) {
-      cli_abort(
-        "Encoding attributes not found for element {.val {name}} in {.path {store}}"
-      )
-    }
-  )
-}
-
 #' Read Zarr element
 #'
 #' Read an element from a Zarr store
@@ -103,13 +76,94 @@ read_zarr_element <- function(
   )
 }
 
+#' Read Zarr element keys
+#'
+#' Read the keys of an element from a Zarr store
+#'
+#' @inheritParams read_zarr_element
+#'
+#' @return A character vector of keys
+#'
+#' @noRd
+read_zarr_element_keys <- function(
+  store,
+  name,
+  type = NULL,
+  version = NULL,
+  stop_on_error = FALSE,
+  ...
+) {
+  if (!zarr_path_exists(store, name)) {
+    return(NULL)
+  }
+
+  if (is.null(type)) {
+    encoding_list <- read_zarr_encoding(store, name)
+    type <- encoding_list$type
+    version <- encoding_list$version
+  }
+
+  read_fun <- switch(
+    type,
+    "dataframe" = read_zarr_data_frame_keys,
+    "dict" = read_zarr_mapping_keys,
+    cli_abort(
+      "No function for reading keys for Zarr encoding {.cls {type}} for element {.val {name}}"
+    )
+  )
+
+  tryCatch(
+    {
+      read_fun(store = store, name = name, version = version, ...)
+    },
+    error = function(e) {
+      msg <- cli::cli_fmt(cli::cli_bullets(c(
+        paste0(
+          "Error reading element keys for {.field {name}} of type {.cls {type}}"
+        ),
+        "i" = conditionMessage(e)
+      )))
+      if (stop_on_error) {
+        cli_abort(msg)
+      } else {
+        cli_warn(msg)
+        NULL
+      }
+    }
+  )
+}
+
+#' Read Zarr encoding
+#'
+#' Read the encoding and version of an element in a Zarr store
+#'
+#' @inheritParams read_zarr_element
+#'
+#' @return A named list with names type and version
+#'
+#' @noRd
+read_zarr_encoding <- function(store, name) {
+  tryCatch(
+    {
+      attrs <- Rarr::read_zarr_attributes(file.path(store, name))
+      list(
+        type = attrs[["encoding-type"]],
+        version = attrs[["encoding-version"]]
+      )
+    },
+    error = function(e) {
+      cli_abort(
+        "Encoding attributes not found for element {.val {name}} in {.path {store}}"
+      )
+    }
+  )
+}
+
 #' Read Zarr null
 #'
 #' Read a null value from an Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return `NULL`
 #' @noRd
@@ -123,9 +177,7 @@ read_zarr_null <- function(store, name, version = "0.1.0") {
 #'
 #' Read a dense array from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return A matrix or a vector if 1D
 #'
@@ -160,9 +212,7 @@ read_zarr_csc_matrix <- function(store, name, version) {
 #'
 #' Read a sparse array from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
 #'
 #' @return A sparse matrix/DelayedArray???, or a vector if 1D
@@ -197,9 +247,7 @@ read_zarr_sparse_array <- function(
 #'
 #' Read a recarray from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @details
 #' A "record array" (recarray) is a Python NumPy array type that contains
@@ -222,9 +270,7 @@ read_zarr_rec_array <- function(store, name, version = "0.2.0") {
 #'
 #' Read a nullable boolean from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return A boolean vector
 #'
@@ -237,9 +283,7 @@ read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
 #'
 #' Read a nullable integer from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return An integer vector
 #'
@@ -271,9 +315,7 @@ read_zarr_nullable_string <- function(store, name, version = "0.1.0") {
 #'
 #' Read a nullable vector (boolean or integer) from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return A nullable vector
 #'
@@ -367,9 +409,7 @@ read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
 #'
 #' Read a numeric scalar from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return A numeric vector of length 1
 #'
@@ -389,9 +429,7 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
 #'
 #' Read a mapping from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return A named list
 #'
@@ -406,9 +444,7 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
 #'
 #' Read a data frame from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return A data.frame
 #'
@@ -433,8 +469,7 @@ read_zarr_data_frame <- function(
 
 #' Read multiple Zarr datatypes
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
+#' @inheritParams read_zarr_element
 #' @param item_names Vector of item names (in order)
 #'
 #' @return A named list
@@ -458,75 +493,11 @@ read_zarr_collection <- function(store, name, item_names) {
   items
 }
 
-#' Read Zarr element keys
-#'
-#' Read the keys of an element from a Zarr store
-#'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param type The encoding type of the element to read
-#' @param version The encoding version of the element to read
-#' @param stop_on_error Whether to stop on error or generate a warning instead
-#' @param ... Extra arguments passed to individual reading functions
-#'
-#' @return A character vector of keys
-#'
-#' @noRd
-read_zarr_element_keys <- function(
-  store,
-  name,
-  type = NULL,
-  version = NULL,
-  stop_on_error = FALSE,
-  ...
-) {
-  if (!zarr_path_exists(store, name)) {
-    return(NULL)
-  }
-
-  if (is.null(type)) {
-    encoding_list <- read_zarr_encoding(store, name)
-    type <- encoding_list$type
-    version <- encoding_list$version
-  }
-
-  read_fun <- switch(
-    type,
-    "dataframe" = read_zarr_data_frame_keys,
-    "dict" = read_zarr_mapping_keys,
-    cli_abort(
-      "No function for reading keys for Zarr encoding {.cls {type}} for element {.val {name}}"
-    )
-  )
-
-  tryCatch(
-    {
-      read_fun(store = store, name = name, version = version, ...)
-    },
-    error = function(e) {
-      msg <- cli::cli_fmt(cli::cli_bullets(c(
-        paste0(
-          "Error reading element keys for {.field {name}} of type {.cls {type}}"
-        ),
-        "i" = conditionMessage(e)
-      )))
-      if (stop_on_error) {
-        cli_abort(msg)
-      } else {
-        cli_warn(msg)
-        NULL
-      }
-    }
-  )
-}
-
 #' Read Zarr mapping keys
 #'
 #' Read keys for a mapping (dict) from a Zarr store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #'
 #' @return A character vector of item names
 #'
@@ -547,9 +518,7 @@ read_zarr_mapping_keys <- function(store, name, version = "0.1.0") {
 #' Read the row names (index) and/or column names of a data frame from a Zarr
 #' store
 #'
-#' @param store A Zarr store instance
-#' @param name Name of the element within the Zarr store
-#' @param version Encoding version of the element to read
+#' @inheritParams read_zarr_element
 #' @param dim Dimension to read keys for: `"both"`, `"rows"`, or `"cols"`
 #'
 #' @return A character vector if `dim` is `"rows"` or `"cols"`, or a list with

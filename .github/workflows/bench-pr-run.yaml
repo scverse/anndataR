@@ -40,12 +40,14 @@ jobs:
             any::reticulate
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.x'
 
       - name: Install Python dependencies
-        run: pip install anndata dummy-anndata
+        # TEMP(anndata<0.13.0): pin added in PR #481, revert once anndataR
+        # supports Python anndata >= 0.13.0
+        run: pip install "anndata<0.13.0" dummy-anndata
 
       - name: Configure reticulate
         run: echo "RETICULATE_PYTHON=$(which python)" >> $GITHUB_ENV
