@@ -65,9 +65,11 @@ create_zarr_group <- function(
 #'
 #' @noRd
 create_zarr <- function(store, format) {
-  prefix <- basename(store)
-  dir <- gsub(paste0(prefix, "$"), "", store)
-  create_zarr_group(store = dir, name = prefix, format = format)
+  create_zarr_group(
+    store = dirname(store),
+    name = basename(store),
+    format = format
+  )
 }
 
 #' is_zarr_empty

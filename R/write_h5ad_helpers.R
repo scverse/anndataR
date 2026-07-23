@@ -7,7 +7,11 @@
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param chunk_size Target chunk size in bytes. When `"auto"` (default), the
+#'   chunk size is determined automatically using `hdf5_auto_chunk()`.
+#'   When `NULL`, chunking is disabled (contiguous storage, the rhdf5 default).
+#'   When a number, it is used as the target chunk size in bytes.
+#' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -132,8 +136,7 @@ write_h5ad_element <- function(
 #'
 #' @noRd
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
+#' @inheritParams write_h5ad_element
 #' @param encoding The encoding type to set
 #' @param version The encoding version to set
 write_h5ad_encoding <- function(hdf5_file, name, encoding, version) {
@@ -160,11 +163,8 @@ write_h5ad_encoding <- function(hdf5_file, name, encoding, version) {
 #'
 #' Write a null dataset to an H5AD file
 #'
-#' @param value Value to write, not used
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression Not used as there is no value
-#' @param version Encoding version of the element to write
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
 #' @noRd
 write_h5ad_null <- function(
@@ -198,12 +198,8 @@ write_h5ad_null <- function(
 #'
 #' Write a dense array to an H5AD file
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
 #' @noRd
 write_h5ad_dense_array <- function(
@@ -268,14 +264,10 @@ write_h5ad_dense_array <- function(
 #'
 #' Write a sparse array to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_h5ad_sparse_array <- function(
   value,
   hdf5_file,
@@ -347,14 +339,10 @@ write_h5ad_sparse_array <- function(
 #'
 #' Write a nullable boolean to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 # nolint start: object_length_linter
 write_h5ad_nullable_boolean <- function(
   value,
@@ -396,14 +384,10 @@ write_h5ad_nullable_boolean <- function(
 #'
 #' Write a nullable integer to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 # nolint start: object_length_linter
 write_h5ad_nullable_integer <- function(
   value,
@@ -444,14 +428,10 @@ write_h5ad_nullable_integer <- function(
 #'
 #' Write a string array to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_h5ad_string_array <- function(
   value,
   hdf5_file,
@@ -485,14 +465,10 @@ write_h5ad_string_array <- function(
 #'
 #' Write a categorical to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_h5ad_categorical <- function(
   value,
   hdf5_file,
@@ -551,14 +527,10 @@ write_h5ad_categorical <- function(
 #'
 #' Write a string scalar to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_h5ad_string_scalar <- function(
   value,
   hdf5_file,
@@ -583,14 +555,10 @@ write_h5ad_string_scalar <- function(
 #'
 #' Write a numeric scalar to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_h5ad_numeric_scalar <- function(
   value,
   hdf5_file,
@@ -626,14 +594,10 @@ write_h5ad_numeric_scalar <- function(
 #'
 #' Write a mapping to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_h5ad_mapping <- function(
   value,
   hdf5_file,
@@ -664,17 +628,13 @@ write_h5ad_mapping <- function(
 #'
 #' Write a data frame to an H5AD file
 #'
-#' @noRd
-#'
-#' @param value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #' @param index The index to write. Can either be a vector of length equal to
 #' the number of rows in `values` or a single character string giving the name
 #' of a column in `values`. If `NULL` then `rownames(value)` is used.
-#' @param version Encoding version of the element to write
+#'
+#' @noRd
 write_h5ad_data_frame <- function(
   value,
   hdf5_file,
@@ -760,14 +720,10 @@ write_h5ad_data_frame <- function(
 #'
 #' Write a data frame index to an H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param index_value Value to write
-#' @param hdf5_file An `HDF5File` object
-#' @param name Name of the element within the H5AD file
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version Encoding version of the element to write
+#' @noRd
 write_h5ad_data_frame_index <- function(
   index_value,
   hdf5_file,
@@ -794,14 +750,10 @@ write_h5ad_data_frame_index <- function(
 #'
 #' Write a new empty H5AD file
 #'
-#' @noRd
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
 #'
-#' @param hdf5_file An `HDF5File` object
-#' @param obs Data frame with observations
-#' @param var Data frame with variables
-#' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
-#' @param version The H5AD version to write
+#' @noRd
 write_empty_h5ad <- function(
   hdf5_file,
   obs,

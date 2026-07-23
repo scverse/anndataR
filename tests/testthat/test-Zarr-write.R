@@ -32,6 +32,22 @@ for (zarr_format in c(2, 3)) {
         create_zarr(store = store_w_diff, format = zarr_format_diff)
         expect_equal(zarr_node_format(store_w_diff, ""), zarr_format_diff)
       })
+      
+      test_that("Writing a Zarr store at a relative path works", {
+        withr::with_tempdir({
+          create_zarr(store = "relative.zarr", format = zarr_format)
+          expect_true(dir.exists("relative.zarr"))
+          expect_true(file.exists(file.path("relative.zarr", ".zgroup")))
+        })
+      })
+      
+      test_that("Writing a Zarr store with regex characters in the name works", {
+        store_regex <- tempfile(pattern = "a+b", fileext = ".zarr")
+        create_zarr(store = store_regex, format = zarr_format)
+        expect_true(file.exists(file.path(store_regex, ".zgroup")))
+        # The store must not be nested inside a directory of the same name
+        expect_false(dir.exists(file.path(store_regex, basename(store_regex))))
+      })
 
       test_that("Writing Zarr dense arrays works", {
         array <- matrix(rnorm(20), nrow = 5, ncol = 4)
