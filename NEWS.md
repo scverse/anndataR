@@ -1,3 +1,16 @@
+# anndataR 1.2.1
+
+Backported from the development branch (PR #489):
+
+- Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
+- Fix conditional expression in `AbstractAnnData` matrix validation (PR #487).
+- Require Python `anndata<0.13.0` in tests, workflows and vignettes (PR #481).
+- Update `CITATION` with the published paper (PR #464).
+
+# anndataR 1.2.0
+
+- Bioconductor 3.23 release
+
 # anndataR 1.1.3
 
 - Prepare for Bioconductor 3.23 release (PR #449).

@@ -11,7 +11,10 @@ vignette: >
 ```{r, include = FALSE}
 # Set up reticulate and check for required Python packages.
 reticulate::py_require("mudata")
-reticulate::py_require("scanpy")
+# TEMP(anndata<0.13.0): pin and the scanpy lower bound were added in PR #481,
+# revert once anndataR supports Python anndata >= 0.13.0
+reticulate::py_require("scanpy>=1.10")
+reticulate::py_require("anndata<0.13.0")
 
 # Check if required Python packages are available.
 python_available <- reticulate::py_module_available("scanpy") &&
@@ -57,7 +60,9 @@ If these are not available, the code chunks will not be evaluated but the exampl
 Install required Python packages if needed:
 
 ```{r python_setup, eval=FALSE}
-reticulate::py_require("scanpy")
+# TEMP(anndata<0.13.0): anndataR does not yet support Python anndata >= 0.13.0
+reticulate::py_require("scanpy>=1.10")
+reticulate::py_require("anndata<0.13.0")
 ```
 
 ```{r load_libraries}
