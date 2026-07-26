@@ -5,11 +5,11 @@ if (dir.exists(store)) {
   unlink(store, recursive = TRUE)
 }
 
-create_zarr(store = store)
+Rarr::write_zarr_group(store, "")
 
 test_that("Creating a Zarr store at a relative path works", {
   withr::with_tempdir({
-    create_zarr(store = "relative.zarr")
+    Rarr::write_zarr_group(store = "relative.zarr", "")
     expect_true(dir.exists("relative.zarr"))
     expect_true(file.exists(file.path("relative.zarr", ".zgroup")))
   })
@@ -17,7 +17,7 @@ test_that("Creating a Zarr store at a relative path works", {
 
 test_that("Creating a Zarr store with regex characters in the name works", {
   store_regex <- tempfile(pattern = "a+b", fileext = ".zarr")
-  create_zarr(store = store_regex)
+  Rarr::write_zarr_group(store = store_regex, "")
   expect_true(file.exists(file.path(store_regex, ".zgroup")))
   # The store must not be nested inside a directory of the same name
   expect_false(dir.exists(file.path(store_regex, basename(store_regex))))
