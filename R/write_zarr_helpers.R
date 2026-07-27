@@ -8,11 +8,9 @@
 #' @param compression The compression to use when writing the element.
 #'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
 #'   `"zlib"`, `"lz4"`.
-#' @param zarr_format The format to use when writing the Zarr file.
-#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively.
-#'   Unless it is specified, Zarr v3 will be used by default.
-#'   The format can also be specified using
-#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
+#' @param zarr_format The format to write the element in, either 2 or 3 for the
+#'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
+#'   elements of a store end up in the same format.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'
@@ -363,6 +361,59 @@ write_zarr_nullable_integer <- function(
   write_zarr_encoding(store, name, "nullable-integer", version, zarr_format)
 }
 
+#' Patch Zarr array metadata to declare VLen-UTF8 strings
+#'
+#' TEMPORARY WORKAROUND. Rarr has no interface for writing VLen-UTF8 strings, so
+#' the array is written with a placeholder data type and its metadata is then
+#' rewritten by hand: a `vlen-utf8` filter for Zarr v2, and the `bytes` codec
+#' swapped for `vlen-utf8` plus a `string` data type for Zarr v3.
+#'
+#' Editing metadata behind Rarr's back like this is fragile, and it means the
+#' array on disk briefly disagrees with what Rarr thinks it wrote.
+#'
+#' TODO: Remove this function and pass the string type to Rarr directly once
+#' https://github.com/Huber-group-EMBL/Rarr/issues/111 is resolved.
+#'
+#' @param store The location of the Zarr store
+#' @param name Name of the array within the store
+#' @param zarr_format The format the array was written in
+#'
+#' @noRd
+patch_zarr_vlen_utf8 <- function(store, name, zarr_format) {
+  metadata_path <- file.path(
+    store,
+    name,
+    if (zarr_format == 2L) ".zarray" else "zarr.json"
+  )
+  check_requires("write_zarr", "jsonlite", where = "CRAN")
+  metadata <- jsonlite::read_json(metadata_path)
+
+  if (zarr_format == 2L) {
+    metadata$filters <- c(metadata$filters, list(list(id = "vlen-utf8")))
+  } else {
+    metadata$data_type <- "string"
+    # There should be only one array-bytes codec
+    metadata$codecs <- lapply(
+      metadata$codecs,
+      function(codec) {
+        if (codec$name == "bytes") {
+          list(name = "vlen-utf8")
+        } else {
+          codec
+        }
+      }
+    )
+  }
+
+  jsonlite::write_json(
+    metadata,
+    metadata_path,
+    auto_unbox = TRUE,
+    pretty = TRUE,
+    null = "null"
+  )
+}
+
 #' Write Zarr string array
 #'
 #' Write a string array to a Zarr store
@@ -396,52 +447,15 @@ write_zarr_string_array <- function(
       dim = dims,
       chunk_dim = chunk_dims,
       order = if (length(dims) > 0) "C" else "F",
+      # placeholder type, rewritten to a string type just below
       data_type = "|O",
       compressor = .get_compressor(compression),
       zarr_version = zarr_format
     )
   })
-  # Rarr doesn't yet provide an explicit interface to deal with VLen-UTF8 so
-  # we patch the metadata by hand.
-  # Will be resolved by https://github.com/Huber-group-EMBL/Rarr/issues/111.
-  if (zarr_format == 2L) {
-    zarr_json_path <- file.path(store, name, ".zarray")
-    zarr_json <- jsonlite::read_json(zarr_json_path)
-    zarr_json$filters <- c(
-      zarr_json$filters,
-      list(list(id = "vlen-utf8"))
-    )
-    jsonlite::write_json(
-      zarr_json,
-      zarr_json_path,
-      auto_unbox = TRUE,
-      pretty = TRUE,
-      null = "null"
-    )
-  }
-  if (zarr_format == 3L) {
-    zarr_json_path <- file.path(store, name, "zarr.json")
-    zarr_json <- jsonlite::read_json(zarr_json_path)
-    zarr_json$data_type <- "string"
-    # There should be only one bytes-array codec
-    zarr_json$codecs <- lapply(
-      zarr_json$codecs,
-      function(codec) {
-        if (codec$name == "bytes") {
-          list(name = "vlen-utf8")
-        } else {
-          codec
-        }
-      }
-    )
-    jsonlite::write_json(
-      zarr_json,
-      zarr_json_path,
-      auto_unbox = TRUE,
-      pretty = TRUE,
-      null = "null"
-    )
-  }
+  # TODO: Remove this call, and write the array as strings directly, once
+  # https://github.com/Huber-group-EMBL/Rarr/issues/111 is resolved
+  patch_zarr_vlen_utf8(store, name, zarr_format)
 
   if (all(dims != 0)) {
     data <- array(data = value, dim = dims)
@@ -534,53 +548,16 @@ write_zarr_string_scalar <- function(
   value <- array(data = value, dim = 1)
   Rarr::create_empty_zarr_array(
     zarr_array_path = file.path(store, name),
+    # placeholder type, rewritten to a string type just below
     data_type = "|O",
     dim = 1,
     chunk_dim = 1,
     compressor = .get_compressor(compression),
     zarr_version = zarr_format
   )
-  # Rarr doesn't yet provide an explicit interface to deal with VLen-UTF8 so
-  # we patch the metadata by hand.
-  # Will be resolved by https://github.com/Huber-group-EMBL/Rarr/issues/111.
-  if (zarr_format == 2L) {
-    zarr_json_path <- file.path(store, name, ".zarray")
-    zarr_json <- jsonlite::read_json(zarr_json_path)
-    zarr_json$filters <- c(
-      zarr_json$filters,
-      list(list(id = "vlen-utf8"))
-    )
-    jsonlite::write_json(
-      zarr_json,
-      zarr_json_path,
-      auto_unbox = TRUE,
-      pretty = TRUE,
-      null = "null"
-    )
-  }
-  if (zarr_format == 3L) {
-    zarr_json_path <- file.path(store, name, "zarr.json")
-    zarr_json <- jsonlite::read_json(zarr_json_path)
-    zarr_json$data_type <- "string"
-    # There should be only one bytes-array codec
-    zarr_json$codecs <- lapply(
-      zarr_json$codecs,
-      function(codec) {
-        if (codec$name == "bytes") {
-          list(name = "vlen-utf8")
-        } else {
-          codec
-        }
-      }
-    )
-    jsonlite::write_json(
-      zarr_json,
-      zarr_json_path,
-      auto_unbox = TRUE,
-      pretty = TRUE,
-      null = "null"
-    )
-  }
+  # TODO: Remove this call, and write the scalar as a string directly, once
+  # https://github.com/Huber-group-EMBL/Rarr/issues/111 is resolved
+  patch_zarr_vlen_utf8(store, name, zarr_format)
   Rarr::update_zarr_array(
     value,
     zarr_array_path = file.path(store, name),

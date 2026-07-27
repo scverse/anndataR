@@ -141,6 +141,9 @@ test_that("writing X works", {
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(zarr$X <- X)
+  # the store was created as v2, so everything written into it must be v2 too,
+  # whatever the anndataR.zarr_format option happens to be
+  expect_zarr_store_format(store, 2)
   unlink(store, recursive = TRUE)
 })
 
