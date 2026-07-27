@@ -410,8 +410,15 @@ for (zarr_format in c(2, 3)) {
           zarr_format = zarr_format
         )
 
-        # TODO: blosc does not work for now
-        comp_list <- c("gzip", "zstd", "lzma", "bz2", "zlib", "lz4")
+        comp_list <- c(
+          "gzip",
+          "blosc",
+          "zstd",
+          "lzma",
+          "bz2",
+          "zlib",
+          "lz4"
+        )
         for (comp in comp_list) {
           write_zarr(
             adata,
@@ -419,8 +426,10 @@ for (zarr_format in c(2, 3)) {
             compression = comp,
             zarr_format = zarr_format
           )
+          # measure before removing the store, otherwise the comparison is
+          # always against a size of zero
+          expect_gt(dir_size(store_none), dir_size(store_compressed))
           unlink(store_compressed, recursive = TRUE)
-          expect_true(dir_size(store_none) > dir_size(store_compressed))
         }
       })
     }

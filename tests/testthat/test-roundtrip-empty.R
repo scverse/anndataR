@@ -10,10 +10,6 @@ tryCatch(ad$settings$allow_write_nullable_strings <- TRUE, error = function(e) {
 })
 bi <- reticulate::import_builtins()
 
-# suppress ZarrUserWarnings
-wr <- reticulate::import("warnings")
-wr$filterwarnings("ignore")
-
 known_issues <- read_known_issues()
 
 name <- "empty"
