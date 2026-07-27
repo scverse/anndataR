@@ -5,10 +5,10 @@
 #' @param fmt Either `"h5ad"` or `"zarr"`
 #' @return A named list with elements: `backend`, `ext`, `r_read_fun`,
 #'   `r_write_fun`, `py_read_method`, `py_write_method`
-get_fmt_config <- function(fmt = c("h5ad", "zarr")) {
+get_fmt_config <- function(fmt = c("h5ad", "zarrv2", "zarrv3")) {
   fmt <- match.arg(fmt)
 
-  if (fmt == "zarr") {
+  if (fmt %in% c("zarrv2", "zarrv3")) {
     skip_if_no_zarr() # nolint: object_usage_linter
     list(
       backend = "ZarrAnnData",
@@ -16,7 +16,8 @@ get_fmt_config <- function(fmt = c("h5ad", "zarr")) {
       r_read_fun = read_zarr,
       r_write_fun = write_zarr,
       py_read_method = "read_zarr",
-      py_write_method = "write_zarr"
+      py_write_method = "write_zarr",
+      zarr_format = if (fmt == "zarrv2") 2L else 3L
     )
   } else {
     list(

@@ -223,6 +223,19 @@ tmpfile <- tempfile(fileext = ".zarr")
 write_zarr(obj, tmpfile)
 ```
 
+Both Zarr v2 and v3 can be read and written, and new stores are written as Zarr v3 by default.
+To write a Zarr v2 store, pass `zarr_format = 2`:
+
+```{r write-zarr-format}
+tmpfile <- tempfile(fileext = ".zarr")
+adata$write_zarr(tmpfile, zarr_format = 2)
+```
+
+Setting `options(anndataR.zarr_format = 2)` changes the default for the rest of the session.
+Writing to a store that already exists always uses the format of that store, so appending to a Zarr v2 store never produces a mix of the two.
+
+See the [Zarr documentation](https://zarr.readthedocs.io/en/stable/) and the [Zarr specifications](https://zarr-specs.readthedocs.io/en/latest/specs.html) for more about the two formats.
+
 ## Subsetting `AnnData` objects {#subsetting}
 
 `r Biocpkg("anndataR")` provides standard R subsetting methods that work with familiar bracket notation. These methods return `AnnDataView` objects that provide lazy evaluation for efficient memory usage.

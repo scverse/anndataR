@@ -386,7 +386,8 @@ See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for more details on the conv
     \preformatted{AbstractAnnData$as_ZarrAnnData(
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  zarr_format = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -396,6 +397,7 @@ See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for more details on the conv
       \item{\code{file}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
       \item{\code{compression}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
       \item{\code{mode}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
+      \item{\code{zarr_format}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
     }
     \if{html}{\out{</div>}}
   }
@@ -448,7 +450,8 @@ See \code{\link[=write_zarr]{write_zarr()}} for details
     \preformatted{AbstractAnnData$write_zarr(
   path,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  ...
 )}
     \if{html}{\out{</div>}}
   }
@@ -458,6 +461,7 @@ See \code{\link[=write_zarr]{write_zarr()}} for details
       \item{\code{path}}{See \code{\link[=write_zarr]{write_zarr()}}}
       \item{\code{compression}}{See \code{\link[=write_zarr]{write_zarr()}}}
       \item{\code{mode}}{See \code{\link[=write_zarr]{write_zarr()}}}
+      \item{\code{...}}{See \code{\link[=write_zarr]{write_zarr()}}}
     }
     \if{html}{\out{</div>}}
   }
