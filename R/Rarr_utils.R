@@ -17,6 +17,8 @@ create_zarr_group <- function(
   name,
   format
 ) {
+  format <- check_zarr_format(format)
+
   # Split "a/b/c" into c("a", "b", "c")
   split_name <- strsplit(name, split = "/", fixed = TRUE)[[1]]
   if (length(split_name) > 1) {
@@ -35,23 +37,78 @@ create_zarr_group <- function(
     }
   }
   dir.create(file.path(store, split_name[1]), showWarnings = FALSE)
-  format <- paste0("v", format)
-  switch(
-    format,
-    v2 = {
-      write(
-        "{\"zarr_format\":2}",
-        file = file.path(store, split_name[1], ".zgroup")
-      )
-    },
-    v3 = {
-      write(
-        "{\"zarr_format\": 3,\n\"node_type\": \"group\"}",
-        file = file.path(store, split_name[1], "zarr.json")
-      )
-    },
-    cli_abort("Incorrect Zarr format specified. Must be '2' or '3'.")
-  )
+  if (format == 2L) {
+    write(
+      "{\"zarr_format\":2}",
+      file = file.path(store, split_name[1], ".zgroup")
+    )
+  } else {
+    write(
+      "{\"zarr_format\": 3,\n\"node_type\": \"group\"}",
+      file = file.path(store, split_name[1], "zarr.json")
+    )
+  }
+}
+
+#' check_zarr_format
+#'
+#' Check that a Zarr format is one of the supported versions
+#'
+#' @param format Zarr format
+#'
+#' @return `format` as an integer
+#'
+#' @noRd
+check_zarr_format <- function(format, call = rlang::caller_env()) {
+  if (
+    length(format) != 1L ||
+      !is.numeric(format) ||
+      is.na(format) ||
+      !format %in% c(2L, 3L)
+  ) {
+    cli_abort(
+      "{.arg zarr_format} must be either {.val {2L}} or {.val {3L}}, \\
+      not {.val {format}}.",
+      call = call
+    )
+  }
+
+  as.integer(format)
+}
+
+#' get_zarr_format
+#'
+#' Determine the Zarr format of an existing store from its root metadata
+#'
+#' @param store The location of the Zarr store
+#'
+#' @return The Zarr format of `store` as an integer
+#'
+#' @noRd
+get_zarr_format <- function(store, call = rlang::caller_env()) {
+  files <- list.files(store, all.files = TRUE, recursive = FALSE)
+
+  is_v2 <- any(c(".zgroup", ".zarray") %in% files)
+  is_v3 <- "zarr.json" %in% files
+
+  if (is_v2 && is_v3) {
+    cli_abort(
+      c(
+        "Store {.file {store}} contains both Zarr v2 and v3 root metadata.",
+        "i" = "Found both {.file .zgroup}/{.file .zarray} and {.file zarr.json}."
+      ),
+      call = call
+    )
+  }
+
+  if (!is_v2 && !is_v3) {
+    cli_abort(
+      "Could not determine the Zarr format of {.file {store}}.",
+      call = call
+    )
+  }
+
+  if (is_v2) 2L else 3L
 }
 
 #' create_zarr

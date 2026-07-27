@@ -351,7 +351,7 @@ for (zarr_format in c(2, 3)) {
         sce <- generate_dataset(format = "SingleCellExperiment")
         write_zarr(sce, store)
         expect_true(dir.exists(store))
-        expect_equal(zarr_node_format(store, ""), zarr_format)
+        expect_zarr_store_format(store, zarr_format)
       })
 
       test_that("writing Zarr from SingleCellExperiment works for manual zarr format", {
@@ -361,7 +361,7 @@ for (zarr_format in c(2, 3)) {
         zarr_format_manual <- setdiff(c(2, 3), zarr_format)
         write_zarr(sce, store, zarr_format = zarr_format_manual)
         expect_true(dir.exists(store))
-        expect_equal(zarr_node_format(store, ""), zarr_format_manual)
+        expect_zarr_store_format(store, zarr_format_manual)
         expect_equal(getOption("anndataR.zarr_format"), zarr_format)
       })
 
@@ -371,7 +371,7 @@ for (zarr_format in c(2, 3)) {
         seurat <- generate_dataset(format = "Seurat")
         write_zarr(seurat, store)
         expect_true(dir.exists(store))
-        expect_equal(zarr_node_format(store, ""), zarr_format)
+        expect_zarr_store_format(store, zarr_format)
       })
 
       test_that("writing Zarr from Seurat works for manual zarr format", {
@@ -381,8 +381,81 @@ for (zarr_format in c(2, 3)) {
         zarr_format_manual <- setdiff(c(2, 3), zarr_format)
         write_zarr(seurat, store, zarr_format = zarr_format_manual)
         expect_true(dir.exists(store))
-        expect_equal(zarr_node_format(store, ""), zarr_format_manual)
+        expect_zarr_store_format(store, zarr_format_manual)
         expect_equal(getOption("anndataR.zarr_format"), zarr_format)
+      })
+
+      # a small AnnData covering the element types that are written as nested
+      # groups, as those are where a mixed format store would show up first
+      make_adata <- function() {
+        AnnData(
+          X = matrix(as.double(1:6), nrow = 2, ncol = 3),
+          obs = data.frame(
+            row.names = c("c1", "c2"),
+            categorical = factor(c("a", "b")),
+            string = c("x", "y")
+          ),
+          var = data.frame(row.names = c("g1", "g2", "g3")),
+          layers = list(double = matrix(as.double(7:12), nrow = 2, ncol = 3)),
+          uns = list(scalar = "a string", nested = list(number = 1))
+        )
+      }
+
+      test_that("the zarr_format argument overrides the option everywhere", {
+        store <- tempfile(fileext = ".zarr")
+        zarr_format_manual <- setdiff(c(2, 3), zarr_format)
+        write_zarr(make_adata(), store, zarr_format = zarr_format_manual)
+        expect_zarr_store_format(store, zarr_format_manual)
+        expect_equal(getOption("anndataR.zarr_format"), zarr_format)
+      })
+
+      test_that("writing to an existing store keeps the format of that store", {
+        store <- tempfile(fileext = ".zarr")
+        zarr_format_manual <- setdiff(c(2, 3), zarr_format)
+        write_zarr(make_adata(), store, zarr_format = zarr_format_manual)
+
+        # the option says one thing, the store on disk says another
+        adata <- suppressWarnings(ZarrAnnData$new(store, mode = "r+"))
+        adata$obsm <- list(pca = matrix(as.double(1:4), nrow = 2, ncol = 2))
+
+        expect_zarr_store_format(store, zarr_format_manual)
+      })
+
+      test_that("asking for a different format than an existing store errors", {
+        store <- tempfile(fileext = ".zarr")
+        zarr_format_manual <- setdiff(c(2, 3), zarr_format)
+        write_zarr(make_adata(), store, zarr_format = zarr_format_manual)
+
+        expect_error(
+          suppressWarnings(
+            ZarrAnnData$new(store, mode = "r+", zarr_format = zarr_format)
+          ),
+          "is in Zarr v"
+        )
+      })
+
+      test_that("mode 'w' rewrites an existing store in the other format", {
+        store <- tempfile(fileext = ".zarr")
+        zarr_format_manual <- setdiff(c(2, 3), zarr_format)
+        write_zarr(make_adata(), store, zarr_format = zarr_format_manual)
+
+        write_zarr(make_adata(), store, mode = "w", zarr_format = zarr_format)
+
+        expect_zarr_store_format(store, zarr_format)
+        expect_no_error(read_zarr(store))
+      })
+
+      test_that("an invalid zarr_format errors", {
+        for (invalid in list(1, 4, "3", NA, c(2, 3))) {
+          expect_error(
+            write_zarr(
+              make_adata(),
+              tempfile(fileext = ".zarr"),
+              zarr_format = invalid
+            ),
+            "must be either"
+          )
+        }
       })
 
       dir_size <- function(path) {

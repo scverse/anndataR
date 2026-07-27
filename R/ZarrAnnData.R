@@ -342,7 +342,7 @@ ZarrAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
-      zarr_format = getOption("anndataR.zarr_format", 3L)
+      zarr_format = NULL
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc")
 
@@ -351,7 +351,10 @@ ZarrAnnData <- R6::R6Class(
 
       private$.compression <- compression
 
-      private$.zarrformat <- zarr_format
+      if (!is.null(zarr_format)) {
+        zarr_format <- check_zarr_format(zarr_format)
+      }
+
       is_readonly <- FALSE
 
       if (is.character(file)) {
@@ -385,10 +388,35 @@ ZarrAnnData <- R6::R6Class(
           )
         }
 
+        # Truncate any existing store so that "w" cannot leave metadata of the
+        # previous store behind, which would result in a mixed format store
+        if (mode == "w" && dir.exists(file)) {
+          unlink(file, recursive = TRUE)
+        }
+
         if (mode %in% c("w", "w-", "x")) {
+          private$.zarrformat <- check_zarr_format(
+            zarr_format %||% getOption("anndataR.zarr_format", 3L)
+          )
           create_zarr(file, format = private$.zarrformat)
-        } else if (mode == "r") {
-          is_readonly <- TRUE
+        } else {
+          # An existing store dictates its own format, otherwise appending to it
+          # would produce a store with a mix of v2 and v3 nodes
+          private$.zarrformat <- get_zarr_format(file)
+          if (!is.null(zarr_format) && zarr_format != private$.zarrformat) {
+            cli_abort(
+              c(
+                "Store {.file {file}} is in Zarr v{private$.zarrformat} format
+                 but {.arg zarr_format} is set to {.val {zarr_format}}.",
+                "i" = "Use {.code mode = \"w\"} to rewrite the store in Zarr
+                       v{zarr_format} format."
+              ),
+              call = rlang::caller_env()
+            )
+          }
+          if (mode == "r") {
+            is_readonly <- TRUE
+          }
         }
       } else {
         cli_abort(
@@ -531,11 +559,14 @@ ZarrAnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
-#' @param zarr_format The format to use when writing the Zarr file.
-#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively.
-#'   Unless it is specified, Zarr v3 will be used by default.
-#'   The format can also be specified using
-#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
+#' @param zarr_format The format to use when creating the Zarr store. Should be
+#'   either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
+#'   be set using the `anndataR.zarr_format` option, e.g.
+#'   `options(anndataR.zarr_format = 2)`. If neither is set, Zarr v3 is used.
+#'
+#'   When an existing store is opened, that store's format is used instead and
+#'   setting `zarr_format` to a different format is an error. Use
+#'   `mode = "w"` to rewrite an existing store in another format.
 #'
 #' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -559,7 +590,7 @@ as_ZarrAnnData <- function(
     "lz4"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = getOption("anndataR.zarr_format", 3L)
+  zarr_format = NULL
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
