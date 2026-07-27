@@ -372,7 +372,7 @@ ZarrAnnData <- R6::R6Class(
         }
 
         if (mode %in% c("w", "w-", "x")) {
-          Rarr::write_zarr_group(file, "")
+          Rarr::write_zarr_group(file, "", zarr_version = 2L)
         } else if (mode == "r") {
           is_readonly <- TRUE
         }

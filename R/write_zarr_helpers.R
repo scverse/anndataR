@@ -234,7 +234,7 @@ write_zarr_sparse_array <- function(
   }
 
   # Write sparse matrix
-  Rarr::write_zarr_group(store, name)
+  Rarr::write_zarr_group(store, name, zarr_version = 2L)
   zarr_write_compressed(
     store,
     paste0(name, "/indices"),
@@ -277,7 +277,7 @@ write_zarr_nullable_boolean <- function(
   version = "0.1.0"
 ) {
   # write mask and values
-  Rarr::write_zarr_group(store, name)
+  Rarr::write_zarr_group(store, name, zarr_version = 2L)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
@@ -314,7 +314,7 @@ write_zarr_nullable_integer <- function(
   version = "0.1.0"
 ) {
   # write mask and values
-  Rarr::write_zarr_group(store, name)
+  Rarr::write_zarr_group(store, name, zarr_version = 2L)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- -1L
 
@@ -400,7 +400,7 @@ write_zarr_categorical <- function(
   compression,
   version = "0.2.0"
 ) {
-  Rarr::write_zarr_group(store, name)
+  Rarr::write_zarr_group(store, name, zarr_version = 2L)
 
   categories <- levels(value)
 
@@ -500,7 +500,7 @@ write_zarr_mapping <- function(
   compression,
   version = "0.1.0"
 ) {
-  Rarr::write_zarr_group(store, name)
+  Rarr::write_zarr_group(store, name, zarr_version = 2L)
 
   # Write mapping elements
   for (key in names(value)) {
@@ -534,7 +534,7 @@ write_zarr_data_frame <- function(
   index = NULL,
   version = "0.2.0"
 ) {
-  Rarr::write_zarr_group(store, name)
+  Rarr::write_zarr_group(store, name, zarr_version = 2L)
   write_zarr_encoding(store, name, "dataframe", version)
 
   if (is.null(index)) {
@@ -615,28 +615,28 @@ write_empty_zarr <- function(
   compression,
   version = "0.1.0"
 ) {
-  Rarr::write_zarr_group(store, "")
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   write_zarr_encoding(store, "/", "anndata", "0.1.0")
 
   write_zarr_element(obs[, integer(0)], store, "/obs", compression)
   write_zarr_element(var[, integer(0)], store, "/var", compression)
 
-  Rarr::write_zarr_group(store, "layers")
+  Rarr::write_zarr_group(store, "layers", zarr_version = 2L)
   write_zarr_encoding(store, "/layers", "dict", "0.1.0")
 
-  Rarr::write_zarr_group(store, "obsm")
+  Rarr::write_zarr_group(store, "obsm", zarr_version = 2L)
   write_zarr_encoding(store, "/obsm", "dict", "0.1.0")
 
-  Rarr::write_zarr_group(store, "obsp")
+  Rarr::write_zarr_group(store, "obsp", zarr_version = 2L)
   write_zarr_encoding(store, "/obsp", "dict", "0.1.0")
 
-  Rarr::write_zarr_group(store, "uns")
+  Rarr::write_zarr_group(store, "uns", zarr_version = 2L)
   write_zarr_encoding(store, "/uns", "dict", "0.1.0")
 
-  Rarr::write_zarr_group(store, "varm")
+  Rarr::write_zarr_group(store, "varm", zarr_version = 2L)
   write_zarr_encoding(store, "/varm", "dict", "0.1.0")
 
-  Rarr::write_zarr_group(store, "varp")
+  Rarr::write_zarr_group(store, "varp", zarr_version = 2L)
   write_zarr_encoding(store, "/varp", "dict", "0.1.0")
 }
 
