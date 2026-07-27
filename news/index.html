@@ -40,12 +40,15 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/scverse/anndataR/blob/v1.3.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/scverse/anndataR/blob/devel/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.1" id="anndatar-131">anndataR 1.3.1<a class="anchor" aria-label="anchor" href="#anndatar-131"></a></h2>
 <ul><li>Add support for reading backed objects using <code>DelayedArray</code> matrices, including a <code>backed</code> argument for <code>HDF5AnnData</code> and <code>InMemoryAnnData</code>, and conversion of backed <code>AnnData</code> objects to <code>SingleCellExperiment</code>/<code>Seurat</code> (PR <a href="https://github.com/scverse/anndataR/issues/387" class="external-link">#387</a>).</li>
+<li>Add support for writing Zarr v3 stores, using (i) <code>zarr_format</code> argument of <code><a href="../reference/write_zarr.html">write_zarr()</a></code>/<code><a href="../reference/as_ZarrAnnData.html">as_ZarrAnnData()</a></code> or (ii) the <code>anndataR.zarr_format</code> option. New stores are written as Zarr v3 by default (PR <a href="https://github.com/scverse/anndataR/issues/455" class="external-link">#455</a>).</li>
+<li>Write strings as VLen-UTF8 rather than as fixed-width, so that string arrays read back as variable length strings in Python <code>anndata</code> (PR <a href="https://github.com/scverse/anndataR/issues/455" class="external-link">#455</a>).</li>
+<li>Use the format of an existing Zarr store when writing to it and truncate the store when <code>mode = "w"</code>, so that a store can no longer end up with a mix of Zarr v2 and v3 nodes (PR <a href="https://github.com/scverse/anndataR/issues/455" class="external-link">#455</a>).</li>
 <li>Enable additional linters and optimise several suboptimal code patterns (PR <a href="https://github.com/scverse/anndataR/issues/453" class="external-link">#453</a>).</li>
 <li>Fix <code>create_zarr()</code> so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR <a href="https://github.com/scverse/anndataR/issues/478" class="external-link">#478</a>).</li>
 <li>Fix use of <code>&amp;</code> instead of <code>&amp;&amp;</code> when validating column names in <code>AbstractAnnData</code> (PR <a href="https://github.com/scverse/anndataR/issues/487" class="external-link">#487</a>).</li>

@@ -351,6 +351,25 @@ write_zarr(obj, tmpfile)
 #> ℹ NOTE: obs_names and var_names are stored separately
 ```
 
+Both Zarr v2 and v3 can be read and written, and new stores are written
+as Zarr v3 by default. To write a Zarr v2 store, pass `zarr_format = 2`:
+
+``` r
+
+tmpfile <- tempfile(fileext = ".zarr")
+adata$write_zarr(tmpfile, zarr_format = 2)
+```
+
+Setting `options(anndataR.zarr_format = 2)` changes the default for the
+rest of the session. Writing to a store that already exists always uses
+the format of that store, so appending to a Zarr v2 store never produces
+a mix of the two.
+
+See the [Zarr documentation](https://zarr.readthedocs.io/en/stable/) and
+the [Zarr
+specifications](https://zarr-specs.readthedocs.io/en/latest/specs.html)
+for more about the two formats.
+
 ### Subsetting `AnnData` objects
 
 *[anndataR](https://bioconductor.org/packages/3.24/anndataR)* provides
@@ -557,7 +576,7 @@ sessionInfo()
 #>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    
 #>  [22] bslib_0.11.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
-#>  [28] plotly_4.12.0          zoo_1.8-15             cachem_1.1.0          
+#>  [28] plotly_4.12.1          zoo_1.8-15             cachem_1.1.0          
 #>  [31] igraph_2.3.3           mime_0.13              lifecycle_1.0.5       
 #>  [34] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
 #>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.75.0         
@@ -575,7 +594,7 @@ sessionInfo()
 #>  [73] promises_1.5.0         grid_4.6.1             Rtsne_0.17            
 #>  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          
 #>  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           
-#>  [82] data.table_1.18.4      XVector_0.53.0         spatstat.geom_3.8-1   
+#>  [82] data.table_1.18.4      XVector_0.53.0         spatstat.geom_3.8-2   
 #>  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            
 #>  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-4           
 #>  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.1         
@@ -583,15 +602,14 @@ sessionInfo()
 #>  [97] survival_3.8-6         paws.common_0.8.10     tidyselect_1.2.1      
 #> [100] miniUI_0.1.2           pbapply_1.7-4          knitr_1.51            
 #> [103] gridExtra_2.3.1        bookdown_0.47          scattermore_1.2       
-#> [106] xfun_0.60              stringi_1.8.7          lazyeval_0.2.3        
-#> [109] yaml_2.3.12            evaluate_1.0.5         codetools_0.2-20      
-#> [112] tibble_3.3.1           BiocManager_1.30.27    cli_3.6.6             
-#> [115] uwot_0.2.4             xtable_1.8-8           reticulate_1.46.0     
-#> [118] systemfonts_1.3.2      jquerylib_0.1.4        Rcpp_1.1.2            
-#> [121] spatstat.random_3.5-0  globals_0.19.1         png_0.1-9             
-#> [124] spatstat.univar_3.2-0  parallel_4.6.1         pkgdown_2.2.1         
-#> [127] ggplot2_4.0.3          dotCall64_1.2          listenv_1.0.0         
-#> [130] viridisLite_0.4.3      scales_1.4.0           ggridges_0.5.7        
-#> [133] crayon_1.5.3           purrr_1.2.2            rlang_1.3.0           
-#> [136] cowplot_1.2.0
+#> [106] xfun_0.60              stringi_1.8.7          yaml_2.3.12           
+#> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
+#> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            
+#> [115] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     
+#> [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-0 
+#> [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.2-0 
+#> [124] parallel_4.6.1         pkgdown_2.2.1          ggplot2_4.0.3         
+#> [127] dotCall64_1.2          listenv_1.0.0          viridisLite_0.4.3     
+#> [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
+#> [133] purrr_1.2.2            rlang_1.3.0            cowplot_1.2.0
 ```

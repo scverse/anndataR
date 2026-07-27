@@ -40,7 +40,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Convert an <code>AnnData</code> to an <code>ZarrAnnData</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.3.1/R/ZarrAnnData.R" class="external-link"><code>R/ZarrAnnData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/R/ZarrAnnData.R" class="external-link"><code>R/ZarrAnnData.R</code></a></small>
       <div class="d-none name"><code>as_ZarrAnnData.Rd</code></div>
     </div>
 
@@ -54,7 +54,8 @@
 <span>  <span class="va">adata</span>,</span>
 <span>  <span class="va">file</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
-<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
+<span>  zarr_format <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -83,6 +84,16 @@ Zarr file. Can be one of <code>"none"</code>, <code>"gzip"</code>, <code>"blosc"
 <li><p><code>w</code> creates a file, truncating any existing ones</p></li>
 <li><p><code>w-</code>/<code>x</code> are synonyms, creating a file and failing if it already exists</p></li>
 </ul></dd>
+
+
+<dt id="arg-zarr-format">zarr_format<a class="anchor" aria-label="anchor" href="#arg-zarr-format"></a></dt>
+<dd><p>The format to use when creating the Zarr store. Should be
+either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
+be set using the <code>anndataR.zarr_format</code> option, e.g.
+<code>options(anndataR.zarr_format = 2)</code>. If neither is set, Zarr v3 is used.</p>
+<p>When an existing store is opened, that store's format is used instead and
+setting <code>zarr_format</code> to a different format is an error. Use
+<code>mode = "w"</code> to rewrite an existing store in another format.</p></dd>
 
 </dl></div>
     <div class="section level2">

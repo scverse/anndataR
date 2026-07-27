@@ -40,7 +40,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Write Zarr</h1>
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.3.1/R/write_zarr.R" class="external-link"><code>R/write_zarr.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/R/write_zarr.R" class="external-link"><code>R/write_zarr.R</code></a></small>
       <div class="d-none name"><code>write_zarr.Rd</code></div>
     </div>
 
@@ -89,7 +89,7 @@ See <code><a href="https://huber-group-embl.github.io/Rarr/reference/compressors
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to <code><a href="as_AnnData.html">as_AnnData()</a></code></p></dd>
+<dd><p>Additional arguments passed to <code><a href="as_AnnData.html">as_AnnData()</a></code> or <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -98,6 +98,18 @@ See <code><a href="https://huber-group-embl.github.io/Rarr/reference/compressors
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+
+<div class="section">
+<h3 id="zarr-format">Zarr format<a class="anchor" aria-label="anchor" href="#zarr-format"></a></h3>
+
+
+<p>New stores are written in the Zarr v3 format. Pass <code>zarr_format = 2</code> to write
+a Zarr v2 store instead, or set <code>options(anndataR.zarr_format = 2)</code> to change
+the default for the current session. However, if <code>zarr_format = 3</code> is passed
+to <code>write_zarr</code>, it will override <code>options(anndataR.zarr_format = 2)</code>.
+Writing to an existing store always uses the format of that store.
+See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code> for details.</p>
+</div>
 
 <div class="section">
 <h3 id="null-values"><code>NULL</code> values<a class="anchor" aria-label="anchor" href="#null-values"></a></h3>
@@ -125,6 +137,10 @@ to be read by older versions of Python <strong>anndata</strong>.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">zarr_store</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">adata</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span><span class="va">zarr_store</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Write a Zarr v2 store instead of the default v3</span></span></span>
+<span class="r-in"><span><span class="va">zarr_store</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">adata</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span><span class="va">zarr_store</span>, zarr_format <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Write a SingleCellExperiment as a Zarr store</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"SingleCellExperiment"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>

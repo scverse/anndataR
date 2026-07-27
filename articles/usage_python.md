@@ -208,7 +208,7 @@ sessionInfo()
 #>  [21] bslib_0.11.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] httr2_1.3.0                 plyr_1.8.9                 
-#>  [27] plotly_4.12.0               zoo_1.8-15                 
+#>  [27] plotly_4.12.1               zoo_1.8-15                 
 #>  [29] cachem_1.1.0                igraph_2.3.3               
 #>  [31] mime_0.13                   lifecycle_1.0.5            
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
@@ -221,8 +221,8 @@ sessionInfo()
 #>  [47] irlba_2.3.7                 RSQLite_3.53.3             
 #>  [49] textshaping_1.0.5           GenomicRanges_1.65.1       
 #>  [51] filelock_1.0.3              progressr_1.0.0            
-#>  [53] spatstat.sparse_3.2-0       polyclip_1.10-7            
-#>  [55] httr_1.4.8                  abind_1.4-8                
+#>  [53] spatstat.sparse_3.2-0       httr_1.4.8                 
+#>  [55] polyclip_1.10-7             abind_1.4-8                
 #>  [57] compiler_4.6.1              withr_3.0.3                
 #>  [59] bit64_4.8.2                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
@@ -237,7 +237,7 @@ sessionInfo()
 #>  [79] gtable_0.3.6                spatstat.data_3.1-9        
 #>  [81] tidyr_1.3.2                 data.table_1.18.4          
 #>  [83] sp_2.2-3                    XVector_0.53.0             
-#>  [85] BiocGenerics_0.59.10        spatstat.geom_3.8-1        
+#>  [85] BiocGenerics_0.59.10        spatstat.geom_3.8-2        
 #>  [87] RcppAnnoy_0.0.23            ggrepel_0.9.8              
 #>  [89] RANN_2.6.2                  pillar_1.11.1              
 #>  [91] stringr_1.6.0               spam_2.11-4                
@@ -253,22 +253,21 @@ sessionInfo()
 #> [111] SummarizedExperiment_1.43.0 scattermore_1.2            
 #> [113] stats4_4.6.1                xfun_0.60                  
 #> [115] Biobase_2.73.1              matrixStats_1.5.0          
-#> [117] stringi_1.8.7               lazyeval_0.2.3             
-#> [119] yaml_2.3.12                 evaluate_1.0.5             
-#> [121] codetools_0.2-20            tibble_3.3.1               
-#> [123] BiocManager_1.30.27         cli_3.6.6                  
-#> [125] uwot_0.2.4                  xtable_1.8-8               
-#> [127] systemfonts_1.3.2           jquerylib_0.1.4            
-#> [129] Rcpp_1.1.2                  spatstat.random_3.5-0      
-#> [131] globals_0.19.1              dbplyr_2.6.0               
-#> [133] png_0.1-9                   spatstat.univar_3.2-0      
-#> [135] parallel_4.6.1              blob_1.3.0                 
-#> [137] pkgdown_2.2.1               ggplot2_4.0.3              
-#> [139] dotCall64_1.2               listenv_1.0.0              
-#> [141] viridisLite_0.4.3           scales_1.4.0               
-#> [143] ggridges_0.5.7              SeuratObject_5.4.0         
-#> [145] purrr_1.2.2                 rlang_1.3.0                
-#> [147] cowplot_1.2.0
+#> [117] stringi_1.8.7               yaml_2.3.12                
+#> [119] evaluate_1.0.5              codetools_0.2-20           
+#> [121] tibble_3.3.1                BiocManager_1.30.27        
+#> [123] cli_3.6.6                   uwot_0.2.4                 
+#> [125] xtable_1.8-8                systemfonts_1.3.2          
+#> [127] jquerylib_0.1.4             Rcpp_1.1.2                 
+#> [129] spatstat.random_3.5-0       globals_0.19.1             
+#> [131] dbplyr_2.6.0                png_0.1-9                  
+#> [133] spatstat.univar_3.2-0       parallel_4.6.1             
+#> [135] blob_1.3.0                  pkgdown_2.2.1              
+#> [137] ggplot2_4.0.3               dotCall64_1.2              
+#> [139] listenv_1.0.0               viridisLite_0.4.3          
+#> [141] scales_1.4.0                ggridges_0.5.7             
+#> [143] SeuratObject_5.4.0          purrr_1.2.2                
+#> [145] rlang_1.3.0                 cowplot_1.2.0
 ```
 
 ### Python
@@ -287,50 +286,50 @@ reticulate::py_config()
 #> NOTE: Python version was forced by RETICULATE_PYTHON
 
 reticulate::py_list_packages()
-#>              package     version                  requirement
-#> 1            anndata     0.12.19             anndata==0.12.19
-#> 2   array-api-compat      1.15.0     array-api-compat==1.15.0
-#> 3            certifi   2026.7.22           certifi==2026.7.22
-#> 4          contourpy       1.3.3             contourpy==1.3.3
-#> 5             cycler      0.12.1               cycler==0.12.1
-#> 6             donfig 0.8.1.post1          donfig==0.8.1.post1
-#> 7   fast-array-utils         1.5        fast-array-utils==1.5
-#> 8          fonttools      4.63.0            fonttools==4.63.0
-#> 9      google-crc32c       1.8.0         google-crc32c==1.8.0
-#> 10              h5py      3.16.0                 h5py==3.16.0
-#> 11            joblib       1.5.3                joblib==1.5.3
-#> 12        kiwisolver       1.5.0            kiwisolver==1.5.0
-#> 13   legacy-api-wrap         1.5         legacy-api-wrap==1.5
-#> 14          llvmlite      0.48.0             llvmlite==0.48.0
-#> 15        matplotlib      3.11.1           matplotlib==3.11.1
-#> 16            mudata      0.3.10               mudata==0.3.10
-#> 17          narwhals      2.24.0             narwhals==2.24.0
-#> 18           natsort       8.4.0               natsort==8.4.0
-#> 19          networkx       3.6.1              networkx==3.6.1
-#> 20             numba      0.66.0                numba==0.66.0
-#> 21         numcodecs      0.16.5            numcodecs==0.16.5
-#> 22             numpy       2.4.6                 numpy==2.4.6
-#> 23         packaging        26.2              packaging==26.2
-#> 24            pandas       2.3.3                pandas==2.3.3
-#> 25             patsy       1.0.2                 patsy==1.0.2
-#> 26            pillow      12.3.0               pillow==12.3.0
-#> 27       pynndescent       0.6.0           pynndescent==0.6.0
-#> 28         pyparsing       3.3.2             pyparsing==3.3.2
-#> 29   python-dateutil 2.9.0.post0 python-dateutil==2.9.0.post0
-#> 30              pytz      2026.2                 pytz==2026.2
-#> 31            PyYAML       6.0.3                PyYAML==6.0.3
-#> 32            scanpy      1.12.2               scanpy==1.12.2
-#> 33      scikit-learn       1.9.0          scikit-learn==1.9.0
-#> 34             scipy      1.18.0                scipy==1.18.0
-#> 35      scverse-misc       0.1.1          scverse-misc==0.1.1
-#> 36           seaborn      0.13.2              seaborn==0.13.2
-#> 37     session-info2       0.4.1         session-info2==0.4.1
-#> 38               six      1.17.0                  six==1.17.0
-#> 39       statsmodels      0.14.6          statsmodels==0.14.6
-#> 40     threadpoolctl       3.6.0         threadpoolctl==3.6.0
-#> 41              tqdm      4.69.0                 tqdm==4.69.0
-#> 42 typing_extensions      4.16.0    typing_extensions==4.16.0
-#> 43            tzdata      2026.3               tzdata==2026.3
-#> 44        umap-learn      0.5.12           umap-learn==0.5.12
-#> 45              zarr       3.2.1                  zarr==3.2.1
+#>              package      version                  requirement
+#> 1            anndata      0.12.19             anndata==0.12.19
+#> 2   array-api-compat       1.15.0     array-api-compat==1.15.0
+#> 3            certifi    2026.7.22           certifi==2026.7.22
+#> 4          contourpy        1.3.3             contourpy==1.3.3
+#> 5             cycler       0.12.1               cycler==0.12.1
+#> 6             donfig  0.8.1.post1          donfig==0.8.1.post1
+#> 7   fast-array-utils          1.5        fast-array-utils==1.5
+#> 8          fonttools       4.63.0            fonttools==4.63.0
+#> 9      google-crc32c        1.8.0         google-crc32c==1.8.0
+#> 10              h5py       3.16.0                 h5py==3.16.0
+#> 11            joblib        1.5.3                joblib==1.5.3
+#> 12        kiwisolver        1.5.0            kiwisolver==1.5.0
+#> 13   legacy-api-wrap          1.5         legacy-api-wrap==1.5
+#> 14          llvmlite       0.48.0             llvmlite==0.48.0
+#> 15        matplotlib       3.11.1           matplotlib==3.11.1
+#> 16            mudata       0.3.10               mudata==0.3.10
+#> 17          narwhals       2.24.0             narwhals==2.24.0
+#> 18           natsort        8.4.0               natsort==8.4.0
+#> 19          networkx        3.6.1              networkx==3.6.1
+#> 20             numba       0.66.0                numba==0.66.0
+#> 21         numcodecs       0.16.5            numcodecs==0.16.5
+#> 22             numpy        2.4.6                 numpy==2.4.6
+#> 23         packaging         26.2              packaging==26.2
+#> 24            pandas        2.3.3                pandas==2.3.3
+#> 25             patsy        1.0.2                 patsy==1.0.2
+#> 26            pillow       12.3.0               pillow==12.3.0
+#> 27       pynndescent        0.6.0           pynndescent==0.6.0
+#> 28         pyparsing        3.3.2             pyparsing==3.3.2
+#> 29   python-dateutil  2.9.0.post0 python-dateutil==2.9.0.post0
+#> 30              pytz 2026.3.post1           pytz==2026.3.post1
+#> 31            PyYAML        6.0.3                PyYAML==6.0.3
+#> 32            scanpy       1.12.3               scanpy==1.12.3
+#> 33      scikit-learn        1.9.0          scikit-learn==1.9.0
+#> 34             scipy       1.18.0                scipy==1.18.0
+#> 35      scverse-misc        0.1.1          scverse-misc==0.1.1
+#> 36           seaborn       0.13.2              seaborn==0.13.2
+#> 37     session-info2        0.4.1         session-info2==0.4.1
+#> 38               six       1.17.0                  six==1.17.0
+#> 39       statsmodels       0.14.6          statsmodels==0.14.6
+#> 40     threadpoolctl        3.6.0         threadpoolctl==3.6.0
+#> 41              tqdm       4.70.0                 tqdm==4.70.0
+#> 42 typing_extensions       4.16.0    typing_extensions==4.16.0
+#> 43            tzdata       2026.3               tzdata==2026.3
+#> 44        umap-learn       0.5.12           umap-learn==0.5.12
+#> 45              zarr        3.2.1                  zarr==3.2.1
 ```

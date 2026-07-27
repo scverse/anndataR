@@ -510,7 +510,8 @@ for more details on the conversion
     AbstractAnnData$as_ZarrAnnData(
       file,
       compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      zarr_format = NULL
     )
 
 #### Arguments
@@ -526,6 +527,11 @@ for more details on the conversion
   [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
 
 - `mode`:
+
+  See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+
+- `zarr_format`:
 
   See
   [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
@@ -595,7 +601,8 @@ for details
     AbstractAnnData$write_zarr(
       path,
       compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      ...
     )
 
 #### Arguments
@@ -611,6 +618,11 @@ for details
   [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
 
 - `mode`:
+
+  See
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+
+- `...`:
 
   See
   [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
