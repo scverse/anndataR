@@ -387,6 +387,7 @@ patch_zarr_vlen_utf8 <- function(store, name, zarr_format) {
     name,
     if (zarr_format == 2L) ".zarray" else "zarr.json"
   )
+  check_requires("write_zarr", "jsonlite", where = "CRAN")
   metadata <- jsonlite::read_json(metadata_path)
 
   if (zarr_format == 2L) {
