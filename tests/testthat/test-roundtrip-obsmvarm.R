@@ -7,10 +7,6 @@ ad <- reticulate::import("anndata", convert = FALSE)
 da <- reticulate::import("dummy_anndata", convert = FALSE)
 bi <- reticulate::import_builtins()
 
-# suppress ZarrUserWarnings
-wr <- reticulate::import("warnings")
-wr$filterwarnings("ignore")
-
 known_issues <- read_known_issues()
 
 test_names <- c(
