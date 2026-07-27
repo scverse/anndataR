@@ -1,6 +1,9 @@
 # anndataR 1.3.1
 
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
+- Add support for writing Zarr v3 stores, selected with the `zarr_format` argument of `write_zarr()`/`as_ZarrAnnData()` or the `anndataR.zarr_format` option. New stores are written as Zarr v3 by default (PR #455).
+- Write strings as VLen-UTF8 rather than as fixed-width, so that string arrays read back as variable length strings in Python `anndata` (PR #455).
+- Use the format of an existing Zarr store when writing to it and truncate the store when `mode = "w"`, so that a store can no longer end up with a mix of Zarr v2 and v3 nodes (PR #455).
 - Enable additional linters and optimise several suboptimal code patterns (PR #453).
 - Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
 - Fix use of `&` instead of `&&` when validating column names in `AbstractAnnData` (PR #487).
