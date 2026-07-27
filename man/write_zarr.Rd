@@ -41,6 +41,16 @@ See \code{help("compressors", package = "Rarr")}.}
 Write a Zarr file
 }
 \details{
+\subsection{Zarr format}{
+
+New stores are written in the Zarr v3 format. Pass \code{zarr_format = 2} to write
+a Zarr v2 store instead, or set \code{options(anndataR.zarr_format = 2)} to change
+the default for the current session. However, if \code{zarr_format = 3} is passed
+to \code{write_zarr}, it will override \code{options(anndataR.zarr_format = 2)}.
+Writing to an existing store always uses the format of that store.
+See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details.
+}
+
 \subsection{\code{NULL} values}{
 
 For compatibility with changes in Python \strong{anndata} 0.12.0, \code{NULL} values
@@ -63,14 +73,9 @@ adata <- AnnData(
 zarr_store <- tempfile(fileext = ".zarr")
 adata$write_zarr(zarr_store)
 
-# set Zarr version to 2.
-options(anndataR.zarr_format = 2)
+# Write a Zarr v2 store instead of the default v3
 zarr_store <- tempfile(fileext = ".zarr")
-adata$write_zarr(zarr_store)
-
-# write .zarr as version 3
-zarr_store <- tempfile(fileext = ".zarr")
-adata$write_zarr(zarr_store, zarr_format = 3)
+adata$write_zarr(zarr_store, zarr_format = 2)
 
 # Write a SingleCellExperiment as a Zarr store
 if (requireNamespace("SingleCellExperiment", quietly = TRUE)) {

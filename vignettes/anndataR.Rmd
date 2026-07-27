@@ -223,24 +223,18 @@ tmpfile <- tempfile(fileext = ".zarr")
 write_zarr(obj, tmpfile)
 ```
 
-We support reading and writing Zarr v2 and v3 where Zarr v3 is the default. 
-
-To use Zarr v2, globally set `options(anndataR.zarr_format = 2)` or use `zarr_format = 2` to set it in an individual function all. 
+Both Zarr v2 and v3 can be read and written, and new stores are written as Zarr v3 by default.
+To write a Zarr v2 store, pass `zarr_format = 2`:
 
 ```{r write-zarr-format}
-options(anndataR.zarr_format = 2)
-
-tmpfile <- tempfile(fileext = ".zarr")
-adata$write_zarr(tmpfile)
-
 tmpfile <- tempfile(fileext = ".zarr")
 adata$write_zarr(tmpfile, zarr_format = 2)
 ```
 
-See more about Zarr data formats below:
+Setting `options(anndataR.zarr_format = 2)` changes the default for the rest of the session.
+Writing to a store that already exists always uses the format of that store, so appending to a Zarr v2 store never produces a mix of the two.
 
-* https://zarr.readthedocs.io/en/stable/
-* https://zarr-specs.readthedocs.io/en/latest/specs.html
+See the [Zarr documentation](https://zarr.readthedocs.io/en/stable/) and the [Zarr specifications](https://zarr-specs.readthedocs.io/en/latest/specs.html) for more about the two formats.
 
 ## Subsetting `AnnData` objects {#subsetting}
 

@@ -8,11 +8,9 @@
 #' @param compression The compression to use when writing the element.
 #'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
 #'   `"zlib"`, `"lz4"`.
-#' @param zarr_format The format to use when writing the Zarr file.
-#'   Should be either 2 or 3 for Zarr v2 or v3 formats, respectively.
-#'   Unless it is specified, Zarr v3 will be used by default.
-#'   The format can also be specified using
-#'   `anndataR.zarr_format`, e.g. `options(anndataR.zarr_format = 2)`.
+#' @param zarr_format The format to write the element in, either 2 or 3 for the
+#'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
+#'   elements of a store end up in the same format.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
 #'
