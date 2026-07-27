@@ -45,8 +45,10 @@ Write a Zarr file
 
 New stores are written in the Zarr v3 format. Pass \code{zarr_format = 2} to write
 a Zarr v2 store instead, or set \code{options(anndataR.zarr_format = 2)} to change
-the default for the current session. Writing to an existing store always uses
-the format of that store. See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details.
+the default for the current session. However, if \code{zarr_format = 3} is passed
+to \code{write_zarr}, it will override \code{options(anndataR.zarr_format = 2)}.
+Writing to an existing store always uses the format of that store.
+See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details.
 }
 
 \subsection{\code{NULL} values}{

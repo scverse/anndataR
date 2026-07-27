@@ -25,8 +25,10 @@
 #'
 #' New stores are written in the Zarr v3 format. Pass `zarr_format = 2` to write
 #' a Zarr v2 store instead, or set `options(anndataR.zarr_format = 2)` to change
-#' the default for the current session. Writing to an existing store always uses
-#' the format of that store. See [as_ZarrAnnData()] for details.
+#' the default for the current session. However, if `zarr_format = 3` is passed
+#' to `write_zarr`, it will override `options(anndataR.zarr_format = 2)`.
+#' Writing to an existing store always uses the format of that store.
+#' See [as_ZarrAnnData()] for details.
 #'
 #' ## `NULL` values
 #'
