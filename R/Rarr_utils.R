@@ -13,9 +13,9 @@ ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 check_zarr_format <- function(format, call = rlang::caller_env()) {
   if (
     length(format) != 1L ||
-    !is.numeric(format) ||
-    is.na(format) ||
-    !format %in% c(2L, 3L)
+      !is.numeric(format) ||
+      is.na(format) ||
+      !format %in% c(2L, 3L)
   ) {
     cli_abort(
       "{.arg zarr_format} must be either {.val {2L}} or {.val {3L}}, \\
@@ -23,7 +23,7 @@ check_zarr_format <- function(format, call = rlang::caller_env()) {
       call = call
     )
   }
-  
+
   as.integer(format)
 }
 
