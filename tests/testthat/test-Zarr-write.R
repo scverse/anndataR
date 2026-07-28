@@ -30,15 +30,21 @@ for (zarr_format in c(2, 3)) {
           unlink(store_w_diff, recursive = TRUE)
         }
         zarr_format_diff <- setdiff(c(2, 3), zarr_format)
-        Rarr::write_zarr_group(store_w_diff, "", 
-                               zarr_version = zarr_format_diff)
+        Rarr::write_zarr_group(
+          store_w_diff,
+          "",
+          zarr_version = zarr_format_diff
+        )
         expect_equal(zarr_node_format(store_w_diff, ""), zarr_format_diff)
       })
 
       test_that("Writing a Zarr store at a relative path works", {
         withr::with_tempdir({
-          Rarr::write_zarr_group("relative.zarr", "", 
-                                 zarr_version = zarr_format)
+          Rarr::write_zarr_group(
+            "relative.zarr",
+            "",
+            zarr_version = zarr_format
+          )
           expect_true(dir.exists("relative.zarr"))
           expect_true(file.exists(file.path("relative.zarr", metafile)))
         })

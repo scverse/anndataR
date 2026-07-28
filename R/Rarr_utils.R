@@ -12,10 +12,10 @@ ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 #' @noRd
 get_zarr_format <- function(store, call = rlang::caller_env()) {
   files <- list.files(store, all.files = TRUE, recursive = FALSE)
-  
+
   is_v2 <- any(c(".zgroup", ".zarray") %in% files)
   is_v3 <- "zarr.json" %in% files
-  
+
   if (is_v2 && is_v3) {
     cli_abort(
       c(
@@ -25,14 +25,14 @@ get_zarr_format <- function(store, call = rlang::caller_env()) {
       call = call
     )
   }
-  
+
   if (!is_v2 && !is_v3) {
     cli_abort(
       "Could not determine the Zarr format of {.file {store}}.",
       call = call
     )
   }
-  
+
   if (is_v2) 2L else 3L
 }
 

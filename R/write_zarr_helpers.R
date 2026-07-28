@@ -760,7 +760,7 @@ write_empty_zarr <- function(
   write_zarr_encoding(store, "/uns", "dict", "0.1.0", zarr_format)
 
   Rarr::write_zarr_group(store, "varm", zarr_version = zarr_format)
-  write_zarr_encoding(store, "/varm", "dict", "0.1.0", zarr_format) 
+  write_zarr_encoding(store, "/varm", "dict", "0.1.0", zarr_format)
 
   Rarr::write_zarr_group(store, "varp", zarr_version = zarr_format)
   write_zarr_encoding(store, "/varp", "dict", "0.1.0", zarr_format)
