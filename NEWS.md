@@ -1,3 +1,7 @@
+# anndataR devel
+
+- Consolidate `read_zarr_nullable_integer()` and `read_zarr_nullable_boolean()` into a single function (PR #493).
+
 # anndataR 1.3.1
 
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
