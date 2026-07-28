@@ -21,6 +21,7 @@ ZarrAnnData <- R6::R6Class(
   private = list(
     .zarrobj = NULL,
     .zarrformat = NULL,
+    .consolidated_metadata = NULL,
     .compression = NULL,
     .readonly = NULL,
 
@@ -48,7 +49,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_X, status=done
-        read_zarr_element(private$.zarrobj, "X") |>
+        read_zarr_element(
+          private$.zarrobj, 
+          "X", 
+          private$.consolidated_metadata[["X"]][["encoding-type"]],
+          private$.consolidated_metadata[["X"]][["encoding-version"]]
+        ) |>
           private$.add_matrix_dimnames("X")
       } else {
         private$.check_writeable()
@@ -74,7 +80,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_layers, status=done
-        read_zarr_element(private$.zarrobj, "layers") |>
+        read_zarr_element(
+          private$.zarrobj, 
+          "layers",
+          private$.consolidated_metadata[["layers"]][["encoding-type"]],
+          private$.consolidated_metadata[["layers"]][["encoding-version"]]
+        ) |>
           private$.add_mapping_dimnames("layers")
       } else {
         private$.check_writeable()
@@ -100,7 +111,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obsm, status=done
-        read_zarr_element(private$.zarrobj, "obsm") |>
+        read_zarr_element(
+          private$.zarrobj, 
+          "obsm",
+          private$.consolidated_metadata[["obsm"]][["encoding-type"]],
+          private$.consolidated_metadata[["obsm"]][["encoding-version"]]
+        ) |>
           private$.add_mapping_dimnames("obsm")
       } else {
         private$.check_writeable()
@@ -128,7 +144,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_varm, status=done
-        read_zarr_element(private$.zarrobj, "varm") |>
+        read_zarr_element(
+          private$.zarrobj, 
+          "varm",
+          private$.consolidated_metadata[["varm"]][["encoding-type"]],
+          private$.consolidated_metadata[["varm"]][["encoding-version"]]
+        ) |>
           private$.add_mapping_dimnames("varm")
       } else {
         private$.check_writeable()
@@ -156,7 +177,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obsp, status=done
-        read_zarr_element(private$.zarrobj, "obsp") |>
+        read_zarr_element(
+          private$.zarrobj, 
+          "obsp",
+          private$.consolidated_metadata[["obsp"]][["encoding-type"]],
+          private$.consolidated_metadata[["obsp"]][["encoding-version"]]
+        ) |>
           private$.add_mapping_dimnames("obsp")
       } else {
         private$.check_writeable()
@@ -182,7 +208,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_varp, status=done
-        read_zarr_element(private$.zarrobj, "varp") |>
+        read_zarr_element(
+          private$.zarrobj, 
+          "varp",
+          private$.consolidated_metadata[["varp"]][["encoding-type"]],
+          private$.consolidated_metadata[["varp"]][["encoding-version"]]
+        ) |>
           private$.add_mapping_dimnames("varp")
       } else {
         private$.check_writeable()
@@ -208,7 +239,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obs, status=done
-        read_zarr_element(private$.zarrobj, "obs")
+        read_zarr_element(
+          private$.zarrobj, 
+          "obs",
+          private$.consolidated_metadata[["obs"]][["encoding-type"]],
+          private$.consolidated_metadata[["obs"]][["encoding-version"]]
+        )
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_obs, status=done
@@ -227,7 +263,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_var, status=done
-        read_zarr_element(private$.zarrobj, "var")
+        read_zarr_element(
+          private$.zarrobj, 
+          "var",
+          private$.consolidated_metadata[["var"]][["encoding-type"]],
+          private$.consolidated_metadata[["var"]][["encoding-version"]]
+        )
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_var, status=done
@@ -246,7 +287,13 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obs_names, status=done
-        read_zarr_element_keys(private$.zarrobj, "obs", dim = "rows")
+        read_zarr_element_keys(
+          private$.zarrobj, 
+          "obs",
+          private$.consolidated_metadata[["obs"]][["encoding-type"]],
+          private$.consolidated_metadata[["obs"]][["encoding-version"]],
+          dim = "rows"
+        )
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_obs_names, status=done
@@ -259,7 +306,13 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_var_names, status=done
-        read_zarr_element_keys(private$.zarrobj, "var", dim = "rows")
+        read_zarr_element_keys(
+          private$.zarrobj, 
+          "var",
+          private$.consolidated_metadata[["var"]][["encoding-type"]],
+          private$.consolidated_metadata[["var"]][["encoding-version"]],
+          dim = "rows"
+        )
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_var_names, status=done
@@ -272,7 +325,12 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_uns, status=done
-        read_zarr_element(private$.zarrobj, "uns")
+        read_zarr_element(
+          private$.zarrobj, 
+          "uns",
+          private$.consolidated_metadata[["uns"]][["encoding-type"]],
+          private$.consolidated_metadata[["uns"]][["encoding-version"]]
+        )
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_uns, status=done
@@ -495,6 +553,10 @@ ZarrAnnData <- R6::R6Class(
         }
         Rarr::zarr_consolidate_metadata(file)
       }
+
+      # Create consolidated metadata on the fly, in memory, if it doesn't exist on disk
+      private$.consolidated_metadata <- Rarr:::.read_consolidated_metadata(file)$metadata %||%
+        Rarr::zarr_consolidate_metadata(file, action = "return")
 
       self
     },
