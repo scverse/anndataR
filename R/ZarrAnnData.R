@@ -493,6 +493,7 @@ ZarrAnnData <- R6::R6Class(
             self[[slot]] <- value
           }
         }
+        Rarr::zarr_consolidate_metadata(file)
       }
 
       self
