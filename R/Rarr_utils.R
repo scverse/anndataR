@@ -1,6 +1,32 @@
 # Zarr metadata files used to identify valid Zarr nodes (arrays or groups)
 ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 
+#' check_zarr_format
+#'
+#' Check that a Zarr format is one of the supported versions
+#'
+#' @param format Zarr format
+#'
+#' @return `format` as an integer
+#'
+#' @noRd
+check_zarr_format <- function(format, call = rlang::caller_env()) {
+  if (
+    length(format) != 1L ||
+    !is.numeric(format) ||
+    is.na(format) ||
+    !format %in% c(2L, 3L)
+  ) {
+    cli_abort(
+      "{.arg zarr_format} must be either {.val {2L}} or {.val {3L}}, \\
+      not {.val {format}}.",
+      call = call
+    )
+  }
+  
+  as.integer(format)
+}
+
 #' get_zarr_format
 #'
 #' Determine the Zarr format of an existing store from its root metadata
