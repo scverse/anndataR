@@ -14,4 +14,16 @@ skip_if_no_zarr <- function() {
     "ignore",
     message = "Writing zarr v2 data will no longer be the default"
   )
+
+  # Warnings emitted by Python zarr when it writes the v3 stores used by the
+  # roundtrip tests. Filter these by message rather than ignoring everything,
+  # so that warnings we do care about still show up.
+  wn$filterwarnings(
+    "ignore",
+    message = "zarr v3 autosharding will be the default"
+  )
+  wn$filterwarnings(
+    "ignore",
+    message = "Consolidated metadata is currently not part in the Zarr format 3"
+  )
 }

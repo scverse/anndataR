@@ -20,6 +20,7 @@ ZarrAnnData <- R6::R6Class(
   cloneable = FALSE,
   private = list(
     .zarrobj = NULL,
+    .zarrformat = NULL,
     .compression = NULL,
     .readonly = NULL,
 
@@ -62,7 +63,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "X",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -87,7 +89,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "layers",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -114,7 +117,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "obsm",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -141,7 +145,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "varm",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -166,7 +171,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "obsp",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -191,7 +197,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "varp",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -209,7 +216,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "obs",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -227,7 +235,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "var",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     },
@@ -275,7 +284,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "uns",
-            private$.compression
+            private$.compression,
+            private$.zarrformat
           )
       }
     }
@@ -300,6 +310,8 @@ ZarrAnnData <- R6::R6Class(
     #' @param mode The mode to open the Zarr file. See [as_ZarrAnnData()] for
     #'   details
     #' @param compression The compression algorithm to use. See
+    #'   [as_ZarrAnnData()] for details
+    #' @param zarr_format The Zarr format to use. See
     #'   [as_ZarrAnnData()] for details
     #'
     #' @details
@@ -329,7 +341,8 @@ ZarrAnnData <- R6::R6Class(
         "bz2",
         "zlib",
         "lz4"
-      )
+      ),
+      zarr_format = NULL
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc")
 
@@ -337,6 +350,10 @@ ZarrAnnData <- R6::R6Class(
       mode <- match.arg(mode)
 
       private$.compression <- compression
+
+      if (!is.null(zarr_format)) {
+        zarr_format <- check_zarr_format(zarr_format)
+      }
 
       is_readonly <- FALSE
 
@@ -371,10 +388,35 @@ ZarrAnnData <- R6::R6Class(
           )
         }
 
+        # Truncate any existing store so that "w" cannot leave metadata of the
+        # previous store behind, which would result in a mixed format store
+        if (mode == "w" && dir.exists(file)) {
+          unlink(file, recursive = TRUE)
+        }
+
         if (mode %in% c("w", "w-", "x")) {
-          Rarr::write_zarr_group(file, "", zarr_version = 2L)
-        } else if (mode == "r") {
-          is_readonly <- TRUE
+          private$.zarrformat <- check_zarr_format(
+            zarr_format %||% getOption("anndataR.zarr_format", 3L)
+          )
+          Rarr::write_zarr_group(file, "", zarr_version = private$.zarrformat)
+        } else {
+          # An existing store dictates its own format, otherwise appending to it
+          # would produce a store with a mix of v2 and v3 nodes
+          private$.zarrformat <- get_zarr_format(file)
+          if (!is.null(zarr_format) && zarr_format != private$.zarrformat) {
+            cli_abort(
+              c(
+                "Store {.file {file}} is in Zarr v{private$.zarrformat} format
+                 but {.arg zarr_format} is set to {.val {zarr_format}}.",
+                "i" = "Use {.code mode = \"w\"} to rewrite the store in Zarr
+                       v{zarr_format} format."
+              ),
+              call = rlang::caller_env()
+            )
+          }
+          if (mode == "r") {
+            is_readonly <- TRUE
+          }
         }
       } else {
         cli_abort(
@@ -406,7 +448,13 @@ ZarrAnnData <- R6::R6Class(
           shape <- get_shape(obs, var, X, shape)
           obs <- get_initial_obs(obs, X, shape)
           var <- get_initial_var(var, X, shape)
-          write_empty_zarr(file, obs, var, compression)
+          write_empty_zarr(
+            file,
+            obs,
+            var,
+            compression,
+            zarr_format = private$.zarrformat
+          )
         }
       }
 
@@ -511,6 +559,14 @@ ZarrAnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#' @param zarr_format The format to use when creating the Zarr store. Should be
+#'   either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
+#'   be set using the `anndataR.zarr_format` option, e.g.
+#'   `options(anndataR.zarr_format = 2)`. If neither is set, Zarr v3 is used.
+#'
+#'   When an existing store is opened, that store's format is used instead and
+#'   setting `zarr_format` to a different format is an error. Use
+#'   `mode = "w"` to rewrite an existing store in another format.
 #'
 #' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -533,7 +589,8 @@ as_ZarrAnnData <- function(
     "zlib",
     "lz4"
   ),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  zarr_format = NULL
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -555,6 +612,7 @@ as_ZarrAnnData <- function(
     uns = adata$uns,
     shape = adata$shape(),
     mode = mode,
-    compression = compression
+    compression = compression,
+    zarr_format = zarr_format
   )
 }
