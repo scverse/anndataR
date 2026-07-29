@@ -555,8 +555,9 @@ ZarrAnnData <- R6::R6Class(
       }
 
       # Create consolidated metadata on the fly, in memory, if it doesn't exist on disk
-      private$.consolidated_metadata <- Rarr:::.read_consolidated_metadata(file)$metadata %||%
+      consolidated <- Rarr:::.read_consolidated_metadata(file)$metadata %||%
         Rarr::zarr_consolidate_metadata(file, action = "return")
+      private$.consolidated_metadata <- list2env(consolidated, hash = TRUE, parent = emptyenv())
 
       self
     },
