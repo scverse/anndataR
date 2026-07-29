@@ -40,6 +40,14 @@ ZarrAnnData <- R6::R6Class(
           call = rlang::caller_env()
         )
       }
+    },
+
+    .get_attrs_from_consolidated = function(slot, attr) {
+      if (private$.zarrformat == 3L) {
+        private$.consolidated_metadata[[slot]]$attributes[[attr]]
+      } else {
+        private$.consolidated_metadata[[file.path(slot, ".zattrs")]][[attr]]
+      }
     }
   ),
   active = list(
@@ -52,8 +60,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "X", 
-          private$.consolidated_metadata[["X"]][["encoding-type"]],
-          private$.consolidated_metadata[["X"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("X", "encoding-type"),
+          private$.get_attrs_from_consolidated("X", "encoding-version")
         ) |>
           private$.add_matrix_dimnames("X")
       } else {
@@ -83,8 +91,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "layers",
-          private$.consolidated_metadata[["layers"]][["encoding-type"]],
-          private$.consolidated_metadata[["layers"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("layers", "encoding-type"),
+          private$.get_attrs_from_consolidated("layers", "encoding-version")
         ) |>
           private$.add_mapping_dimnames("layers")
       } else {
@@ -114,8 +122,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "obsm",
-          private$.consolidated_metadata[["obsm"]][["encoding-type"]],
-          private$.consolidated_metadata[["obsm"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("obsm", "encoding-type"),
+          private$.get_attrs_from_consolidated("obsm", "encoding-version")
         ) |>
           private$.add_mapping_dimnames("obsm")
       } else {
@@ -147,8 +155,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "varm",
-          private$.consolidated_metadata[["varm"]][["encoding-type"]],
-          private$.consolidated_metadata[["varm"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("varm", "encoding-type"),
+          private$.get_attrs_from_consolidated("varm", "encoding-version")
         ) |>
           private$.add_mapping_dimnames("varm")
       } else {
@@ -180,8 +188,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "obsp",
-          private$.consolidated_metadata[["obsp"]][["encoding-type"]],
-          private$.consolidated_metadata[["obsp"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("obsp", "encoding-type"),
+          private$.get_attrs_from_consolidated("obsp", "encoding-version")
         ) |>
           private$.add_mapping_dimnames("obsp")
       } else {
@@ -211,8 +219,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "varp",
-          private$.consolidated_metadata[["varp"]][["encoding-type"]],
-          private$.consolidated_metadata[["varp"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("varp", "encoding-type"),
+          private$.get_attrs_from_consolidated("varp", "encoding-version")
         ) |>
           private$.add_mapping_dimnames("varp")
       } else {
@@ -242,8 +250,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "obs",
-          private$.consolidated_metadata[["obs"]][["encoding-type"]],
-          private$.consolidated_metadata[["obs"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("obs", "encoding-type"),
+          private$.get_attrs_from_consolidated("obs", "encoding-version")
         )
       } else {
         private$.check_writeable()
@@ -266,8 +274,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "var",
-          private$.consolidated_metadata[["var"]][["encoding-type"]],
-          private$.consolidated_metadata[["var"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("var", "encoding-type"),
+          private$.get_attrs_from_consolidated("var", "encoding-version")
         )
       } else {
         private$.check_writeable()
@@ -290,8 +298,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element_keys(
           private$.zarrobj, 
           "obs",
-          private$.consolidated_metadata[["obs"]][["encoding-type"]],
-          private$.consolidated_metadata[["obs"]][["encoding-version"]],
+          private$.get_attrs_from_consolidated("obs", "encoding-type"),
+          private$.get_attrs_from_consolidated("obs", "encoding-version"),
           dim = "rows"
         )
       } else {
@@ -309,8 +317,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element_keys(
           private$.zarrobj, 
           "var",
-          private$.consolidated_metadata[["var"]][["encoding-type"]],
-          private$.consolidated_metadata[["var"]][["encoding-version"]],
+          private$.get_attrs_from_consolidated("var", "encoding-type"),
+          private$.get_attrs_from_consolidated("var", "encoding-version"),
           dim = "rows"
         )
       } else {
@@ -328,8 +336,8 @@ ZarrAnnData <- R6::R6Class(
         read_zarr_element(
           private$.zarrobj, 
           "uns",
-          private$.consolidated_metadata[["uns"]][["encoding-type"]],
-          private$.consolidated_metadata[["uns"]][["encoding-version"]]
+          private$.get_attrs_from_consolidated("uns", "encoding-type"),
+          private$.get_attrs_from_consolidated("uns", "encoding-version")
         )
       } else {
         private$.check_writeable()
