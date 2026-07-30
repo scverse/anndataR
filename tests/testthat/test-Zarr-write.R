@@ -125,6 +125,20 @@ test_that("Writing Zarr nullable integers works", {
   expect_equal(attrs[["encoding-type"]], "nullable-integer")
 })
 
+test_that("Writing Zarr nullable strings works", {
+  nullable <- LETTERS[1:5]
+  nullable[5] <- NA
+
+  expect_silent(write_zarr_element(nullable, store, "nullable_string"))
+  expect_true(zarr_path_exists(store, "nullable_string"))
+  attrs <- Rarr::read_zarr_attributes(file.path(store, "nullable_string"))
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_equal(attrs[["encoding-type"]], "nullable-string-array")
+
+  array <- read_zarr_nullable_string(store, "nullable_string")
+  expect_equal(array, nullable)
+})
+
 test_that("Writing Zarr string arrays works", {
   string <- LETTERS[1:5]
 
