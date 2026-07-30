@@ -559,8 +559,8 @@ ZarrAnnData <- R6::R6Class(
       }
 
       # Create consolidated metadata on the fly, in memory, 
-      # if it doesn't exist on disk.
-      private$.consolidated_metadata <- Rarr:::.read_consolidated_metadata(
+      # if it doesn't exist on disk (only happens for readonly stores).
+      private$.consolidated_metadata <- Rarr::read_zarr_consolidated_metadata(
         file,
         consolidate = "missing"
       ) |>
