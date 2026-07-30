@@ -106,7 +106,8 @@ Other AnnData classes:
   uns = NULL,
   shape = NULL,
   mode = c("a", "r", "r+", "w", "w-", "x"),
-  compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4")
+  compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+  zarr_format = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -129,6 +130,8 @@ both \code{X} or \code{obs} and \code{var} are not provided.}
       \item{\code{mode}}{The mode to open the Zarr file. See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for
 details}
       \item{\code{compression}}{The compression algorithm to use. See
+\code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
+      \item{\code{zarr_format}}{The Zarr format to use. See
 \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
     }
     \if{html}{\out{</div>}}

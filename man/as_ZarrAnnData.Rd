@@ -8,7 +8,8 @@ as_ZarrAnnData(
   adata,
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-  mode = c("w-", "r", "r+", "a", "w", "x")
+  mode = c("w-", "r", "r+", "a", "w", "x"),
+  zarr_format = NULL
 )
 }
 \arguments{
@@ -28,6 +29,15 @@ Zarr file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zs
 \item \code{w} creates a file, truncating any existing ones
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists
 }}
+
+\item{zarr_format}{The format to use when creating the Zarr store. Should be
+either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
+be set using the \code{anndataR.zarr_format} option, e.g.
+\code{options(anndataR.zarr_format = 2)}. If neither is set, Zarr v3 is used.
+
+When an existing store is opened, that store's format is used instead and
+setting \code{zarr_format} to a different format is an error. Use
+\code{mode = "w"} to rewrite an existing store in another format.}
 }
 \value{
 A \code{\link{ZarrAnnData}} object with the same data as the input \code{AnnData}
