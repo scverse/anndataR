@@ -38,11 +38,11 @@ import scipy.sparse
 # ruff format inst/scripts/example_files.py && ruff check --select I --fix inst/scripts/example_files.py
 #
 # Version: 0.5.0
-# Date: 2026-07-23
+# Date: 2026-07-30
 #
 # CHANGELOG
 #
-# v0.5.0 (2026-07-23)
+# v0.5.0 (2026-07-30)
 # - Add nullable string examples
 # - Avoid anndata/scanpy warnings
 # - Update package versions to latest stable versions
@@ -88,14 +88,11 @@ adata.layers["csc_counts"] = scipy.sparse.csc_matrix(counts.copy(), dtype=numpy.
 
 # Populate adata.var with different types
 adata.var["String"] = [f"String{i}" for i in range(adata.n_vars)]
-adata.var["StringNA"] = pandas.array(
-    [None] + [f"String{i}" for i in range(1, adata.n_vars)]
-)
 
 # Populate adata.obs with different types
 adata.obs["Float"] = 42.42
 adata.obs["FloatNA"] = adata.obs["Float"].copy()
-adata.obs["FloatNA"].iloc[0] = None
+adata.obs.loc[adata.obs_names[0], "FloatNA"] = None
 adata.obs["Int"] = numpy.arange(adata.n_obs)
 adata.obs["IntNA"] = pandas.array([None] + [42] * (adata.n_obs - 1))
 adata.obs["Bool"] = pandas.array([False] + [True] * (adata.n_obs - 1))
@@ -112,8 +109,8 @@ adata.uns["Sparse1D"] = scipy.sparse.csc_matrix([1, 2, 0, 0, 0, 3])
 adata.uns["StringScalar"] = "A string"
 adata.uns["String"] = [f"String {i}" for i in range(10)]
 adata.uns["String2D"] = [[f"row{i}col{j}" for i in range(10)] for j in range(5)]
-adata.uns["String2DNA"] = pandas.array(
-    [[None, "A", "B"], ["C", None, "D"], ["E", "F", None]], dtype="string"
+adata.uns["StringNA"] = pandas.array(
+    [None] + [f"String{i}" for i in range(1, 10)], dtype="string"
 )
 adata.uns["DataFrameEmpty"] = pandas.DataFrame(index=adata.obs.index)
 
@@ -146,6 +143,8 @@ print("\n>>> Writing H5AD file...")
 adata.write_h5ad("inst/extdata/example.h5ad", compression="gzip")
 
 # Write Zarr files in both v2 and v3 formats and zip them
+# TODO: Enable sharding when Rarr supports it
+anndata.settings.auto_shard_zarr_v3 = False
 os.chdir("inst/extdata/")
 for fmt in (2, 3):
     anndata.settings.zarr_write_format = fmt
