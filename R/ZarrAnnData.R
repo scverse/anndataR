@@ -43,11 +43,7 @@ ZarrAnnData <- R6::R6Class(
     },
 
     .get_attrs_from_consolidated = function(slot, attr) {
-      if (private$.zarrformat == 3L) {
         private$.consolidated_metadata[[slot]]$attributes[[attr]]
-      } else {
-        private$.consolidated_metadata[[file.path(slot, ".zattrs")]][[attr]]
-      }
     }
   ),
   active = list(
