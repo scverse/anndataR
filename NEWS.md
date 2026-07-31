@@ -1,3 +1,7 @@
+# anndataR 1.3.2
+
+- Write consolidated metadata on non-readonly anndata stores. Consolidated metadata is used to read encoding type and version of elements one level deep into the store (PR #492).
+
 # anndataR 1.3.1
 
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
