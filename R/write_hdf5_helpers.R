@@ -167,19 +167,19 @@ hdf5_write_boolean_dataset <- function(
   # }
   # nolint end
 
+  if (!is.null(dim(value))) {
+    dims <- dim(value)
+  } else {
+    dims <- length(value)
+  }
+
   value <- as.integer(value)
 
   # Create the dataspace for the data to write
   if (is_scalar) {
     h5space <- rhdf5::H5Screate("H5S_SCALAR", native = TRUE)
   } else {
-    if (!is.null(dim(value))) {
-      dims <- dim(value)
-    } else {
-      dims <- length(value)
-    }
-
-    h5space <- rhdf5::H5Screate_simple(dims = dims, NULL, native = TRUE)
+    h5space <- rhdf5::H5Screate_simple(dims = dims, NULL, native = FALSE)
   }
   on.exit(rhdf5::H5Sclose(h5space), add = TRUE)
 
