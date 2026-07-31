@@ -1,5 +1,6 @@
 # anndataR 1.3.1
 
+- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496).
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
 - Add support for writing Zarr v3 stores, using (i) `zarr_format` argument of `write_zarr()`/`as_ZarrAnnData()` or (ii) the `anndataR.zarr_format` option. New stores are written as Zarr v3 by default (PR #455).
 - Write strings as VLen-UTF8 rather than as fixed-width, so that string arrays read back as variable length strings in Python `anndata` (PR #455).
