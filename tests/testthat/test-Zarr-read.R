@@ -115,7 +115,7 @@ for (zarr_format in c(2, 3)) {
   })
 
   test_that(
-    paste("reading Zarr", zarr_version, "nullable string arrays works"),
+    paste("reading Zarr", zarr_format, "nullable string arrays works"),
     {
       array <- read_zarr_nullable_string(store, "uns/StringNA")
       expect_vector(array, ptype = character(), size = 10)
