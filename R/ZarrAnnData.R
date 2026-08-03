@@ -43,7 +43,7 @@ ZarrAnnData <- R6::R6Class(
     },
 
     .get_attrs_from_consolidated = function(slot, attr) {
-        private$.consolidated_metadata[[slot]]$attributes[[attr]]
+      private$.consolidated_metadata[[slot]]$attributes[[attr]]
     }
   ),
   active = list(
@@ -54,8 +54,8 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_X, status=done
         read_zarr_element(
-          private$.zarrobj, 
-          "X", 
+          private$.zarrobj,
+          "X",
           private$.get_attrs_from_consolidated("X", "encoding-type"),
           private$.get_attrs_from_consolidated("X", "encoding-version")
         ) |>
@@ -85,7 +85,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_layers, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "layers",
           private$.get_attrs_from_consolidated("layers", "encoding-type"),
           private$.get_attrs_from_consolidated("layers", "encoding-version")
@@ -116,7 +116,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obsm, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "obsm",
           private$.get_attrs_from_consolidated("obsm", "encoding-type"),
           private$.get_attrs_from_consolidated("obsm", "encoding-version")
@@ -149,7 +149,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_varm, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "varm",
           private$.get_attrs_from_consolidated("varm", "encoding-type"),
           private$.get_attrs_from_consolidated("varm", "encoding-version")
@@ -182,7 +182,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obsp, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "obsp",
           private$.get_attrs_from_consolidated("obsp", "encoding-type"),
           private$.get_attrs_from_consolidated("obsp", "encoding-version")
@@ -213,7 +213,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_varp, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "varp",
           private$.get_attrs_from_consolidated("varp", "encoding-type"),
           private$.get_attrs_from_consolidated("varp", "encoding-version")
@@ -244,7 +244,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obs, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "obs",
           private$.get_attrs_from_consolidated("obs", "encoding-type"),
           private$.get_attrs_from_consolidated("obs", "encoding-version")
@@ -268,7 +268,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_var, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "var",
           private$.get_attrs_from_consolidated("var", "encoding-type"),
           private$.get_attrs_from_consolidated("var", "encoding-version")
@@ -292,7 +292,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obs_names, status=done
         read_zarr_element_keys(
-          private$.zarrobj, 
+          private$.zarrobj,
           "obs",
           private$.get_attrs_from_consolidated("obs", "encoding-type"),
           private$.get_attrs_from_consolidated("obs", "encoding-version"),
@@ -311,7 +311,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_var_names, status=done
         read_zarr_element_keys(
-          private$.zarrobj, 
+          private$.zarrobj,
           "var",
           private$.get_attrs_from_consolidated("var", "encoding-type"),
           private$.get_attrs_from_consolidated("var", "encoding-version"),
@@ -330,7 +330,7 @@ ZarrAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_uns, status=done
         read_zarr_element(
-          private$.zarrobj, 
+          private$.zarrobj,
           "uns",
           private$.get_attrs_from_consolidated("uns", "encoding-type"),
           private$.get_attrs_from_consolidated("uns", "encoding-version")
@@ -558,7 +558,7 @@ ZarrAnnData <- R6::R6Class(
         Rarr::zarr_consolidate_metadata(file)
       }
 
-      # Create consolidated metadata on the fly, in memory, 
+      # Create consolidated metadata on the fly, in memory,
       # if it doesn't exist on disk (only happens for readonly stores).
       private$.consolidated_metadata <- Rarr::read_zarr_consolidated_metadata(
         file,
