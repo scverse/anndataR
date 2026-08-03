@@ -453,7 +453,13 @@ write_zarr_nullable_string <- function(
   )
 
   # Write attributes
-  write_zarr_encoding(store, name, "nullable-string-array", version, zarr_format)
+  write_zarr_encoding(
+    store,
+    name,
+    "nullable-string-array",
+    version,
+    zarr_format
+  )
 
   Rarr::write_zarr_attributes(
     file.path(store, name),

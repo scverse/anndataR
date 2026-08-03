@@ -448,10 +448,10 @@ read_h5ad_nullable_integer <- function(
 #'
 #' @noRd
 read_h5ad_nullable_string <- function(
-    hdf5_file,
-    name,
-    version = "0.1.0",
-    ...
+  hdf5_file,
+  name,
+  version = "0.1.0",
+  ...
 ) {
   as.character(read_h5ad_nullable(hdf5_file, name, version))
 }
