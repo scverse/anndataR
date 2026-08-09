@@ -115,12 +115,7 @@ for (zarr_format in c(2, 3)) {
   })
 
   test_that(paste("reading Zarr", zarr_format, "mappings works"), {
-    if (zarr_format == "3") {
-      # TODO: Remove when v3 recarray support is implemented
-      mapping <- suppressWarnings(read_zarr_mapping(store, "uns"))
-    } else {
-      mapping <- read_zarr_mapping(store, "uns")
-    }
+    mapping <- read_zarr_mapping(store, "uns")
     expect_type(mapping, "list")
     expect_type(names(mapping), "character")
   })
