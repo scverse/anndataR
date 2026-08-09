@@ -200,15 +200,15 @@ sessionInfo()
 #>   [5] farver_2.1.2                rmarkdown_2.31             
 #>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
-#>  [11] memoise_2.0.1               spatstat.explore_3.8-1     
+#>  [11] memoise_2.0.1               spatstat.explore_3.8-2     
 #>  [13] htmltools_0.5.9             S4Arrays_1.13.0            
 #>  [15] curl_7.1.0                  SparseArray_1.13.2         
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
 #>  [19] parallelly_1.48.0           KernSmooth_2.23-26         
-#>  [21] bslib_0.11.0                htmlwidgets_1.6.4          
+#>  [21] bslib_0.12.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] httr2_1.3.0                 plyr_1.8.9                 
-#>  [27] plotly_4.12.1               zoo_1.8-15                 
+#>  [27] plotly_4.12.1               zoo_1.9-0                  
 #>  [29] cachem_1.1.0                igraph_2.3.3               
 #>  [31] mime_0.13                   lifecycle_1.0.5            
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
@@ -216,7 +216,7 @@ sessionInfo()
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
 #>  [39] future_1.75.0               shiny_1.14.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
-#>  [43] S4Vectors_0.51.5            Seurat_5.5.1               
+#>  [43] S4Vectors_0.51.6            Seurat_5.5.1               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
 #>  [47] irlba_2.3.7                 RSQLite_3.53.3             
 #>  [49] textshaping_1.0.5           GenomicRanges_1.65.1       
@@ -226,7 +226,7 @@ sessionInfo()
 #>  [57] compiler_4.6.1              withr_3.0.3                
 #>  [59] bit64_4.8.2                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
-#>  [63] MASS_7.3-65                 DelayedArray_0.39.3        
+#>  [63] MASS_7.3-65                 DelayedArray_0.39.4        
 #>  [65] tools_4.6.1                 lmtest_0.9-40              
 #>  [67] otel_0.2.0                  httpuv_1.6.17              
 #>  [69] future.apply_1.20.2         goftest_1.2-3              
@@ -237,7 +237,7 @@ sessionInfo()
 #>  [79] gtable_0.3.6                spatstat.data_3.1-9        
 #>  [81] tidyr_1.3.2                 data.table_1.18.4          
 #>  [83] sp_2.2-3                    XVector_0.53.0             
-#>  [85] BiocGenerics_0.59.10        spatstat.geom_3.8-2        
+#>  [85] BiocGenerics_0.59.11        spatstat.geom_3.8-2        
 #>  [87] RcppAnnoy_0.0.23            ggrepel_0.9.8              
 #>  [89] RANN_2.6.2                  pillar_1.11.1              
 #>  [91] stringr_1.6.0               spam_2.11-4                
@@ -252,14 +252,14 @@ sessionInfo()
 #> [109] IRanges_2.47.2              Seqinfo_1.3.0              
 #> [111] SummarizedExperiment_1.43.0 scattermore_1.2            
 #> [113] stats4_4.6.1                xfun_0.60                  
-#> [115] Biobase_2.73.1              matrixStats_1.5.0          
-#> [117] stringi_1.8.7               yaml_2.3.12                
+#> [115] Biobase_2.73.2              matrixStats_1.5.0          
+#> [117] stringi_1.8.9               yaml_2.3.12                
 #> [119] evaluate_1.0.5              codetools_0.2-20           
 #> [121] tibble_3.3.1                BiocManager_1.30.27        
 #> [123] cli_3.6.6                   uwot_0.2.4                 
 #> [125] xtable_1.8-8                systemfonts_1.3.2          
 #> [127] jquerylib_0.1.4             Rcpp_1.1.2                 
-#> [129] spatstat.random_3.5-0       globals_0.19.1             
+#> [129] spatstat.random_3.5-1       globals_0.19.1             
 #> [131] dbplyr_2.6.0                png_0.1-9                  
 #> [133] spatstat.univar_3.2-0       parallel_4.6.1             
 #> [135] blob_1.3.0                  pkgdown_2.2.1              
@@ -309,7 +309,7 @@ reticulate::py_list_packages()
 #> 20             numba       0.66.0                numba==0.66.0
 #> 21         numcodecs       0.16.5            numcodecs==0.16.5
 #> 22             numpy        2.4.6                 numpy==2.4.6
-#> 23         packaging         26.2              packaging==26.2
+#> 23         packaging         26.3              packaging==26.3
 #> 24            pandas        2.3.3                pandas==2.3.3
 #> 25             patsy        1.0.2                 patsy==1.0.2
 #> 26            pillow       12.3.0               pillow==12.3.0
@@ -323,7 +323,7 @@ reticulate::py_list_packages()
 #> 34             scipy       1.18.0                scipy==1.18.0
 #> 35      scverse-misc        0.1.1          scverse-misc==0.1.1
 #> 36           seaborn       0.13.2              seaborn==0.13.2
-#> 37     session-info2        0.4.1         session-info2==0.4.1
+#> 37     session-info2        0.4.2         session-info2==0.4.2
 #> 38               six       1.17.0                  six==1.17.0
 #> 39       statsmodels       0.14.6          statsmodels==0.14.6
 #> 40     threadpoolctl        3.6.0         threadpoolctl==3.6.0
@@ -331,5 +331,5 @@ reticulate::py_list_packages()
 #> 42 typing_extensions       4.16.0    typing_extensions==4.16.0
 #> 43            tzdata       2026.3               tzdata==2026.3
 #> 44        umap-learn       0.5.12           umap-learn==0.5.12
-#> 45              zarr        3.2.1                  zarr==3.2.1
+#> 45              zarr        3.3.0                  zarr==3.3.0
 ```

@@ -558,10 +558,10 @@ sessionInfo()
 #> 
 #> other attached packages:
 #>  [1] anndataR_1.3.1              SingleCellExperiment_1.35.2
-#>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.1             
+#>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.2             
 #>  [5] GenomicRanges_1.65.1        Seqinfo_1.3.0              
-#>  [7] IRanges_2.47.2              S4Vectors_0.51.5           
-#>  [9] BiocGenerics_0.59.10        generics_0.1.4             
+#>  [7] IRanges_2.47.2              S4Vectors_0.51.6           
+#>  [9] BiocGenerics_0.59.11        generics_0.1.4             
 #> [11] MatrixGenerics_1.25.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-3                   
 #> [15] BiocStyle_2.41.0           
@@ -570,27 +570,27 @@ sessionInfo()
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
 #>   [4] spatstat.utils_3.2-4   farver_2.1.2           rmarkdown_2.31        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
-#>  [10] ROCR_1.0-12            spatstat.explore_3.8-1 htmltools_0.5.9       
+#>  [10] ROCR_1.0-12            spatstat.explore_3.8-2 htmltools_0.5.9       
 #>  [13] S4Arrays_1.13.0        curl_7.1.0             Rhdf5lib_2.1.0        
-#>  [16] SparseArray_1.13.2     rhdf5_2.57.1           sass_0.4.10           
+#>  [16] SparseArray_1.13.2     rhdf5_2.57.5           sass_0.4.10           
 #>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    
-#>  [22] bslib_0.11.0           htmlwidgets_1.6.4      desc_1.4.3            
+#>  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
-#>  [28] plotly_4.12.1          zoo_1.8-15             cachem_1.1.0          
+#>  [28] plotly_4.12.1          zoo_1.9-0              cachem_1.1.0          
 #>  [31] igraph_2.3.3           mime_0.13              lifecycle_1.0.5       
 #>  [34] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
 #>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.75.0         
 #>  [40] shiny_1.14.0           digest_0.6.39          paws.storage_0.10.0   
 #>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.1          
 #>  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [49] Rarr_2.1.26            progressr_1.0.0        spatstat.sparse_3.2-0 
+#>  [49] Rarr_2.1.32            progressr_1.0.0        spatstat.sparse_3.2-0 
 #>  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           
 #>  [55] compiler_4.6.1         withr_3.0.3            S7_0.2.2              
 #>  [58] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        
-#>  [61] MASS_7.3-65            DelayedArray_0.39.3    tools_4.6.1           
+#>  [61] MASS_7.3-65            DelayedArray_0.39.4    tools_4.6.1           
 #>  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         
 #>  [67] future.apply_1.20.2    goftest_1.2-3          R.oo_1.27.1           
-#>  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.0   
+#>  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.4   
 #>  [73] promises_1.5.0         grid_4.6.1             Rtsne_0.17            
 #>  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          
 #>  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           
@@ -602,11 +602,11 @@ sessionInfo()
 #>  [97] survival_3.8-6         paws.common_0.8.10     tidyselect_1.2.1      
 #> [100] miniUI_0.1.2           pbapply_1.7-4          knitr_1.51            
 #> [103] gridExtra_2.3.1        bookdown_0.47          scattermore_1.2       
-#> [106] xfun_0.60              stringi_1.8.7          yaml_2.3.12           
+#> [106] xfun_0.60              stringi_1.8.9          yaml_2.3.12           
 #> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
 #> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            
 #> [115] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     
-#> [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-0 
+#> [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-1 
 #> [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.2-0 
 #> [124] parallel_4.6.1         pkgdown_2.2.1          ggplot2_4.0.3         
 #> [127] dotCall64_1.2          listenv_1.0.0          viridisLite_0.4.3     
