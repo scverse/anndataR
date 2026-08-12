@@ -257,6 +257,36 @@ test_that("Writing H5AD mappings works", {
   expect_equal(attrs[["encoding-type"]], "dict")
 })
 
+test_that("Writing H5AD mappings with an index works", {
+  index <- paste0("Row", 1:5)
+  mapping <- list(
+    df = data.frame(Letters = letters[1:5], Numbers = 1:5),
+    array = matrix(rnorm(20), nrow = 5, ncol = 4)
+  )
+
+  expect_silent(
+    write_h5ad_element(
+      mapping,
+      hdf5_file,
+      "indexed_mapping",
+      compression = "none",
+      index = index
+    )
+  )
+
+  hdf5_file$open_and_defer_close()
+  # The index is used for data frame elements...
+  expect_identical(
+    as.vector(rhdf5::h5read(hdf5_file$handle, "indexed_mapping/df/_index")),
+    index
+  )
+  # ...and ignored by everything else
+  expect_equal(
+    dim(rhdf5::h5read(hdf5_file$handle, "indexed_mapping/array")),
+    c(4, 5)
+  )
+})
+
 test_that("Writing H5AD data frames works", {
   df <- data.frame(
     Letters = letters[1:5],

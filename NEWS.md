@@ -6,6 +6,7 @@
 - Use the format of an existing Zarr store when writing to it and truncate the store when `mode = "w"`, so that a store can no longer end up with a mix of Zarr v2 and v3 nodes (PR #455).
 - Enable additional linters and optimise several suboptimal code patterns (PR #453).
 - Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
+- Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #XXX).
 - Fix use of `&` instead of `&&` when validating column names in `AbstractAnnData` (PR #487).
 - Update tests to take into account the `Rarr` structured datatype breaking change (PR #462).
 - Temporarily require Python `anndata < 0.13.0` in tests, workflows and the Python usage vignette (PR #481).
