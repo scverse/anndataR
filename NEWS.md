@@ -1,3 +1,7 @@
+# anndataR devel
+
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
+
 # anndataR 1.3.1
 
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
