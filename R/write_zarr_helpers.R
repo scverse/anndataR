@@ -56,6 +56,8 @@ write_zarr_element <- function(
       # Character values
       if (length(value) == 1 && !is.matrix(value)) {
         write_zarr_string_scalar
+      } else if (anyNA(value) && length(dim(value)) <= 1) {
+        write_zarr_nullable_string
       } else {
         write_zarr_string_array
       }
@@ -352,6 +354,52 @@ write_zarr_nullable_integer <- function(
 
   # Write attributes
   write_zarr_encoding(store, name, "nullable-integer", version)
+}
+
+#' Write Zarr nullable string
+#'
+#' Write a nullable string to a Zarr store
+#'
+#' @noRd
+#'
+#' @param value Value to write
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
+#' @param compression The compression to use when writing the element. Can be
+#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param version Encoding version of the element to write
+write_zarr_nullable_string <- function(
+  value,
+  store,
+  name,
+  compression,
+  version = "0.1.0"
+) {
+  # write mask and values
+  create_zarr_group(store, name)
+  value_no_na <- value
+  value_no_na[is.na(value_no_na)] <- ""
+
+  write_zarr_string_array(
+    value_no_na,
+    store,
+    paste0(name, "/values"),
+    compression
+  )
+  zarr_write_compressed(
+    store,
+    paste0(name, "/mask"),
+    is.na(value),
+    compression
+  )
+
+  # Write attributes
+  write_zarr_encoding(store, name, "nullable-string-array", version)
+
+  Rarr::write_zarr_attributes(
+    file.path(store, name),
+    new.zattrs = list(`na-value` = "NA")
+  )
 }
 
 #' Write Zarr string array

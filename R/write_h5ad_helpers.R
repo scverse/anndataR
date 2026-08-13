@@ -53,6 +53,8 @@ write_h5ad_element <- function(
       # Character values
       if (length(value) == 1 && !is.matrix(value)) {
         write_h5ad_string_scalar
+      } else if (anyNA(value) && length(dim(value)) <= 1) {
+        write_h5ad_nullable_string
       } else {
         write_h5ad_string_array
       }
@@ -425,6 +427,60 @@ write_h5ad_nullable_integer <- function(
   )
 
   write_h5ad_encoding(file, name, "nullable-integer", version)
+}
+
+#' Write H5AD nullable string
+#'
+#' Write a nullable string to an H5AD file
+#'
+#' @noRd
+#'
+#' @param value Value to write
+#' @param file An open H5AD handle
+#' @param name Name of the element within the H5AD file
+#' @param compression The compression to use when writing the element. Can be
+#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param version Encoding version of the element to write
+# nolint start: object_length_linter
+write_h5ad_nullable_string <- function(
+  value,
+  file,
+  name,
+  compression,
+  chunk_size = "auto",
+  version = "0.1.0"
+) {
+  # nolint end: object_length_linter
+  rhdf5::h5createGroup(file, name)
+
+  value_no_na <- value
+  value_no_na[is.na(value_no_na)] <- ""
+
+  write_h5ad_string_array(
+    value_no_na,
+    file,
+    paste0(name, "/values"),
+    compression,
+    chunk_size
+  )
+
+  write_h5ad_dense_array(
+    is.na(value),
+    file,
+    paste0(name, "/mask"),
+    compression,
+    chunk_size
+  )
+
+  write_h5ad_encoding(file, name, "nullable-string-array", version)
+
+  hdf5_write_attribute(
+    file,
+    name,
+    "na-value",
+    "NA",
+    is_scalar = TRUE
+  )
 }
 
 #' Write H5AD string array

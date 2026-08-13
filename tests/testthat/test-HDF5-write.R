@@ -103,6 +103,20 @@ test_that("Writing H5AD nullable integers works", {
   expect_equal(attrs[["encoding-type"]], "nullable-integer")
 })
 
+test_that("Writing H5AD nullable strings works", {
+  nullable <- LETTERS[1:5]
+  nullable[5] <- NA
+
+  expect_silent(write_h5ad_element(nullable, file, "nullable_string"))
+  expect_true(hdf5_path_exists(file, "/nullable_string"))
+  attrs <- rhdf5::h5readAttributes(file, "nullable_string", native = FALSE)
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_equal(attrs[["encoding-type"]], "nullable-string-array")
+
+  array <- read_h5ad_nullable_string(file, "nullable_string")
+  expect_equal(array, nullable)
+})
+
 test_that("Writing H5AD string arrays works", {
   string <- LETTERS[1:5]
 

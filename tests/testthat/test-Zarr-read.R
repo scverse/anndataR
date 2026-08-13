@@ -106,6 +106,15 @@ for (zarr_version in c("v2", "v3")) {
     expect_equal(dim(array), c(5, 10))
   })
 
+  test_that(
+    paste("reading Zarr", zarr_version, "nullable string arrays works"),
+    {
+      array <- read_zarr_nullable_string(store, "uns/StringNA")
+      expect_vector(array, ptype = character(), size = 10)
+      expect_true(anyNA(array))
+    }
+  )
+
   test_that(paste("reading Zarr", zarr_version, "mappings works"), {
     if (zarr_version == "v3") {
       # TODO: Remove when v3 recarray support is implemented
