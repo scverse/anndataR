@@ -226,7 +226,7 @@ sessionInfo()
 #>  [57] compiler_4.6.1              withr_3.0.3                
 #>  [59] bit64_4.8.2                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
-#>  [63] MASS_7.3-65                 DelayedArray_0.39.4        
+#>  [63] MASS_7.3-65                 DelayedArray_0.39.5        
 #>  [65] tools_4.6.1                 lmtest_0.9-40              
 #>  [67] otel_0.2.0                  httpuv_1.6.17              
 #>  [69] future.apply_1.20.2         goftest_1.2-3              
@@ -237,7 +237,7 @@ sessionInfo()
 #>  [79] gtable_0.3.6                spatstat.data_3.1-9        
 #>  [81] tidyr_1.3.2                 data.table_1.18.4          
 #>  [83] sp_2.2-3                    XVector_0.53.0             
-#>  [85] BiocGenerics_0.59.11        spatstat.geom_3.8-2        
+#>  [85] BiocGenerics_0.59.12        spatstat.geom_3.8-2        
 #>  [87] RcppAnnoy_0.0.23            ggrepel_0.9.8              
 #>  [89] RANN_2.6.2                  pillar_1.11.1              
 #>  [91] stringr_1.6.0               spam_2.11-4                
@@ -280,7 +280,7 @@ reticulate::py_config()
 #> pythonhome:     /opt/hostedtoolcache/Python/3.14.6/x64:/opt/hostedtoolcache/Python/3.14.6/x64
 #> version:        3.14.6 (main, Jun 10 2026, 14:29:35) [GCC 13.3.0]
 #> numpy:          /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/numpy
-#> numpy_version:  2.4.6
+#> numpy_version:  2.5.2
 #> scanpy:         /opt/hostedtoolcache/Python/3.14.6/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
@@ -300,15 +300,15 @@ reticulate::py_list_packages()
 #> 11            joblib        1.5.3                joblib==1.5.3
 #> 12        kiwisolver        1.5.0            kiwisolver==1.5.0
 #> 13   legacy-api-wrap          1.5         legacy-api-wrap==1.5
-#> 14          llvmlite       0.48.0             llvmlite==0.48.0
+#> 14          llvmlite       0.49.0             llvmlite==0.49.0
 #> 15        matplotlib       3.11.1           matplotlib==3.11.1
 #> 16            mudata       0.3.10               mudata==0.3.10
 #> 17          narwhals       2.24.0             narwhals==2.24.0
 #> 18           natsort        8.4.0               natsort==8.4.0
 #> 19          networkx        3.6.1              networkx==3.6.1
-#> 20             numba       0.66.0                numba==0.66.0
+#> 20             numba       0.67.0                numba==0.67.0
 #> 21         numcodecs       0.16.5            numcodecs==0.16.5
-#> 22             numpy        2.4.6                 numpy==2.4.6
+#> 22             numpy        2.5.2                 numpy==2.5.2
 #> 23         packaging         26.3              packaging==26.3
 #> 24            pandas        2.3.3                pandas==2.3.3
 #> 25             patsy        1.0.2                 patsy==1.0.2

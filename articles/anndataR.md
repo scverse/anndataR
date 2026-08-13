@@ -141,7 +141,7 @@ adata
 #> ZarrAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     varm: 'PCs'
 #>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X'
@@ -192,7 +192,7 @@ sce <- adata$as_SingleCellExperiment()
 sce
 #> class: SingleCellExperiment 
 #> dim: 100 50 
-#> metadata(18): Bool BoolNA ... StringScalar umap
+#> metadata(19): Bool BoolNA ... StringScalar umap
 #> assays(5): counts csc_counts dense_counts dense_X X
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
 #> rowData names(11): String n_cells_by_counts ... dispersions
@@ -228,7 +228,7 @@ adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     varm: 'X_pca'
 #>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'
@@ -246,7 +246,7 @@ adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'orig.ident', 'nCount_RNA', 'nFeature_RNA', 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'
 #>     obsp: 'connectivities', 'distances'
@@ -561,7 +561,7 @@ sessionInfo()
 #>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.2             
 #>  [5] GenomicRanges_1.65.1        Seqinfo_1.3.0              
 #>  [7] IRanges_2.47.2              S4Vectors_0.51.6           
-#>  [9] BiocGenerics_0.59.11        generics_0.1.4             
+#>  [9] BiocGenerics_0.59.12        generics_0.1.4             
 #> [11] MatrixGenerics_1.25.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-3                   
 #> [15] BiocStyle_2.41.0           
@@ -572,7 +572,7 @@ sessionInfo()
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-2 htmltools_0.5.9       
 #>  [13] S4Arrays_1.13.0        curl_7.1.0             Rhdf5lib_2.1.0        
-#>  [16] SparseArray_1.13.2     rhdf5_2.57.5           sass_0.4.10           
+#>  [16] SparseArray_1.13.2     rhdf5_2.57.9           sass_0.4.10           
 #>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    
 #>  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
@@ -587,7 +587,7 @@ sessionInfo()
 #>  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           
 #>  [55] compiler_4.6.1         withr_3.0.3            S7_0.2.2              
 #>  [58] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        
-#>  [61] MASS_7.3-65            DelayedArray_0.39.4    tools_4.6.1           
+#>  [61] MASS_7.3-65            DelayedArray_0.39.5    tools_4.6.1           
 #>  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         
 #>  [67] future.apply_1.20.2    goftest_1.2-3          R.oo_1.27.1           
 #>  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.4   
