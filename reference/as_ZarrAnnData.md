@@ -11,8 +11,7 @@ as_ZarrAnnData(
   adata,
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-  mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = NULL
+  mode = c("w-", "r", "r+", "a", "w", "x")
 )
 ```
 
@@ -47,18 +46,6 @@ as_ZarrAnnData(
 
   - `w-`/`x` are synonyms, creating a file and failing if it already
     exists
-
-- zarr_format:
-
-  The format to use when creating the Zarr store. Should be either 2 or
-  3 for Zarr v2 or v3 formats, respectively. The default can also be set
-  using the `anndataR.zarr_format` option, e.g.
-  `options(anndataR.zarr_format = 2)`. If neither is set, Zarr v3 is
-  used.
-
-  When an existing store is opened, that store's format is used instead
-  and setting `zarr_format` to a different format is an error. Use
-  `mode = "w"` to rewrite an existing store in another format.
 
 ## Value
 

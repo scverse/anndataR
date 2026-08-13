@@ -13,7 +13,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +46,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Abstract AnnData class</h1>
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/R/AbstractAnnData.R" class="external-link"><code>R/AbstractAnnData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.2.1/R/AbstractAnnData.R" class="external-link"><code>R/AbstractAnnData.R</code></a></small>
       <div class="d-none name"><code>AbstractAnnData.Rd</code></div>
     </div>
 
@@ -78,43 +78,43 @@ intended to be used as a base class for concrete implementations of
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>layers</code></dt>
+<dt><code>layers</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>obs</code></dt>
+<dt><code>obs</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>var</code></dt>
+<dt><code>var</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>obs_names</code></dt>
+<dt><code>obs_names</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>var_names</code></dt>
+<dt><code>var_names</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>obsm</code></dt>
+<dt><code>obsm</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>varm</code></dt>
+<dt><code>varm</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>obsp</code></dt>
+<dt><code>obsp</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>varp</code></dt>
+<dt><code>varp</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-    <dt><code>uns</code></dt>
+<dt><code>uns</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
@@ -125,7 +125,8 @@ intended to be used as a base class for concrete implementations of
 
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
-<p></p><ul><li><p><a href="#method-AbstractAnnData-print"><code>AbstractAnnData$print()</code></a></p></li>
+
+<ul><li><p><a href="#method-AbstractAnnData-print"><code>AbstractAnnData$print()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-shape"><code>AbstractAnnData$shape()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-n_obs"><code>AbstractAnnData$n_obs()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-n_vars"><code>AbstractAnnData$n_vars()</code></a></p></li>
@@ -147,11 +148,13 @@ intended to be used as a base class for concrete implementations of
 <li><p><a href="#method-AbstractAnnData-write_zarr"><code>AbstractAnnData$write_zarr()</code></a></p></li>
 <li><p><a href="#method-AbstractAnnData-clone"><code>AbstractAnnData$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-AbstractAnnData-print"></a><div class="section">
-<h3 id="abstractanndata-print-"><code>AbstractAnnData$print()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-print-"></a></h3>
+<h3 id="method-print-">Method <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code><a class="anchor" aria-label="anchor" href="#method-print-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">print</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>...</code></dt>
 <dd><p>Optional arguments to print method</p></dd>
@@ -160,109 +163,96 @@ intended to be used as a base class for concrete implementations of
 </dl><p></p></div>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-shape"></a><div class="section">
-<h3 id="abstractanndata-shape-"><code>AbstractAnnData$shape()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-shape-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-shape"></a><div class="section">
+<h3 id="method-shape-">Method <code>shape()</code><a class="anchor" aria-label="anchor" href="#method-shape-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">shape</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-n_obs"></a><div class="section">
-<h3 id="abstractanndata-n-obs-"><code>AbstractAnnData$n_obs()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-n-obs-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-n_obs"></a><div class="section">
+<h3 id="method-n-obs-">Method <code>n_obs()</code><a class="anchor" aria-label="anchor" href="#method-n-obs-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">n_obs</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-n_vars"></a><div class="section">
-<h3 id="abstractanndata-n-vars-"><code>AbstractAnnData$n_vars()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-n-vars-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-n_vars"></a><div class="section">
+<h3 id="method-n-vars-">Method <code>n_vars()</code><a class="anchor" aria-label="anchor" href="#method-n-vars-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">n_vars</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-obs_keys"></a><div class="section">
-<h3 id="abstractanndata-obs-keys-"><code>AbstractAnnData$obs_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-obs-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-obs_keys"></a><div class="section">
+<h3 id="method-obs-keys-">Method <code>obs_keys()</code><a class="anchor" aria-label="anchor" href="#method-obs-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">obs_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-var_keys"></a><div class="section">
-<h3 id="abstractanndata-var-keys-"><code>AbstractAnnData$var_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-var-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-var_keys"></a><div class="section">
+<h3 id="method-var-keys-">Method <code>var_keys()</code><a class="anchor" aria-label="anchor" href="#method-var-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">var_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-layers_keys"></a><div class="section">
-<h3 id="abstractanndata-layers-keys-"><code>AbstractAnnData$layers_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-layers-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-layers_keys"></a><div class="section">
+<h3 id="method-layers-keys-">Method <code>layers_keys()</code><a class="anchor" aria-label="anchor" href="#method-layers-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">layers_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-obsm_keys"></a><div class="section">
-<h3 id="abstractanndata-obsm-keys-"><code>AbstractAnnData$obsm_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-obsm-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-obsm_keys"></a><div class="section">
+<h3 id="method-obsm-keys-">Method <code>obsm_keys()</code><a class="anchor" aria-label="anchor" href="#method-obsm-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">obsm_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-varm_keys"></a><div class="section">
-<h3 id="abstractanndata-varm-keys-"><code>AbstractAnnData$varm_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-varm-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-varm_keys"></a><div class="section">
+<h3 id="method-varm-keys-">Method <code>varm_keys()</code><a class="anchor" aria-label="anchor" href="#method-varm-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">varm_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-obsp_keys"></a><div class="section">
-<h3 id="abstractanndata-obsp-keys-"><code>AbstractAnnData$obsp_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-obsp-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-obsp_keys"></a><div class="section">
+<h3 id="method-obsp-keys-">Method <code>obsp_keys()</code><a class="anchor" aria-label="anchor" href="#method-obsp-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">obsp_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-varp_keys"></a><div class="section">
-<h3 id="abstractanndata-varp-keys-"><code>AbstractAnnData$varp_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-varp-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-varp_keys"></a><div class="section">
+<h3 id="method-varp-keys-">Method <code>varp_keys()</code><a class="anchor" aria-label="anchor" href="#method-varp-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">varp_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-uns_keys"></a><div class="section">
-<h3 id="abstractanndata-uns-keys-"><code>AbstractAnnData$uns_keys()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-uns-keys-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-uns_keys"></a><div class="section">
+<h3 id="method-uns-keys-">Method <code>uns_keys()</code><a class="anchor" aria-label="anchor" href="#method-uns-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">uns_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-</div>
 
-<p></p><hr><a id="method-AbstractAnnData-as_SingleCellExperiment"></a><div class="section">
-<h3 id="abstractanndata-as-singlecellexperiment-"><code>AbstractAnnData$as_SingleCellExperiment()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-as-singlecellexperiment-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-as_SingleCellExperiment"></a><div class="section">
+<h3 id="method-as-singlecellexperiment-">Method <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code><a class="anchor" aria-label="anchor" href="#method-as-singlecellexperiment-"></a></h3>
 <p>Convert to <code>SingleCellExperiment</code></p>
 <p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code> for more details on the conversion</p><div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
@@ -276,43 +266,51 @@ intended to be used as a base class for concrete implementations of
 <span>  rowPairs_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  metadata_mapping <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>x_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
-      <dt><code>assays_mapping</code></dt>
+
+<dt><code>assays_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
-      <dt><code>colData_mapping</code></dt>
+
+<dt><code>colData_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
-      <dt><code>rowData_mapping</code></dt>
+
+<dt><code>rowData_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
-      <dt><code>reducedDims_mapping</code></dt>
+
+<dt><code>reducedDims_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
-      <dt><code>colPairs_mapping</code></dt>
+
+<dt><code>colPairs_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
-      <dt><code>rowPairs_mapping</code></dt>
+
+<dt><code>rowPairs_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
-      <dt><code>metadata_mapping</code></dt>
+
+<dt><code>metadata_mapping</code></dt>
 <dd><p>See <code><a href="as_SingleCellExperiment.html">as_SingleCellExperiment()</a></code></p></dd>
 
 
 </dl><p></p></div>
-</div><p></p><div class="section">
+</div>
+<div class="section">
 <h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
 <p>A <code>SingleCellExperiment</code> object</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-as_Seurat"></a><div class="section">
-<h3 id="abstractanndata-as-seurat-"><code>AbstractAnnData$as_Seurat()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-as-seurat-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-as_Seurat"></a><div class="section">
+<h3 id="method-as-seurat-">Method <code><a href="as_Seurat.html">as_Seurat()</a></code><a class="anchor" aria-label="anchor" href="#method-as-seurat-"></a></h3>
 <p>Convert to <code>Seurat</code></p>
 <p>See <code><a href="as_Seurat.html">as_Seurat()</a></code> for more details on the conversion</p><div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
@@ -326,69 +324,77 @@ intended to be used as a base class for concrete implementations of
 <span>  graph_mapping <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  misc_mapping <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>assay_name</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
-      <dt><code>x_mapping</code></dt>
+
+<dt><code>x_mapping</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
-      <dt><code>layers_mapping</code></dt>
+
+<dt><code>layers_mapping</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
-      <dt><code>object_metadata_mapping</code></dt>
+
+<dt><code>object_metadata_mapping</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
-      <dt><code>assay_metadata_mapping</code></dt>
+
+<dt><code>assay_metadata_mapping</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
-      <dt><code>reduction_mapping</code></dt>
+
+<dt><code>reduction_mapping</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
-      <dt><code>graph_mapping</code></dt>
+
+<dt><code>graph_mapping</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
-      <dt><code>misc_mapping</code></dt>
+
+<dt><code>misc_mapping</code></dt>
 <dd><p>See <code><a href="as_Seurat.html">as_Seurat()</a></code></p></dd>
 
 
 </dl><p></p></div>
-</div><p></p><div class="section">
+</div>
+<div class="section">
 <h4 id="returns-1">Returns<a class="anchor" aria-label="anchor" href="#returns-1"></a></h4>
 <p>A <code>Seurat</code> object</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-as_InMemoryAnnData"></a><div class="section">
-<h3 id="abstractanndata-as-inmemoryanndata-"><code>AbstractAnnData$as_InMemoryAnnData()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-as-inmemoryanndata-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-as_InMemoryAnnData"></a><div class="section">
+<h3 id="method-as-inmemoryanndata-">Method <code><a href="as_InMemoryAnnData.html">as_InMemoryAnnData()</a></code><a class="anchor" aria-label="anchor" href="#method-as-inmemoryanndata-"></a></h3>
 <p>Convert to an <code><a href="InMemoryAnnData.html">InMemoryAnnData</a></code></p>
 <p>See <code><a href="as_InMemoryAnnData.html">as_InMemoryAnnData()</a></code> for more details on the conversion</p><div class="section">
 <h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">as_InMemoryAnnData</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="returns-2">Returns<a class="anchor" aria-label="anchor" href="#returns-2"></a></h4>
 <p>An <a href="InMemoryAnnData.html">InMemoryAnnData</a> object</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-as_ReticulateAnnData"></a><div class="section">
-<h3 id="abstractanndata-as-reticulateanndata-"><code>AbstractAnnData$as_ReticulateAnnData()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-as-reticulateanndata-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-as_ReticulateAnnData"></a><div class="section">
+<h3 id="method-as-reticulateanndata-">Method <code><a href="as_ReticulateAnnData.html">as_ReticulateAnnData()</a></code><a class="anchor" aria-label="anchor" href="#method-as-reticulateanndata-"></a></h3>
 <p>Convert to a <code><a href="ReticulateAnnData.html">ReticulateAnnData</a></code></p>
 <p>See <code><a href="as_ReticulateAnnData.html">as_ReticulateAnnData()</a></code> for more details on the conversion</p><div class="section">
 <h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">as_ReticulateAnnData</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="returns-3">Returns<a class="anchor" aria-label="anchor" href="#returns-3"></a></h4>
 <p>A <a href="ReticulateAnnData.html">ReticulateAnnData</a> object</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-as_HDF5AnnData"></a><div class="section">
-<h3 id="abstractanndata-as-hdf-anndata-"><code>AbstractAnnData$as_HDF5AnnData()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-as-hdf-anndata-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-as_HDF5AnnData"></a><div class="section">
+<h3 id="method-as-hdf-anndata-">Method <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code><a class="anchor" aria-label="anchor" href="#method-as-hdf-anndata-"></a></h3>
 <p>Convert to an <code><a href="HDF5AnnData.html">HDF5AnnData</a></code></p>
 <p>See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code> for more details on the conversion</p><div class="section">
 <h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
@@ -398,65 +404,68 @@ intended to be used as a base class for concrete implementations of
 <span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>file</code></dt>
 <dd><p>See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></p></dd>
 
-      <dt><code>compression</code></dt>
+
+<dt><code>compression</code></dt>
 <dd><p>See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></p></dd>
 
-      <dt><code>chunk_size</code></dt>
+
+<dt><code>chunk_size</code></dt>
 <dd><p>See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></p></dd>
 
-      <dt><code>mode</code></dt>
+
+<dt><code>mode</code></dt>
 <dd><p>See <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code></p></dd>
 
 
 </dl><p></p></div>
-</div><p></p><div class="section">
+</div>
+<div class="section">
 <h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
 <p>An <code><a href="HDF5AnnData.html">HDF5AnnData</a></code> object</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-as_ZarrAnnData"></a><div class="section">
-<h3 id="abstractanndata-as-zarranndata-"><code>AbstractAnnData$as_ZarrAnnData()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-as-zarranndata-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-as_ZarrAnnData"></a><div class="section">
+<h3 id="method-as-zarranndata-">Method <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code><a class="anchor" aria-label="anchor" href="#method-as-zarranndata-"></a></h3>
 <p>Convert to a <code><a href="ZarrAnnData.html">ZarrAnnData</a></code></p>
 <p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code> for more details on the conversion</p><div class="section">
 <h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">as_ZarrAnnData</span><span class="op">(</span></span>
 <span>  <span class="va">file</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
-<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
-<span>  zarr_format <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>file</code></dt>
 <dd><p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
 
-      <dt><code>compression</code></dt>
+
+<dt><code>compression</code></dt>
 <dd><p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
 
-      <dt><code>mode</code></dt>
-<dd><p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
 
-      <dt><code>zarr_format</code></dt>
+<dt><code>mode</code></dt>
 <dd><p>See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code></p></dd>
 
 
 </dl><p></p></div>
-</div><p></p><div class="section">
+</div>
+<div class="section">
 <h4 id="returns-5">Returns<a class="anchor" aria-label="anchor" href="#returns-5"></a></h4>
 <p>A <code><a href="ZarrAnnData.html">ZarrAnnData</a></code> object</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-write_h5ad"></a><div class="section">
-<h3 id="abstractanndata-write-h-ad-"><code>AbstractAnnData$write_h5ad()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-write-h-ad-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-write_h5ad"></a><div class="section">
+<h3 id="method-write-h-ad-">Method <code><a href="write_h5ad.html">write_h5ad()</a></code><a class="anchor" aria-label="anchor" href="#method-write-h-ad-"></a></h3>
 <p>Write the <code>AnnData</code> object to an H5AD file</p>
 <p>See <code><a href="write_h5ad.html">write_h5ad()</a></code> for details</p><div class="section">
 <h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
@@ -466,69 +475,74 @@ intended to be used as a base class for concrete implementations of
 <span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>path</code></dt>
 <dd><p>See <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
 
-      <dt><code>compression</code></dt>
+
+<dt><code>compression</code></dt>
 <dd><p>See <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
 
-      <dt><code>chunk_size</code></dt>
+
+<dt><code>chunk_size</code></dt>
 <dd><p>See <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
 
-      <dt><code>mode</code></dt>
+
+<dt><code>mode</code></dt>
 <dd><p>See <code><a href="write_h5ad.html">write_h5ad()</a></code></p></dd>
 
 
 </dl><p></p></div>
-</div><p></p><div class="section">
+</div>
+<div class="section">
 <h4 id="returns-6">Returns<a class="anchor" aria-label="anchor" href="#returns-6"></a></h4>
 <p><code>path</code> invisibly</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-write_zarr"></a><div class="section">
-<h3 id="abstractanndata-write-zarr-"><code>AbstractAnnData$write_zarr()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-write-zarr-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-write_zarr"></a><div class="section">
+<h3 id="method-write-zarr-">Method <code><a href="write_zarr.html">write_zarr()</a></code><a class="anchor" aria-label="anchor" href="#method-write-zarr-"></a></h3>
 <p>Write the <code>AnnData</code> object to a Zarr file</p>
 <p>See <code><a href="write_zarr.html">write_zarr()</a></code> for details</p><div class="section">
 <h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span></span>
 <span>  <span class="va">path</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
-<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>path</code></dt>
 <dd><p>See <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
 
-      <dt><code>compression</code></dt>
+
+<dt><code>compression</code></dt>
 <dd><p>See <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
 
-      <dt><code>mode</code></dt>
-<dd><p>See <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
 
-      <dt><code>...</code></dt>
+<dt><code>mode</code></dt>
 <dd><p>See <code><a href="write_zarr.html">write_zarr()</a></code></p></dd>
 
 
 </dl><p></p></div>
-</div><p></p><div class="section">
+</div>
+<div class="section">
 <h4 id="returns-7">Returns<a class="anchor" aria-label="anchor" href="#returns-7"></a></h4>
 <p><code>path</code> invisibly</p>
 </div>
 
-</div>
-
-<p></p><hr><a id="method-AbstractAnnData-clone"></a><div class="section">
-<h3 id="abstractanndata-clone-"><code>AbstractAnnData$clone()</code><a class="anchor" aria-label="anchor" href="#abstractanndata-clone-"></a></h3>
+</div><p></p><hr><a id="method-AbstractAnnData-clone"></a><div class="section">
+<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div><p></p><div class="section">
+</div>
+
+<div class="section">
 <h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
@@ -538,7 +552,6 @@ intended to be used as a base class for concrete implementations of
 </div>
 
 </div>
-
 
     </div>
 
