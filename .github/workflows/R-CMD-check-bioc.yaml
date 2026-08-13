@@ -16,17 +16,37 @@ concurrency:
 env:
   GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
   R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-  ## Check `RELEASE_*` branches against Bioconductor release and everything else
-  ## against Bioconductor devel. `devel` depends on packages that only exist in
-  ## Bioconductor devel (currently `Rarr`, whose 2.1.x series *is* the devel
-  ## series), so checking it against release can never resolve dependencies.
-  BIOC_VERSION: ${{ startsWith(github.base_ref || github.ref_name, 'RELEASE_') && 'release' || 'devel' }}
 
 jobs:
+  ## Each `RELEASE_x_y` branch belongs to one Bioconductor version, so check it
+  ## against that version rather than against whichever release is current.
+  ## `devel` is checked against Bioconductor devel; it depends on packages that
+  ## only exist there, so checking it against a release can never resolve.
+  bioc-version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+
+    steps:
+      - name: Resolve the Bioconductor version to check against
+        id: resolve
+        shell: bash
+        run: |
+          ref="${{ github.base_ref || github.ref_name }}"
+          case "$ref" in
+            RELEASE_*) version="${ref#RELEASE_}"; version="${version//_/.}" ;;
+            *)         version="devel" ;;
+          esac
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Checking '$ref' against Bioconductor $version"
+
   R-CMD-check-bioc:
+    needs: bioc-version
+
     runs-on: ${{ matrix.config.os }}
 
-    name: ${{ matrix.config.os }} (${{ startsWith(github.base_ref || github.ref_name, 'RELEASE_') && 'release' || 'devel' }})
+    name: ${{ matrix.config.os }} (${{ needs.bioc-version.outputs.version }})
 
     strategy:
       fail-fast: false
@@ -65,7 +85,7 @@ jobs:
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
-          bioc-version: ${{ env.BIOC_VERSION }}
+          bioc-version: ${{ needs.bioc-version.outputs.version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
 
       - name: Install pandoc
@@ -135,7 +155,7 @@ jobs:
           path: ${{ steps.bioc-check.outputs.check-dir }}
 
       - name: Run BiocCheck
-        if: matrix.config.os == 'ubuntu-latest' && env.BIOC_VERSION == 'devel'
+        if: matrix.config.os == 'ubuntu-latest' && needs.bioc-version.outputs.version == 'devel'
         uses: grimbough/bioc-actions/run-BiocCheck@v1
         with:
           error-on: 'never'
