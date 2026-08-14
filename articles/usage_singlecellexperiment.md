@@ -128,7 +128,7 @@ sce_obj <- read_h5ad(h5ad_file, as = "SingleCellExperiment")
 sce_obj
 #> class: SingleCellExperiment 
 #> dim: 100 50 
-#> metadata(18): Bool BoolNA ... rank_genes_groups umap
+#> metadata(19): Bool BoolNA ... rank_genes_groups umap
 #> assays(5): counts csc_counts dense_X dense_counts X
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
 #> rowData names(11): String n_cells_by_counts ... dispersions
@@ -150,7 +150,7 @@ sce <- adata$as_SingleCellExperiment()
 sce
 #> class: SingleCellExperiment 
 #> dim: 100 50 
-#> metadata(18): Bool BoolNA ... rank_genes_groups umap
+#> metadata(19): Bool BoolNA ... rank_genes_groups umap
 #> assays(5): counts csc_counts dense_X dense_counts X
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
 #> rowData names(11): String n_cells_by_counts ... dispersions
@@ -177,7 +177,7 @@ sce_zarr <- read_zarr(zarr_path, as = "SingleCellExperiment")
 sce_zarr
 #> class: SingleCellExperiment 
 #> dim: 100 50 
-#> metadata(18): Bool BoolNA ... StringScalar umap
+#> metadata(19): Bool BoolNA ... StringScalar umap
 #> assays(5): counts csc_counts dense_counts dense_X X
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
 #> rowData names(11): String n_cells_by_counts ... dispersions
@@ -198,7 +198,7 @@ sce_zarr <- adata$as_SingleCellExperiment()
 sce_zarr
 #> class: SingleCellExperiment 
 #> dim: 100 50 
-#> metadata(18): Bool BoolNA ... StringScalar umap
+#> metadata(19): Bool BoolNA ... StringScalar umap
 #> assays(5): counts csc_counts dense_counts dense_X X
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
 #> rowData names(11): String n_cells_by_counts ... dispersions
@@ -366,7 +366,7 @@ sessionInfo()
 #>  [5] Seqinfo_1.3.0               IRanges_2.47.2             
 #>  [7] S4Vectors_0.51.6            BiocGenerics_0.59.12       
 #>  [9] generics_0.1.4              MatrixGenerics_1.25.0      
-#> [11] matrixStats_1.5.0           anndataR_1.2.1             
+#> [11] matrixStats_1.5.0           anndataR_1.3.1             
 #> [13] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
@@ -378,15 +378,16 @@ sessionInfo()
 #> [16] BiocManager_1.30.27 purrr_1.2.2         httr2_1.3.0        
 #> [19] textshaping_1.0.5   jquerylib_0.1.4     abind_1.4-8        
 #> [22] cli_3.6.6           crayon_1.5.3        rlang_1.3.0        
-#> [25] XVector_0.53.0      R.methodsS3_1.8.2   cachem_1.1.0       
-#> [28] DelayedArray_0.39.5 yaml_2.3.12         otel_0.2.0         
-#> [31] S4Arrays_1.13.0     tools_4.6.1         Rhdf5lib_2.1.0     
-#> [34] grumpy_0.1.1        curl_7.1.0          reticulate_1.46.0  
-#> [37] vctrs_0.7.3         R6_2.6.1            png_0.1-9          
-#> [40] lifecycle_1.0.5     rhdf5_2.57.9        fs_2.1.0           
-#> [43] htmlwidgets_1.6.4   ragg_1.5.2          desc_1.4.3         
-#> [46] pkgdown_2.2.1       bslib_0.12.0        glue_1.8.1         
-#> [49] Rcpp_1.1.2          systemfonts_1.3.2   xfun_0.60          
-#> [52] paws.storage_0.10.0 rhdf5filters_1.25.4 knitr_1.51         
-#> [55] htmltools_0.5.9     rmarkdown_2.31      compiler_4.6.1
+#> [25] XVector_0.53.0      R.methodsS3_1.8.2   withr_3.0.3        
+#> [28] cachem_1.1.0        DelayedArray_0.39.5 yaml_2.3.12        
+#> [31] otel_0.2.0          S4Arrays_1.13.0     tools_4.6.1        
+#> [34] Rhdf5lib_2.1.0      grumpy_0.1.1        curl_7.1.0         
+#> [37] reticulate_1.46.0   vctrs_0.7.3         R6_2.6.1           
+#> [40] png_0.1-9           lifecycle_1.0.5     rhdf5_2.57.10      
+#> [43] fs_2.1.0            htmlwidgets_1.6.4   ragg_1.5.2         
+#> [46] desc_1.4.3          pkgdown_2.2.1       bslib_0.12.0       
+#> [49] glue_1.8.1          Rcpp_1.1.2          systemfonts_1.3.2  
+#> [52] xfun_0.60           paws.storage_0.10.0 rhdf5filters_1.25.4
+#> [55] knitr_1.51          htmltools_0.5.9     rmarkdown_2.31     
+#> [58] compiler_4.6.1
 ```

@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ Morgan</h4>
 Deconinck</h4>
                         
       
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.2.1/vignettes/anndataR.Rmd" class="external-link"><code>vignettes/anndataR.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/vignettes/anndataR.Rmd" class="external-link"><code>vignettes/anndataR.Rmd</code></a></small>
       <div class="d-none name"><code>anndataR.Rmd</code></div>
     </div>
 
@@ -196,7 +196,7 @@ stores too.</p>
 <span><span class="co">#&gt; ZarrAnnData object with n_obs × n_vars = 50 × 100</span></span>
 <span><span class="co">#&gt;     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'</span></span>
 <span><span class="co">#&gt;     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'</span></span>
-<span><span class="co">#&gt;     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'</span></span>
+<span><span class="co">#&gt;     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'</span></span>
 <span><span class="co">#&gt;     obsm: 'X_pca', 'X_umap'</span></span>
 <span><span class="co">#&gt;     varm: 'PCs'</span></span>
 <span><span class="co">#&gt;     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X'</span></span>
@@ -241,7 +241,7 @@ to work with <code>AnnData</code> objects.</p>
 <span><span class="va">sce</span></span>
 <span><span class="co">#&gt; class: SingleCellExperiment </span></span>
 <span><span class="co">#&gt; dim: 100 50 </span></span>
-<span><span class="co">#&gt; metadata(18): Bool BoolNA ... StringScalar umap</span></span>
+<span><span class="co">#&gt; metadata(19): Bool BoolNA ... StringScalar umap</span></span>
 <span><span class="co">#&gt; assays(5): counts csc_counts dense_counts dense_X X</span></span>
 <span><span class="co">#&gt; rownames(100): Gene000 Gene001 ... Gene098 Gene099</span></span>
 <span><span class="co">#&gt; rowData names(11): String n_cells_by_counts ... dispersions</span></span>
@@ -270,7 +270,7 @@ object (see <code><a href="../articles/usage_seurat.html">vignette("usage_seurat
 <span><span class="co">#&gt; InMemoryAnnData object with n_obs × n_vars = 50 × 100</span></span>
 <span><span class="co">#&gt;     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'</span></span>
 <span><span class="co">#&gt;     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'</span></span>
-<span><span class="co">#&gt;     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'</span></span>
+<span><span class="co">#&gt;     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'</span></span>
 <span><span class="co">#&gt;     obsm: 'X_pca', 'X_umap'</span></span>
 <span><span class="co">#&gt;     varm: 'X_pca'</span></span>
 <span><span class="co">#&gt;     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'</span></span>
@@ -284,7 +284,7 @@ object (see <code><a href="../articles/usage_seurat.html">vignette("usage_seurat
 <span><span class="co">#&gt; InMemoryAnnData object with n_obs × n_vars = 50 × 100</span></span>
 <span><span class="co">#&gt;     obs: 'orig.ident', 'nCount_RNA', 'nFeature_RNA', 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'</span></span>
 <span><span class="co">#&gt;     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'</span></span>
-<span><span class="co">#&gt;     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'</span></span>
+<span><span class="co">#&gt;     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'</span></span>
 <span><span class="co">#&gt;     obsm: 'X_pca', 'X_umap'</span></span>
 <span><span class="co">#&gt;     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'</span></span>
 <span><span class="co">#&gt;     obsp: 'connectivities', 'distances'</span></span></code></pre></div>
@@ -372,6 +372,19 @@ object (see <code><a href="../articles/usage_seurat.html">vignette("usage_seurat
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> To write column names for <span style="color: #00BB00;">obsm[['X_umap']]</span>, store it as <span style="color: #0000BB;">&lt;data.frame&gt;</span> instead</span></span>
 <span><span class="co">#&gt;   of a double matrix</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> <span style="font-weight: bold;">NOTE:</span> <span style="color: #00BB00;">obs_names</span> and <span style="color: #00BB00;">var_names</span> are stored separately</span></span></code></pre></div>
+<p>Both Zarr v2 and v3 can be read and written, and new stores are
+written as Zarr v3 by default. To write a Zarr v2 store, pass
+<code>zarr_format = 2</code>:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tmpfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span></span>
+<span><span class="va">adata</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span><span class="va">tmpfile</span>, zarr_format <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p>Setting <code>options(anndataR.zarr_format = 2)</code> changes the
+default for the rest of the session. Writing to a store that already
+exists always uses the format of that store, so appending to a Zarr v2
+store never produces a mix of the two.</p>
+<p>See the <a href="https://zarr.readthedocs.io/en/stable/" class="external-link">Zarr
+documentation</a> and the <a href="https://zarr-specs.readthedocs.io/en/latest/specs.html" class="external-link">Zarr
+specifications</a> for more about the two formats.</p>
 </div>
 <div class="section level3">
 <h3 id="subsetting">Subsetting <code>AnnData</code> objects<a class="anchor" aria-label="anchor" href="#subsetting"></a>
@@ -384,7 +397,7 @@ provide lazy evaluation for efficient memory usage.</p>
 <h4 id="basic-subsetting">Basic subsetting<a class="anchor" aria-label="anchor" href="#basic-subsetting"></a>
 </h4>
 <p>Subset observations (rows) using logical conditions:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create some sample data</span></span>
 <span><span class="va">adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AnnData.html">AnnData</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
@@ -405,7 +418,7 @@ provide lazy evaluation for efficient memory usage.</p>
 <span><span class="co">#&gt;     obs: 'cell_type', 'score'</span></span>
 <span><span class="co">#&gt;     var: 'gene_name', 'highly_variable'</span></span></code></pre></div>
 <p>Subset variables (columns) using logical conditions:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subset to highly variable genes</span></span>
 <span><span class="va">view2</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">[</span>, <span class="va">adata</span><span class="op">$</span><span class="va">var</span><span class="op">$</span><span class="va">highly_variable</span><span class="op">]</span></span>
 <span><span class="va">view2</span></span>
@@ -417,7 +430,7 @@ provide lazy evaluation for efficient memory usage.</p>
 <h4 id="combined-subsetting">Combined subsetting<a class="anchor" aria-label="anchor" href="#combined-subsetting"></a>
 </h4>
 <p>Subset both observations and variables simultaneously:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subset to cell type "A" and highly variable genes</span></span>
 <span><span class="va">view3</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">[</span><span class="va">adata</span><span class="op">$</span><span class="va">obs</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="va">adata</span><span class="op">$</span><span class="va">var</span><span class="op">$</span><span class="va">highly_variable</span><span class="op">]</span></span>
 <span><span class="va">view3</span></span>
@@ -428,7 +441,7 @@ provide lazy evaluation for efficient memory usage.</p>
 <div class="section level4">
 <h4 id="using-different-index-types">Using different index types<a class="anchor" aria-label="anchor" href="#using-different-index-types"></a>
 </h4>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Numeric indices</span></span>
 <span><span class="va">view4</span> <span class="op">&lt;-</span> <span class="va">adata</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
 <span><span class="va">view4</span></span>
@@ -449,7 +462,7 @@ provide lazy evaluation for efficient memory usage.</p>
 <h4 id="working-with-views">Working with views<a class="anchor" aria-label="anchor" href="#working-with-views"></a>
 </h4>
 <p>Views maintain access to all original data slots:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Access dimensions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">view3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 3 3</span></span>
@@ -497,7 +510,7 @@ provide lazy evaluation for efficient memory usage.</p>
 in your work, please cite <a href="https://doi.org/10.1101/2025.08.18.669052" class="external-link"><em>“anndataR improves
 interoperability between R and Python in single-cell
 transcriptomics”</em></a>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"anndataR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'anndataR' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -525,7 +538,7 @@ transcriptomics”</em></a>:</p>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.6.1 (2026-06-24)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -549,7 +562,7 @@ transcriptomics”</em></a>:</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] anndataR_1.2.1              SingleCellExperiment_1.35.2</span></span>
+<span><span class="co">#&gt;  [1] anndataR_1.3.1              SingleCellExperiment_1.35.2</span></span>
 <span><span class="co">#&gt;  [3] SummarizedExperiment_1.43.0 Biobase_2.73.2             </span></span>
 <span><span class="co">#&gt;  [5] GenomicRanges_1.65.1        Seqinfo_1.3.0              </span></span>
 <span><span class="co">#&gt;  [7] IRanges_2.47.2              S4Vectors_0.51.6           </span></span>
@@ -564,7 +577,7 @@ transcriptomics”</em></a>:</p>
 <span><span class="co">#&gt;   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           </span></span>
 <span><span class="co">#&gt;  [10] ROCR_1.0-12            spatstat.explore_3.8-2 htmltools_0.5.9       </span></span>
 <span><span class="co">#&gt;  [13] S4Arrays_1.13.0        curl_7.1.0             Rhdf5lib_2.1.0        </span></span>
-<span><span class="co">#&gt;  [16] SparseArray_1.13.2     rhdf5_2.57.9           sass_0.4.10           </span></span>
+<span><span class="co">#&gt;  [16] SparseArray_1.13.2     rhdf5_2.57.10          sass_0.4.10           </span></span>
 <span><span class="co">#&gt;  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    </span></span>
 <span><span class="co">#&gt;  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            </span></span>
 <span><span class="co">#&gt;  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            </span></span>
@@ -577,33 +590,33 @@ transcriptomics”</em></a>:</p>
 <span><span class="co">#&gt;  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     </span></span>
 <span><span class="co">#&gt;  [49] Rarr_2.1.32            progressr_1.0.0        spatstat.sparse_3.2-0 </span></span>
 <span><span class="co">#&gt;  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           </span></span>
-<span><span class="co">#&gt;  [55] compiler_4.6.1         S7_0.2.2               fastDummies_1.7.6     </span></span>
-<span><span class="co">#&gt;  [58] grumpy_0.1.1           R.utils_2.13.0         MASS_7.3-65           </span></span>
-<span><span class="co">#&gt;  [61] DelayedArray_0.39.5    tools_4.6.1            lmtest_0.9-40         </span></span>
-<span><span class="co">#&gt;  [64] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   </span></span>
-<span><span class="co">#&gt;  [67] goftest_1.2-3          R.oo_1.27.1            glue_1.8.1            </span></span>
-<span><span class="co">#&gt;  [70] nlme_3.1-169           rhdf5filters_1.25.4    promises_1.5.0        </span></span>
-<span><span class="co">#&gt;  [73] grid_4.6.1             Rtsne_0.17             cluster_2.1.8.2       </span></span>
-<span><span class="co">#&gt;  [76] reshape2_1.4.5         gtable_0.3.6           spatstat.data_3.1-9   </span></span>
-<span><span class="co">#&gt;  [79] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.4     </span></span>
-<span><span class="co">#&gt;  [82] XVector_0.53.0         spatstat.geom_3.8-2    RcppAnnoy_0.0.23      </span></span>
-<span><span class="co">#&gt;  [85] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         </span></span>
-<span><span class="co">#&gt;  [88] stringr_1.6.0          spam_2.11-4            RcppHNSW_0.7.0        </span></span>
-<span><span class="co">#&gt;  [91] later_1.4.8            splines_4.6.1          dplyr_1.2.1           </span></span>
-<span><span class="co">#&gt;  [94] lattice_0.22-9         deldir_2.0-4           survival_3.8-6        </span></span>
-<span><span class="co">#&gt;  [97] paws.common_0.8.10     tidyselect_1.2.1       miniUI_0.1.2          </span></span>
-<span><span class="co">#&gt; [100] pbapply_1.7-4          knitr_1.51             gridExtra_2.3.1       </span></span>
-<span><span class="co">#&gt; [103] bookdown_0.47          scattermore_1.2        xfun_0.60             </span></span>
-<span><span class="co">#&gt; [106] stringi_1.8.9          yaml_2.3.12            evaluate_1.0.5        </span></span>
-<span><span class="co">#&gt; [109] codetools_0.2-20       tibble_3.3.1           BiocManager_1.30.27   </span></span>
-<span><span class="co">#&gt; [112] cli_3.6.6              uwot_0.2.4             xtable_1.8-8          </span></span>
-<span><span class="co">#&gt; [115] reticulate_1.46.0      systemfonts_1.3.2      jquerylib_0.1.4       </span></span>
-<span><span class="co">#&gt; [118] Rcpp_1.1.2             spatstat.random_3.5-1  globals_0.19.1        </span></span>
-<span><span class="co">#&gt; [121] png_0.1-9              spatstat.univar_3.2-0  parallel_4.6.1        </span></span>
-<span><span class="co">#&gt; [124] pkgdown_2.2.1          ggplot2_4.0.3          dotCall64_1.2         </span></span>
-<span><span class="co">#&gt; [127] listenv_1.0.0          viridisLite_0.4.3      scales_1.4.0          </span></span>
-<span><span class="co">#&gt; [130] ggridges_0.5.7         crayon_1.5.3           purrr_1.2.2           </span></span>
-<span><span class="co">#&gt; [133] rlang_1.3.0            cowplot_1.2.0</span></span></code></pre></div>
+<span><span class="co">#&gt;  [55] compiler_4.6.1         withr_3.0.3            S7_0.2.2              </span></span>
+<span><span class="co">#&gt;  [58] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        </span></span>
+<span><span class="co">#&gt;  [61] MASS_7.3-65            DelayedArray_0.39.5    tools_4.6.1           </span></span>
+<span><span class="co">#&gt;  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         </span></span>
+<span><span class="co">#&gt;  [67] future.apply_1.20.2    goftest_1.2-3          R.oo_1.27.1           </span></span>
+<span><span class="co">#&gt;  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.4   </span></span>
+<span><span class="co">#&gt;  [73] promises_1.5.0         grid_4.6.1             Rtsne_0.17            </span></span>
+<span><span class="co">#&gt;  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          </span></span>
+<span><span class="co">#&gt;  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           </span></span>
+<span><span class="co">#&gt;  [82] data.table_1.18.4      XVector_0.53.0         spatstat.geom_3.8-2   </span></span>
+<span><span class="co">#&gt;  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            </span></span>
+<span><span class="co">#&gt;  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-4           </span></span>
+<span><span class="co">#&gt;  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.1         </span></span>
+<span><span class="co">#&gt;  [94] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          </span></span>
+<span><span class="co">#&gt;  [97] survival_3.8-6         paws.common_0.8.10     tidyselect_1.2.1      </span></span>
+<span><span class="co">#&gt; [100] miniUI_0.1.2           pbapply_1.7-4          knitr_1.51            </span></span>
+<span><span class="co">#&gt; [103] gridExtra_2.3.1        bookdown_0.47          scattermore_1.2       </span></span>
+<span><span class="co">#&gt; [106] xfun_0.60              stringi_1.8.9          yaml_2.3.12           </span></span>
+<span><span class="co">#&gt; [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          </span></span>
+<span><span class="co">#&gt; [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            </span></span>
+<span><span class="co">#&gt; [115] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     </span></span>
+<span><span class="co">#&gt; [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-1 </span></span>
+<span><span class="co">#&gt; [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.2-0 </span></span>
+<span><span class="co">#&gt; [124] parallel_4.6.1         pkgdown_2.2.1          ggplot2_4.0.3         </span></span>
+<span><span class="co">#&gt; [127] dotCall64_1.2          listenv_1.0.0          viridisLite_0.4.3     </span></span>
+<span><span class="co">#&gt; [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          </span></span>
+<span><span class="co">#&gt; [133] purrr_1.2.2            rlang_1.3.0            cowplot_1.2.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

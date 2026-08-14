@@ -17,7 +17,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>ZarrAnnData</h1>
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.2.1/R/ZarrAnnData.R" class="external-link"><code>R/ZarrAnnData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/R/ZarrAnnData.R" class="external-link"><code>R/ZarrAnnData.R</code></a></small>
       <div class="d-none name"><code>ZarrAnnData.Rd</code></div>
     </div>
 
@@ -80,7 +80,7 @@ large files.</p>
     </div>
     <div class="section level2">
     <h2 id="super-class">Super class<a class="anchor" aria-label="anchor" href="#super-class"></a></h2>
-    <p><code><a href="AbstractAnnData.html">anndataR::AbstractAnnData</a></code> -&gt; <code>ZarrAnnData</code></p>
+    <p><code><a href="AbstractAnnData.html">AbstractAnnData</a></code> -&gt; <code>ZarrAnnData</code></p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
@@ -88,43 +88,43 @@ large files.</p>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>layers</code></dt>
+    <dt><code>layers</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obsm</code></dt>
+    <dt><code>obsm</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>varm</code></dt>
+    <dt><code>varm</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obsp</code></dt>
+    <dt><code>obsp</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>varp</code></dt>
+    <dt><code>varp</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obs</code></dt>
+    <dt><code>obs</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>var</code></dt>
+    <dt><code>var</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obs_names</code></dt>
+    <dt><code>obs_names</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>var_names</code></dt>
+    <dt><code>var_names</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>uns</code></dt>
+    <dt><code>uns</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
@@ -135,8 +135,7 @@ large files.</p>
 
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
-
-<ul><li><p><a href="#method-ZarrAnnData-new"><code>ZarrAnnData$new()</code></a></p></li>
+<p></p><ul><li><p><a href="#method-ZarrAnnData-initialize"><code>ZarrAnnData$new()</code></a></p></li>
 <li><p><a href="#method-ZarrAnnData-n_obs"><code>ZarrAnnData$n_obs()</code></a></p></li>
 <li><p><a href="#method-ZarrAnnData-n_vars"><code>ZarrAnnData$n_vars()</code></a></p></li>
 <li><p><a href="#method-ZarrAnnData-obs_keys"><code>ZarrAnnData$obs_keys()</code></a></p></li>
@@ -147,18 +146,18 @@ large files.</p>
 <li><p><a href="#method-ZarrAnnData-obsp_keys"><code>ZarrAnnData$obsp_keys()</code></a></p></li>
 <li><p><a href="#method-ZarrAnnData-varp_keys"><code>ZarrAnnData$varp_keys()</code></a></p></li>
 <li><p><a href="#method-ZarrAnnData-uns_keys"><code>ZarrAnnData$uns_keys()</code></a></p></li>
-</ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href="AbstractAnnData.html#method-as_HDF5AnnData"><code>anndataR::AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href="AbstractAnnData.html#method-as_InMemoryAnnData"><code>anndataR::AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href="AbstractAnnData.html#method-as_ReticulateAnnData"><code>anndataR::AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href="AbstractAnnData.html#method-as_Seurat"><code>anndataR::AbstractAnnData$as_Seurat()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href="AbstractAnnData.html#method-as_SingleCellExperiment"><code>anndataR::AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href="AbstractAnnData.html#method-as_ZarrAnnData"><code>anndataR::AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href="AbstractAnnData.html#method-print"><code>anndataR::AbstractAnnData$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href="AbstractAnnData.html#method-shape"><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_h5ad"><a href="AbstractAnnData.html#method-write_h5ad"><code>anndataR::AbstractAnnData$write_h5ad()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href="AbstractAnnData.html#method-write_zarr"><code>anndataR::AbstractAnnData$write_zarr()</code></a></span></li>
-</ul></details></p><hr><a id="method-ZarrAnnData-new"></a><div class="section">
-<h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
+</ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href="AbstractAnnData.html#method-as_HDF5AnnData"><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href="AbstractAnnData.html#method-as_InMemoryAnnData"><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href="AbstractAnnData.html#method-as_ReticulateAnnData"><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href="AbstractAnnData.html#method-as_Seurat"><code>AbstractAnnData$as_Seurat()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href="AbstractAnnData.html#method-as_SingleCellExperiment"><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href="AbstractAnnData.html#method-as_ZarrAnnData"><code>AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href="AbstractAnnData.html#method-print"><code>AbstractAnnData$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href="AbstractAnnData.html#method-shape"><code>AbstractAnnData$shape()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_h5ad"><a href="AbstractAnnData.html#method-write_h5ad"><code>AbstractAnnData$write_h5ad()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href="AbstractAnnData.html#method-write_zarr"><code>AbstractAnnData$write_zarr()</code></a></span></li>
+</ul></details></p><hr><a id="method-ZarrAnnData-initialize"></a><div class="section">
+<h3 id="zarranndata-new-"><code>ZarrAnnData$new()</code><a class="anchor" aria-label="anchor" href="#zarranndata-new-"></a></h3>
 <p><code>ZarrAnnData</code> constructor</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/ZarrAnnData.html">ZarrAnnData</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
@@ -174,71 +173,61 @@ large files.</p>
 <span>  uns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"w"</span>, <span class="st">"w-"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
-<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span></span>
+<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
+<span>  zarr_format <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>file</code></dt>
 <dd><p>The file name (character) of the <code>.zarr</code> file. If this file
 already exits, other arguments must be <code>NULL</code>.</p></dd>
 
-
-<dt><code>X</code></dt>
+      <dt><code>X</code></dt>
 <dd><p>See the <code>X</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>obs</code></dt>
+      <dt><code>obs</code></dt>
 <dd><p>See the <code>obs</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>var</code></dt>
+      <dt><code>var</code></dt>
 <dd><p>See the <code>var</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>layers</code></dt>
+      <dt><code>layers</code></dt>
 <dd><p>See the <code>layers</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>obsm</code></dt>
+      <dt><code>obsm</code></dt>
 <dd><p>See the <code>obsm</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>varm</code></dt>
+      <dt><code>varm</code></dt>
 <dd><p>See the <code>varm</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>obsp</code></dt>
+      <dt><code>obsp</code></dt>
 <dd><p>See the <code>obsp</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>varp</code></dt>
+      <dt><code>varp</code></dt>
 <dd><p>See the <code>varp</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>uns</code></dt>
+      <dt><code>uns</code></dt>
 <dd><p>See the <code>uns</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>shape</code></dt>
+      <dt><code>shape</code></dt>
 <dd><p>Shape tuple (e.g. <code>c(n_obs, n_vars)</code>). Can be provided if
 both <code>X</code> or <code>obs</code> and <code>var</code> are not provided.</p></dd>
 
-
-<dt><code>mode</code></dt>
+      <dt><code>mode</code></dt>
 <dd><p>The mode to open the Zarr file. See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code> for
 details</p></dd>
 
-
-<dt><code>compression</code></dt>
+      <dt><code>compression</code></dt>
 <dd><p>The compression algorithm to use. See
+<code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code> for details</p></dd>
+
+      <dt><code>zarr_format</code></dt>
+<dd><p>The Zarr format to use. See
 <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code> for details</p></dd>
 
 
 </dl><p></p></div>
-</div>
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h4>
 <p>The constructor creates a new Zarr <code>AnnData</code> interface object. This can
 either be used to either connect to an existing <code>.zarr</code> file or to
@@ -246,88 +235,98 @@ create a new one. If any additional slot arguments are set an existing
 file will be overwritten.</p>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-n_obs"></a><div class="section">
-<h3 id="method-n-obs-">Method <code>n_obs()</code><a class="anchor" aria-label="anchor" href="#method-n-obs-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-n_obs"></a><div class="section">
+<h3 id="zarranndata-n-obs-"><code>ZarrAnnData$n_obs()</code><a class="anchor" aria-label="anchor" href="#zarranndata-n-obs-"></a></h3>
 <p>See the <code>n_obs</code> field in <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">n_obs</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-n_vars"></a><div class="section">
-<h3 id="method-n-vars-">Method <code>n_vars()</code><a class="anchor" aria-label="anchor" href="#method-n-vars-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-n_vars"></a><div class="section">
+<h3 id="zarranndata-n-vars-"><code>ZarrAnnData$n_vars()</code><a class="anchor" aria-label="anchor" href="#zarranndata-n-vars-"></a></h3>
 <p>See the <code>n_vars</code> field in <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">n_vars</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-obs_keys"></a><div class="section">
-<h3 id="method-obs-keys-">Method <code>obs_keys()</code><a class="anchor" aria-label="anchor" href="#method-obs-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-obs_keys"></a><div class="section">
+<h3 id="zarranndata-obs-keys-"><code>ZarrAnnData$obs_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-obs-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">obs_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-var_keys"></a><div class="section">
-<h3 id="method-var-keys-">Method <code>var_keys()</code><a class="anchor" aria-label="anchor" href="#method-var-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-var_keys"></a><div class="section">
+<h3 id="zarranndata-var-keys-"><code>ZarrAnnData$var_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-var-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">var_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-layers_keys"></a><div class="section">
-<h3 id="method-layers-keys-">Method <code>layers_keys()</code><a class="anchor" aria-label="anchor" href="#method-layers-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-layers_keys"></a><div class="section">
+<h3 id="zarranndata-layers-keys-"><code>ZarrAnnData$layers_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-layers-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">layers_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-obsm_keys"></a><div class="section">
-<h3 id="method-obsm-keys-">Method <code>obsm_keys()</code><a class="anchor" aria-label="anchor" href="#method-obsm-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-obsm_keys"></a><div class="section">
+<h3 id="zarranndata-obsm-keys-"><code>ZarrAnnData$obsm_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-obsm-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-6">Usage<a class="anchor" aria-label="anchor" href="#usage-6"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">obsm_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-varm_keys"></a><div class="section">
-<h3 id="method-varm-keys-">Method <code>varm_keys()</code><a class="anchor" aria-label="anchor" href="#method-varm-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-varm_keys"></a><div class="section">
+<h3 id="zarranndata-varm-keys-"><code>ZarrAnnData$varm_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-varm-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-7">Usage<a class="anchor" aria-label="anchor" href="#usage-7"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">varm_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-obsp_keys"></a><div class="section">
-<h3 id="method-obsp-keys-">Method <code>obsp_keys()</code><a class="anchor" aria-label="anchor" href="#method-obsp-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-obsp_keys"></a><div class="section">
+<h3 id="zarranndata-obsp-keys-"><code>ZarrAnnData$obsp_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-obsp-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-8">Usage<a class="anchor" aria-label="anchor" href="#usage-8"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">obsp_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-varp_keys"></a><div class="section">
-<h3 id="method-varp-keys-">Method <code>varp_keys()</code><a class="anchor" aria-label="anchor" href="#method-varp-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-varp_keys"></a><div class="section">
+<h3 id="zarranndata-varp-keys-"><code>ZarrAnnData$varp_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-varp-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-9">Usage<a class="anchor" aria-label="anchor" href="#usage-9"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">varp_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
+</div>
 
-</div><p></p><hr><a id="method-ZarrAnnData-uns_keys"></a><div class="section">
-<h3 id="method-uns-keys-">Method <code>uns_keys()</code><a class="anchor" aria-label="anchor" href="#method-uns-keys-"></a></h3>
+<p></p><hr><a id="method-ZarrAnnData-uns_keys"></a><div class="section">
+<h3 id="zarranndata-uns-keys-"><code>ZarrAnnData$uns_keys()</code><a class="anchor" aria-label="anchor" href="#zarranndata-uns-keys-"></a></h3>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">uns_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-
 </div>
+
 
     </div>
 

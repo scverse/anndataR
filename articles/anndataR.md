@@ -141,7 +141,7 @@ adata
 #> ZarrAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     varm: 'PCs'
 #>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X'
@@ -192,7 +192,7 @@ sce <- adata$as_SingleCellExperiment()
 sce
 #> class: SingleCellExperiment 
 #> dim: 100 50 
-#> metadata(18): Bool BoolNA ... StringScalar umap
+#> metadata(19): Bool BoolNA ... StringScalar umap
 #> assays(5): counts csc_counts dense_counts dense_X X
 #> rownames(100): Gene000 Gene001 ... Gene098 Gene099
 #> rowData names(11): String n_cells_by_counts ... dispersions
@@ -228,7 +228,7 @@ adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     varm: 'X_pca'
 #>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'
@@ -246,7 +246,7 @@ adata
 #> InMemoryAnnData object with n_obs × n_vars = 50 × 100
 #>     obs: 'orig.ident', 'nCount_RNA', 'nFeature_RNA', 'Float', 'FloatNA', 'Int', 'IntNA', 'Bool', 'BoolNA', 'n_genes_by_counts', 'log1p_n_genes_by_counts', 'total_counts', 'log1p_total_counts', 'leiden'
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
-#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringScalar', 'umap'
+#>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
 #>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'
 #>     obsp: 'connectivities', 'distances'
@@ -350,6 +350,25 @@ write_zarr(obj, tmpfile)
 #>   of a double matrix
 #> ℹ NOTE: obs_names and var_names are stored separately
 ```
+
+Both Zarr v2 and v3 can be read and written, and new stores are written
+as Zarr v3 by default. To write a Zarr v2 store, pass `zarr_format = 2`:
+
+``` r
+
+tmpfile <- tempfile(fileext = ".zarr")
+adata$write_zarr(tmpfile, zarr_format = 2)
+```
+
+Setting `options(anndataR.zarr_format = 2)` changes the default for the
+rest of the session. Writing to a store that already exists always uses
+the format of that store, so appending to a Zarr v2 store never produces
+a mix of the two.
+
+See the [Zarr documentation](https://zarr.readthedocs.io/en/stable/) and
+the [Zarr
+specifications](https://zarr-specs.readthedocs.io/en/latest/specs.html)
+for more about the two formats.
 
 ### Subsetting `AnnData` objects
 
@@ -538,7 +557,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.2.1              SingleCellExperiment_1.35.2
+#>  [1] anndataR_1.3.1              SingleCellExperiment_1.35.2
 #>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.2             
 #>  [5] GenomicRanges_1.65.1        Seqinfo_1.3.0              
 #>  [7] IRanges_2.47.2              S4Vectors_0.51.6           
@@ -553,7 +572,7 @@ sessionInfo()
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-2 htmltools_0.5.9       
 #>  [13] S4Arrays_1.13.0        curl_7.1.0             Rhdf5lib_2.1.0        
-#>  [16] SparseArray_1.13.2     rhdf5_2.57.9           sass_0.4.10           
+#>  [16] SparseArray_1.13.2     rhdf5_2.57.10          sass_0.4.10           
 #>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    
 #>  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
@@ -566,31 +585,31 @@ sessionInfo()
 #>  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
 #>  [49] Rarr_2.1.32            progressr_1.0.0        spatstat.sparse_3.2-0 
 #>  [52] polyclip_1.10-7        httr_1.4.8             abind_1.4-8           
-#>  [55] compiler_4.6.1         S7_0.2.2               fastDummies_1.7.6     
-#>  [58] grumpy_0.1.1           R.utils_2.13.0         MASS_7.3-65           
-#>  [61] DelayedArray_0.39.5    tools_4.6.1            lmtest_0.9-40         
-#>  [64] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   
-#>  [67] goftest_1.2-3          R.oo_1.27.1            glue_1.8.1            
-#>  [70] nlme_3.1-169           rhdf5filters_1.25.4    promises_1.5.0        
-#>  [73] grid_4.6.1             Rtsne_0.17             cluster_2.1.8.2       
-#>  [76] reshape2_1.4.5         gtable_0.3.6           spatstat.data_3.1-9   
-#>  [79] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.4     
-#>  [82] XVector_0.53.0         spatstat.geom_3.8-2    RcppAnnoy_0.0.23      
-#>  [85] ggrepel_0.9.8          RANN_2.6.2             pillar_1.11.1         
-#>  [88] stringr_1.6.0          spam_2.11-4            RcppHNSW_0.7.0        
-#>  [91] later_1.4.8            splines_4.6.1          dplyr_1.2.1           
-#>  [94] lattice_0.22-9         deldir_2.0-4           survival_3.8-6        
-#>  [97] paws.common_0.8.10     tidyselect_1.2.1       miniUI_0.1.2          
-#> [100] pbapply_1.7-4          knitr_1.51             gridExtra_2.3.1       
-#> [103] bookdown_0.47          scattermore_1.2        xfun_0.60             
-#> [106] stringi_1.8.9          yaml_2.3.12            evaluate_1.0.5        
-#> [109] codetools_0.2-20       tibble_3.3.1           BiocManager_1.30.27   
-#> [112] cli_3.6.6              uwot_0.2.4             xtable_1.8-8          
-#> [115] reticulate_1.46.0      systemfonts_1.3.2      jquerylib_0.1.4       
-#> [118] Rcpp_1.1.2             spatstat.random_3.5-1  globals_0.19.1        
-#> [121] png_0.1-9              spatstat.univar_3.2-0  parallel_4.6.1        
-#> [124] pkgdown_2.2.1          ggplot2_4.0.3          dotCall64_1.2         
-#> [127] listenv_1.0.0          viridisLite_0.4.3      scales_1.4.0          
-#> [130] ggridges_0.5.7         crayon_1.5.3           purrr_1.2.2           
-#> [133] rlang_1.3.0            cowplot_1.2.0
+#>  [55] compiler_4.6.1         withr_3.0.3            S7_0.2.2              
+#>  [58] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        
+#>  [61] MASS_7.3-65            DelayedArray_0.39.5    tools_4.6.1           
+#>  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         
+#>  [67] future.apply_1.20.2    goftest_1.2-3          R.oo_1.27.1           
+#>  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.4   
+#>  [73] promises_1.5.0         grid_4.6.1             Rtsne_0.17            
+#>  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          
+#>  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           
+#>  [82] data.table_1.18.4      XVector_0.53.0         spatstat.geom_3.8-2   
+#>  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.2            
+#>  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-4           
+#>  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.1         
+#>  [94] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          
+#>  [97] survival_3.8-6         paws.common_0.8.10     tidyselect_1.2.1      
+#> [100] miniUI_0.1.2           pbapply_1.7-4          knitr_1.51            
+#> [103] gridExtra_2.3.1        bookdown_0.47          scattermore_1.2       
+#> [106] xfun_0.60              stringi_1.8.9          yaml_2.3.12           
+#> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
+#> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.4            
+#> [115] xtable_1.8-8           reticulate_1.46.0      systemfonts_1.3.2     
+#> [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-1 
+#> [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.2-0 
+#> [124] parallel_4.6.1         pkgdown_2.2.1          ggplot2_4.0.3         
+#> [127] dotCall64_1.2          listenv_1.0.0          viridisLite_0.4.3     
+#> [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
+#> [133] purrr_1.2.2            rlang_1.3.0            cowplot_1.2.0
 ```

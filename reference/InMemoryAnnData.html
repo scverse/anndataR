@@ -15,7 +15,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>InMemoryAnnData</h1>
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.2.1/R/InMemoryAnnData.R" class="external-link"><code>R/InMemoryAnnData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/R/InMemoryAnnData.R" class="external-link"><code>R/InMemoryAnnData.R</code></a></small>
       <div class="d-none name"><code>InMemoryAnnData.Rd</code></div>
     </div>
 
@@ -77,7 +77,7 @@ interact with an <code>AnnData</code> object.</p>
     </div>
     <div class="section level2">
     <h2 id="super-class">Super class<a class="anchor" aria-label="anchor" href="#super-class"></a></h2>
-    <p><code><a href="AbstractAnnData.html">anndataR::AbstractAnnData</a></code> -&gt; <code>InMemoryAnnData</code></p>
+    <p><code><a href="AbstractAnnData.html">AbstractAnnData</a></code> -&gt; <code>InMemoryAnnData</code></p>
     </div>
     <div class="section level2">
     <h2 id="active-bindings">Active bindings<a class="anchor" aria-label="anchor" href="#active-bindings"></a></h2>
@@ -85,43 +85,43 @@ interact with an <code>AnnData</code> object.</p>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>layers</code></dt>
+    <dt><code>layers</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obs</code></dt>
+    <dt><code>obs</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>var</code></dt>
+    <dt><code>var</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obs_names</code></dt>
+    <dt><code>obs_names</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>var_names</code></dt>
+    <dt><code>var_names</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obsm</code></dt>
+    <dt><code>obsm</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>varm</code></dt>
+    <dt><code>varm</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>obsp</code></dt>
+    <dt><code>obsp</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>varp</code></dt>
+    <dt><code>varp</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
-<dt><code>uns</code></dt>
+    <dt><code>uns</code></dt>
 <dd><p>See <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
 
@@ -132,31 +132,30 @@ interact with an <code>AnnData</code> object.</p>
 
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
-
-<ul><li><p><a href="#method-InMemoryAnnData-new"><code>InMemoryAnnData$new()</code></a></p></li>
+<p></p><ul><li><p><a href="#method-InMemoryAnnData-initialize"><code>InMemoryAnnData$new()</code></a></p></li>
 <li><p><a href="#method-InMemoryAnnData-clone"><code>InMemoryAnnData$clone()</code></a></p></li>
-</ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href="AbstractAnnData.html#method-as_HDF5AnnData"><code>anndataR::AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href="AbstractAnnData.html#method-as_InMemoryAnnData"><code>anndataR::AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href="AbstractAnnData.html#method-as_ReticulateAnnData"><code>anndataR::AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href="AbstractAnnData.html#method-as_Seurat"><code>anndataR::AbstractAnnData$as_Seurat()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href="AbstractAnnData.html#method-as_SingleCellExperiment"><code>anndataR::AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href="AbstractAnnData.html#method-as_ZarrAnnData"><code>anndataR::AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href="AbstractAnnData.html#method-layers_keys"><code>anndataR::AbstractAnnData$layers_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href="AbstractAnnData.html#method-n_obs"><code>anndataR::AbstractAnnData$n_obs()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href="AbstractAnnData.html#method-n_vars"><code>anndataR::AbstractAnnData$n_vars()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href="AbstractAnnData.html#method-obs_keys"><code>anndataR::AbstractAnnData$obs_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsm_keys"><a href="AbstractAnnData.html#method-obsm_keys"><code>anndataR::AbstractAnnData$obsm_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsp_keys"><a href="AbstractAnnData.html#method-obsp_keys"><code>anndataR::AbstractAnnData$obsp_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href="AbstractAnnData.html#method-print"><code>anndataR::AbstractAnnData$print()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href="AbstractAnnData.html#method-shape"><code>anndataR::AbstractAnnData$shape()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="uns_keys"><a href="AbstractAnnData.html#method-uns_keys"><code>anndataR::AbstractAnnData$uns_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href="AbstractAnnData.html#method-var_keys"><code>anndataR::AbstractAnnData$var_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varm_keys"><a href="AbstractAnnData.html#method-varm_keys"><code>anndataR::AbstractAnnData$varm_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varp_keys"><a href="AbstractAnnData.html#method-varp_keys"><code>anndataR::AbstractAnnData$varp_keys()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_h5ad"><a href="AbstractAnnData.html#method-write_h5ad"><code>anndataR::AbstractAnnData$write_h5ad()</code></a></span></li>
-<li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href="AbstractAnnData.html#method-write_zarr"><code>anndataR::AbstractAnnData$write_zarr()</code></a></span></li>
-</ul></details></p><hr><a id="method-InMemoryAnnData-new"></a><div class="section">
-<h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
+</ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href="AbstractAnnData.html#method-as_HDF5AnnData"><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href="AbstractAnnData.html#method-as_InMemoryAnnData"><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href="AbstractAnnData.html#method-as_ReticulateAnnData"><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href="AbstractAnnData.html#method-as_Seurat"><code>AbstractAnnData$as_Seurat()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href="AbstractAnnData.html#method-as_SingleCellExperiment"><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href="AbstractAnnData.html#method-as_ZarrAnnData"><code>AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href="AbstractAnnData.html#method-layers_keys"><code>AbstractAnnData$layers_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href="AbstractAnnData.html#method-n_obs"><code>AbstractAnnData$n_obs()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href="AbstractAnnData.html#method-n_vars"><code>AbstractAnnData$n_vars()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href="AbstractAnnData.html#method-obs_keys"><code>AbstractAnnData$obs_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsm_keys"><a href="AbstractAnnData.html#method-obsm_keys"><code>AbstractAnnData$obsm_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obsp_keys"><a href="AbstractAnnData.html#method-obsp_keys"><code>AbstractAnnData$obsp_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="print"><a href="AbstractAnnData.html#method-print"><code>AbstractAnnData$print()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="shape"><a href="AbstractAnnData.html#method-shape"><code>AbstractAnnData$shape()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="uns_keys"><a href="AbstractAnnData.html#method-uns_keys"><code>AbstractAnnData$uns_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="var_keys"><a href="AbstractAnnData.html#method-var_keys"><code>AbstractAnnData$var_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varm_keys"><a href="AbstractAnnData.html#method-varm_keys"><code>AbstractAnnData$varm_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="varp_keys"><a href="AbstractAnnData.html#method-varp_keys"><code>AbstractAnnData$varp_keys()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_h5ad"><a href="AbstractAnnData.html#method-write_h5ad"><code>AbstractAnnData$write_h5ad()</code></a></span></li>
+  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="write_zarr"><a href="AbstractAnnData.html#method-write_zarr"><code>AbstractAnnData$write_zarr()</code></a></span></li>
+</ul></details></p><hr><a id="method-InMemoryAnnData-initialize"></a><div class="section">
+<h3 id="inmemoryanndata-new-"><code>InMemoryAnnData$new()</code><a class="anchor" aria-label="anchor" href="#inmemoryanndata-new-"></a></h3>
 <p>Creates a new instance of an in-memory <code>AnnData</code> object.
 Inherits from <a href="AbstractAnnData.html">AbstractAnnData</a>.</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -172,47 +171,36 @@ Inherits from <a href="AbstractAnnData.html">AbstractAnnData</a>.</p><div class=
 <span>  uns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shape <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>X</code></dt>
 <dd><p>See the <code>X</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>obs</code></dt>
+      <dt><code>obs</code></dt>
 <dd><p>See the <code>obs</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>var</code></dt>
+      <dt><code>var</code></dt>
 <dd><p>See the <code>var</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>layers</code></dt>
+      <dt><code>layers</code></dt>
 <dd><p>See the <code>layers</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>obsm</code></dt>
+      <dt><code>obsm</code></dt>
 <dd><p>See the <code>obsm</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>varm</code></dt>
+      <dt><code>varm</code></dt>
 <dd><p>See the <code>varm</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>obsp</code></dt>
+      <dt><code>obsp</code></dt>
 <dd><p>See the <code>obsp</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>varp</code></dt>
+      <dt><code>varp</code></dt>
 <dd><p>See the <code>varp</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>uns</code></dt>
+      <dt><code>uns</code></dt>
 <dd><p>See the <code>uns</code> slot in <a href="AnnData-usage.html">AnnData-usage</a></p></dd>
 
-
-<dt><code>shape</code></dt>
+      <dt><code>shape</code></dt>
 <dd><p>Shape tuple (e.g. <code>c(n_obs, n_vars)</code>). Can be provided if
 both <code>X</code> or <code>obs</code> and <code>var</code> are not provided.</p></dd>
 
@@ -220,14 +208,14 @@ both <code>X</code> or <code>obs</code> and <code>var</code> are not provided.</
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-InMemoryAnnData-clone"></a><div class="section">
-<h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
+</div>
+
+<p></p><hr><a id="method-InMemoryAnnData-clone"></a><div class="section">
+<h3 id="inmemoryanndata-clone-"><code>InMemoryAnnData$clone()</code><a class="anchor" aria-label="anchor" href="#inmemoryanndata-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">InMemoryAnnData</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
-</div>
-
-<div class="section">
+</div><p></p><div class="section">
 <h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
@@ -237,6 +225,7 @@ both <code>X</code> or <code>obs</code> and <code>var</code> are not provided.</
 </div>
 
 </div>
+
 
     </div>
 
