@@ -187,7 +187,7 @@ jobs:
           path: ${{ steps.bioc-check.outputs.check-dir }}
 
       - name: Run BiocCheck
-        if: matrix.config.os == 'ubuntu-latest' && needs.bioc-version.outputs.version == 'devel'
+        if: matrix.config.os == 'ubuntu-latest'
         uses: grimbough/bioc-actions/run-BiocCheck@v1
         with:
           error-on: 'never'
