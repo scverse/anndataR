@@ -1,6 +1,7 @@
 # anndataR devel
 
 - Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
+- Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
 
 # anndataR 1.3.1
 
