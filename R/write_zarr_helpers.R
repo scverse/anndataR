@@ -61,6 +61,8 @@ write_zarr_element <- function(
       # Character values
       if (length(value) == 1 && !is.matrix(value)) {
         write_zarr_string_scalar
+      } else if (anyNA(value) && length(dim(value)) <= 1) {
+        write_zarr_nullable_string
       } else {
         write_zarr_string_array
       }
@@ -411,6 +413,58 @@ patch_zarr_vlen_utf8 <- function(store, name, zarr_format) {
     auto_unbox = TRUE,
     pretty = TRUE,
     null = "null"
+  )
+}
+
+#' Write Zarr nullable string
+#'
+#' Write a nullable string to a Zarr store
+#'
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
+#'
+#' @noRd
+write_zarr_nullable_string <- function(
+  value,
+  store,
+  name,
+  compression,
+  zarr_format,
+  version = "0.1.0"
+) {
+  # write mask and values
+  create_zarr_group(store, name, zarr_format)
+  value_no_na <- value
+  value_no_na[is.na(value_no_na)] <- ""
+
+  write_zarr_string_array(
+    value_no_na,
+    store,
+    paste0(name, "/values"),
+    compression,
+    zarr_format = zarr_format
+  )
+  zarr_write_compressed(
+    store,
+    paste0(name, "/mask"),
+    is.na(value),
+    compression,
+    zarr_format = zarr_format
+  )
+
+  # Write attributes
+  write_zarr_encoding(
+    store,
+    name,
+    "nullable-string-array",
+    version,
+    zarr_format
+  )
+
+  Rarr::write_zarr_attributes(
+    file.path(store, name),
+    new.zattrs = list(`na-value` = "NA"),
+    zarr_version = zarr_format
   )
 }
 
