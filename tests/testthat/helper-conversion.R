@@ -13,6 +13,8 @@ convert_py_value <- function(py_value, name) {
     py_value <- convert_nullable_integer_array(py_value)
   } else if (name == "nullable_boolean_array") {
     py_value <- convert_nullable_boolean_array(py_value)
+  } else if (name == "nullable_string_array") {
+    py_value <- convert_nullable_string_array(py_value)
   } else {
     py_value <- reticulate::py_to_r(py_value)
   }
@@ -67,6 +69,21 @@ convert_nullable_boolean_array <- function(nullable_array) {
   mask <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_mask"))
   data <- reticulate::py_to_r(reticulate::py_get_attr(nullable_array, "_data"))
   py_value <- as.logical(data)
+  py_value[mask] <- NA
+
+  py_value
+}
+
+convert_nullable_string_array <- function(nullable_array) {
+  converted <- reticulate::py_to_r(nullable_array)
+  if (!inherits(converted, "python.builtin.object")) {
+    return(unlist(converted))
+  }
+
+  # pandas StringArray has no `_mask`/`_data`
+  mask <- reticulate::py_to_r(nullable_array$isna())
+  data <- reticulate::py_to_r(nullable_array$to_numpy(na_value = ""))
+  py_value <- as.character(data)
   py_value[mask] <- NA
 
   py_value

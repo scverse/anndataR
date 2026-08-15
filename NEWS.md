@@ -1,3 +1,9 @@
+# anndataR devel
+
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
+- Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
+- Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).
+
 # anndataR 1.3.1
 
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
