@@ -114,13 +114,17 @@ for (zarr_format in c(2, 3)) {
     expect_equal(dim(array), c(5, 10))
   })
 
-  test_that(paste("reading Zarr", zarr_format, "mappings works"), {
-    if (zarr_format == "3") {
-      # TODO: Remove when v3 recarray support is implemented
-      mapping <- suppressWarnings(read_zarr_mapping(store, "uns"))
-    } else {
-      mapping <- read_zarr_mapping(store, "uns")
+  test_that(
+    paste("reading Zarr", zarr_format, "nullable string arrays works"),
+    {
+      array <- read_zarr_nullable_string(store, "uns/StringNA")
+      expect_vector(array, ptype = character(), size = 10)
+      expect_true(anyNA(array))
     }
+  )
+
+  test_that(paste("reading Zarr", zarr_format, "mappings works"), {
+    mapping <- read_zarr_mapping(store, "uns")
     expect_type(mapping, "list")
     expect_type(names(mapping), "character")
   })

@@ -1,5 +1,8 @@
-# anndataR 1.3.2
+# anndataR devel
 
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
+- Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
+- Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).
 - Write consolidated metadata on non-readonly anndata stores. Consolidated metadata is used to read encoding type and version of elements one level deep into the store (PR #492).
 
 # anndataR 1.3.1
