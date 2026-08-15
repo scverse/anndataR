@@ -49,6 +49,7 @@ read_zarr_element <- function(
     "string-array" = read_zarr_string_array,
     "nullable-integer" = read_zarr_nullable_integer,
     "nullable-boolean" = read_zarr_nullable_boolean,
+    "nullable-string-array" = read_zarr_nullable_string,
     cli_abort(
       "No function for reading Zarr encoding {.cls {type}} for element {.val {name}}"
     )
@@ -289,6 +290,25 @@ read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
 #' @noRd
 read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
   as.integer(read_zarr_nullable(store, name, version))
+}
+
+#' Read Zarr nullable string
+#'
+#' Read a nullable string from a Zarr store
+#'
+#' @param store A Zarr store instance
+#' @param name Name of the element within the Zarr store
+#' @param version Encoding version of the element to read
+#'
+#' @details
+#' **NOTE:** This implementation ignores the `"na-value"` attribute, see
+#' https://anndata.scverse.org/en/stable/fileformat-prose.html#nullable-string-specifications-v0-1-0
+#'
+#' @return A character vector
+#'
+#' @noRd
+read_zarr_nullable_string <- function(store, name, version = "0.1.0") {
+  as.character(read_zarr_nullable(store, name, version))
 }
 
 #' Read Zarr nullable
