@@ -433,7 +433,7 @@ write_zarr_nullable_string <- function(
   version = "0.1.0"
 ) {
   # write mask and values
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- ""
 
