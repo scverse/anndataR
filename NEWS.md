@@ -3,6 +3,7 @@
 - Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
 - Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
 - Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).
+- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496).
 
 # anndataR 1.3.1
 
