@@ -1,12 +1,11 @@
 # /// script
-# requires-python = "==3.14.4"
+# requires-python = "==3.14.6"
 # dependencies = [
-#   "anndata==0.12.10",
+#   "anndata==0.13.2",
 #   "igraph==1.0.0",
-#   "leidenalg==0.11.0",
-#   "scanpy==1.12.1",
-#   "scipy==1.17.1",
-#   "zarr==3.1.6",
+#   "scanpy==1.12.2",
+#   "scipy==1.18.0",
+#   "zarr==3.2.1",
 # ]
 # ///
 import os
@@ -38,11 +37,15 @@ import scipy.sparse
 #
 # ruff format inst/scripts/example_files.py && ruff check --select I --fix inst/scripts/example_files.py
 #
-# Version: 0.4.1
-# Date: 2026-04-15
+# Version: 0.5.0
+# Date: 2026-07-30
 #
 # CHANGELOG
 #
+# v0.5.0 (2026-07-30)
+# - Add nullable string examples
+# - Avoid anndata/scanpy warnings
+# - Update package versions to latest stable versions
 # v0.4.1 (2026-04-15)
 # - Replace requirements.yml with uv dependency comments
 # - Update package versions to latest stable versions
@@ -88,8 +91,8 @@ adata.var["String"] = [f"String{i}" for i in range(adata.n_vars)]
 
 # Populate adata.obs with different types
 adata.obs["Float"] = 42.42
-adata.obs["FloatNA"] = adata.obs["Float"]
-adata.obs["FloatNA"][0] = float("nan")
+adata.obs["FloatNA"] = adata.obs["Float"].copy()
+adata.obs.loc[adata.obs_names[0], "FloatNA"] = None
 adata.obs["Int"] = numpy.arange(adata.n_obs)
 adata.obs["IntNA"] = pandas.array([None] + [42] * (adata.n_obs - 1))
 adata.obs["Bool"] = pandas.array([False] + [True] * (adata.n_obs - 1))
@@ -106,6 +109,9 @@ adata.uns["Sparse1D"] = scipy.sparse.csc_matrix([1, 2, 0, 0, 0, 3])
 adata.uns["StringScalar"] = "A string"
 adata.uns["String"] = [f"String {i}" for i in range(10)]
 adata.uns["String2D"] = [[f"row{i}col{j}" for i in range(10)] for j in range(5)]
+adata.uns["StringNA"] = pandas.array(
+    [None] + [f"String{i}" for i in range(1, 10)], dtype="string"
+)
 adata.uns["DataFrameEmpty"] = pandas.DataFrame(index=adata.obs.index)
 
 print("\n>>> Running scanpy workflow...")
@@ -113,7 +119,7 @@ print("\n>>> Running scanpy workflow...")
 # Run the standard scanpy workflow
 print("Calculating QC metrics...")
 scanpy.pp.calculate_qc_metrics(adata, percent_top=None, inplace=True)
-print("Normalizing..")
+print("Normalizing...")
 scanpy.pp.normalize_total(adata, inplace=True)
 adata.layers["dense_X"] = adata.X.copy().toarray()
 scanpy.pp.log1p(adata)
@@ -126,7 +132,7 @@ scanpy.pp.neighbors(adata)
 print("Calculating UMAP...")
 scanpy.tl.umap(adata)
 print("Calculating Leiden clusters...")
-scanpy.tl.leiden(adata)
+scanpy.tl.leiden(adata, flavor="igraph", n_iterations=2)
 print("Calculating marker genes...")
 scanpy.tl.rank_genes_groups(adata, "leiden")
 
@@ -137,6 +143,8 @@ print("\n>>> Writing H5AD file...")
 adata.write_h5ad("inst/extdata/example.h5ad", compression="gzip")
 
 # Write Zarr files in both v2 and v3 formats and zip them
+# TODO: Enable sharding when Rarr supports it
+anndata.settings.auto_shard_zarr_v3 = False
 os.chdir("inst/extdata/")
 for fmt in (2, 3):
     anndata.settings.zarr_write_format = fmt

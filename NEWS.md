@@ -1,8 +1,12 @@
 # anndataR devel
 
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
+- Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
+- Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).
 - Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496).
 
 # anndataR 1.3.1
+
 - Add support for reading backed objects using `DelayedArray` matrices, including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`, and conversion of backed `AnnData` objects to `SingleCellExperiment`/`Seurat` (PR #387).
 - Add support for writing Zarr v3 stores, using (i) `zarr_format` argument of `write_zarr()`/`as_ZarrAnnData()` or (ii) the `anndataR.zarr_format` option. New stores are written as Zarr v3 by default (PR #455).
 - Write strings as VLen-UTF8 rather than as fixed-width, so that string arrays read back as variable length strings in Python `anndata` (PR #455).
