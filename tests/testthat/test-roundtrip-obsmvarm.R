@@ -263,6 +263,38 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
               )
               write_h5ad(adata_r, file_r2, mode = "w")
 
+              # When the R element is a data frame, its index must be the
+              # obs_names/var_names of the parent object. This cannot be
+              # checked against {file_py} because the Python and R generators
+              # use different observation and variable names, so compare the
+              # index against the parent names within {file_r2}. Do this before
+              # the attributes are cleared below, so that both datasets still
+              # carry the same attributes.
+              for (slot in c("obsm", "varm")) {
+                encoding <- rhdf5::h5readAttributes(
+                  file_r2,
+                  paste0("/", slot, "/", r_name)
+                )[["encoding-type"]]
+
+                if (!identical(encoding, "dataframe")) {
+                  next
+                }
+
+                axis <- if (slot == "obsm") "obs" else "var"
+                res_index <- processx::run(
+                  "h5diff",
+                  c(
+                    "-v2",
+                    file_r2,
+                    file_r2,
+                    paste0("/", axis, "/_index"),
+                    paste0("/", slot, "/", r_name, "/_index")
+                  ),
+                  error_on_status = FALSE
+                )
+                expect_equal(res_index$status, 0, info = res_index$stdout)
+              }
+
               hdf5_file_r2 <- HDF5File$new(file_r2)
 
               # Remove the rhdf5-NA.OK for comparison
