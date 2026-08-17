@@ -28,6 +28,18 @@ test_names <- setdiff(
   )
 )
 
+# Types to test, each paired with the obsm/varm key it is stored under.
+# dummy_anndata collapses every requested `df_<type>` into a single element
+# named "dataframe", so for data frames the key is not the name of the type.
+# The dummy-anndata#12 types excluded above are included as data frames
+# because they round trip correctly as columns of one, as they do for obs/var.
+test_elements <- c(
+  lapply(test_names, function(type) list(type = type, key = type)),
+  lapply(names(da$vector_generators), function(type) {
+    list(type = paste0("df_", type), key = "dataframe")
+  })
+)
+
 for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
   fmt_config <- get_fmt_config(fmt)
 
@@ -38,7 +50,10 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
         ad$settings$zarr_write_format <- fmt_config$zarr_format
       }
 
-      for (name in test_names) {
+      for (element in test_elements) {
+        name <- element$type
+        key <- element$key
+
         # first generate a python adata
         adata_py <- da$generate_dataset(
           x_type = NULL,
@@ -127,11 +142,23 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
             adata_r <- fmt_config$r_read_fun(file_py, as = fmt_config$backend)
 
             # R AnnData now adds dimnames on-the-fly, but Python doesn't preserve them
-            # So we need to strip dimnames for comparison
-            actual_obsm <- adata_r$obsm[[name]]
-            expected_obsm <- py_to_r(py_get_item(adata_py$obsm, name))
-            dimnames(actual_obsm) <- NULL
-            dimnames(expected_obsm) <- NULL
+            # So we need to strip dimnames for comparison. A data.frame always has
+            # row names, and `py_to_r()` keeps the pandas index as the row.names
+            # attribute, so the data frame is rebuilt to make them comparable
+            strip_names <- function(x) {
+              if (is.data.frame(x)) {
+                x <- as.data.frame(as.list(x), check.names = FALSE)
+                rownames(x) <- NULL
+              } else {
+                dimnames(x) <- NULL
+              }
+              x
+            }
+
+            actual_obsm <- strip_names(adata_r$obsm[[key]])
+            expected_obsm <- strip_names(
+              py_to_r(py_get_item(adata_py$obsm, key))
+            )
 
             expect_equal(
               actual_obsm,
@@ -139,10 +166,10 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
               tolerance = 1e-6
             )
 
-            actual_varm <- adata_r$varm[[name]]
-            expected_varm <- py_to_r(py_get_item(adata_py$varm, name))
-            dimnames(actual_varm) <- NULL
-            dimnames(expected_varm) <- NULL
+            actual_varm <- strip_names(adata_r$varm[[key]])
+            expected_varm <- strip_names(
+              py_to_r(py_get_item(adata_py$varm, key))
+            )
 
             expect_equal(
               actual_varm,
@@ -178,24 +205,27 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
             # read from file
             adata_py2 <- ad[[fmt_config$py_read_method]](file_r)
 
-            # expect name is one of the keys
+            # expect the element is one of the keys
             expect_contains(
               bi$list(adata_py2$obsm$keys()),
-              name
+              key
             )
             expect_contains(
               bi$list(adata_py2$varm$keys()),
-              name
+              key
             )
 
-            # expect that the objects are the same
+            # expect that the objects are the same. Python `anndata` requires
+            # the index of a data frame in obsm/varm to be the obs_names or
+            # var_names of the parent object and refuses to read the file at
+            # all if it is not, so for data frames this also checks the index
             expect_equal_py(
-              py_get_item(adata_py2$obsm, name),
-              py_get_item(adata_py$obsm, name)
+              py_get_item(adata_py2$obsm, key),
+              py_get_item(adata_py$obsm, key)
             )
             expect_equal_py(
-              py_get_item(adata_py2$varm, name),
-              py_get_item(adata_py$varm, name)
+              py_get_item(adata_py2$varm, key),
+              py_get_item(adata_py$varm, key)
             )
           }
         )
