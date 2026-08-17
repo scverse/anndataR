@@ -81,6 +81,21 @@ test_that("Writing dgeMatrix", {
   expect_equal(attrs[["encoding-type"]], "array")
 })
 
+test_that("Writing a logical matrix preserves its shape and values", {
+  value <- matrix(c(TRUE, FALSE, TRUE, FALSE, TRUE, FALSE), nrow = 2, ncol = 3)
+
+  expect_silent(
+    write_h5ad_element(value, file, "logical_matrix", compression = "none")
+  )
+
+  raw <- rhdf5::h5read(file, "logical_matrix", native = FALSE)
+  # Dense arrays are written transposed on disk (see write_h5ad_dense_array())
+  expect_equal(dim(raw), rev(dim(value)))
+
+  roundtrip <- read_h5ad_dense_array(file, "logical_matrix")
+  expect_equal(roundtrip, value)
+})
+
 test_that("Writing H5AD nullable booleans works", {
   nullable <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
   nullable[5] <- NA
@@ -101,6 +116,20 @@ test_that("Writing H5AD nullable integers works", {
   attrs <- rhdf5::h5readAttributes(file, "nullable_int", native = FALSE)
   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
   expect_equal(attrs[["encoding-type"]], "nullable-integer")
+})
+
+test_that("Writing H5AD nullable strings works", {
+  nullable <- LETTERS[1:5]
+  nullable[5] <- NA
+
+  expect_silent(write_h5ad_element(nullable, file, "nullable_string"))
+  expect_true(hdf5_path_exists(file, "/nullable_string"))
+  attrs <- rhdf5::h5readAttributes(file, "nullable_string", native = FALSE)
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+  expect_equal(attrs[["encoding-type"]], "nullable-string-array")
+
+  array <- read_h5ad_nullable_string(file, "nullable_string")
+  expect_equal(array, nullable)
 })
 
 test_that("Writing H5AD string arrays works", {

@@ -1,3 +1,11 @@
+# anndataR 1.2.2
+
+Backported from the development branch (PR #503):
+
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480).
+- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496, thanks @JuanTejedor!).
+- Check `RELEASE_*` branches against their own Bioconductor version instead of against Bioconductor devel, and run the checks on pushes to release branches (PR #502).
+
 # anndataR 1.2.1
 
 Backported from the development branch (PR #489):

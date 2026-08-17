@@ -99,6 +99,12 @@ test_that("reading string arrays works", {
   expect_equal(dim(array), c(5, 10))
 })
 
+test_that("reading nullable string arrays works", {
+  array <- read_h5ad_nullable_string(file, "uns/StringNA")
+  expect_vector(array, ptype = character(), size = 10)
+  expect_true(anyNA(array))
+})
+
 test_that("reading mappings works", {
   mapping <- read_h5ad_mapping(file, "uns")
   expect_type(mapping, "list")

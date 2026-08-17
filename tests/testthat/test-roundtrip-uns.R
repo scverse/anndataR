@@ -5,6 +5,11 @@ library(reticulate)
 
 ad <- reticulate::import("anndata", convert = FALSE)
 da <- reticulate::import("dummy_anndata", convert = FALSE)
+pd <- reticulate::import("pandas", convert = FALSE)
+# anndata >= 0.12 requires opting in to write nullable strings (pd.arrays.StringArray)
+tryCatch(ad$settings$allow_write_nullable_strings <- TRUE, error = function(e) {
+  NULL
+})
 bi <- reticulate::import_builtins()
 
 known_issues <- read_known_issues()
@@ -12,7 +17,8 @@ known_issues <- read_known_issues()
 test_names <- c(
   names(da$matrix_generators),
   names(da$vector_generators),
-  names(da$scalar_generators)
+  names(da$scalar_generators),
+  "nullable_string_array"
 )
 
 for (fmt in c("h5ad", "zarr")) {
@@ -20,18 +26,39 @@ for (fmt in c("h5ad", "zarr")) {
 
   for (name in test_names) {
     # first generate a python adata
-    adata_py <- da$generate_dataset(
-      x_type = NULL,
-      obs_types = list(),
-      var_types = list(),
-      layer_types = list(),
-      obsm_types = list(),
-      varm_types = list(),
-      obsp_types = list(),
-      varp_types = list(),
-      uns_types = list(name),
-      nested_uns_types = list()
-    )
+    if (name == "nullable_string_array") {
+      # dummy_anndata has no `nullable_string_array` generator, so build this
+      # case manually.
+      adata_py <- da$generate_dataset(
+        x_type = NULL,
+        obs_types = list(),
+        var_types = list(),
+        layer_types = list(),
+        obsm_types = list(),
+        varm_types = list(),
+        obsp_types = list(),
+        varp_types = list(),
+        uns_types = list(),
+        nested_uns_types = list()
+      )
+      adata_py$uns[[name]] <- pd$array(
+        reticulate::r_to_py(list(NULL, "a", "b", NULL, "c")),
+        dtype = "string"
+      )
+    } else {
+      adata_py <- da$generate_dataset(
+        x_type = NULL,
+        obs_types = list(),
+        var_types = list(),
+        layer_types = list(),
+        obsm_types = list(),
+        varm_types = list(),
+        obsp_types = list(),
+        varp_types = list(),
+        uns_types = list(name),
+        nested_uns_types = list()
+      )
+    }
 
     # create a couple of paths
     file_py <- withr::local_file(
