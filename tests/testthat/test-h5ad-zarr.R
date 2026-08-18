@@ -29,7 +29,7 @@ compare_rec_array <- function(rec_array_h5ad, rec_array_zarr, test_fun) {
     # Rarr >= 2.1.0 (Bioc devel): zarr fields are lists of scalars, so compare
     # the h5ad fields as lists and transpose the zarr fields to match.
     test_fun(
-      unname(lapply(rec_array_h5ad, as.list)),
+      lapply(rec_array_h5ad, as.list),
       purrr::transpose(rec_array_zarr)
     )
   } else {
