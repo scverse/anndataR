@@ -347,6 +347,7 @@ ZarrAnnData <- R6::R6Class(
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
+      backed = FALSE,
       compression = c(
         "none",
         "gzip",

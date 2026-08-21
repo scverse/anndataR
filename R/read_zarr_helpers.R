@@ -196,13 +196,7 @@ read_zarr_dense_array <- function(store, name, backed = FALSE, version = "0.2.0"
     return(read_zarr_dense_array_base(store, name, version))
   }
   
-  data <- ZarrArray::ZarrArray(hdf5_file$path, name, type = dataset_type)
-  
-  if (length(dim(data)) == 2) {
-    data <- t(data)
-  } else if (length(dim(data)) > 2) {
-    data <- aperm(data)
-  }
+  data <- ZarrArray::ZarrArray(file.path(store, name))
   
   data
 }
@@ -270,7 +264,7 @@ read_zarr_sparse_array <- function(
     return(read_zarr_sparse_array_base(store, name, version, type))
   }
   
-  t(ZarrArray::ZarrSparseMatrix(store, name))
+  t(ZarrArray::ZarrSparseMatrix(store, group = name))
 }
 
 #' Read Zarr sparse array (base)
@@ -284,7 +278,7 @@ read_zarr_sparse_array <- function(
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
-read_zarr_sparse_array <- function(
+read_zarr_sparse_array_base <- function(
     store,
     name,
     version = "0.1.0",
@@ -525,7 +519,7 @@ read_zarr_data_frame <- function(
   store,
   name,
   version = "0.2.0", 
-  backed = FALSE,
+  backed = FALSE
 ) {
   version <- match.arg(version)
 
