@@ -70,12 +70,12 @@ Other AnnData classes:
     \item \href{#method-ZarrAnnData-obsp_keys}{\code{ZarrAnnData$obsp_keys()}}
     \item \href{#method-ZarrAnnData-varp_keys}{\code{ZarrAnnData$varp_keys()}}
     \item \href{#method-ZarrAnnData-uns_keys}{\code{ZarrAnnData$uns_keys()}}
+    \item \href{#method-ZarrAnnData-as_InMemoryAnnData}{\code{ZarrAnnData$as_InMemoryAnnData()}}
   }
 }
 \if{html}{\out{<details><summary>Inherited methods</summary>
 <ul>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_HDF5AnnData'><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_InMemoryAnnData'><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ReticulateAnnData'><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>AbstractAnnData$as_Seurat()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
@@ -106,6 +106,7 @@ Other AnnData classes:
   uns = NULL,
   shape = NULL,
   mode = c("a", "r", "r+", "w", "w-", "x"),
+  backed = FALSE,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   zarr_format = NULL
 )}
@@ -129,6 +130,8 @@ already exits, other arguments must be \code{NULL}.}
 both \code{X} or \code{obs} and \code{var} are not provided.}
       \item{\code{mode}}{The mode to open the Zarr file. See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for
 details}
+      \item{\code{backed}}{Whether the object is disk backed. See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}
+for details}
       \item{\code{compression}}{The compression algorithm to use. See
 \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
       \item{\code{zarr_format}}{The Zarr format to use. See
@@ -260,6 +263,20 @@ file will be overwritten.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ZarrAnnData$uns_keys()}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ZarrAnnData-as_InMemoryAnnData"></a>}}
+\if{latex}{\out{\hypertarget{method-ZarrAnnData-as_InMemoryAnnData}{}}}
+\subsection{\code{ZarrAnnData$as_InMemoryAnnData()}}{
+  Convert to an \code{\link{InMemoryAnnData}}. Any backed
+(\code{DelayedArray}) slots are materialized into ordinary in-memory
+matrices: an in-memory object should not stay tied to an on-disk file.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ZarrAnnData$as_InMemoryAnnData()}
     \if{html}{\out{</div>}}
   }
 }

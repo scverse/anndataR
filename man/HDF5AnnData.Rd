@@ -307,8 +307,6 @@ file will be overwritten.
   Convert to an \code{\link{InMemoryAnnData}}. Any backed
 (\code{DelayedArray}) slots are materialized into ordinary in-memory
 matrices: an in-memory object should not stay tied to an on-disk file.
-Slots are read eagerly (via base {rhdf5}) rather than carried over as
-DelayedArrays, which is also faster than realizing them.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{HDF5AnnData$as_InMemoryAnnData()}

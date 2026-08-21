@@ -172,6 +172,7 @@ read_zarr_encoding <- function(store, name) {
 #' Read a null value from an Zarr store
 #'
 #' @inheritParams read_zarr_element
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return `NULL`
 #' @noRd
@@ -368,7 +369,7 @@ read_zarr_nullable_integer <- function(store, name, version = "0.1.0", ...) {
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
-#' @param ...
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @details
 #' **NOTE:** This implementation ignores the `"na-value"` attribute, see

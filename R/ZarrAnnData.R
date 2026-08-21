@@ -314,6 +314,8 @@ ZarrAnnData <- R6::R6Class(
     #'   both `X` or `obs` and `var` are not provided.
     #' @param mode The mode to open the Zarr file. See [as_ZarrAnnData()] for
     #'   details
+    #' @param backed Whether the object is disk backed. See [as_ZarrAnnData()]
+    #'   for details
     #' @param compression The compression algorithm to use. See
     #'   [as_ZarrAnnData()] for details
     #' @param zarr_format The Zarr format to use. See
@@ -599,6 +601,9 @@ ZarrAnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#' @param backed Whether the object is disk backed and returns
+#'   [DelayedArray::DelayedArray] object for matrix data. Can only be `TRUE`
+#'   when `mode == "r"`.
 #' @param zarr_format The format to use when creating the Zarr store. Should be
 #'   either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
 #'   be set using the `anndataR.zarr_format` option, e.g.
@@ -630,6 +635,7 @@ as_ZarrAnnData <- function(
     "lz4"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE,
   zarr_format = NULL
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
@@ -653,6 +659,7 @@ as_ZarrAnnData <- function(
     shape = adata$shape(),
     mode = mode,
     compression = compression,
+    backed = backed,
     zarr_format = zarr_format
   )
 }
