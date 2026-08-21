@@ -26,6 +26,22 @@ for (zarr_format in c(2, 3)) {
     expect_type(mat, "double")
     expect_equal(dim(mat), c(50, 100))
   })
+  
+  test_that(paste("reading backed Zarr", zarr_format, "dense matrices works"), {
+    mat <- read_zarr_dense_array(store, "layers/dense_counts", backed = TRUE)
+    expect_s4_class(mat, "DelayedMatrix")
+    seed <- DelayedArray::seed(mat)
+    expect_identical(DelayedArray::type(seed), "integer")
+    expect_false(DelayedArray::is_sparse(seed))
+    expect_equal(dim(mat), c(50, 100))
+    
+    mat <- read_zarr_dense_array(store, "layers/dense_X", backed = TRUE)
+    expect_s4_class(mat, "DelayedMatrix")
+    seed <- DelayedArray::seed(mat)
+    expect_identical(DelayedArray::type(seed), "double")
+    expect_false(DelayedArray::is_sparse(seed))
+    expect_equal(dim(mat), c(50, 100))
+  })
 
   test_that(paste("reading Zarr", zarr_format, "sparse matrices works"), {
     mat <- read_zarr_sparse_array(store, "layers/csc_counts", type = "csc")
