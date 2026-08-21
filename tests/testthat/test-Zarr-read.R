@@ -218,7 +218,6 @@ for (zarr_format in c(2, 3)) {
     suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
 
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
-    withr::defer(backed$close())
     sce_backed <- backed$as_SingleCellExperiment()
 
     ad2 <- as_AnnData(sce_backed)

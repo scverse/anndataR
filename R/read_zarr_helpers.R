@@ -175,7 +175,7 @@ read_zarr_encoding <- function(store, name) {
 #'
 #' @return `NULL`
 #' @noRd
-read_zarr_null <- function(store, name, version = "0.1.0") {
+read_zarr_null <- function(store, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   NULL
@@ -194,7 +194,8 @@ read_zarr_dense_array <- function(
   store,
   name,
   backed = FALSE,
-  version = "0.2.0"
+  version = "0.2.0", 
+  ...
 ) {
   version <- match.arg(version)
 
@@ -217,7 +218,7 @@ read_zarr_dense_array <- function(
 #' @return A matrix or a vector if 1D
 #'
 #' @noRd
-read_zarr_dense_array_base <- function(store, name, version = "0.2.0") {
+read_zarr_dense_array_base <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   data <- Rarr::read_zarr_array(file.path(store, name))
@@ -225,7 +226,7 @@ read_zarr_dense_array_base <- function(store, name, version = "0.2.0") {
   data
 }
 
-read_zarr_csr_matrix <- function(store, name, backed = FALSE, version) {
+read_zarr_csr_matrix <- function(store, name, backed = FALSE, version, ...) {
   read_zarr_sparse_array(
     store = store,
     name = name,
@@ -235,7 +236,7 @@ read_zarr_csr_matrix <- function(store, name, backed = FALSE, version) {
   )
 }
 
-read_zarr_csc_matrix <- function(store, name, backed = FALSE, version) {
+read_zarr_csc_matrix <- function(store, name, backed = FALSE, version, ...) {
   read_zarr_sparse_array(
     store = store,
     name = name,
@@ -261,7 +262,8 @@ read_zarr_sparse_array <- function(
   name,
   backed = FALSE,
   version = "0.1.0",
-  type = c("csr_matrix", "csc_matrix")
+  type = c("csr_matrix", "csc_matrix"), 
+  ...
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
@@ -289,7 +291,8 @@ read_zarr_sparse_array_base <- function(
   store,
   name,
   version = "0.1.0",
-  type = c("csr_matrix", "csc_matrix")
+  type = c("csr_matrix", "csc_matrix"),
+  ...
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
@@ -326,7 +329,7 @@ read_zarr_sparse_array_base <- function(
 #' @return A named list of 1D arrays
 #'
 #' @noRd
-read_zarr_rec_array <- function(store, name, version = "0.2.0") {
+read_zarr_rec_array <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
   Rarr::read_zarr_array(file.path(store, name)) |>
     lapply(as.vector)
@@ -341,7 +344,7 @@ read_zarr_rec_array <- function(store, name, version = "0.2.0") {
 #' @return A boolean vector
 #'
 #' @noRd
-read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
+read_zarr_nullable_boolean <- function(store, name, version = "0.1.0", ...) {
   as.logical(read_zarr_nullable(store, name, version))
 }
 
@@ -354,7 +357,7 @@ read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
 #' @return An integer vector
 #'
 #' @noRd
-read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
+read_zarr_nullable_integer <- function(store, name, version = "0.1.0", ...) {
   as.integer(read_zarr_nullable(store, name, version))
 }
 
@@ -387,7 +390,7 @@ read_zarr_nullable_string <- function(store, name, version = "0.1.0", ...) {
 #' @return A nullable vector
 #'
 #' @noRd
-read_zarr_nullable <- function(store, name, version = "0.1.0") {
+read_zarr_nullable <- function(store, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   mask <- Rarr::read_zarr_array(file.path(store, paste0(name, "/mask")))
@@ -411,7 +414,7 @@ read_zarr_nullable <- function(store, name, version = "0.1.0") {
 #' @return A character vector/matrix
 #'
 #' @noRd
-read_zarr_string_array <- function(store, name, version = "0.2.0") {
+read_zarr_string_array <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   data <- Rarr::read_zarr_array(file.path(store, name))
@@ -433,7 +436,7 @@ read_zarr_string_array <- function(store, name, version = "0.2.0") {
 #' @return A factor
 #'
 #' @noRd
-read_zarr_categorical <- function(store, name, version = "0.2.0") {
+read_zarr_categorical <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   codes <- Rarr::read_zarr_array(file.path(store, paste0(name, "/codes")))
@@ -467,7 +470,7 @@ read_zarr_categorical <- function(store, name, version = "0.2.0") {
 #' @return A character vector of length 1
 #'
 #' @noRd
-read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
+read_zarr_string_scalar <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
   as.character(Rarr::read_zarr_array(file.path(store, name)))
 }
@@ -481,7 +484,7 @@ read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
 #' @return A numeric vector of length 1
 #'
 #' @noRd
-read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
+read_zarr_numeric_scalar <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   value <- Rarr::read_zarr_array(file.path(store, name))
@@ -501,7 +504,7 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
 #' @return A named list
 #'
 #' @noRd
-read_zarr_mapping <- function(store, name, version = "0.1.0", backed = FALSE) {
+read_zarr_mapping <- function(store, name, version = "0.1.0", backed = FALSE, ...) {
   version <- match.arg(version)
   items <- read_zarr_mapping_keys(store, name, version)
   read_zarr_collection(store, name, items, backed = backed)
@@ -527,7 +530,8 @@ read_zarr_data_frame <- function(
   store,
   name,
   version = "0.2.0",
-  backed = FALSE
+  backed = FALSE, 
+  ...
 ) {
   version <- match.arg(version)
 
@@ -550,7 +554,7 @@ read_zarr_data_frame <- function(
 #' @return A named list
 #'
 #' @noRd
-read_zarr_collection <- function(store, name, item_names, backed = FALSE) {
+read_zarr_collection <- function(store, name, item_names, backed = FALSE, ...) {
   items <- lapply(
     item_names,
     function(item_name) {
@@ -578,7 +582,7 @@ read_zarr_collection <- function(store, name, item_names, backed = FALSE) {
 #' @return A character vector of item names
 #'
 #' @noRd
-read_zarr_mapping_keys <- function(store, name, version = "0.1.0") {
+read_zarr_mapping_keys <- function(store, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   items <- list.dirs(
