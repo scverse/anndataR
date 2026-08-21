@@ -35,7 +35,7 @@ read_zarr(
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
 }}
 
-\item{backed}{Whether to read the H5AD file in backed mode, returning an
+\item{backed}{Whether to read the Zarr store in backed mode, returning an
 object containing \link[DelayedArray:DelayedMatrix]{DelayedArray::DelayedMatrix} matrices. Which slots are
 backed depends on the value of \code{as}.}
 
