@@ -59,11 +59,13 @@ read_zarr_element <- function(
 
   tryCatch(
     {
-      read_fun(store = store, 
-               name = name, 
-               version = version, 
-               backed = backed, 
-               ...)
+      read_fun(
+        store = store,
+        name = name,
+        version = version,
+        backed = backed,
+        ...
+      )
     },
     error = function(e) {
       msg <- cli::cli_fmt(cli::cli_bullets(c(
@@ -188,16 +190,21 @@ read_zarr_null <- function(store, name, version = "0.1.0") {
 #' @return A matrix or a vector if 1D
 #'
 #' @noRd
-read_zarr_dense_array <- function(store, name, backed = FALSE, version = "0.2.0") {
+read_zarr_dense_array <- function(
+  store,
+  name,
+  backed = FALSE,
+  version = "0.2.0"
+) {
   version <- match.arg(version)
 
   # Eager reads use base {rhdf5} directly
   if (!isTRUE(backed)) {
     return(read_zarr_dense_array_base(store, name, version))
   }
-  
+
   data <- ZarrArray::ZarrArray(file.path(store, name))
-  
+
   data
 }
 
@@ -212,9 +219,9 @@ read_zarr_dense_array <- function(store, name, backed = FALSE, version = "0.2.0"
 #' @noRd
 read_zarr_dense_array_base <- function(store, name, version = "0.2.0") {
   version <- match.arg(version)
-  
+
   data <- Rarr::read_zarr_array(file.path(store, name))
-  
+
   data
 }
 
@@ -263,7 +270,7 @@ read_zarr_sparse_array <- function(
   if (!isTRUE(backed)) {
     return(read_zarr_sparse_array_base(store, name, version, type))
   }
-  
+
   t(ZarrArray::ZarrSparseMatrix(store, group = name))
 }
 
@@ -279,16 +286,16 @@ read_zarr_sparse_array <- function(
 #'
 #' @noRd
 read_zarr_sparse_array_base <- function(
-    store,
-    name,
-    version = "0.1.0",
-    type = c("csr_matrix", "csc_matrix")
+  store,
+  name,
+  version = "0.1.0",
+  type = c("csr_matrix", "csc_matrix")
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
-  
+
   attrs <- Rarr::read_zarr_attributes(file.path(store, name))
-  
+
   construct_sparse_matrix(
     data = as.vector(Rarr::read_zarr_array(file.path(store, name, "data"))),
     indices = as.vector(Rarr::read_zarr_array(file.path(
@@ -506,19 +513,19 @@ read_zarr_mapping <- function(store, name, version = "0.1.0", backed = FALSE) {
 #' @inheritParams read_zarr_element
 #' @param backed Whether to return DelayedArrays for array/matrix types (always
 #' `FALSE`)
-#' 
+#'
 #' @details
 #' The `backed` argument is included to avoid `backed` being passed via `...`
 #' and is always overwritten to `FALSE` since data frame columns should not be
 #' DelayedArrays.
-#' 
+#'
 #' @return A data.frame
 #'
 #' @noRd
 read_zarr_data_frame <- function(
   store,
   name,
-  version = "0.2.0", 
+  version = "0.2.0",
   backed = FALSE
 ) {
   version <- match.arg(version)

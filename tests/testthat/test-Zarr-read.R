@@ -26,7 +26,7 @@ for (zarr_format in c(2, 3)) {
     expect_type(mat, "double")
     expect_equal(dim(mat), c(50, 100))
   })
-  
+
   test_that(paste("reading backed Zarr", zarr_format, "dense matrices works"), {
     mat <- read_zarr_dense_array(store, "layers/dense_counts", backed = TRUE)
     expect_s4_class(mat, "DelayedMatrix")
@@ -34,7 +34,7 @@ for (zarr_format in c(2, 3)) {
     expect_identical(DelayedArray::type(seed), "integer")
     expect_false(DelayedArray::is_sparse(seed))
     expect_equal(dim(mat), c(50, 100))
-    
+
     mat <- read_zarr_dense_array(store, "layers/dense_X", backed = TRUE)
     expect_s4_class(mat, "DelayedMatrix")
     seed <- DelayedArray::seed(mat)
@@ -52,51 +52,50 @@ for (zarr_format in c(2, 3)) {
     expect_s4_class(mat, "dgRMatrix")
     expect_equal(dim(mat), c(50, 100))
   })
-  
+
   test_that(
-    paste("reading backed Zarr", zarr_format, "sparse matrices works"), {
-    mat <- read_zarr_sparse_array(
-      store,
-      "layers/csc_counts",
-      type = "csc",
-      backed = TRUE
-    )
-    expect_s4_class(mat, "DelayedMatrix")
-    seed <- DelayedArray::seed(mat)
-    expect_s4_class(seed, "CSR_ZarrSparseMatrixSeed")
-    expect_identical(DelayedArray::type(seed), "double")
-    expect_true(DelayedArray::is_sparse(seed))
-    expect_equal(dim(mat), c(50, 100))
-    
-    mat <- read_zarr_sparse_array(
-      store,
-      "layers/counts",
-      type = "csr",
-      backed = TRUE
-    )
-    expect_s4_class(mat, "DelayedMatrix")
-    seed <- DelayedArray::seed(mat)
-    expect_s4_class(seed, "CSC_ZarrSparseMatrixSeed")
-    expect_identical(DelayedArray::type(seed), "double")
-    expect_true(DelayedArray::is_sparse(seed))
-    expect_equal(dim(mat), c(50, 100))
-  })
-  
-  # INVARIANT: backed dense reads must equal an INDEPENDENT eager read
-  test_that(
-    "backed dense reads are value-identical to independent eager reads", 
+    paste("reading backed Zarr", zarr_format, "sparse matrices works"),
     {
-      for (nm in c("layers/dense_counts", "layers/dense_X")) {
-        eager <- read_zarr_dense_array_base(store, nm)
-        backed <- read_zarr_dense_array(store, nm, backed = TRUE)
-        expect_s4_class(backed, "DelayedMatrix")
-        expect_equal(as.matrix(backed), eager)
-        raw <- Rarr::read_zarr_array(file.path(store, nm)) # on-disk orientation is vars x obs
-        expect_equal(as.matrix(backed), raw, ignore_attr = TRUE)
-      }
+      mat <- read_zarr_sparse_array(
+        store,
+        "layers/csc_counts",
+        type = "csc",
+        backed = TRUE
+      )
+      expect_s4_class(mat, "DelayedMatrix")
+      seed <- DelayedArray::seed(mat)
+      expect_s4_class(seed, "CSR_ZarrSparseMatrixSeed")
+      expect_identical(DelayedArray::type(seed), "double")
+      expect_true(DelayedArray::is_sparse(seed))
+      expect_equal(dim(mat), c(50, 100))
+
+      mat <- read_zarr_sparse_array(
+        store,
+        "layers/counts",
+        type = "csr",
+        backed = TRUE
+      )
+      expect_s4_class(mat, "DelayedMatrix")
+      seed <- DelayedArray::seed(mat)
+      expect_s4_class(seed, "CSC_ZarrSparseMatrixSeed")
+      expect_identical(DelayedArray::type(seed), "double")
+      expect_true(DelayedArray::is_sparse(seed))
+      expect_equal(dim(mat), c(50, 100))
     }
   )
-  
+
+  # INVARIANT: backed dense reads must equal an INDEPENDENT eager read
+  test_that("backed dense reads are value-identical to independent eager reads", {
+    for (nm in c("layers/dense_counts", "layers/dense_X")) {
+      eager <- read_zarr_dense_array_base(store, nm)
+      backed <- read_zarr_dense_array(store, nm, backed = TRUE)
+      expect_s4_class(backed, "DelayedMatrix")
+      expect_equal(as.matrix(backed), eager)
+      raw <- Rarr::read_zarr_array(file.path(store, nm)) # on-disk orientation is vars x obs
+      expect_equal(as.matrix(backed), raw, ignore_attr = TRUE)
+    }
+  })
+
   # INVARIANT: backed sparse reads must equal independent eager reads and stay
   # sparse.
   test_that("backed sparse reads are value-identical to independent eager reads", {
@@ -117,18 +116,18 @@ for (zarr_format in c(2, 3)) {
       expect_equal(as.matrix(backed), as.matrix(eager))
     }
   })
-  
+
   # INVARIANT: a backed ZarrAnnData exposes the same matrices (values, dimnames,
   # orientation) as an eager one, for every matrix-valued slot.
   test_that("backed ZarrAnnData slots equal eager slots", {
     eager <- ZarrAnnData$new(store, mode = "r")
     backed <- ZarrAnnData$new(store, mode = "r", backed = TRUE)
-    
+
     expect_s4_class(backed$X, "DelayedMatrix")
     expect_equal(as.matrix(backed$X), as.matrix(eager$X))
     # TODO: backed dimnames are a list of NULL ?
     # expect_identical(dimnames(backed$X), dimnames(eager$X))
-    
+
     for (k in eager$layers_keys()) {
       expect_equal(
         as.matrix(backed$layers[[k]]),
@@ -151,7 +150,7 @@ for (zarr_format in c(2, 3)) {
       )
     }
   })
-  
+
   # INVARIANT: a backed matrix reads lazily by file path, so it must keep working
   # after the source AnnData is closed and garbage-collected.
   test_that("backed matrices stay readable after the source AnnData is closed", {
@@ -163,44 +162,44 @@ for (zarr_format in c(2, 3)) {
     expect_s4_class(x_backed, "DelayedMatrix")
     rm(backed)
     gc()
-    
+
     expect_equal(as.matrix(x_backed), expected)
   })
-  
+
   # Regression test: subsetting a backed AnnData must stay lazy AND apply the
   # subset.
   test_that("subsetting a backed AnnData stays lazy and subsets correctly", {
     backed <- ZarrAnnData$new(store, mode = "r", backed = TRUE)
     eager <- ZarrAnnData$new(store, mode = "r")
-    
+
     oi <- c(1, 3, 5, 7, 9)
     vi <- 1:10
     vb <- backed[oi, vi]
     ve <- eager[oi, vi]
-    
+
     expect_s4_class(vb$X, "DelayedMatrix")
     expect_equal(dim(vb$X), c(length(oi), length(vi)))
     expect_equal(as.matrix(vb$X), as.matrix(ve$X))
   })
-  
+
   # Regression test: converting a backed AnnData to InMemory must materialize its
   # DelayedArrays into ordinary in-memory matrices
   test_that("converting a backed AnnData to InMemory materializes its matrices", {
     backed <- ZarrAnnData$new(store, mode = "r", backed = TRUE)
     im <- backed$as_InMemoryAnnData()
-    
+
     expect_false(inherits(im$X, "DelayedArray"))
     expect_equal(as.matrix(im$X), as.matrix(backed$X))
   })
-  
+
   # INVARIANT: a backed SingleCellExperiment keeps its assays lazy (DelayedMatrix)
   # and value-equal to an eager conversion.
   test_that("backed SingleCellExperiment has lazy assays equal to eager ones", {
     suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
-    
+
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
     eager <- read_zarr(store, as = "ZarrAnnData")
-    
+
     sce_b <- backed$as_SingleCellExperiment()
     sce_e <- eager$as_SingleCellExperiment()
     for (a in SummarizedExperiment::assayNames(sce_e)) {
@@ -212,16 +211,16 @@ for (zarr_format in c(2, 3)) {
       )
     }
   })
-  
+
   # Regression test (issue #387, reported by LouiseDck): converting a backed SCE
   # back to AnnData must preserve shape.
   test_that("round-trip of a backed SCE back to AnnData preserves shape", {
     suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
-    
+
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
     withr::defer(backed$close())
     sce_backed <- backed$as_SingleCellExperiment()
-    
+
     ad2 <- as_AnnData(sce_backed)
     expect_equal(ad2$shape(), backed$shape())
   })
