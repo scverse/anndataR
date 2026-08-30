@@ -7,12 +7,19 @@
 #'
 #' The main conversion functions include:
 #'
-#' * `py_to_r.anndata._core.anndata.AnnData`: Converts Python AnnData
-#'   objects to R [ReticulateAnnData] objects
+#' * `py_to_r.anndata.AnnData` and `py_to_r.anndata._core.anndata.AnnData`:
+#'   Convert Python AnnData objects to R [ReticulateAnnData] objects
 #' * `r_to_py.AbstractAnnData`: Converts R [AbstractAnnData] objects
 #'   to Python AnnData objects
 #' * `py_to_r.collections.abc.Mapping`: Converts Python mapping
 #'   objects to R lists
+#'
+#' The `py_to_r()` method for AnnData objects is registered for two class
+#' names because Python anndata >= 0.13 sets `AnnData.__module__` to
+#' `"anndata"`, so reticulate reports the class as `anndata.AnnData` instead
+#' of `anndata._core.anndata.AnnData` as in earlier versions. Python
+#' anndata >= 0.13 is not fully supported yet, so a warning is emitted when
+#' such an object is wrapped.
 #'
 #' These functions are automatically registered as S3 methods and are called
 #' when using `reticulate::py_to_r()` and `reticulate::r_to_py()` on compatible
@@ -33,7 +40,7 @@
 #'   ad_py <- import("anndata", convert = FALSE)
 #'   py_adata <- ad_py$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
 #'
-#'   # Automatic conversion to R (uses py_to_r.anndata._core.anndata.AnnData)
+#'   # Automatic conversion to R (uses the py_to_r() method for AnnData)
 #'   r_adata <- py_to_r(py_adata)
 #'
 #'   # Automatic conversion back to Python (uses r_to_py.AbstractAnnData)
@@ -64,6 +71,13 @@ py_to_r.collections.abc.Mapping <- function(x) {
 #' @importFrom reticulate py_to_r
 #' @method py_to_r anndata._core.anndata.AnnData
 py_to_r.anndata._core.anndata.AnnData <- function(x) {
+  ReticulateAnnData$new(py_anndata = x)
+}
+
+#' @rdname reticulate-helpers
+#' @export
+#' @method py_to_r anndata.AnnData
+py_to_r.anndata.AnnData <- function(x) {
   ReticulateAnnData$new(py_anndata = x)
 }
 

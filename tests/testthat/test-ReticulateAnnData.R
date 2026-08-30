@@ -43,6 +43,47 @@ test_that("ReticulateAnnData wrapping Python object works", {
   expect_equal(dim(r_adata$X), c(4, 5))
 })
 
+test_that("both Python AnnData class names are supported", {
+  skip_if_no_anndata_py()
+
+  # Python anndata >= 0.13 reports the class as "anndata.AnnData", earlier
+  # versions as "anndata._core.anndata.AnnData" (issue #499)
+  py_classes <- c("anndata.AnnData", "anndata._core.anndata.AnnData")
+
+  for (py_class in py_classes) {
+    expect_false(
+      is.null(utils::getS3method("py_to_r", py_class, optional = TRUE))
+    )
+  }
+
+  mock_old <- structure(
+    list(),
+    class = c("anndata._core.anndata.AnnData", "python.builtin.object")
+  )
+  expect_no_warning(adata_old <- ReticulateAnnData$new(py_anndata = mock_old))
+  expect_s3_class(adata_old, "ReticulateAnnData")
+
+  # anndata >= 0.13 objects are accepted but warn that they are not fully
+  # supported yet
+  mock_new <- structure(
+    list(),
+    class = c("anndata.AnnData", "python.builtin.object")
+  )
+  rlang::reset_warning_verbosity("anndataR_py_anndata_0.13")
+  expect_warning(
+    adata_new <- ReticulateAnnData$new(py_anndata = mock_new),
+    "not fully supported"
+  )
+  expect_s3_class(adata_new, "ReticulateAnnData")
+
+  expect_error(
+    ReticulateAnnData$new(
+      py_anndata = structure(list(), class = "python.builtin.object")
+    ),
+    "must be a Python AnnData object"
+  )
+})
+
 test_that("ReticulateAnnData slot access works", {
   skip_if_no_anndata_py()
 

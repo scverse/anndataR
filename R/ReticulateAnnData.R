@@ -293,8 +293,14 @@ ReticulateAnnData <- R6::R6Class(
       check_requires("ReticulateAnnData", "anndata", where = "Python")
 
       if (!is.null(py_anndata)) {
-        # Use existing Python AnnData object
-        if (!inherits(py_anndata, "anndata._core.anndata.AnnData")) {
+        # Use existing Python AnnData object. Python anndata >= 0.13 reports
+        # the class as "anndata.AnnData", earlier versions as
+        # "anndata._core.anndata.AnnData".
+        py_anndata_classes <- c(
+          "anndata.AnnData",
+          "anndata._core.anndata.AnnData"
+        )
+        if (!inherits(py_anndata, py_anndata_classes)) {
           cli_abort(
             "{.arg py_anndata} must be a Python AnnData object from {.pkg reticulate}"
           )
@@ -392,6 +398,27 @@ ReticulateAnnData <- R6::R6Class(
           self$varp <- varp
         }
         if (!is.null(uns)) self$uns <- uns
+      }
+
+      # Python anndata >= 0.13 reports the class as "anndata.AnnData",
+      # earlier versions as "anndata._core.anndata.AnnData"
+      if (inherits(private$.py_anndata, "anndata.AnnData")) {
+        cli_warn(
+          c(
+            paste(
+              "Python {.pkg anndata} >= 0.13 detected, which is not fully",
+              "supported by {.pkg anndataR} yet"
+            ),
+            i = "Some functionality may not work as expected",
+            i = paste(
+              "Pin an earlier version with",
+              "{.code reticulate::py_require(\"anndata<0.13\")}",
+              "before Python is initialized"
+            )
+          ),
+          .frequency = "once",
+          .frequency_id = "anndataR_py_anndata_0.13"
+        )
       }
 
       self

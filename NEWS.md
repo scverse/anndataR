@@ -1,5 +1,6 @@
 # anndataR devel
 
+- Support the `anndata.AnnData` class name reported by reticulate for Python anndata >= 0.13 (in addition to `anndata._core.anndata.AnnData` for earlier versions) in `py_to_r()` and the `ReticulateAnnData` constructor, and warn that Python anndata >= 0.13 is not fully supported yet when such an object is detected (PR #510, issue #499).
 - Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
 - Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
 - Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).

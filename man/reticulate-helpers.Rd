@@ -4,12 +4,15 @@
 \alias{reticulate-helpers}
 \alias{py_to_r.collections.abc.Mapping}
 \alias{py_to_r.anndata._core.anndata.AnnData}
+\alias{py_to_r.anndata.AnnData}
 \alias{r_to_py.AbstractAnnData}
 \title{Reticulate Helper Functions for AnnData Conversion}
 \usage{
 \method{py_to_r}{collections.abc.Mapping}(x)
 
 \method{py_to_r}{anndata._core.anndata.AnnData}(x)
+
+\method{py_to_r}{anndata.AnnData}(x)
 
 \method{r_to_py}{AbstractAnnData}(x, convert = TRUE)
 }
@@ -32,13 +35,20 @@ the R-Python boundary.
 \details{
 The main conversion functions include:
 \itemize{
-\item \code{py_to_r.anndata._core.anndata.AnnData}: Converts Python AnnData
-objects to R \link{ReticulateAnnData} objects
+\item \code{py_to_r.anndata.AnnData} and \code{py_to_r.anndata._core.anndata.AnnData}:
+Convert Python AnnData objects to R \link{ReticulateAnnData} objects
 \item \code{r_to_py.AbstractAnnData}: Converts R \link{AbstractAnnData} objects
 to Python AnnData objects
 \item \code{py_to_r.collections.abc.Mapping}: Converts Python mapping
 objects to R lists
 }
+
+The \code{py_to_r()} method for AnnData objects is registered for two class
+names because Python anndata >= 0.13 sets \code{AnnData.__module__} to
+\code{"anndata"}, so reticulate reports the class as \code{anndata.AnnData} instead
+of \code{anndata._core.anndata.AnnData} as in earlier versions. Python
+anndata >= 0.13 is not fully supported yet, so a warning is emitted when
+such an object is wrapped.
 
 These functions are automatically registered as S3 methods and are called
 when using \code{reticulate::py_to_r()} and \code{reticulate::r_to_py()} on compatible
@@ -56,7 +66,7 @@ if (requireNamespace("reticulate", quietly = TRUE) &&
   ad_py <- import("anndata", convert = FALSE)
   py_adata <- ad_py$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
 
-  # Automatic conversion to R (uses py_to_r.anndata._core.anndata.AnnData)
+  # Automatic conversion to R (uses the py_to_r() method for AnnData)
   r_adata <- py_to_r(py_adata)
 
   # Automatic conversion back to Python (uses r_to_py.AbstractAnnData)
