@@ -43,13 +43,6 @@ to Python AnnData objects
 objects to R lists
 }
 
-The \code{py_to_r()} method for AnnData objects is registered for two class
-names because Python anndata >= 0.13 sets \code{AnnData.__module__} to
-\code{"anndata"}, so reticulate reports the class as \code{anndata.AnnData} instead
-of \code{anndata._core.anndata.AnnData} as in earlier versions. Python
-anndata >= 0.13 is not fully supported yet, so a warning is emitted when
-such an object is wrapped.
-
 These functions are automatically registered as S3 methods and are called
 when using \code{reticulate::py_to_r()} and \code{reticulate::r_to_py()} on compatible
 objects.

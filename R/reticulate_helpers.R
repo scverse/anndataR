@@ -14,13 +14,6 @@
 #' * `py_to_r.collections.abc.Mapping`: Converts Python mapping
 #'   objects to R lists
 #'
-#' The `py_to_r()` method for AnnData objects is registered for two class
-#' names because Python anndata >= 0.13 sets `AnnData.__module__` to
-#' `"anndata"`, so reticulate reports the class as `anndata.AnnData` instead
-#' of `anndata._core.anndata.AnnData` as in earlier versions. Python
-#' anndata >= 0.13 is not fully supported yet, so a warning is emitted when
-#' such an object is wrapped.
-#'
 #' These functions are automatically registered as S3 methods and are called
 #' when using `reticulate::py_to_r()` and `reticulate::r_to_py()` on compatible
 #' objects.

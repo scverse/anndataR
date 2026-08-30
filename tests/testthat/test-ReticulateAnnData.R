@@ -46,35 +46,23 @@ test_that("ReticulateAnnData wrapping Python object works", {
 test_that("both Python AnnData class names are supported", {
   skip_if_no_anndata_py()
 
-  # Python anndata >= 0.13 reports the class as "anndata.AnnData", earlier
-  # versions as "anndata._core.anndata.AnnData" (issue #499)
+  local_mocked_bindings(
+    py_package_version = function(package) package_version("0.12.0")
+  )
+
+  # anndata >= 0.13 uses "anndata.AnnData", earlier versions
+  # "anndata._core.anndata.AnnData" (issue #499)
   py_classes <- c("anndata.AnnData", "anndata._core.anndata.AnnData")
 
   for (py_class in py_classes) {
     expect_false(
       is.null(utils::getS3method("py_to_r", py_class, optional = TRUE))
     )
+
+    mock <- structure(list(), class = c(py_class, "python.builtin.object"))
+    expect_no_warning(adata <- ReticulateAnnData$new(py_anndata = mock))
+    expect_s3_class(adata, "ReticulateAnnData")
   }
-
-  mock_old <- structure(
-    list(),
-    class = c("anndata._core.anndata.AnnData", "python.builtin.object")
-  )
-  expect_no_warning(adata_old <- ReticulateAnnData$new(py_anndata = mock_old))
-  expect_s3_class(adata_old, "ReticulateAnnData")
-
-  # anndata >= 0.13 objects are accepted but warn that they are not fully
-  # supported yet
-  mock_new <- structure(
-    list(),
-    class = c("anndata.AnnData", "python.builtin.object")
-  )
-  rlang::reset_warning_verbosity("anndataR_py_anndata_0.13")
-  expect_warning(
-    adata_new <- ReticulateAnnData$new(py_anndata = mock_new),
-    "not fully supported"
-  )
-  expect_s3_class(adata_new, "ReticulateAnnData")
 
   expect_error(
     ReticulateAnnData$new(
@@ -82,6 +70,37 @@ test_that("both Python AnnData class names are supported", {
     ),
     "must be a Python AnnData object"
   )
+})
+
+test_that("Python anndata >= 0.13 warns that it is not fully supported", {
+  skip_if_no_anndata_py()
+
+  mock <- structure(
+    list(),
+    class = c("anndata.AnnData", "python.builtin.object")
+  )
+
+  local_mocked_bindings(
+    py_package_version = function(package) package_version("0.13.0")
+  )
+  rlang::reset_warning_verbosity("anndataR_py_anndata_0.13")
+  expect_warning(
+    adata <- ReticulateAnnData$new(py_anndata = mock),
+    "not fully supported"
+  )
+  expect_s3_class(adata, "ReticulateAnnData")
+})
+
+test_that("py_package_version() parses Python version strings", {
+  skip_if_no_anndata_py()
+
+  expect_s3_class(py_package_version("anndata"), "package_version")
+
+  local_mocked_bindings(
+    import = function(...) list(version = function(package) "0.13.0rc1"),
+    .package = "reticulate"
+  )
+  expect_equal(py_package_version("anndata"), package_version("0.13.0"))
 })
 
 test_that("ReticulateAnnData slot access works", {
