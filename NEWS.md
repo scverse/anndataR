@@ -1,5 +1,6 @@
 # anndataR devel
 
+- Pin Python `mudata` to `< 0.4` in the `usage_python` vignette, as mudata 0.4 can no longer read the legacy example `.h5mu` file (PR #512, issue #511).
 - Support the `anndata.AnnData` class name used by Python anndata >= 0.13 in `py_to_r()` and `ReticulateAnnData`, and warn that anndata >= 0.13 is not fully supported yet (PR #510, issue #499).
 - Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
 - Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
