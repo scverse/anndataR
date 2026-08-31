@@ -654,6 +654,11 @@ write_h5ad_numeric_scalar <- function(
 #'
 #' @inheritParams write_h5ad_element
 #' @inheritParams write_h5ad_encoding version
+#' @param index The index to use for `data.frame` elements of the mapping. Used
+#' for aligned mappings (`obsm`/`varm`), where the index of a `data.frame` must
+#' be the `obs_names`/`var_names` of the parent object. Ignored by elements
+#' that are not `data.frame`s. If `NULL` then each `data.frame` provides its
+#' own index, see `write_h5ad_data_frame()`.
 #'
 #' @noRd
 write_h5ad_mapping <- function(
@@ -662,6 +667,7 @@ write_h5ad_mapping <- function(
   name,
   compression,
   chunk_size = "auto",
+  index = NULL,
   version = "0.1.0"
 ) {
   hdf5_file$open_and_defer_close()
@@ -670,13 +676,27 @@ write_h5ad_mapping <- function(
 
   # Write mapping elements
   for (key in names(value)) {
-    write_h5ad_element(
-      value[[key]],
-      hdf5_file,
-      paste0(name, "/", key),
-      compression,
-      chunk_size = chunk_size
-    )
+    element <- value[[key]]
+    element_name <- paste0(name, "/", key)
+
+    if (!is.null(index) && is.data.frame(element)) {
+      write_h5ad_element(
+        element,
+        hdf5_file,
+        element_name,
+        compression,
+        chunk_size = chunk_size,
+        index = index
+      )
+    } else {
+      write_h5ad_element(
+        element,
+        hdf5_file,
+        element_name,
+        compression,
+        chunk_size = chunk_size
+      )
+    }
   }
 
   write_h5ad_encoding(hdf5_file, name, "dict", version)
