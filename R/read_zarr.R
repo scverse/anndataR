@@ -19,6 +19,9 @@
 #'   * `r+` opens an existing file for read/write.
 #'   * `w` creates a file, truncating any existing ones.
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
+#' @param backed Whether to read the Zarr store in backed mode, returning an
+#'  object containing [DelayedArray::DelayedMatrix] matrices. Which slots are
+#'  backed depends on the value of `as`.
 #' @param ... Extra arguments provided to the `as_*` conversion function for the
 #'   object specified by `as`
 #'
@@ -47,12 +50,13 @@ read_zarr <- function(
   path,
   as = c("InMemoryAnnData", "ZarrAnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
+  backed = FALSE,
   ...
 ) {
   as <- match.arg(as)
   mode <- match.arg(mode)
 
-  zarr_adata <- ZarrAnnData$new(path, mode = mode)
+  zarr_adata <- ZarrAnnData$new(path, mode = mode, backed = backed)
 
   if (as == "ZarrAnnData") {
     return(zarr_adata)
