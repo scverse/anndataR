@@ -109,7 +109,7 @@ Install required Python packages if needed:
 
 ``` r
 
-reticulate::py_install("mudata")
+reticulate::py_install("mudata<0.4")
 ```
 
 ``` r
@@ -173,7 +173,7 @@ print(rna_sce)
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -192,17 +192,17 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] reticulate_1.46.0 anndataR_1.3.1    BiocStyle_2.41.0 
+#> [1] reticulate_1.47.0 anndataR_1.3.1    BiocStyle_2.41.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
 #>   [3] magrittr_2.0.5              spatstat.utils_3.2-4       
-#>   [5] farver_2.1.2                rmarkdown_2.31             
+#>   [5] farver_2.1.2                rmarkdown_2.32             
 #>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
 #>  [11] memoise_2.0.1               spatstat.explore_3.8-2     
 #>  [13] htmltools_0.5.9             S4Arrays_1.13.0            
-#>  [15] curl_7.1.0                  SparseArray_1.13.2         
+#>  [15] curl_8.0.0                  SparseArray_1.13.2         
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
 #>  [19] parallelly_1.48.0           KernSmooth_2.23-26         
 #>  [21] bslib_0.12.0                htmlwidgets_1.6.4          
@@ -216,17 +216,17 @@ sessionInfo()
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
 #>  [39] future_1.75.0               shiny_1.14.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
-#>  [43] S4Vectors_0.51.6            Seurat_5.5.1               
+#>  [43] S4Vectors_0.51.9            Seurat_5.5.1               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
 #>  [47] irlba_2.3.7                 RSQLite_3.53.3             
-#>  [49] textshaping_1.0.5           GenomicRanges_1.65.1       
+#>  [49] textshaping_1.0.5           GenomicRanges_1.65.4       
 #>  [51] filelock_1.0.3              progressr_1.0.0            
-#>  [53] spatstat.sparse_3.2-0       httr_1.4.8                 
+#>  [53] spatstat.sparse_3.2-0       httr_1.4.9                 
 #>  [55] polyclip_1.10-7             abind_1.4-8                
 #>  [57] compiler_4.6.1              withr_3.0.3                
-#>  [59] bit64_4.8.2                 S7_0.2.2                   
+#>  [59] bit64_4.8.6                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
-#>  [63] MASS_7.3-65                 DelayedArray_0.39.5        
+#>  [63] MASS_7.3-65                 DelayedArray_0.39.6        
 #>  [65] tools_4.6.1                 lmtest_0.9-40              
 #>  [67] otel_0.2.0                  httpuv_1.6.17              
 #>  [69] future.apply_1.20.2         goftest_1.2-3              
@@ -235,11 +235,11 @@ sessionInfo()
 #>  [75] Rtsne_0.17                  cluster_2.1.8.2            
 #>  [77] reshape2_1.4.5              generics_0.1.4             
 #>  [79] gtable_0.3.6                spatstat.data_3.1-9        
-#>  [81] tidyr_1.3.2                 data.table_1.18.4          
+#>  [81] tidyr_1.3.2                 data.table_1.18.6.1        
 #>  [83] sp_2.2-3                    XVector_0.53.0             
 #>  [85] BiocGenerics_0.59.12        spatstat.geom_3.8-2        
 #>  [87] RcppAnnoy_0.0.23            ggrepel_0.9.8              
-#>  [89] RANN_2.6.2                  pillar_1.11.1              
+#>  [89] RANN_2.6.3                  pillar_1.11.1              
 #>  [91] stringr_1.6.0               spam_2.11-4                
 #>  [93] RcppHNSW_0.7.0              later_1.4.8                
 #>  [95] splines_4.6.1               dplyr_1.2.1                
@@ -247,16 +247,16 @@ sessionInfo()
 #>  [99] bit_4.6.0                   deldir_2.0-4               
 #> [101] survival_3.8-6              tidyselect_1.2.1           
 #> [103] SingleCellExperiment_1.35.2 miniUI_0.1.2               
-#> [105] pbapply_1.7-4               knitr_1.51                 
-#> [107] gridExtra_2.3.1             bookdown_0.47              
-#> [109] IRanges_2.47.2              Seqinfo_1.3.0              
+#> [105] pbapply_1.7-5               knitr_1.52                 
+#> [107] gridExtra_2.3.1             bookdown_0.48              
+#> [109] IRanges_2.47.5              Seqinfo_1.3.2              
 #> [111] SummarizedExperiment_1.43.0 scattermore_1.2            
 #> [113] stats4_4.6.1                xfun_0.60                  
 #> [115] Biobase_2.73.2              matrixStats_1.5.0          
 #> [117] stringi_1.8.9               yaml_2.3.12                
 #> [119] evaluate_1.0.5              codetools_0.2-20           
 #> [121] tibble_3.3.1                BiocManager_1.30.27        
-#> [123] cli_3.6.6                   uwot_0.2.4                 
+#> [123] cli_3.6.6                   uwot_0.2.5                 
 #> [125] xtable_1.8-8                systemfonts_1.3.2          
 #> [127] jquerylib_0.1.4             Rcpp_1.1.2                 
 #> [129] spatstat.random_3.5-1       globals_0.19.1             
@@ -280,7 +280,7 @@ reticulate::py_config()
 #> pythonhome:     /opt/hostedtoolcache/Python/3.14.7/x64:/opt/hostedtoolcache/Python/3.14.7/x64
 #> version:        3.14.7 (main, Aug  6 2026, 02:19:46) [GCC 13.3.0]
 #> numpy:          /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/numpy
-#> numpy_version:  2.5.2
+#> numpy_version:  2.5.3
 #> scanpy:         /opt/hostedtoolcache/Python/3.14.7/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
@@ -290,46 +290,50 @@ reticulate::py_list_packages()
 #> 1            anndata      0.12.19             anndata==0.12.19
 #> 2   array-api-compat       1.15.0     array-api-compat==1.15.0
 #> 3            certifi    2026.7.22           certifi==2026.7.22
-#> 4          contourpy        1.3.3             contourpy==1.3.3
-#> 5             cycler       0.12.1               cycler==0.12.1
-#> 6             donfig  0.8.1.post1          donfig==0.8.1.post1
-#> 7   fast-array-utils          1.5        fast-array-utils==1.5
-#> 8          fonttools       4.63.0            fonttools==4.63.0
-#> 9      google-crc32c        1.8.0         google-crc32c==1.8.0
-#> 10              h5py       3.16.0                 h5py==3.16.0
-#> 11            joblib        1.5.3                joblib==1.5.3
-#> 12        kiwisolver        1.5.0            kiwisolver==1.5.0
-#> 13   legacy-api-wrap          1.5         legacy-api-wrap==1.5
-#> 14          llvmlite       0.49.0             llvmlite==0.49.0
-#> 15        matplotlib       3.11.1           matplotlib==3.11.1
-#> 16            mudata       0.3.10               mudata==0.3.10
-#> 17          narwhals       2.24.0             narwhals==2.24.0
-#> 18           natsort        8.4.0               natsort==8.4.0
-#> 19          networkx        3.6.1              networkx==3.6.1
-#> 20             numba       0.67.0                numba==0.67.0
-#> 21         numcodecs       0.16.5            numcodecs==0.16.5
-#> 22             numpy        2.5.2                 numpy==2.5.2
-#> 23         packaging         26.3              packaging==26.3
-#> 24            pandas        2.3.3                pandas==2.3.3
-#> 25             patsy        1.0.2                 patsy==1.0.2
-#> 26            pillow       12.3.0               pillow==12.3.0
-#> 27       pynndescent        0.6.0           pynndescent==0.6.0
-#> 28         pyparsing        3.3.2             pyparsing==3.3.2
-#> 29   python-dateutil  2.9.0.post0 python-dateutil==2.9.0.post0
-#> 30              pytz 2026.3.post1           pytz==2026.3.post1
-#> 31            PyYAML        6.0.3                PyYAML==6.0.3
-#> 32            scanpy       1.12.3               scanpy==1.12.3
-#> 33      scikit-learn        1.9.0          scikit-learn==1.9.0
-#> 34             scipy       1.18.0                scipy==1.18.0
-#> 35      scverse-misc        0.1.1          scverse-misc==0.1.1
-#> 36           seaborn       0.13.2              seaborn==0.13.2
-#> 37     session-info2        0.4.2         session-info2==0.4.2
-#> 38               six       1.17.0                  six==1.17.0
-#> 39       statsmodels       0.14.6          statsmodels==0.14.6
-#> 40     threadpoolctl        3.6.0         threadpoolctl==3.6.0
-#> 41              tqdm       4.70.0                 tqdm==4.70.0
-#> 42 typing_extensions       4.16.0    typing_extensions==4.16.0
-#> 43            tzdata       2026.3               tzdata==2026.3
-#> 44        umap-learn       0.5.12           umap-learn==0.5.12
-#> 45              zarr        3.3.0                  zarr==3.3.0
+#> 4        cloudpickle        3.1.2           cloudpickle==3.1.2
+#> 5          contourpy        1.3.3             contourpy==1.3.3
+#> 6             cycler       0.12.1               cycler==0.12.1
+#> 7             donfig  0.8.1.post1          donfig==0.8.1.post1
+#> 8   fast-array-utils          1.5        fast-array-utils==1.5
+#> 9          fonttools       4.64.0            fonttools==4.64.0
+#> 10         formulaic        1.2.2             formulaic==1.2.2
+#> 11     google-crc32c        1.8.0         google-crc32c==1.8.0
+#> 12              h5py       3.16.0                 h5py==3.16.0
+#> 13    interface_meta        2.0.1        interface_meta==2.0.1
+#> 14            joblib        1.6.0                joblib==1.6.0
+#> 15        kiwisolver        1.5.1            kiwisolver==1.5.1
+#> 16   legacy-api-wrap          1.5         legacy-api-wrap==1.5
+#> 17          llvmlite       0.49.0             llvmlite==0.49.0
+#> 18        matplotlib       3.11.1           matplotlib==3.11.1
+#> 19            mudata       0.3.10               mudata==0.3.10
+#> 20          narwhals       2.26.0             narwhals==2.26.0
+#> 21           natsort        8.4.0               natsort==8.4.0
+#> 22          networkx        3.6.1              networkx==3.6.1
+#> 23             numba       0.67.0                numba==0.67.0
+#> 24         numcodecs       0.16.5            numcodecs==0.16.5
+#> 25             numpy        2.5.3                 numpy==2.5.3
+#> 26         packaging         26.3              packaging==26.3
+#> 27            pandas        2.3.3                pandas==2.3.3
+#> 28             patsy        1.0.3                 patsy==1.0.3
+#> 29            pillow       12.3.0               pillow==12.3.0
+#> 30       pynndescent        0.6.0           pynndescent==0.6.0
+#> 31         pyparsing        3.3.2             pyparsing==3.3.2
+#> 32   python-dateutil  2.9.0.post0 python-dateutil==2.9.0.post0
+#> 33              pytz 2026.3.post1           pytz==2026.3.post1
+#> 34            PyYAML        6.0.3                PyYAML==6.0.3
+#> 35            scanpy       1.12.4               scanpy==1.12.4
+#> 36      scikit-learn        1.9.0          scikit-learn==1.9.0
+#> 37             scipy       1.18.1                scipy==1.18.1
+#> 38      scverse-misc        0.1.1          scverse-misc==0.1.1
+#> 39           seaborn       0.13.2              seaborn==0.13.2
+#> 40     session-info2        0.4.2         session-info2==0.4.2
+#> 41               six       1.17.0                  six==1.17.0
+#> 42       statsmodels       0.15.0          statsmodels==0.15.0
+#> 43     threadpoolctl        3.6.0         threadpoolctl==3.6.0
+#> 44              tqdm       4.70.0                 tqdm==4.70.0
+#> 45 typing_extensions       4.16.0    typing_extensions==4.16.0
+#> 46            tzdata       2026.3               tzdata==2026.3
+#> 47        umap-learn       0.5.12           umap-learn==0.5.12
+#> 48             wrapt     2.4.1rc1              wrapt==2.4.1rc1
+#> 49              zarr        3.3.0                  zarr==3.3.0
 ```

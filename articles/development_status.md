@@ -50,17 +50,17 @@ These tables show the status of the implementation of different
 
 | Slot | Getter | Getter test | Setter | Setter test |
 |:---|:--:|:--:|:--:|:--:|
-| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L57) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L84) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L72) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L254) |
-| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L90) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L74) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L93) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L112) |
-| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L120) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L94) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L127) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L235) |
-| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L164) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L169) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L167) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L200) |
-| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L204) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L181) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L207) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L214) |
-| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L246) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L89) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L249) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L132) |
-| var | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L105) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L79) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L108) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L122) |
-| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L142) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L96) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L149) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L241) |
-| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L184) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L175) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L187) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L207) |
-| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L225) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L187) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L228) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L221) |
-| X | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L36) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L70) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L39) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L106) |
+| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L57) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L144) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L72) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L314) |
+| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L90) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L134) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L93) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L172) |
+| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L120) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L154) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L127) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L295) |
+| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L164) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L229) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L167) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L260) |
+| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L204) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L241) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L207) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L274) |
+| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L246) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L149) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L249) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L192) |
+| var | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L105) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L139) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L108) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L182) |
+| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L142) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L156) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L149) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L301) |
+| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L184) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L235) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L187) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L267) |
+| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L225) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L247) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L228) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L281) |
+| X | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L36) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L130) | [✅](https://github.com/scverse/anndataR/blob/main/R/ReticulateAnnData.R#L39) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ReticulateAnnData.R#L166) |
 
 ### `ZarrAnnData`
 
@@ -153,7 +153,7 @@ sessionInfo()
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -173,19 +173,19 @@ sessionInfo()
     ## 
     ## other attached packages:
     ## [1] tidyr_1.3.2      dplyr_1.2.1      purrr_1.2.2      stringr_1.6.0   
-    ## [5] rprojroot_2.1.1  knitr_1.51       tibble_3.3.1     BiocStyle_2.41.0
+    ## [5] rprojroot_2.1.1  knitr_1.52       tibble_3.3.1     BiocStyle_2.41.0
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] jsonlite_2.0.0      compiler_4.6.1      BiocManager_1.30.27
     ##  [4] tidyselect_1.2.1    jquerylib_0.1.4     systemfonts_1.3.2  
     ##  [7] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
     ## [10] R6_2.6.1            generics_0.1.4      htmlwidgets_1.6.4  
-    ## [13] bookdown_0.47       desc_1.4.3          bslib_0.12.0       
+    ## [13] bookdown_0.48       desc_1.4.3          bslib_0.12.0       
     ## [16] pillar_1.11.1       rlang_1.3.0         cachem_1.1.0       
     ## [19] stringi_1.8.9       xfun_0.60           fs_2.1.0           
     ## [22] sass_0.4.10         otel_0.2.0          cli_3.6.6          
     ## [25] pkgdown_2.2.1       withr_3.0.3         magrittr_2.0.5     
     ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.3        
     ## [31] evaluate_1.0.5      glue_1.8.1          ragg_1.5.2         
-    ## [34] rmarkdown_2.31      tools_4.6.1         pkgconfig_2.0.3    
+    ## [34] rmarkdown_2.32      tools_4.6.1         pkgconfig_2.0.3    
     ## [37] htmltools_0.5.9

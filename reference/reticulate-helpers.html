@@ -65,6 +65,9 @@ the R-Python boundary.</p>
 <span><span class="co"># S3 method for class 'anndata._core.anndata.AnnData'</span></span>
 <span><span class="fu">py_to_r</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for class 'anndata.AnnData'</span></span>
+<span><span class="fu">py_to_r</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for class 'AbstractAnnData'</span></span>
 <span><span class="fu">r_to_py</span><span class="op">(</span><span class="va">x</span>, convert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -88,8 +91,8 @@ the R-Python boundary.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The main conversion functions include:</p><ul><li><p><code>py_to_r.anndata._core.anndata.AnnData</code>: Converts Python AnnData
-objects to R <a href="ReticulateAnnData.html">ReticulateAnnData</a> objects</p></li>
+    <p>The main conversion functions include:</p><ul><li><p><code>py_to_r.anndata.AnnData</code> and <code>py_to_r.anndata._core.anndata.AnnData</code>:
+Convert Python AnnData objects to R <a href="ReticulateAnnData.html">ReticulateAnnData</a> objects</p></li>
 <li><p><code>r_to_py.AbstractAnnData</code>: Converts R <a href="AbstractAnnData.html">AbstractAnnData</a> objects
 to Python AnnData objects</p></li>
 <li><p><code>py_to_r.collections.abc.Mapping</code>: Converts Python mapping
@@ -123,7 +126,7 @@ objects.</p>
 <span class="r-in"><span>  <span class="va">ad_py</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/reticulate/reference/import.html" class="external-link">import</a></span><span class="op">(</span><span class="st">"anndata"</span>, convert <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">py_adata</span> <span class="op">&lt;-</span> <span class="va">ad_py</span><span class="op">$</span><span class="fu">AnnData</span><span class="op">(</span>X <span class="op">=</span> <span class="fu"><a href="https://rstudio.github.io/reticulate/reference/r-py-conversion.html" class="external-link">r_to_py</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># Automatic conversion to R (uses py_to_r.anndata._core.anndata.AnnData)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Automatic conversion to R (uses the py_to_r() method for AnnData)</span></span></span>
 <span class="r-in"><span>  <span class="va">r_adata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rstudio.github.io/reticulate/reference/r-py-conversion.html" class="external-link">py_to_r</a></span><span class="op">(</span><span class="va">py_adata</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Automatic conversion back to Python (uses r_to_py.AbstractAnnData)</span></span></span>

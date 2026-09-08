@@ -190,6 +190,7 @@ A BibTeX entry for LaTeX users is
 
 - [`py_to_r(`*`<collections.abc.Mapping>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   [`py_to_r(`*`<anndata._core.anndata.AnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
+  [`py_to_r(`*`<anndata.AnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   [`r_to_py(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   : Reticulate Helper Functions for AnnData Conversion
 

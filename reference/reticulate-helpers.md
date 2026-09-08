@@ -14,6 +14,9 @@ py_to_r(x)
 # S3 method for class 'anndata._core.anndata.AnnData'
 py_to_r(x)
 
+# S3 method for class 'anndata.AnnData'
+py_to_r(x)
+
 # S3 method for class 'AbstractAnnData'
 r_to_py(x, convert = TRUE)
 ```
@@ -40,8 +43,8 @@ A Python AnnData object
 
 The main conversion functions include:
 
-- `py_to_r.anndata._core.anndata.AnnData`: Converts Python AnnData
-  objects to R
+- `py_to_r.anndata.AnnData` and `py_to_r.anndata._core.anndata.AnnData`:
+  Convert Python AnnData objects to R
   [ReticulateAnnData](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
   objects
 
@@ -84,7 +87,7 @@ if (requireNamespace("reticulate", quietly = TRUE) &&
   ad_py <- import("anndata", convert = FALSE)
   py_adata <- ad_py$AnnData(X = r_to_py(matrix(1:12, 3, 4)))
 
-  # Automatic conversion to R (uses py_to_r.anndata._core.anndata.AnnData)
+  # Automatic conversion to R (uses the py_to_r() method for AnnData)
   r_adata <- py_to_r(py_adata)
 
   # Automatic conversion back to Python (uses r_to_py.AbstractAnnData)
