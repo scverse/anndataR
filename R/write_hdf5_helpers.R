@@ -308,22 +308,28 @@ hdf5_write_attribute <- function(
 #' @name name Name of the element within the HDF5 file
 #'
 #' @details
-#' rhdf5 adds a `rhdf5-NA.OK` attribute to elements which doesn't affect the
-#' validity of the HDF5 but shows up when comparing to a file created by Python.
-#' This function removes those attributes from an element so files are
-#' comparable.
+#' rhdf5 adds a `rhdf5-NA.OK` attribute (and, since rhdf5 2.57.12, an `as.na`
+#' attribute) to elements containing `NA`. They don't affect the validity of
+#' the HDF5 but show up when comparing to a file created by Python. This
+#' function removes those attributes from an element so files are comparable.
 #'
 #' @noRd
 hdf5_clear_rhdf5_attributes <- function(hdf5_file, name) {
   hdf5_file$open_and_defer_close()
 
+  rhdf5_attrs <- c("rhdf5-NA.OK", "as.na")
+
   h5obj <- rhdf5::H5Oopen(hdf5_file$handle, name)
   h5type <- rhdf5::H5Iget_type(h5obj)
-  rhdf5_na_ok_exists <- rhdf5::H5Aexists(h5obj, "rhdf5-NA.OK")
+  attrs_exist <- vapply(
+    rhdf5_attrs,
+    function(attr) rhdf5::H5Aexists(h5obj, attr),
+    logical(1)
+  )
   rhdf5::H5Oclose(h5obj)
 
-  if (rhdf5_na_ok_exists) {
-    rhdf5::h5deleteAttribute(hdf5_file$handle, name, "rhdf5-NA.OK")
+  for (attr in rhdf5_attrs[attrs_exist]) {
+    rhdf5::h5deleteAttribute(hdf5_file$handle, name, attr)
   }
 
   if (h5type == "H5I_GROUP") {
