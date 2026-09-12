@@ -1,55 +1,6 @@
 # Zarr metadata files used to identify valid Zarr nodes (arrays or groups)
 ZARR_METADATA_FILES <- c(".zarray", ".zattrs", ".zgroup", "zarr.json")
 
-#' create_zarr_group
-#'
-#' Create a Zarr group
-#'
-#' @param store The location of the Zarr store
-#' @param name Name of the group
-#' @param format Zarr format
-#'
-#' @return `NULL`
-#'
-#' @noRd
-create_zarr_group <- function(
-  store,
-  name,
-  format
-) {
-  format <- check_zarr_format(format)
-
-  # Split "a/b/c" into c("a", "b", "c")
-  split_name <- strsplit(name, split = "/", fixed = TRUE)[[1]]
-  if (length(split_name) > 1) {
-    # Build cumulative paths: c("a", "a/b", "a/b/c")
-    split_name <- vapply(
-      seq_along(split_name),
-      function(x) paste(split_name[seq_len(x)], collapse = "/"),
-      FUN.VALUE = character(1)
-    )
-    # Keep only the target and its immediate parent:
-    # split_name[1] = "a/b/c" (target), split_name[2] = "a/b" (parent)
-    split_name <- rev(tail(split_name, 2))
-    # Recursively ensure the parent group exists before creating the target
-    if (!dir.exists(file.path(store, split_name[2]))) {
-      create_zarr_group(store = store, name = split_name[2], format = format)
-    }
-  }
-  dir.create(file.path(store, split_name[1]), showWarnings = FALSE)
-  if (format == 2L) {
-    write(
-      "{\"zarr_format\":2}",
-      file = file.path(store, split_name[1], ".zgroup")
-    )
-  } else {
-    write(
-      "{\"zarr_format\": 3,\n\"node_type\": \"group\"}",
-      file = file.path(store, split_name[1], "zarr.json")
-    )
-  }
-}
-
 #' check_zarr_format
 #'
 #' Check that a Zarr format is one of the supported versions
@@ -109,24 +60,6 @@ get_zarr_format <- function(store, call = rlang::caller_env()) {
   }
 
   if (is_v2) 2L else 3L
-}
-
-#' create_zarr
-#'
-#' Create Zarr store
-#'
-#' @param store The location of the Zarr store
-#' @param format Zarr format
-#'
-#' @return `NULL`
-#'
-#' @noRd
-create_zarr <- function(store, format) {
-  create_zarr_group(
-    store = dirname(store),
-    name = basename(store),
-    format = format
-  )
 }
 
 #' is_zarr_empty
