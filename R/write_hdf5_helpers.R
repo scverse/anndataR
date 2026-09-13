@@ -1,3 +1,28 @@
+#' Get the path to an HDF5 element relative to a root group
+#'
+#' Used to support reading/writing an AnnData from a group inside an HDF5
+#' file instead of the file root.
+#'
+#' @param root The path to the group within the HDF5 file that the AnnData
+#'   is rooted at. `"/"` or `""` mean the file root.
+#' @param name Name of the element, relative to `root`. May or may not have
+#'   a leading `/`.
+#'
+#' @return `name` prefixed with `root`
+#' @noRd
+hdf5_root_path <- function(root, name) {
+  root <- gsub("^/+|/+$", "", root)
+  name <- sub("^/+", "", name)
+
+  if (root == "") {
+    if (name == "") "/" else name
+  } else if (name == "") {
+    root
+  } else {
+    paste0(root, "/", name)
+  }
+}
+
 #' HDF5 path exists
 #'
 #' Check that a path in HDF5 exists
