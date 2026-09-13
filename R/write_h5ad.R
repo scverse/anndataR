@@ -20,6 +20,10 @@
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms creating a file and failing if it already exists
+#' @param root The path to the group within the HDF5 file that the `AnnData`
+#'   is written to. Defaults to `"/"`, the file root. Can be used to write an
+#'   `AnnData` to a group inside a file that also contains other content,
+#'   e.g. a modality inside a `.h5mu` file.
 #' @param ... Additional arguments passed to [as_AnnData()]
 #'
 #' @details
@@ -102,6 +106,7 @@ write_h5ad <- function(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  root = "/",
   ...
 ) {
   mode <- match.arg(mode)
@@ -110,7 +115,8 @@ write_h5ad <- function(
       path,
       compression = compression,
       chunk_size = chunk_size,
-      mode = mode
+      mode = mode,
+      root = root
     )
   } else {
     as_AnnData(
@@ -120,6 +126,7 @@ write_h5ad <- function(
       compression = compression,
       chunk_size = chunk_size,
       mode = mode,
+      root = root,
       ...
     )
   }
