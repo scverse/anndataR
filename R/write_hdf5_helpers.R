@@ -23,6 +23,25 @@ hdf5_root_path <- function(root, name) {
   }
 }
 
+#' Ensure a group path exists in an HDF5 file
+#'
+#' Create a group and any missing intermediate segments.
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The group path to ensure exists, e.g. `"mod/rna"`
+#'
+#' @noRd
+hdf5_ensure_group_path <- function(hdf5_file, path) {
+  segments <- strsplit(path, "/", fixed = TRUE)[[1]]
+
+  for (i in seq_along(segments)) {
+    segment_path <- paste(segments[seq_len(i)], collapse = "/")
+    if (!hdf5_path_exists(hdf5_file, segment_path)) {
+      hdf5_create_group(hdf5_file, segment_path)
+    }
+  }
+}
+
 #' HDF5 path exists
 #'
 #' Check that a path in HDF5 exists
