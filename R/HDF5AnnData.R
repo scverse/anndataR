@@ -444,8 +444,13 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
-      # Fail if the file exists not allowed to overwrite
-      if (file.exists(file) && mode %in% c("w-", "x")) {
+      # Fail if the file exists and is not allowed to be overwritten. At a
+      # non-root group this is checked at the group level instead (below).
+      if (
+        private$.root == "/" &&
+          file.exists(file) &&
+          mode %in% c("w-", "x")
+      ) {
         cli_abort(
           paste(
             "File {.file {file}} already exists but mode is set to {.val {mode}}.",
@@ -456,8 +461,13 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
-      # Create/truncate the file
-      if (mode %in% c("w", "w-", "x")) {
+      # Create/truncate the file. At the file root, "w"/"w-"/"x" always
+      # (re)create the file, at a non-root group, only create it if it's
+      # missing.
+      if (
+        mode %in% c("w", "w-", "x") &&
+          (private$.root == "/" || !file.exists(file))
+      ) {
         h5file <- rhdf5::H5Fcreate(
           file,
           flags = "H5F_ACC_TRUNC",
@@ -473,12 +483,11 @@ HDF5AnnData <- R6::R6Class(
       # Set the HDF5File
       private$.hdf5_file <- HDF5File$new(file)
 
-      # Read-only mode never creates the root group, so it must already exist
-      if (
-        private$.root != "/" &&
-          is_readonly &&
-          !hdf5_path_exists(private$.hdf5_file, private$.root)
-      ) {
+      root_exists <- private$.root == "/" ||
+        hdf5_path_exists(private$.hdf5_file, private$.root)
+
+      if (private$.root != "/" && is_readonly && !root_exists) {
+        # Read-only mode never creates the root group, so it must already exist
         cli_abort(
           paste(
             "Group {.val {private$.root}} does not exist in file {.file {file}}."
@@ -487,13 +496,50 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
-      is_empty <- nrow(rhdf5::h5ls(private$.hdf5_file$path)) == 0L
+      if (private$.root != "/" && !is_readonly) {
+        # Fail if the group exists and is not allowed to be overwritten
+        if (root_exists && mode %in% c("w-", "x")) {
+          cli_abort(
+            paste(
+              "Group {.val {private$.root}} already exists in file",
+              "{.file {file}} but mode is set to {.val {mode}}.",
+              "If you want to overwrite the group, use a different mode",
+              "(e.g. 'w')."
+            ),
+            call = rlang::caller_env()
+          )
+        }
+
+        # For a fresh write, delete an existing group so it can be recreated,
+        # without touching anything else in the file.
+        if (root_exists && mode == "w") {
+          private$.hdf5_file$open()
+          rhdf5::H5Ldelete(private$.hdf5_file$handle, private$.root)
+          private$.hdf5_file$close()
+          root_exists <- FALSE
+        }
+
+        if (!root_exists) {
+          hdf5_ensure_group_path(private$.hdf5_file, private$.root)
+        }
+      }
+
+      is_empty <- if (private$.root == "/") {
+        nrow(rhdf5::h5ls(private$.hdf5_file$path)) == 0L
+      } else {
+        entries <- rhdf5::h5ls(private$.hdf5_file$path)
+        sum(entries$group == paste0("/", private$.root)) == 0L
+      }
 
       if (!is_readonly) {
         if (!is_empty) {
           cli_warn(
             paste(
-              "An non-empty file is opened in read/write mode.",
+              if (private$.root == "/") {
+                "An non-empty file is opened in read/write mode."
+              } else {
+                "A non-empty group is opened in read/write mode."
+              },
               "Use with caution, as this can lead to data corruption."
             )
           )
@@ -506,7 +552,8 @@ HDF5AnnData <- R6::R6Class(
             obs,
             var,
             compression,
-            chunk_size
+            chunk_size,
+            root = private$.root
           )
         }
       }
@@ -682,6 +729,10 @@ HDF5AnnData <- R6::R6Class(
 #' @param backed Whether the object is disk backed and returns
 #'   [DelayedArray::DelayedArray] object for matrix data. Can only be `TRUE`
 #'   when `mode == "r"`.
+#' @param root The path to the group within the HDF5 file that the `AnnData`
+#'   is stored at. Defaults to `"/"`, the file root. Can be used to write an
+#'   `AnnData` to a group inside a file that also contains other content,
+#'   e.g. a modality inside a `.h5mu` file.
 #'
 #' @return An [`HDF5AnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -697,7 +748,8 @@ as_HDF5AnnData <- function(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  backed = FALSE
+  backed = FALSE,
+  root = "/"
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -721,6 +773,7 @@ as_HDF5AnnData <- function(
     mode = mode,
     compression = compression,
     chunk_size = chunk_size,
-    backed = backed
+    backed = backed,
+    root = root
   )
 }
