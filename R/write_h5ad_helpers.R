@@ -810,6 +810,9 @@ write_h5ad_data_frame_index <- function(
 #'
 #' @inheritParams write_h5ad_element
 #' @inheritParams write_h5ad_encoding version
+#' @param root The path to the group within the HDF5 file to write the empty
+#'   H5AD skeleton at. Defaults to `"/"`, the file root. The group itself
+#'   must already exist.
 #'
 #' @noRd
 write_empty_h5ad <- function(
@@ -818,44 +821,45 @@ write_empty_h5ad <- function(
   var,
   compression,
   chunk_size = "auto",
-  version = "0.1.0"
+  version = "0.1.0",
+  root = "/"
 ) {
   hdf5_file$open_and_defer_close()
 
-  write_h5ad_encoding(hdf5_file, "/", "anndata", "0.1.0")
+  write_h5ad_encoding(hdf5_file, root, "anndata", "0.1.0")
 
   write_h5ad_element(
     obs[, integer(0)],
     hdf5_file,
-    "/obs",
+    hdf5_root_path(root, "obs"),
     compression,
     chunk_size = chunk_size
   )
   write_h5ad_element(
     var[, integer(0)],
     hdf5_file,
-    "/var",
+    hdf5_root_path(root, "var"),
     compression,
     chunk_size = chunk_size
   )
 
-  hdf5_create_group(hdf5_file, "layers")
-  write_h5ad_encoding(hdf5_file, "/layers", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, hdf5_root_path(root, "layers"))
+  write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "layers"), "dict", "0.1.0")
 
-  hdf5_create_group(hdf5_file, "obsm")
-  write_h5ad_encoding(hdf5_file, "/obsm", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, hdf5_root_path(root, "obsm"))
+  write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "obsm"), "dict", "0.1.0")
 
-  hdf5_create_group(hdf5_file, "obsp")
-  write_h5ad_encoding(hdf5_file, "/obsp", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, hdf5_root_path(root, "obsp"))
+  write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "obsp"), "dict", "0.1.0")
 
-  hdf5_create_group(hdf5_file, "uns")
-  write_h5ad_encoding(hdf5_file, "/uns", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, hdf5_root_path(root, "uns"))
+  write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "uns"), "dict", "0.1.0")
 
-  hdf5_create_group(hdf5_file, "varm")
-  write_h5ad_encoding(hdf5_file, "/varm", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, hdf5_root_path(root, "varm"))
+  write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "varm"), "dict", "0.1.0")
 
-  hdf5_create_group(hdf5_file, "varp")
-  write_h5ad_encoding(hdf5_file, "/varp", "dict", "0.1.0")
+  hdf5_create_group(hdf5_file, hdf5_root_path(root, "varp"))
+  write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "varp"), "dict", "0.1.0")
 
   invisible(NULL)
 }
