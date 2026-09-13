@@ -719,13 +719,19 @@ HDF5AnnData <- R6::R6Class(
 #'   automatically using an algorithm that mimics h5py's auto-chunking
 #'   behaviour. Set to `NULL` to disable chunking (contiguous storage,
 #'   the rhdf5 default), or a number to use a specific target size in bytes.
-#' @param mode The mode to open the HDF5 file:
+#' @param mode The mode to open the HDF5 file. When `root` is not `"/"`,
+#'   these apply to the group at `root` rather than the whole file:
 #'
-#'   * `a` creates a new file or opens an existing one for read/write
-#'   * `r` opens an existing file for reading
-#'   * `r+` opens an existing file for read/write
-#'   * `w` creates a file, truncating any existing ones
-#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r` opens an existing file for reading, the group at `root` must
+#'     already exist.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
+#'     the file is created if missing but otherwise left untouched, and only the
+#'     group at `root` is deleted and recreated.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already
+#'     exists. When `root != "/"`, they instead fail if the group at
+#'     `root` already exists.
 #' @param backed Whether the object is disk backed and returns
 #'   [DelayedArray::DelayedArray] object for matrix data. Can only be `TRUE`
 #'   when `mode == "r"`.

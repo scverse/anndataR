@@ -12,13 +12,19 @@
 #'     [`SingleCellExperiment::SingleCellExperiment`] object
 #'   * `"Seurat"`: Read the H5AD file as a
 #'     [`SeuratObject::Seurat`] object
-#' @param mode The mode to open the HDF5 file.
+#' @param mode The mode to open the HDF5 file. When `root` is not `"/"`,
+#'   these apply to the group at `root` rather than the whole file:
 #'
 #'   * `a` creates a new file or opens an existing one for read/write.
-#'   * `r` opens an existing file for reading.
+#'   * `r` opens an existing file for reading, the group at `root` must
+#'     already exist.
 #'   * `r+` opens an existing file for read/write.
-#'   * `w` creates a file, truncating any existing ones.
-#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists.
+#'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
+#'     the file is created if missing but otherwise left untouched, and only the
+#'     group at `root` is deleted and recreated.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already
+#'     exists. When `root != "/"`, they instead fail if the group at
+#'     `root` already exists.
 #' @param backed Whether to read the H5AD file in backed mode, returning an
 #'  object containing [DelayedArray::DelayedMatrix] matrices. Which slots are
 #'  backed depends on the value of `as`.
