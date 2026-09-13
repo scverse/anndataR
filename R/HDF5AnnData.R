@@ -47,7 +47,7 @@ HDF5AnnData <- R6::R6Class(
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
         read_h5ad_element(
           private$.hdf5_file,
-          hdf5_root_path(private$.root,"X"),
+          hdf5_root_path(private$.root, "X"),
           backed = private$.backed
         ) |>
           private$.add_matrix_dimnames("X")
