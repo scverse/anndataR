@@ -10,6 +10,33 @@ test_that("opening H5AD works", {
   expect_true(inherits(adata, "HDF5AnnData"))
 })
 
+test_that("reading an HDF5AnnData at a non-root group works", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  nested_adata <- HDF5AnnData$new(nested_file, root = "mod/rna", mode = "r")
+  root_adata <- HDF5AnnData$new(file, mode = "r")
+
+  expect_equal(nested_adata$X, root_adata$X)
+  expect_equal(nested_adata$layers, root_adata$layers)
+  expect_equal(nested_adata$obsm, root_adata$obsm)
+  expect_equal(nested_adata$varm, root_adata$varm)
+  expect_equal(nested_adata$obsp, root_adata$obsp)
+  expect_equal(nested_adata$varp, root_adata$varp)
+  expect_equal(nested_adata$obs, root_adata$obs)
+  expect_equal(nested_adata$var, root_adata$var)
+  expect_equal(nested_adata$obs_names, root_adata$obs_names)
+  expect_equal(nested_adata$var_names, root_adata$var_names)
+})
+
+test_that("reading a missing root group errors", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(nested_file, root = "mod/does_not_exist", mode = "r"),
+    "does not exist"
+  )
+})
+
 adata <- HDF5AnnData$new(file, mode = "r")
 
 # GETTERS ----------------------------------------------------------------
