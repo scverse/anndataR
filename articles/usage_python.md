@@ -173,7 +173,7 @@ print(rna_sce)
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -196,7 +196,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
-#>   [3] magrittr_2.0.5              spatstat.utils_3.2-4       
+#>   [3] magrittr_2.0.5              spatstat.utils_3.2-5       
 #>   [5] farver_2.1.2                rmarkdown_2.32             
 #>   [7] fs_2.1.0                    ragg_1.5.2                 
 #>   [9] vctrs_0.7.3                 ROCR_1.0-12                
@@ -291,11 +291,11 @@ reticulate::py_list_packages()
 #> 2   array-api-compat       1.15.0     array-api-compat==1.15.0
 #> 3            certifi    2026.7.22           certifi==2026.7.22
 #> 4        cloudpickle        3.1.2           cloudpickle==3.1.2
-#> 5          contourpy        1.3.3             contourpy==1.3.3
+#> 5          contourpy        1.4.0             contourpy==1.4.0
 #> 6             cycler       0.12.1               cycler==0.12.1
 #> 7             donfig  0.8.1.post1          donfig==0.8.1.post1
 #> 8   fast-array-utils          1.5        fast-array-utils==1.5
-#> 9          fonttools       4.64.0            fonttools==4.64.0
+#> 9          fonttools       4.65.0            fonttools==4.65.0
 #> 10         formulaic        1.2.2             formulaic==1.2.2
 #> 11     google-crc32c        1.8.0         google-crc32c==1.8.0
 #> 12              h5py       3.16.0                 h5py==3.16.0
@@ -304,7 +304,7 @@ reticulate::py_list_packages()
 #> 15        kiwisolver        1.5.1            kiwisolver==1.5.1
 #> 16   legacy-api-wrap          1.5         legacy-api-wrap==1.5
 #> 17          llvmlite       0.49.0             llvmlite==0.49.0
-#> 18        matplotlib       3.11.1           matplotlib==3.11.1
+#> 18        matplotlib       3.11.2           matplotlib==3.11.2
 #> 19            mudata       0.3.10               mudata==0.3.10
 #> 20          narwhals       2.26.0             narwhals==2.26.0
 #> 21           natsort        8.4.0               natsort==8.4.0
@@ -322,7 +322,7 @@ reticulate::py_list_packages()
 #> 33              pytz 2026.3.post1           pytz==2026.3.post1
 #> 34            PyYAML        6.0.3                PyYAML==6.0.3
 #> 35            scanpy       1.12.4               scanpy==1.12.4
-#> 36      scikit-learn        1.9.0          scikit-learn==1.9.0
+#> 36      scikit-learn        1.9.1          scikit-learn==1.9.1
 #> 37             scipy       1.18.1                scipy==1.18.1
 #> 38      scverse-misc        0.1.1          scverse-misc==0.1.1
 #> 39           seaborn       0.13.2              seaborn==0.13.2
@@ -330,10 +330,10 @@ reticulate::py_list_packages()
 #> 41               six       1.17.0                  six==1.17.0
 #> 42       statsmodels       0.15.0          statsmodels==0.15.0
 #> 43     threadpoolctl        3.6.0         threadpoolctl==3.6.0
-#> 44              tqdm       4.70.0                 tqdm==4.70.0
+#> 44              tqdm       4.70.1                 tqdm==4.70.1
 #> 45 typing_extensions       4.16.0    typing_extensions==4.16.0
-#> 46            tzdata       2026.3               tzdata==2026.3
+#> 46            tzdata       2026.4               tzdata==2026.4
 #> 47        umap-learn       0.5.12           umap-learn==0.5.12
-#> 48             wrapt     2.4.1rc1              wrapt==2.4.1rc1
+#> 48             wrapt        2.4.1                 wrapt==2.4.1
 #> 49              zarr        3.3.0                  zarr==3.3.0
 ```

@@ -237,7 +237,7 @@ or
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -261,7 +261,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
-#>   [4] spatstat.utils_3.2-4   farver_2.1.2           rmarkdown_2.32        
+#>   [4] spatstat.utils_3.2-5   farver_2.1.2           rmarkdown_2.32        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-2 htmltools_0.5.9       
 #>  [13] curl_8.0.0             Rhdf5lib_2.1.0         rhdf5_2.57.12         

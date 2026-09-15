@@ -144,6 +144,34 @@ tracker](https://github.com/scverse/anndataR/issues?q=sort%3Aupdated-desc+is%3Ai
 
 Investigate if this is a problem or not.
 
+### Issue: rhdf5 2.57.12 emits a spurious NA_character\_ warning when a numeric dataset containing NA or NaN is written into a pre-created dataset.
+
+- Affected backend: `HDF5AnnData`
+- Affected slot(s): `X`, `layers`, `obs`, `var`, `obsm`, `varm`, `obsp`,
+  `varp`, `uns`
+- Affected dtype(s): `numeric_with_nas`, `numeric_matrix_with_nas`,
+  `numeric_dense_with_nas`, `numeric_csparse_with_nas`,
+  `numeric_rsparse_with_nas`, `integer_matrix_with_nas`,
+  `integer_csparse_with_nas`, `integer_rsparse_with_nas`
+- Probable cause: write
+- To investigate: FALSE
+- To fix: FALSE
+
+#### Error message
+
+    Writing NA_character_ in fixed-length string datasets is fragile and deprecated.
+    In particular, it will write NA_character_ as the string 'NA' in the HDF5 file.
+    Use variable-length strings instead.
+
+#### Proposed solution
+
+The check in rhdf5’s h5writeDataset.array() lacks a storage.mode(obj) ==
+“character” guard on the existing-dataset branch
+(<https://github.com/Huber-group-EMBL/rhdf5/blob/1682d4b493d0ddc9e46cba78a141b780bb8390e8/R/h5write.R#L405-L417>).
+Reported in Huber-group-EMBL/rhdf5#241 and fixed in
+Huber-group-EMBL/rhdf5#242; remove this entry and the skips in
+test-h5ad-fileclosure.R once the fixed rhdf5 is in Bioconductor devel.
+
 ## Session info
 
 ``` r
@@ -153,7 +181,7 @@ sessionInfo()
 
     ## R version 4.6.1 (2026-06-24)
     ## Platform: x86_64-pc-linux-gnu
-    ## Running under: Ubuntu 24.04.4 LTS
+    ## Running under: Ubuntu 24.04.5 LTS
     ## 
     ## Matrix products: default
     ## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 

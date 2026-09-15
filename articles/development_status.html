@@ -761,15 +761,59 @@ anndata does not.<a class="anchor" aria-label="anchor" href="#issue-converted-sc
 <p>Investigate if this is a problem or not.</p>
 </div>
 </div>
+<div class="section level3">
+<h3 id="issue-rhdf5-2-57-12-emits-a-spurious-na_character_-warning-when-a-numeric-dataset-containing-na-or-nan-is-written-into-a-pre-created-dataset-">Issue: rhdf5 2.57.12 emits a spurious NA_character_ warning when a
+numeric dataset containing NA or NaN is written into a pre-created
+dataset.<a class="anchor" aria-label="anchor" href="#issue-rhdf5-2-57-12-emits-a-spurious-na_character_-warning-when-a-numeric-dataset-containing-na-or-nan-is-written-into-a-pre-created-dataset-"></a>
+</h3>
+<ul>
+<li>Affected backend: <code>HDF5AnnData</code>
+</li>
+<li>Affected slot(s): <code>X</code>, <code>layers</code>,
+<code>obs</code>, <code>var</code>, <code>obsm</code>,
+<code>varm</code>, <code>obsp</code>, <code>varp</code>,
+<code>uns</code>
+</li>
+<li>Affected dtype(s): <code>numeric_with_nas</code>,
+<code>numeric_matrix_with_nas</code>,
+<code>numeric_dense_with_nas</code>,
+<code>numeric_csparse_with_nas</code>,
+<code>numeric_rsparse_with_nas</code>,
+<code>integer_matrix_with_nas</code>,
+<code>integer_csparse_with_nas</code>,
+<code>integer_rsparse_with_nas</code>
+</li>
+<li>Probable cause: write</li>
+<li>To investigate: FALSE</li>
+<li>To fix: FALSE</li>
+</ul>
+<div class="section level4">
+<h4 id="error-message-1">Error message<a class="anchor" aria-label="anchor" href="#error-message-1"></a>
+</h4>
+<pre><code>Writing NA_character_ in fixed-length string datasets is fragile and deprecated.
+In particular, it will write NA_character_ as the string 'NA' in the HDF5 file.
+Use variable-length strings instead.</code></pre>
+</div>
+<div class="section level4">
+<h4 id="proposed-solution-1">Proposed solution<a class="anchor" aria-label="anchor" href="#proposed-solution-1"></a>
+</h4>
+<p>The check in rhdf5’s h5writeDataset.array() lacks a storage.mode(obj)
+== “character” guard on the existing-dataset branch (<a href="https://github.com/Huber-group-EMBL/rhdf5/blob/1682d4b493d0ddc9e46cba78a141b780bb8390e8/R/h5write.R#L405-L417" class="external-link uri">https://github.com/Huber-group-EMBL/rhdf5/blob/1682d4b493d0ddc9e46cba78a141b780bb8390e8/R/h5write.R#L405-L417</a>).
+Reported in Huber-group-EMBL/rhdf5#241 and fixed in
+Huber-group-EMBL/rhdf5#242; remove this entry and the skips in
+test-h5ad-fileclosure.R once the fixed rhdf5 is in Bioconductor
+devel.</p>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.6.1 (2026-06-24)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">## Running under: Ubuntu 24.04.4 LTS</span></span>
+<span><span class="co">## Running under: Ubuntu 24.04.5 LTS</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
 <span><span class="co">## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
