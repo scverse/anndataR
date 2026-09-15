@@ -1,14 +1,16 @@
-# anndataR devel
+# anndataR 1.3.2
 
-- Skip the H5AD file-closure tests while rhdf5 2.57.12 emits a spurious `NA_character_` warning for numeric datasets containing `NA`, tracked as a known issue until the fix from Huber-group-EMBL/rhdf5#242 reaches Bioconductor devel (PR #520).
-- Also remove the `as.na` attribute that rhdf5 2.57.12 adds to datasets containing `NA` when comparing R-written files to Python-written ones in the roundtrip tests (PR #519, issue #517).
-- Pin Python `mudata` to `< 0.4` in the pkgdown and macOS-Intel check workflows as well, because `py_require()` pins in the vignette are ignored when `RETICULATE_PYTHON` is forced (PR #518, issue #511).
-- Pin Python `mudata` to `< 0.4` in the `usage_python` vignette, as mudata 0.4 can no longer read the legacy example `.h5mu` file (PR #512, issue #511).
 - Support the `anndata.AnnData` class name used by Python anndata >= 0.13 in `py_to_r()` and `ReticulateAnnData`, and warn that anndata >= 0.13 is not fully supported yet (PR #510, issue #499).
-- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480).
+- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496).
+- Remove the workaround for LZF compression of VLen strings and require `rhdf5 >= 2.57.5`, which fixes the issue upstream (PR #497).
+- Pin Python `mudata` to `< 0.4` in the `usage_python` vignette, as mudata 0.4 can no longer read the legacy example `.h5mu` file (PR #512, issue #511).
+- Pin Python `mudata` to `< 0.4` in the pkgdown and macOS-Intel check workflows as well, because `py_require()` pins in the vignette are ignored when `RETICULATE_PYTHON` is forced (PR #518, issue #511).
+- Remove the `as.na` attribute that rhdf5 2.57.12 adds to datasets containing `NA` when comparing R-written files to Python-written ones in the roundtrip tests (PR #519, issue #517).
+- Skip the H5AD file-closure tests while rhdf5 2.57.12 emits a spurious `NA_character_` warning for numeric datasets containing `NA`, tracked as a known issue until the fix from Huber-group-EMBL/rhdf5#242 reaches Bioconductor devel (PR #520).
+- Remove the special handling of Zarr v3 structured datatypes in the tests, now that `Rarr` supports them (PR #498).
 - Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
 - Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).
-- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496).
 
 # anndataR 1.3.1
 
