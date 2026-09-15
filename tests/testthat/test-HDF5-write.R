@@ -515,6 +515,10 @@ test_that("hdf5_clear_rhdf5_attributes() recurses into groups", {
   hdf5_clear_rhdf5_attributes(hdf5_file, "sparse")
 
   hdf5_file$open_and_defer_close()
-  attrs <- rhdf5::h5readAttributes(hdf5_file$handle, "sparse/data", native = FALSE)
+  attrs <- rhdf5::h5readAttributes(
+    hdf5_file$handle,
+    "sparse/data",
+    native = FALSE
+  )
   expect_false("as.na" %in% names(attrs))
 })
