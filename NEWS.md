@@ -1,5 +1,6 @@
 # anndataR devel
 
+- Skip the H5AD file-closure tests while rhdf5 2.57.12 emits a spurious `NA_character_` warning for numeric datasets containing `NA`, tracked as a known issue until the fix from Huber-group-EMBL/rhdf5#242 reaches Bioconductor devel (PR #520).
 - Also remove the `as.na` attribute that rhdf5 2.57.12 adds to datasets containing `NA` when comparing R-written files to Python-written ones in the roundtrip tests (PR #519, issue #517).
 - Pin Python `mudata` to `< 0.4` in the pkgdown and macOS-Intel check workflows as well, because `py_require()` pins in the vignette are ignored when `RETICULATE_PYTHON` is forced (PR #518, issue #511).
 - Pin Python `mudata` to `< 0.4` in the `usage_python` vignette, as mudata 0.4 can no longer read the legacy example `.h5mu` file (PR #512, issue #511).
