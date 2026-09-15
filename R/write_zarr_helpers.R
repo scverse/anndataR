@@ -651,6 +651,11 @@ write_zarr_numeric_scalar <- function(
 #'
 #' @inheritParams write_zarr_element
 #' @inheritParams write_zarr_encoding version
+#' @param index The index to use for `data.frame` elements of the mapping. Used
+#' for aligned mappings (`obsm`/`varm`), where the index of a `data.frame` must
+#' be the `obs_names`/`var_names` of the parent object. Ignored by elements
+#' that are not `data.frame`s. If `NULL` then each `data.frame` provides its
+#' own index, see `write_zarr_data_frame()`.
 #'
 #' @noRd
 write_zarr_mapping <- function(
@@ -659,19 +664,34 @@ write_zarr_mapping <- function(
   name,
   compression,
   zarr_format,
+  index = NULL,
   version = "0.1.0"
 ) {
   create_zarr_group(store, name, zarr_format)
 
   # Write mapping elements
   for (key in names(value)) {
-    write_zarr_element(
-      value[[key]],
-      store,
-      paste0(name, "/", key),
-      compression,
-      zarr_format = zarr_format
-    )
+    element <- value[[key]]
+    element_name <- paste0(name, "/", key)
+
+    if (!is.null(index) && is.data.frame(element)) {
+      write_zarr_element(
+        element,
+        store,
+        element_name,
+        compression,
+        zarr_format = zarr_format,
+        index = index
+      )
+    } else {
+      write_zarr_element(
+        element,
+        store,
+        element_name,
+        compression,
+        zarr_format = zarr_format
+      )
+    }
   }
 
   write_zarr_encoding(store, name, "dict", version, zarr_format)
