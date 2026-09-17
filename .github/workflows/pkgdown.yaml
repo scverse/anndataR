@@ -51,7 +51,9 @@ jobs:
         run: |
           # TEMP(anndata<0.13.0): pin added in PR #481, revert once anndataR
           # supports Python anndata >= 0.13.0
-          pip install "anndata<0.13.0" scanpy mudata
+          # TEMP(mudata<0.4): mudata 0.4 cannot read the legacy example .h5mu
+          # file, revert once issue #511 is resolved
+          pip install "anndata<0.13.0" scanpy "mudata<0.4"
           echo "RETICULATE_PYTHON=$(which python3)" >> ~/.Renviron
           echo "Python configured for reticulate:" && Rscript -e 'reticulate::py_config()'
 
