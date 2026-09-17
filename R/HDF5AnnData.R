@@ -24,6 +24,7 @@ HDF5AnnData <- R6::R6Class(
     .backed = NULL,
     .compression = NULL,
     .chunk_size = "auto",
+    .root = "/",
 
     .check_mode_writeable = function() {
       if (!is.null(private$.mode) && private$.mode == "r") {
@@ -44,7 +45,11 @@ HDF5AnnData <- R6::R6Class(
     X = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_X, status=done
-        read_h5ad_element(private$.hdf5_file, "X", backed = private$.backed) |>
+        read_h5ad_element(
+          private$.hdf5_file,
+          hdf5_root_path(private$.root, "X"),
+          backed = private$.backed
+        ) |>
           private$.add_matrix_dimnames("X")
       } else {
         private$.check_mode_writeable()
@@ -59,7 +64,7 @@ HDF5AnnData <- R6::R6Class(
         ) |>
           write_h5ad_element(
             private$.hdf5_file,
-            "X",
+            hdf5_root_path(private$.root, "X"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -71,7 +76,7 @@ HDF5AnnData <- R6::R6Class(
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
         read_h5ad_element(
           private$.hdf5_file,
-          "layers",
+          hdf5_root_path(private$.root, "layers"),
           backed = private$.backed
         ) |>
           private$.add_mapping_dimnames("layers")
@@ -88,7 +93,7 @@ HDF5AnnData <- R6::R6Class(
         ) |>
           write_h5ad_element(
             private$.hdf5_file,
-            "layers",
+            hdf5_root_path(private$.root, "layers"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -100,7 +105,7 @@ HDF5AnnData <- R6::R6Class(
         # trackstatus: class=HDF5AnnData, feature=get_obsm, status=done
         read_h5ad_element(
           private$.hdf5_file,
-          "obsm",
+          hdf5_root_path(private$.root, "obsm"),
           backed = private$.backed
         ) |>
           private$.add_mapping_dimnames("obsm")
@@ -119,7 +124,7 @@ HDF5AnnData <- R6::R6Class(
         ) |>
           write_h5ad_element(
             private$.hdf5_file,
-            "obsm",
+            hdf5_root_path(private$.root, "obsm"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -131,7 +136,7 @@ HDF5AnnData <- R6::R6Class(
         # trackstatus: class=HDF5AnnData, feature=get_varm, status=done
         read_h5ad_element(
           private$.hdf5_file,
-          "varm",
+          hdf5_root_path(private$.root, "varm"),
           backed = private$.backed
         ) |>
           private$.add_mapping_dimnames("varm")
@@ -150,7 +155,7 @@ HDF5AnnData <- R6::R6Class(
         ) |>
           write_h5ad_element(
             private$.hdf5_file,
-            "varm",
+            hdf5_root_path(private$.root, "varm"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -162,7 +167,7 @@ HDF5AnnData <- R6::R6Class(
         # trackstatus: class=HDF5AnnData, feature=get_obsp, status=done
         read_h5ad_element(
           private$.hdf5_file,
-          "obsp",
+          hdf5_root_path(private$.root, "obsp"),
           backed = private$.backed
         ) |>
           private$.add_mapping_dimnames("obsp")
@@ -179,7 +184,7 @@ HDF5AnnData <- R6::R6Class(
         ) |>
           write_h5ad_element(
             private$.hdf5_file,
-            "obsp",
+            hdf5_root_path(private$.root, "obsp"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -191,7 +196,7 @@ HDF5AnnData <- R6::R6Class(
         # trackstatus: class=HDF5AnnData, feature=get_varp, status=done
         read_h5ad_element(
           private$.hdf5_file,
-          "varp",
+          hdf5_root_path(private$.root, "varp"),
           backed = private$.backed
         ) |>
           private$.add_mapping_dimnames("varp")
@@ -208,7 +213,7 @@ HDF5AnnData <- R6::R6Class(
         ) |>
           write_h5ad_element(
             private$.hdf5_file,
-            "varp",
+            hdf5_root_path(private$.root, "varp"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -218,7 +223,11 @@ HDF5AnnData <- R6::R6Class(
     obs = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs, status=done
-        read_h5ad_element(private$.hdf5_file, "obs", backed = private$.backed)
+        read_h5ad_element(
+          private$.hdf5_file,
+          hdf5_root_path(private$.root, "obs"),
+          backed = private$.backed
+        )
       } else {
         private$.check_mode_writeable()
 
@@ -226,7 +235,7 @@ HDF5AnnData <- R6::R6Class(
         private$.validate_obsvar_dataframe(value, "obs") |>
           write_h5ad_element(
             private$.hdf5_file,
-            "obs",
+            hdf5_root_path(private$.root, "obs"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -236,7 +245,11 @@ HDF5AnnData <- R6::R6Class(
     var = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var, status=done
-        read_h5ad_element(private$.hdf5_file, "var", backed = private$.backed)
+        read_h5ad_element(
+          private$.hdf5_file,
+          hdf5_root_path(private$.root, "var"),
+          backed = private$.backed
+        )
       } else {
         private$.check_mode_writeable()
 
@@ -244,7 +257,7 @@ HDF5AnnData <- R6::R6Class(
         private$.validate_obsvar_dataframe(value, "var") |>
           write_h5ad_element(
             private$.hdf5_file,
-            "var",
+            hdf5_root_path(private$.root, "var"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -254,7 +267,11 @@ HDF5AnnData <- R6::R6Class(
     obs_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_obs_names, status=done
-        read_h5ad_element_keys(private$.hdf5_file, "obs", dim = "rows")
+        read_h5ad_element_keys(
+          private$.hdf5_file,
+          hdf5_root_path(private$.root, "obs"),
+          dim = "rows"
+        )
       } else {
         private$.check_mode_writeable()
 
@@ -262,7 +279,7 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_data_frame_index(
           value,
           private$.hdf5_file,
-          "obs",
+          hdf5_root_path(private$.root, "obs"),
           private$.compression,
           chunk_size = private$.chunk_size
         )
@@ -272,7 +289,11 @@ HDF5AnnData <- R6::R6Class(
     var_names = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_var_names, status=done
-        read_h5ad_element_keys(private$.hdf5_file, "var", dim = "rows")
+        read_h5ad_element_keys(
+          private$.hdf5_file,
+          hdf5_root_path(private$.root, "var"),
+          dim = "rows"
+        )
       } else {
         private$.check_mode_writeable()
 
@@ -280,7 +301,7 @@ HDF5AnnData <- R6::R6Class(
         write_h5ad_data_frame_index(
           value,
           private$.hdf5_file,
-          "var",
+          hdf5_root_path(private$.root, "var"),
           private$.compression,
           chunk_size = private$.chunk_size
         )
@@ -290,7 +311,11 @@ HDF5AnnData <- R6::R6Class(
     uns = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_uns, status=done
-        read_h5ad_element(private$.hdf5_file, "uns", backed = private$.backed)
+        read_h5ad_element(
+          private$.hdf5_file,
+          hdf5_root_path(private$.root, "uns"),
+          backed = private$.backed
+        )
       } else {
         private$.check_mode_writeable()
 
@@ -302,7 +327,7 @@ HDF5AnnData <- R6::R6Class(
         ) |>
           write_h5ad_element(
             private$.hdf5_file,
-            "uns",
+            hdf5_root_path(private$.root, "uns"),
             private$.compression,
             chunk_size = private$.chunk_size
           )
@@ -334,6 +359,10 @@ HDF5AnnData <- R6::R6Class(
     #'   [as_HDF5AnnData()] for details
     #' @param chunk_size The target chunk size in bytes. See
     #'   [as_HDF5AnnData()] for details
+    #' @param root The path to the group within the HDF5 file that the
+    #'   `AnnData` is stored at. Defaults to `"/"`, the file root. Can be
+    #'   used to read/write an `AnnData` from/to a group inside a file that
+    #'   also contains other content, e.g. a modality inside a `.h5mu` file.
     #'
     #' @details
     #' The constructor creates a new HDF5 `AnnData` interface object. This can
@@ -355,7 +384,8 @@ HDF5AnnData <- R6::R6Class(
       mode = c("a", "r", "r+", "w", "w-", "x"),
       backed = FALSE,
       compression = c("none", "gzip", "lzf"),
-      chunk_size = "auto"
+      chunk_size = "auto",
+      root = "/"
     ) {
       check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
       check_requires("HDF5AnnData", "withr", where = "CRAN")
@@ -366,6 +396,7 @@ HDF5AnnData <- R6::R6Class(
       private$.mode <- mode
       private$.compression <- compression
       private$.chunk_size <- chunk_size
+      private$.root <- hdf5_root_path(root, "/")
 
       is_readonly <- if (mode == "r") {
         TRUE
@@ -413,8 +444,13 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
-      # Fail if the file exists not allowed to overwrite
-      if (file.exists(file) && mode %in% c("w-", "x")) {
+      # Fail if the file exists and is not allowed to be overwritten. At a
+      # non-root group this is checked at the group level instead (below).
+      if (
+        private$.root == "/" &&
+          file.exists(file) &&
+          mode %in% c("w-", "x")
+      ) {
         cli_abort(
           paste(
             "File {.file {file}} already exists but mode is set to {.val {mode}}.",
@@ -425,8 +461,13 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
-      # Create/truncate the file
-      if (mode %in% c("w", "w-", "x")) {
+      # Create/truncate the file. At the file root, "w"/"w-"/"x" always
+      # (re)create the file, at a non-root group, only create it if it's
+      # missing.
+      if (
+        mode %in% c("w", "w-", "x") &&
+          (private$.root == "/" || !file.exists(file))
+      ) {
         h5file <- rhdf5::H5Fcreate(
           file,
           flags = "H5F_ACC_TRUNC",
@@ -442,13 +483,63 @@ HDF5AnnData <- R6::R6Class(
       # Set the HDF5File
       private$.hdf5_file <- HDF5File$new(file)
 
-      is_empty <- nrow(rhdf5::h5ls(private$.hdf5_file$path)) == 0L
+      root_exists <- private$.root == "/" ||
+        hdf5_path_exists(private$.hdf5_file, private$.root)
+
+      if (private$.root != "/" && is_readonly && !root_exists) {
+        # Read-only mode never creates the root group, so it must already exist
+        cli_abort(
+          paste(
+            "Group {.val {private$.root}} does not exist in file {.file {file}}."
+          ),
+          call = rlang::caller_env()
+        )
+      }
+
+      if (private$.root != "/" && !is_readonly) {
+        # Fail if the group exists and is not allowed to be overwritten
+        if (root_exists && mode %in% c("w-", "x")) {
+          cli_abort(
+            paste(
+              "Group {.val {private$.root}} already exists in file",
+              "{.file {file}} but mode is set to {.val {mode}}.",
+              "If you want to overwrite the group, use a different mode",
+              "(e.g. 'w')."
+            ),
+            call = rlang::caller_env()
+          )
+        }
+
+        # For a fresh write, delete an existing group so it can be recreated,
+        # without touching anything else in the file.
+        if (root_exists && mode == "w") {
+          private$.hdf5_file$open()
+          rhdf5::H5Ldelete(private$.hdf5_file$handle, private$.root)
+          private$.hdf5_file$close()
+          root_exists <- FALSE
+        }
+
+        if (!root_exists) {
+          hdf5_ensure_group_path(private$.hdf5_file, private$.root)
+        }
+      }
+
+      is_empty <- if (private$.root == "/") {
+        nrow(rhdf5::h5ls(private$.hdf5_file$path)) == 0L
+      } else {
+        entries <- rhdf5::h5ls(private$.hdf5_file$path)
+        sum(entries$group == paste0("/", private$.root)) == 0L
+      }
 
       if (!is_readonly) {
         if (!is_empty) {
           cli_warn(
             paste(
-              "An non-empty file is opened in read/write mode.",
+              if (private$.root == "/") {
+                "An non-empty file is opened in read/write mode."
+              } else {
+                "A non-empty group is opened in read/write mode."
+              },
               "Use with caution, as this can lead to data corruption."
             )
           )
@@ -461,13 +552,17 @@ HDF5AnnData <- R6::R6Class(
             obs,
             var,
             compression,
-            chunk_size
+            chunk_size,
+            root = private$.root
           )
         }
       }
 
       # File is supposed to exist by now. Check if it is a valid H5AD file
-      attrs <- rhdf5::h5readAttributes(private$.hdf5_file$path, "/")
+      attrs <- rhdf5::h5readAttributes(
+        private$.hdf5_file$path,
+        private$.root
+      )
       if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
         cli_abort(c(
           "File {.file {file}} is not a valid H5AD file.",
@@ -506,35 +601,61 @@ HDF5AnnData <- R6::R6Class(
 
     #' @description See [AnnData-usage]
     obs_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "obs", dim = "cols")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "obs"),
+        dim = "cols"
+      )
     },
     #' @description See [AnnData-usage]
     var_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "var", dim = "cols")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "var"),
+        dim = "cols"
+      )
     },
     #' @description See [AnnData-usage]
     layers_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "layers")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "layers")
+      )
     },
     #' @description See [AnnData-usage]
     obsm_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "obsm")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "obsm")
+      )
     },
     #' @description See [AnnData-usage]
     varm_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "varm")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "varm")
+      )
     },
     #' @description See [AnnData-usage]
     obsp_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "obsp")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "obsp")
+      )
     },
     #' @description See [AnnData-usage]
     varp_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "varp")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "varp")
+      )
     },
     #' @description See [AnnData-usage]
     uns_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "uns")
+      read_h5ad_element_keys(
+        private$.hdf5_file,
+        hdf5_root_path(private$.root, "uns")
+      )
     },
 
     #' @description See the `n_obs` field in [AnnData-usage]
@@ -598,16 +719,26 @@ HDF5AnnData <- R6::R6Class(
 #'   automatically using an algorithm that mimics h5py's auto-chunking
 #'   behaviour. Set to `NULL` to disable chunking (contiguous storage,
 #'   the rhdf5 default), or a number to use a specific target size in bytes.
-#' @param mode The mode to open the HDF5 file:
+#' @param mode The mode to open the HDF5 file. When `root` is not `"/"`,
+#'   these apply to the group at `root` rather than the whole file:
 #'
-#'   * `a` creates a new file or opens an existing one for read/write
-#'   * `r` opens an existing file for reading
-#'   * `r+` opens an existing file for read/write
-#'   * `w` creates a file, truncating any existing ones
-#'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r` opens an existing file for reading, the group at `root` must
+#'     already exist.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
+#'     the file is created if missing but otherwise left untouched, and only the
+#'     group at `root` is deleted and recreated.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already
+#'     exists. When `root != "/"`, they instead fail if the group at
+#'     `root` already exists.
 #' @param backed Whether the object is disk backed and returns
 #'   [DelayedArray::DelayedArray] object for matrix data. Can only be `TRUE`
 #'   when `mode == "r"`.
+#' @param root The path to the group within the HDF5 file that the `AnnData`
+#'   is stored at. Defaults to `"/"`, the file root. Can be used to write an
+#'   `AnnData` to a group inside a file that also contains other content,
+#'   e.g. a modality inside a `.h5mu` file.
 #'
 #' @return An [`HDF5AnnData`] object with the same data as the input `AnnData`
 #'   object.
@@ -623,7 +754,8 @@ as_HDF5AnnData <- function(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  backed = FALSE
+  backed = FALSE,
+  root = "/"
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(
@@ -647,6 +779,7 @@ as_HDF5AnnData <- function(
     mode = mode,
     compression = compression,
     chunk_size = chunk_size,
-    backed = backed
+    backed = backed,
+    root = root
   )
 }

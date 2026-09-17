@@ -14,12 +14,23 @@
 #'   behaviour. Set to `NULL` to disable chunking (contiguous storage,
 #'   the rhdf5 default), or a number to use a specific target size in bytes.
 #'   This only affects array-like datasets; scalar values are unaffected.
-#' @param mode The mode to open the HDF5 file.
+#' @param mode The mode to open the HDF5 file. When `root` is not `"/"`,
+#'   these apply to the group at `root` rather than the whole file:
 #'
-#'   * `a` creates a new file or opens an existing one for read/write
-#'   * `r+` opens an existing file for read/write
-#'   * `w` creates a file, truncating any existing ones
-#'   * `w-`/`x` are synonyms creating a file and failing if it already exists
+#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `r` opens an existing file for reading, the group at `root` must
+#'     already exist.
+#'   * `r+` opens an existing file for read/write.
+#'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
+#'     the file is created if missing but otherwise left untouched, and only the
+#'     group at `root` is deleted and recreated.
+#'   * `w-`/`x` are synonyms, creating a file and failing if it already
+#'     exists. When `root != "/"`, they instead fail if the group at
+#'     `root` already exists.
+#' @param root The path to the group within the HDF5 file that the `AnnData`
+#'   is written to. Defaults to `"/"`, the file root. Can be used to write an
+#'   `AnnData` to a group inside a file that also contains other content,
+#'   e.g. a modality inside a `.h5mu` file.
 #' @param ... Additional arguments passed to [as_AnnData()]
 #'
 #' @details
@@ -102,6 +113,7 @@ write_h5ad <- function(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  root = "/",
   ...
 ) {
   mode <- match.arg(mode)
@@ -110,7 +122,8 @@ write_h5ad <- function(
       path,
       compression = compression,
       chunk_size = chunk_size,
-      mode = mode
+      mode = mode,
+      root = root
     )
   } else {
     as_AnnData(
@@ -120,6 +133,7 @@ write_h5ad <- function(
       compression = compression,
       chunk_size = chunk_size,
       mode = mode,
+      root = root,
       ...
     )
   }
