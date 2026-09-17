@@ -1,6 +1,6 @@
 # anndataR 1.2.2
 
-Backported from the development branch (PR #503):
+Backported from the development branch (PR #503, PR #523):
 
 - Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480).
 - Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496, thanks @JuanTejedor!).
