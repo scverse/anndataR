@@ -195,7 +195,7 @@ read_zarr_dense_array <- function(
   store,
   name,
   backed = FALSE,
-  version = "0.2.0", 
+  version = "0.2.0",
   ...
 ) {
   version <- match.arg(version)
@@ -263,7 +263,7 @@ read_zarr_sparse_array <- function(
   name,
   backed = FALSE,
   version = "0.1.0",
-  type = c("csr_matrix", "csc_matrix"), 
+  type = c("csr_matrix", "csc_matrix"),
   ...
 ) {
   version <- match.arg(version)
@@ -505,7 +505,13 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0", ...) {
 #' @return A named list
 #'
 #' @noRd
-read_zarr_mapping <- function(store, name, version = "0.1.0", backed = FALSE, ...) {
+read_zarr_mapping <- function(
+  store,
+  name,
+  version = "0.1.0",
+  backed = FALSE,
+  ...
+) {
   version <- match.arg(version)
   items <- read_zarr_mapping_keys(store, name, version)
   read_zarr_collection(store, name, items, backed = backed)
@@ -531,7 +537,7 @@ read_zarr_data_frame <- function(
   store,
   name,
   version = "0.2.0",
-  backed = FALSE, 
+  backed = FALSE,
   ...
 ) {
   version <- match.arg(version)

@@ -126,7 +126,7 @@ for (zarr_format in c(2, 3)) {
     expect_s4_class(backed$X, "DelayedMatrix")
     expect_equal(as.matrix(backed$X), as.matrix(eager$X))
     # TODO: backed dimnames are a list of NULL ?
-    # expect_identical(dimnames(backed$X), dimnames(eager$X))
+    # commending out expect_identical for dimnames backed vs eager
 
     for (k in eager$layers_keys()) {
       expect_equal(
