@@ -3,7 +3,9 @@
 on:
   workflow_dispatch:
   push:
-    branches: devel
+    branches:
+      - devel
+      - 'RELEASE_**'
   pull_request:
 
 name: test-coverage.yaml
@@ -11,7 +13,34 @@ name: test-coverage.yaml
 permissions: read-all
 
 jobs:
+  ## Measure coverage against the Bioconductor version the branch targets,
+  ## the same way R-CMD-check-bioc does. A `RELEASE_x_y` branch checked
+  ## against devel fails on packages that changed behaviour after the branch
+  ## was cut.
+  bioc-version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+
+    steps:
+      - name: Resolve the Bioconductor version to check against
+        id: resolve
+        shell: bash
+        env:
+          REF: ${{ github.base_ref || github.ref_name }}
+        run: |
+          ref="$REF"
+          case "$ref" in
+            RELEASE_*) version="${ref#RELEASE_}"; version="${version//_/.}" ;;
+            *)         version="devel" ;;
+          esac
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Measuring coverage of '$ref' against Bioconductor $version"
+
   test-coverage:
+    needs: bioc-version
+
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -29,7 +58,7 @@ jobs:
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
-          bioc-version: devel
+          bioc-version: ${{ needs.bioc-version.outputs.version }}
 
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
