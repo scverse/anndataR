@@ -288,9 +288,6 @@ Write a `SingleCellExperiment` object to disk:
 
 tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(sce, tmpfile)
-#> Warning in h5writeDataset.array(...): Writing NA_character_ in fixed-length string datasets is fragile and deprecated.
-#> In particular, it will write NA_character_ as the string 'NA' in the HDF5 file.
-#> Use variable-length strings instead.
 #> Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported
 #> matrix format in obsp/connectivities ℹ Supported matrices inherit from
 #> <RsparseMatrix> or <CsparseMatrix>
@@ -308,9 +305,6 @@ Write a `Seurat` object to disk:
 
 tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(obj, tmpfile)
-#> Warning in h5writeDataset.array(...): Writing NA_character_ in fixed-length string datasets is fragile and deprecated.
-#> In particular, it will write NA_character_ as the string 'NA' in the HDF5 file.
-#> Use variable-length strings instead.
 #> Warning: Matrix column names cannot be written to a <HDF5AnnData> object, they will be
 #> lost
 #> ℹ To write column names for obsm[['X_pca']], store it as <data.frame> instead
@@ -563,7 +557,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.3.1              SingleCellExperiment_1.35.2
+#>  [1] anndataR_1.3.2              SingleCellExperiment_1.35.2
 #>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.2             
 #>  [5] GenomicRanges_1.65.4        Seqinfo_1.3.2              
 #>  [7] IRanges_2.47.5              S4Vectors_0.51.9           
@@ -578,7 +572,7 @@ sessionInfo()
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-2 htmltools_0.5.9       
 #>  [13] S4Arrays_1.13.0        curl_8.0.0             Rhdf5lib_2.1.0        
-#>  [16] SparseArray_1.13.2     rhdf5_2.57.12          sass_0.4.10           
+#>  [16] SparseArray_1.13.2     rhdf5_2.57.15          sass_0.4.10           
 #>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    
 #>  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
@@ -608,7 +602,7 @@ sessionInfo()
 #>  [97] survival_3.8-6         paws.common_0.8.10     tidyselect_1.2.1      
 #> [100] miniUI_0.1.2           pbapply_1.7-5          knitr_1.52            
 #> [103] gridExtra_2.3.1        bookdown_0.48          scattermore_1.2       
-#> [106] xfun_0.60              stringi_1.8.9          yaml_2.3.12           
+#> [106] xfun_0.61              stringi_1.8.9          yaml_2.3.12           
 #> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
 #> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.5            
 #> [115] xtable_1.8-8           reticulate_1.47.0      systemfonts_1.3.2     

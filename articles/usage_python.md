@@ -192,7 +192,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] reticulate_1.47.0 anndataR_1.3.1    BiocStyle_2.41.0 
+#> [1] reticulate_1.47.0 anndataR_1.3.2    BiocStyle_2.41.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             
@@ -251,7 +251,7 @@ sessionInfo()
 #> [107] gridExtra_2.3.1             bookdown_0.48              
 #> [109] IRanges_2.47.5              Seqinfo_1.3.2              
 #> [111] SummarizedExperiment_1.43.0 scattermore_1.2            
-#> [113] stats4_4.6.1                xfun_0.60                  
+#> [113] stats4_4.6.1                xfun_0.61                  
 #> [115] Biobase_2.73.2              matrixStats_1.5.0          
 #> [117] stringi_1.8.9               yaml_2.3.12                
 #> [119] evaluate_1.0.5              codetools_0.2-20           
@@ -305,35 +305,36 @@ reticulate::py_list_packages()
 #> 16   legacy-api-wrap          1.5         legacy-api-wrap==1.5
 #> 17          llvmlite       0.49.0             llvmlite==0.49.0
 #> 18        matplotlib       3.11.2           matplotlib==3.11.2
-#> 19            mudata       0.3.10               mudata==0.3.10
-#> 20          narwhals       2.26.0             narwhals==2.26.0
-#> 21           natsort        8.4.0               natsort==8.4.0
-#> 22          networkx        3.6.1              networkx==3.6.1
-#> 23             numba       0.67.0                numba==0.67.0
-#> 24         numcodecs       0.16.5            numcodecs==0.16.5
-#> 25             numpy        2.5.3                 numpy==2.5.3
-#> 26         packaging         26.3              packaging==26.3
-#> 27            pandas        2.3.3                pandas==2.3.3
-#> 28             patsy        1.0.3                 patsy==1.0.3
-#> 29            pillow       12.3.0               pillow==12.3.0
-#> 30       pynndescent        0.6.0           pynndescent==0.6.0
-#> 31         pyparsing        3.3.2             pyparsing==3.3.2
-#> 32   python-dateutil  2.9.0.post0 python-dateutil==2.9.0.post0
-#> 33              pytz 2026.3.post1           pytz==2026.3.post1
-#> 34            PyYAML        6.0.3                PyYAML==6.0.3
-#> 35            scanpy       1.12.4               scanpy==1.12.4
-#> 36      scikit-learn        1.9.1          scikit-learn==1.9.1
-#> 37             scipy       1.18.1                scipy==1.18.1
-#> 38      scverse-misc        0.1.1          scverse-misc==0.1.1
-#> 39           seaborn       0.13.2              seaborn==0.13.2
-#> 40     session-info2        0.4.2         session-info2==0.4.2
-#> 41               six       1.17.0                  six==1.17.0
-#> 42       statsmodels       0.15.0          statsmodels==0.15.0
-#> 43     threadpoolctl        3.6.0         threadpoolctl==3.6.0
-#> 44              tqdm       4.70.1                 tqdm==4.70.1
-#> 45 typing_extensions       4.16.0    typing_extensions==4.16.0
-#> 46            tzdata       2026.4               tzdata==2026.4
-#> 47        umap-learn       0.5.12           umap-learn==0.5.12
-#> 48             wrapt        2.4.1                 wrapt==2.4.1
-#> 49              zarr        3.3.0                  zarr==3.3.0
+#> 19           msgspec       0.21.1              msgspec==0.21.1
+#> 20            mudata       0.3.10               mudata==0.3.10
+#> 21          narwhals       2.26.0             narwhals==2.26.0
+#> 22           natsort        8.4.0               natsort==8.4.0
+#> 23          networkx        3.6.1              networkx==3.6.1
+#> 24             numba       0.67.0                numba==0.67.0
+#> 25         numcodecs       0.16.5            numcodecs==0.16.5
+#> 26             numpy        2.5.3                 numpy==2.5.3
+#> 27         packaging         26.3              packaging==26.3
+#> 28            pandas        2.3.3                pandas==2.3.3
+#> 29             patsy        1.0.3                 patsy==1.0.3
+#> 30            pillow       12.3.0               pillow==12.3.0
+#> 31       pynndescent        0.6.0           pynndescent==0.6.0
+#> 32         pyparsing        3.3.2             pyparsing==3.3.2
+#> 33   python-dateutil  2.9.0.post0 python-dateutil==2.9.0.post0
+#> 34              pytz 2026.3.post1           pytz==2026.3.post1
+#> 35            PyYAML        6.0.3                PyYAML==6.0.3
+#> 36            scanpy       1.12.4               scanpy==1.12.4
+#> 37      scikit-learn        1.9.1          scikit-learn==1.9.1
+#> 38             scipy       1.18.1                scipy==1.18.1
+#> 39      scverse-misc        0.1.1          scverse-misc==0.1.1
+#> 40           seaborn       0.13.2              seaborn==0.13.2
+#> 41     session-info2        0.4.2         session-info2==0.4.2
+#> 42               six       1.17.0                  six==1.17.0
+#> 43       statsmodels       0.15.0          statsmodels==0.15.0
+#> 44     threadpoolctl        3.7.0         threadpoolctl==3.7.0
+#> 45              tqdm       4.70.1                 tqdm==4.70.1
+#> 46 typing_extensions       4.16.0    typing_extensions==4.16.0
+#> 47            tzdata       2026.4               tzdata==2026.4
+#> 48        umap-learn       0.5.12           umap-learn==0.5.12
+#> 49             wrapt        2.4.1                 wrapt==2.4.1
+#> 50              zarr        3.4.0                  zarr==3.4.0
 ```

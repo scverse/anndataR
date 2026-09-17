@@ -332,10 +332,10 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 #> To use Python UMAP via reticulate, set umap.method to 'umap-learn' and metric to 'correlation'
 #> This message will be shown once per session
-#> 06:11:03 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 06:11:03 Read 200 rows and found 10 numeric columns
-#> 06:11:03 Using Annoy for neighbor search, n_neighbors = 30
-#> 06:11:03 Building Annoy index with metric = cosine, n_trees = 50
+#> 08:08:57 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 08:08:57 Read 200 rows and found 10 numeric columns
+#> 08:08:57 Using Annoy for neighbor search, n_neighbors = 30
+#> 08:08:57 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -389,15 +389,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 06:11:03 Writing NN index file to temp file /tmp/Rtmp9trDMc/file1cb44f12ba24
-#> 06:11:03 Searching Annoy index using 1 thread, search_k = 3000
-#> 06:11:03 Annoy recall = 100%
-#> 06:11:04 Commencing smooth kNN distance calibration using 1 thread
+#> 08:08:57 Writing NN index file to temp file /tmp/Rtmpyh2YTl/file1f25f01f5ac
+#> 08:08:57 Searching Annoy index using 1 thread, search_k = 3000
+#> 08:08:57 Annoy recall = 100%
+#> 08:08:58 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 06:11:05 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 06:11:05 Commencing optimization for 500 epochs, with 6146 positive edges
-#> 06:11:05 Using rng type: pcg
-#> 06:11:06 Optimization finished
+#> 08:09:00 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 08:09:00 Commencing optimization for 500 epochs, with 6146 positive edges
+#> 08:09:00 Using rng type: pcg
+#> 08:09:01 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names

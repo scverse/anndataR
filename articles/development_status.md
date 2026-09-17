@@ -210,7 +210,7 @@ sessionInfo()
     ## [10] R6_2.6.1            generics_0.1.4      htmlwidgets_1.6.4  
     ## [13] bookdown_0.48       desc_1.4.3          bslib_0.12.0       
     ## [16] pillar_1.11.1       rlang_1.3.0         cachem_1.1.0       
-    ## [19] stringi_1.8.9       xfun_0.60           fs_2.1.0           
+    ## [19] stringi_1.8.9       xfun_0.61           fs_2.1.0           
     ## [22] sass_0.4.10         otel_0.2.0          cli_3.6.6          
     ## [25] pkgdown_2.2.1       withr_3.0.3         magrittr_2.0.5     
     ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.3        

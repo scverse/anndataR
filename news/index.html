@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,20 @@
       <small>Source: <a href="https://github.com/scverse/anndataR/blob/devel/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.3.2" id="anndatar-132">anndataR 1.3.2<a class="anchor" aria-label="anchor" href="#anndatar-132"></a></h2>
+<ul><li>Support the <code>anndata.AnnData</code> class name used by Python anndata &gt;= 0.13 in <code><a href="https://rstudio.github.io/reticulate/reference/r-py-conversion.html" class="external-link">py_to_r()</a></code> and <code>ReticulateAnnData</code>, and warn that anndata &gt;= 0.13 is not fully supported yet (PR <a href="https://github.com/scverse/anndataR/issues/510" class="external-link">#510</a>, issue <a href="https://github.com/scverse/anndataR/issues/499" class="external-link">#499</a>).</li>
+<li>Add support for <code>nullable-string-array</code> elements in H5AD and Zarr (PR <a href="https://github.com/scverse/anndataR/issues/480" class="external-link">#480</a>).</li>
+<li>Fix <code>hdf5_write_boolean_dataset()</code> writing logical matrices as flat 1D datasets instead of preserving their shape (PR <a href="https://github.com/scverse/anndataR/issues/496" class="external-link">#496</a>).</li>
+<li>Remove the workaround for LZF compression of VLen strings and require <code>rhdf5 &gt;= 2.57.5</code>, which fixes the issue upstream (PR <a href="https://github.com/scverse/anndataR/issues/497" class="external-link">#497</a>).</li>
+<li>Pin Python <code>mudata</code> to <code>&lt; 0.4</code> in the <code>usage_python</code> vignette, as mudata 0.4 can no longer read the legacy example <code>.h5mu</code> file (PR <a href="https://github.com/scverse/anndataR/issues/512" class="external-link">#512</a>, issue <a href="https://github.com/scverse/anndataR/issues/511" class="external-link">#511</a>).</li>
+<li>Pin Python <code>mudata</code> to <code>&lt; 0.4</code> in the pkgdown and macOS-Intel check workflows as well, because <code><a href="https://rstudio.github.io/reticulate/reference/py_require.html" class="external-link">py_require()</a></code> pins in the vignette are ignored when <code>RETICULATE_PYTHON</code> is forced (PR <a href="https://github.com/scverse/anndataR/issues/518" class="external-link">#518</a>, issue <a href="https://github.com/scverse/anndataR/issues/511" class="external-link">#511</a>).</li>
+<li>Remove the <code>as.na</code> attribute that rhdf5 2.57.12 adds to datasets containing <code>NA</code> when comparing R-written files to Python-written ones in the roundtrip tests (PR <a href="https://github.com/scverse/anndataR/issues/519" class="external-link">#519</a>, issue <a href="https://github.com/scverse/anndataR/issues/517" class="external-link">#517</a>).</li>
+<li>Skip the H5AD file-closure tests while rhdf5 2.57.12 emits a spurious <code>NA_character_</code> warning for numeric datasets containing <code>NA</code>, tracked as a known issue until the fix from Huber-group-EMBL/rhdf5#242 reaches Bioconductor devel (PR <a href="https://github.com/scverse/anndataR/issues/520" class="external-link">#520</a>).</li>
+<li>Remove the special handling of Zarr v3 structured datatypes in the tests, now that <code>Rarr</code> supports them (PR <a href="https://github.com/scverse/anndataR/issues/498" class="external-link">#498</a>).</li>
+<li>Check <code>RELEASE_*</code> branches against Bioconductor release and <code>devel</code> against Bioconductor devel, instead of checking <code>devel</code> against both (PR <a href="https://github.com/scverse/anndataR/issues/502" class="external-link">#502</a>).</li>
+<li>Run BiocCheck on <code>RELEASE_*</code> branches as well as on <code>devel</code> (PR <a href="https://github.com/scverse/anndataR/issues/504" class="external-link">#504</a>).</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.1" id="anndatar-131">anndataR 1.3.1<a class="anchor" aria-label="anchor" href="#anndatar-131"></a></h2>
 <ul><li>Add support for reading backed objects using <code>DelayedArray</code> matrices, including a <code>backed</code> argument for <code>HDF5AnnData</code> and <code>InMemoryAnnData</code>, and conversion of backed <code>AnnData</code> objects to <code>SingleCellExperiment</code>/<code>Seurat</code> (PR <a href="https://github.com/scverse/anndataR/issues/387" class="external-link">#387</a>).</li>

@@ -366,7 +366,7 @@ sessionInfo()
 #>  [5] Seqinfo_1.3.2               IRanges_2.47.5             
 #>  [7] S4Vectors_0.51.9            BiocGenerics_0.59.12       
 #>  [9] generics_0.1.4              MatrixGenerics_1.25.0      
-#> [11] matrixStats_1.5.0           anndataR_1.3.1             
+#> [11] matrixStats_1.5.0           anndataR_1.3.2             
 #> [13] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
@@ -383,11 +383,11 @@ sessionInfo()
 #> [31] otel_0.2.0          S4Arrays_1.13.0     tools_4.6.1        
 #> [34] Rhdf5lib_2.1.0      grumpy_0.1.1        curl_8.0.0         
 #> [37] reticulate_1.47.0   vctrs_0.7.3         R6_2.6.1           
-#> [40] png_0.1-9           lifecycle_1.0.5     rhdf5_2.57.12      
+#> [40] png_0.1-9           lifecycle_1.0.5     rhdf5_2.57.15      
 #> [43] fs_2.1.0            htmlwidgets_1.6.4   ragg_1.5.2         
 #> [46] desc_1.4.3          pkgdown_2.2.1       bslib_0.12.0       
 #> [49] glue_1.8.1          Rcpp_1.1.2          systemfonts_1.3.2  
-#> [52] xfun_0.60           paws.storage_0.10.0 rhdf5filters_1.25.4
+#> [52] xfun_0.61           paws.storage_0.10.0 rhdf5filters_1.25.4
 #> [55] knitr_1.52          htmltools_0.5.9     rmarkdown_2.32     
 #> [58] compiler_4.6.1
 ```
