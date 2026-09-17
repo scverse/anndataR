@@ -68,9 +68,13 @@ to_py_matrix <- function(mat) {
 to_R_matrix <- function(mat, allow_backed = TRUE) {
   if (inherits(mat, "DelayedMatrix") && isFALSE(allow_backed)) {
     seed <- DelayedArray::seed(mat)
-    if (inherits(seed, "CSC_H5SparseMatrixSeed")) {
+    if (
+      inherits(seed, c("CSC_H5SparseMatrixSeed", "CSC_ZarrSparseMatrixSeed"))
+    ) {
       mat <- as(mat, "CsparseMatrix")
-    } else if (inherits(seed, "CSR_H5SparseMatrixSeed")) {
+    } else if (
+      inherits(seed, c("CSR_H5SparseMatrixSeed", "CSR_ZarrSparseMatrixSeed"))
+    ) {
       mat <- as(mat, "RsparseMatrix")
     } else {
       mat <- as.matrix(mat)
