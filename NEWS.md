@@ -1,10 +1,15 @@
 # anndataR 1.2.2
 
-Backported from the development branch (PR #503):
+Backported from the development branch (PR #503, PR #523):
 
 - Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480).
 - Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496, thanks @JuanTejedor!).
 - Check `RELEASE_*` branches against their own Bioconductor version instead of against Bioconductor devel, and run the checks on pushes to release branches (PR #502).
+- Support the `anndata.AnnData` class name used by Python anndata >= 0.13 in `py_to_r()` and `ReticulateAnnData`, and warn that anndata >= 0.13 is not fully supported yet (PR #510, issue #499).
+- Pin Python `mudata` to `< 0.4` in the `usage_python` vignette and in the pkgdown and check workflows, as mudata 0.4 can no longer read the legacy example `.h5mu` file (PR #512, PR #518, issue #511).
+- Update the Zarr recarray tests to take into account the `Rarr` structured datatype breaking change, so that they pass with both Bioconductor release and devel versions of `Rarr` (PR #462).
+- Measure test coverage against the Bioconductor version the branch targets instead of always against devel (PR #523).
+- Drop the R-devel setup workaround for the Windows and macOS ARM check jobs, which installed R devel against Bioconductor 3.23 packages (PR #523).
 
 # anndataR 1.2.1
 

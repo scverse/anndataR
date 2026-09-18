@@ -10,7 +10,9 @@ vignette: >
 
 ```{r, include = FALSE}
 # Set up reticulate and check for required Python packages.
-reticulate::py_require("mudata")
+# TEMP(mudata<0.4): mudata 0.4 cannot read the legacy example .h5mu file,
+# revert once issue #511 is resolved
+reticulate::py_require("mudata<0.4")
 # TEMP(anndata<0.13.0): pin and the scanpy lower bound were added in PR #481,
 # revert once anndataR supports Python anndata >= 0.13.0
 reticulate::py_require("scanpy>=1.10")
@@ -107,7 +109,7 @@ seurat_obj
 Install required Python packages if needed:
 
 ```{r mudata_setup, eval=FALSE}
-reticulate::py_install("mudata")
+reticulate::py_install("mudata<0.4")
 ```
 
 ```{r load_mudata}

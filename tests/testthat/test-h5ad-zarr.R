@@ -19,12 +19,27 @@ expect_equal_h5ad_zarr <- function(h5ad_fn, zarr_fn, path, ...) {
 # compare rec arrays of h5ad and zarr
 compare_rec_array <- function(rec_array_h5ad, rec_array_zarr, test_fun) {
   test_fun(length(rec_array_h5ad), length(rec_array_zarr[[1]]))
-  test_fun(do.call(rbind, rec_array_h5ad), {
-    array_list_zarr_mat <- do.call(cbind, rec_array_zarr)
-    rownames(array_list_zarr_mat) <-
-      paste(0:(nrow(array_list_zarr_mat) - 1))
-    array_list_zarr_mat
-  })
+  # Rarr 2.1.0 introduced a breaking change: structured datatypes (record arrays)
+  # now return lists as their internal elements instead of vectors. The
+  # Bioconductor release (older Rarr) and devel (>= 2.1.0) therefore return
+  # recarrays in different shapes, so compare_rec_array() branches on this flag.
+  # See https://github.com/scverse/anndataR/issues/409
+  if (packageVersion("Rarr") >= "2.1.0") {
+    # Rarr >= 2.1.0 (Bioc devel): zarr fields are lists of scalars, so compare
+    # the h5ad fields as lists and transpose the zarr fields to match.
+    test_fun(
+      unname(lapply(rec_array_h5ad, as.list)),
+      purrr::transpose(rec_array_zarr)
+    )
+  } else {
+    # Older Rarr (Bioc release): zarr fields are double vectors.
+    test_fun(do.call(rbind, rec_array_h5ad), {
+      array_list_zarr_mat <- do.call(cbind, rec_array_zarr)
+      rownames(array_list_zarr_mat) <-
+        paste(0:(nrow(array_list_zarr_mat) - 1))
+      array_list_zarr_mat
+    })
+  }
 }
 
 test_that("reading dense matrices is the same for h5ad and zarr", {
