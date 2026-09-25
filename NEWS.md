@@ -1,3 +1,7 @@
+# anndataR (development version)
+
+- Write data frames in `obsm` and `varm` with the obs and var names as their index instead of row numbers, so Python `anndata` can read the file.
+
 # anndataR 1.3.2
 
 - Support the `anndata.AnnData` class name used by Python anndata >= 0.13 in `py_to_r()` and `ReticulateAnnData`, and warn that anndata >= 0.13 is not fully supported yet (PR #510, issue #499).

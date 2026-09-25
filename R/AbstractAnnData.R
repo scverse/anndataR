@@ -449,9 +449,15 @@ AbstractAnnData <- R6::R6Class(
           )
         }
       }
-      # Strip rownames for storage if requested
+      # Strip rownames for storage if requested. A data frame is the exception:
+      # the dataframe encoding stores its row names as the index, which must
+      # match the obs/var names, so it gets the expected row names instead.
       if (strip_rownames) {
-        rownames(mat) <- NULL
+        if (!is.data.frame(mat)) {
+          rownames(mat) <- NULL
+        } else if (!is.null(expected_rownames)) {
+          rownames(mat) <- expected_rownames
+        }
       }
 
       if (!is.null(expected_colnames) && !is.null(colnames(mat))) {
