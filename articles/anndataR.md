@@ -351,25 +351,6 @@ write_zarr(obj, tmpfile)
 #> ℹ NOTE: obs_names and var_names are stored separately
 ```
 
-Both Zarr v2 and v3 can be read and written, and new stores are written
-as Zarr v3 by default. To write a Zarr v2 store, pass `zarr_format = 2`:
-
-``` r
-
-tmpfile <- tempfile(fileext = ".zarr")
-adata$write_zarr(tmpfile, zarr_format = 2)
-```
-
-Setting `options(anndataR.zarr_format = 2)` changes the default for the
-rest of the session. Writing to a store that already exists always uses
-the format of that store, so appending to a Zarr v2 store never produces
-a mix of the two.
-
-See the [Zarr documentation](https://zarr.readthedocs.io/en/stable/) and
-the [Zarr
-specifications](https://zarr-specs.readthedocs.io/en/latest/specs.html)
-for more about the two formats.
-
 ### Subsetting `AnnData` objects
 
 *[anndataR](https://bioconductor.org/packages/3.24/anndataR)* provides
@@ -557,10 +538,10 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.3.2              SingleCellExperiment_1.35.2
+#>  [1] anndataR_1.2.2              SingleCellExperiment_1.35.2
 #>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.2             
 #>  [5] GenomicRanges_1.65.4        Seqinfo_1.3.2              
-#>  [7] IRanges_2.47.5              S4Vectors_0.51.9           
+#>  [7] IRanges_2.47.5              S4Vectors_0.51.10          
 #>  [9] BiocGenerics_0.59.12        generics_0.1.4             
 #> [11] MatrixGenerics_1.25.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-3                   
@@ -570,46 +551,46 @@ sessionInfo()
 #>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
 #>   [4] spatstat.utils_3.2-5   farver_2.1.2           rmarkdown_2.32        
 #>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
-#>  [10] ROCR_1.0-12            spatstat.explore_3.8-2 htmltools_0.5.9       
-#>  [13] S4Arrays_1.13.0        curl_8.0.0             Rhdf5lib_2.1.0        
-#>  [16] SparseArray_1.13.2     rhdf5_2.57.15          sass_0.4.10           
+#>  [10] ROCR_1.0-12            spatstat.explore_3.8-3 htmltools_0.5.9       
+#>  [13] S4Arrays_1.13.2        curl_8.0.0             Rhdf5lib_2.1.0        
+#>  [16] SparseArray_1.13.4     rhdf5_2.57.19          sass_0.4.10           
 #>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    
 #>  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
-#>  [28] plotly_4.12.1          zoo_1.9-0              cachem_1.1.0          
-#>  [31] igraph_2.3.3           mime_0.13              lifecycle_1.0.5       
+#>  [28] plotly_4.12.1          zoo_1.9-1              cachem_1.1.0          
+#>  [31] igraph_2.3.4           mime_0.13              lifecycle_1.0.5       
 #>  [34] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
-#>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.75.0         
+#>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.76.0         
 #>  [40] shiny_1.14.0           digest_0.6.39          paws.storage_0.10.0   
-#>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.5.1          
-#>  [46] RSpectra_0.16-2        irlba_2.3.7            textshaping_1.0.5     
-#>  [49] Rarr_2.1.39            progressr_1.0.0        spatstat.sparse_3.2-0 
+#>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.6.0          
+#>  [46] RSpectra_0.16-2        irlba_2.4.1            textshaping_1.0.5     
+#>  [49] Rarr_2.1.43            progressr_1.0.0        spatstat.sparse_3.2-0 
 #>  [52] polyclip_1.10-7        httr_1.4.9             abind_1.4-8           
-#>  [55] compiler_4.6.1         withr_3.0.3            S7_0.2.2              
-#>  [58] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        
-#>  [61] MASS_7.3-65            DelayedArray_0.39.6    tools_4.6.1           
-#>  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         
-#>  [67] future.apply_1.20.2    goftest_1.2-3          R.oo_1.27.1           
-#>  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.4   
-#>  [73] promises_1.5.0         grid_4.6.1             Rtsne_0.17            
-#>  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          
-#>  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           
-#>  [82] data.table_1.18.6.1    XVector_0.53.0         spatstat.geom_3.8-2   
-#>  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.3            
-#>  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-4           
-#>  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.1         
-#>  [94] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          
-#>  [97] survival_3.8-6         paws.common_0.8.10     tidyselect_1.2.1      
-#> [100] miniUI_0.1.2           pbapply_1.7-5          knitr_1.52            
-#> [103] gridExtra_2.3.1        bookdown_0.48          scattermore_1.2       
-#> [106] xfun_0.61              stringi_1.8.9          yaml_2.3.12           
-#> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
-#> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.5            
-#> [115] xtable_1.8-8           reticulate_1.47.0      systemfonts_1.3.2     
-#> [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-1 
-#> [121] globals_0.19.1         png_0.1-9              spatstat.univar_3.2-0 
-#> [124] parallel_4.6.1         pkgdown_2.2.1          ggplot2_4.0.3         
-#> [127] dotCall64_1.2          listenv_1.0.0          viridisLite_0.4.3     
-#> [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
-#> [133] purrr_1.2.2            rlang_1.3.0            cowplot_1.2.0
+#>  [55] compiler_4.6.1         S7_0.2.2               fastDummies_1.7.6     
+#>  [58] grumpy_0.1.1           R.utils_2.13.0         MASS_7.3-65           
+#>  [61] DelayedArray_0.39.8    tools_4.6.1            lmtest_0.9-40         
+#>  [64] otel_0.2.0             httpuv_1.6.17          future.apply_1.20.2   
+#>  [67] goftest_1.2-3          R.oo_1.27.1            glue_1.8.1            
+#>  [70] nlme_3.1-169           rhdf5filters_1.25.4    promises_1.5.0        
+#>  [73] grid_4.6.1             Rtsne_0.17             cluster_2.1.8.2       
+#>  [76] reshape2_1.4.5         gtable_0.3.6           spatstat.data_3.1-9   
+#>  [79] R.methodsS3_1.8.2      tidyr_1.3.2            data.table_1.18.6.1   
+#>  [82] XVector_0.53.0         spatstat.geom_3.8-3    RcppAnnoy_0.0.23      
+#>  [85] ggrepel_0.9.8          RANN_2.6.3             pillar_1.11.1         
+#>  [88] stringr_1.6.0          spam_2.11-4            RcppHNSW_0.7.0        
+#>  [91] later_1.4.8            splines_4.6.1          dplyr_1.2.1           
+#>  [94] lattice_0.22-9         deldir_2.0-4           survival_3.8-6        
+#>  [97] paws.common_0.9.0      tidyselect_1.2.1       miniUI_0.1.2          
+#> [100] pbapply_1.7-5          knitr_1.52             gridExtra_2.3.1       
+#> [103] bookdown_0.48          scattermore_1.2        xfun_0.61             
+#> [106] stringi_1.8.9          yaml_2.3.12            evaluate_1.0.5        
+#> [109] codetools_0.2-20       tibble_3.3.1           BiocManager_1.30.27   
+#> [112] cli_3.6.6              uwot_0.2.5             xtable_1.8-8          
+#> [115] reticulate_1.47.0      systemfonts_1.3.2      jquerylib_0.1.4       
+#> [118] Rcpp_1.1.2             spatstat.random_3.5-2  globals_0.19.1        
+#> [121] png_0.1-9              spatstat.univar_3.2-0  parallel_4.6.1        
+#> [124] pkgdown_2.2.1          ggplot2_4.0.3          dotCall64_1.2         
+#> [127] listenv_1.1.0          viridisLite_0.4.3      scales_1.4.0          
+#> [130] ggridges_0.5.7         crayon_1.5.3           purrr_1.2.2           
+#> [133] rlang_1.3.0            cowplot_1.2.0
 ```

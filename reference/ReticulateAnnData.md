@@ -28,7 +28,7 @@ Other AnnData classes:
 
 ## Super class
 
-[`AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
+[`anndataR::AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
 -\> `ReticulateAnnData`
 
 ## Active bindings
@@ -92,7 +92,7 @@ Other AnnData classes:
 
 ### Public methods
 
-- [`ReticulateAnnData$new()`](#method-ReticulateAnnData-initialize)
+- [`ReticulateAnnData$new()`](#method-ReticulateAnnData-new)
 
 - [`ReticulateAnnData$n_obs()`](#method-ReticulateAnnData-n_obs)
 
@@ -102,28 +102,28 @@ Other AnnData classes:
 
 Inherited methods
 
-- [`AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
-- [`AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
-- [`AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
-- [`AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
-- [`AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
-- [`AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
-- [`AbstractAnnData$layers_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-layers_keys)
-- [`AbstractAnnData$obs_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obs_keys)
-- [`AbstractAnnData$obsm_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obsm_keys)
-- [`AbstractAnnData$obsp_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obsp_keys)
-- [`AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
-- [`AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
-- [`AbstractAnnData$uns_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-uns_keys)
-- [`AbstractAnnData$var_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-var_keys)
-- [`AbstractAnnData$varm_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varm_keys)
-- [`AbstractAnnData$varp_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varp_keys)
-- [`AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
-- [`AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
+- [`anndataR::AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
+- [`anndataR::AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
+- [`anndataR::AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
+- [`anndataR::AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
+- [`anndataR::AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
+- [`anndataR::AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
+- [`anndataR::AbstractAnnData$layers_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-layers_keys)
+- [`anndataR::AbstractAnnData$obs_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obs_keys)
+- [`anndataR::AbstractAnnData$obsm_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obsm_keys)
+- [`anndataR::AbstractAnnData$obsp_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-obsp_keys)
+- [`anndataR::AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
+- [`anndataR::AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
+- [`anndataR::AbstractAnnData$uns_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-uns_keys)
+- [`anndataR::AbstractAnnData$var_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-var_keys)
+- [`anndataR::AbstractAnnData$varm_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varm_keys)
+- [`anndataR::AbstractAnnData$varp_keys()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-varp_keys)
+- [`anndataR::AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
+- [`anndataR::AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
 
 ------------------------------------------------------------------------
 
-### `ReticulateAnnData$new()`
+### Method `new()`
 
 `ReticulateAnnData` constructor
 
@@ -218,7 +218,7 @@ be created using the other provided arguments.
 
 ------------------------------------------------------------------------
 
-### `ReticulateAnnData$n_obs()`
+### Method `n_obs()`
 
 See the `n_obs` field in
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -229,7 +229,7 @@ See the `n_obs` field in
 
 ------------------------------------------------------------------------
 
-### `ReticulateAnnData$n_vars()`
+### Method `n_vars()`
 
 See the `n_vars` field in
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -240,7 +240,7 @@ See the `n_vars` field in
 
 ------------------------------------------------------------------------
 
-### `ReticulateAnnData$py_anndata()`
+### Method `py_anndata()`
 
 Get the underlying Python AnnData object
 

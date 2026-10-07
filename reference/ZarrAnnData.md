@@ -28,7 +28,7 @@ Other AnnData classes:
 
 ## Super class
 
-[`AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
+[`anndataR::AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
 -\> `ZarrAnnData`
 
 ## Active bindings
@@ -92,7 +92,7 @@ Other AnnData classes:
 
 ### Public methods
 
-- [`ZarrAnnData$new()`](#method-ZarrAnnData-initialize)
+- [`ZarrAnnData$new()`](#method-ZarrAnnData-new)
 
 - [`ZarrAnnData$n_obs()`](#method-ZarrAnnData-n_obs)
 
@@ -116,20 +116,20 @@ Other AnnData classes:
 
 Inherited methods
 
-- [`AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
-- [`AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
-- [`AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
-- [`AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
-- [`AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
-- [`AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
-- [`AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
-- [`AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
-- [`AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
-- [`AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
+- [`anndataR::AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
+- [`anndataR::AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
+- [`anndataR::AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
+- [`anndataR::AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
+- [`anndataR::AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
+- [`anndataR::AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
+- [`anndataR::AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
+- [`anndataR::AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
+- [`anndataR::AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
+- [`anndataR::AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$new()`
+### Method `new()`
 
 `ZarrAnnData` constructor
 
@@ -148,8 +148,7 @@ Inherited methods
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
-      compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-      zarr_format = NULL
+      compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4")
     )
 
 #### Arguments
@@ -221,12 +220,6 @@ Inherited methods
   [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
   for details
 
-- `zarr_format`:
-
-  The Zarr format to use. See
-  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
-  for details
-
 #### Details
 
 The constructor creates a new Zarr `AnnData` interface object. This can
@@ -236,7 +229,7 @@ file will be overwritten.
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$n_obs()`
+### Method `n_obs()`
 
 See the `n_obs` field in
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -247,7 +240,7 @@ See the `n_obs` field in
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$n_vars()`
+### Method `n_vars()`
 
 See the `n_vars` field in
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -258,7 +251,7 @@ See the `n_vars` field in
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$obs_keys()`
+### Method `obs_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -269,7 +262,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$var_keys()`
+### Method `var_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -280,7 +273,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$layers_keys()`
+### Method `layers_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -291,7 +284,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$obsm_keys()`
+### Method `obsm_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -302,7 +295,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$varm_keys()`
+### Method `varm_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -313,7 +306,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$obsp_keys()`
+### Method `obsp_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -324,7 +317,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$varp_keys()`
+### Method `varp_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -335,7 +328,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `ZarrAnnData$uns_keys()`
+### Method `uns_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)

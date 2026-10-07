@@ -28,7 +28,7 @@ Other AnnData classes:
 
 ## Super class
 
-[`AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
+[`anndataR::AbstractAnnData`](https://anndataR.scverse.org/reference/AbstractAnnData.md)
 -\> `HDF5AnnData`
 
 ## Active bindings
@@ -92,7 +92,7 @@ Other AnnData classes:
 
 ### Public methods
 
-- [`HDF5AnnData$new()`](#method-HDF5AnnData-initialize)
+- [`HDF5AnnData$new()`](#method-HDF5AnnData-new)
 
 - [`HDF5AnnData$obs_keys()`](#method-HDF5AnnData-obs_keys)
 
@@ -110,31 +110,30 @@ Other AnnData classes:
 
 - [`HDF5AnnData$uns_keys()`](#method-HDF5AnnData-uns_keys)
 
+- [`HDF5AnnData$close()`](#method-HDF5AnnData-close)
+
 - [`HDF5AnnData$n_obs()`](#method-HDF5AnnData-n_obs)
 
 - [`HDF5AnnData$n_vars()`](#method-HDF5AnnData-n_vars)
 
-- [`HDF5AnnData$open()`](#method-HDF5AnnData-open)
-
-- [`HDF5AnnData$close()`](#method-HDF5AnnData-close)
-
-- [`HDF5AnnData$as_InMemoryAnnData()`](#method-HDF5AnnData-as_InMemoryAnnData)
-
 Inherited methods
 
-- [`AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
-- [`AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
-- [`AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
-- [`AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
-- [`AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
-- [`AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
-- [`AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
-- [`AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
-- [`AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
+- [`anndataR::AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
+- [`anndataR::AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
+- [`anndataR::AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
+- [`anndataR::AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
+- [`anndataR::AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
+- [`anndataR::AbstractAnnData$as_ZarrAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ZarrAnnData)
+- [`anndataR::AbstractAnnData$print()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-print)
+- [`anndataR::AbstractAnnData$shape()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-shape)
+- [`anndataR::AbstractAnnData$write_h5ad()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_h5ad)
+- [`anndataR::AbstractAnnData$write_zarr()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-write_zarr)
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$new()`
+### Method `new()`
+
+Close the HDF5 file when the object is garbage collected
 
 `HDF5AnnData` constructor
 
@@ -153,7 +152,6 @@ Inherited methods
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
-      backed = FALSE,
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto"
     )
@@ -221,12 +219,6 @@ Inherited methods
   [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
   for details
 
-- `backed`:
-
-  Whether the object is disk backed. See
-  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
-  for details
-
 - `compression`:
 
   The compression algorithm to use. See
@@ -248,7 +240,7 @@ file will be overwritten.
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$obs_keys()`
+### Method `obs_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -259,7 +251,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$var_keys()`
+### Method `var_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -270,7 +262,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$layers_keys()`
+### Method `layers_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -281,7 +273,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$obsm_keys()`
+### Method `obsm_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -292,7 +284,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$varm_keys()`
+### Method `varm_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -303,7 +295,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$obsp_keys()`
+### Method `obsp_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -314,7 +306,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$varp_keys()`
+### Method `varp_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -325,7 +317,7 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$uns_keys()`
+### Method `uns_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -336,7 +328,17 @@ See
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$n_obs()`
+### Method [`close()`](https://rdrr.io/r/base/connections.html)
+
+Close the HDF5 file
+
+#### Usage
+
+    HDF5AnnData$close()
+
+------------------------------------------------------------------------
+
+### Method `n_obs()`
 
 See the `n_obs` field in
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -347,7 +349,7 @@ See the `n_obs` field in
 
 ------------------------------------------------------------------------
 
-### `HDF5AnnData$n_vars()`
+### Method `n_vars()`
 
 See the `n_vars` field in
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -355,44 +357,3 @@ See the `n_vars` field in
 #### Usage
 
     HDF5AnnData$n_vars()
-
-------------------------------------------------------------------------
-
-### `HDF5AnnData$open()`
-
-Open the HDF5 file handle
-
-#### Usage
-
-    HDF5AnnData$open(readonly = FALSE)
-
-#### Arguments
-
-- `readonly`:
-
-  Whether to open in read-only mode
-
-------------------------------------------------------------------------
-
-### `HDF5AnnData$close()`
-
-Close the HDF5 file handle
-
-#### Usage
-
-    HDF5AnnData$close()
-
-------------------------------------------------------------------------
-
-### `HDF5AnnData$as_InMemoryAnnData()`
-
-Convert to an
-[`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md).
-Any backed (`DelayedArray`) slots are materialized into ordinary
-in-memory matrices: an in-memory object should not stay tied to an
-on-disk file. Slots are read eagerly (via base rhdf5) rather than
-carried over as DelayedArrays, which is also faster than realizing them.
-
-#### Usage
-
-    HDF5AnnData$as_InMemoryAnnData()
