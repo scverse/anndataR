@@ -191,30 +191,27 @@ private$.validate_aligned_mapping(
 **Pattern:** Helper functions check for optional dependencies:
 
 ```r
-# tests/testthat/helper-skip_if_no_anndata.R
-skip_if_no_anndata <- function() {
-  if (!rlang::is_installed("reticulate")) {
-    skip("reticulate not installed")
-  }
-  
-  # Check Python anndata module
-  if (!reticulate::py_module_available("anndata")) {
-    skip("Python anndata not available")
-  }
+# tests/testthat/helper-skip_if_no_anndata_py.R
+skip_if_no_anndata_py <- function() {
+  skip_if_no_py_module("anndata", requirement = "anndata<0.13.0")
 }
 
 # Usage in tests
 test_that("ReticulateAnnData works", {
-  skip_if_no_anndata()
+  skip_if_no_anndata_py()
   # ... test code ...
 })
 ```
 
 **Available skip helpers:**
 
-- `skip_if_no_anndata()`: Python anndata + reticulate
-- `skip_if_no_dummy_anndata()`: anndataR.testdata Python module (for roundtrip tests)
+- `skip_if_no_py_module()`: generic helper, declares the requirement with `reticulate::py_require()` and skips if the module can't be imported
+- `skip_if_no_anndata_py()`: Python anndata + reticulate
+- `skip_if_no_dummy_anndata()`: dummy_anndata Python module (for roundtrip tests)
+- `skip_if_no_zarr()`: Python zarr module
 - `skip_if_no_h5diff()`: h5diff CLI tool
+
+**Strict mode:** set `ANNDATAR_TEST_REQUIRE_PYTHON=true` to make the Python helpers error with the actual import error instead of skipping. `reticulate::py_module_available()` turns any error into `FALSE`, so without it a broken Python environment silently skips all Python tests. scverse/integration-testing sets this when testing against anndata main.
 
 ### Roundtrip Testing Pattern
 
