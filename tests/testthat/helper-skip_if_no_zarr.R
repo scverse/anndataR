@@ -1,7 +1,7 @@
 # helper function to skip tests if we don't have the Python 'zarr' module
 # or the R {anndata} package
 skip_if_no_zarr <- function() {
-  skip_if_no_py_module("zarr")
+  skip_if_no_py_module("zarr") # nolint: object_usage_linter
 
   # TODO: Remove when this warning is removed from anndata
   wn <- reticulate::import("warnings")
