@@ -579,24 +579,43 @@ write_zarr_numeric_scalar <- function(
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param index The index to use for `data.frame` elements of the mapping. Used
+#' for aligned mappings (`obsm`/`varm`), where the index of a `data.frame` must
+#' be the `obs_names`/`var_names` of the parent object. Ignored by elements
+#' that are not `data.frame`s. If `NULL` then each `data.frame` provides its
+#' own index, see `write_zarr_data_frame()`.
 #' @param version Encoding version of the element to write
 write_zarr_mapping <- function(
   value,
   store,
   name,
   compression,
+  index = NULL,
   version = "0.1.0"
 ) {
   create_zarr_group(store, name)
 
   # Write mapping elements
   for (key in names(value)) {
-    write_zarr_element(
-      value[[key]],
-      store,
-      paste0(name, "/", key),
-      compression
-    )
+    element <- value[[key]]
+    element_name <- paste0(name, "/", key)
+
+    if (!is.null(index) && is.data.frame(element)) {
+      write_zarr_element(
+        element,
+        store,
+        element_name,
+        compression,
+        index = index
+      )
+    } else {
+      write_zarr_element(
+        element,
+        store,
+        element_name,
+        compression
+      )
+    }
   }
 
   write_zarr_encoding(store, name, "dict", version)
