@@ -255,9 +255,18 @@ test_that("writing obsm/varm data frames stores obs_names/var_names as index", {
     named = data.frame(A = rnorm(10), B = rnorm(10), row.names = obs_names),
     # Row names are optional, the index is taken from the parent either way
     unnamed = data.frame(C = rnorm(10)),
+    # Columns with missing values are written as nullable arrays
+    nullable = data.frame(
+      int = c(1:9, NA),
+      chr = c("x", NA, letters[3:10])
+    ),
     matrix = matrix(rnorm(10 * 2), nrow = 10, ncol = 2)
   )
-  h5ad$varm <- list(named = data.frame(D = rnorm(20), row.names = var_names))
+  varm_dbl <- c(0.5, NA, seq(1.5, 18.5))
+  h5ad$varm <- list(
+    named = data.frame(D = rnorm(20), row.names = var_names),
+    nullable = data.frame(dbl = varm_dbl, chr = letters[1:20])
+  )
   h5ad$close()
 
   expect_identical(
@@ -269,7 +278,15 @@ test_that("writing obsm/varm data frames stores obs_names/var_names as index", {
     obs_names
   )
   expect_identical(
+    as.vector(rhdf5::h5read(h5ad_file, "obsm/nullable/_index")),
+    obs_names
+  )
+  expect_identical(
     as.vector(rhdf5::h5read(h5ad_file, "varm/named/_index")),
+    var_names
+  )
+  expect_identical(
+    as.vector(rhdf5::h5read(h5ad_file, "varm/nullable/_index")),
     var_names
   )
 
@@ -281,6 +298,13 @@ test_that("writing obsm/varm data frames stores obs_names/var_names as index", {
   expect_identical(colnames(adata$obsm$named), c("A", "B"))
   expect_identical(rownames(adata$obsm$named), obs_names)
   expect_identical(rownames(adata$varm$named), var_names)
+
+  # The values of the data frames, including missing values, round-trip
+  expect_identical(adata$obsm$nullable$int, c(1:9, NA))
+  expect_identical(adata$obsm$nullable$chr, c("x", NA, letters[3:10]))
+  expect_identical(rownames(adata$varm$nullable), var_names)
+  expect_identical(adata$varm$nullable$dbl, varm_dbl)
+  expect_identical(adata$varm$nullable$chr, letters[1:20])
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_obsp, status=done
