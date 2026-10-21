@@ -1,5 +1,15 @@
 # Changelog
 
+## anndataR 1.3.3
+
+- Add a strict mode for the Python tests: with
+  `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error
+  with the actual import error instead of skipping, so that a broken
+  Python environment can’t silently skip all Python tests. Used by
+  scverse/integration-testing to test against anndata main (PR
+  [\#533](https://github.com/scverse/anndataR/issues/533), issue
+  [\#515](https://github.com/scverse/anndataR/issues/515)).
+
 ## anndataR 1.3.2
 
 - Support the `anndata.AnnData` class name used by Python anndata \>=

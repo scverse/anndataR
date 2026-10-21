@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -222,31 +222,29 @@
 <h3 id="conditional-test-skipping">Conditional Test Skipping<a class="anchor" aria-label="anchor" href="#conditional-test-skipping"></a></h3>
 <p><strong>Pattern:</strong> Helper functions check for optional dependencies:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># tests/testthat/helper-skip_if_no_anndata.R</span></span>
-<span><span class="va">skip_if_no_anndata</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">is_installed</a></span><span class="op">(</span><span class="st">"reticulate"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">skip</span><span class="op">(</span><span class="st">"reticulate not installed"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span>  </span>
-<span>  <span class="co"># Check Python anndata module</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_module_available.html" class="external-link">py_module_available</a></span><span class="op">(</span><span class="st">"anndata"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">skip</span><span class="op">(</span><span class="st">"Python anndata not available"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
+<code class="sourceCode R"><span><span class="co"># tests/testthat/helper-skip_if_no_anndata_py.R</span></span>
+<span><span class="va">skip_if_no_anndata_py</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">skip_if_no_py_module</span><span class="op">(</span><span class="st">"anndata"</span>, requirement <span class="op">=</span> <span class="st">"anndata&lt;0.13.0"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Usage in tests</span></span>
 <span><span class="fu">test_that</span><span class="op">(</span><span class="st">"ReticulateAnnData works"</span>, <span class="op">{</span></span>
-<span>  <span class="fu">skip_if_no_anndata</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu">skip_if_no_anndata_py</span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="co"># ... test code ...</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Available skip helpers:</strong></p>
 <ul><li>
-<code>skip_if_no_anndata()</code>: Python anndata + reticulate</li>
+<code>skip_if_no_py_module()</code>: generic helper, declares the requirement with <code><a href="https://rstudio.github.io/reticulate/reference/py_require.html" class="external-link">reticulate::py_require()</a></code> and skips if the module can’t be imported</li>
 <li>
-<code>skip_if_no_dummy_anndata()</code>: anndataR.testdata Python module (for roundtrip tests)</li>
+<code>skip_if_no_anndata_py()</code>: Python anndata + reticulate</li>
+<li>
+<code>skip_if_no_dummy_anndata()</code>: dummy_anndata Python module (for roundtrip tests)</li>
+<li>
+<code>skip_if_no_zarr()</code>: Python zarr module</li>
 <li>
 <code>skip_if_no_h5diff()</code>: h5diff CLI tool</li>
-</ul></div>
+</ul><p><strong>Strict mode:</strong> set <code>ANNDATAR_TEST_REQUIRE_PYTHON=true</code> to make the Python helpers error with the actual import error instead of skipping. <code><a href="https://rstudio.github.io/reticulate/reference/py_module_available.html" class="external-link">reticulate::py_module_available()</a></code> turns any error into <code>FALSE</code>, so without it a broken Python environment silently skips all Python tests. scverse/integration-testing sets this when testing against anndata main.</p>
+</div>
 <div class="section level3">
 <h3 id="roundtrip-testing-pattern">Roundtrip Testing Pattern<a class="anchor" aria-label="anchor" href="#roundtrip-testing-pattern"></a></h3>
 <p><strong>Goal:</strong> Ensure R read/write matches Python anndata behavior</p>
