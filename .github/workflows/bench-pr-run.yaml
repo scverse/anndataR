@@ -42,7 +42,9 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.x'
+          # TEMP(python<3.15): h5py has no Python 3.15 wheels yet and fails to
+          # build from source, revert to 3.x once it does
+          python-version: '3.14'
 
       - name: Install Python dependencies
         # TEMP(anndata<0.13.0): pin added in PR #481, revert once anndataR
