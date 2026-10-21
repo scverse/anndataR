@@ -169,7 +169,8 @@ write_h5ad_null <- function(
   name,
   compression,
   chunk_size = "auto",
-  version = "0.1.0"
+  version = "0.1.0",
+  ...
 ) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
