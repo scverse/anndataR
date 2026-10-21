@@ -1,3 +1,9 @@
+# anndataR 1.2.3
+
+Backported from the development branch (PR #535):
+
+- Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
+
 # anndataR 1.2.2
 
 Backported from the development branch (PR #503, PR #523):
