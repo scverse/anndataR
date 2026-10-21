@@ -9,6 +9,12 @@
   scverse/integration-testing to test against anndata main (PR
   [\#533](https://github.com/scverse/anndataR/issues/533), issue
   [\#515](https://github.com/scverse/anndataR/issues/515)).
+- Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is
+  the `obs_names`/`var_names` of the parent object instead of R’s
+  automatic row numbers, which produced files that Python **anndata**
+  refused to read (PR
+  [\#501](https://github.com/scverse/anndataR/issues/501), PR
+  [\#525](https://github.com/scverse/anndataR/issues/525)).
 
 ## anndataR 1.3.2
 
