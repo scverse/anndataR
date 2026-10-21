@@ -1,5 +1,104 @@
 # Changelog
 
+## anndataR 1.3.2
+
+- Support the `anndata.AnnData` class name used by Python anndata \>=
+  0.13 in
+  [`py_to_r()`](https://rstudio.github.io/reticulate/reference/r-py-conversion.html)
+  and `ReticulateAnnData`, and warn that anndata \>= 0.13 is not fully
+  supported yet (PR
+  [\#510](https://github.com/scverse/anndataR/issues/510), issue
+  [\#499](https://github.com/scverse/anndataR/issues/499)).
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR
+  [\#480](https://github.com/scverse/anndataR/issues/480)).
+- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D
+  datasets instead of preserving their shape (PR
+  [\#496](https://github.com/scverse/anndataR/issues/496)).
+- Remove the workaround for LZF compression of VLen strings and require
+  `rhdf5 >= 2.57.5`, which fixes the issue upstream (PR
+  [\#497](https://github.com/scverse/anndataR/issues/497)).
+- Pin Python `mudata` to `< 0.4` in the `usage_python` vignette, as
+  mudata 0.4 can no longer read the legacy example `.h5mu` file (PR
+  [\#512](https://github.com/scverse/anndataR/issues/512), issue
+  [\#511](https://github.com/scverse/anndataR/issues/511)).
+- Pin Python `mudata` to `< 0.4` in the pkgdown and macOS-Intel check
+  workflows as well, because
+  [`py_require()`](https://rstudio.github.io/reticulate/reference/py_require.html)
+  pins in the vignette are ignored when `RETICULATE_PYTHON` is forced
+  (PR [\#518](https://github.com/scverse/anndataR/issues/518), issue
+  [\#511](https://github.com/scverse/anndataR/issues/511)).
+- Remove the `as.na` attribute that rhdf5 2.57.12 adds to datasets
+  containing `NA` when comparing R-written files to Python-written ones
+  in the roundtrip tests (PR
+  [\#519](https://github.com/scverse/anndataR/issues/519), issue
+  [\#517](https://github.com/scverse/anndataR/issues/517)).
+- Skip the H5AD file-closure tests while rhdf5 2.57.12 emits a spurious
+  `NA_character_` warning for numeric datasets containing `NA`, tracked
+  as a known issue until the fix from Huber-group-EMBL/rhdf5#242 reaches
+  Bioconductor devel (PR
+  [\#520](https://github.com/scverse/anndataR/issues/520)).
+- Remove the special handling of Zarr v3 structured datatypes in the
+  tests, now that `Rarr` supports them (PR
+  [\#498](https://github.com/scverse/anndataR/issues/498)).
+- Check `RELEASE_*` branches against Bioconductor release and `devel`
+  against Bioconductor devel, instead of checking `devel` against both
+  (PR [\#502](https://github.com/scverse/anndataR/issues/502)).
+- Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR
+  [\#504](https://github.com/scverse/anndataR/issues/504)).
+
+## anndataR 1.3.1
+
+- Add support for reading backed objects using `DelayedArray` matrices,
+  including a `backed` argument for `HDF5AnnData` and `InMemoryAnnData`,
+  and conversion of backed `AnnData` objects to
+  `SingleCellExperiment`/`Seurat` (PR
+  [\#387](https://github.com/scverse/anndataR/issues/387)).
+- Add support for writing Zarr v3 stores, using (i) `zarr_format`
+  argument of
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)/[`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+  or (ii) the `anndataR.zarr_format` option. New stores are written as
+  Zarr v3 by default (PR
+  [\#455](https://github.com/scverse/anndataR/issues/455)).
+- Write strings as VLen-UTF8 rather than as fixed-width, so that string
+  arrays read back as variable length strings in Python `anndata` (PR
+  [\#455](https://github.com/scverse/anndataR/issues/455)).
+- Use the format of an existing Zarr store when writing to it and
+  truncate the store when `mode = "w"`, so that a store can no longer
+  end up with a mix of Zarr v2 and v3 nodes (PR
+  [\#455](https://github.com/scverse/anndataR/issues/455)).
+- Enable additional linters and optimise several suboptimal code
+  patterns (PR [\#453](https://github.com/scverse/anndataR/issues/453)).
+- Fix `create_zarr()` so that Zarr stores can be created at relative
+  paths and at paths containing regex metacharacters (PR
+  [\#478](https://github.com/scverse/anndataR/issues/478)).
+- Fix use of `&` instead of `&&` when validating column names in
+  `AbstractAnnData` (PR
+  [\#487](https://github.com/scverse/anndataR/issues/487)).
+- Update tests to take into account the `Rarr` structured datatype
+  breaking change (PR
+  [\#462](https://github.com/scverse/anndataR/issues/462)).
+- Temporarily require Python `anndata < 0.13.0` in tests, workflows and
+  the Python usage vignette (PR
+  [\#481](https://github.com/scverse/anndataR/issues/481)).
+- Add Zarr to the benchmarks (PR
+  [\#446](https://github.com/scverse/anndataR/issues/446)).
+- Add Bioconductor R-universe checks (PR
+  [\#470](https://github.com/scverse/anndataR/issues/470)).
+- Fix CI runners (PR
+  [\#457](https://github.com/scverse/anndataR/issues/457)).
+- Upgrade to roxygen2 8.0.0.
+- Simplify roxygen documentation for the H5AD and Zarr helpers by using
+  `@inheritParams` (PR
+  [\#479](https://github.com/scverse/anndataR/issues/479)).
+- Update `CITATION` with the published paper (PR
+  [\#464](https://github.com/scverse/anndataR/issues/464)).
+- Mark Zarr support as implemented in the class diagram (PR
+  [\#460](https://github.com/scverse/anndataR/issues/460)).
+
+## anndataR 1.3.0
+
+- Bioconductor 3.24 devel
+
 ## anndataR 1.2.2
 
 Backported from the development branch (PR
@@ -70,6 +169,10 @@ Backported from the development branch (PR
 
 - Fix broken links (PR
   [\#429](https://github.com/scverse/anndataR/issues/429)).
+- Fix the software design vignette (PR
+  [\#438](https://github.com/scverse/anndataR/issues/438)).
+- Fix GitHub Actions MacOS/Windows setup issue (PR
+  [\#447](https://github.com/scverse/anndataR/issues/447)).
 
 ## anndataR 1.1.1
 
@@ -93,6 +196,33 @@ Backported from the development branch (PR
 ## anndataR 1.1.0
 
 - Bioconductor 3.23 devel
+- Separate reading and writing keys in `HDF5AnnData` (PR
+  [\#392](https://github.com/scverse/anndataR/issues/392)).
+- Add a check for 0 dimensions when converting to `Seurat` (PR
+  [\#393](https://github.com/scverse/anndataR/issues/393)).
+- Warn that matrix dim names will not be written to H5AD files (PR
+  [\#396](https://github.com/scverse/anndataR/issues/396)).
+- Add a warning to `.from_SCE_convert()` (PR
+  [\#402](https://github.com/scverse/anndataR/issues/402)).
+- Warn when a rotation is provided but not stored in a
+  `LinearEmbeddingMatrix` (PR
+  [\#407](https://github.com/scverse/anndataR/issues/407)).
+- Fix linting issues (PR
+  [\#389](https://github.com/scverse/anndataR/issues/389)).
+- Add Bioconductor badges (PR
+  [\#375](https://github.com/scverse/anndataR/issues/375)).
+- Update **{pkgdown}** rendering (PR
+  [\#379](https://github.com/scverse/anndataR/issues/379)).
+- Force loading the environment in the Python vignette (PR
+  [\#394](https://github.com/scverse/anndataR/issues/394)).
+- Add issue templates (PR
+  [\#395](https://github.com/scverse/anndataR/issues/395)).
+- Update GitHub Actions based on those used by **{rhdf5}** (PR
+  [\#378](https://github.com/scverse/anndataR/issues/378)).
+- Set different cache versions in GitHub Actions (PR
+  [\#403](https://github.com/scverse/anndataR/issues/403)).
+- Update CI (PR
+  [\#416](https://github.com/scverse/anndataR/issues/416)).
 
 ## anndataR 1.0.2
 

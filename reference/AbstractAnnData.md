@@ -131,7 +131,7 @@ Other AnnData classes:
 
 ------------------------------------------------------------------------
 
-### Method [`print()`](https://rdrr.io/r/base/print.html)
+### `AbstractAnnData$print()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -148,7 +148,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `shape()`
+### `AbstractAnnData$shape()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -159,7 +159,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `n_obs()`
+### `AbstractAnnData$n_obs()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -170,7 +170,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `n_vars()`
+### `AbstractAnnData$n_vars()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -181,7 +181,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `obs_keys()`
+### `AbstractAnnData$obs_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -192,7 +192,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `var_keys()`
+### `AbstractAnnData$var_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -203,7 +203,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `layers_keys()`
+### `AbstractAnnData$layers_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -214,7 +214,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `obsm_keys()`
+### `AbstractAnnData$obsm_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -225,7 +225,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `varm_keys()`
+### `AbstractAnnData$varm_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -236,7 +236,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `obsp_keys()`
+### `AbstractAnnData$obsp_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -247,7 +247,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `varp_keys()`
+### `AbstractAnnData$varp_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -258,7 +258,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method `uns_keys()`
+### `AbstractAnnData$uns_keys()`
 
 See
 [AnnData-usage](https://anndataR.scverse.org/reference/AnnData-usage.md)
@@ -269,7 +269,7 @@ See
 
 ------------------------------------------------------------------------
 
-### Method [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md)
+### `AbstractAnnData$as_SingleCellExperiment()`
 
 Convert to `SingleCellExperiment`
 
@@ -338,7 +338,7 @@ A `SingleCellExperiment` object
 
 ------------------------------------------------------------------------
 
-### Method [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
+### `AbstractAnnData$as_Seurat()`
 
 Convert to `Seurat`
 
@@ -406,7 +406,7 @@ A `Seurat` object
 
 ------------------------------------------------------------------------
 
-### Method [`as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/as_InMemoryAnnData.md)
+### `AbstractAnnData$as_InMemoryAnnData()`
 
 Convert to an
 [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md)
@@ -427,7 +427,7 @@ object
 
 ------------------------------------------------------------------------
 
-### Method [`as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/as_ReticulateAnnData.md)
+### `AbstractAnnData$as_ReticulateAnnData()`
 
 Convert to a
 [`ReticulateAnnData`](https://anndataR.scverse.org/reference/ReticulateAnnData.md)
@@ -448,7 +448,7 @@ object
 
 ------------------------------------------------------------------------
 
-### Method [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
+### `AbstractAnnData$as_HDF5AnnData()`
 
 Convert to an
 [`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
@@ -496,7 +496,7 @@ object
 
 ------------------------------------------------------------------------
 
-### Method [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+### `AbstractAnnData$as_ZarrAnnData()`
 
 Convert to a
 [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
@@ -510,7 +510,8 @@ for more details on the conversion
     AbstractAnnData$as_ZarrAnnData(
       file,
       compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      zarr_format = NULL
     )
 
 #### Arguments
@@ -530,6 +531,11 @@ for more details on the conversion
   See
   [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
 
+- `zarr_format`:
+
+  See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+
 #### Returns
 
 A [`ZarrAnnData`](https://anndataR.scverse.org/reference/ZarrAnnData.md)
@@ -537,7 +543,7 @@ object
 
 ------------------------------------------------------------------------
 
-### Method [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
+### `AbstractAnnData$write_h5ad()`
 
 Write the `AnnData` object to an H5AD file
 
@@ -582,7 +588,7 @@ for details
 
 ------------------------------------------------------------------------
 
-### Method [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+### `AbstractAnnData$write_zarr()`
 
 Write the `AnnData` object to a Zarr file
 
@@ -595,7 +601,8 @@ for details
     AbstractAnnData$write_zarr(
       path,
       compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      ...
     )
 
 #### Arguments
@@ -615,13 +622,18 @@ for details
   See
   [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
 
+- `...`:
+
+  See
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+
 #### Returns
 
 `path` invisibly
 
 ------------------------------------------------------------------------
 
-### Method `clone()`
+### `AbstractAnnData$clone()`
 
 The objects of this class are cloneable with this method.
 

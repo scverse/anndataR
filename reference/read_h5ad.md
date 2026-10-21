@@ -9,6 +9,7 @@ read_h5ad(
   path,
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
+  backed = FALSE,
   ...
 )
 ```
@@ -53,6 +54,13 @@ read_h5ad(
 
   - `w-`/`x` are synonyms, creating a file and failing if it already
     exists.
+
+- backed:
+
+  Whether to read the H5AD file in backed mode, returning an object
+  containing
+  [DelayedArray::DelayedMatrix](https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html)
+  matrices. Which slots are backed depends on the value of `as`.
 
 - ...:
 

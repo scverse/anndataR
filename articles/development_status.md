@@ -16,18 +16,18 @@ These tables show the status of the implementation of different
 
 | Slot | Getter | Getter test | Setter | Setter test |
 |:---|:--:|:--:|:--:|:--:|
-| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L76) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L23) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L80) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L146) |
-| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L205) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L73) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L208) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L157) |
-| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L241) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L117) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L244) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L189) |
-| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L101) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L33) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L105) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L211) |
-| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L155) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L53) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L159) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L240) |
+| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L71) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L23) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L81) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L146) |
+| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L220) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L73) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L225) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L157) |
+| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L256) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L117) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L261) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L189) |
+| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L100) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L33) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L110) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L211) |
+| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L162) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L53) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L172) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L240) |
 | raw |  |  |  |  |
-| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L277) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L280) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L270) |
-| var | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L223) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L95) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L226) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L173) |
-| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L259) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L123) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L262) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L200) |
-| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L128) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L43) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L132) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L226) |
-| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L180) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L63) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L184) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L255) |
-| X | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L51) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L16) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L55) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L135) |
+| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L292) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L297) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L270) |
+| var | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L238) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L95) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L243) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L173) |
+| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L274) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L123) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L279) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L200) |
+| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L131) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L43) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L141) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L226) |
+| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L191) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L63) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L201) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L255) |
+| X | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L46) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L16) | [✅](https://github.com/scverse/anndataR/blob/main/R/HDF5AnnData.R#L52) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-HDF5AnnData.R#L135) |
 
 ### `InMemoryAnnData`
 
@@ -66,18 +66,18 @@ These tables show the status of the implementation of different
 
 | Slot | Getter | Getter test | Setter | Setter test |
 |:---|:--:|:--:|:--:|:--:|
-| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L74) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L23) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L79) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L147) |
-| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L203) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L71) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L207) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L160) |
-| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L239) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L115) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L243) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L196) |
-| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L99) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L104) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L222) |
-| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L153) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L51) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L158) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L253) |
+| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L76) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L23) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L81) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L150) |
+| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L210) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L71) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L214) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L163) |
+| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L248) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L115) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L252) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L199) |
+| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L102) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L107) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L225) |
+| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L158) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L51) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L163) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L256) |
 | raw |  |  |  |  |
-| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L265) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L269) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L284) |
-| var | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L221) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L93) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L225) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L178) |
-| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L252) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L121) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L256) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L209) |
-| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L126) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L131) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L237) |
-| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L178) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L61) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L183) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L269) |
-| X | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L49) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L16) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L54) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L134) |
+| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L274) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L278) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L287) |
+| var | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L229) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L93) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L233) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L181) |
+| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L261) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L121) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L265) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L212) |
+| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L130) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L135) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L240) |
+| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L184) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L61) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L189) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L272) |
+| X | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L50) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L16) | [✅](https://github.com/scverse/anndataR/blob/main/R/ZarrAnnData.R#L55) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-ZarrAnnData.R#L134) |
 
 ## Conversion
 
@@ -88,17 +88,17 @@ These tables show the implementation status of conversion between
 
 | Slot | From | From test | To | To test |
 |:---|:--:|:--:|:--:|:--:|
-| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L314) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L66) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L209) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L64) |
-| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L266) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L24) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L239) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L22) |
-| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L265) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L18) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L240) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L18) |
-| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L327) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L176) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L347) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L202) |
-| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L391) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L90) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L249) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L123) |
+| layers | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L320) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L66) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L209) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L64) |
+| obs | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L272) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L24) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L239) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L22) |
+| obs_names | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L271) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L18) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L240) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L18) |
+| obsm | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L333) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L176) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L347) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L202) |
+| obsp | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L397) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L90) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L249) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L123) |
 | raw |  |  |  |  |
-| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L439) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L145) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L257) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L171) |
-| var | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L290) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L45) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L244) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L43) |
-| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L289) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L20) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L245) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L16) |
-| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L353) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L183) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L348) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L210) |
-| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L415) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L118) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L253) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L147) |
+| uns | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L445) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L145) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L257) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L171) |
+| var | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L296) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L45) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L244) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L43) |
+| var_names | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L295) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L20) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L245) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L16) |
+| varm | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L359) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L183) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L348) | [🚧](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L210) |
+| varp | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L421) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-from_SingleCellExperiment.R#L118) | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L253) | [✅](https://github.com/scverse/anndataR/blob/main/tests/testthat/test-as_SingleCellExperiment.R#L147) |
 | X | [✅](https://github.com/scverse/anndataR/blob/main/R/from_SingleCellExperiment.R#L142) |  | [✅](https://github.com/scverse/anndataR/blob/main/R/as_SingleCellExperiment.R#L208) |  |
 
 ### `Seurat`
@@ -144,6 +144,34 @@ tracker](https://github.com/scverse/anndataR/issues?q=sort%3Aupdated-desc+is%3Ai
 
 Investigate if this is a problem or not.
 
+### Issue: rhdf5 2.57.12 emits a spurious NA_character\_ warning when a numeric dataset containing NA or NaN is written into a pre-created dataset.
+
+- Affected backend: `HDF5AnnData`
+- Affected slot(s): `X`, `layers`, `obs`, `var`, `obsm`, `varm`, `obsp`,
+  `varp`, `uns`
+- Affected dtype(s): `numeric_with_nas`, `numeric_matrix_with_nas`,
+  `numeric_dense_with_nas`, `numeric_csparse_with_nas`,
+  `numeric_rsparse_with_nas`, `integer_matrix_with_nas`,
+  `integer_csparse_with_nas`, `integer_rsparse_with_nas`
+- Probable cause: write
+- To investigate: FALSE
+- To fix: FALSE
+
+#### Error message
+
+    Writing NA_character_ in fixed-length string datasets is fragile and deprecated.
+    In particular, it will write NA_character_ as the string 'NA' in the HDF5 file.
+    Use variable-length strings instead.
+
+#### Proposed solution
+
+The check in rhdf5’s h5writeDataset.array() lacks a storage.mode(obj) ==
+“character” guard on the existing-dataset branch
+(<https://github.com/Huber-group-EMBL/rhdf5/blob/1682d4b493d0ddc9e46cba78a141b780bb8390e8/R/h5write.R#L405-L417>).
+Reported in Huber-group-EMBL/rhdf5#241 and fixed in
+Huber-group-EMBL/rhdf5#242; remove this entry and the skips in
+test-h5ad-fileclosure.R once the fixed rhdf5 is in Bioconductor devel.
+
 ## Session info
 
 ``` r
@@ -182,7 +210,7 @@ sessionInfo()
     ## [10] R6_2.6.1            generics_0.1.4      htmlwidgets_1.6.4  
     ## [13] bookdown_0.48       desc_1.4.3          bslib_0.12.0       
     ## [16] pillar_1.11.1       rlang_1.3.0         cachem_1.1.0       
-    ## [19] stringi_1.8.9       xfun_0.61           fs_2.1.0           
+    ## [19] stringi_1.8.9       xfun_0.62           fs_2.1.0           
     ## [22] sass_0.4.10         otel_0.2.0          cli_3.6.6          
     ## [25] pkgdown_2.2.1       withr_3.0.3         magrittr_2.0.5     
     ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.3        

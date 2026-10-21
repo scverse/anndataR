@@ -19,40 +19,43 @@ Useful links:
 ## Author
 
 **Maintainer**: Robrecht Cannoodt <rcannood@gmail.com>
-([ORCID](https://orcid.org/0000-0003-3641-729X)) (rcannood)
+([ORCID](https://orcid.org/0000-0003-3641-729X)) (github: rcannood)
 
 Authors:
 
+- Robrecht Cannoodt <rcannood@gmail.com>
+  ([ORCID](https://orcid.org/0000-0003-3641-729X)) (github: rcannood)
+
 - Luke Zappia <luke@lazappi.id.au>
-  ([ORCID](https://orcid.org/0000-0001-7744-8565)) (lazappi)
+  ([ORCID](https://orcid.org/0000-0001-7744-8565)) (github: lazappi)
 
 - Martin Morgan <mtmorgan.bioc@gmail.com>
-  ([ORCID](https://orcid.org/0000-0002-5874-8148)) (mtmorgan)
+  ([ORCID](https://orcid.org/0000-0002-5874-8148)) (github: mtmorgan)
 
 - Louise Deconinck <louise.deconinck@gmail.com>
-  ([ORCID](https://orcid.org/0000-0001-8100-6823)) (LouiseDck)
+  ([ORCID](https://orcid.org/0000-0001-8100-6823)) (github: LouiseDck)
 
 Other contributors:
 
 - Danila Bredikhin <danila.bredikhin@embl.de>
-  ([ORCID](https://orcid.org/0000-0001-8089-6983)) (gtca)
+  ([ORCID](https://orcid.org/0000-0001-8089-6983)) (github: gtca)
   \[contributor\]
 
 - Isaac Virshup ([ORCID](https://orcid.org/0000-0002-1710-8945))
-  (ivirshup) \[contributor\]
+  (github: ivirshup) \[contributor\]
 
 - Brian Schilder <brian_schilder@alumni.brown.edu>
-  ([ORCID](https://orcid.org/0000-0001-5949-2191)) (bschilder)
+  ([ORCID](https://orcid.org/0000-0001-5949-2191)) (github: bschilder)
   \[contributor\]
 
 - Chananchida Sang-aram ([ORCID](https://orcid.org/0000-0002-0922-0822))
-  (csangara) \[contributor\]
+  (github: csangara) \[contributor\]
 
 - Artür Manukyan ([ORCID](https://orcid.org/0000-0002-0441-9517))
-  (Artur-man) \[contributor\]
+  (github: Artur-man) \[contributor\]
 
-- Hugo Gruson ([ORCID](https://orcid.org/0000-0002-4094-1476)) (Bisaloo)
-  \[contributor\]
+- Hugo Gruson ([ORCID](https://orcid.org/0000-0002-4094-1476)) (github:
+  Bisaloo) \[contributor\]
 
 - Data Intuitive <info@data-intuitive.com> \[funder\]
 
