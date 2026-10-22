@@ -8,6 +8,7 @@ as_ZarrAnnData(
   adata,
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   zarr_format = NULL
 )
@@ -20,6 +21,13 @@ as_ZarrAnnData(
 \item{compression}{The compression algorithm to use when writing the
 Zarr file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zstd"},
 \code{"lzma"}, \code{"bz2"}, \code{"zlib"} or \code{"lz4"}. Defaults to \code{"none"}.}
+
+\item{chunk_size}{The target chunk size in bytes to use when writing
+Zarr arrays. When \code{"auto"} (default), the chunk size is determined
+automatically using the same algorithm as for HDF5 datasets in
+\code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}}, which mimics h5py's auto-chunking. Set to \code{NULL} to
+write each array as a single chunk, or a number to use a specific target
+size in bytes.}
 
 \item{mode}{The mode to open the Zarr file:
 \itemize{

@@ -22,6 +22,7 @@ ZarrAnnData <- R6::R6Class(
     .zarrobj = NULL,
     .zarrformat = NULL,
     .compression = NULL,
+    .chunk_size = "auto",
     .readonly = NULL,
 
     .check_file_valid = function() {
@@ -64,7 +65,8 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "X",
             private$.compression,
-            private$.zarrformat
+            private$.zarrformat,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -90,7 +92,8 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "layers",
             private$.compression,
-            private$.zarrformat
+            private$.zarrformat,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -119,6 +122,7 @@ ZarrAnnData <- R6::R6Class(
             "obsm",
             private$.compression,
             private$.zarrformat,
+            chunk_size = private$.chunk_size,
             index = self$obs_names
           )
       }
@@ -148,6 +152,7 @@ ZarrAnnData <- R6::R6Class(
             "varm",
             private$.compression,
             private$.zarrformat,
+            chunk_size = private$.chunk_size,
             index = self$var_names
           )
       }
@@ -174,7 +179,8 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "obsp",
             private$.compression,
-            private$.zarrformat
+            private$.zarrformat,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -200,7 +206,8 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "varp",
             private$.compression,
-            private$.zarrformat
+            private$.zarrformat,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -219,7 +226,8 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "obs",
             private$.compression,
-            private$.zarrformat
+            private$.zarrformat,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -238,7 +246,8 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "var",
             private$.compression,
-            private$.zarrformat
+            private$.zarrformat,
+            chunk_size = private$.chunk_size
           )
       }
     },
@@ -287,7 +296,8 @@ ZarrAnnData <- R6::R6Class(
             private$.zarrobj,
             "uns",
             private$.compression,
-            private$.zarrformat
+            private$.zarrformat,
+            chunk_size = private$.chunk_size
           )
       }
     }
@@ -312,6 +322,8 @@ ZarrAnnData <- R6::R6Class(
     #' @param mode The mode to open the Zarr file. See [as_ZarrAnnData()] for
     #'   details
     #' @param compression The compression algorithm to use. See
+    #'   [as_ZarrAnnData()] for details
+    #' @param chunk_size The target chunk size in bytes. See
     #'   [as_ZarrAnnData()] for details
     #' @param zarr_format The Zarr format to use. See
     #'   [as_ZarrAnnData()] for details
@@ -344,6 +356,7 @@ ZarrAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
+      chunk_size = "auto",
       zarr_format = NULL
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc")
@@ -352,6 +365,7 @@ ZarrAnnData <- R6::R6Class(
       mode <- match.arg(mode)
 
       private$.compression <- compression
+      private$.chunk_size <- chunk_size
 
       if (!is.null(zarr_format)) {
         zarr_format <- check_zarr_format(zarr_format)
@@ -455,7 +469,8 @@ ZarrAnnData <- R6::R6Class(
             obs,
             var,
             compression,
-            zarr_format = private$.zarrformat
+            zarr_format = private$.zarrformat,
+            chunk_size = chunk_size
           )
         }
       }
@@ -554,6 +569,12 @@ ZarrAnnData <- R6::R6Class(
 #' @param compression The compression algorithm to use when writing the
 #'   Zarr file. Can be one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`,
 #'   `"lzma"`, `"bz2"`, `"zlib"` or `"lz4"`. Defaults to `"none"`.
+#' @param chunk_size The target chunk size in bytes to use when writing
+#'   Zarr arrays. When `"auto"` (default), the chunk size is determined
+#'   automatically using the same algorithm as for HDF5 datasets in
+#'   [as_HDF5AnnData()], which mimics h5py's auto-chunking. Set to `NULL` to
+#'   write each array as a single chunk, or a number to use a specific target
+#'   size in bytes.
 #' @param mode The mode to open the Zarr file:
 #'
 #'   * `a` creates a new file or opens an existing one for read/write
@@ -591,6 +612,7 @@ as_ZarrAnnData <- function(
     "zlib",
     "lz4"
   ),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   zarr_format = NULL
 ) {
@@ -615,6 +637,7 @@ as_ZarrAnnData <- function(
     shape = adata$shape(),
     mode = mode,
     compression = compression,
+    chunk_size = chunk_size,
     zarr_format = zarr_format
   )
 }
