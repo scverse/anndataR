@@ -70,7 +70,7 @@ write_zarr_element <- function(
       # Numeric values
       if (length(value) == 1 && !is.matrix(value)) {
         write_zarr_numeric_scalar
-      } else if (is.integer(value) && anyNA(value)) {
+      } else if (is.integer(value) && anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_integer
       } else {
         write_zarr_dense_array
@@ -201,6 +201,12 @@ write_zarr_dense_array <- function(
   # matrices of type 'dgeMatrix' can simply be converted to a matrix
   if (inherits(value, "denseMatrix")) {
     value <- as.matrix(value)
+  }
+
+  if (is.matrix(value) && is.integer(value) && anyNA(value)) {
+    # an integer array can't hold NA: as for H5AD, the matrix is written as
+    # double with NaN for NA
+    value[is.na(value)] <- NaN
   }
 
   zarr_write_compressed(
