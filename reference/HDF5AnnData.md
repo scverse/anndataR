@@ -390,8 +390,7 @@ Convert to an
 [`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md).
 Any backed (`DelayedArray`) slots are materialized into ordinary
 in-memory matrices: an in-memory object should not stay tied to an
-on-disk file. Slots are read eagerly (via base rhdf5) rather than
-carried over as DelayedArrays, which is also faster than realizing them.
+on-disk file.
 
 #### Usage
 
