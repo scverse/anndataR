@@ -8,6 +8,7 @@ write_zarr(
   object,
   path,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   ...
 )
@@ -23,6 +24,13 @@ write_zarr(
 file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zstd"},
 \code{"lzma"}, \code{"bz2"}, \code{"zlib"}, \code{"lz4"}. Defaults to \code{"none"}.
 See \code{help("compressors", package = "Rarr")}.}
+
+\item{chunk_size}{The target chunk size in bytes to use when writing Zarr
+arrays. When \code{"auto"} (default), the chunk size is determined
+automatically using the same algorithm as \code{\link[=write_h5ad]{write_h5ad()}}, which mimics
+h5py's auto-chunking behaviour. Set to \code{NULL} to write each array as a
+single chunk, or a number to use a specific target size in bytes.
+This only affects array-like elements; scalar values are unaffected.}
 
 \item{mode}{The mode to open the Zarr file.
 \itemize{

@@ -10,6 +10,12 @@
 #'   file. Can be one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`,
 #'   `"lzma"`, `"bz2"`, `"zlib"`, `"lz4"`. Defaults to `"none"`.
 #'   See `help("compressors", package = "Rarr")`.
+#' @param chunk_size The target chunk size in bytes to use when writing Zarr
+#'   arrays. When `"auto"` (default), the chunk size is determined
+#'   automatically using the same algorithm as [write_h5ad()], which mimics
+#'   h5py's auto-chunking behaviour. Set to `NULL` to write each array as a
+#'   single chunk, or a number to use a specific target size in bytes.
+#'   This only affects array-like elements; scalar values are unaffected.
 #' @param mode The mode to open the Zarr file.
 #'
 #'   * `a` creates a new file or opens an existing one for read/write
@@ -114,6 +120,7 @@ write_zarr <- function(
     "zlib",
     "lz4"
   ),
+  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   ...
 ) {
@@ -122,6 +129,7 @@ write_zarr <- function(
     object$as_ZarrAnnData(
       path,
       compression = compression,
+      chunk_size = chunk_size,
       mode = mode,
       ...
     )
@@ -131,6 +139,7 @@ write_zarr <- function(
       output_class = "ZarrAnnData",
       file = path,
       compression = compression,
+      chunk_size = chunk_size,
       mode = mode,
       ...
     )

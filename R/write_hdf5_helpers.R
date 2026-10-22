@@ -356,16 +356,22 @@ hdf5_clear_rhdf5_attributes <- function(hdf5_file, name) {
 #' @param storage_mode Storage mode of the data ("double", "integer", etc.)
 #' @param target_size The target chunk size in bytes. When `NULL` (default),
 #'   the target size is determined automatically based on the dataset size.
+#' @param chunk_base,chunk_min,chunk_max The multiplier for the target size,
+#'   its soft lower limit and the hard upper limit of a chunk, in bytes. The
+#'   defaults are h5py's; Zarr arrays use zarr's (see `zarr_chunk_dim()`).
 #'
 #' @return Integer vector of chunk dimensions
 #'
 #' @noRd
-hdf5_auto_chunk <- function(dims, storage_mode, target_size = NULL) {
+hdf5_auto_chunk <- function(
+  dims,
+  storage_mode,
+  target_size = NULL,
   # h5py constants
-  chunk_base <- 16L * 1024L # 16 KB - multiplier for target calculation
-  chunk_min <- 8L * 1024L # 8 KB - soft lower limit
-  chunk_max <- 1024L * 1024L # 1 MB - hard upper limit
-
+  chunk_base = 16L * 1024L, # 16 KB - multiplier for target calculation
+  chunk_min = 8L * 1024L, # 8 KB - soft lower limit
+  chunk_max = 1024L * 1024L # 1 MB - hard upper limit
+) {
   # Estimate bytes per element
   element_bytes <- switch(
     storage_mode,

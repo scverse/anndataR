@@ -524,3 +524,56 @@ for (zarr_format in c(2, 3)) {
     }
   )
 }
+
+# integer_matrix_with_nas is left out: written to Zarr, it is not read back
+# (an issue of its own, not of chunking)
+chunk_test_dataset <- function() {
+  without_int_nas <- function(slot) {
+    setdiff(get_generator_types(slot = slot), "integer_matrix_with_nas")
+  }
+  generate_dataset(
+    50,
+    100,
+    layer_types = without_int_nas("layers"),
+    obsm_types = without_int_nas("obsm"),
+    varm_types = without_int_nas("varm"),
+    obsp_types = without_int_nas("obsp"),
+    varp_types = without_int_nas("varp"),
+    format = "AnnData"
+  )
+}
+
+test_that("write_zarr() chunk_size = NULL writes each array as one chunk", {
+  dummy <- chunk_test_dataset()
+  store <- withr::local_tempfile(fileext = ".zarr")
+
+  expect_no_error(write_zarr(dummy, store, chunk_size = NULL))
+  chunks <- Rarr::zarr_overview(file.path(store, "X"), as_data_frame = TRUE)
+  expect_equal(unlist(chunks$chunk_dim), unlist(chunks$dim))
+
+  result <- read_zarr(store)
+  expect_equal(result$X, dummy$X)
+})
+
+test_that("write_zarr() chunk_size = 'auto' (default) produces a valid store", {
+  dummy <- chunk_test_dataset()
+  store <- withr::local_tempfile(fileext = ".zarr")
+
+  expect_no_error(write_zarr(dummy, store, chunk_size = "auto"))
+
+  result <- read_zarr(store)
+  expect_equal(result$X, dummy$X)
+})
+
+test_that("write_zarr() chunk_size as a number uses it as target byte size", {
+  dummy <- chunk_test_dataset()
+  store <- withr::local_tempfile(fileext = ".zarr")
+
+  # 1 KB target: X is split into several chunks
+  expect_no_error(write_zarr(dummy, store, chunk_size = 1024L))
+  chunks <- Rarr::zarr_overview(file.path(store, "X"), as_data_frame = TRUE)
+  expect_true(any(unlist(chunks$chunk_dim) < unlist(chunks$dim)))
+
+  result <- read_zarr(store)
+  expect_equal(result$X, dummy$X)
+})
