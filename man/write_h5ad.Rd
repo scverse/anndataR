@@ -10,6 +10,7 @@ write_h5ad(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  root = "/",
   ...
 )
 }
@@ -30,13 +31,25 @@ behaviour. Set to \code{NULL} to disable chunking (contiguous storage,
 the rhdf5 default), or a number to use a specific target size in bytes.
 This only affects array-like datasets; scalar values are unaffected.}
 
-\item{mode}{The mode to open the HDF5 file.
+\item{mode}{The mode to open the HDF5 file. When \code{root} is not \code{"/"},
+these apply to the group at \code{root} rather than the whole file:
 \itemize{
-\item \code{a} creates a new file or opens an existing one for read/write
-\item \verb{r+} opens an existing file for read/write
-\item \code{w} creates a file, truncating any existing ones
-\item \verb{w-}/\code{x} are synonyms creating a file and failing if it already exists
+\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{r} opens an existing file for reading, the group at \code{root} must
+already exist.
+\item \verb{r+} opens an existing file for read/write.
+\item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
+the file is created if missing but otherwise left untouched, and only the
+group at \code{root} is deleted and recreated.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
+exists. When \code{root != "/"}, they instead fail if the group at
+\code{root} already exists.
 }}
+
+\item{root}{The path to the group within the HDF5 file that the \code{AnnData}
+is written to. Defaults to \code{"/"}, the file root. Can be used to write an
+\code{AnnData} to a group inside a file that also contains other content,
+e.g. a modality inside a \code{.h5mu} file.}
 
 \item{...}{Additional arguments passed to \code{\link[=as_AnnData]{as_AnnData()}}}
 }

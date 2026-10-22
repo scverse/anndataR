@@ -273,20 +273,23 @@ AbstractAnnData <- R6::R6Class(
     #' @param compression See [as_HDF5AnnData()]
     #' @param chunk_size See [as_HDF5AnnData()]
     #' @param mode See [as_HDF5AnnData()]
+    #' @param root See [as_HDF5AnnData()]
     #'
     #' @return An [`HDF5AnnData`] object
     as_HDF5AnnData = function(
       file,
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto",
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      root = "/"
     ) {
       as_HDF5AnnData(
         adata = self,
         file = file,
         compression = compression,
         chunk_size = chunk_size,
-        mode = mode
+        mode = mode,
+        root = root
       )
     },
     #' @description
