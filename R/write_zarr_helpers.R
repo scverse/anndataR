@@ -204,8 +204,7 @@ write_zarr_dense_array <- function(
   }
 
   if (is.matrix(value) && is.integer(value) && anyNA(value)) {
-    # an integer array can't hold NA: as for H5AD, the matrix is written as
-    # double with NaN for NA
+    # an integer array can't hold NA
     value[is.na(value)] <- NaN
   }
 
