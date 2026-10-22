@@ -159,7 +159,8 @@ write_zarr_null <- function(
   name,
   compression,
   zarr_format,
-  version = "0.1.0"
+  version = "0.1.0",
+  ...
 ) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))

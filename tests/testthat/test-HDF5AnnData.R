@@ -307,6 +307,30 @@ test_that("writing obsm/varm data frames stores obs_names/var_names as index", {
   expect_identical(adata$varm$nullable$chr, letters[1:20])
 })
 
+test_that("setting obsm/varm to NULL writes a null element", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  h5ad <- HDF5AnnData$new(
+    h5ad_file,
+    obs = data.frame(row.names = paste0("Cell", 1:10)),
+    var = data.frame(row.names = paste0("Gene", 1:20)),
+    obsm = list(X = matrix(rnorm(10 * 5), nrow = 10, ncol = 5)),
+    varm = list(X = matrix(rnorm(20 * 5), nrow = 20, ncol = 5))
+  )
+
+  expect_no_warning(h5ad$obsm <- NULL)
+  expect_no_warning(h5ad$varm <- NULL)
+  h5ad$close()
+
+  expect_identical(
+    rhdf5::h5readAttributes(h5ad_file, "obsm")[["encoding-type"]],
+    "null"
+  )
+  expect_identical(
+    rhdf5::h5readAttributes(h5ad_file, "varm")[["encoding-type"]],
+    "null"
+  )
+})
+
 # trackstatus: class=HDF5AnnData, feature=test_set_obsp, status=done
 test_that("writing obsp works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
