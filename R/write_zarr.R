@@ -6,9 +6,9 @@
 #'   [`SingleCellExperiment::SingleCellExperiment`] or a
 #'   [`SeuratObject::Seurat`] object
 #' @param path Path of the file to write to
-#' @param compression The compression algorithm to use when writing the Zarr
-#'   file. Can be one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`,
-#'   `"lzma"`, `"bz2"`, `"zlib"`, `"lz4"`. Defaults to `"none"`.
+#' @param compression The compression to use when writing the element.
+#'   One of `"zstd"`, `"gzip"`, `"blosc"`, `"lzma"`, `"bz2"`,
+#'   `"zlib"`, `"lz4"`, `"none"`. Defaults to `"zstd"`.
 #'   See `help("compressors", package = "Rarr")`.
 #' @param mode The mode to open the Zarr file.
 #'
@@ -105,14 +105,14 @@ write_zarr <- function(
   object,
   path,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
   ...

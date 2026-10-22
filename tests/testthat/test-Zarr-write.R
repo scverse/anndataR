@@ -57,11 +57,17 @@ for (zarr_format in c(2, 3)) {
           array,
           store,
           "dense_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "dense_array"))
         expect_equal(zarr_node_format(store, "dense_array"), zarr_format)
+        expect_equal({
+          zarr_ov <- Rarr::zarr_overview(file.path(store, "dense_array"),
+                                         as_data_frame = TRUE)
+          zarr_ov$compressor
+        },
+        "zstd"
+        )
         attrs <- Rarr::read_zarr_attributes(file.path(store, "dense_array"))
         expect_true(all(
           c("encoding-type", "encoding-version") %in% names(attrs)
@@ -97,7 +103,6 @@ for (zarr_format in c(2, 3)) {
           csc_array,
           store,
           "csc_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csc_array"))
@@ -116,7 +121,6 @@ for (zarr_format in c(2, 3)) {
           csr_array,
           store,
           "csr_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csr_array"))
@@ -295,7 +299,6 @@ for (zarr_format in c(2, 3)) {
           mapping,
           store,
           "mapping",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "mapping"))
