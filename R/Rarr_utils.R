@@ -76,6 +76,31 @@ check_zarr_format <- function(format, call = rlang::caller_env()) {
   as.integer(format)
 }
 
+#' Check a chunk size
+#'
+#' Check that `chunk_size` is `"auto"`, `NULL` or a positive number, before
+#' anything is written.
+#'
+#' @param chunk_size The chunk size to check
+#' @param call The calling environment, used in error messages
+#'
+#' @return `chunk_size`, invisibly
+#' @noRd
+check_chunk_size <- function(chunk_size, call = rlang::caller_env()) {
+  is_bytes <- is.numeric(chunk_size) &&
+    length(chunk_size) == 1L &&
+    is.finite(chunk_size) &&
+    chunk_size > 0
+  if (!(is.null(chunk_size) || identical(chunk_size, "auto") || is_bytes)) {
+    cli_abort(
+      "{.arg chunk_size} must be {.val auto}, {.code NULL} or a positive \\
+      number of bytes, not {.val {chunk_size}}.",
+      call = call
+    )
+  }
+  invisible(chunk_size)
+}
+
 #' get_zarr_format
 #'
 #' Determine the Zarr format of an existing store from its root metadata
