@@ -106,3 +106,11 @@ citation("anndataR")
         pages = {2025.08.18.669052},
         doi = {10.1101/2025.08.18.669052},
       }
+
+## Contributors
+
+<a href="https://github.com/scverse/anndataR/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=scverse/anndataR" />
+</a>
+
+_Made with [contrib.rocks](https://contrib.rocks)._
