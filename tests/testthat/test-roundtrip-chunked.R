@@ -33,7 +33,7 @@ for (fmt in c("zarrv2", "zarrv3")) {
     adata_r <- read_zarr(file_py, as = "InMemoryAnnData")
     suppressWarnings({
       write_zarr(adata_r, file_single, chunk_size = NULL)
-      write_zarr(adata_r, file_chunked, chunk_size = 32L)
+      write_zarr(adata_r, file_chunked, chunk_size = 4L)
     })
 
     test_that(paste0("chunk_size splits arrays into chunks (", fmt, ")"), {

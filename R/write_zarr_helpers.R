@@ -12,8 +12,8 @@
 #'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
 #'   elements of a store end up in the same format.
 #' @param chunk_size Target chunk size in bytes. When `"auto"` (default), the
-#'   chunk size is determined automatically using `hdf5_auto_chunk()`, as for
-#'   [write_h5ad()]. When `NULL`, each array is written as a single chunk.
+#'   chunk size is determined automatically by `zarr_chunk_dim()`. When
+#'   `NULL`, each array is written as a single chunk.
 #'   When a number, it is used as the target chunk size in bytes.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param ... Additional arguments passed to writing functions
@@ -193,6 +193,7 @@ write_zarr_null <- function(
 #'
 #' @inheritParams write_zarr_element
 #' @inheritParams write_zarr_encoding version
+#' @param element_bytes Passed to `zarr_chunk_dim()`
 #'
 #' @noRd
 write_zarr_dense_array <- function(
@@ -202,7 +203,8 @@ write_zarr_dense_array <- function(
   compression,
   zarr_format,
   chunk_size = "auto",
-  version = "0.2.0"
+  version = "0.2.0",
+  element_bytes = NULL
 ) {
   version <- match.arg(version)
 
@@ -217,7 +219,8 @@ write_zarr_dense_array <- function(
     value,
     compression,
     zarr_format = zarr_format,
-    chunk_size = chunk_size
+    chunk_size = chunk_size,
+    element_bytes = element_bytes
   )
 
   # Write attributes
@@ -593,7 +596,16 @@ write_zarr_categorical <- function(
     paste0(name, "/codes"),
     compression,
     zarr_format,
-    chunk_size = chunk_size
+    chunk_size = chunk_size,
+    # chunked as Python anndata chunks codes, which pandas stores in the
+    # smallest signed integer type that holds them
+    element_bytes = if (length(categories) < 127L) {
+      1L
+    } else if (length(categories) < 32767L) {
+      2L
+    } else {
+      4L
+    }
   )
 
   # Write encoding
@@ -890,6 +902,8 @@ write_empty_zarr <- function(
 #'
 #' @noRd
 #'
+#' @param element_bytes Passed to `zarr_chunk_dim()`
+#'
 #' @return  Returns (invisibly) `TRUE` if the array is successfully written.
 zarr_write_compressed <- function(
   store,
@@ -906,14 +920,20 @@ zarr_write_compressed <- function(
     "lz4"
   ),
   zarr_format,
-  chunk_size = "auto"
+  chunk_size = "auto",
+  element_bytes = NULL
 ) {
   dims <- dim(value) %||% length(value)
   data <- array(data = value, dim = dims)
   Rarr::write_zarr_array(
     data,
     zarr_array_path = file.path(store, name),
-    chunk_dim = zarr_chunk_dim(dims, storage.mode(data), chunk_size),
+    chunk_dim = zarr_chunk_dim(
+      dims,
+      storage.mode(data),
+      chunk_size,
+      element_bytes = element_bytes
+    ),
     order = if (length(dims) > 0) "C" else "F",
     compressor = .get_compressor(compression),
     zarr_version = zarr_format
@@ -947,19 +967,26 @@ zarr_write_compressed <- function(
 #' Compute chunk dimensions for a Zarr array
 #'
 #' Zarr arrays are chunked with the algorithm used for HDF5 datasets,
-#' `hdf5_auto_chunk()`, with the size constants of Python's zarr
-#' (`zarr.core.chunk_grids._guess_chunks()`), so that a large array is not a
-#' single chunk and chunk sizes match those of Python **anndata**.
+#' `hdf5_auto_chunk()`, with the size constants and element sizes of Python's
+#' zarr (`zarr.core.chunk_grids._guess_chunks()`), so that a large array is not
+#' a single chunk and chunk shapes match those of Python **anndata**.
 #'
 #' @param dims Integer vector of array dimensions
 #' @param storage_mode Storage mode of the data ("double", "integer", etc.)
+#' @param element_bytes The size of one element in bytes. When `NULL`
+#'   (default), the size Python anndata writes for `storage_mode`.
 #' @inheritParams write_zarr_element
 #'
 #' @return Integer vector of chunk dimensions
 #'
 #' @noRd
-zarr_chunk_dim <- function(dims, storage_mode, chunk_size = "auto") {
-  # - "auto"   -> mimic h5py's auto-chunking algorithm
+zarr_chunk_dim <- function(
+  dims,
+  storage_mode,
+  chunk_size = "auto",
+  element_bytes = NULL
+) {
+  # - "auto"   -> zarr's auto-chunking
   # - NULL     -> a single chunk
   # - <number> -> use provided byte size as target
   if (length(dims) == 0 || any(dims == 0) || is.null(chunk_size)) {
@@ -970,6 +997,16 @@ zarr_chunk_dim <- function(dims, storage_mode, chunk_size = "auto") {
     dims,
     storage_mode,
     target_size = target_size,
+    # element sizes as Python anndata writes them (bool, int32, float64), with
+    # variable-length strings counted as one byte, as zarr counts them
+    element_bytes = element_bytes %||%
+      switch(
+        storage_mode,
+        logical = 1L,
+        character = 1L,
+        integer = 4L,
+        8L
+      ),
     # zarr constants
     chunk_base = 256L * 1024L, # 256 KB - multiplier for target calculation
     chunk_min = 128L * 1024L, # 128 KB - soft lower limit

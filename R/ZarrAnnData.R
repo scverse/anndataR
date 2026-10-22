@@ -323,9 +323,9 @@ ZarrAnnData <- R6::R6Class(
     #'   details
     #' @param compression The compression algorithm to use. See
     #'   [as_ZarrAnnData()] for details
-    #' @param chunk_size The target chunk size in bytes. See
-    #'   [as_ZarrAnnData()] for details
     #' @param zarr_format The Zarr format to use. See
+    #'   [as_ZarrAnnData()] for details
+    #' @param chunk_size The target chunk size in bytes. See
     #'   [as_ZarrAnnData()] for details
     #'
     #' @details
@@ -356,10 +356,11 @@ ZarrAnnData <- R6::R6Class(
         "zlib",
         "lz4"
       ),
-      chunk_size = "auto",
-      zarr_format = NULL
+      zarr_format = NULL,
+      chunk_size = "auto"
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc", version = "2.1.27")
+      check_chunk_size(chunk_size)
 
       compression <- match.arg(compression)
       mode <- match.arg(mode)
@@ -569,12 +570,6 @@ ZarrAnnData <- R6::R6Class(
 #' @param compression The compression algorithm to use when writing the
 #'   Zarr file. Can be one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`,
 #'   `"lzma"`, `"bz2"`, `"zlib"` or `"lz4"`. Defaults to `"none"`.
-#' @param chunk_size The target chunk size in bytes to use when writing
-#'   Zarr arrays. When `"auto"` (default), the chunk size is determined
-#'   automatically using the same algorithm as for HDF5 datasets in
-#'   [as_HDF5AnnData()], which mimics h5py's auto-chunking. Set to `NULL` to
-#'   write each array as a single chunk, or a number to use a specific target
-#'   size in bytes.
 #' @param mode The mode to open the Zarr file:
 #'
 #'   * `a` creates a new file or opens an existing one for read/write
@@ -591,6 +586,12 @@ ZarrAnnData <- R6::R6Class(
 #'   setting `zarr_format` to a different format is an error. Use
 #'   `mode = "w"` to rewrite an existing store in another format.
 #'
+#' @param chunk_size The target chunk size in bytes to use when writing
+#'   Zarr arrays. When `"auto"` (default), chunks are chosen as Python's
+#'   **zarr** chooses them (as [as_HDF5AnnData()] does with h5py's algorithm,
+#'   but with zarr's limits), so chunk shapes match those written by Python
+#'   **anndata**. Set to `NULL` to write each array as a single chunk, or a
+#'   number to use a specific target size in bytes, capped at 64 MB per chunk.
 #' @return A [`ZarrAnnData`] object with the same data as the input `AnnData`
 #'   object.
 #' @keywords internal
@@ -612,9 +613,9 @@ as_ZarrAnnData <- function(
     "zlib",
     "lz4"
   ),
-  chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = NULL
+  zarr_format = NULL,
+  chunk_size = "auto"
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
     cli_abort(

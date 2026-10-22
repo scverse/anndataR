@@ -29,3 +29,14 @@ test_that("zarr_chunk_dim leaves scalars and empty arrays alone", {
   expect_equal(zarr_chunk_dim(integer(0), "double"), integer(0))
   expect_equal(zarr_chunk_dim(c(0L, 5L), "double"), c(0L, 5L))
 })
+
+test_that("zarr_chunk_dim sizes elements as Python anndata writes them", {
+  # expected values from zarr.core.chunk_grids._guess_chunks() with the item
+  # size Python anndata writes: bool 1, int32 4, float64 8, strings 1
+  expect_equal(zarr_chunk_dim(1e8, "logical"), 781250L)
+  expect_equal(zarr_chunk_dim(3e6, "character"), 375000L)
+  expect_equal(zarr_chunk_dim(3e5, "character"), 150000L)
+  expect_equal(zarr_chunk_dim(3e6, "integer"), 187500L)
+  expect_equal(zarr_chunk_dim(c(3e5, 50), "integer"), c(37500L, 7L))
+  expect_equal(zarr_chunk_dim(c(1e6, 2e3), "double"), c(15625L, 32L))
+})

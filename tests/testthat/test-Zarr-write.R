@@ -577,3 +577,64 @@ test_that("write_zarr() chunk_size as a number uses it as target byte size", {
   result <- read_zarr(store)
   expect_equal(result$X, dummy$X)
 })
+
+test_that("write_zarr() chunks obs columns as Python anndata does", {
+  n <- 3e5
+  adata <- AnnData(
+    obs = data.frame(
+      row.names = paste0("cell", seq_len(n)),
+      type = factor(rep(c("a", "b", "c"), length.out = n)),
+      flag = rep(c(TRUE, FALSE), length.out = n),
+      count = seq_len(n),
+      score = seq_len(n) / 2
+    )
+  )
+  store <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr(adata, store)
+
+  # expected values from zarr.core.chunk_grids._guess_chunks() with the item
+  # size Python anndata writes: strings 1, int8 codes, bool, int32, float64
+  chunk_dim <- function(name) {
+    unlist(
+      Rarr::zarr_overview(
+        file.path(store, name),
+        as_data_frame = TRUE
+      )$chunk_dim
+    )
+  }
+  expect_equal(chunk_dim("obs/_index"), 150000L)
+  expect_equal(chunk_dim("obs/type/codes"), 150000L)
+  expect_equal(chunk_dim("obs/flag"), 150000L)
+  expect_equal(chunk_dim("obs/count"), 75000L)
+  expect_equal(chunk_dim("obs/score"), 37500L)
+})
+
+test_that("write_zarr() rejects an invalid chunk_size before touching the store", {
+  dummy <- chunk_test_dataset()
+  store <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr(dummy, store)
+
+  for (bad in list(NA_real_, -1, 0, "big", c(1024, 2048))) {
+    expect_error(
+      write_zarr(dummy, store, mode = "w", chunk_size = bad),
+      "chunk_size"
+    )
+  }
+  # the existing store is left as it was
+  expect_equal(read_zarr(store)$X, dummy$X)
+})
+
+test_that("write_zarr() and as_ZarrAnnData() keep their positional arguments", {
+  dummy <- chunk_test_dataset()
+  store <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr(dummy, store)
+
+  # object, path, compression, mode
+  expect_no_error(write_zarr(dummy, store, "none", "w"))
+  expect_equal(read_zarr(store)$X, dummy$X)
+
+  # adata, file, compression, mode, zarr_format
+  store_v2 <- withr::local_tempfile(fileext = ".zarr")
+  as_ZarrAnnData(dummy, store_v2, "none", "w-", 2L)
+  expect_equal(zarr_node_format(store_v2, ""), 2L)
+})
