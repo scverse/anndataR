@@ -9,7 +9,8 @@ write_zarr(
   path,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  ...
+  ...,
+  chunk_size = "auto"
 )
 }
 \arguments{
@@ -33,6 +34,14 @@ See \code{help("compressors", package = "Rarr")}.}
 }}
 
 \item{...}{Additional arguments passed to \code{\link[=as_AnnData]{as_AnnData()}} or \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
+
+\item{chunk_size}{The target chunk size in bytes to use when writing Zarr
+arrays. When \code{"auto"} (default), chunks are chosen as Python's \strong{zarr}
+chooses them (as \code{\link[=write_h5ad]{write_h5ad()}} does with h5py's algorithm, but with
+zarr's limits), so chunk shapes match those written by Python \strong{anndata}.
+Set to \code{NULL} to write each array as a single chunk, or a number to use a
+specific target size in bytes, capped at 64 MB per chunk.
+This only affects array-like elements; scalar values are unaffected.}
 }
 \value{
 \code{path} invisibly

@@ -19,6 +19,13 @@
 #'
 #' @param ... Additional arguments passed to [as_AnnData()] or [as_ZarrAnnData()]
 #'
+#' @param chunk_size The target chunk size in bytes to use when writing Zarr
+#'   arrays. When `"auto"` (default), chunks are chosen as Python's **zarr**
+#'   chooses them (as [write_h5ad()] does with h5py's algorithm, but with
+#'   zarr's limits), so chunk shapes match those written by Python **anndata**.
+#'   Set to `NULL` to write each array as a single chunk, or a number to use a
+#'   specific target size in bytes, capped at 64 MB per chunk.
+#'   This only affects array-like elements; scalar values are unaffected.
 #' @details
 #'
 #' ## Zarr format
@@ -115,13 +122,15 @@ write_zarr <- function(
     "lz4"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  ...
+  ...,
+  chunk_size = "auto"
 ) {
   mode <- match.arg(mode)
   adata <- if (inherits(object, "AbstractAnnData")) {
     object$as_ZarrAnnData(
       path,
       compression = compression,
+      chunk_size = chunk_size,
       mode = mode,
       ...
     )
@@ -131,6 +140,7 @@ write_zarr <- function(
       output_class = "ZarrAnnData",
       file = path,
       compression = compression,
+      chunk_size = chunk_size,
       mode = mode,
       ...
     )
