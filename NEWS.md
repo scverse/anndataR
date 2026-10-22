@@ -1,5 +1,6 @@
 # anndataR 1.3.3
 
+- Add auto-chunking for Zarr writes, with a `chunk_size` argument for `write_zarr()`, `as_ZarrAnnData()` and `ZarrAnnData` as for HDF5 writes. Chunk shapes match those of Python **anndata**, so large stores can be read a block at a time and need less memory to write (PR #543, issue #541).
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
 
