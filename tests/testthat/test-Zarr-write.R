@@ -61,12 +61,15 @@ for (zarr_format in c(2, 3)) {
         ))
         expect_true(zarr_path_exists(store, "dense_array"))
         expect_equal(zarr_node_format(store, "dense_array"), zarr_format)
-        expect_equal({
-          zarr_ov <- Rarr::zarr_overview(file.path(store, "dense_array"),
-                                         as_data_frame = TRUE)
-          zarr_ov$compressor
-        },
-        "zstd"
+        expect_equal(
+          {
+            zarr_ov <- Rarr::zarr_overview(
+              file.path(store, "dense_array"),
+              as_data_frame = TRUE
+            )
+            zarr_ov$compressor
+          },
+          "zstd"
         )
         attrs <- Rarr::read_zarr_attributes(file.path(store, "dense_array"))
         expect_true(all(
