@@ -552,3 +552,20 @@ test_that("hdf5_clear_rhdf5_attributes() recurses into groups", {
   )
   expect_false("as.na" %in% names(attrs))
 })
+
+test_that("errors while writing an element keep the original message", {
+  local_mocked_bindings(
+    write_h5ad_dense_array = function(...) stop("value not in {0,...,n}")
+  )
+  value <- matrix(rnorm(20), nrow = 5, ncol = 4)
+  expect_warning(
+    write_h5ad_element(value, hdf5_file, "error_array"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    write_h5ad_element(value, hdf5_file, "error_array", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+})

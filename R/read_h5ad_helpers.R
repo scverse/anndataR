@@ -68,14 +68,11 @@ read_h5ad_element <- function(
       )
     },
     error = function(e) {
-      msg <- cli::cli_fmt(cli::cli_bullets(c(
-        paste0("Error reading element {.field {name}} of type {.cls {type}}"),
-        "i" = conditionMessage(e)
-      )))
+      msg <- "Error reading element {.field {name}} of type {.cls {type}}"
       if (stop_on_error) {
-        cli_abort(msg)
+        cli_abort(msg, parent = e)
       } else {
-        cli_warn(msg)
+        cli_warn(msg, parent = e)
         NULL
       }
     }
@@ -129,16 +126,11 @@ read_h5ad_element_keys <- function(
       read_fun(hdf5_file = file, name = name, version = version, ...)
     },
     error = function(e) {
-      msg <- cli::cli_fmt(cli::cli_bullets(c(
-        paste0(
-          "Error reading element keys for {.field {name}} of type {.cls {type}}"
-        ),
-        "i" = conditionMessage(e)
-      )))
+      msg <- "Error reading element keys for {.field {name}} of type {.cls {type}}"
       if (stop_on_error) {
-        cli_abort(msg)
+        cli_abort(msg, parent = e)
       } else {
-        cli_warn(msg)
+        cli_warn(msg, parent = e)
         NULL
       }
     }
