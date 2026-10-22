@@ -237,6 +237,100 @@ test_that("writing varm works", {
   expect_identical(h5ad$varm$PCs, expected_varm_x)
 })
 
+test_that("writing obsm/varm data frames stores obs_names/var_names as index", {
+  # Regression test: a data.frame always has row names, so stripping them
+  # before writing leaves the automatic 1:nrow sequence rather than NULL. That
+  # sequence used to be written as the on-disk index, which Python anndata
+  # rejects because it does not match the parent obs_names/var_names
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  obs_names <- paste0("Cell", 1:10)
+  var_names <- paste0("Gene", 1:20)
+  h5ad <- HDF5AnnData$new(
+    h5ad_file,
+    obs = data.frame(row.names = obs_names),
+    var = data.frame(row.names = var_names)
+  )
+
+  h5ad$obsm <- list(
+    named = data.frame(A = rnorm(10), B = rnorm(10), row.names = obs_names),
+    # Row names are optional, the index is taken from the parent either way
+    unnamed = data.frame(C = rnorm(10)),
+    # Columns with missing values are written as nullable arrays
+    nullable = data.frame(
+      int = c(1:9, NA),
+      chr = c("x", NA, letters[3:10])
+    ),
+    matrix = matrix(rnorm(10 * 2), nrow = 10, ncol = 2)
+  )
+  varm_dbl <- c(0.5, NA, seq(1.5, 18.5))
+  h5ad$varm <- list(
+    named = data.frame(D = rnorm(20), row.names = var_names),
+    nullable = data.frame(dbl = varm_dbl, chr = letters[1:20])
+  )
+  h5ad$close()
+
+  expect_identical(
+    as.vector(rhdf5::h5read(h5ad_file, "obsm/named/_index")),
+    obs_names
+  )
+  expect_identical(
+    as.vector(rhdf5::h5read(h5ad_file, "obsm/unnamed/_index")),
+    obs_names
+  )
+  expect_identical(
+    as.vector(rhdf5::h5read(h5ad_file, "obsm/nullable/_index")),
+    obs_names
+  )
+  expect_identical(
+    as.vector(rhdf5::h5read(h5ad_file, "varm/named/_index")),
+    var_names
+  )
+  expect_identical(
+    as.vector(rhdf5::h5read(h5ad_file, "varm/nullable/_index")),
+    var_names
+  )
+
+  # Non-data.frame entries are unaffected
+  expect_equal(dim(rhdf5::h5read(h5ad_file, "obsm/matrix")), c(2, 10))
+
+  # The columns of the data frames are still readable
+  adata <- read_h5ad(h5ad_file, as = "InMemoryAnnData")
+  expect_identical(colnames(adata$obsm$named), c("A", "B"))
+  expect_identical(rownames(adata$obsm$named), obs_names)
+  expect_identical(rownames(adata$varm$named), var_names)
+
+  # The values of the data frames, including missing values, round-trip
+  expect_identical(adata$obsm$nullable$int, c(1:9, NA))
+  expect_identical(adata$obsm$nullable$chr, c("x", NA, letters[3:10]))
+  expect_identical(rownames(adata$varm$nullable), var_names)
+  expect_identical(adata$varm$nullable$dbl, varm_dbl)
+  expect_identical(adata$varm$nullable$chr, letters[1:20])
+})
+
+test_that("setting obsm/varm to NULL writes a null element", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  h5ad <- HDF5AnnData$new(
+    h5ad_file,
+    obs = data.frame(row.names = paste0("Cell", 1:10)),
+    var = data.frame(row.names = paste0("Gene", 1:20)),
+    obsm = list(X = matrix(rnorm(10 * 5), nrow = 10, ncol = 5)),
+    varm = list(X = matrix(rnorm(20 * 5), nrow = 20, ncol = 5))
+  )
+
+  expect_no_warning(h5ad$obsm <- NULL)
+  expect_no_warning(h5ad$varm <- NULL)
+  h5ad$close()
+
+  expect_identical(
+    rhdf5::h5readAttributes(h5ad_file, "obsm")[["encoding-type"]],
+    "null"
+  )
+  expect_identical(
+    rhdf5::h5readAttributes(h5ad_file, "varm")[["encoding-type"]],
+    "null"
+  )
+})
+
 # trackstatus: class=HDF5AnnData, feature=test_set_obsp, status=done
 test_that("writing obsp works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5ad")

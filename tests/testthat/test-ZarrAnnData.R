@@ -250,6 +250,32 @@ test_that("writing varm works", {
   expect_identical(zarr$varm$PCs, expected_varm_x)
 })
 
+test_that("setting obsm/varm to NULL writes a null element", {
+  store <- tempfile(fileext = ".zarr")
+  create_zarr(store = store)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(
+    store,
+    obs = obs,
+    var = var,
+    obsm = list(X = matrix(rnorm(10 * 5), nrow = 10, ncol = 5)),
+    varm = list(X = matrix(rnorm(20 * 5), nrow = 20, ncol = 5))
+  )
+
+  expect_no_warning(zarr$obsm <- NULL)
+  expect_no_warning(zarr$varm <- NULL)
+
+  expect_identical(
+    Rarr::read_zarr_attributes(file.path(store, "obsm"))[["encoding-type"]],
+    "null"
+  )
+  expect_identical(
+    Rarr::read_zarr_attributes(file.path(store, "varm"))[["encoding-type"]],
+    "null"
+  )
+})
+
 # trackstatus: class=ZarrAnnData, feature=test_set_obsp, status=done
 test_that("writing obsp works", {
   store <- tempfile(fileext = ".zarr")

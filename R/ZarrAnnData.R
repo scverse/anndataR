@@ -114,7 +114,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "obsm",
-            private$.compression
+            private$.compression,
+            index = self$obs_names
           )
       }
     },
@@ -141,7 +142,8 @@ ZarrAnnData <- R6::R6Class(
           write_zarr_element(
             private$.zarrobj,
             "varm",
-            private$.compression
+            private$.compression,
+            index = self$var_names
           )
       }
     },

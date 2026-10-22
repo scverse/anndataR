@@ -169,7 +169,8 @@ write_h5ad_null <- function(
   name,
   compression,
   chunk_size = "auto",
-  version = "0.1.0"
+  version = "0.1.0",
+  ...
 ) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
@@ -668,6 +669,11 @@ write_h5ad_numeric_scalar <- function(
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
 #' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' @param index The index to use for `data.frame` elements of the mapping. Used
+#' for aligned mappings (`obsm`/`varm`), where the index of a `data.frame` must
+#' be the `obs_names`/`var_names` of the parent object. Ignored by elements
+#' that are not `data.frame`s. If `NULL` then each `data.frame` provides its
+#' own index, see `write_h5ad_data_frame()`.
 #' @param version Encoding version of the element to write
 write_h5ad_mapping <- function(
   value,
@@ -675,19 +681,34 @@ write_h5ad_mapping <- function(
   name,
   compression,
   chunk_size = "auto",
+  index = NULL,
   version = "0.1.0"
 ) {
   rhdf5::h5createGroup(file, name)
 
   # Write mapping elements
   for (key in names(value)) {
-    write_h5ad_element(
-      value[[key]],
-      file,
-      paste0(name, "/", key),
-      compression,
-      chunk_size = chunk_size
-    )
+    element <- value[[key]]
+    element_name <- paste0(name, "/", key)
+
+    if (!is.null(index) && is.data.frame(element)) {
+      write_h5ad_element(
+        element,
+        file,
+        element_name,
+        compression,
+        chunk_size = chunk_size,
+        index = index
+      )
+    } else {
+      write_h5ad_element(
+        element,
+        file,
+        element_name,
+        compression,
+        chunk_size = chunk_size
+      )
+    }
   }
 
   write_h5ad_encoding(file, name, "dict", version)
