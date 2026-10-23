@@ -804,7 +804,6 @@ write_empty_zarr <- function(
   zarr_format,
   version = "0.1.0"
 ) {
-  Rarr::write_zarr_group(store, "", zarr_version = zarr_format)
   write_zarr_encoding(store, "/", "anndata", "0.1.0", zarr_format)
 
   write_zarr_element(
