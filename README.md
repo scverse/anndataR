@@ -109,3 +109,11 @@ citation("anndataR")
         pages = {btag288},
         doi = {10.1093/bioinformatics/btag288},
       }
+
+## Contributors
+
+<a href="https://github.com/scverse/anndataR/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=scverse/anndataR" />
+</a>
+
+_Made with [contrib.rocks](https://contrib.rocks)._

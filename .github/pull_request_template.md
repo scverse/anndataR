@@ -13,6 +13,8 @@
 - [ ] Add/update examples in vignettes
 - [ ] Pass CI checks
 
+<!-- If you are a new contributor consider adding yourself the DESCRIPTION, see CONTRIBUTING.md -->
+
 **Before merge**
 
 - [ ] Update `NEWS`
