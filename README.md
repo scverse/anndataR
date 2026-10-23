@@ -6,10 +6,10 @@
 [![Codecov test coverage](https://codecov.io/gh/scverse/anndataR/graph/badge.svg)](https://app.codecov.io/gh/scverse/anndataR)
 [![Bioc release status](http://www.bioconductor.org/shields/build/release/bioc/anndataR.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/anndataR)
 [![Bioc devel status](http://www.bioconductor.org/shields/build/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR)
-[![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/anndataR.svg)](http://bioconductor.org/packages/stats/bioc/anndataR/)
+[![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/anndataR.svg)](https://bioconductor.org/packages/stats/bioc/anndataR/)
 [![Bioc support](https://bioconductor.org/shields/posts/anndataR.svg)](https://support.bioconductor.org/tag/anndataR)
 [![Bioc history](https://bioconductor.org/shields/years-in-bioc/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
-[![Bioc last commit](https://bioconductor.org/shields/lastcommit/devel/bioc/anndataR.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR/)
+[![Bioc last commit](https://bioconductor.org/shields/lastcommit/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR/)
 [![Bioc dependencies](https://bioconductor.org/shields/dependencies/release/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
 <!-- badges: end -->
 
