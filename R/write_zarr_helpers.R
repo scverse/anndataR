@@ -810,14 +810,14 @@ write_empty_zarr <- function(
   write_zarr_element(
     obs[, integer(0)],
     store,
-    "/obs",
+    "obs",
     compression,
     zarr_format
   )
   write_zarr_element(
     var[, integer(0)],
     store,
-    "/var",
+    "var",
     compression,
     zarr_format
   )
