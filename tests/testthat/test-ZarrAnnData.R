@@ -255,7 +255,7 @@ test_that("writing varm works", {
 
 test_that("setting obsm/varm to NULL writes a null element", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(
