@@ -40,20 +40,28 @@ for (zarr_format in c(2, 3)) {
 
       test_that("Writing a Zarr store at a relative path works", {
         withr::with_tempdir({
-          Rarr::write_zarr_group(
+          ZarrAnnData$new(
             "relative.zarr",
-            "",
-            zarr_version = zarr_format
+            obs = data.frame(row.names = 1:3),
+            var = data.frame(row.names = 1:2),
+            mode = "w"
           )
           expect_true(dir.exists("relative.zarr"))
           expect_true(file.exists(file.path("relative.zarr", metafile)))
+          expect_equal(zarr_node_format("relative.zarr", ""), zarr_format)
         })
       })
 
       test_that("Writing a Zarr store with regex characters in the name works", {
         store_regex <- tempfile(pattern = "a+b", fileext = ".zarr")
-        Rarr::write_zarr_group(store_regex, "", zarr_version = zarr_format)
+        ZarrAnnData$new(
+          store_regex,
+          obs = data.frame(row.names = 1:3),
+          var = data.frame(row.names = 1:2),
+          mode = "w"
+        )
         expect_true(file.exists(file.path(store_regex, metafile)))
+        expect_equal(zarr_node_format(store_regex, ""), zarr_format)
         # The store must not be nested inside a directory of the same name
         expect_false(dir.exists(file.path(store_regex, basename(store_regex))))
       })
