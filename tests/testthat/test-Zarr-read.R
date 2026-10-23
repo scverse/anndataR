@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr")
+skip_if_not_installed("Rarr", minimum_version = "2.1.27")
 
 for (zarr_format in c(2, 3)) {
   zarr_zip <- system.file(

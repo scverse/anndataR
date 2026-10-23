@@ -346,7 +346,7 @@ ZarrAnnData <- R6::R6Class(
       ),
       zarr_format = NULL
     ) {
-      check_requires("ZarrAnnData", "Rarr", where = "Bioc")
+      check_requires("ZarrAnnData", "Rarr", where = "Bioc", version = "2.1.27")
 
       compression <- match.arg(compression)
       mode <- match.arg(mode)
@@ -400,7 +400,7 @@ ZarrAnnData <- R6::R6Class(
           private$.zarrformat <- check_zarr_format(
             zarr_format %||% getOption("anndataR.zarr_format", 3L)
           )
-          create_zarr(file, format = private$.zarrformat)
+          Rarr::write_zarr_group(file, "", zarr_version = private$.zarrformat)
         } else {
           # An existing store dictates its own format, otherwise appending to it
           # would produce a store with a mix of v2 and v3 nodes
