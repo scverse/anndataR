@@ -21,6 +21,7 @@ ZarrAnnData <- R6::R6Class(
   private = list(
     .zarrobj = NULL,
     .zarrformat = NULL,
+    .backed = NULL,
     .compression = NULL,
     .readonly = NULL,
 
@@ -48,7 +49,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_X, status=done
-        read_zarr_element(private$.zarrobj, "X") |>
+        read_zarr_element(private$.zarrobj, "X", backed = private$.backed) |>
           private$.add_matrix_dimnames("X")
       } else {
         private$.check_writeable()
@@ -74,7 +75,11 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_layers, status=done
-        read_zarr_element(private$.zarrobj, "layers") |>
+        read_zarr_element(
+          private$.zarrobj,
+          "layers",
+          backed = private$.backed
+        ) |>
           private$.add_mapping_dimnames("layers")
       } else {
         private$.check_writeable()
@@ -100,7 +105,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obsm, status=done
-        read_zarr_element(private$.zarrobj, "obsm") |>
+        read_zarr_element(private$.zarrobj, "obsm", backed = private$.backed) |>
           private$.add_mapping_dimnames("obsm")
       } else {
         private$.check_writeable()
@@ -129,7 +134,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_varm, status=done
-        read_zarr_element(private$.zarrobj, "varm") |>
+        read_zarr_element(private$.zarrobj, "varm", backed = private$.backed) |>
           private$.add_mapping_dimnames("varm")
       } else {
         private$.check_writeable()
@@ -158,7 +163,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obsp, status=done
-        read_zarr_element(private$.zarrobj, "obsp") |>
+        read_zarr_element(private$.zarrobj, "obsp", backed = private$.backed) |>
           private$.add_mapping_dimnames("obsp")
       } else {
         private$.check_writeable()
@@ -184,7 +189,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_varp, status=done
-        read_zarr_element(private$.zarrobj, "varp") |>
+        read_zarr_element(private$.zarrobj, "varp", backed = private$.backed) |>
           private$.add_mapping_dimnames("varp")
       } else {
         private$.check_writeable()
@@ -210,7 +215,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_obs, status=done
-        read_zarr_element(private$.zarrobj, "obs")
+        read_zarr_element(private$.zarrobj, "obs", backed = private$.backed)
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_obs, status=done
@@ -229,7 +234,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_var, status=done
-        read_zarr_element(private$.zarrobj, "var")
+        read_zarr_element(private$.zarrobj, "var", backed = private$.backed)
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_var, status=done
@@ -274,7 +279,7 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_uns, status=done
-        read_zarr_element(private$.zarrobj, "uns")
+        read_zarr_element(private$.zarrobj, "uns", backed = private$.backed)
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_uns, status=done
@@ -311,6 +316,8 @@ ZarrAnnData <- R6::R6Class(
     #'   both `X` or `obs` and `var` are not provided.
     #' @param mode The mode to open the Zarr file. See [as_ZarrAnnData()] for
     #'   details
+    #' @param backed Whether the object is disk backed. See [as_ZarrAnnData()]
+    #'   for details
     #' @param compression The compression algorithm to use. See
     #'   [as_ZarrAnnData()] for details
     #' @param zarr_format The Zarr format to use. See
@@ -334,6 +341,7 @@ ZarrAnnData <- R6::R6Class(
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
+      backed = FALSE,
       compression = c(
         "none",
         "gzip",
@@ -366,6 +374,25 @@ ZarrAnnData <- R6::R6Class(
           } else {
             mode <- "w-"
           }
+        }
+
+        if (backed && mode != "r") {
+          cli_warn(
+            paste(
+              "{.arg backed} can only be {.val TRUE} when {.arg mode} is {.val 'r'}.",
+              "Setting {.arg backed} to {.val FALSE}."
+            )
+          )
+          backed <- FALSE
+        }
+        private$.backed <- backed
+
+        if (isTRUE(private$.backed)) {
+          check_requires(
+            "Reading a backed ZarrAnnData",
+            c("ZarrArray", "DelayedArray"),
+            where = "Bioc"
+          )
         }
 
         if (!dir.exists(file) && mode %in% c("r", "r+")) {
@@ -541,6 +568,21 @@ ZarrAnnData <- R6::R6Class(
     #' @description See [AnnData-usage]
     uns_keys = function() {
       read_zarr_element_keys(private$.zarrobj, "uns")
+    },
+
+    #' @description Convert to an [`InMemoryAnnData`]. Any backed
+    #'   (`DelayedArray`) slots are materialized into ordinary in-memory
+    #'   matrices: an in-memory object should not stay tied to an on-disk file.
+    as_InMemoryAnnData = function() {
+      if (isTRUE(private$.backed)) {
+        prev <- private$.backed
+        private$.backed <- FALSE
+        on.exit(private$.backed <- prev, add = TRUE)
+        # TODO: commenting call to open_and_defer_close for now,
+        # but irrelevant to Zarr
+        # Hold the file open for the whole multi-slot read (single handle).
+      }
+      super$as_InMemoryAnnData()
     }
   )
 )
@@ -561,6 +603,9 @@ ZarrAnnData <- R6::R6Class(
 #'   * `r+` opens an existing file for read/write
 #'   * `w` creates a file, truncating any existing ones
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already exists
+#' @param backed Whether the object is disk backed and returns
+#'   [DelayedArray::DelayedArray] object for matrix data. Can only be `TRUE`
+#'   when `mode == "r"`.
 #' @param zarr_format The format to use when creating the Zarr store. Should be
 #'   either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
 #'   be set using the `anndataR.zarr_format` option, e.g.
@@ -592,6 +637,7 @@ as_ZarrAnnData <- function(
     "lz4"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE,
   zarr_format = NULL
 ) {
   if (!(inherits(adata, "AbstractAnnData"))) {
@@ -615,6 +661,7 @@ as_ZarrAnnData <- function(
     shape = adata$shape(),
     mode = mode,
     compression = compression,
+    backed = backed,
     zarr_format = zarr_format
   )
 }
