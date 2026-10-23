@@ -15,6 +15,11 @@
   refused to read (PR
   [\#501](https://github.com/scverse/anndataR/issues/501), PR
   [\#525](https://github.com/scverse/anndataR/issues/525)).
+- Replace the internal `create_zarr()` and `create_zarr_group()` helpers
+  with
+  [`Rarr::write_zarr_group()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_group.html)
+  and require `Rarr >= 2.1.27` (PR
+  [\#490](https://github.com/scverse/anndataR/issues/490)).
 
 ## anndataR 1.3.2
 

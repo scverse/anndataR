@@ -173,11 +173,11 @@ print(rna_sce)
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.5 LTS
+#> Running under: Ubuntu 26.04.1 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.32.so;  LAPACK version 3.12.0
 #> 
 #> locale:
 #>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
@@ -278,7 +278,7 @@ reticulate::py_config()
 #> python:         /opt/hostedtoolcache/Python/3.14.8/x64/bin/python3
 #> libpython:      /opt/hostedtoolcache/Python/3.14.8/x64/lib/libpython3.14.so
 #> pythonhome:     /opt/hostedtoolcache/Python/3.14.8/x64:/opt/hostedtoolcache/Python/3.14.8/x64
-#> version:        3.14.8 (main, Oct  1 2026, 02:38:33) [GCC 13.3.0]
+#> version:        3.14.8 (main, Oct  1 2026, 02:39:56) [GCC 15.2.0]
 #> numpy:          /opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages/numpy
 #> numpy_version:  2.5.4
 #> scanpy:         /opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages/scanpy
@@ -289,7 +289,7 @@ reticulate::py_list_packages()
 #>              package     version               requirement
 #> 1            anndata     0.12.19          anndata==0.12.19
 #> 2   array-api-compat      1.15.0  array-api-compat==1.15.0
-#> 3            certifi  2026.10.19       certifi==2026.10.19
+#> 3            certifi  2026.10.23       certifi==2026.10.23
 #> 4        cloudpickle       3.1.2        cloudpickle==3.1.2
 #> 5          contourpy       1.4.0          contourpy==1.4.0
 #> 6             cycler      0.12.1            cycler==0.12.1
