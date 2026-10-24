@@ -6,8 +6,9 @@
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element.
-#'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
-#'   `"zlib"`, `"lz4"`.
+#'   One of `"zstd"`, `"gzip"`, `"blosc"`, `"lzma"`, `"bz2"`,
+#'   `"zlib"`, `"lz4"`, `"none"`. Defaults to `"zstd"`.
+#'   See `help("compressors", package = "Rarr")`.
 #' @param zarr_format The format to write the element in, either 2 or 3 for the
 #'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
 #'   elements of a store end up in the same format.
@@ -25,14 +26,14 @@ write_zarr_element <- function(
   store,
   name,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format,
   stop_on_error = FALSE,
@@ -855,14 +856,14 @@ zarr_write_compressed <- function(
   name,
   value,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format
 ) {
@@ -891,13 +892,13 @@ zarr_write_compressed <- function(
 .get_compressor <- function(compression) {
   switch(
     compression,
-    "none" = NULL,
     "zstd" = Rarr::use_zstd(),
-    "blosc" = Rarr::use_blosc(),
     "gzip" = Rarr::use_gzip(),
+    "blosc" = Rarr::use_blosc(),
     "lzma" = Rarr::use_lzma(),
     "bz2" = Rarr::use_bz2(),
     "zlib" = Rarr::use_zlib(),
-    "lz4" = Rarr::use_lz4()
+    "lz4" = Rarr::use_lz4(),
+    "none" = NULL
   )
 }
