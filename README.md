@@ -6,10 +6,10 @@
 [![Codecov test coverage](https://codecov.io/gh/scverse/anndataR/graph/badge.svg)](https://app.codecov.io/gh/scverse/anndataR)
 [![Bioc release status](http://www.bioconductor.org/shields/build/release/bioc/anndataR.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/anndataR)
 [![Bioc devel status](http://www.bioconductor.org/shields/build/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR)
-[![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/anndataR.svg)](http://bioconductor.org/packages/stats/bioc/anndataR/)
+[![Bioc downloads rank](https://bioconductor.org/shields/downloads/release/anndataR.svg)](https://bioconductor.org/packages/stats/bioc/anndataR/)
 [![Bioc support](https://bioconductor.org/shields/posts/anndataR.svg)](https://support.bioconductor.org/tag/anndataR)
 [![Bioc history](https://bioconductor.org/shields/years-in-bioc/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
-[![Bioc last commit](https://bioconductor.org/shields/lastcommit/devel/bioc/anndataR.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR/)
+[![Bioc last commit](https://bioconductor.org/shields/lastcommit/devel/bioc/anndataR.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/anndataR/)
 [![Bioc dependencies](https://bioconductor.org/shields/dependencies/release/anndataR.svg)](https://bioconductor.org/packages/release/bioc/html/anndataR.html#since)
 <!-- badges: end -->
 
@@ -86,23 +86,26 @@ Take note that you need all suggested dependencies available, and that building 
 
 ## Citing **{anndataR}**
 
-If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1101/2025.08.18.669052):
+If you use **{anndataR}** in your work, please cite [_"anndataR improves interoperability between R and Python in single-cell transcriptomics"_](https://doi.org/10.1093/bioinformatics/btag288):
 
 ```r
 citation("anndataR")
 ```
 
-    Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025).
-    “anndataR improves interoperability between R and Python in single-cell transcriptomics.” _bioRxiv_, 2025.08.18.669052.
-    doi:10.1101/2025.08.18.669052 <https://doi.org/10.1101/2025.08.18.669052>.
+    Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y, scverse core (2026).
+    “anndataR improves interoperability between R and Python in single-cell transcriptomics.” _Bioinformatics_, *42*, btag288.
+    doi:10.1093/bioinformatics/btag288 <https://doi.org/10.1093/bioinformatics/btag288>.
 
     A BibTeX entry for LaTeX users is
 
       @Article{,
-        title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
-        author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
-        journal = {bioRxiv},
-        year = {2025},
-        pages = {2025.08.18.669052},
-        doi = {10.1101/2025.08.18.669052},
+        title = {anndataR improves interoperability between R and Python in single-cell transcriptomics},
+        author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys and {scverse core}},
+        journal = {Bioinformatics},
+        volume = {42},
+        issue = {6},
+        month = {June},
+        year = {2026},
+        pages = {btag288},
+        doi = {10.1093/bioinformatics/btag288},
       }
