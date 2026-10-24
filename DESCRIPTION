@@ -1,5 +1,5 @@
 Package: anndataR
-Title: AnnData interoperability in R
+Title: AnnData Interoperability in R
 Version: 1.3.3
 Authors@R: c(
     person("Robrecht", "Cannoodt", , "rcannood@gmail.com", role = c("aut", "cre"),
