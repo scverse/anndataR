@@ -758,7 +758,8 @@ write_h5ad_data_frame <- function(
       hdf5_file,
       paste0(name, "/", col),
       compression,
-      chunk_size = chunk_size
+      chunk_size = chunk_size,
+      force_array = TRUE
     )
   }
 
@@ -824,7 +825,8 @@ write_h5ad_data_frame_index <- function(
     hdf5_file,
     paste0(name, "/", index_name),
     compression,
-    chunk_size = chunk_size
+    chunk_size = chunk_size,
+    force_array = TRUE
   )
 }
 
