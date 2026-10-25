@@ -576,7 +576,11 @@ for (zarr_format in c(2, 3)) {
 
 for (zarr_format in c(2, 3)) {
   test_that(
-    paste0("Python can read Zarr stores with length 1 var (v", zarr_format, ")"),
+    paste0(
+      "Python can read Zarr stores with length 1 var (v",
+      zarr_format,
+      ")"
+    ),
     {
       skip_if_no_anndata_py()
       skip_if_no_zarr()
