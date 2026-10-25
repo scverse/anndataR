@@ -124,6 +124,21 @@ hdf5_get_dataset_type <- function(hdf5_file, name) {
   rhdf5::H5Tget_class(tid)
 }
 
+#' Create a HDF5 string type
+#'
+#' Create a variable-length, UTF-8 encoded HDF5 string type.
+#'
+#' @return A HDF5 datatype ID. The caller is responsible for closing it with
+#'   [rhdf5::H5Tclose()].
+#' @noRd
+hdf5_string_type <- function() {
+  tid <- rhdf5::H5Tcopy("H5T_C_S1")
+  rhdf5::H5Tset_strpad(tid, strpad = "NULLTERM")
+  rhdf5::H5Tset_size(tid, NULL)
+  rhdf5::H5Tset_cset(tid, "UTF-8")
+  tid
+}
+
 #' Write a scalar to a HDF5 file
 #'
 #' Write a HDF5 scalar
@@ -153,13 +168,7 @@ hdf5_write_scalar <- function(
     storage.mode(value)[1],
     integer = "H5T_STD_I64LE",
     double = "H5T_IEEE_F64LE",
-    character = {
-      tid <- rhdf5::H5Tcopy("H5T_C_S1")
-      rhdf5::H5Tset_strpad(tid, strpad = "NULLTERM")
-      rhdf5::H5Tset_size(tid, NULL)
-      rhdf5::H5Tset_cset(tid, "UTF-8")
-      tid
-    },
+    character = hdf5_string_type(),
     {
       cli_abort(c(
         "{.arg value} must be of type {.val integer}, {.val double} or {.val character}",
