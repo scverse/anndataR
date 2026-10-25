@@ -89,6 +89,11 @@ hdf5_write_dataset <- function(
   # warning about "Compression (level > 0) requires chunking"
   level <- if (is.null(chunk) || compression == "none") 0L else 6L
 
+  # Use UTF-8 strings if not set
+  if (is.null(H5type) && is.character(value)) {
+    H5type <- hdf5_string_type()
+  }
+
   rhdf5::h5createDataset(
     hdf5_file$handle,
     name,
@@ -128,8 +133,7 @@ hdf5_get_dataset_type <- function(hdf5_file, name) {
 #'
 #' Create a variable-length, UTF-8 encoded HDF5 string type.
 #'
-#' @return A HDF5 datatype ID. The caller is responsible for closing it with
-#'   [rhdf5::H5Tclose()].
+#' @return A HDF5 datatype ID
 #' @noRd
 hdf5_string_type <- function() {
   tid <- rhdf5::H5Tcopy("H5T_C_S1")
