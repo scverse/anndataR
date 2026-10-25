@@ -609,6 +609,8 @@ test_that("Python can read non-ASCII strings", {
   adata_py <- reticulate::import("anndata", convert = FALSE)$read_h5ad(file)
   obs_names <- reticulate::py_to_r(adata_py$obs_names$tolist())
   expect_equal(obs_names, c("c1é", "c2"))
-  cat_values <- reticulate::py_to_r(adata_py$obs[["cat"]]$astype("str")$tolist())
+  cat_values <- reticulate::py_to_r(adata_py$obs[["cat"]]$astype(
+    "str"
+  )$tolist())
   expect_equal(cat_values, c("café", "b"))
 })
