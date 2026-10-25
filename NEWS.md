@@ -1,3 +1,7 @@
+# anndataR devel
+
+- Fix writing non-ASCII strings to H5AD files by using UTF-8 for string datasets (PR #555, issue #400).
+
 # anndataR 1.3.3
 
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
@@ -162,7 +166,7 @@ Backported from the development branch (PR #489):
 
 ## Minor changes
 
-- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
+- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe
   operators for cleaner code (PR #328)
 - Add explanatory comments for matrix generation alignment with Python
   **dummy-anndata** (PR #328)
@@ -174,11 +178,11 @@ Backported from the development branch (PR #489):
 
 ## Bug fixes
 
-- Add compression parameter to additional write operations in `HDF5AnnData` 
+- Add compression parameter to additional write operations in `HDF5AnnData`
   for consistency (PR #328)
 - Directly use `obs_names` and `var_names` properties instead of corresponding
   indirect S3 methods `rownames` and `colnames` (PR #328)
-- Fix error message variable name in `.validate_aligned_array()` method 
+- Fix error message variable name in `.validate_aligned_array()` method
   (expected_colnames → expected_rownames) (PR #328)
 - Fix Seurat conversion for PCA loadings with variable feature subsets (PR #328)
   - Seurat PCA loadings only contain variable features, not all genes
@@ -240,7 +244,7 @@ Backported from the development branch (PR #489):
   (PR #284)
   - There will still be a warning if neither of this is present as it may
     affect compatibility with **{Seurat}** functions
-    
+
 ## Minor changes
 
 - Use accessor functions/methods instead of direct slot access where possible
