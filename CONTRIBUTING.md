@@ -16,8 +16,8 @@ Please use the [issue tracker](https://github.com/scverse/anndataR/issues) and p
 
 ### Conventions
 
-- Format code with [Air](https://posit-dev.github.io/air/) (`air format .`) and check it with `lintr::lint_package()`
-- Document functions with roxygen2 and regenerate the man pages with `devtools::document()`
+- Format code with [Air](https://posit-dev.github.io/air/) (`air format .`) and vignettes with `styler::style_dir("vignettes")`, then check with `lintr::lint_package()`
+- Document functions with roxygen2 and regenerate the man pages with `devtools::document()`, using the roxygen2 version pinned in `DESCRIPTION` (`Config/roxygen2/version`)
 - Add or update tests in `tests/testthat/`
 - Add or update examples in the vignettes where relevant
 - Check that new behaviour matches Python **anndata** where applicable (see the roundtrip tests)
@@ -31,6 +31,7 @@ Please use the [issue tracker](https://github.com/scverse/anndataR/issues) and p
 devtools::test()
 devtools::test(filter = "roundtrip-X")  # Run a single test file
 devtools::check()
+BiocCheck::BiocCheck()
 ```
 
 Some tests require Python **anndata** and are skipped if it is not available.
@@ -45,15 +46,15 @@ Set `ANNDATAR_TEST_REQUIRE_PYTHON=true` to make them fail instead.
 
 ## Package design
 
-See `vignettes/software_design.Rmd` for details.
+See the [software design article](https://anndataR.scverse.org/articles/software_design.html) for details.
 Some key points to be aware of:
 
-- **AnnData classes**: `AbstractAnnData` is the base class for `InMemoryAnnData`, `HDF5AnnData`, `ReticulateAnnData` and `AnnDataView`.
+- **AnnData classes**: `AbstractAnnData` is the base class for `InMemoryAnnData`, `HDF5AnnData`, `ZarrAnnData`, `ReticulateAnnData` and `AnnDataView`.
   Changes to the interface usually need to be made in all of them.
 - **Names are stored separately**: `obs_names` and `var_names` are stored apart from `obs`/`var`, and dimnames are added when data is accessed.
   Internal code should use `adata$obs_names` and `adata$var_names` rather than `rownames(adata$obs)` or `colnames(adata$X)`.
 - **Views are read-only**: `AnnDataView` (returned by `adata[i, j]`) subsets lazily and can't be modified.
-  Convert it with `$as_InMemoryAnnData()` or `$as_HDF5AnnData()` first when needed.
+  Convert it with one of the `$as_*AnnData()` methods first when needed.
 - **Validation**: setters use the validation helpers in `AbstractAnnData`.
   Update these if you change the rules for a slot.
 - **Conversion**: `from_*()` functions convert other formats to AnnData and `as_*()` functions convert AnnData to other formats.
