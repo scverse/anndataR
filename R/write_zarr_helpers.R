@@ -12,6 +12,8 @@
 #'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
 #'   elements of a store end up in the same format.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param force_array Whether to always write length-1 character, numeric and
+#'   logical values as arrays instead of scalars (e.g. for data frame columns)
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -36,6 +38,7 @@ write_zarr_element <- function(
   ),
   zarr_format,
   stop_on_error = FALSE,
+  force_array = FALSE,
   ...
 ) {
   compression <- match.arg(compression)
@@ -59,7 +62,7 @@ write_zarr_element <- function(
       }
     } else if (is.character(value)) {
       # Character values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_string_scalar
       } else if (anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_string
@@ -68,7 +71,7 @@ write_zarr_element <- function(
       }
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) {
       # Numeric values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_numeric_scalar
       } else if (is.integer(value) && anyNA(value)) {
         write_zarr_nullable_integer
@@ -79,7 +82,7 @@ write_zarr_element <- function(
       # Logical values
       if (anyNA(value)) {
         write_zarr_nullable_boolean
-      } else if (length(value) == 1) {
+      } else if (!force_array && length(value) == 1) {
         # Single Booleans should be written as numeric scalars
         write_zarr_numeric_scalar
       } else {
@@ -748,7 +751,8 @@ write_zarr_data_frame <- function(
       store,
       paste0(name, "/", col),
       compression,
-      zarr_format
+      zarr_format,
+      force_array = TRUE
     )
   }
 
@@ -758,7 +762,8 @@ write_zarr_data_frame <- function(
     store,
     paste0(name, "/", index_name),
     compression,
-    zarr_format
+    zarr_format,
+    force_array = TRUE
   )
 
   # Write additional data frame attributes
