@@ -288,7 +288,7 @@ reticulate::py_config()
 reticulate::py_list_packages()
 #>              package     version               requirement
 #> 1            anndata     0.12.19          anndata==0.12.19
-#> 2   array-api-compat      1.15.0  array-api-compat==1.15.0
+#> 2   array-api-compat      1.16.0  array-api-compat==1.16.0
 #> 3            certifi  2026.10.23       certifi==2026.10.23
 #> 4        cloudpickle       3.1.2        cloudpickle==3.1.2
 #> 5          contourpy       1.4.0          contourpy==1.4.0

@@ -130,3 +130,9 @@ A BibTeX entry for LaTeX users is
     doi = {10.1093/bioinformatics/btag288},
   }
 ```
+
+## Contributors
+
+[![](https://contrib.rocks/image?repo=scverse/anndataR)](https://github.com/scverse/anndataR/graphs/contributors)
+
+*Made with [contrib.rocks](https://contrib.rocks).*

@@ -131,6 +131,12 @@ A BibTeX entry for LaTeX users is
   }
 ```
 
+## Contributors
+
+[![](https://contrib.rocks/image?repo=scverse/anndataR)](https://github.com/scverse/anndataR/graphs/contributors)
+
+*Made with [contrib.rocks](https://contrib.rocks).*
+
 # Package index
 
 ## All functions
