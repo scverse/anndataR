@@ -82,7 +82,13 @@ test_that("'w-'/'x' fail if the group already exists, not the file", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  HDF5AnnData$new(h5ad_file, obs = obs, var = var, root = "mod/rna", mode = "w-")
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    root = "mod/rna",
+    mode = "w-"
+  )
 
   expect_error(
     HDF5AnnData$new(
@@ -111,8 +117,20 @@ test_that("'w' at a sub-root recreates only that group", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  HDF5AnnData$new(h5ad_file, obs = obs, var = var, root = "mod/rna", mode = "w-")
-  HDF5AnnData$new(h5ad_file, obs = obs, var = var, root = "mod/atac", mode = "w-")
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    root = "mod/rna",
+    mode = "w-"
+  )
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    root = "mod/atac",
+    mode = "w-"
+  )
 
   new_obs <- data.frame(row.names = 1:5)
   new_var <- data.frame(row.names = 1:8)
@@ -134,7 +152,13 @@ test_that("'r+'/'a' warn on a non-empty root group, scoped to the group", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
-  HDF5AnnData$new(h5ad_file, obs = obs, var = var, root = "mod/rna", mode = "w-")
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    root = "mod/rna",
+    mode = "w-"
+  )
 
   expect_warning(
     HDF5AnnData$new(h5ad_file, root = "mod/rna", mode = "r+"),

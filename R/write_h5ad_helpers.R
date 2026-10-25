@@ -844,7 +844,12 @@ write_empty_h5ad <- function(
   )
 
   hdf5_create_group(hdf5_file, hdf5_root_path(root, "layers"))
-  write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "layers"), "dict", "0.1.0")
+  write_h5ad_encoding(
+    hdf5_file,
+    hdf5_root_path(root, "layers"),
+    "dict",
+    "0.1.0"
+  )
 
   hdf5_create_group(hdf5_file, hdf5_root_path(root, "obsm"))
   write_h5ad_encoding(hdf5_file, hdf5_root_path(root, "obsm"), "dict", "0.1.0")

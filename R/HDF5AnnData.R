@@ -465,7 +465,8 @@ HDF5AnnData <- R6::R6Class(
       # (re)create the file, at a non-root group, only create it if it's
       # missing.
       if (
-        mode %in% c("w", "w-", "x") &&
+        mode %in%
+          c("w", "w-", "x") &&
           (private$.root == "/" || !file.exists(file))
       ) {
         h5file <- rhdf5::H5Fcreate(
