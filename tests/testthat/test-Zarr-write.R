@@ -524,3 +524,73 @@ for (zarr_format in c(2, 3)) {
     }
   )
 }
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0(
+      "write_zarr() writes length 1 data frame columns and indices as arrays (v",
+      zarr_format,
+      ")"
+    ),
+    {
+      store <- withr::local_tempfile(fileext = ".zarr")
+      adata <- AnnData(
+        X = matrix(1, 1, 2),
+        obs = data.frame(
+          ct = "T cell",
+          n = 3L,
+          x = 1.5,
+          flag = TRUE,
+          na_int = NA_integer_,
+          na_chr = NA_character_,
+          row.names = "c1"
+        ),
+        var = data.frame(row.names = c("g1", "g2"))
+      )
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+
+      encoding <- function(key) {
+        read_zarr_encoding(store, key)$type
+      }
+      expect_equal(encoding("obs/_index"), "string-array")
+      expect_equal(encoding("obs/ct"), "string-array")
+      expect_equal(encoding("obs/n"), "array")
+      expect_equal(encoding("obs/x"), "array")
+      expect_equal(encoding("obs/flag"), "array")
+      expect_equal(encoding("obs/na_int"), "nullable-integer")
+      expect_equal(encoding("obs/na_chr"), "nullable-string-array")
+
+      # A single variable
+      adata <- AnnData(
+        X = matrix(1, 2, 1),
+        obs = data.frame(row.names = c("c1", "c2")),
+        var = data.frame(row.names = "g")
+      )
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      expect_equal(encoding("var/_index"), "string-array")
+
+      expect_equal(read_zarr(store)$var_names, "g")
+    }
+  )
+}
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0("Python can read Zarr stores with length 1 var (v", zarr_format, ")"),
+    {
+      skip_if_no_anndata_py()
+      skip_if_no_zarr()
+      ad <- reticulate::import("anndata", convert = FALSE)
+      store <- withr::local_tempfile(fileext = ".zarr")
+
+      adata <- AnnData(
+        X = matrix(1, 2, 1),
+        obs = data.frame(row.names = c("c1", "c2")),
+        var = data.frame(row.names = "g")
+      )
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      py_adata <- ad$read_zarr(store)
+      expect_equal(reticulate::py_to_r(py_adata$n_vars), 1L)
+    }
+  )
+}
