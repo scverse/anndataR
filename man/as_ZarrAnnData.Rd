@@ -9,7 +9,8 @@ as_ZarrAnnData(
   file,
   compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = NULL
+  zarr_format = NULL,
+  chunk_size = "auto"
 )
 }
 \arguments{
@@ -38,6 +39,13 @@ be set using the \code{anndataR.zarr_format} option, e.g.
 When an existing store is opened, that store's format is used instead and
 setting \code{zarr_format} to a different format is an error. Use
 \code{mode = "w"} to rewrite an existing store in another format.}
+
+\item{chunk_size}{The target chunk size in bytes to use when writing
+Zarr arrays. When \code{"auto"} (default), chunks are chosen as Python's
+\strong{zarr} chooses them (as \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} does with h5py's algorithm,
+but with zarr's limits), so chunk shapes match those written by Python
+\strong{anndata}. Set to \code{NULL} to write each array as a single chunk, or a
+number to use a specific target size in bytes, capped at 64 MB per chunk.}
 }
 \value{
 A \code{\link{ZarrAnnData}} object with the same data as the input \code{AnnData}
