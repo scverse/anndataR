@@ -8,6 +8,7 @@ S3method(dim,AbstractAnnData)
 S3method(dimnames,AbstractAnnData)
 S3method(ncol,AbstractAnnData)
 S3method(nrow,AbstractAnnData)
+S3method(py_to_r,anndata.AnnData)
 S3method(py_to_r,anndata._core.anndata.AnnData)
 S3method(py_to_r,collections.abc.Mapping)
 S3method(r_to_py,AbstractAnnData)
@@ -20,21 +21,33 @@ export(read_h5ad)
 export(read_zarr)
 export(write_h5ad)
 export(write_zarr)
-importFrom(Matrix,as.matrix)
-importFrom(Matrix,sparseMatrix)
-importFrom(Matrix,t)
+importFrom(Matrix,
+  as.matrix,
+  sparseMatrix,
+  t
+)
 importFrom(R6,R6Class)
-importFrom(cli,cli_abort)
-importFrom(cli,cli_inform)
-importFrom(cli,cli_warn)
+importFrom(cli,
+  cli_abort,
+  cli_inform,
+  cli_warn
+)
 importFrom(lifecycle,deprecated)
-importFrom(methods,as)
-importFrom(methods,new)
-importFrom(purrr,map_dfr)
-importFrom(purrr,map_lgl)
-importFrom(reticulate,py_to_r)
-importFrom(reticulate,r_to_py)
-importFrom(rlang,`%||%`)
-importFrom(rlang,caller_env)
+importFrom(methods,
+  as,
+  new
+)
+importFrom(purrr,
+  map_dfr,
+  map_lgl
+)
+importFrom(reticulate,
+  py_to_r,
+  r_to_py
+)
+importFrom(rlang,
+  "%||%",
+  caller_env
+)
 importFrom(stats,setNames)
 importFrom(utils,tail)

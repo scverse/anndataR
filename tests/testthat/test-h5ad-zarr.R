@@ -1,6 +1,6 @@
 skip_if_not_installed("rhdf5")
 skip_if_not_installed("HDF5Array")
-skip_if_not_installed("Rarr")
+skip_if_not_installed("Rarr", minimum_version = "2.1.27")
 
 # h5ad file
 filename <- system.file("extdata", "example.h5ad", package = "anndataR")

@@ -293,6 +293,36 @@ test_that("Writing H5AD mappings works", {
   expect_equal(attrs[["encoding-type"]], "dict")
 })
 
+test_that("Writing H5AD mappings with an index works", {
+  index <- paste0("Row", 1:5)
+  mapping <- list(
+    df = data.frame(Letters = letters[1:5], Numbers = 1:5),
+    array = matrix(rnorm(20), nrow = 5, ncol = 4)
+  )
+
+  expect_silent(
+    write_h5ad_element(
+      mapping,
+      hdf5_file,
+      "indexed_mapping",
+      compression = "none",
+      index = index
+    )
+  )
+
+  hdf5_file$open_and_defer_close()
+  # The index is used for data frame elements...
+  expect_identical(
+    as.vector(rhdf5::h5read(hdf5_file$handle, "indexed_mapping/df/_index")),
+    index
+  )
+  # ...and ignored by everything else
+  expect_equal(
+    dim(rhdf5::h5read(hdf5_file$handle, "indexed_mapping/array")),
+    c(4, 5)
+  )
+})
+
 test_that("Writing H5AD data frames works", {
   df <- data.frame(
     Letters = letters[1:5],
@@ -484,4 +514,41 @@ test_that("writing a backed AnnData materializes its DelayedMatrix slots", {
   withr::defer(roundtrip$close())
   expect_false(inherits(roundtrip$X, "DelayedArray"))
   expect_equal(as.matrix(roundtrip$X), as.matrix(backed$X))
+})
+
+test_that("hdf5_clear_rhdf5_attributes() removes rhdf5 bookkeeping attributes", {
+  file <- withr::local_tempfile(fileext = ".h5")
+  rhdf5::h5createFile(file)
+  hdf5_file <- HDF5File$new(file)
+
+  write_h5ad_element(c(1, 2, 3), hdf5_file, "vector", compression = "none")
+  hdf5_write_attribute(hdf5_file, "vector", "rhdf5-NA.OK", TRUE)
+  hdf5_write_attribute(hdf5_file, "vector", "as.na", TRUE)
+
+  hdf5_clear_rhdf5_attributes(hdf5_file, "vector")
+
+  hdf5_file$open_and_defer_close()
+  attrs <- rhdf5::h5readAttributes(hdf5_file$handle, "vector", native = FALSE)
+  expect_false(any(c("rhdf5-NA.OK", "as.na") %in% names(attrs)))
+  expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
+})
+
+test_that("hdf5_clear_rhdf5_attributes() recurses into groups", {
+  file <- withr::local_tempfile(fileext = ".h5")
+  rhdf5::h5createFile(file)
+  hdf5_file <- HDF5File$new(file)
+
+  csc <- as(matrix(c(1, 0, 0, 2), nrow = 2), "CsparseMatrix")
+  write_h5ad_element(csc, hdf5_file, "sparse", compression = "none")
+  hdf5_write_attribute(hdf5_file, "sparse/data", "as.na", TRUE)
+
+  hdf5_clear_rhdf5_attributes(hdf5_file, "sparse")
+
+  hdf5_file$open_and_defer_close()
+  attrs <- rhdf5::h5readAttributes(
+    hdf5_file$handle,
+    "sparse/data",
+    native = FALSE
+  )
+  expect_false("as.na" %in% names(attrs))
 })

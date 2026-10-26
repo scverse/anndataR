@@ -1,9 +1,22 @@
-# anndataR devel
+# anndataR 1.3.3
 
-- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480)
+- Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
+- Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
+- Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
+
+# anndataR 1.3.2
+
+- Support the `anndata.AnnData` class name used by Python anndata >= 0.13 in `py_to_r()` and `ReticulateAnnData`, and warn that anndata >= 0.13 is not fully supported yet (PR #510, issue #499).
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480).
+- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496).
+- Remove the workaround for LZF compression of VLen strings and require `rhdf5 >= 2.57.5`, which fixes the issue upstream (PR #497).
+- Pin Python `mudata` to `< 0.4` in the `usage_python` vignette, as mudata 0.4 can no longer read the legacy example `.h5mu` file (PR #512, issue #511).
+- Pin Python `mudata` to `< 0.4` in the pkgdown and macOS-Intel check workflows as well, because `py_require()` pins in the vignette are ignored when `RETICULATE_PYTHON` is forced (PR #518, issue #511).
+- Remove the `as.na` attribute that rhdf5 2.57.12 adds to datasets containing `NA` when comparing R-written files to Python-written ones in the roundtrip tests (PR #519, issue #517).
+- Skip the H5AD file-closure tests while rhdf5 2.57.12 emits a spurious `NA_character_` warning for numeric datasets containing `NA`, tracked as a known issue until the fix from Huber-group-EMBL/rhdf5#242 reaches Bioconductor devel (PR #520).
+- Remove the special handling of Zarr v3 structured datatypes in the tests, now that `Rarr` supports them (PR #498).
 - Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
 - Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).
-- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496).
 
 # anndataR 1.3.1
 
@@ -27,6 +40,35 @@
 # anndataR 1.3.0
 
 - Bioconductor 3.24 devel
+
+# anndataR 1.2.3
+
+Backported from the development branch (PR #538):
+
+- Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
+- Pin Python to 3.14 in the benchmark and pkgdown workflows, as `h5py` has no wheels for Python 3.15 yet (PR #534).
+
+# anndataR 1.2.2
+
+Backported from the development branch (PR #503, PR #523):
+
+- Add support for `nullable-string-array` elements in H5AD and Zarr (PR #480).
+- Fix `hdf5_write_boolean_dataset()` writing logical matrices as flat 1D datasets instead of preserving their shape (PR #496, thanks @JuanTejedor!).
+- Check `RELEASE_*` branches against their own Bioconductor version instead of against Bioconductor devel, and run the checks on pushes to release branches (PR #502).
+- Support the `anndata.AnnData` class name used by Python anndata >= 0.13 in `py_to_r()` and `ReticulateAnnData`, and warn that anndata >= 0.13 is not fully supported yet (PR #510, issue #499).
+- Pin Python `mudata` to `< 0.4` in the `usage_python` vignette and in the pkgdown and check workflows, as mudata 0.4 can no longer read the legacy example `.h5mu` file (PR #512, PR #518, issue #511).
+- Update the Zarr recarray tests to take into account the `Rarr` structured datatype breaking change, so that they pass with both Bioconductor release and devel versions of `Rarr` (PR #462).
+- Measure test coverage against the Bioconductor version the branch targets instead of always against devel (PR #523).
+- Drop the R-devel setup workaround for the Windows and macOS ARM check jobs, which installed R devel against Bioconductor 3.23 packages (PR #523).
+
+# anndataR 1.2.1
+
+Backported from the development branch (PR #489):
+
+- Fix `create_zarr()` so that Zarr stores can be created at relative paths and at paths containing regex metacharacters (PR #478).
+- Fix conditional expression in `AbstractAnnData` matrix validation (PR #487).
+- Require Python `anndata<0.13.0` in tests, workflows and vignettes (PR #481).
+- Update `CITATION` with the published paper (PR #464).
 
 # anndataR 1.2.0
 
