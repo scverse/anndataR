@@ -524,3 +524,20 @@ for (zarr_format in c(2, 3)) {
     }
   )
 }
+
+test_that("patch_zarr_vlen_utf8() adds the vlen-utf8 filter only once", {
+  store <- withr::local_tempfile(fileext = ".zarr")
+  dir.create(file.path(store, "strings"), recursive = TRUE)
+  metadata_path <- file.path(store, "strings", ".zarray")
+
+  for (filters in list(NULL, list(list(id = "vlen-utf8")))) {
+    jsonlite::write_json(
+      list(dtype = "|O", filters = filters, zarr_format = 2L),
+      metadata_path,
+      auto_unbox = TRUE,
+      null = "null"
+    )
+    patch_zarr_vlen_utf8(store, "strings", 2L)
+    expect_identical(jsonlite::read_json(metadata_path)$filters, list(list(id = "vlen-utf8")))
+  }
+})
