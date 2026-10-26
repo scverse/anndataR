@@ -203,7 +203,7 @@ write_zarr_dense_array <- function(
     value <- as.matrix(value)
   }
 
-  if (is.matrix(value) && is.integer(value) && anyNA(value)) {
+  if (is.matrix(value) && anyNA(value)) {
     # an integer array can't hold NA
     value[is.na(value)] <- NaN
   }
