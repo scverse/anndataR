@@ -28,10 +28,12 @@ compare_rec_array <- function(rec_array_h5ad, rec_array_zarr, test_fun) {
   if (packageVersion("Rarr") >= "2.1.0") {
     # Rarr >= 2.1.0 (Bioc devel): zarr fields are lists of scalars, so compare
     # the h5ad fields as lists and transpose the zarr fields to match.
-    test_fun(
-      unname(lapply(rec_array_h5ad, as.list)),
-      purrr::transpose(rec_array_zarr)
-    )
+    expected <- lapply(rec_array_h5ad, as.list)
+    # WORKAROUND: we can remove this when grumpy > 0.1.1 is released.
+    if (packageVersion("grumpy") <= "0.1.1") {
+      expected <- unname(expected)
+    }
+    test_fun(expected, purrr::transpose(rec_array_zarr))
   } else {
     # Older Rarr (Bioc release): zarr fields are double vectors.
     test_fun(do.call(rbind, rec_array_h5ad), {
