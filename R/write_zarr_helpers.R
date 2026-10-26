@@ -393,7 +393,11 @@ patch_zarr_vlen_utf8 <- function(store, name, zarr_format) {
 
   if (zarr_format == 2L) {
     # Rarr versions that fix Rarr#261 record the filter themselves
-    has_vlen_utf8 <- any(vapply(metadata$filters, \(f) identical(f$id, "vlen-utf8"), logical(1)))
+    has_vlen_utf8 <- any(vapply(
+      metadata$filters,
+      \(f) identical(f$id, "vlen-utf8"),
+      logical(1)
+    ))
     if (!has_vlen_utf8) {
       metadata$filters <- c(metadata$filters, list(list(id = "vlen-utf8")))
     }

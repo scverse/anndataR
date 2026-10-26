@@ -538,6 +538,9 @@ test_that("patch_zarr_vlen_utf8() adds the vlen-utf8 filter only once", {
       null = "null"
     )
     patch_zarr_vlen_utf8(store, "strings", 2L)
-    expect_identical(jsonlite::read_json(metadata_path)$filters, list(list(id = "vlen-utf8")))
+    expect_identical(
+      jsonlite::read_json(metadata_path)$filters,
+      list(list(id = "vlen-utf8"))
+    )
   }
 })
