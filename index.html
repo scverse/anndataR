@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>AnnData interoperability in R • anndataR</title>
+<title>AnnData Interoperability in R • anndataR</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="AnnData interoperability in R">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="AnnData Interoperability in R">
 <meta name="description" content="Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyse your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.">
 <meta property="og:description" content="Bring the power and flexibility of AnnData to the R ecosystem, allowing you to effortlessly manipulate and analyse your single-cell data. This package lets you work with backed h5ad and zarr files, directly access various slots (e.g. X, obs, var), or convert the data into SingleCellExperiment and Seurat objects.">
 <meta property="og:image" content="https://anndataR.scverse.org/logo.svg">
@@ -137,23 +137,32 @@
 <h2 id="citing-anndatar">Citing <strong>{anndataR}</strong>
 <a class="anchor" aria-label="anchor" href="#citing-anndatar"></a>
 </h2>
-<p>If you use <strong>{anndataR}</strong> in your work, please cite <a href="https://doi.org/10.1101/2025.08.18.669052" class="external-link"><em>“anndataR improves interoperability between R and Python in single-cell transcriptomics”</em></a>:</p>
+<p>If you use <strong>{anndataR}</strong> in your work, please cite <a href="https://doi.org/10.1093/bioinformatics/btag288" class="external-link"><em>“anndataR improves interoperability between R and Python in single-cell transcriptomics”</em></a>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"anndataR"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang<span class="sc">-</span>aram C, Bredikhin D, Seurinck R, Saeys <span class="fu">Y</span> (<span class="dv">2025</span>).</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>“anndataR improves interoperability between R and Python <span class="cf">in</span> single<span class="sc">-</span>cell transcriptomics.” _bioRxiv_, <span class="dv">2025</span>.<span class="dv">08</span>.<span class="dv">18</span>.<span class="fl">669052.</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>doi<span class="sc">:</span><span class="fl">10.1101</span><span class="sc">/</span><span class="dv">2025</span>.<span class="dv">08</span>.<span class="fl">18.669052</span> <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.1101</span><span class="sc">/</span><span class="dv">2025</span>.<span class="dv">08</span>.<span class="fl">18.669052</span><span class="sc">&gt;</span>.</span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang<span class="sc">-</span>aram C, Bredikhin D, Seurinck R, Saeys Y, scverse <span class="fu">core</span> (<span class="dv">2026</span>).</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>“anndataR improves interoperability between R and Python <span class="cf">in</span> single<span class="sc">-</span>cell transcriptomics.” _Bioinformatics_, <span class="sc">*</span><span class="dv">42</span><span class="sc">*</span>, btag288.</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>doi<span class="sc">:</span><span class="fl">10.1093</span><span class="sc">/</span>bioinformatics<span class="sc">/</span>btag288 <span class="sc">&lt;</span>https<span class="sc">:</span><span class="er">//</span>doi.org<span class="sc">/</span><span class="fl">10.1093</span><span class="sc">/</span>bioinformatics<span class="sc">/</span>btag288<span class="sc">&gt;</span>.</span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a></span>
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>A BibTeX entry <span class="cf">for</span> LaTeX users is</span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>  <span class="sc">@</span>Article{,</span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    title <span class="ot">=</span> {{anndataR} improves interoperability between R and Python <span class="cf">in</span> single<span class="sc">-</span>cell transcriptomics},</span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    author <span class="ot">=</span> {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang<span class="sc">-</span>aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},</span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    journal <span class="ot">=</span> {bioRxiv},</span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    year <span class="ot">=</span> {<span class="dv">2025</span>},</span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    pages <span class="ot">=</span> {<span class="dv">2025</span>.<span class="dv">08</span>.<span class="fl">18.669052</span>},</span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    doi <span class="ot">=</span> {<span class="fl">10.1101</span><span class="sc">/</span><span class="dv">2025</span>.<span class="dv">08</span>.<span class="fl">18.669052</span>},</span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  }</span></code></pre></div>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    title <span class="ot">=</span> {anndataR improves interoperability between R and Python <span class="cf">in</span> single<span class="sc">-</span>cell transcriptomics},</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    author <span class="ot">=</span> {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and Isaac Virshup and Chananchida Sang<span class="sc">-</span>aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys and {scverse core}},</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    journal <span class="ot">=</span> {Bioinformatics},</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    volume <span class="ot">=</span> {<span class="dv">42</span>},</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    issue <span class="ot">=</span> {<span class="dv">6</span>},</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>    month <span class="ot">=</span> {June},</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    year <span class="ot">=</span> {<span class="dv">2026</span>},</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>    pages <span class="ot">=</span> {btag288},</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>    doi <span class="ot">=</span> {<span class="fl">10.1093</span><span class="sc">/</span>bioinformatics<span class="sc">/</span>btag288},</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>  }</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="contributors">Contributors<a class="anchor" aria-label="anchor" href="#contributors"></a>
+</h2>
+<p><a href="https://github.com/scverse/anndataR/graphs/contributors" class="external-link"> <img src="https://contrib.rocks/image?repo=scverse/anndataR"></a></p>
+<p><em>Made with <a href="https://contrib.rocks" class="external-link">contrib.rocks</a>.</em></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -173,6 +182,12 @@
 </ul>
 </div>
 
+<div class="community">
+<h2 data-toc-skip>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
+</ul>
+</div>
 
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>

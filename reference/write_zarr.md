@@ -8,7 +8,7 @@ Write a Zarr file
 write_zarr(
   object,
   path,
-  compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+  compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
   ...
 )
@@ -30,9 +30,9 @@ write_zarr(
 
 - compression:
 
-  The compression algorithm to use when writing the Zarr file. Can be
-  one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
-  `"zlib"`, `"lz4"`. Defaults to `"none"`. See
+  The compression to use when writing the element. One of `"zstd"`,
+  `"gzip"`, `"blosc"`, `"lzma"`, `"bz2"`, `"zlib"`, `"lz4"`, `"none"`.
+  Defaults to `"zstd"`. See
   [`help("compressors", package = "Rarr")`](https://huber-group-embl.github.io/Rarr/reference/compressors.html).
 
 - mode:

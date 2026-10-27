@@ -40,7 +40,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Convert an <code>AnnData</code> to an <code>ZarrAnnData</code></h1>
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.3.3/R/ZarrAnnData.R" class="external-link"><code>R/ZarrAnnData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/R/ZarrAnnData.R" class="external-link"><code>R/ZarrAnnData.R</code></a></small>
       <div class="d-none name"><code>as_ZarrAnnData.Rd</code></div>
     </div>
 
@@ -53,7 +53,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_ZarrAnnData</span><span class="op">(</span></span>
 <span>  <span class="va">adata</span>,</span>
 <span>  <span class="va">file</span>,</span>
-<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
+<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"zstd"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
 <span>  zarr_format <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -72,9 +72,10 @@
 
 
 <dt id="arg-compression">compression<a class="anchor" aria-label="anchor" href="#arg-compression"></a></dt>
-<dd><p>The compression algorithm to use when writing the
-Zarr file. Can be one of <code>"none"</code>, <code>"gzip"</code>, <code>"blosc"</code>, <code>"zstd"</code>,
-<code>"lzma"</code>, <code>"bz2"</code>, <code>"zlib"</code> or <code>"lz4"</code>. Defaults to <code>"none"</code>.</p></dd>
+<dd><p>The compression to use when writing the element.
+One of <code>"zstd"</code>, <code>"gzip"</code>, <code>"blosc"</code>, <code>"lzma"</code>, <code>"bz2"</code>,
+<code>"zlib"</code>, <code>"lz4"</code>, <code>"none"</code>. Defaults to <code>"zstd"</code>.
+See <code><a href="https://huber-group-embl.github.io/Rarr/reference/compressors.html" class="external-link">help("compressors", package = "Rarr")</a></code>.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
