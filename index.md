@@ -104,7 +104,7 @@ building them can take some time.
 
 If you use **{anndataR}** in your work, please cite [*“anndataR improves
 interoperability between R and Python in single-cell
-transcriptomics”*](https://doi.org/10.1093/bioinformatics/btag288):
+transcriptomics”*](https://doi.org/10.1101/2025.08.18.669052):
 
 ``` r
 
@@ -112,27 +112,18 @@ citation("anndataR")
 ```
 
 ``` R
-Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y, scverse core (2026).
-“anndataR improves interoperability between R and Python in single-cell transcriptomics.” _Bioinformatics_, *42*, btag288.
-doi:10.1093/bioinformatics/btag288 <https://doi.org/10.1093/bioinformatics/btag288>.
+Deconinck L, Zappia L, Cannoodt R, Morgan M, scverse core, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y (2025).
+“anndataR improves interoperability between R and Python in single-cell transcriptomics.” _bioRxiv_, 2025.08.18.669052.
+doi:10.1101/2025.08.18.669052 <https://doi.org/10.1101/2025.08.18.669052>.
 
 A BibTeX entry for LaTeX users is
 
   @Article{,
-    title = {anndataR improves interoperability between R and Python in single-cell transcriptomics},
-    author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys and {scverse core}},
-    journal = {Bioinformatics},
-    volume = {42},
-    issue = {6},
-    month = {June},
-    year = {2026},
-    pages = {btag288},
-    doi = {10.1093/bioinformatics/btag288},
+    title = {{anndataR} improves interoperability between R and Python in single-cell transcriptomics},
+    author = {Louise Deconinck and Luke Zappia and Robrecht Cannoodt and Martin Morgan and {scverse core} and Isaac Virshup and Chananchida Sang-aram and Danila Bredikhin and Ruth Seurinck and Yvan Saeys},
+    journal = {bioRxiv},
+    year = {2025},
+    pages = {2025.08.18.669052},
+    doi = {10.1101/2025.08.18.669052},
   }
 ```
-
-## Contributors
-
-[![](https://contrib.rocks/image?repo=scverse/anndataR)](https://github.com/scverse/anndataR/graphs/contributors)
-
-*Made with [contrib.rocks](https://contrib.rocks).*

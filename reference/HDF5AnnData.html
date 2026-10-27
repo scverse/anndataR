@@ -50,7 +50,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>HDF5AnnData</h1>
-      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/devel/R/HDF5AnnData.R" class="external-link"><code>R/HDF5AnnData.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/scverse/anndataR/blob/v1.3.3/R/HDF5AnnData.R" class="external-link"><code>R/HDF5AnnData.R</code></a></small>
       <div class="d-none name"><code>HDF5AnnData.Rd</code></div>
     </div>
 
@@ -363,7 +363,9 @@ file will be overwritten.</p>
 <h3 id="hdf-anndata-as-inmemoryanndata-"><code>HDF5AnnData$as_InMemoryAnnData()</code><a class="anchor" aria-label="anchor" href="#hdf-anndata-as-inmemoryanndata-"></a></h3>
 <p>Convert to an <code><a href="InMemoryAnnData.html">InMemoryAnnData</a></code>. Any backed
 (<code>DelayedArray</code>) slots are materialized into ordinary in-memory
-matrices: an in-memory object should not stay tied to an on-disk file.</p><div class="section">
+matrices: an in-memory object should not stay tied to an on-disk file.
+Slots are read eagerly (via base rhdf5) rather than carried over as
+DelayedArrays, which is also faster than realizing them.</p><div class="section">
 <h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">HDF5AnnData</span><span class="op">$</span><span class="fu">as_InMemoryAnnData</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>

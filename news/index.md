@@ -15,11 +15,6 @@
   refused to read (PR
   [\#501](https://github.com/scverse/anndataR/issues/501), PR
   [\#525](https://github.com/scverse/anndataR/issues/525)).
-- Replace the internal `create_zarr()` and `create_zarr_group()` helpers
-  with
-  [`Rarr::write_zarr_group()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_group.html)
-  and require `Rarr >= 2.1.27` (PR
-  [\#490](https://github.com/scverse/anndataR/issues/490)).
 
 ## anndataR 1.3.2
 
@@ -119,21 +114,6 @@
 ## anndataR 1.3.0
 
 - Bioconductor 3.24 devel
-
-## anndataR 1.2.3
-
-Backported from the development branch (PR
-[\#538](https://github.com/scverse/anndataR/issues/538)):
-
-- Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is
-  the `obs_names`/`var_names` of the parent object instead of R’s
-  automatic row numbers, which produced files that Python **anndata**
-  refused to read (PR
-  [\#501](https://github.com/scverse/anndataR/issues/501), PR
-  [\#525](https://github.com/scverse/anndataR/issues/525)).
-- Pin Python to 3.14 in the benchmark and pkgdown workflows, as `h5py`
-  has no wheels for Python 3.15 yet (PR
-  [\#534](https://github.com/scverse/anndataR/issues/534)).
 
 ## anndataR 1.2.2
 

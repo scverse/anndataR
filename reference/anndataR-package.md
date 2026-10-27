@@ -1,4 +1,4 @@
-# anndataR: AnnData Interoperability in R
+# anndataR: AnnData interoperability in R
 
 Bring the power and flexibility of AnnData to the R ecosystem, allowing
 you to effortlessly manipulate and analyse your single-cell data. This

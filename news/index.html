@@ -40,14 +40,13 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/scverse/anndataR/blob/devel/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/scverse/anndataR/blob/v1.3.3/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.3" id="anndatar-133">anndataR 1.3.3<a class="anchor" aria-label="anchor" href="#anndatar-133"></a></h2>
 <ul><li>Add a strict mode for the Python tests: with <code>ANNDATAR_TEST_REQUIRE_PYTHON=true</code>, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can’t silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR <a href="https://github.com/scverse/anndataR/issues/533" class="external-link">#533</a>, issue <a href="https://github.com/scverse/anndataR/issues/515" class="external-link">#515</a>).</li>
 <li>Fix writing <code>data.frame</code>s in <code>obsm</code>/<code>varm</code> so that the stored index is the <code>obs_names</code>/<code>var_names</code> of the parent object instead of R’s automatic row numbers, which produced files that Python <strong>anndata</strong> refused to read (PR <a href="https://github.com/scverse/anndataR/issues/501" class="external-link">#501</a>, PR <a href="https://github.com/scverse/anndataR/issues/525" class="external-link">#525</a>).</li>
-<li>Replace the internal <code>create_zarr()</code> and <code>create_zarr_group()</code> helpers with <code><a href="https://huber-group-embl.github.io/Rarr/reference/write_zarr_group.html" class="external-link">Rarr::write_zarr_group()</a></code> and require <code>Rarr &gt;= 2.1.27</code> (PR <a href="https://github.com/scverse/anndataR/issues/490" class="external-link">#490</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.2" id="anndatar-132">anndataR 1.3.2<a class="anchor" aria-label="anchor" href="#anndatar-132"></a></h2>
@@ -85,12 +84,6 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.0" id="anndatar-130">anndataR 1.3.0<a class="anchor" aria-label="anchor" href="#anndatar-130"></a></h2>
 <ul><li>Bioconductor 3.24 devel</li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.2.3" id="anndatar-123">anndataR 1.2.3<a class="anchor" aria-label="anchor" href="#anndatar-123"></a></h2>
-<p>Backported from the development branch (PR <a href="https://github.com/scverse/anndataR/issues/538" class="external-link">#538</a>):</p>
-<ul><li>Fix writing <code>data.frame</code>s in <code>obsm</code>/<code>varm</code> so that the stored index is the <code>obs_names</code>/<code>var_names</code> of the parent object instead of R’s automatic row numbers, which produced files that Python <strong>anndata</strong> refused to read (PR <a href="https://github.com/scverse/anndataR/issues/501" class="external-link">#501</a>, PR <a href="https://github.com/scverse/anndataR/issues/525" class="external-link">#525</a>).</li>
-<li>Pin Python to 3.14 in the benchmark and pkgdown workflows, as <code>h5py</code> has no wheels for Python 3.15 yet (PR <a href="https://github.com/scverse/anndataR/issues/534" class="external-link">#534</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.2" id="anndatar-122">anndataR 1.2.2<a class="anchor" aria-label="anchor" href="#anndatar-122"></a></h2>
