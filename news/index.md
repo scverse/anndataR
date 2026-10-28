@@ -15,6 +15,17 @@
   refused to read (PR
   [\#501](https://github.com/scverse/anndataR/issues/501), PR
   [\#525](https://github.com/scverse/anndataR/issues/525)).
+- Fix the error and warning messages when reading or writing an element
+  fails: the original error is now shown as the cause, instead of being
+  parsed as a **cli** expression, which failed with
+  `` Could not parse cli `{}` expression `` (PR
+  [\#547](https://github.com/scverse/anndataR/issues/547), issue
+  [\#531](https://github.com/scverse/anndataR/issues/531)).
+- Check that the indices of sparse matrices fit their shape when reading
+  H5AD files and Zarr stores, with an error that suggests the indices
+  may not be 0-based (PR
+  [\#547](https://github.com/scverse/anndataR/issues/547), issue
+  [\#531](https://github.com/scverse/anndataR/issues/531)).
 
 ## anndataR 1.3.2
 

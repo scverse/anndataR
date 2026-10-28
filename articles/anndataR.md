@@ -288,15 +288,18 @@ Write a `SingleCellExperiment` object to disk:
 
 tmpfile <- tempfile(fileext = ".h5ad")
 write_h5ad(sce, tmpfile)
-#> Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported
-#> matrix format in obsp/connectivities ℹ Supported matrices inherit from
-#> <RsparseMatrix> or <CsparseMatrix>
-#> Warning: Could not write element 'obsp/distances' of type 'dgTMatrix': Unsupported
-#> matrix format in obsp/distances ℹ Supported matrices inherit from
-#> <RsparseMatrix> or <CsparseMatrix>
-#> Warning: Could not write element 'varp/test_varp' of type 'dgTMatrix': Unsupported
-#> matrix format in varp/test_varp ℹ Supported matrices inherit from
-#> <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element obsp/connectivities of type <dgTMatrix>
+#> Caused by error in `write_fun()`:
+#> ! Unsupported matrix format in obsp/connectivities
+#> ℹ Supported matrices inherit from <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element obsp/distances of type <dgTMatrix>
+#> Caused by error in `write_fun()`:
+#> ! Unsupported matrix format in obsp/distances
+#> ℹ Supported matrices inherit from <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element varp/test_varp of type <dgTMatrix>
+#> Caused by error in `write_fun()`:
+#> ! Unsupported matrix format in varp/test_varp
+#> ℹ Supported matrices inherit from <RsparseMatrix> or <CsparseMatrix>
 ```
 
 Write a `Seurat` object to disk:
@@ -327,15 +330,18 @@ adata$write_zarr(tmpfile) # Alternatively, write_zarr(adata, tmpfile)
 
 tmpfile <- tempfile(fileext = ".zarr")
 write_zarr(sce, tmpfile)
-#> Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported
-#> matrix format in obsp/connectivities ℹ Supported matrices inherit from
-#> <RsparseMatrix> or <CsparseMatrix>
-#> Warning: Could not write element 'obsp/distances' of type 'dgTMatrix': Unsupported
-#> matrix format in obsp/distances ℹ Supported matrices inherit from
-#> <RsparseMatrix> or <CsparseMatrix>
-#> Warning: Could not write element 'varp/test_varp' of type 'dgTMatrix': Unsupported
-#> matrix format in varp/test_varp ℹ Supported matrices inherit from
-#> <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element obsp/connectivities of type <dgTMatrix>
+#> Caused by error in `write_fun()`:
+#> ! Unsupported matrix format in obsp/connectivities
+#> ℹ Supported matrices inherit from <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element obsp/distances of type <dgTMatrix>
+#> Caused by error in `write_fun()`:
+#> ! Unsupported matrix format in obsp/distances
+#> ℹ Supported matrices inherit from <RsparseMatrix> or <CsparseMatrix>
+#> Warning: Could not write element varp/test_varp of type <dgTMatrix>
+#> Caused by error in `write_fun()`:
+#> ! Unsupported matrix format in varp/test_varp
+#> ℹ Supported matrices inherit from <RsparseMatrix> or <CsparseMatrix>
 
 tmpfile <- tempfile(fileext = ".zarr")
 write_zarr(obj, tmpfile)

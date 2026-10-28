@@ -318,15 +318,18 @@ object (see <code><a href="../articles/usage_seurat.html">vignette("usage_seurat
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmpfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/write_h5ad.html">write_h5ad</a></span><span class="op">(</span><span class="va">sce</span>, <span class="va">tmpfile</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported</span></span>
-<span><span class="co">#&gt; matrix format in <span style="color: #0000BB;">obsp/connectivities</span> <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
-<span><span class="co">#&gt; Warning: Could not write element 'obsp/distances' of type 'dgTMatrix': Unsupported</span></span>
-<span><span class="co">#&gt; matrix format in <span style="color: #0000BB;">obsp/distances</span> <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
-<span><span class="co">#&gt; Warning: Could not write element 'varp/test_varp' of type 'dgTMatrix': Unsupported</span></span>
-<span><span class="co">#&gt; matrix format in <span style="color: #0000BB;">varp/test_varp</span> <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Could not write element <span style="color: #00BB00;">obsp/connectivities</span> of type <span style="color: #0000BB;">&lt;dgTMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Caused by error in `write_fun()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Unsupported matrix format in <span style="color: #0000BB;">obsp/connectivities</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Warning: Could not write element <span style="color: #00BB00;">obsp/distances</span> of type <span style="color: #0000BB;">&lt;dgTMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Caused by error in `write_fun()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Unsupported matrix format in <span style="color: #0000BB;">obsp/distances</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Warning: Could not write element <span style="color: #00BB00;">varp/test_varp</span> of type <span style="color: #0000BB;">&lt;dgTMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Caused by error in `write_fun()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Unsupported matrix format in <span style="color: #0000BB;">varp/test_varp</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span></code></pre></div>
 <p>Write a <code>Seurat</code> object to disk:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmpfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".h5ad"</span><span class="op">)</span></span>
@@ -349,15 +352,18 @@ object (see <code><a href="../articles/usage_seurat.html">vignette("usage_seurat
 <span></span>
 <span><span class="va">tmpfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/write_zarr.html">write_zarr</a></span><span class="op">(</span><span class="va">sce</span>, <span class="va">tmpfile</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Could not write element 'obsp/connectivities' of type 'dgTMatrix': Unsupported</span></span>
-<span><span class="co">#&gt; matrix format in <span style="color: #0000BB;">obsp/connectivities</span> <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
-<span><span class="co">#&gt; Warning: Could not write element 'obsp/distances' of type 'dgTMatrix': Unsupported</span></span>
-<span><span class="co">#&gt; matrix format in <span style="color: #0000BB;">obsp/distances</span> <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
-<span><span class="co">#&gt; Warning: Could not write element 'varp/test_varp' of type 'dgTMatrix': Unsupported</span></span>
-<span><span class="co">#&gt; matrix format in <span style="color: #0000BB;">varp/test_varp</span> <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Warning: Could not write element <span style="color: #00BB00;">obsp/connectivities</span> of type <span style="color: #0000BB;">&lt;dgTMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Caused by error in `write_fun()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Unsupported matrix format in <span style="color: #0000BB;">obsp/connectivities</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Warning: Could not write element <span style="color: #00BB00;">obsp/distances</span> of type <span style="color: #0000BB;">&lt;dgTMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Caused by error in `write_fun()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Unsupported matrix format in <span style="color: #0000BB;">obsp/distances</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Warning: Could not write element <span style="color: #00BB00;">varp/test_varp</span> of type <span style="color: #0000BB;">&lt;dgTMatrix&gt;</span></span></span>
+<span><span class="co">#&gt; Caused by error in `write_fun()`:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Unsupported matrix format in <span style="color: #0000BB;">varp/test_varp</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Supported matrices inherit from <span style="color: #0000BB;">&lt;RsparseMatrix&gt;</span> or <span style="color: #0000BB;">&lt;CsparseMatrix&gt;</span></span></span>
 <span></span>
 <span><span class="va">tmpfile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".zarr"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/write_zarr.html">write_zarr</a></span><span class="op">(</span><span class="va">obj</span>, <span class="va">tmpfile</span><span class="op">)</span></span>
