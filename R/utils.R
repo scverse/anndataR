@@ -307,7 +307,7 @@ construct_sparse_matrix <- function(
       cli_abort(c(
         paste(
           "Sparse matrix indices range from {index_range[[1]]} to {index_range[[2]]},",
-          "which does not fit shape [{shape[[1]]}, {shape[[2]]}]"
+          "which does not fit shape [{shape[[1]]}, {shape[[2]]}]"
         ),
         "i" = "Indices must be 0-based and smaller than {n_minor}"
       ))
