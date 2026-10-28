@@ -41,6 +41,10 @@
   [](https://orcid.org/0000-0002-4094-1476)  
   Bisaloo
 
+- **Ellis Patrick**. Contributor.
+  [](https://orcid.org/0000-0002-5253-4747)  
+  ellispatrick
+
 - **[Data Intuitive](https://data-intuitive.com)**. Funder.
 
 - **[Chan Zuckerberg Initiative](https://chanzuckerberg.com)**. Funder.
