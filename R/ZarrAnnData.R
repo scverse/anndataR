@@ -335,18 +335,18 @@ ZarrAnnData <- R6::R6Class(
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
       compression = c(
-        "none",
+        "zstd",
         "gzip",
         "blosc",
-        "zstd",
         "lzma",
         "bz2",
         "zlib",
-        "lz4"
+        "lz4",
+        "none"
       ),
       zarr_format = NULL
     ) {
-      check_requires("ZarrAnnData", "Rarr", where = "Bioc")
+      check_requires("ZarrAnnData", "Rarr", where = "Bioc", version = "2.1.27")
 
       compression <- match.arg(compression)
       mode <- match.arg(mode)
@@ -400,7 +400,7 @@ ZarrAnnData <- R6::R6Class(
           private$.zarrformat <- check_zarr_format(
             zarr_format %||% getOption("anndataR.zarr_format", 3L)
           )
-          create_zarr(file, format = private$.zarrformat)
+          Rarr::write_zarr_group(file, "", zarr_version = private$.zarrformat)
         } else {
           # An existing store dictates its own format, otherwise appending to it
           # would produce a store with a mix of v2 and v3 nodes
@@ -551,9 +551,10 @@ ZarrAnnData <- R6::R6Class(
 #'
 #' @param adata An `AnnData` object to be converted to [`ZarrAnnData`]
 #' @param file The file name (character) of the `.zarr` file
-#' @param compression The compression algorithm to use when writing the
-#'   Zarr file. Can be one of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`,
-#'   `"lzma"`, `"bz2"`, `"zlib"` or `"lz4"`. Defaults to `"none"`.
+#' @param compression The compression to use when writing the element.
+#'   One of `"zstd"`, `"gzip"`, `"blosc"`, `"lzma"`, `"bz2"`,
+#'   `"zlib"`, `"lz4"`, `"none"`. Defaults to `"zstd"`.
+#'   See `help("compressors", package = "Rarr")`.
 #' @param mode The mode to open the Zarr file:
 #'
 #'   * `a` creates a new file or opens an existing one for read/write
@@ -582,14 +583,14 @@ as_ZarrAnnData <- function(
   adata,
   file,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   mode = c("w-", "r", "r+", "a", "w", "x"),
   zarr_format = NULL
