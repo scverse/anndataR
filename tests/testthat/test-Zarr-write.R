@@ -533,7 +533,7 @@ for (zarr_format in c(2, 3)) {
 
 test_that("errors while writing a Zarr element keep the original message", {
   store <- withr::local_tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 3)
+  Rarr::write_zarr_group(store, "", zarr_version = 3)
 
   local_mocked_bindings(
     write_zarr_dense_array = function(...) stop("value not in {0,...,n}")
