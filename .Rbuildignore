@@ -1,5 +1,6 @@
 ^AGENTS\.md$
 ^LICENSE\.md$
+^CONTRIBUTING\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.github$

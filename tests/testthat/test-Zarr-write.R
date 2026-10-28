@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr")
+skip_if_not_installed("Rarr", minimum_version = "2.1.27")
 
 for (zarr_format in c(2, 3)) {
   # set version
@@ -17,7 +17,7 @@ for (zarr_format in c(2, 3)) {
         unlink(store, recursive = TRUE)
       }
 
-      create_zarr(store = store, format = zarr_format)
+      Rarr::write_zarr_group(store, "", zarr_version = zarr_format)
       metafile <- if (zarr_format == 3) "zarr.json" else ".zgroup"
 
       test_that("Writing Zarr store works", {
@@ -30,22 +30,38 @@ for (zarr_format in c(2, 3)) {
           unlink(store_w_diff, recursive = TRUE)
         }
         zarr_format_diff <- setdiff(c(2, 3), zarr_format)
-        create_zarr(store = store_w_diff, format = zarr_format_diff)
+        Rarr::write_zarr_group(
+          store_w_diff,
+          "",
+          zarr_version = zarr_format_diff
+        )
         expect_equal(zarr_node_format(store_w_diff, ""), zarr_format_diff)
       })
 
       test_that("Writing a Zarr store at a relative path works", {
         withr::with_tempdir({
-          create_zarr(store = "relative.zarr", format = zarr_format)
+          ZarrAnnData$new(
+            "relative.zarr",
+            obs = data.frame(row.names = 1:3),
+            var = data.frame(row.names = 1:2),
+            mode = "w"
+          )
           expect_true(dir.exists("relative.zarr"))
           expect_true(file.exists(file.path("relative.zarr", metafile)))
+          expect_equal(zarr_node_format("relative.zarr", ""), zarr_format)
         })
       })
 
       test_that("Writing a Zarr store with regex characters in the name works", {
         store_regex <- tempfile(pattern = "a+b", fileext = ".zarr")
-        create_zarr(store = store_regex, format = zarr_format)
+        ZarrAnnData$new(
+          store_regex,
+          obs = data.frame(row.names = 1:3),
+          var = data.frame(row.names = 1:2),
+          mode = "w"
+        )
         expect_true(file.exists(file.path(store_regex, metafile)))
+        expect_equal(zarr_node_format(store_regex, ""), zarr_format)
         # The store must not be nested inside a directory of the same name
         expect_false(dir.exists(file.path(store_regex, basename(store_regex))))
       })
@@ -57,11 +73,20 @@ for (zarr_format in c(2, 3)) {
           array,
           store,
           "dense_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "dense_array"))
         expect_equal(zarr_node_format(store, "dense_array"), zarr_format)
+        expect_equal(
+          {
+            zarr_ov <- Rarr::zarr_overview(
+              file.path(store, "dense_array"),
+              as_data_frame = TRUE
+            )
+            zarr_ov$compressor
+          },
+          "zstd"
+        )
         attrs <- Rarr::read_zarr_attributes(file.path(store, "dense_array"))
         expect_true(all(
           c("encoding-type", "encoding-version") %in% names(attrs)
@@ -97,7 +122,6 @@ for (zarr_format in c(2, 3)) {
           csc_array,
           store,
           "csc_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csc_array"))
@@ -116,7 +140,6 @@ for (zarr_format in c(2, 3)) {
           csr_array,
           store,
           "csr_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csr_array"))
@@ -295,7 +318,6 @@ for (zarr_format in c(2, 3)) {
           mapping,
           store,
           "mapping",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "mapping"))

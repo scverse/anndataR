@@ -4,7 +4,7 @@
 \name{anndataR-package}
 \alias{anndataR}
 \alias{anndataR-package}
-\title{anndataR: AnnData interoperability in R}
+\title{anndataR: AnnData Interoperability in R}
 \description{
 \if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
 

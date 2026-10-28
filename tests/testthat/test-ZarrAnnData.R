@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr")
+skip_if_not_installed("Rarr", minimum_version = "2.1.27")
 
 file <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
 td <- tempdir(check = TRUE)
@@ -134,7 +134,7 @@ test_that("creating empty Zarr works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_X, status=done
 test_that("writing X works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -150,7 +150,7 @@ test_that("writing X works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_layers, status=done
 test_that("writing layers works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -163,7 +163,7 @@ test_that("writing layers works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_obs, status=done
 test_that("writing obs works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -181,7 +181,7 @@ test_that("writing obs works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_var, status=done
 test_that("writing var works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -199,7 +199,7 @@ test_that("writing var works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_obs_names, status=done
 test_that("writing obs names works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -212,7 +212,7 @@ test_that("writing obs names works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_var_names, status=done
 test_that("writing var names works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -225,7 +225,7 @@ test_that("writing var names works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_obsm, status=done
 test_that("writing obsm works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -240,7 +240,7 @@ test_that("writing obsm works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_varm, status=done
 test_that("writing varm works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -253,10 +253,36 @@ test_that("writing varm works", {
   expect_identical(zarr$varm$PCs, expected_varm_x)
 })
 
+test_that("setting obsm/varm to NULL writes a null element", {
+  store <- tempfile(fileext = ".zarr")
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  zarr <- ZarrAnnData$new(
+    store,
+    obs = obs,
+    var = var,
+    obsm = list(X = matrix(rnorm(10 * 5), nrow = 10, ncol = 5)),
+    varm = list(X = matrix(rnorm(20 * 5), nrow = 20, ncol = 5))
+  )
+
+  expect_no_warning(zarr$obsm <- NULL)
+  expect_no_warning(zarr$varm <- NULL)
+
+  expect_identical(
+    Rarr::read_zarr_attributes(file.path(store, "obsm"))[["encoding-type"]],
+    "null"
+  )
+  expect_identical(
+    Rarr::read_zarr_attributes(file.path(store, "varm"))[["encoding-type"]],
+    "null"
+  )
+})
+
 # trackstatus: class=ZarrAnnData, feature=test_set_obsp, status=done
 test_that("writing obsp works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -272,7 +298,7 @@ test_that("writing obsp works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_varp, status=done
 test_that("writing varp works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -287,7 +313,7 @@ test_that("writing varp works", {
 # trackstatus: class=ZarrAnnData, feature=test_set_uns, status=done
 test_that("writing uns works", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   obs <- data.frame(row.names = 1:10)
   var <- data.frame(row.names = 1:20)
   zarr <- ZarrAnnData$new(store, obs = obs, var = var)
@@ -322,7 +348,7 @@ test_that("opening a non-existent path in r+ mode errors", {
 
 test_that("opening an existing file in exclusive-create mode errors", {
   store <- tempfile(fileext = ".zarr")
-  create_zarr(store = store, format = 2)
+  Rarr::write_zarr_group(store, "", zarr_version = 2L)
   on.exit(unlink(store, recursive = TRUE))
   expect_error(
     ZarrAnnData$new(store, mode = "w-"),
