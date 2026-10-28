@@ -130,6 +130,40 @@ test_that("Writing a logical matrix preserves its shape and values", {
   expect_equal(roundtrip, value)
 })
 
+test_that("Writing H5AD double matrices keeps NA and NaN", {
+  value <- matrix(c(1.5, NA, NaN, 4), nrow = 2, ncol = 2)
+
+  expect_no_error(
+    write_h5ad_element(
+      value,
+      hdf5_file,
+      "double_matrix_na",
+      compression = "none"
+    )
+  )
+
+  hdf5_file$open_and_defer_close()
+  roundtrip <- read_h5ad_dense_array_base(hdf5_file, "double_matrix_na")
+  expect_identical(roundtrip, value)
+})
+
+test_that("Writing H5AD integer matrices with NA works", {
+  value <- matrix(c(1L, NA, 3:6), nrow = 3, ncol = 2)
+
+  expect_no_error(
+    write_h5ad_element(
+      value,
+      hdf5_file,
+      "integer_matrix_na",
+      compression = "none"
+    )
+  )
+
+  hdf5_file$open_and_defer_close()
+  roundtrip <- read_h5ad_dense_array_base(hdf5_file, "integer_matrix_na")
+  expect_identical(roundtrip, matrix(c(1, NA, 3:6), nrow = 3, ncol = 2))
+})
+
 test_that("Writing H5AD nullable booleans works", {
   nullable <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
   nullable[5] <- NA
@@ -551,6 +585,87 @@ test_that("hdf5_clear_rhdf5_attributes() recurses into groups", {
     native = FALSE
   )
   expect_false("as.na" %in% names(attrs))
+})
+
+test_that("errors while writing an element keep the original message", {
+  local_mocked_bindings(
+    write_h5ad_dense_array = function(...) stop("value not in {0,...,n}")
+  )
+  value <- matrix(rnorm(20), nrow = 5, ncol = 4)
+  expect_warning(
+    write_h5ad_element(value, hdf5_file, "error_array"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    write_h5ad_element(value, hdf5_file, "error_array", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+})
+
+test_that("write_h5ad() writes length 1 data frame columns and indices as arrays", {
+  file <- withr::local_tempfile(fileext = ".h5ad")
+  adata <- AnnData(
+    X = matrix(1, 1, 2),
+    obs = data.frame(
+      ct = "T cell",
+      n = 3L,
+      x = 1.5,
+      flag = TRUE,
+      na_int = NA_integer_,
+      na_chr = NA_character_,
+      row.names = "c1"
+    ),
+    var = data.frame(row.names = c("g1", "g2"))
+  )
+  write_h5ad(adata, file, mode = "w")
+
+  encoding <- function(key) {
+    read_h5ad_encoding(HDF5File$new(file), key)$type
+  }
+  expect_equal(encoding("obs/_index"), "string-array")
+  expect_equal(encoding("obs/ct"), "string-array")
+  expect_equal(encoding("obs/n"), "array")
+  expect_equal(encoding("obs/x"), "array")
+  expect_equal(encoding("obs/flag"), "array")
+  expect_equal(encoding("obs/na_int"), "nullable-integer")
+  expect_equal(encoding("obs/na_chr"), "nullable-string-array")
+
+  # A single variable
+  adata <- AnnData(
+    X = matrix(1, 2, 1),
+    obs = data.frame(row.names = c("c1", "c2")),
+    var = data.frame(row.names = "g")
+  )
+  write_h5ad(adata, file, mode = "w")
+  expect_equal(encoding("var/_index"), "string-array")
+
+  expect_equal(read_h5ad(file)$var_names, "g")
+})
+
+test_that("Python can read H5AD files with length 1 obs or var", {
+  skip_if_no_anndata_py()
+  ad <- reticulate::import("anndata", convert = FALSE)
+  file <- withr::local_tempfile(fileext = ".h5ad")
+
+  adata <- AnnData(
+    X = matrix(1, 2, 1),
+    obs = data.frame(row.names = c("c1", "c2")),
+    var = data.frame(row.names = "g")
+  )
+  write_h5ad(adata, file, mode = "w")
+  py_adata <- ad$read_h5ad(file)
+  expect_equal(reticulate::py_to_r(py_adata$n_vars), 1L)
+
+  adata <- AnnData(
+    X = matrix(1, 1, 2),
+    obs = data.frame(ct = "T cell", n = 3L, row.names = "c1"),
+    var = data.frame(row.names = c("g1", "g2"))
+  )
+  write_h5ad(adata, file, mode = "w")
+  py_adata <- ad$read_h5ad(file)
+  expect_equal(reticulate::py_to_r(py_adata$n_obs), 1L)
 })
 
 test_that("Strings are written as UTF-8", {

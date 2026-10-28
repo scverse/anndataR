@@ -1,12 +1,18 @@
 # anndataR devel
 
+- Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
+- Use zstd by default in `write_zarr()` (PR #540)
+- Write length 1 `data.frame` columns and indices as arrays instead of scalars (PR #556, issue #553).
+- Fix writing integer matrices containing `NA` to Zarr, which produced stores that couldn't be read back: as for H5AD, they are now written as double (PR #546, issue #542).
+- Keep `NA` in double and integer matrices written to H5AD instead of replacing it with `NaN`, so that `NA` and `NaN` can still be told apart when reading the file back in R. Python **anndata** reads both as `NaN` (PR #546).
 - Fix writing non-ASCII strings to H5AD files by using UTF-8 for string datasets (PR #555, issue #400).
 
 # anndataR 1.3.3
 
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
-- Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
+- Fix the error and warning messages when reading or writing an element fails: the original error is now shown as the cause, instead of being parsed as a **cli** expression, which failed with ``Could not parse cli `{}` expression`` (PR #547, issue #531).
+- Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based (PR #547, issue #531).
 
 # anndataR 1.3.2
 

@@ -165,3 +165,39 @@ for (zarr_format in c(2, 3)) {
     expect_s4_class(seurat, "Seurat")
   })
 }
+
+test_that("errors while reading a Zarr element keep the original message", {
+  zarr_zip <- system.file(
+    "extdata",
+    "example_v3.zarr.zip",
+    package = "anndataR"
+  )
+  td <- withr::local_tempdir()
+  unzip(zarr_zip, exdir = td)
+  store <- file.path(td, "example_v3.zarr")
+
+  local_mocked_bindings(
+    read_zarr_dense_array = function(...) stop("value not in {0,...,n}"),
+    read_zarr_mapping_keys = function(...) stop("value not in {0,...,n}")
+  )
+  expect_warning(
+    read_zarr_element(store, "layers/dense_counts"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    read_zarr_element(store, "layers/dense_counts", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_warning(
+    read_zarr_element_keys(store, "uns"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    read_zarr_element_keys(store, "uns", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+})
