@@ -207,9 +207,9 @@ write_zarr_dense_array <- function(
     value <- as.matrix(value)
   }
 
-  if (is.matrix(value) && anyNA(value)) {
-    # an integer array can't hold NA
-    value[is.na(value)] <- NaN
+  if (is.integer(value) && length(dim(value)) >= 2 && anyNA(value)) {
+    # an integer array can't hold NA, but a double array can
+    storage.mode(value) <- "double"
   }
 
   zarr_write_compressed(

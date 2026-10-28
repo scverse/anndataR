@@ -3,7 +3,8 @@
 - Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
 - Use zstd by default in `write_zarr()` (PR #540)
 - Write length 1 `data.frame` columns and indices as arrays instead of scalars (PR #556, issue #553).
-- Fix writing integer matrices containing `NA` to Zarr, which produced stores that couldn't be read back: as for H5AD, they are now written as double with `NaN` for `NA` (PR #546, issue #542).
+- Fix writing integer matrices containing `NA` to Zarr, which produced stores that couldn't be read back: as for H5AD, they are now written as double (PR #546, issue #542).
+- Keep `NA` in double and integer matrices written to H5AD instead of replacing it with `NaN`, so that `NA` and `NaN` can still be told apart when reading the file back in R. Python **anndata** reads both as `NaN` (PR #546).
 
 # anndataR 1.3.3
 

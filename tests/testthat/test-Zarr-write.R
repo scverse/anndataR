@@ -226,10 +226,22 @@ for (zarr_format in c(2, 3)) {
         ))
         attrs <- Rarr::read_zarr_attributes(file.path(store, "int_matrix_na"))
         expect_equal(attrs[["encoding-type"]], "array")
-        expect_equal(
+        expect_identical(
           read_zarr_element(store, "int_matrix_na"),
-          matrix(c(1, NaN, 3:6), nrow = 3, ncol = 2)
+          matrix(c(1, NA, 3:6), nrow = 3, ncol = 2)
         )
+      })
+
+      test_that("Writing Zarr double matrices keeps NA and NaN", {
+        value <- matrix(c(1.5, NA, NaN, 4), nrow = 2, ncol = 2)
+
+        expect_silent(write_zarr_element(
+          value,
+          store,
+          "dbl_matrix_na",
+          zarr_format = zarr_format
+        ))
+        expect_identical(read_zarr_element(store, "dbl_matrix_na"), value)
       })
 
       test_that("Writing Zarr string arrays works", {
@@ -623,6 +635,29 @@ test_that("Python anndata reads an integer matrix with NA written to Zarr", {
   x <- reticulate::py_to_r(np$asarray(ad$read_zarr(zarr)$X))
   expect_equal(is.na(x), is.na(adata$X), ignore_attr = TRUE)
   expect_equal(x[!is.na(x)], as.double(adata$X[!is.na(adata$X)]))
+})
+
+test_that("NA and NaN in double matrices survive a round trip through Python", {
+  skip_if_no_anndata_py()
+  value <- matrix(c(1.5, NA, NaN, 4), nrow = 2, ncol = 2)
+  adata <- AnnData(
+    X = value,
+    obs = data.frame(row.names = c("a", "b")),
+    var = data.frame(row.names = c("x", "y"))
+  )
+  ad <- reticulate::import("anndata", convert = FALSE)
+
+  zarr <- withr::local_tempfile(fileext = ".zarr")
+  zarr_py <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr(adata, zarr)
+  ad$read_zarr(zarr)$write_zarr(zarr_py)
+  expect_identical(unname(read_zarr(zarr_py)$X), value)
+
+  h5ad <- withr::local_tempfile(fileext = ".h5ad")
+  h5ad_py <- withr::local_tempfile(fileext = ".h5ad")
+  write_h5ad(adata, h5ad)
+  ad$read_h5ad(h5ad)$write_h5ad(h5ad_py)
+  expect_identical(unname(read_h5ad(h5ad_py)$X), value)
 })
 
 for (zarr_format in c(2, 3)) {
