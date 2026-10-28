@@ -116,18 +116,11 @@ write_h5ad_element <- function(
       )
     },
     error = function(e) {
-      message <- paste0(
-        "Could not write element '",
-        name,
-        "' of type '",
-        class(value),
-        "':\n",
-        conditionMessage(e)
-      )
+      msg <- "Could not write element {.field {name}} of type {.cls {class(value)}}"
       if (stop_on_error) {
-        cli_abort(message)
+        cli_abort(msg, parent = e)
       } else {
-        cli_warn(message)
+        cli_warn(msg, parent = e)
         NULL
       }
     }

@@ -10,6 +10,8 @@
 
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
+- Fix the error and warning messages when reading or writing an element fails: the original error is now shown as the cause, instead of being parsed as a **cli** expression, which failed with ``Could not parse cli `{}` expression`` (PR #547, issue #531).
+- Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based (PR #547, issue #531).
 
 # anndataR 1.3.2
 

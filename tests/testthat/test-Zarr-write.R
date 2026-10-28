@@ -560,6 +560,26 @@ for (zarr_format in c(2, 3)) {
   )
 }
 
+test_that("errors while writing a Zarr element keep the original message", {
+  store <- withr::local_tempfile(fileext = ".zarr")
+  Rarr::write_zarr_group(store, "", zarr_version = 3)
+
+  local_mocked_bindings(
+    write_zarr_dense_array = function(...) stop("value not in {0,...,n}")
+  )
+  value <- matrix(rnorm(20), nrow = 5, ncol = 4)
+  expect_warning(
+    write_zarr_element(value, store, "error_array"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    write_zarr_element(value, store, "error_array", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+})
+
 # Integer matrices with NA are written as for H5AD: as double, with NaN for NA
 # (#542)
 slots <- c("X", "layers", "obsm", "varm", "obsp", "varp")
