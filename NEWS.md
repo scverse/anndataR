@@ -2,6 +2,7 @@
 
 - Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
 - Use zstd by default in `write_zarr()` (PR #540)
+- Write length 1 `data.frame` columns and indices as arrays instead of scalars (PR #556, issue #553).
 
 # anndataR 1.3.3
 
@@ -166,7 +167,7 @@ Backported from the development branch (PR #489):
 
 ## Minor changes
 
-- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
+- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe
   operators for cleaner code (PR #328)
 - Add explanatory comments for matrix generation alignment with Python
   **dummy-anndata** (PR #328)
@@ -178,11 +179,11 @@ Backported from the development branch (PR #489):
 
 ## Bug fixes
 
-- Add compression parameter to additional write operations in `HDF5AnnData` 
+- Add compression parameter to additional write operations in `HDF5AnnData`
   for consistency (PR #328)
 - Directly use `obs_names` and `var_names` properties instead of corresponding
   indirect S3 methods `rownames` and `colnames` (PR #328)
-- Fix error message variable name in `.validate_aligned_array()` method 
+- Fix error message variable name in `.validate_aligned_array()` method
   (expected_colnames → expected_rownames) (PR #328)
 - Fix Seurat conversion for PCA loadings with variable feature subsets (PR #328)
   - Seurat PCA loadings only contain variable features, not all genes
@@ -244,7 +245,7 @@ Backported from the development branch (PR #489):
   (PR #284)
   - There will still be a warning if neither of this is present as it may
     affect compatibility with **{Seurat}** functions
-    
+
 ## Minor changes
 
 - Use accessor functions/methods instead of direct slot access where possible
