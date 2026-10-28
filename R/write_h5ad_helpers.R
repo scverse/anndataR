@@ -216,10 +216,9 @@ write_h5ad_dense_array <- function(
     value <- as.matrix(value)
   }
 
-  if (is.matrix(value) && anyNA(value)) {
-    # is.na(value) <- NaN gets ignored
-    na_indices <- is.na(value)
-    value[na_indices] <- NaN
+  if (is.integer(value) && length(dim(value)) >= 2 && anyNA(value)) {
+    # an integer array can't hold NA, but a double array can
+    storage.mode(value) <- "double"
   }
 
   if (!is.vector(value)) {

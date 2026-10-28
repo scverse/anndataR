@@ -74,7 +74,7 @@ write_zarr_element <- function(
       # Numeric values
       if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_numeric_scalar
-      } else if (is.integer(value) && anyNA(value)) {
+      } else if (is.integer(value) && anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_integer
       } else {
         write_zarr_dense_array
@@ -198,6 +198,11 @@ write_zarr_dense_array <- function(
   # matrices of type 'dgeMatrix' can simply be converted to a matrix
   if (inherits(value, "denseMatrix")) {
     value <- as.matrix(value)
+  }
+
+  if (is.integer(value) && length(dim(value)) >= 2 && anyNA(value)) {
+    # an integer array can't hold NA, but a double array can
+    storage.mode(value) <- "double"
   }
 
   zarr_write_compressed(

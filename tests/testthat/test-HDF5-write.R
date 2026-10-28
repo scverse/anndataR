@@ -130,6 +130,40 @@ test_that("Writing a logical matrix preserves its shape and values", {
   expect_equal(roundtrip, value)
 })
 
+test_that("Writing H5AD double matrices keeps NA and NaN", {
+  value <- matrix(c(1.5, NA, NaN, 4), nrow = 2, ncol = 2)
+
+  expect_no_error(
+    write_h5ad_element(
+      value,
+      hdf5_file,
+      "double_matrix_na",
+      compression = "none"
+    )
+  )
+
+  hdf5_file$open_and_defer_close()
+  roundtrip <- read_h5ad_dense_array_base(hdf5_file, "double_matrix_na")
+  expect_identical(roundtrip, value)
+})
+
+test_that("Writing H5AD integer matrices with NA works", {
+  value <- matrix(c(1L, NA, 3:6), nrow = 3, ncol = 2)
+
+  expect_no_error(
+    write_h5ad_element(
+      value,
+      hdf5_file,
+      "integer_matrix_na",
+      compression = "none"
+    )
+  )
+
+  hdf5_file$open_and_defer_close()
+  roundtrip <- read_h5ad_dense_array_base(hdf5_file, "integer_matrix_na")
+  expect_identical(roundtrip, matrix(c(1, NA, 3:6), nrow = 3, ncol = 2))
+})
+
 test_that("Writing H5AD nullable booleans works", {
   nullable <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
   nullable[5] <- NA
