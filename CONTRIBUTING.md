@@ -21,7 +21,8 @@ matching template.
 
 - Format code with [Air](https://posit-dev.github.io/air/)
   (`air format .`) and vignettes with `styler::style_dir("vignettes")`,
-  then check with `lintr::lint_package()`
+  then check with
+  [`lintr::lint_package()`](https://lintr.r-lib.org/reference/lint.html)
 - Document functions with roxygen2 and regenerate the man pages with
   `devtools::document()`, using the roxygen2 version pinned in
   `DESCRIPTION` (`Config/roxygen2/version`)

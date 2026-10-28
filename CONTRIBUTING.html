@@ -59,7 +59,7 @@
 <li>Open a pull request against <code>devel</code> and fill in the PR template</li>
 </ol><div class="section level3">
 <h3 id="conventions">Conventions<a class="anchor" aria-label="anchor" href="#conventions"></a></h3>
-<ul><li>Format code with <a href="https://posit-dev.github.io/air/" class="external-link">Air</a> (<code>air format .</code>) and vignettes with <code>styler::style_dir("vignettes")</code>, then check with <code>lintr::lint_package()</code>
+<ul><li>Format code with <a href="https://posit-dev.github.io/air/" class="external-link">Air</a> (<code>air format .</code>) and vignettes with <code>styler::style_dir("vignettes")</code>, then check with <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code>
 </li>
 <li>Document functions with roxygen2 and regenerate the man pages with <code>devtools::document()</code>, using the roxygen2 version pinned in <code>DESCRIPTION</code> (<code>Config/roxygen2/version</code>)</li>
 <li>Add or update tests in <code>tests/testthat/</code>

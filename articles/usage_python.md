@@ -275,13 +275,13 @@ sessionInfo()
 ``` r
 
 reticulate::py_config()
-#> python:         /opt/hostedtoolcache/Python/3.14.8/x64/bin/python3
-#> libpython:      /opt/hostedtoolcache/Python/3.14.8/x64/lib/libpython3.14.so
-#> pythonhome:     /opt/hostedtoolcache/Python/3.14.8/x64:/opt/hostedtoolcache/Python/3.14.8/x64
-#> version:        3.14.8 (main, Oct  1 2026, 02:39:56) [GCC 15.2.0]
-#> numpy:          /opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages/numpy
+#> python:         /opt/hostedtoolcache/Python/3.14.9/x64/bin/python3
+#> libpython:      /opt/hostedtoolcache/Python/3.14.9/x64/lib/libpython3.14.so
+#> pythonhome:     /opt/hostedtoolcache/Python/3.14.9/x64:/opt/hostedtoolcache/Python/3.14.9/x64
+#> version:        3.14.9 (main, Oct 21 2026, 14:48:41) [GCC 15.2.0]
+#> numpy:          /opt/hostedtoolcache/Python/3.14.9/x64/lib/python3.14/site-packages/numpy
 #> numpy_version:  2.5.4
-#> scanpy:         /opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages/scanpy
+#> scanpy:         /opt/hostedtoolcache/Python/3.14.9/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
 
@@ -295,7 +295,7 @@ reticulate::py_list_packages()
 #> 6             cycler      0.12.1            cycler==0.12.1
 #> 7             donfig 0.8.1.post1       donfig==0.8.1.post1
 #> 8   fast-array-utils       1.5.1   fast-array-utils==1.5.1
-#> 9          fonttools      4.67.0         fonttools==4.67.0
+#> 9          fonttools      4.68.0         fonttools==4.68.0
 #> 10         formulaic       1.2.2          formulaic==1.2.2
 #> 11     google-crc32c       1.9.0      google-crc32c==1.9.0
 #> 12              h5py      3.16.0              h5py==3.16.0
@@ -310,14 +310,14 @@ reticulate::py_list_packages()
 #> 21          narwhals      2.28.0          narwhals==2.28.0
 #> 22           natsort       8.4.0            natsort==8.4.0
 #> 23          networkx         3.7             networkx==3.7
-#> 24             numba      0.68.0             numba==0.68.0
+#> 24             numba      0.68.1             numba==0.68.1
 #> 25         numcodecs      0.17.1         numcodecs==0.17.1
 #> 26             numpy       2.5.4              numpy==2.5.4
 #> 27         packaging        26.3           packaging==26.3
 #> 28            pandas       2.3.3             pandas==2.3.3
 #> 29             patsy       1.0.3              patsy==1.0.3
 #> 30            pillow      13.0.0            pillow==13.0.0
-#> 31       pynndescent       0.6.0        pynndescent==0.6.0
+#> 31       pynndescent       0.7.0        pynndescent==0.7.0
 #> 32         pyparsing       3.3.3          pyparsing==3.3.3
 #> 33   python-dateutil       3.0.0    python-dateutil==3.0.0
 #> 34              pytz      2026.5              pytz==2026.5
@@ -336,5 +336,5 @@ reticulate::py_list_packages()
 #> 47            tzdata      2026.5            tzdata==2026.5
 #> 48        umap-learn      0.5.12        umap-learn==0.5.12
 #> 49             wrapt    2.5.2rc1           wrapt==2.5.2rc1
-#> 50              zarr       3.4.1               zarr==3.4.1
+#> 50              zarr       3.4.2               zarr==3.4.2
 ```
