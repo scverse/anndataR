@@ -552,3 +552,67 @@ test_that("hdf5_clear_rhdf5_attributes() recurses into groups", {
   )
   expect_false("as.na" %in% names(attrs))
 })
+
+test_that("write_h5ad() writes length 1 data frame columns and indices as arrays", {
+  file <- withr::local_tempfile(fileext = ".h5ad")
+  adata <- AnnData(
+    X = matrix(1, 1, 2),
+    obs = data.frame(
+      ct = "T cell",
+      n = 3L,
+      x = 1.5,
+      flag = TRUE,
+      na_int = NA_integer_,
+      na_chr = NA_character_,
+      row.names = "c1"
+    ),
+    var = data.frame(row.names = c("g1", "g2"))
+  )
+  write_h5ad(adata, file, mode = "w")
+
+  encoding <- function(key) {
+    read_h5ad_encoding(HDF5File$new(file), key)$type
+  }
+  expect_equal(encoding("obs/_index"), "string-array")
+  expect_equal(encoding("obs/ct"), "string-array")
+  expect_equal(encoding("obs/n"), "array")
+  expect_equal(encoding("obs/x"), "array")
+  expect_equal(encoding("obs/flag"), "array")
+  expect_equal(encoding("obs/na_int"), "nullable-integer")
+  expect_equal(encoding("obs/na_chr"), "nullable-string-array")
+
+  # A single variable
+  adata <- AnnData(
+    X = matrix(1, 2, 1),
+    obs = data.frame(row.names = c("c1", "c2")),
+    var = data.frame(row.names = "g")
+  )
+  write_h5ad(adata, file, mode = "w")
+  expect_equal(encoding("var/_index"), "string-array")
+
+  expect_equal(read_h5ad(file)$var_names, "g")
+})
+
+test_that("Python can read H5AD files with length 1 obs or var", {
+  skip_if_no_anndata_py()
+  ad <- reticulate::import("anndata", convert = FALSE)
+  file <- withr::local_tempfile(fileext = ".h5ad")
+
+  adata <- AnnData(
+    X = matrix(1, 2, 1),
+    obs = data.frame(row.names = c("c1", "c2")),
+    var = data.frame(row.names = "g")
+  )
+  write_h5ad(adata, file, mode = "w")
+  py_adata <- ad$read_h5ad(file)
+  expect_equal(reticulate::py_to_r(py_adata$n_vars), 1L)
+
+  adata <- AnnData(
+    X = matrix(1, 1, 2),
+    obs = data.frame(ct = "T cell", n = 3L, row.names = "c1"),
+    var = data.frame(row.names = c("g1", "g2"))
+  )
+  write_h5ad(adata, file, mode = "w")
+  py_adata <- ad$read_h5ad(file)
+  expect_equal(reticulate::py_to_r(py_adata$n_obs), 1L)
+})
