@@ -344,10 +344,10 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing nearest neighbor graph</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing SNN</span>
 <span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">obj</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 UMAP embedding parameters a = 0.9922 b = 1.112</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 Read 200 rows and found 10 numeric columns</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 Using Annoy for neighbor search, n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 Building Annoy index with metric = cosine, n_trees = 50</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:04 UMAP embedding parameters a = 0.9922 b = 1.112</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:04 Read 200 rows and found 10 numeric columns</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:04 Using Annoy for neighbor search, n_neighbors = 30</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:04 Building Annoy index with metric = cosine, n_trees = 50</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0%   10   20   30   40   50   60   70   80   90   100%</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [----|----|----|----|----|----|----|----|----|----|</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
@@ -401,15 +401,15 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> |</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 Writing NN index file to temp file /tmp/Rtmpdpg4Ph/file1b924f739a25</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 Searching Annoy index using 1 thread, search_k = 3000</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 Annoy recall = 100%</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:52 Commencing smooth kNN distance calibration using 1 thread</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:04 Writing NN index file to temp file /tmp/RtmpwxitEZ/file1b9862fd7c98</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:04 Searching Annoy index using 1 thread, search_k = 3000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:04 Annoy recall = 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:05 Commencing smooth kNN distance calibration using 1 thread</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  with target n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:54 Initializing from normalized Laplacian + noise (using RSpectra)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:54 Commencing optimization for 500 epochs, with 6146 positive edges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:54 Using rng type: pcg</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:48:54 Optimization finished</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:06 Initializing from normalized Laplacian + noise (using RSpectra)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:06 Commencing optimization for 500 epochs, with 6146 positive edges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:06 Using rng type: pcg</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:56:07 Optimization finished</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">as_AnnData</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Row names of `Loadings(seurat_obj, <span style="color: #0000BB;">"pca"</span>)` do not match the expected var names</span>
