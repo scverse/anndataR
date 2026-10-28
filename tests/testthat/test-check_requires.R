@@ -5,6 +5,7 @@ test_that("check_requires passes for an installed package", {
 test_that("check_requires errors for a missing package", {
   cnd <- expect_error(check_requires("Test", "notapackage"))
   expect_match(conditionMessage(cnd), "notapackage")
+  expect_no_match(conditionMessage(cnd), "Minimum version")
 })
 
 test_that("check_requires passes when the installed version is new enough", {
