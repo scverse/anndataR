@@ -42,7 +42,7 @@ What follows from this:
 
 - **Format-level bugs go upstream.** If the problem is how bytes land on disk (a chunk layout, a codec name, string encoding, metadata), file it on rhdf5 or Rarr, link it from the anndataR issue, work around it here with a `TODO` naming the upstream issue, and bump the version pin in `DESCRIPTION` once the fix is released. Recent examples: Rarr#262 (the C string encoder, merged), Rarr#111 (`patch_zarr_vlen_utf8()` waits on it), rhdf5#241 (a spurious `NA` warning, tracked in `inst/known_issues.yaml`).
 - **Prefer the owner's implementation.** anndataR decides *what* to write (the spec) and passes *how* through. When the owner doesn't provide something yet, as with auto-chunking in Rarr, implement it here pinned to Python's behaviour and propose it upstream.
-- **Everything below anndataR is optional.** These packages are in `Suggests` and loaded through `check_requires(what, requires, where, version)`. A new call into one of them needs a `check_requires()` guard and a matching `skip_if_*()` in the tests.
+- **The storage stack is optional.** rhdf5, Rarr, DelayedArray, HDF5Array and ZarrArray are in `Suggests`, as are Seurat and SingleCellExperiment, and are loaded through `check_requires(what, requires, where, version)`. A new call into one of them needs a `check_requires()` guard and a matching `skip_if_*()` in the tests. Matrix and reticulate are `Imports` and always available; Python **anndata** itself is optional and checked with `check_requires(..., where = "Python")`.
 
 ## Direction
 
@@ -64,14 +64,14 @@ Open questions, not direction; don't build on them yet:
 - `adata[i, j]` returns an `AnnDataView`: lazy, read-only, converted with `$as_InMemoryAnnData()` and the other `$as_*AnnData()` methods.
 - The S3 methods (`dim()`, `dimnames()`, `[`) for every class live in `R/AbstractAnnData-s3methods.R`; `n_obs()`/`n_vars()` are the R6 equivalents.
 - `HDF5AnnData` opens the file per operation (`open_and_defer_close()`) and closes it when the object is garbage collected; `test-h5ad-fileclosure.R` guards against leaked handles.
-- R data frames can't hold duplicate row names, Python can. `generate_dataset(obs_has_row_names = FALSE)` covers that edge.
+- R data frames can't hold duplicate row names, Python can. Reading a file with duplicate `obs_names` or `var_names` is not handled yet (#256); don't add fixtures that assume it is.
 - `NULL` in `uns` is written as an empty dataset, as anndata >= 0.12 does; `options(anndataR.write_null = FALSE)` turns that off.
 - Every getter and setter carries a `# trackstatus: class=..., feature=..., status=...` comment; the development-status article is generated from them, so a new feature gets one.
 - `man/` is generated. Never hand-edit it; run `devtools::document()` with the roxygen2 version pinned in `DESCRIPTION`.
 
 ## Testing against Python
 
-- The `skip_if_no_*()` helpers in `tests/testthat/helper-skip_if_*.R` declare the Python requirement with `reticulate::py_require()` and skip when it can't be imported. `ANNDATAR_TEST_REQUIRE_PYTHON=true` turns the skips into errors; CI and scverse/integration-testing set it, so a broken Python environment can't silently skip every Python test.
+- The `skip_if_no_*()` helpers in `tests/testthat/helper-skip_if_*.R` declare the Python requirement with `reticulate::py_require()` and skip when it can't be imported. `ANNDATAR_TEST_REQUIRE_PYTHON=true` turns the skips into errors, so a broken Python environment can't silently skip every Python test; scverse/integration-testing sets it, this repository's own workflows don't.
 - `test-roundtrip-*.R` write with R and read with Python and vice versa, over every element type of `dummy_anndata`, for H5AD, Zarr v2 and Zarr v3. A change to any encoding gets a roundtrip test.
 - `expect_equal_py()` compares R and Python objects; `generate_dataset()` builds the R fixtures.
 - `h5diff` (skipped when absent) checks that H5AD files written by R and Python are the same on disk.
