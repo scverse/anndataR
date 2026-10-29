@@ -26,6 +26,7 @@
 - Remove the special handling of Zarr v3 structured datatypes in the tests, now that `Rarr` supports them (PR #498).
 - Check `RELEASE_*` branches against Bioconductor release and `devel` against Bioconductor devel, instead of checking `devel` against both (PR #502).
 - Run BiocCheck on `RELEASE_*` branches as well as on `devel` (PR #504).
+- Write consolidated metadata on non-readonly anndata stores. Consolidated metadata is used to read encoding type and version of elements one level deep into the store (PR #492).
 
 # anndataR 1.3.1
 
