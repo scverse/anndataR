@@ -106,7 +106,7 @@ check_r_packages <- function(what, requires, where, version = NULL) {
         "{.run {install_fun}({missing_str})}"
       )
     )
-    if (length(version_str) > 0) {
+    if (any(has_version)) {
       msg <- c(
         msg,
         "i" = "{cli::qty(version_str)}Minimum version{?s} required: {.val {version_str}}"
