@@ -6,12 +6,15 @@
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element.
-#'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
-#'   `"zlib"`, `"lz4"`.
+#'   One of `"zstd"`, `"gzip"`, `"blosc"`, `"lzma"`, `"bz2"`,
+#'   `"zlib"`, `"lz4"`, `"none"`. Defaults to `"zstd"`.
+#'   See `help("compressors", package = "Rarr")`.
 #' @param zarr_format The format to write the element in, either 2 or 3 for the
 #'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
 #'   elements of a store end up in the same format.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param force_array Whether to always write length-1 character, numeric and
+#'   logical values as arrays instead of scalars (e.g. for data frame columns)
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -25,17 +28,18 @@ write_zarr_element <- function(
   store,
   name,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format,
   stop_on_error = FALSE,
+  force_array = FALSE,
   ...
 ) {
   compression <- match.arg(compression)
@@ -59,7 +63,7 @@ write_zarr_element <- function(
       }
     } else if (is.character(value)) {
       # Character values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_string_scalar
       } else if (anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_string
@@ -68,9 +72,9 @@ write_zarr_element <- function(
       }
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) {
       # Numeric values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_numeric_scalar
-      } else if (is.integer(value) && anyNA(value)) {
+      } else if (is.integer(value) && anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_integer
       } else {
         write_zarr_dense_array
@@ -79,7 +83,7 @@ write_zarr_element <- function(
       # Logical values
       if (anyNA(value)) {
         write_zarr_nullable_boolean
-      } else if (length(value) == 1) {
+      } else if (!force_array && length(value) == 1) {
         # Single Booleans should be written as numeric scalars
         write_zarr_numeric_scalar
       } else {
@@ -110,18 +114,11 @@ write_zarr_element <- function(
       )
     },
     error = function(e) {
-      message <- paste0(
-        "Could not write element '",
-        name,
-        "' of type '",
-        class(value),
-        "':\n",
-        conditionMessage(e)
-      )
+      msg <- "Could not write element {.field {name}} of type {.cls {class(value)}}"
       if (stop_on_error) {
-        cli_abort(message)
+        cli_abort(msg, parent = e)
       } else {
-        cli_warn(message)
+        cli_warn(msg, parent = e)
         NULL
       }
     }
@@ -201,6 +198,11 @@ write_zarr_dense_array <- function(
   # matrices of type 'dgeMatrix' can simply be converted to a matrix
   if (inherits(value, "denseMatrix")) {
     value <- as.matrix(value)
+  }
+
+  if (is.integer(value) && length(dim(value)) >= 2 && anyNA(value)) {
+    # an integer array can't hold NA, but a double array can
+    storage.mode(value) <- "double"
   }
 
   zarr_write_compressed(
@@ -756,7 +758,8 @@ write_zarr_data_frame <- function(
       store,
       paste0(name, "/", col),
       compression,
-      zarr_format
+      zarr_format,
+      force_array = TRUE
     )
   }
 
@@ -766,7 +769,8 @@ write_zarr_data_frame <- function(
     store,
     paste0(name, "/", index_name),
     compression,
-    zarr_format
+    zarr_format,
+    force_array = TRUE
   )
 
   # Write additional data frame attributes
@@ -863,14 +867,14 @@ zarr_write_compressed <- function(
   name,
   value,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format
 ) {
@@ -899,13 +903,13 @@ zarr_write_compressed <- function(
 .get_compressor <- function(compression) {
   switch(
     compression,
-    "none" = NULL,
     "zstd" = Rarr::use_zstd(),
-    "blosc" = Rarr::use_blosc(),
     "gzip" = Rarr::use_gzip(),
+    "blosc" = Rarr::use_blosc(),
     "lzma" = Rarr::use_lzma(),
     "bz2" = Rarr::use_bz2(),
     "zlib" = Rarr::use_zlib(),
-    "lz4" = Rarr::use_lz4()
+    "lz4" = Rarr::use_lz4(),
+    "none" = NULL
   )
 }

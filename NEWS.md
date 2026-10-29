@@ -1,9 +1,18 @@
+# anndataR devel
+
+- Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
+- Use zstd by default in `write_zarr()` (PR #540)
+- Write length 1 `data.frame` columns and indices as arrays instead of scalars (PR #556, issue #553).
+- Fix writing integer matrices containing `NA` to Zarr, which produced stores that couldn't be read back: as for H5AD, they are now written as double (PR #546, issue #542).
+- Keep `NA` in double and integer matrices written to H5AD instead of replacing it with `NaN`, so that `NA` and `NaN` can still be told apart when reading the file back in R. Python **anndata** reads both as `NaN` (PR #546).
+
 # anndataR 1.3.3
 
 - Fix Zarr v2 string arrays getting the `vlen-utf8` filter twice, which Python zarr can't read, with Rarr versions that record the filter themselves (PR #557, Huber-group-EMBL/Rarr#261).
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
-- Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
+- Fix the error and warning messages when reading or writing an element fails: the original error is now shown as the cause, instead of being parsed as a **cli** expression, which failed with ``Could not parse cli `{}` expression`` (PR #547, issue #531).
+- Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based (PR #547, issue #531).
 
 # anndataR 1.3.2
 
@@ -163,7 +172,7 @@ Backported from the development branch (PR #489):
 
 ## Minor changes
 
-- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
+- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe
   operators for cleaner code (PR #328)
 - Add explanatory comments for matrix generation alignment with Python
   **dummy-anndata** (PR #328)
@@ -175,11 +184,11 @@ Backported from the development branch (PR #489):
 
 ## Bug fixes
 
-- Add compression parameter to additional write operations in `HDF5AnnData` 
+- Add compression parameter to additional write operations in `HDF5AnnData`
   for consistency (PR #328)
 - Directly use `obs_names` and `var_names` properties instead of corresponding
   indirect S3 methods `rownames` and `colnames` (PR #328)
-- Fix error message variable name in `.validate_aligned_array()` method 
+- Fix error message variable name in `.validate_aligned_array()` method
   (expected_colnames → expected_rownames) (PR #328)
 - Fix Seurat conversion for PCA loadings with variable feature subsets (PR #328)
   - Seurat PCA loadings only contain variable features, not all genes
@@ -241,7 +250,7 @@ Backported from the development branch (PR #489):
   (PR #284)
   - There will still be a warning if neither of this is present as it may
     affect compatibility with **{Seurat}** functions
-    
+
 ## Minor changes
 
 - Use accessor functions/methods instead of direct slot access where possible

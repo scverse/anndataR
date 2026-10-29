@@ -376,3 +376,53 @@ test_that("reading H5AD as Seurat works", {
   seurat <- read_h5ad(filename, as = "Seurat")
   expect_s4_class(seurat, "Seurat")
 })
+
+test_that("errors while reading an element keep the original message", {
+  local_mocked_bindings(
+    read_h5ad_dense_array = function(...) stop("value not in {0,...,n}")
+  )
+  expect_warning(
+    read_h5ad_element(hdf5_file, "layers/dense_counts"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    read_h5ad_element(hdf5_file, "layers/dense_counts", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+})
+
+test_that("errors while reading element keys keep the original message", {
+  local_mocked_bindings(
+    read_h5ad_mapping_keys = function(...) stop("value not in {0,...,n}")
+  )
+  expect_warning(
+    read_h5ad_element_keys(hdf5_file, "uns"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    read_h5ad_element_keys(hdf5_file, "uns", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+})
+
+test_that("reading a sparse matrix with 1-based indices gives an informative error", {
+  file <- withr::local_tempfile(fileext = ".h5ad")
+  adata <- AnnData(
+    X = Matrix::rsparsematrix(3, 4, density = 1),
+    obs = data.frame(row.names = paste0("cell", 1:3)),
+    var = data.frame(row.names = paste0("gene", 1:4))
+  )
+  write_h5ad(adata, file, mode = "w")
+
+  # shift the indices to 1-based
+  rhdf5::h5write(rhdf5::h5read(file, "X/indices") + 1L, file, "X/indices")
+
+  expect_error(
+    read_h5ad_element(HDF5File$new(file), "X", stop_on_error = TRUE),
+    "must be 0-based"
+  )
+})
