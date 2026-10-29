@@ -61,6 +61,8 @@ ReticulateAnnData <- R6::R6Class(
           private$.py_anndata,
           "layers"
         )$keys())
+        # skip the None key that holds X in anndata >= 0.13
+        keys <- Filter(Negate(is.null), keys)
         for (name in keys) {
           out[[name]] <- py_to_r(reticulate::py_get_attr(
             private$.py_anndata,
