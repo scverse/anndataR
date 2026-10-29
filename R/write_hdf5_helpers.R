@@ -1,3 +1,47 @@
+#' Get the path to an HDF5 element relative to a root group
+#'
+#' Used to support reading/writing an AnnData from a group inside an HDF5
+#' file instead of the file root.
+#'
+#' @param root The path to the group within the HDF5 file that the AnnData
+#'   is rooted at. `"/"` or `""` mean the file root.
+#' @param name Name of the element, relative to `root`. May or may not have
+#'   a leading `/`.
+#'
+#' @return `name` prefixed with `root`
+#' @noRd
+hdf5_root_path <- function(root, name) {
+  root <- gsub("^/+|/+$", "", root)
+  name <- sub("^/+", "", name)
+
+  if (root == "") {
+    if (name == "") "/" else name
+  } else if (name == "") {
+    root
+  } else {
+    paste0(root, "/", name)
+  }
+}
+
+#' Ensure a group path exists in an HDF5 file
+#'
+#' Create a group and any missing intermediate segments.
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The group path to ensure exists, e.g. `"mod/rna"`
+#'
+#' @noRd
+hdf5_ensure_group_path <- function(hdf5_file, path) {
+  segments <- strsplit(path, "/", fixed = TRUE)[[1]]
+
+  for (i in seq_along(segments)) {
+    segment_path <- paste(segments[seq_len(i)], collapse = "/")
+    if (!hdf5_path_exists(hdf5_file, segment_path)) {
+      hdf5_create_group(hdf5_file, segment_path)
+    }
+  }
+}
+
 #' HDF5 path exists
 #'
 #' Check that a path in HDF5 exists

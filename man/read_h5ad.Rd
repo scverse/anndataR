@@ -9,6 +9,7 @@ read_h5ad(
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
   backed = FALSE,
+  root = "/",
   ...
 )
 }
@@ -26,18 +27,29 @@ read_h5ad(
 \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object
 }}
 
-\item{mode}{The mode to open the HDF5 file.
+\item{mode}{The mode to open the HDF5 file. When \code{root} is not \code{"/"},
+these apply to the group at \code{root} rather than the whole file:
 \itemize{
 \item \code{a} creates a new file or opens an existing one for read/write.
-\item \code{r} opens an existing file for reading.
+\item \code{r} opens an existing file for reading, the group at \code{root} must
+already exist.
 \item \verb{r+} opens an existing file for read/write.
-\item \code{w} creates a file, truncating any existing ones.
-\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists.
+\item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
+the file is created if missing but otherwise left untouched, and only the
+group at \code{root} is deleted and recreated.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
+exists. When \code{root != "/"}, they instead fail if the group at
+\code{root} already exists.
 }}
 
 \item{backed}{Whether to read the H5AD file in backed mode, returning an
 object containing \link[DelayedArray:DelayedMatrix]{DelayedArray::DelayedMatrix} matrices. Which slots are
 backed depends on the value of \code{as}.}
+
+\item{root}{The path to the group within the HDF5 file that the \code{AnnData}
+is stored at. Defaults to \code{"/"}, the file root. Can be used to read an
+\code{AnnData} from a group inside a file that also contains other content,
+e.g. a modality inside a \code{.h5mu} file.}
 
 \item{...}{Extra arguments provided to the \verb{as_*} conversion function for the
 object specified by \code{as}}
