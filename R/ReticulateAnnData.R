@@ -79,7 +79,18 @@ ReticulateAnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        reticulate::py_set_attr(private$.py_anndata, "layers", r_to_py(value))
+
+        # replace the layers in place, keeping the None key that holds X
+        bi <- reticulate::import_builtins()
+        py_layers <- reticulate::py_get_attr(private$.py_anndata, "layers")
+        for (name in bi$list(py_layers$keys())) {
+          if (!is.null(name)) {
+            reticulate::py_del_item(py_layers, name)
+          }
+        }
+        for (name in names(value)) {
+          reticulate::py_set_item(py_layers, name, r_to_py(value[[name]]))
+        }
         self
       }
     },
