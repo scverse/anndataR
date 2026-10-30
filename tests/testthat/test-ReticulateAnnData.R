@@ -43,6 +43,77 @@ test_that("ReticulateAnnData wrapping Python object works", {
   expect_equal(dim(r_adata$X), c(4, 5))
 })
 
+test_that("layers getter ignores the None key anndata >= 0.13 uses for X", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  ad <- import("anndata", convert = FALSE)
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  counts <- matrix(21:40, nrow = 4, ncol = 5)
+
+  # wrap a Python AnnData with X and one layer
+  py_adata <- ad$AnnData(
+    X = r_to_py(X),
+    layers = r_to_py(list(counts = counts))
+  )
+  r_adata <- ReticulateAnnData$new(py_anndata = py_adata)
+  expect_named(r_adata$layers, "counts")
+  expect_equal(r_adata$layers$counts, counts)
+
+  # wrap a Python AnnData with only X
+  py_adata_x_only <- ad$AnnData(X = r_to_py(X))
+  r_adata_x_only <- ReticulateAnnData$new(py_anndata = py_adata_x_only)
+  expect_length(r_adata_x_only$layers, 0)
+})
+
+test_that("py_to_r() skips None keys in Python mappings", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  ad <- import("anndata", convert = FALSE)
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  counts <- matrix(21:40, nrow = 4, ncol = 5)
+  py_adata <- ad$AnnData(
+    X = r_to_py(X),
+    layers = r_to_py(list(counts = counts))
+  )
+
+  result <- py_to_r(reticulate::py_get_attr(py_adata, "layers"))
+  expect_named(result, "counts")
+})
+
+test_that("setting layers keeps X and does not warn", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  ad <- import("anndata", convert = FALSE)
+  warnings <- import("warnings", convert = FALSE)
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  m <- matrix(21:40, nrow = 4, ncol = 5)
+  r_adata <- ReticulateAnnData$new(py_anndata = ad$AnnData(X = r_to_py(X)))
+
+  # replace the layers while recording Python warnings
+  with(warnings$catch_warnings(record = TRUE) %as% recorded_warnings, {
+    warnings$simplefilter("always")
+    r_adata$layers <- list(a = m)
+  })
+  expect_length(py_to_r(recorded_warnings), 0)
+  expect_equal(r_adata$X, X)
+  expect_named(r_adata$layers, "a")
+
+  # remove all layers while recording Python warnings
+  with(warnings$catch_warnings(record = TRUE) %as% recorded_warnings, {
+    warnings$simplefilter("always")
+    r_adata$layers <- list()
+  })
+  expect_length(py_to_r(recorded_warnings), 0)
+  expect_equal(r_adata$X, X)
+  expect_length(r_adata$layers, 0)
+})
+
 test_that("both Python AnnData class names are supported", {
   skip_if_no_anndata_py()
 
