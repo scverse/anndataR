@@ -11,6 +11,10 @@ test_that("normalise_py_anndata_print() drops the X entry from the layers line",
     "    layers: 'counts'"
   )
   expect_equal(
+    normalise_py_anndata_print("    layers: None (.X), 'counts'"),
+    "    layers: 'counts'"
+  )
+  expect_equal(
     normalise_py_anndata_print("    layers: 'counts', 'data', None (.X)"),
     "    layers: 'counts', 'data'"
   )
