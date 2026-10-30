@@ -667,3 +667,66 @@ test_that("Python can read H5AD files with length 1 obs or var", {
   py_adata <- ad$read_h5ad(file)
   expect_equal(reticulate::py_to_r(py_adata$n_obs), 1L)
 })
+
+test_that("Strings are written as UTF-8", {
+  file <- withr::local_tempfile(fileext = ".h5ad")
+  adata <- AnnData(
+    X = matrix(1, 2, 1),
+    obs = data.frame(
+      cat = factor(c("café", "b")),
+      str = c("é", NA),
+      row.names = c("c1é", "c2")
+    ),
+    var = data.frame(row.names = "g"),
+    uns = list(scalar = "naïve", array = c("ü", "x"))
+  )
+  write_h5ad(adata, file, mode = "w")
+
+  h5 <- HDF5File$new(file)
+  h5$open_and_defer_close(readonly = TRUE)
+  paths <- c(
+    "obs/_index",
+    "obs/cat/categories",
+    "obs/str/values",
+    "uns/scalar",
+    "uns/array"
+  )
+  for (path in paths) {
+    dset <- rhdf5::H5Dopen(h5$handle, path)
+    cset <- rhdf5::H5Tget_cset(rhdf5::H5Dget_type(dset))
+    rhdf5::H5Dclose(dset)
+    expect_equal(cset, 1L, label = path)
+  }
+  h5$close()
+
+  adata_r <- read_h5ad(file, as = "InMemoryAnnData")
+  expect_equal(adata_r$obs_names, c("c1é", "c2"))
+  expect_equal(as.character(adata_r$obs$cat), c("café", "b"))
+  expect_equal(adata_r$obs$str, c("é", NA))
+  expect_equal(adata_r$uns$scalar, "naïve")
+  expect_equal(as.vector(adata_r$uns$array), c("ü", "x"))
+})
+
+test_that("Python can read non-ASCII strings", {
+  skip_if_no_anndata_py()
+
+  file <- withr::local_tempfile(fileext = ".h5ad")
+  adata <- AnnData(
+    X = matrix(1, 2, 2),
+    obs = data.frame(
+      cat = factor(c("café", "b")),
+      str = c("é", NA),
+      row.names = c("c1é", "c2")
+    ),
+    var = data.frame(row.names = c("g1", "g2"))
+  )
+  write_h5ad(adata, file, mode = "w")
+
+  adata_py <- reticulate::import("anndata", convert = FALSE)$read_h5ad(file)
+  obs_names <- reticulate::py_to_r(adata_py$obs_names$tolist())
+  expect_equal(obs_names, c("c1é", "c2"))
+  cat_values <- reticulate::py_to_r(adata_py$obs[["cat"]]$astype(
+    "str"
+  )$tolist())
+  expect_equal(cat_values, c("café", "b"))
+})

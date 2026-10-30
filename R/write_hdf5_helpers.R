@@ -89,6 +89,12 @@ hdf5_write_dataset <- function(
   # warning about "Compression (level > 0) requires chunking"
   level <- if (is.null(chunk) || compression == "none") 0L else 6L
 
+  # Use UTF-8 strings if not set
+  if (is.null(H5type) && is.character(value)) {
+    H5type <- hdf5_string_type()
+    value[] <- enc2utf8(value)
+  }
+
   rhdf5::h5createDataset(
     hdf5_file$handle,
     name,
@@ -124,6 +130,20 @@ hdf5_get_dataset_type <- function(hdf5_file, name) {
   rhdf5::H5Tget_class(tid)
 }
 
+#' Create a HDF5 string type
+#'
+#' Create a variable-length, UTF-8 encoded HDF5 string type.
+#'
+#' @return A HDF5 datatype ID
+#' @noRd
+hdf5_string_type <- function() {
+  tid <- rhdf5::H5Tcopy("H5T_C_S1")
+  rhdf5::H5Tset_strpad(tid, strpad = "NULLTERM")
+  rhdf5::H5Tset_size(tid, NULL)
+  rhdf5::H5Tset_cset(tid, "UTF-8")
+  tid
+}
+
 #' Write a scalar to a HDF5 file
 #'
 #' Write a HDF5 scalar
@@ -154,11 +174,8 @@ hdf5_write_scalar <- function(
     integer = "H5T_STD_I64LE",
     double = "H5T_IEEE_F64LE",
     character = {
-      tid <- rhdf5::H5Tcopy("H5T_C_S1")
-      rhdf5::H5Tset_strpad(tid, strpad = "NULLTERM")
-      rhdf5::H5Tset_size(tid, NULL)
-      rhdf5::H5Tset_cset(tid, "UTF-8")
-      tid
+      value <- enc2utf8(value)
+      hdf5_string_type()
     },
     {
       cli_abort(c(
