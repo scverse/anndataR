@@ -697,6 +697,7 @@ test_that("Strings are written as UTF-8", {
     rhdf5::H5Dclose(dset)
     expect_equal(cset, 1L, label = path)
   }
+  h5$close()
 
   adata_r <- read_h5ad(file, as = "InMemoryAnnData")
   expect_equal(adata_r$obs_names, c("c1é", "c2"))

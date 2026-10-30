@@ -92,6 +92,7 @@ hdf5_write_dataset <- function(
   # Use UTF-8 strings if not set
   if (is.null(H5type) && is.character(value)) {
     H5type <- hdf5_string_type()
+    value[] <- enc2utf8(value)
   }
 
   rhdf5::h5createDataset(
@@ -172,7 +173,10 @@ hdf5_write_scalar <- function(
     storage.mode(value)[1],
     integer = "H5T_STD_I64LE",
     double = "H5T_IEEE_F64LE",
-    character = hdf5_string_type(),
+    character = {
+      value <- enc2utf8(value)
+      hdf5_string_type()
+    },
     {
       cli_abort(c(
         "{.arg value} must be of type {.val integer}, {.val double} or {.val character}",
