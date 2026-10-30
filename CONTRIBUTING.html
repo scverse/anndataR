@@ -59,7 +59,7 @@
 <li>Open a pull request against <code>devel</code> and fill in the PR template</li>
 </ol><div class="section level3">
 <h3 id="conventions">Conventions<a class="anchor" aria-label="anchor" href="#conventions"></a></h3>
-<ul><li>Format code with <a href="https://posit-dev.github.io/air/" class="external-link">Air</a> (<code>air format .</code>) and vignettes with <code>styler::style_dir("vignettes")</code>, then check with <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code>
+<ul><li>Format code with <a href="https://posit-dev.github.io/air/" class="external-link">Air</a> (<code>air format .</code>) and vignettes with <code>styler::style_dir("vignettes")</code>, then check with <code>lintr::lint_package()</code>
 </li>
 <li>Document functions with roxygen2 and regenerate the man pages with <code>devtools::document()</code>, using the roxygen2 version pinned in <code>DESCRIPTION</code> (<code>Config/roxygen2/version</code>)</li>
 <li>Add or update tests in <code>tests/testthat/</code>
@@ -103,7 +103,20 @@
 <strong>Conversion</strong>: <code>from_*()</code> functions convert other formats to AnnData and <code>as_*()</code> functions convert AnnData to other formats. Update both when adding a conversion feature.</li>
 <li>
 <strong>Python differences</strong>: Python AnnData allows duplicate names and distinguishes <code>None</code> from an empty dict, which R doesn’t. Known issues are tracked in <code>inst/known_issues.yaml</code>.</li>
-</ul></div>
+</ul><div class="section level3">
+<h3 id="where-things-live">Where things live<a class="anchor" aria-label="anchor" href="#where-things-live"></a></h3>
+<p>anndataR implements the AnnData specification and the conversions, and leaves the file formats to other Bioconductor packages:</p>
+<ul><li>
+<strong>rhdf5</strong> reads and writes HDF5, <strong>Rarr</strong> reads and writes Zarr. A bug in how data lands on disk (chunking, codecs, string encoding, metadata) belongs in their issue trackers; link it from the anndataR issue and bump the version pin in <code>DESCRIPTION</code> once it is fixed.</li>
+<li>
+<strong>DelayedArray</strong> provides backed (lazy) matrices, with <strong>HDF5Array</strong> seeds for H5AD; <strong>ZarrArray</strong> seeds for Zarr are being added in PR #507.</li>
+<li>
+<strong>Matrix</strong> provides the in-memory sparse matrices.</li>
+<li>
+<strong>reticulate</strong> and Python <strong>anndata</strong> are only needed for <code>ReticulateAnnData</code> and for the tests that compare against Python.</li>
+</ul><p>The storage and conversion packages are in <code>Suggests</code>, not <code>Imports</code>: guard new calls with <code>check_requires()</code> and skip the matching tests when the package isn’t installed. The same goes for Python <strong>anndata</strong>, which <code>check_requires(..., where = "Python")</code> checks for; <strong>reticulate</strong> and <strong>Matrix</strong> themselves are always available.</p>
+</div>
+</div>
 <div class="section level2">
 <h2 id="package-authors">Package authors<a class="anchor" aria-label="anchor" href="#package-authors"></a></h2>
 <p>New contributors are welcome to add themselves to the package authors in <code>DESCRIPTION</code>. Add a <code><a href="https://rdrr.io/r/utils/person.html" class="external-link">person()</a></code> entry with the <code>ctb</code> role in your pull request, including your ORCID and GitHub username in the <code>comment</code> field.</p>

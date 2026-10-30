@@ -21,8 +21,7 @@ matching template.
 
 - Format code with [Air](https://posit-dev.github.io/air/)
   (`air format .`) and vignettes with `styler::style_dir("vignettes")`,
-  then check with
-  [`lintr::lint_package()`](https://lintr.r-lib.org/reference/lint.html)
+  then check with `lintr::lint_package()`
 - Document functions with roxygen2 and regenerate the man pages with
   `devtools::document()`, using the roxygen2 version pinned in
   `DESCRIPTION` (`Config/roxygen2/version`)
@@ -89,6 +88,28 @@ details. Some key points to be aware of:
 - **Python differences**: Python AnnData allows duplicate names and
   distinguishes `None` from an empty dict, which R doesn’t. Known issues
   are tracked in `inst/known_issues.yaml`.
+
+### Where things live
+
+anndataR implements the AnnData specification and the conversions, and
+leaves the file formats to other Bioconductor packages:
+
+- **rhdf5** reads and writes HDF5, **Rarr** reads and writes Zarr. A bug
+  in how data lands on disk (chunking, codecs, string encoding,
+  metadata) belongs in their issue trackers; link it from the anndataR
+  issue and bump the version pin in `DESCRIPTION` once it is fixed.
+- **DelayedArray** provides backed (lazy) matrices, with **HDF5Array**
+  seeds for H5AD; **ZarrArray** seeds for Zarr are being added in PR
+  \#507.
+- **Matrix** provides the in-memory sparse matrices.
+- **reticulate** and Python **anndata** are only needed for
+  `ReticulateAnnData` and for the tests that compare against Python.
+
+The storage and conversion packages are in `Suggests`, not `Imports`:
+guard new calls with `check_requires()` and skip the matching tests when
+the package isn’t installed. The same goes for Python **anndata**, which
+`check_requires(..., where = "Python")` checks for; **reticulate** and
+**Matrix** themselves are always available.
 
 ## Package authors
 

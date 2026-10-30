@@ -339,7 +339,7 @@ or
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24)
+#> R version 4.6.2 (2026-10-29)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 26.04.1 LTS
 #> 
@@ -371,18 +371,18 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] xfun_0.62           bslib_0.12.0        httr2_1.3.0        
-#>  [4] htmlwidgets_1.6.4   rhdf5_2.57.20       lattice_0.22-9     
-#>  [7] rhdf5filters_1.25.4 vctrs_0.7.3         tools_4.6.1        
+#>  [4] htmlwidgets_1.6.4   rhdf5_2.57.20       lattice_0.23-1     
+#>  [7] rhdf5filters_1.25.5 vctrs_0.7.3         tools_4.6.2        
 #> [10] curl_8.1.0          paws.common_0.9.0   R.oo_1.27.1        
-#> [13] Matrix_1.7-5        desc_1.4.3          lifecycle_1.0.5    
-#> [16] compiler_4.6.1      textshaping_1.0.5   htmltools_0.5.9    
+#> [13] Matrix_1.7-6        desc_1.4.3          lifecycle_1.0.5    
+#> [16] compiler_4.6.2      textshaping_1.0.5   htmltools_0.5.9    
 #> [19] sass_0.4.10         yaml_2.3.12         pkgdown_2.2.1      
 #> [22] crayon_1.5.3        jquerylib_0.1.4     R.utils_2.13.0     
 #> [25] grumpy_0.1.1        DelayedArray_0.39.8 cachem_1.1.0       
 #> [28] abind_1.4-8         digest_0.6.39       paws.storage_0.11.0
 #> [31] purrr_1.2.2         bookdown_0.48       fastmap_1.2.0      
-#> [34] grid_4.6.1          cli_3.6.6           SparseArray_1.13.4 
-#> [37] Rarr_2.1.50         magrittr_2.0.5      S4Arrays_1.13.2    
+#> [34] grid_4.6.2          cli_3.6.6           SparseArray_1.13.4 
+#> [37] Rarr_2.1.53         magrittr_2.0.5      S4Arrays_1.13.2    
 #> [40] withr_3.0.3         rmarkdown_2.32      XVector_0.53.0     
 #> [43] otel_0.2.0          reticulate_1.47.0   progressr_1.1.0    
 #> [46] ragg_1.5.2          png_0.1-9           R.methodsS3_1.8.2  

@@ -171,7 +171,7 @@ print(rna_sce)
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24)
+#> R version 4.6.2 (2026-10-29)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 26.04.1 LTS
 #> 
@@ -204,14 +204,14 @@ sessionInfo()
 #>  [13] htmltools_0.5.9             S4Arrays_1.13.2            
 #>  [15] curl_8.1.0                  SparseArray_1.13.4         
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
-#>  [19] parallelly_1.48.0           KernSmooth_2.23-26         
+#>  [19] parallelly_1.48.0           KernSmooth_2.23-27         
 #>  [21] bslib_0.12.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] httr2_1.3.0                 plyr_1.8.9                 
 #>  [27] plotly_4.12.1               zoo_1.9-1                  
 #>  [29] cachem_1.1.0                igraph_2.3.4               
 #>  [31] mime_0.13                   lifecycle_1.0.5            
-#>  [33] pkgconfig_2.0.3             Matrix_1.7-5               
+#>  [33] pkgconfig_2.0.3             Matrix_1.7-6               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
 #>  [39] future_1.80.0               shiny_1.14.0               
@@ -223,16 +223,16 @@ sessionInfo()
 #>  [51] filelock_1.0.3              progressr_1.1.0            
 #>  [53] spatstat.sparse_3.2-0       httr_1.4.9                 
 #>  [55] polyclip_1.10-7             abind_1.4-8                
-#>  [57] compiler_4.6.1              withr_3.0.3                
+#>  [57] compiler_4.6.2              withr_3.0.3                
 #>  [59] bit64_4.8.6                 S7_0.2.2                   
 #>  [61] DBI_1.3.0                   fastDummies_1.7.6          
-#>  [63] MASS_7.3-65                 DelayedArray_0.39.8        
-#>  [65] tools_4.6.1                 lmtest_0.9-40              
+#>  [63] MASS_7.3-66                 DelayedArray_0.39.8        
+#>  [65] tools_4.6.2                 lmtest_0.9-40              
 #>  [67] otel_0.2.0                  httpuv_1.6.17              
 #>  [69] future.apply_1.21.0         goftest_1.2-3              
-#>  [71] glue_1.8.1                  nlme_3.1-169               
-#>  [73] promises_1.5.0              grid_4.6.1                 
-#>  [75] Rtsne_0.17                  cluster_2.1.8.2            
+#>  [71] glue_1.8.1                  nlme_3.1-171               
+#>  [73] promises_1.5.0              grid_4.6.2                 
+#>  [75] Rtsne_0.17                  cluster_2.1.8.3            
 #>  [77] reshape2_1.4.5              generics_0.1.4             
 #>  [79] gtable_0.3.6                spatstat.data_3.1-9        
 #>  [81] tidyr_1.3.2                 data.table_1.18.6.1        
@@ -242,16 +242,16 @@ sessionInfo()
 #>  [89] RANN_2.6.3                  pillar_1.11.1              
 #>  [91] stringr_1.6.0               spam_2.11-4                
 #>  [93] RcppHNSW_0.7.0              later_1.4.8                
-#>  [95] splines_4.6.1               dplyr_1.2.1                
-#>  [97] BiocFileCache_3.3.0         lattice_0.22-9             
+#>  [95] splines_4.6.2               dplyr_1.2.1                
+#>  [97] BiocFileCache_3.3.0         lattice_0.23-1             
 #>  [99] bit_4.6.0                   deldir_2.0-4               
-#> [101] survival_3.8-6              tidyselect_1.2.1           
+#> [101] survival_3.8-12             tidyselect_1.2.1           
 #> [103] SingleCellExperiment_1.35.2 miniUI_0.1.2               
 #> [105] pbapply_1.7-5               knitr_1.52                 
 #> [107] gridExtra_2.3.1             bookdown_0.48              
 #> [109] IRanges_2.47.5              Seqinfo_1.3.2              
 #> [111] SummarizedExperiment_1.43.0 scattermore_1.2            
-#> [113] stats4_4.6.1                xfun_0.62                  
+#> [113] stats4_4.6.2                xfun_0.62                  
 #> [115] Biobase_2.73.2              matrixStats_1.5.0          
 #> [117] stringi_1.8.9               yaml_2.3.12                
 #> [119] evaluate_1.0.5              codetools_0.2-20           
@@ -261,7 +261,7 @@ sessionInfo()
 #> [127] jquerylib_0.1.4             Rcpp_1.1.2                 
 #> [129] spatstat.random_3.5-2       globals_0.20.0             
 #> [131] dbplyr_2.6.0                png_0.1-9                  
-#> [133] spatstat.univar_3.2-0       parallel_4.6.1             
+#> [133] spatstat.univar_3.2-0       parallel_4.6.2             
 #> [135] blob_1.3.0                  pkgdown_2.2.1              
 #> [137] ggplot2_4.0.3               dotCall64_1.2              
 #> [139] listenv_1.1.0               viridisLite_0.4.3          
@@ -320,9 +320,9 @@ reticulate::py_list_packages()
 #> 31       pynndescent       0.7.0        pynndescent==0.7.0
 #> 32         pyparsing       3.3.3          pyparsing==3.3.3
 #> 33   python-dateutil       3.0.0    python-dateutil==3.0.0
-#> 34              pytz      2026.5              pytz==2026.5
+#> 34              pytz      2026.6              pytz==2026.6
 #> 35            PyYAML       6.0.3             PyYAML==6.0.3
-#> 36            scanpy      1.12.4            scanpy==1.12.4
+#> 36            scanpy      1.12.5            scanpy==1.12.5
 #> 37      scikit-learn       1.9.1       scikit-learn==1.9.1
 #> 38             scipy      1.18.1             scipy==1.18.1
 #> 39      scverse-misc       0.1.1       scverse-misc==0.1.1
@@ -335,6 +335,6 @@ reticulate::py_list_packages()
 #> 46 typing_extensions      4.16.0 typing_extensions==4.16.0
 #> 47            tzdata      2026.6            tzdata==2026.6
 #> 48        umap-learn      0.5.12        umap-learn==0.5.12
-#> 49             wrapt    2.5.2rc1           wrapt==2.5.2rc1
+#> 49             wrapt  2.6.0.dev1         wrapt==2.6.0.dev1
 #> 50              zarr       3.4.2               zarr==3.4.2
 ```

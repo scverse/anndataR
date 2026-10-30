@@ -179,7 +179,7 @@ test-h5ad-fileclosure.R once the fixed rhdf5 is in Bioconductor devel.
 sessionInfo()
 ```
 
-    ## R version 4.6.1 (2026-06-24)
+    ## R version 4.6.2 (2026-10-29)
     ## Platform: x86_64-pc-linux-gnu
     ## Running under: Ubuntu 26.04.1 LTS
     ## 
@@ -204,7 +204,7 @@ sessionInfo()
     ## [5] rprojroot_2.1.1  knitr_1.52       tibble_3.3.1     BiocStyle_2.41.0
     ## 
     ## loaded via a namespace (and not attached):
-    ##  [1] jsonlite_2.0.0      compiler_4.6.1      BiocManager_1.30.27
+    ##  [1] jsonlite_2.0.0      compiler_4.6.2      BiocManager_1.30.27
     ##  [4] tidyselect_1.2.1    jquerylib_0.1.4     systemfonts_1.3.2  
     ##  [7] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
     ## [10] R6_2.6.1            generics_0.1.4      htmlwidgets_1.6.4  
@@ -215,5 +215,5 @@ sessionInfo()
     ## [25] pkgdown_2.2.1       withr_3.0.3         magrittr_2.0.5     
     ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.3        
     ## [31] evaluate_1.0.5      glue_1.8.1          ragg_1.5.2         
-    ## [34] rmarkdown_2.32      tools_4.6.1         pkgconfig_2.0.3    
+    ## [34] rmarkdown_2.32      tools_4.6.2         pkgconfig_2.0.3    
     ## [37] htmltools_0.5.9

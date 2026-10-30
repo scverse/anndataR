@@ -541,7 +541,7 @@ citation("anndataR")
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24)
+#> R version 4.6.2 (2026-10-29)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 26.04.1 LTS
 #> 
@@ -579,33 +579,33 @@ sessionInfo()
 #>  [10] ROCR_1.0-12            spatstat.explore_3.8-3 htmltools_0.5.9       
 #>  [13] S4Arrays_1.13.2        curl_8.1.0             Rhdf5lib_2.1.0        
 #>  [16] SparseArray_1.13.4     rhdf5_2.57.20          sass_0.4.10           
-#>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-26    
+#>  [19] sctransform_0.4.3      parallelly_1.48.0      KernSmooth_2.23-27    
 #>  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            
 #>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
 #>  [28] plotly_4.12.1          zoo_1.9-1              cachem_1.1.0          
 #>  [31] igraph_2.3.4           mime_0.13              lifecycle_1.0.5       
-#>  [34] pkgconfig_2.0.3        Matrix_1.7-5           R6_2.6.1              
+#>  [34] pkgconfig_2.0.3        Matrix_1.7-6           R6_2.6.1              
 #>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.80.0         
 #>  [40] shiny_1.14.0           digest_0.6.39          paws.storage_0.11.0   
 #>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.6.0          
 #>  [46] RSpectra_0.16-2        irlba_2.4.1            textshaping_1.0.5     
-#>  [49] Rarr_2.1.50            progressr_1.1.0        spatstat.sparse_3.2-0 
+#>  [49] Rarr_2.1.53            progressr_1.1.0        spatstat.sparse_3.2-0 
 #>  [52] polyclip_1.10-7        httr_1.4.9             abind_1.4-8           
-#>  [55] compiler_4.6.1         withr_3.0.3            S7_0.2.2              
+#>  [55] compiler_4.6.2         withr_3.0.3            S7_0.2.2              
 #>  [58] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        
-#>  [61] MASS_7.3-65            DelayedArray_0.39.8    tools_4.6.1           
+#>  [61] MASS_7.3-66            DelayedArray_0.39.8    tools_4.6.2           
 #>  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         
 #>  [67] future.apply_1.21.0    goftest_1.2-3          R.oo_1.27.1           
-#>  [70] glue_1.8.1             nlme_3.1-169           rhdf5filters_1.25.4   
-#>  [73] promises_1.5.0         grid_4.6.1             Rtsne_0.17            
-#>  [76] cluster_2.1.8.2        reshape2_1.4.5         gtable_0.3.6          
+#>  [70] glue_1.8.1             nlme_3.1-171           rhdf5filters_1.25.5   
+#>  [73] promises_1.5.0         grid_4.6.2             Rtsne_0.17            
+#>  [76] cluster_2.1.8.3        reshape2_1.4.5         gtable_0.3.6          
 #>  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           
 #>  [82] data.table_1.18.6.1    XVector_0.53.0         spatstat.geom_3.8-3   
 #>  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.3            
 #>  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-4           
-#>  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.1         
-#>  [94] dplyr_1.2.1            lattice_0.22-9         deldir_2.0-4          
-#>  [97] survival_3.8-6         paws.common_0.9.0      tidyselect_1.2.1      
+#>  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.2         
+#>  [94] dplyr_1.2.1            lattice_0.23-1         deldir_2.0-4          
+#>  [97] survival_3.8-12        paws.common_0.9.0      tidyselect_1.2.1      
 #> [100] miniUI_0.1.2           pbapply_1.7-5          knitr_1.52            
 #> [103] gridExtra_2.3.1        bookdown_0.48          scattermore_1.2       
 #> [106] xfun_0.62              stringi_1.8.9          yaml_2.3.12           
@@ -614,7 +614,7 @@ sessionInfo()
 #> [115] xtable_1.8-8           reticulate_1.47.0      systemfonts_1.3.2     
 #> [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-2 
 #> [121] globals_0.20.0         png_0.1-9              spatstat.univar_3.2-0 
-#> [124] parallel_4.6.1         pkgdown_2.2.1          ggplot2_4.0.3         
+#> [124] parallel_4.6.2         pkgdown_2.2.1          ggplot2_4.0.3         
 #> [127] dotCall64_1.2          listenv_1.1.0          viridisLite_0.4.3     
 #> [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
 #> [133] purrr_1.2.2            rlang_1.3.0            cowplot_1.2.0

@@ -285,8 +285,11 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: SeuratObject</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: sp</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ‘SeuratObject’ was built under R 4.6.0 but the current version is</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 4.6.1; it is recomended that you reinstall ‘SeuratObject’ as the ABI</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 4.6.2; it is recomended that you reinstall ‘SeuratObject’ as the ABI</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> for R may have changed</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ‘SeuratObject’ was built with package ‘Matrix’ 1.7.5 but the current</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> version is 1.7.6; it is recomended that you reinstall ‘SeuratObject’ as</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> the ABI for ‘Matrix’ may have changed</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘SeuratObject’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
@@ -344,10 +347,10 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing nearest neighbor graph</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing SNN</span>
 <span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">obj</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:35 UMAP embedding parameters a = 0.9922 b = 1.112</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:35 Read 200 rows and found 10 numeric columns</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:35 Using Annoy for neighbor search, n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:35 Building Annoy index with metric = cosine, n_trees = 50</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:41 UMAP embedding parameters a = 0.9922 b = 1.112</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:41 Read 200 rows and found 10 numeric columns</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:41 Using Annoy for neighbor search, n_neighbors = 30</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:41 Building Annoy index with metric = cosine, n_trees = 50</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0%   10   20   30   40   50   60   70   80   90   100%</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [----|----|----|----|----|----|----|----|----|----|</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
@@ -401,15 +404,15 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> |</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:35 Writing NN index file to temp file /tmp/RtmpDpRSiE/file1b9e3ae29ade</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:35 Searching Annoy index using 1 thread, search_k = 3000</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:35 Annoy recall = 100%</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:36 Commencing smooth kNN distance calibration using 1 thread</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:41 Writing NN index file to temp file /tmp/RtmptJImGI/file410d4b087446</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:41 Searching Annoy index using 1 thread, search_k = 3000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:41 Annoy recall = 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:42 Commencing smooth kNN distance calibration using 1 thread</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  with target n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:37 Initializing from normalized Laplacian + noise (using RSpectra)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:37 Commencing optimization for 500 epochs, with 6146 positive edges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:37 Using rng type: pcg</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 08:52:38 Optimization finished</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:43 Initializing from normalized Laplacian + noise (using RSpectra)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:43 Commencing optimization for 500 epochs, with 6146 positive edges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:43 Using rng type: pcg</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:49:44 Optimization finished</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">as_AnnData</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Row names of `Loadings(seurat_obj, <span style="color: #0000BB;">"pca"</span>)` do not match the expected var names</span>
