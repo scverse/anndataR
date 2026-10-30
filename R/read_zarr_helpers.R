@@ -7,6 +7,7 @@
 #' @param type The encoding type of the element to read
 #' @param version The encoding version of the element to read
 #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param backed Whether to return a DelayedArray for array/matrix types
 #' @param ... Extra arguments passed to individual reading functions
 #'
 #' @details
@@ -22,6 +23,7 @@ read_zarr_element <- function(
   type = NULL,
   version = NULL,
   stop_on_error = FALSE,
+  backed = FALSE,
   ...
 ) {
   if (!zarr_path_exists(store, name)) {
@@ -57,7 +59,13 @@ read_zarr_element <- function(
 
   tryCatch(
     {
-      read_fun(store = store, name = name, version = version, ...)
+      read_fun(
+        store = store,
+        name = name,
+        version = version,
+        backed = backed,
+        ...
+      )
     },
     error = function(e) {
       msg <- "Error reading element {.field {name}} of type {.cls {type}}"
@@ -154,10 +162,11 @@ read_zarr_encoding <- function(store, name) {
 #' Read a null value from an Zarr store
 #'
 #' @inheritParams read_zarr_element
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @return `NULL`
 #' @noRd
-read_zarr_null <- function(store, name, version = "0.1.0") {
+read_zarr_null <- function(store, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   NULL
@@ -172,7 +181,35 @@ read_zarr_null <- function(store, name, version = "0.1.0") {
 #' @return A matrix or a vector if 1D
 #'
 #' @noRd
-read_zarr_dense_array <- function(store, name, version = "0.2.0") {
+read_zarr_dense_array <- function(
+  store,
+  name,
+  backed = FALSE,
+  version = "0.2.0",
+  ...
+) {
+  version <- match.arg(version)
+
+  # Eager reads use base {rhdf5} directly
+  if (!isTRUE(backed)) {
+    return(read_zarr_dense_array_base(store, name, version))
+  }
+
+  data <- ZarrArray::ZarrArray(file.path(store, name))
+
+  data
+}
+
+#' Read Zarr dense array (base)
+#'
+#' Read a dense array from a Zarr store using base (Rarr)
+#'
+#' @inheritParams read_zarr_element
+#'
+#' @return A matrix or a vector if 1D
+#'
+#' @noRd
+read_zarr_dense_array_base <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   data <- Rarr::read_zarr_array(file.path(store, name))
@@ -180,19 +217,21 @@ read_zarr_dense_array <- function(store, name, version = "0.2.0") {
   data
 }
 
-read_zarr_csr_matrix <- function(store, name, version) {
+read_zarr_csr_matrix <- function(store, name, backed = FALSE, version, ...) {
   read_zarr_sparse_array(
     store = store,
     name = name,
+    backed = backed,
     version = version,
     type = "csr_matrix"
   )
 }
 
-read_zarr_csc_matrix <- function(store, name, version) {
+read_zarr_csc_matrix <- function(store, name, backed = FALSE, version, ...) {
   read_zarr_sparse_array(
     store = store,
     name = name,
+    backed = backed,
     version = version,
     type = "csc_matrix"
   )
@@ -212,8 +251,39 @@ read_zarr_csc_matrix <- function(store, name, version) {
 read_zarr_sparse_array <- function(
   store,
   name,
+  backed = FALSE,
   version = "0.1.0",
-  type = c("csr_matrix", "csc_matrix")
+  type = c("csr_matrix", "csc_matrix"),
+  ...
+) {
+  version <- match.arg(version)
+  type <- match.arg(type)
+
+  # Eager reads use base {rhdf5} directly
+  if (!isTRUE(backed)) {
+    return(read_zarr_sparse_array_base(store, name, version, type))
+  }
+
+  t(ZarrArray::ZarrSparseMatrix(store, group = name))
+}
+
+#' Read Zarr sparse array (base)
+#'
+#' Read a sparse array from a Zarr store using base (Rarr)
+#'
+#' @inheritParams read_zarr_element
+#' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
+#'
+#' @return A sparse matrix/DelayedArray???, or a vector if 1D
+#' @importFrom Matrix sparseMatrix
+#'
+#' @noRd
+read_zarr_sparse_array_base <- function(
+  store,
+  name,
+  version = "0.1.0",
+  type = c("csr_matrix", "csc_matrix"),
+  ...
 ) {
   version <- match.arg(version)
   type <- match.arg(type)
@@ -250,7 +320,7 @@ read_zarr_sparse_array <- function(
 #' @return A named list of 1D arrays
 #'
 #' @noRd
-read_zarr_rec_array <- function(store, name, version = "0.2.0") {
+read_zarr_rec_array <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
   Rarr::read_zarr_array(file.path(store, name)) |>
     lapply(as.vector)
@@ -265,7 +335,7 @@ read_zarr_rec_array <- function(store, name, version = "0.2.0") {
 #' @return A boolean vector
 #'
 #' @noRd
-read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
+read_zarr_nullable_boolean <- function(store, name, version = "0.1.0", ...) {
   as.logical(read_zarr_nullable(store, name, version))
 }
 
@@ -278,7 +348,7 @@ read_zarr_nullable_boolean <- function(store, name, version = "0.1.0") {
 #' @return An integer vector
 #'
 #' @noRd
-read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
+read_zarr_nullable_integer <- function(store, name, version = "0.1.0", ...) {
   as.integer(read_zarr_nullable(store, name, version))
 }
 
@@ -289,6 +359,7 @@ read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
 #' @param version Encoding version of the element to read
+#' @param ... Extra arguments for other reading functions (not used)
 #'
 #' @details
 #' **NOTE:** This implementation ignores the `"na-value"` attribute, see
@@ -297,7 +368,7 @@ read_zarr_nullable_integer <- function(store, name, version = "0.1.0") {
 #' @return A character vector
 #'
 #' @noRd
-read_zarr_nullable_string <- function(store, name, version = "0.1.0") {
+read_zarr_nullable_string <- function(store, name, version = "0.1.0", ...) {
   as.character(read_zarr_nullable(store, name, version))
 }
 
@@ -310,7 +381,7 @@ read_zarr_nullable_string <- function(store, name, version = "0.1.0") {
 #' @return A nullable vector
 #'
 #' @noRd
-read_zarr_nullable <- function(store, name, version = "0.1.0") {
+read_zarr_nullable <- function(store, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   mask <- Rarr::read_zarr_array(file.path(store, paste0(name, "/mask")))
@@ -334,7 +405,7 @@ read_zarr_nullable <- function(store, name, version = "0.1.0") {
 #' @return A character vector/matrix
 #'
 #' @noRd
-read_zarr_string_array <- function(store, name, version = "0.2.0") {
+read_zarr_string_array <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   data <- Rarr::read_zarr_array(file.path(store, name))
@@ -356,7 +427,7 @@ read_zarr_string_array <- function(store, name, version = "0.2.0") {
 #' @return A factor
 #'
 #' @noRd
-read_zarr_categorical <- function(store, name, version = "0.2.0") {
+read_zarr_categorical <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   codes <- Rarr::read_zarr_array(file.path(store, paste0(name, "/codes")))
@@ -390,7 +461,7 @@ read_zarr_categorical <- function(store, name, version = "0.2.0") {
 #' @return A character vector of length 1
 #'
 #' @noRd
-read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
+read_zarr_string_scalar <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
   as.character(Rarr::read_zarr_array(file.path(store, name)))
 }
@@ -404,7 +475,7 @@ read_zarr_string_scalar <- function(store, name, version = "0.2.0") {
 #' @return A numeric vector of length 1
 #'
 #' @noRd
-read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
+read_zarr_numeric_scalar <- function(store, name, version = "0.2.0", ...) {
   version <- match.arg(version)
 
   value <- Rarr::read_zarr_array(file.path(store, name))
@@ -424,10 +495,16 @@ read_zarr_numeric_scalar <- function(store, name, version = "0.2.0") {
 #' @return A named list
 #'
 #' @noRd
-read_zarr_mapping <- function(store, name, version = "0.1.0") {
+read_zarr_mapping <- function(
+  store,
+  name,
+  version = "0.1.0",
+  backed = FALSE,
+  ...
+) {
   version <- match.arg(version)
   items <- read_zarr_mapping_keys(store, name, version)
-  read_zarr_collection(store, name, items)
+  read_zarr_collection(store, name, items, backed = backed)
 }
 
 #' Read Zarr data frame
@@ -435,6 +512,13 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
 #' Read a data frame from a Zarr store
 #'
 #' @inheritParams read_zarr_element
+#' @param backed Whether to return DelayedArrays for array/matrix types (always
+#' `FALSE`)
+#'
+#' @details
+#' The `backed` argument is included to avoid `backed` being passed via `...`
+#' and is always overwritten to `FALSE` since data frame columns should not be
+#' DelayedArrays.
 #'
 #' @return A data.frame
 #'
@@ -442,7 +526,9 @@ read_zarr_mapping <- function(store, name, version = "0.1.0") {
 read_zarr_data_frame <- function(
   store,
   name,
-  version = "0.2.0"
+  version = "0.2.0",
+  backed = FALSE,
+  ...
 ) {
   version <- match.arg(version)
 
@@ -465,7 +551,7 @@ read_zarr_data_frame <- function(
 #' @return A named list
 #'
 #' @noRd
-read_zarr_collection <- function(store, name, item_names) {
+read_zarr_collection <- function(store, name, item_names, backed = FALSE, ...) {
   items <- lapply(
     item_names,
     function(item_name) {
@@ -475,7 +561,8 @@ read_zarr_collection <- function(store, name, item_names) {
         store = store,
         name = new_name,
         type = encoding$type,
-        version = encoding$version
+        version = encoding$version,
+        backed = backed
       )
     }
   )
@@ -492,7 +579,7 @@ read_zarr_collection <- function(store, name, item_names) {
 #' @return A character vector of item names
 #'
 #' @noRd
-read_zarr_mapping_keys <- function(store, name, version = "0.1.0") {
+read_zarr_mapping_keys <- function(store, name, version = "0.1.0", ...) {
   version <- match.arg(version)
 
   items <- list.dirs(

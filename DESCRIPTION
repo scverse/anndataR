@@ -54,6 +54,7 @@ Suggests:
     BiocStyle,
     DelayedArray,
     HDF5Array,
+    ZarrArray,
     jsonlite,
     knitr,
     processx,

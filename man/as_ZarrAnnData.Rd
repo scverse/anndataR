@@ -9,6 +9,7 @@ as_ZarrAnnData(
   file,
   compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE,
   zarr_format = NULL
 )
 }
@@ -30,6 +31,10 @@ See \code{help("compressors", package = "Rarr")}.}
 \item \code{w} creates a file, truncating any existing ones
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists
 }}
+
+\item{backed}{Whether the object is disk backed and returns
+\link[DelayedArray:DelayedArray]{DelayedArray::DelayedArray} object for matrix data. Can only be \code{TRUE}
+when \code{mode == "r"}.}
 
 \item{zarr_format}{The format to use when creating the Zarr store. Should be
 either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
