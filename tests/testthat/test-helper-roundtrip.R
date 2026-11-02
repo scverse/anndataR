@@ -27,3 +27,23 @@ test_that("normalise_py_anndata_print() drops the X entry from the layers line",
     "    obsm: 'X_pca'"
   )
 })
+
+test_that("normalise_py_anndata_print() leaves quoted layer names alone", {
+  expect_equal(
+    normalise_py_anndata_print("    layers: 'counts, None (.X)'"),
+    "    layers: 'counts, None (.X)'"
+  )
+  expect_equal(
+    normalise_py_anndata_print("    layers: 'None (.X)'"),
+    "    layers: 'None (.X)'"
+  )
+  # the real entry is still removed when it follows such a name
+  expect_equal(
+    normalise_py_anndata_print("    layers: 'a, None (.X), b', None (.X)"),
+    "    layers: 'a, None (.X), b'"
+  )
+  expect_equal(
+    normalise_py_anndata_print("    layers: None (.X), 'counts, None (.X)'"),
+    "    layers: 'counts, None (.X)'"
+  )
+})
