@@ -31,6 +31,21 @@ get_fmt_config <- function(fmt = c("h5ad", "zarrv2", "zarrv3")) {
   }
 }
 
+#' Set the Zarr format Python anndata writes
+#'
+#' @param ad The Python `anndata` module
+#' @param zarr_format The Zarr format to write, `2L` or `3L`
+#' @return `TRUE` when Python anndata can write `zarr_format`, `FALSE`
+#'   otherwise
+py_set_zarr_write_format <- function(ad, zarr_format) {
+  # anndata >= 0.14 dropped the setting and can only write Zarr v3
+  if (!reticulate::py_has_attr(ad$settings, "zarr_write_format")) {
+    return(zarr_format == 3L)
+  }
+  ad$settings$zarr_write_format <- zarr_format
+  TRUE
+}
+
 #' Expect AnnData print output to match
 #'
 #' Compares the print output of an R AnnData object with a Python AnnData
