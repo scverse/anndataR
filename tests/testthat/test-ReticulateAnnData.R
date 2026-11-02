@@ -1,3 +1,17 @@
+# TEMP(anndata<0.13.0): the layers of anndata >= 0.13 hold X under the None key.
+# This adds that key for older versions, so the tests below always see it.
+py_adata_with_none_key <- function(X, layers = NULL) {
+  ad <- reticulate::import("anndata", convert = FALSE)
+  py_adata <- ad$AnnData(X = reticulate::r_to_py(X), layers = layers)
+  py_layers <- reticulate::py_get_attr(py_adata, "layers")
+  reticulate::py_set_item(
+    reticulate::py_get_attr(py_layers, "_data"),
+    reticulate::py_none(),
+    reticulate::py_get_attr(py_adata, "X")
+  )
+  py_adata
+}
+
 test_that("ReticulateAnnData creation works", {
   skip_if_no_anndata_py()
 
@@ -41,6 +55,99 @@ test_that("ReticulateAnnData wrapping Python object works", {
   expect_equal(r_adata$n_obs(), 4)
   expect_equal(r_adata$n_vars(), 5)
   expect_equal(dim(r_adata$X), c(4, 5))
+})
+
+test_that("layers getter ignores the None key anndata >= 0.13 uses for X", {
+  skip_if_no_anndata_py()
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  counts <- matrix(21:40, nrow = 4, ncol = 5)
+
+  # wrap a Python AnnData with X and one layer
+  py_adata <- py_adata_with_none_key(X, list(counts = counts))
+  r_adata <- ReticulateAnnData$new(py_anndata = py_adata)
+  expect_named(r_adata$layers, "counts")
+  expect_equal(r_adata$layers$counts, counts)
+
+  # wrap a Python AnnData with only X
+  py_adata_x_only <- py_adata_with_none_key(X)
+  r_adata_x_only <- ReticulateAnnData$new(py_anndata = py_adata_x_only)
+  expect_length(r_adata_x_only$layers, 0)
+})
+
+test_that("py_to_r() skips the None key in layers", {
+  skip_if_no_anndata_py()
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  counts <- matrix(21:40, nrow = 4, ncol = 5)
+  py_adata <- py_adata_with_none_key(X, list(counts = counts))
+
+  result <- py_to_r(reticulate::py_get_attr(py_adata, "layers"))
+  expect_named(result, "counts")
+  expect_equal(result$counts, counts)
+})
+
+test_that("setting layers keeps X and does not warn", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  warnings <- import("warnings", convert = FALSE)
+  bi <- import_builtins()
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  m <- matrix(21:40, nrow = 4, ncol = 5)
+  py_adata <- py_adata_with_none_key(X)
+  r_adata <- ReticulateAnnData$new(py_anndata = py_adata)
+
+  # the None key is still there
+  n_none_keys <- function() {
+    keys <- bi$list(py_get_attr(py_adata, "layers")$keys())
+    length(Filter(is.null, keys))
+  }
+
+  # replace the layers while recording Python warnings
+  with(warnings$catch_warnings(record = TRUE) %as% recorded_warnings, {
+    warnings$simplefilter("always")
+    r_adata$layers <- list(a = m)
+  })
+  expect_length(py_to_r(recorded_warnings), 0)
+  expect_equal(r_adata$X, X)
+  expect_named(r_adata$layers, "a")
+  expect_equal(n_none_keys(), 1L)
+
+  # remove all layers while recording Python warnings
+  with(warnings$catch_warnings(record = TRUE) %as% recorded_warnings, {
+    warnings$simplefilter("always")
+    r_adata$layers <- list()
+  })
+  expect_length(py_to_r(recorded_warnings), 0)
+  expect_equal(r_adata$X, X)
+  expect_length(r_adata$layers, 0)
+  expect_equal(n_none_keys(), 1L)
+})
+
+test_that("setting layers keeps the assigned order", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  ad <- import("anndata", convert = FALSE)
+
+  m1 <- matrix(1:20, nrow = 4, ncol = 5)
+  m2 <- matrix(21:40, nrow = 4, ncol = 5)
+  r_adata <- ReticulateAnnData$new(
+    py_anndata = ad$AnnData(
+      X = r_to_py(m1),
+      layers = r_to_py(list(a = m1, b = m2))
+    )
+  )
+  expect_named(r_adata$layers, c("a", "b"))
+
+  # existing keys in a new order take that order
+  r_adata$layers <- list(b = m1, a = m2)
+  expect_named(r_adata$layers, c("b", "a"))
+  expect_equal(r_adata$layers$b, m1)
+  expect_equal(r_adata$layers$a, m2)
+  expect_equal(r_adata$X, m1)
 })
 
 test_that("both Python AnnData class names are supported", {
