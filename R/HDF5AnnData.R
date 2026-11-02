@@ -25,6 +25,11 @@ HDF5AnnData <- R6::R6Class(
     .compression = NULL,
     .chunk_size = "auto",
 
+    .has_X = function() {
+      hdf5_path_exists(private$.hdf5_file, "X") &&
+        !identical(read_h5ad_encoding(private$.hdf5_file, "X")$type, "null")
+    },
+
     .check_mode_writeable = function() {
       if (!is.null(private$.mode) && private$.mode == "r") {
         cli_abort(
@@ -69,16 +74,30 @@ HDF5AnnData <- R6::R6Class(
     layers = function(value) {
       if (missing(value)) {
         # trackstatus: class=HDF5AnnData, feature=get_layers, status=done
-        read_h5ad_element(
+        layers <- read_h5ad_element(
           private$.hdf5_file,
           "layers",
           backed = private$.backed
         ) |>
           private$.add_mapping_dimnames("layers")
+
+        # list x as the na layer
+        x <- self$X
+        if (!is.null(x)) {
+          layers <- c(layers, setNames(list(x), NA_character_))
+        }
+        layers
       } else {
         private$.check_mode_writeable()
 
         # trackstatus: class=HDF5AnnData, feature=set_layers, status=done
+        # split off the x layer
+        x_index <- x_layer_index(value)
+        if (!is.na(x_index)) {
+          x <- value[[x_index]]
+          value <- value[-x_index]
+        }
+
         private$.validate_aligned_mapping(
           value,
           "layers",
@@ -92,6 +111,11 @@ HDF5AnnData <- R6::R6Class(
             private$.compression,
             chunk_size = private$.chunk_size
           )
+
+        # write the x layer to the root x
+        if (!is.na(x_index)) {
+          self$X <- x
+        }
       }
     },
     #' @field obsm See [AnnData-usage]
@@ -362,6 +386,11 @@ HDF5AnnData <- R6::R6Class(
       check_requires("HDF5AnnData", "rhdf5", where = "Bioc")
       check_requires("HDF5AnnData", "withr", where = "CRAN")
 
+      # take x from the layers
+      split <- split_x_layer(X, layers)
+      X <- split$X
+      layers <- split$layers
+
       compression <- match.arg(compression)
       mode <- match.arg(mode)
 
@@ -516,7 +545,11 @@ HDF5AnnData <- R6::R6Class(
     },
     #' @description See [AnnData-usage]
     layers_keys = function() {
-      read_h5ad_element_keys(private$.hdf5_file, "layers")
+      keys <- read_h5ad_element_keys(private$.hdf5_file, "layers")
+      if (private$.has_X()) {
+        keys <- c(keys, NA_character_)
+      }
+      keys
     },
     #' @description See [AnnData-usage]
     obsm_keys = function() {
@@ -636,7 +669,6 @@ as_HDF5AnnData <- function(
   mode <- match.arg(mode)
   HDF5AnnData$new(
     file = file,
-    X = adata$X,
     obs = adata$obs,
     var = adata$var,
     obsm = adata$obsm,
