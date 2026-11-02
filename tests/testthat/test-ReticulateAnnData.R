@@ -70,18 +70,27 @@ test_that("layers getter ignores the None key anndata >= 0.13 uses for X", {
 test_that("py_to_r() skips None keys in Python mappings", {
   skip_if_no_anndata_py()
 
-  library(reticulate)
-  ad <- import("anndata", convert = FALSE)
-
-  X <- matrix(1:20, nrow = 4, ncol = 5)
-  counts <- matrix(21:40, nrow = 4, ncol = 5)
-  py_adata <- ad$AnnData(
-    X = r_to_py(X),
-    layers = r_to_py(list(counts = counts))
+  # a mapping with a None key, as anndata >= 0.13 layers have for X
+  main <- reticulate::py_run_string(
+    paste(
+      "from collections.abc import Mapping",
+      "class NoneKeyMapping(Mapping):",
+      "    def __init__(self, d):",
+      "        self._d = d",
+      "    def __getitem__(self, k):",
+      "        return self._d[k]",
+      "    def __iter__(self):",
+      "        return iter(self._d)",
+      "    def __len__(self):",
+      "        return len(self._d)",
+      "none_key_mapping = NoneKeyMapping({'a': 1, None: 2, 'b': 3})",
+      sep = "\n"
+    ),
+    convert = FALSE
   )
 
-  result <- py_to_r(reticulate::py_get_attr(py_adata, "layers"))
-  expect_named(result, "counts")
+  result <- py_to_r(main$none_key_mapping)
+  expect_identical(result, list(a = 1L, b = 3L))
 })
 
 test_that("setting layers keeps X and does not warn", {
