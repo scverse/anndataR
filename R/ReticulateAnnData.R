@@ -292,26 +292,6 @@ ReticulateAnnData <- R6::R6Class(
       check_requires("ReticulateAnnData", "reticulate", where = "CRAN")
       check_requires("ReticulateAnnData", "anndata", where = "Python")
 
-      # anndata >= 0.13 is not fully supported yet
-      if (py_package_version("anndata") >= "0.13") {
-        cli_warn(
-          c(
-            paste(
-              "Python {.pkg anndata} >= 0.13 detected, which is not fully",
-              "supported by {.pkg anndataR} yet"
-            ),
-            i = "Some functionality may not work as expected",
-            i = paste(
-              "Pin an earlier version with",
-              "{.code reticulate::py_require(\"anndata<0.13\")}",
-              "before Python is initialized"
-            )
-          ),
-          .frequency = "once",
-          .frequency_id = "anndataR_py_anndata_0.13"
-        )
-      }
-
       if (!is.null(py_anndata)) {
         # Use existing Python AnnData object (class name depends on the
         # Python anndata version)
