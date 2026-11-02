@@ -80,19 +80,20 @@ ReticulateAnnData <- R6::R6Class(
           expected_colnames = colnames(self)
         )
 
-        # set the new layers in place
         py_value <- lapply(value, r_to_py)
         py_layers <- reticulate::py_get_attr(private$.py_anndata, "layers")
-        for (name in names(py_value)) {
-          reticulate::py_set_item(py_layers, name, py_value[[name]])
-        }
 
         # delete the old layers, keeping the None key that holds X
         bi <- reticulate::import_builtins()
         for (name in bi$list(py_layers$keys())) {
-          if (!is.null(name) && !name %in% names(py_value)) {
+          if (!is.null(name)) {
             reticulate::py_del_item(py_layers, name)
           }
+        }
+
+        # set the new layers in the assigned order
+        for (name in names(py_value)) {
+          reticulate::py_set_item(py_layers, name, py_value[[name]])
         }
         self
       }
