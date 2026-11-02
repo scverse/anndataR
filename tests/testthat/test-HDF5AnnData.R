@@ -26,8 +26,10 @@ test_that("reading layers works", {
   expect_true(is.list(layers), "list")
   expect_equal(
     names(layers),
-    c("counts", "csc_counts", "dense_X", "dense_counts")
+    c("counts", "csc_counts", "dense_X", "dense_counts", NA)
   )
+  expect_identical(adata$layers_keys(), names(layers))
+  expect_equal(layers[[5]], adata$X)
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_get_obsm, status=done
@@ -152,6 +154,63 @@ test_that("writing layers works", {
 
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(h5ad$layers <- list(layer1 = X, layer2 = X))
+})
+
+test_that("setting layers keeps or replaces X on disk", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5ad")
+  obs <- data.frame(row.names = letters[1:3])
+  var <- data.frame(row.names = LETTERS[1:5])
+  m <- matrix(1:15, 3L, 5L)
+  a <- matrix(16:30, 3L, 5L)
+  b <- matrix(31:45, 3L, 5L)
+  h5ad <- HDF5AnnData$new(
+    h5ad_file,
+    X = m,
+    obs = obs,
+    var = var,
+    layers = list(A = a)
+  )
+  expected <- function(x) {
+    dimnames(x) <- list(rownames(obs), rownames(var))
+    x
+  }
+  expect_identical(h5ad$layers_keys(), c("A", NA))
+  expect_identical(names(h5ad$layers), c("A", NA))
+
+  # without an NA entry X is kept
+  h5ad$layers <- list(B = b)
+  expect_identical(h5ad$layers_keys(), c("B", NA))
+  expect_identical(h5ad$X, expected(m))
+
+  # an NA entry replaces X
+  h5ad$layers <- setNames(list(a, b), c("A", NA))
+  expect_identical(h5ad$layers_keys(), c("A", NA))
+  expect_identical(h5ad$X, expected(b))
+  expect_identical(
+    h5ad$layers,
+    setNames(list(expected(a), expected(b)), c("A", NA))
+  )
+
+  # the file has X at the root and no NA member in layers
+  contents <- rhdf5::h5ls(h5ad_file)
+  expect_true("X" %in% contents$name[contents$group == "/"])
+  expect_identical(contents$name[contents$group == "/layers"], "A")
+
+  # a NULL NA entry removes X
+  h5ad$layers <- setNames(list(a, NULL), c("A", NA))
+  expect_null(h5ad$X)
+  expect_identical(h5ad$layers_keys(), "A")
+
+  # the constructor takes X from the NA layer
+  h5ad_file2 <- withr::local_tempfile(fileext = ".h5ad")
+  h5ad2 <- HDF5AnnData$new(
+    h5ad_file2,
+    obs = obs,
+    var = var,
+    layers = setNames(list(a, m), c("A", NA))
+  )
+  expect_identical(h5ad2$X, expected(m))
+  expect_identical(h5ad2$layers_keys(), c("A", NA))
 })
 
 # trackstatus: class=HDF5AnnData, feature=test_set_obs, status=done
