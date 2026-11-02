@@ -40,12 +40,14 @@ get_fmt_config <- function(fmt = c("h5ad", "zarrv2", "zarrv3")) {
 #' @param lines Character vector of printed lines
 #' @return The lines without the `X` layer entry
 normalise_py_anndata_print <- function(lines) {
-  # remove the x entry and its separator from the layers line
+  # remove the x entry and its separator from the layers line, skipping over
+  # quoted layer names
   is_layers <- grepl("^ *layers: ", lines)
   lines[is_layers] <- sub(
-    ", None \\(\\.X\\)|None \\(\\.X\\)(, )?",
+    "'[^']*'(*SKIP)(*F)|, None \\(\\.X\\)|None \\(\\.X\\)(, )?",
     "",
-    lines[is_layers]
+    lines[is_layers],
+    perl = TRUE
   )
   lines[!grepl("^ *layers: *$", lines)]
 }
