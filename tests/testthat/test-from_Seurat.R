@@ -94,6 +94,18 @@ for (layer_key in names(active_assay[])) {
   })
 }
 
+test_that("as_AnnData (Seurat) keeps X when setting the layers", {
+  ad_x <- suppressWarnings(as_AnnData(obj, x_mapping = "counts"))
+  expect_identical(utils::tail(ad_x$layers_keys(), 1L), NA_character_)
+  expect_true(
+    all.equal(
+      as.matrix(t(active_assay["counts"])),
+      as.matrix(ad_x$X),
+      check.attributes = FALSE
+    )
+  )
+})
+
 # trackstatus: class=Seurat, feature=test_set_uns, status=done
 for (uns_key in names(Misc(obj))) {
   test_that(paste0("as_AnnData (Seurat) retains uns key: ", uns_key), {

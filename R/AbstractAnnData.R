@@ -111,11 +111,13 @@ AbstractAnnData <- R6::R6Class(
             NULL
           }
         if (length(keys) > 0) {
+          # format the x layer key
+          key_strs <- ifelse(is.na(keys), "NA (.X)", paste0("'", keys, "'"))
           cat(
             "    ",
             attribute,
             ": ",
-            paste(paste0("'", keys, "'"), collapse = ", "),
+            paste(key_strs, collapse = ", "),
             "\n",
             sep = ""
           )
@@ -517,10 +519,15 @@ AbstractAnnData <- R6::R6Class(
       collection <- private$.validate_named_list(collection, label)
       collection_names <- names(collection)
 
-      for (mtx_name in collection_names) {
-        collection_name <- paste0(label, "[['", mtx_name, "']]")
-        collection[[mtx_name]] <- private$.validate_aligned_array(
-          collection[[mtx_name]],
+      # validate each element by position
+      for (i in seq_along(collection)) {
+        collection_name <- if (is.na(collection_names[[i]])) {
+          paste0(label, "[[NA]]")
+        } else {
+          paste0(label, "[['", collection_names[[i]], "']]")
+        }
+        collection[i] <- list(private$.validate_aligned_array(
+          collection[[i]],
           collection_name,
           shape = shape,
           expected_rownames = expected_rownames,
@@ -529,10 +536,11 @@ AbstractAnnData <- R6::R6Class(
           strip_colnames = strip_colnames,
           warn_rownames = warn_rownames,
           warn_colnames = warn_colnames
-        )
+        ))
       }
 
-      collection
+      # drop null elements
+      collection[!vapply(collection, is.null, logical(1))]
     },
 
     # @description `.validate_named_list()` checks for whether a value

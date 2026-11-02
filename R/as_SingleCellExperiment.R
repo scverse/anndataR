@@ -286,7 +286,9 @@ as_SingleCellExperiment <- function(
     )
   }
 
-  self_name(names(adata[[slot]]))
+  # skip the x layer
+  keys <- names(adata[[slot]])
+  self_name(keys[!is.na(keys)])
 }
 
 # nolint start: object_length_linter object_name_linter

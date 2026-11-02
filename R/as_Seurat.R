@@ -582,7 +582,9 @@ as_Seurat <- function(
 # nolint start: object_name_linter object_length_linter
 .as_Seurat_guess_layers <- function(adata) {
   # nolint end: object_name_linter object_length_linter
-  self_name(adata$layers_keys())
+  # skip the x layer
+  layers_keys <- adata$layers_keys()
+  self_name(layers_keys[!is.na(layers_keys)])
 }
 
 

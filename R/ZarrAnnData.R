@@ -24,6 +24,11 @@ ZarrAnnData <- R6::R6Class(
     .compression = NULL,
     .readonly = NULL,
 
+    .has_X = function() {
+      zarr_path_exists(private$.zarrobj, "X") &&
+        !identical(read_zarr_encoding(private$.zarrobj, "X")$type, "null")
+    },
+
     .check_file_valid = function() {
       if (!zarr_path_exists(private$.zarrobj, "/")) {
         cli_abort(
@@ -74,11 +79,25 @@ ZarrAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ZarrAnnData, feature=get_layers, status=done
-        read_zarr_element(private$.zarrobj, "layers") |>
+        layers <- read_zarr_element(private$.zarrobj, "layers") |>
           private$.add_mapping_dimnames("layers")
+
+        # list x as the na layer
+        x <- self$X
+        if (!is.null(x)) {
+          layers <- c(layers, setNames(list(x), NA_character_))
+        }
+        layers
       } else {
         private$.check_writeable()
         # trackstatus: class=ZarrAnnData, feature=set_layers, status=done
+        # split off the x layer
+        x_index <- x_layer_index(value)
+        if (!is.na(x_index)) {
+          x <- value[[x_index]]
+          value <- value[-x_index]
+        }
+
         private$.validate_aligned_mapping(
           value,
           "layers",
@@ -92,6 +111,11 @@ ZarrAnnData <- R6::R6Class(
             private$.compression,
             private$.zarrformat
           )
+
+        # write the x layer to the root x
+        if (!is.na(x_index)) {
+          self$X <- x
+        }
       }
     },
     #' @field obsm See [AnnData-usage]
@@ -348,6 +372,11 @@ ZarrAnnData <- R6::R6Class(
     ) {
       check_requires("ZarrAnnData", "Rarr", where = "Bioc", version = "2.1.27")
 
+      # take x from the layers
+      split <- split_x_layer(X, layers)
+      X <- split$X
+      layers <- split$layers
+
       compression <- match.arg(compression)
       mode <- match.arg(mode)
 
@@ -520,7 +549,11 @@ ZarrAnnData <- R6::R6Class(
     },
     #' @description See [AnnData-usage]
     layers_keys = function() {
-      read_zarr_element_keys(private$.zarrobj, "layers")
+      keys <- read_zarr_element_keys(private$.zarrobj, "layers")
+      if (private$.has_X()) {
+        keys <- c(keys, NA_character_)
+      }
+      keys
     },
     #' @description See [AnnData-usage]
     obsm_keys = function() {
@@ -604,7 +637,6 @@ as_ZarrAnnData <- function(
   mode <- match.arg(mode)
   ZarrAnnData$new(
     file = file,
-    X = adata$X,
     obs = adata$obs,
     var = adata$var,
     obsm = adata$obsm,

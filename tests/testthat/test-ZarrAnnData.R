@@ -26,8 +26,10 @@ test_that("reading layers works", {
   expect_true(is.list(layers), "list")
   expect_equal(
     names(layers),
-    c("counts", "csc_counts", "dense_X", "dense_counts")
+    c("counts", "csc_counts", "dense_X", "dense_counts", NA)
   )
+  expect_identical(adata$layers_keys(), names(layers))
+  expect_equal(layers[[5]], adata$X)
 })
 
 test_that("reading obsm works", {
@@ -158,6 +160,69 @@ test_that("writing layers works", {
   X <- matrix(rnorm(10 * 20), nrow = 10, ncol = 20)
   expect_silent(zarr$layers <- list(layer1 = X, layer2 = X))
   unlink(store, recursive = TRUE)
+})
+
+test_that("setting layers keeps or replaces X on disk", {
+  store <- withr::local_tempfile(fileext = ".zarr")
+  obs <- data.frame(row.names = letters[1:3])
+  var <- data.frame(row.names = LETTERS[1:5])
+  m <- matrix(1:15, 3L, 5L)
+  a <- matrix(16:30, 3L, 5L)
+  b <- matrix(31:45, 3L, 5L)
+  zarr <- ZarrAnnData$new(
+    store,
+    X = m,
+    obs = obs,
+    var = var,
+    layers = list(A = a)
+  )
+  expected <- function(x) {
+    dimnames(x) <- list(rownames(obs), rownames(var))
+    x
+  }
+  expect_identical(zarr$layers_keys(), c("A", NA))
+  expect_identical(names(zarr$layers), c("A", NA))
+
+  # without an NA entry X is kept
+  zarr$layers <- list(B = b)
+  expect_identical(zarr$layers_keys(), c("B", NA))
+  expect_identical(zarr$X, expected(m))
+
+  # an NA entry replaces X
+  zarr$layers <- setNames(list(a, b), c("A", NA))
+  expect_identical(zarr$layers_keys(), c("A", NA))
+  expect_identical(zarr$X, expected(b))
+  expect_identical(
+    zarr$layers,
+    setNames(list(expected(a), expected(b)), c("A", NA))
+  )
+
+  # the store has X at the root and no NA member in layers
+  expect_true(zarr_path_exists(store, "X"))
+  expect_identical(
+    list.dirs(
+      file.path(store, "layers"),
+      full.names = FALSE,
+      recursive = FALSE
+    ),
+    "A"
+  )
+
+  # a NULL NA entry removes X
+  zarr$layers <- setNames(list(a, NULL), c("A", NA))
+  expect_null(zarr$X)
+  expect_identical(zarr$layers_keys(), "A")
+
+  # the constructor takes X from the NA layer
+  store2 <- withr::local_tempfile(fileext = ".zarr")
+  zarr2 <- ZarrAnnData$new(
+    store2,
+    obs = obs,
+    var = var,
+    layers = setNames(list(a, m), c("A", NA))
+  )
+  expect_identical(zarr2$X, expected(m))
+  expect_identical(zarr2$layers_keys(), c("A", NA))
 })
 
 # trackstatus: class=ZarrAnnData, feature=test_set_obs, status=done

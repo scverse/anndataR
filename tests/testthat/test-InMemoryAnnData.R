@@ -265,9 +265,9 @@ test_that("write to layers", {
   dimnames(expected_x4) <- list(ad$obs_names, ad$var_names)
   expect_equal(ad$layers[["X4"]], expected_x4)
 
-  ## list assignment
+  ## list assignment, X stays as the last layer
   ad$layers <- rev(dummy$layers)
-  expected_layers <- rev(dummy$layers)
+  expected_layers <- c(rev(dummy$layers), setNames(list(dummy$X), NA))
   for (i in seq_along(expected_layers)) {
     if (!is.null(expected_layers[[i]])) {
       dimnames(expected_layers[[i]]) <- list(ad$obs_names, ad$var_names)
@@ -275,9 +275,14 @@ test_that("write to layers", {
   }
   expect_equal(ad$layers, expected_layers)
 
-  ## remove
+  ## remove, X stays
   ad$layers <- NULL
-  expect_true(is.null(ad$layers))
+  expect_identical(ad$layers_keys(), NA_character_)
+  ## remove X too
+  ad$X <- NULL
+  expect_null(ad$X)
+  expect_length(ad$layers, 0L)
+  expect_length(ad$layers_keys(), 0L)
   ## add to NULL
   ad$layers <- dummy$layers
   expected_layers <- dummy$layers
@@ -287,4 +292,183 @@ test_that("write to layers", {
     }
   }
   expect_identical(ad$layers, expected_layers)
+})
+
+# X AS THE NA LAYER -------------------------------------------------------
+
+x_layer_obs <- data.frame(row.names = letters[1:3])
+x_layer_var <- data.frame(row.names = LETTERS[1:5])
+x_layer_m <- matrix(1:15, 3L, 5L)
+x_layer_a <- matrix(16:30, 3L, 5L)
+x_layer_b <- matrix(31:45, 3L, 5L)
+
+with_dimnames <- function(m) {
+  dimnames(m) <- list(rownames(x_layer_obs), rownames(x_layer_var))
+  m
+}
+
+test_that("X is listed as the NA layer, last", {
+  ad <- AnnData(
+    X = x_layer_m,
+    obs = x_layer_obs,
+    var = x_layer_var,
+    layers = list(A = x_layer_a, B = x_layer_b)
+  )
+
+  expect_identical(ad$layers_keys(), c("A", "B", NA))
+  expect_identical(
+    ad$layers,
+    setNames(
+      list(
+        with_dimnames(x_layer_a),
+        with_dimnames(x_layer_b),
+        with_dimnames(x_layer_m)
+      ),
+      c("A", "B", NA)
+    )
+  )
+  expect_identical(ad$X, with_dimnames(x_layer_m))
+})
+
+test_that("setting X adds, replaces and removes the NA layer", {
+  ad <- AnnData(
+    obs = x_layer_obs,
+    var = x_layer_var,
+    layers = list(A = x_layer_a)
+  )
+  expect_identical(ad$layers_keys(), "A")
+
+  # appended last
+  ad$X <- x_layer_m
+  expect_identical(ad$layers_keys(), c("A", NA))
+  expect_identical(ad$X, with_dimnames(x_layer_m))
+
+  # replaced
+  ad$layers[["B"]] <- x_layer_b
+  ad$X <- x_layer_b
+  expect_identical(ad$layers_keys(), c("A", "B", NA))
+  expect_identical(ad$X, with_dimnames(x_layer_b))
+
+  # removed
+  ad$X <- NULL
+  expect_null(ad$X)
+  expect_identical(ad$layers_keys(), c("A", "B"))
+})
+
+test_that("setting layers keeps or replaces X", {
+  ad <- AnnData(
+    X = x_layer_m,
+    obs = x_layer_obs,
+    var = x_layer_var,
+    layers = list(A = x_layer_a, B = x_layer_b)
+  )
+
+  # without an NA entry X is kept
+  expect_no_condition(ad$layers <- list(C = x_layer_a))
+  expect_identical(ad$layers_keys(), c("C", NA))
+  expect_identical(ad$X, with_dimnames(x_layer_m))
+
+  # an NA entry replaces X
+  expect_no_condition(
+    ad$layers <- setNames(list(x_layer_a, x_layer_b), c("C", NA))
+  )
+  expect_identical(ad$layers_keys(), c("C", NA))
+  expect_identical(ad$X, with_dimnames(x_layer_b))
+
+  # NULL keeps X
+  ad$layers <- NULL
+  expect_identical(ad$layers_keys(), NA_character_)
+  expect_identical(ad$X, with_dimnames(x_layer_b))
+
+  # a NULL NA entry removes X
+  ad$layers <- setNames(list(x_layer_a, NULL), c("C", NA))
+  expect_identical(ad$layers_keys(), "C")
+  expect_null(ad$X)
+
+  # more than one NA entry is an error
+  expect_error(
+    ad$layers <- setNames(list(x_layer_a, x_layer_b), c(NA, NA)),
+    "more than one"
+  )
+
+  # an NA entry with the wrong shape is an error
+  expect_error(
+    ad$layers <- setNames(list(matrix(1, 5L, 3L)), NA),
+    "layers\\[\\[NA\\]\\]"
+  )
+})
+
+test_that("the constructor takes X from the NA layer", {
+  ad <- AnnData(
+    obs = x_layer_obs,
+    var = x_layer_var,
+    layers = setNames(list(x_layer_a, x_layer_m), c("A", NA))
+  )
+  expect_identical(ad$X, with_dimnames(x_layer_m))
+  expect_identical(ad$layers_keys(), c("A", NA))
+
+  # X only from the layers, no obs or var
+  ad <- AnnData(layers = setNames(list(with_dimnames(x_layer_m)), NA))
+  expect_identical(ad$X, with_dimnames(x_layer_m))
+  expect_identical(ad$obs_names, rownames(x_layer_obs))
+  expect_identical(ad$var_names, rownames(x_layer_var))
+
+  # identical X and NA layer are fine
+  ad <- AnnData(
+    X = x_layer_m,
+    obs = x_layer_obs,
+    var = x_layer_var,
+    layers = setNames(list(x_layer_m), NA)
+  )
+  expect_identical(ad$layers_keys(), NA_character_)
+
+  # different X and NA layer are an error
+  expect_error(
+    AnnData(
+      X = x_layer_m,
+      obs = x_layer_obs,
+      var = x_layer_var,
+      layers = setNames(list(x_layer_a), NA)
+    ),
+    "If you provide `layers[[NA]]` and `X`, they must be identical.",
+    fixed = TRUE
+  )
+
+  # more than one NA entry is an error
+  expect_error(
+    AnnData(
+      obs = x_layer_obs,
+      var = x_layer_var,
+      layers = setNames(list(x_layer_a, x_layer_m), c(NA, NA))
+    ),
+    "more than one"
+  )
+})
+
+test_that("print shows X as the NA layer", {
+  ad <- AnnData(
+    X = x_layer_m,
+    obs = x_layer_obs,
+    var = x_layer_var,
+    layers = list(A = x_layer_a, B = x_layer_b)
+  )
+  expect_output(print(ad), "    layers: 'A', 'B', NA (.X)", fixed = TRUE)
+
+  ad <- AnnData(X = x_layer_m, obs = x_layer_obs, var = x_layer_var)
+  expect_output(print(ad), "    layers: NA (.X)", fixed = TRUE)
+
+  ad <- AnnData(obs = x_layer_obs, var = x_layer_var)
+  expect_no_match(capture.output(print(ad)), "layers")
+})
+
+test_that("as_InMemoryAnnData() keeps X", {
+  ad <- AnnData(
+    X = x_layer_m,
+    obs = x_layer_obs,
+    var = x_layer_var,
+    layers = list(A = x_layer_a)
+  )
+  ad2 <- ad$as_InMemoryAnnData()
+  expect_identical(ad2$layers, ad$layers)
+  expect_identical(ad2$X, ad$X)
 })

@@ -62,7 +62,8 @@ for (var_key in colnames(ad$var)) {
 }
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_layers, status=done
-for (layer_key in names(ad$layers)) {
+# skip the X layer
+for (layer_key in Filter(Negate(is.na), names(ad$layers))) {
   test_that(paste0("as_SCE retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "to_SCE",
@@ -85,6 +86,26 @@ for (layer_key in names(ad$layers)) {
   })
 }
 
+test_that("as_SCE does not guess the X layer as an assay", {
+  expect_false(anyNA(.as_SCE_guess_all(ad, "layers")))
+
+  sce <- ad$as_SingleCellExperiment()
+  expect_false(anyNA(assayNames(sce)))
+  expect_equal(
+    as.matrix(t(assay(sce, "X"))),
+    as.matrix(ad$X),
+    ignore_attr = TRUE
+  )
+
+  sce <- ad$as_SingleCellExperiment(x_mapping = "counts")
+  expect_false("X" %in% assayNames(sce))
+  expect_equal(
+    as.matrix(t(assay(sce, "counts"))),
+    as.matrix(ad$X),
+    ignore_attr = TRUE
+  )
+})
+
 test_that("as_SCE fails when providing duplicate assay names", {
   expect_error(
     ad$as_SingleCellExperiment(
@@ -99,7 +120,7 @@ test_that("as_SCE works when only providing x_mapping", {
   sce <- ad$as_SingleCellExperiment(x_mapping = "counts")
   assay_names <- assayNames(sce)
   expect_true("counts" %in% assay_names)
-  expect_true(all(ad$layers_keys() %in% assay_names))
+  expect_true(all(Filter(Negate(is.na), ad$layers_keys()) %in% assay_names))
 })
 
 test_that("as_SCE works with assays_mapping and x_mapping", {
@@ -117,7 +138,7 @@ test_that("as_SCE works with no x_mapping and no layers_mapping", {
   sce <- ad$as_SingleCellExperiment()
   assay_names <- assayNames(sce)
   expect_true("X" %in% assay_names)
-  expect_true(all(ad$layers_keys() %in% assay_names))
+  expect_true(all(Filter(Negate(is.na), ad$layers_keys()) %in% assay_names))
 })
 
 # trackstatus: class=SingleCellExperiment, feature=test_get_obsp, status=done

@@ -87,6 +87,19 @@ for (layer_key in assayNames(sce)) {
   })
 }
 
+test_that("as_AnnData (SCE) keeps X when setting the layers", {
+  ad_x <- as_AnnData(sce, x_mapping = "X")
+  expect_identical(utils::tail(ad_x$layers_keys(), 1L), NA_character_)
+  expect_false("X" %in% ad_x$layers_keys())
+  expect_true(
+    all.equal(
+      as.matrix(ad_x$X),
+      as.matrix(t(assay(sce, "X"))),
+      ignore_attr = TRUE
+    )
+  )
+})
+
 # trackstatus: class=SingleCellExperiment, feature=test_set_obsp, status=done
 for (obsp_key in names(colPairs(sce))) {
   test_that(paste0("as_AnnData (SCE) retains obsp key: ", obsp_key), {

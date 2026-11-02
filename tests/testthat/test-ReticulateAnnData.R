@@ -103,6 +103,113 @@ test_that("py_package_version() parses Python version strings", {
   expect_equal(py_package_version("anndata"), package_version("0.13.0"))
 })
 
+test_that("layers getter lists X as the NA layer, last", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  ad <- import("anndata", convert = FALSE)
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  counts <- matrix(21:40, nrow = 4, ncol = 5)
+
+  # wrap a Python AnnData with X and one layer
+  py_adata <- ad$AnnData(
+    X = r_to_py(X),
+    layers = r_to_py(list(counts = counts))
+  )
+  r_adata <- ReticulateAnnData$new(py_anndata = py_adata)
+  expect_identical(names(r_adata$layers), c("counts", NA))
+  expect_identical(r_adata$layers_keys(), c("counts", NA))
+  expect_equal(r_adata$layers[[1]], counts)
+  expect_equal(r_adata$layers[[2]], X)
+
+  # wrap a Python AnnData with only X
+  py_adata_x_only <- ad$AnnData(X = r_to_py(X))
+  r_adata_x_only <- ReticulateAnnData$new(py_anndata = py_adata_x_only)
+  expect_identical(names(r_adata_x_only$layers), NA_character_)
+  expect_equal(r_adata_x_only$layers[[1]], X)
+})
+
+test_that("py_to_r() maps a None key in Python mappings to NA", {
+  skip_if_no_anndata_py()
+
+  main <- reticulate::py_run_string(
+    paste(
+      "from collections.abc import Mapping",
+      "class NoneKeyMapping(Mapping):",
+      "    def __init__(self, d):",
+      "        self._d = d",
+      "    def __getitem__(self, k):",
+      "        return self._d[k]",
+      "    def __iter__(self):",
+      "        return iter(self._d)",
+      "    def __len__(self):",
+      "        return len(self._d)",
+      "none_key_mapping = NoneKeyMapping({'a': 1, None: 2})",
+      sep = "\n"
+    ),
+    convert = FALSE
+  )
+
+  result <- py_to_r(main$none_key_mapping)
+  expect_identical(result, setNames(list(1L, 2L), c("a", NA)))
+})
+
+test_that("setting layers keeps or replaces X without Python warnings", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  ad <- import("anndata", convert = FALSE)
+  warnings <- import("warnings", convert = FALSE)
+
+  X <- matrix(1:20, nrow = 4, ncol = 5)
+  m <- matrix(21:40, nrow = 4, ncol = 5)
+  r_adata <- ReticulateAnnData$new(py_anndata = ad$AnnData(X = r_to_py(X)))
+
+  # replace the layers while recording Python warnings
+  with(warnings$catch_warnings(record = TRUE) %as% recorded_warnings, {
+    warnings$simplefilter("always")
+    r_adata$layers <- list(a = m)
+  })
+  expect_length(py_to_r(recorded_warnings), 0)
+  expect_equal(r_adata$X, X)
+  expect_identical(names(r_adata$layers), c("a", NA))
+
+  # remove all layers while recording Python warnings
+  with(warnings$catch_warnings(record = TRUE) %as% recorded_warnings, {
+    warnings$simplefilter("always")
+    r_adata$layers <- list()
+  })
+  expect_length(py_to_r(recorded_warnings), 0)
+  expect_equal(r_adata$X, X)
+  expect_identical(names(r_adata$layers), NA_character_)
+
+  # an NA entry replaces X
+  r_adata$layers <- setNames(list(m, X * 2L), c("a", NA))
+  expect_equal(r_adata$X, X * 2L)
+  expect_identical(names(r_adata$layers), c("a", NA))
+
+  # a NULL NA entry removes X
+  r_adata$layers <- setNames(list(m, NULL), c("a", NA))
+  expect_null(r_adata$X)
+  expect_identical(names(r_adata$layers), "a")
+})
+
+test_that("as_ReticulateAnnData() keeps X and the layers", {
+  skip_if_no_anndata_py()
+
+  ad <- AnnData(
+    X = matrix(1:20, nrow = 4, ncol = 5),
+    obs = data.frame(row.names = paste0("cell", 1:4)),
+    var = data.frame(row.names = paste0("gene", 1:5)),
+    layers = list(counts = matrix(21:40, nrow = 4, ncol = 5))
+  )
+  r_adata <- ad$as_ReticulateAnnData()
+  expect_identical(r_adata$layers_keys(), c("counts", NA))
+  expect_equal(r_adata$X, unname(ad$X))
+  expect_identical(r_adata$obs_names, ad$obs_names)
+})
+
 test_that("ReticulateAnnData slot access works", {
   skip_if_no_anndata_py()
 
@@ -143,7 +250,7 @@ test_that("ReticulateAnnData slot access works", {
   # Test layers
   # trackstatus: class=ReticulateAnnData, feature=test_get_layers, status=done
   expect_type(adata$layers, "list")
-  expect_equal(names(adata$layers), c("raw", "scaled"))
+  expect_equal(names(adata$layers), c("raw", "scaled", NA))
 
   # Test uns
   # trackstatus: class=ReticulateAnnData, feature=test_get_uns, status=done
@@ -317,7 +424,7 @@ test_that("ReticulateAnnData layers setting works", {
     normalized = matrix(41:60, nrow = 4, ncol = 5)
   )
   adata$layers <- new_layers
-  expect_equal(names(adata$layers), c("raw", "normalized"))
+  expect_equal(names(adata$layers), c("raw", "normalized", NA))
   expect_equal(dim(adata$layers$raw), c(4, 5))
   expect_equal(dim(adata$layers$normalized), c(4, 5))
 })

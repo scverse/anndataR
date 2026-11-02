@@ -124,11 +124,14 @@ test_that("backed HDF5AnnData slots equal eager slots", {
   expect_equal(as.matrix(backed$X), as.matrix(eager$X))
   expect_identical(dimnames(backed$X), dimnames(eager$X))
 
-  for (k in eager$layers_keys()) {
+  eager_layers <- eager$layers
+  backed_layers <- backed$layers
+  expect_identical(names(backed_layers), names(eager_layers))
+  for (i in seq_along(eager_layers)) {
     expect_equal(
-      as.matrix(backed$layers[[k]]),
-      as.matrix(eager$layers[[k]]),
-      info = paste("layer", k)
+      as.matrix(backed_layers[[i]]),
+      as.matrix(eager_layers[[i]]),
+      info = paste("layer", names(eager_layers)[[i]])
     )
   }
   for (k in names(eager$obsm)) {

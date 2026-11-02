@@ -72,7 +72,8 @@ for (var_key in colnames(ad$var)) {
 
 
 # trackstatus: class=Seurat, feature=test_get_layers, status=done
-for (layer_key in names(ad$layers)) {
+# skip the X layer
+for (layer_key in Filter(Negate(is.na), names(ad$layers))) {
   test_that(paste0("as_Seurat retains layer: ", layer_key), {
     msg <- message_if_known(
       backend = "to_Seurat",
@@ -95,6 +96,18 @@ for (layer_key in names(ad$layers)) {
     )
   })
 }
+
+test_that("as_Seurat does not guess the X layer as a layer", {
+  expect_false(anyNA(.as_Seurat_guess_layers(ad)))
+
+  active_assay <- seu[[DefaultAssay(seu)]]
+  expect_false(anyNA(Layers(active_assay)))
+  expect_equal(
+    as.matrix(t(active_assay["X"])),
+    as.matrix(ad$X),
+    ignore_attr = TRUE
+  )
+})
 
 # trackstatus: class=Seurat, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {

@@ -75,9 +75,16 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
               adata_r$shape(),
               unlist(reticulate::py_to_r(adata_py$shape))
             )
+            # compare the named layers and the x layer separately
+            keys_r <- adata_r$layers_keys()
+            keys_py <- bi$list(adata_py$layers$keys())
             expect_equal(
-              adata_r$layers_keys(),
-              bi$list(adata_py$layers$keys())
+              keys_r[!is.na(keys_r)],
+              as.character(unlist(Filter(Negate(is.null), keys_py)))
+            )
+            expect_equal(
+              anyNA(keys_r),
+              !inherits(adata_py$X, "python.builtin.NoneType")
             )
 
             # check that the print output is the same (normalize class names)
