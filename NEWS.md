@@ -10,6 +10,7 @@
 - Skip the Python-written Zarr v2 roundtrip tests when the installed Python **anndata** can no longer write Zarr v2, as **anndata** main does (PR #568, issue #514).
 - Skip the `None` key that Python **anndata** >= 0.13 uses for `X` when reading layers through `ReticulateAnnData` and `py_to_r()`, and keep `X` when setting `layers` (PR #563, issue #514).
 - Ignore the `None (.X)` entry that Python **anndata** >= 0.13.2 lists under `layers:` when comparing printed objects in the roundtrip tests (PR #564, issue #514).
+- Drop 3D layers from the layers roundtrip tests, because Python **anndata** >= 0.13 refuses to write them (PR #571, issue #514).
 
 # anndataR 1.3.3
 
