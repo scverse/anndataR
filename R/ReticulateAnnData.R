@@ -56,20 +56,35 @@ ReticulateAnnData <- R6::R6Class(
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_layers, status=done
         bi <- reticulate::import_builtins()
+        py_layers <- reticulate::py_get_attr(private$.py_anndata, "layers")
         out <- list()
-        keys <- bi$list(reticulate::py_get_attr(
-          private$.py_anndata,
-          "layers"
-        )$keys())
-        for (name in keys) {
-          out[[name]] <- py_to_r(reticulate::py_get_attr(
-            private$.py_anndata,
-            "layers"
-          )[[name]])
+        for (name in bi$list(py_layers$keys())) {
+          # skip the none key that holds x
+          if (!is.null(name)) {
+            out[[name]] <- py_to_r(py_layers[[name]])
+          }
+        }
+
+        # list x as the na layer, last
+        x <- self$X
+        if (!is.null(x)) {
+          out <- c(out, setNames(list(x), NA_character_))
         }
         out
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_layers, status=done
+        # split off the x layer
+        x_index <- x_layer_index(value)
+        if (!is.na(x_index)) {
+          x <- private$.validate_aligned_array(
+            value[[x_index]],
+            "layers[[NA]]",
+            shape = c(self$n_obs(), self$n_vars()),
+            expected_rownames = rownames(self),
+            expected_colnames = colnames(self)
+          )
+          value <- value[-x_index]
+        }
         value <- private$.validate_aligned_mapping(
           value,
           "layers",
@@ -77,7 +92,25 @@ ReticulateAnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        reticulate::py_set_attr(private$.py_anndata, "layers", r_to_py(value))
+
+        # set the new layers in place
+        py_layers <- reticulate::py_get_attr(private$.py_anndata, "layers")
+        for (name in names(value)) {
+          reticulate::py_set_item(py_layers, name, r_to_py(value[[name]]))
+        }
+
+        # delete the old layers, keeping the none key that holds x
+        bi <- reticulate::import_builtins()
+        for (name in bi$list(py_layers$keys())) {
+          if (!is.null(name) && !name %in% names(value)) {
+            reticulate::py_del_item(py_layers, name)
+          }
+        }
+
+        # set the x layer
+        if (!is.na(x_index)) {
+          self$X <- x
+        }
         self
       }
     },
@@ -292,6 +325,11 @@ ReticulateAnnData <- R6::R6Class(
       check_requires("ReticulateAnnData", "reticulate", where = "CRAN")
       check_requires("ReticulateAnnData", "anndata", where = "Python")
 
+      # take x from the layers
+      split <- split_x_layer(X, layers)
+      X <- split$X
+      layers <- split$layers
+
       # anndata >= 0.13 is not fully supported yet
       if (py_package_version("anndata") >= "0.13") {
         cli_warn(
@@ -487,11 +525,14 @@ as_ReticulateAnnData <- function(adata) {
     )
   }
 
+  # take x from the layers
+  split <- split_x_layer(NULL, adata$layers)
+
   ReticulateAnnData$new(
-    X = adata$X,
+    X = split$X,
     obs = adata$obs,
     var = adata$var,
-    layers = adata$layers,
+    layers = split$layers,
     obsm = adata$obsm,
     varm = adata$varm,
     obsp = adata$obsp,

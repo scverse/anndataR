@@ -52,7 +52,13 @@ py_to_r.collections.abc.Mapping <- function(x) {
   bi <- reticulate::import_builtins()
   keys <- bi$list(x$keys())
   for (name in keys) {
-    out[[name]] <- reticulate::py_to_r(x[[name]])
+    if (is.null(name)) {
+      # map the none key to an na name
+      value <- reticulate::py_get_item(x, reticulate::py_none())
+      out <- c(out, setNames(list(reticulate::py_to_r(value)), NA_character_))
+    } else {
+      out[[name]] <- reticulate::py_to_r(x[[name]])
+    }
   }
   out
 }
