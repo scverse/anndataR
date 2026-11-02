@@ -13,10 +13,7 @@ vignette: >
 # TEMP(mudata<0.4): mudata 0.4 cannot read the legacy example .h5mu file,
 # revert once issue #511 is resolved
 reticulate::py_require("mudata<0.4")
-# TEMP(anndata<0.13.0): pin and the scanpy lower bound were added in PR #481,
-# revert once anndataR supports Python anndata >= 0.13.0
-reticulate::py_require("scanpy>=1.10")
-reticulate::py_require("anndata<0.13.0")
+reticulate::py_require("scanpy")
 
 # Check if required Python packages are available.
 python_available <- reticulate::py_module_available("scanpy") &&
@@ -62,9 +59,7 @@ If these are not available, the code chunks will not be evaluated but the exampl
 Install required Python packages if needed:
 
 ```{r python_setup, eval=FALSE}
-# TEMP(anndata<0.13.0): anndataR does not yet support Python anndata >= 0.13.0
-reticulate::py_require("scanpy>=1.10")
-reticulate::py_require("anndata<0.13.0")
+reticulate::py_require("scanpy")
 ```
 
 ```{r load_libraries}
