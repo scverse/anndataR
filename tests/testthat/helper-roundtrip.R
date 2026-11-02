@@ -31,16 +31,37 @@ get_fmt_config <- function(fmt = c("h5ad", "zarrv2", "zarrv3")) {
   }
 }
 
+#' Normalise AnnData print output
+#'
+#' anndataR prints `X` among the layers as `NA (.X)` and Python anndata >= 0.13.2
+#' as `None (.X)`, while older Python versions do not list it. This entry is
+#' removed from the `layers:` line, and the line is dropped when no other layer
+#' is left.
+#'
+#' @param lines Character vector of printed lines
+#' @return The lines without the `X` layer entry
+normalise_anndata_print <- function(lines) {
+  # remove the x entry and its separator from the layers line
+  is_layers <- grepl("^ *layers: ", lines)
+  lines[is_layers] <- sub(
+    ", (None|NA) \\(\\.X\\)|(None|NA) \\(\\.X\\)(, )?",
+    "",
+    lines[is_layers]
+  )
+  lines[!grepl("^ *layers: *$", lines)]
+}
+
 #' Expect AnnData print output to match
 #'
 #' Compares the print output of an R AnnData object with a Python AnnData
-#' object, normalising backend class names before comparing.
+#' object, normalising backend class names and the `X` layer entry before
+#' comparing.
 #'
 #' @param adata_r An R AnnData object
 #' @param adata_py A Python AnnData object
 expect_anndata_print_equal <- function(adata_r, adata_py) {
-  str_r <- capture.output(print(adata_r))
-  str_py <- capture.output(print(adata_py))
+  str_r <- normalise_anndata_print(capture.output(print(adata_r)))
+  str_py <- normalise_anndata_print(capture.output(print(adata_py)))
 
   # Normalise class names in R output to match Python output
   str_r <- gsub("[^ ]*AnnData", "AnnData", str_r)
