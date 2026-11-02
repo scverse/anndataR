@@ -31,19 +31,41 @@ get_fmt_config <- function(fmt = c("h5ad", "zarrv2", "zarrv3")) {
   }
 }
 
-#' Set the Zarr format Python anndata writes
+#' Formats for the roundtrip tests
+#'
+#' All formats Python anndata can write. anndata main dropped
+#' `anndata.settings.zarr_write_format` and only writes Zarr v3
+#' (scverse/anndata#2628); Zarr v2 is then recorded as a skipped test and left
+#' out, so the loop over the formats doesn't need to know.
 #'
 #' @param ad The Python `anndata` module
-#' @param zarr_format The Zarr format to write, `2L` or `3L`
-#' @return `TRUE` when Python anndata can write `zarr_format`, `FALSE`
-#'   otherwise
-py_set_zarr_write_format <- function(ad, zarr_format) {
-  # anndata >= 0.14 dropped the setting and can only write Zarr v3
-  if (!reticulate::py_has_attr(ad$settings, "zarr_write_format")) {
-    return(zarr_format == 3L)
+#' @return A character vector of formats accepted by `get_fmt_config()`
+roundtrip_formats <- function(ad) {
+  fmts <- c("h5ad", "zarrv2", "zarrv3")
+  if (reticulate::py_has_attr(ad$settings, "zarr_write_format")) {
+    return(fmts)
   }
-  ad$settings$zarr_write_format <- zarr_format
-  TRUE
+  test_that("Python anndata can write Zarr v2", {
+    skip("Python anndata cannot write Zarr v2")
+  })
+  setdiff(fmts, "zarrv2")
+}
+
+#' Set the Zarr format Python anndata writes
+#'
+#' Does nothing for H5AD (`zarr_format = NULL`) or when the setting no longer
+#' exists, in which case `roundtrip_formats()` has already left out Zarr v2.
+#'
+#' @param ad The Python `anndata` module
+#' @param zarr_format The Zarr format to write, `2L`, `3L` or `NULL`
+py_set_zarr_write_format <- function(ad, zarr_format) {
+  if (
+    !is.null(zarr_format) &&
+      reticulate::py_has_attr(ad$settings, "zarr_write_format")
+  ) {
+    ad$settings$zarr_write_format <- zarr_format
+  }
+  invisible(zarr_format)
 }
 
 #' Expect AnnData print output to match

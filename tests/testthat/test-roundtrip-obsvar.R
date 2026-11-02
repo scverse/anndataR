@@ -11,21 +11,13 @@ known_issues <- read_known_issues()
 
 test_names <- names(da$vector_generators)
 
-for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
+for (fmt in roundtrip_formats(ad)) {
   fmt_config <- get_fmt_config(fmt)
 
   withr::with_options(
     list("anndataR.zarr_format" = fmt_config$zarr_format),
     {
-      if (
-        grepl("zarr", fmt_config$ext, fixed = TRUE) &&
-          !py_set_zarr_write_format(ad, fmt_config$zarr_format)
-      ) {
-        test_that(paste0("Python anndata can write ", fmt), {
-          testthat::skip("Python anndata cannot write Zarr v2")
-        })
-        next
-      }
+      py_set_zarr_write_format(ad, fmt_config$zarr_format)
 
       for (name in test_names) {
         # first generate a python adata
