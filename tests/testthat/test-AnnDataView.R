@@ -192,6 +192,27 @@ test_that("AnnDataView layers subsetting works", {
   )
 })
 
+test_that("AnnDataView keeps X as the NA layer", {
+  ad <- AnnData(
+    X = matrix(1:15, 3L, 5L),
+    obs = data.frame(row.names = LETTERS[1:3]),
+    var = data.frame(row.names = letters[1:5]),
+    layers = list(A = matrix(16:30, 3L, 5L))
+  )
+
+  view <- ad[c(1, 3), c(2, 4)]
+  expect_identical(view$layers_keys(), c("A", NA))
+  expect_identical(names(view$layers), c("A", NA))
+  expect_identical(view$layers[[2]], ad$X[c(1, 3), c(2, 4), drop = FALSE])
+  expect_identical(view$layers[[2]], view$X)
+
+  # converting the view keeps X
+  result <- view$as_InMemoryAnnData()
+  expect_identical(result$layers_keys(), c("A", NA))
+  expect_identical(result$X, view$X)
+  expect_identical(result$layers, view$layers)
+})
+
 test_that("AnnDataView obsm subsetting works", {
   ad <- generate_dataset(
     n_obs = 3L,
