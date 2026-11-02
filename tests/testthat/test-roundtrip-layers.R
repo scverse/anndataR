@@ -13,6 +13,7 @@ test_names <- names(da$matrix_generators)
 
 # layers must always be 2-dimensional in AnnData
 # -> https://github.com/scverse/anndata/blob/0.13.4/src/anndata/_core/storage.py#L62-L67 # nolint
+# TODO: remove once LouiseDck/dummy-anndata#1 is fixed
 test_names <- test_names[!endsWith(test_names, "_3d")]
 
 for (fmt in roundtrip_formats(ad)) {
