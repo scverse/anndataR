@@ -79,6 +79,7 @@ Other AnnData classes:
 \subsection{Public methods}{
   \itemize{
     \item \href{#method-InMemoryAnnData-initialize}{\code{InMemoryAnnData$new()}}
+    \item \href{#method-InMemoryAnnData-layers_keys}{\code{InMemoryAnnData$layers_keys()}}
     \item \href{#method-InMemoryAnnData-clone}{\code{InMemoryAnnData$clone()}}
   }
 }
@@ -90,7 +91,6 @@ Other AnnData classes:
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_Seurat'><code>AbstractAnnData$as_Seurat()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_SingleCellExperiment'><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ZarrAnnData"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-as_ZarrAnnData'><code>AbstractAnnData$as_ZarrAnnData()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="layers_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-layers_keys'><code>AbstractAnnData$layers_keys()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_obs"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_obs'><code>AbstractAnnData$n_obs()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="n_vars"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-n_vars'><code>AbstractAnnData$n_vars()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="obs_keys"><a href='../../anndataR/html/AbstractAnnData.html#method-AbstractAnnData-obs_keys'><code>AbstractAnnData$obs_keys()</code></a></span></li>
@@ -143,6 +143,18 @@ Inherits from \link{AbstractAnnData}.
       \item{\code{shape}}{Shape tuple (e.g. \code{c(n_obs, n_vars)}). Can be provided if
 both \code{X} or \code{obs} and \code{var} are not provided.}
     }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-InMemoryAnnData-layers_keys"></a>}}
+\if{latex}{\out{\hypertarget{method-InMemoryAnnData-layers_keys}{}}}
+\subsection{\code{InMemoryAnnData$layers_keys()}}{
+  See \link{AnnData-usage}
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{InMemoryAnnData$layers_keys()}
     \if{html}{\out{</div>}}
   }
 }

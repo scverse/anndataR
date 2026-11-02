@@ -71,10 +71,19 @@ For example:
 \describe{
 \item{\code{X}}{The main data matrix. Either \code{NULL} or an observation x variable
 matrix (without dimnames) with dimensions consistent with \code{n_obs} and
-\code{n_vars}.}
+\code{n_vars}. \code{X} is stored as the layer named \code{NA} (the counterpart of
+\code{adata.layers[None]} in Python \strong{anndata} >= 0.13), and \code{adata$X} is a
+shortcut for that layer. Setting \code{adata$X <- NULL} removes it.}
 
-\item{\code{layers}}{Additional data layers. Must be \code{NULL} or a named list of
-matrices having dimensions consistent with \code{n_obs} and \code{n_vars}.}
+\item{\code{layers}}{Data layers. Must be \code{NULL} or a named list of matrices having
+dimensions consistent with \code{n_obs} and \code{n_vars}. When \code{X} is set,
+\code{adata$layers} and \code{adata$layers_keys()} include it as the last entry,
+named \code{NA} (for example \code{c("counts", NA)}), and \code{print()} shows it as
+\code{NA (.X)}. \code{adata$layers <- value} replaces the other layers and keeps
+\code{X}, unless \code{value} has an entry named \code{NA}, which then replaces \code{X} (a
+\code{NULL} entry removes it). When creating an \code{AnnData} object, an \code{NA} entry
+in \code{layers} is used as \code{X}; if \code{X} is also given, both must be identical.
+On disk, H5AD files and Zarr stores keep \code{X} at the root, not in \code{layers}.}
 
 \item{\code{obs}}{Observation annotations. A \code{data.frame} with columns containing
 information about observations. The number of rows of \code{obs} defines the

@@ -33,9 +33,18 @@
 #'
 #' @slot X The main data matrix. Either `NULL` or an observation x variable
 #'   matrix (without dimnames) with dimensions consistent with `n_obs` and
-#'   `n_vars`.
-#' @slot layers Additional data layers. Must be `NULL` or a named list of
-#'   matrices having dimensions consistent with `n_obs` and `n_vars`.
+#'   `n_vars`. `X` is stored as the layer named `NA` (the counterpart of
+#'   `adata.layers[None]` in Python **anndata** >= 0.13), and `adata$X` is a
+#'   shortcut for that layer. Setting `adata$X <- NULL` removes it.
+#' @slot layers Data layers. Must be `NULL` or a named list of matrices having
+#'   dimensions consistent with `n_obs` and `n_vars`. When `X` is set,
+#'   `adata$layers` and `adata$layers_keys()` include it as the last entry,
+#'   named `NA` (for example `c("counts", NA)`), and `print()` shows it as
+#'   `NA (.X)`. `adata$layers <- value` replaces the other layers and keeps
+#'   `X`, unless `value` has an entry named `NA`, which then replaces `X` (a
+#'   `NULL` entry removes it). When creating an `AnnData` object, an `NA` entry
+#'   in `layers` is used as `X`; if `X` is also given, both must be identical.
+#'   On disk, H5AD files and Zarr stores keep `X` at the root, not in `layers`.
 #' @slot obs Observation annotations. A `data.frame` with columns containing
 #'   information about observations. The number of rows of `obs` defines the
 #'   observation dimension of the `AnnData` object (`n_obs`). If `NULL`, an
