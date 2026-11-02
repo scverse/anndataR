@@ -45,8 +45,8 @@ roundtrip_formats <- function(ad) {
   if (reticulate::py_has_attr(ad$settings, "zarr_write_format")) {
     return(fmts)
   }
-  test_that("Python anndata can write Zarr v2", {
-    skip("Python anndata cannot write Zarr v2")
+  testthat::test_that("Python anndata can write Zarr v2", {
+    testthat::skip("Python anndata cannot write Zarr v2")
   })
   setdiff(fmts, "zarrv2")
 }
