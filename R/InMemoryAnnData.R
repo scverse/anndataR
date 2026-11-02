@@ -38,7 +38,6 @@ InMemoryAnnData <- R6::R6Class(
   "InMemoryAnnData", # nolint
   inherit = AbstractAnnData,
   private = list(
-    .X = NULL,
     .layers = NULL,
     .obs = NULL,
     .var = NULL,
@@ -53,19 +52,37 @@ InMemoryAnnData <- R6::R6Class(
   active = list(
     #' @field X See [AnnData-usage]
     X = function(value) {
+      x_index <- match(NA_character_, names(private$.layers))
       if (missing(value)) {
         # trackstatus: class=InMemoryAnnData, feature=get_X, status=done
-        private$.X |>
+        if (is.na(x_index)) {
+          return(NULL)
+        }
+        private$.layers[[x_index]] |>
           private$.add_matrix_dimnames("X")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_X, status=done
-        private$.X <- private$.validate_aligned_array(
+        value <- private$.validate_aligned_array(
           value,
           "X",
           shape = c(self$n_obs(), self$n_vars()),
           expected_rownames = self$obs_names,
           expected_colnames = self$var_names
         )
+
+        # store x as the na layer
+        if (is.null(value)) {
+          if (!is.na(x_index)) {
+            private$.layers <- private$.layers[-x_index]
+          }
+        } else if (is.na(x_index)) {
+          private$.layers <- c(
+            private$.layers,
+            setNames(list(value), NA_character_)
+          )
+        } else {
+          private$.layers[[x_index]] <- value
+        }
         self
       }
     },
@@ -77,6 +94,23 @@ InMemoryAnnData <- R6::R6Class(
           private$.add_mapping_dimnames("layers")
       } else {
         # trackstatus: class=InMemoryAnnData, feature=set_layers, status=done
+        # split off the x layer, or keep the current x
+        x_index <- x_layer_index(value)
+        if (is.na(x_index)) {
+          old_index <- match(NA_character_, names(private$.layers))
+          X <- if (is.na(old_index)) NULL else private$.layers[[old_index]]
+        } else {
+          X <- private$.validate_aligned_array(
+            value[[x_index]],
+            "layers[[NA]]",
+            shape = c(self$n_obs(), self$n_vars()),
+            expected_rownames = self$obs_names,
+            expected_colnames = self$var_names
+          )
+          value <- value[-x_index]
+        }
+
+        # store the layers with x last
         private$.layers <- private$.validate_aligned_mapping(
           value,
           "layers",
@@ -84,6 +118,12 @@ InMemoryAnnData <- R6::R6Class(
           expected_rownames = self$obs_names,
           expected_colnames = self$var_names
         )
+        if (!is.null(X)) {
+          private$.layers <- c(
+            private$.layers,
+            setNames(list(X), NA_character_)
+          )
+        }
         self
       }
     },
@@ -256,6 +296,11 @@ InMemoryAnnData <- R6::R6Class(
       uns = NULL,
       shape = NULL
     ) {
+      # take x from the layers
+      split <- split_x_layer(X, layers)
+      X <- split$X
+      layers <- split$layers
+
       # Determine initial obs and var
       shape <- get_shape(obs, var, X, shape)
       obs <- get_initial_obs(obs, X, shape)
@@ -279,14 +324,19 @@ InMemoryAnnData <- R6::R6Class(
       private$.obs <- obs
       private$.var <- var
 
-      # write other slots later
-      self$X <- X
+      # write other slots, layers before x
       self$layers <- layers
+      self$X <- X
       self$obsm <- obsm
       self$varm <- varm
       self$obsp <- obsp
       self$varp <- varp
       self$uns <- uns
+    },
+
+    #' @description See [AnnData-usage]
+    layers_keys = function() {
+      names(private$.layers)
     }
   )
 )
@@ -324,7 +374,6 @@ as_InMemoryAnnData <- function(adata) {
   }
 
   InMemoryAnnData$new(
-    X = adata$X,
     obs = adata$obs,
     var = adata$var,
     layers = adata$layers,

@@ -35,6 +35,60 @@ get_shape <- function(obs, var, X, shape) {
   c(n_obs, n_vars)
 }
 
+#' Split the X layer from the layers
+#'
+#' Take `X` from the `NA`-named entry of `layers` (the R counterpart of Python
+#' anndata's `layers[None]`), for use in the `AnnData` constructors
+#'
+#' @param X The `X` argument of a constructor
+#' @param layers The `layers` argument of a constructor
+#'
+#' @returns A list with `X` and `layers`, where `layers` no longer has an `NA`
+#'   entry
+#' @noRd
+split_x_layer <- function(X, layers) {
+  # find the x layer
+  x_index <- x_layer_index(layers, call = rlang::caller_env())
+  if (is.na(x_index)) {
+    return(list(X = X, layers = layers))
+  }
+
+  # resolve x from the layers
+  x_layer <- layers[[x_index]]
+  layers <- layers[-x_index]
+  if (is.null(X)) {
+    X <- x_layer
+  } else if (!identical(X, x_layer)) {
+    cli_abort(
+      "If you provide {.code layers[[NA]]} and {.arg X}, they must be identical.",
+      call = rlang::caller_env()
+    )
+  }
+
+  list(X = X, layers = layers)
+}
+
+#' Index of the X layer
+#'
+#' Find the position of the `NA`-named entry that holds `X` in a list of layers
+#'
+#' @param layers A list of layers
+#' @param call The environment to report errors in
+#'
+#' @returns The integer index of the `NA` entry, or `NA_integer_` if there is
+#'   none
+#' @noRd
+x_layer_index <- function(layers, call = rlang::caller_env()) {
+  x_index <- which(is.na(names(layers)))
+  if (length(x_index) > 1L) {
+    cli_abort(
+      "{.arg layers} must not have more than one {.val {NA}} name",
+      call = call
+    )
+  }
+  if (length(x_index) == 0L) NA_integer_ else x_index
+}
+
 get_initial_obs <- function(obs, X, shape) {
   if (is.null(obs)) {
     obs <- data.frame(matrix(NA, nrow = shape[[1]], ncol = 0))
