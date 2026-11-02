@@ -7,6 +7,7 @@
 - Keep `NA` in double and integer matrices written to H5AD instead of replacing it with `NaN`, so that `NA` and `NaN` can still be told apart when reading the file back in R. Python **anndata** reads both as `NaN` (PR #546).
 - Fix writing non-ASCII strings to H5AD files by using UTF-8 for string datasets (PR #555, issue #400).
 - Re-enable testing against Python **anndata** >= 0.13, and remove the warning that `ReticulateAnnData` gave for these versions (PR #569, issue #514).
+- Skip the Python-written Zarr v2 roundtrip tests when the installed Python **anndata** can no longer write Zarr v2, as **anndata** main does (PR #568, issue #514).
 
 # anndataR 1.3.3
 
