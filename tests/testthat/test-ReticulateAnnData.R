@@ -123,6 +123,30 @@ test_that("setting layers keeps X and does not warn", {
   expect_length(r_adata$layers, 0)
 })
 
+test_that("setting layers keeps the assigned order", {
+  skip_if_no_anndata_py()
+
+  library(reticulate)
+  ad <- import("anndata", convert = FALSE)
+
+  m1 <- matrix(1:20, nrow = 4, ncol = 5)
+  m2 <- matrix(21:40, nrow = 4, ncol = 5)
+  r_adata <- ReticulateAnnData$new(
+    py_anndata = ad$AnnData(
+      X = r_to_py(m1),
+      layers = r_to_py(list(a = m1, b = m2))
+    )
+  )
+  expect_named(r_adata$layers, c("a", "b"))
+
+  # existing keys in a new order take that order
+  r_adata$layers <- list(b = m1, a = m2)
+  expect_named(r_adata$layers, c("b", "a"))
+  expect_equal(r_adata$layers$b, m1)
+  expect_equal(r_adata$layers$a, m2)
+  expect_equal(r_adata$X, m1)
+})
+
 test_that("both Python AnnData class names are supported", {
   skip_if_no_anndata_py()
 
