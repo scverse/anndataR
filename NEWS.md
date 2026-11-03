@@ -11,6 +11,7 @@
 - Skip the `None` key that Python **anndata** >= 0.13 uses for `X` when reading layers through `ReticulateAnnData` and `py_to_r()`, and keep `X` when setting `layers` (PR #563, issue #514).
 - Ignore the `None (.X)` entry that Python **anndata** >= 0.13.2 lists under `layers:` when comparing printed objects in the roundtrip tests (PR #564, issue #514).
 - Drop 3D layers from the layers roundtrip tests, because Python **anndata** >= 0.13 refuses to write them (PR #571, issue #514).
+- Require `Rarr >= 2.1.45` to read the sharded Zarr v3 stores that Python **anndata** >= 0.13 writes by default, because older versions can return wrong values for sharded arrays (PR #572, issue #514).
 
 # anndataR 1.3.3
 

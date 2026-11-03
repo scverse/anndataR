@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr", minimum_version = "2.1.27")
+skip_if_not_installed("Rarr", minimum_version = "2.1.45")
 
 for (zarr_format in c(2, 3)) {
   zarr_zip <- system.file(
@@ -165,6 +165,55 @@ for (zarr_format in c(2, 3)) {
     expect_s4_class(seurat, "Seurat")
   })
 }
+
+# unzip the Zarr v3 example to a temp dir that is removed when `env` exits
+local_example_v3_store <- function(env = parent.frame()) {
+  zarr_zip <- system.file(
+    "extdata",
+    "example_v3.zarr.zip",
+    package = "anndataR"
+  )
+  td <- withr::local_tempdir(.local_envir = env)
+  unzip(zarr_zip, exdir = td)
+  file.path(td, "example_v3.zarr")
+}
+
+test_that("the Zarr v3 example store is sharded", {
+  store <- local_example_v3_store()
+
+  # X is a sparse group, so check the codecs of its data array
+  metadata <- jsonlite::read_json(file.path(store, "X", "data", "zarr.json"))
+  codecs <- vapply(metadata$codecs, function(codec) codec$name, character(1))
+  expect_contains(codecs, "sharding_indexed")
+})
+
+test_that("the Zarr v3 example reads like the H5AD example", {
+  skip_if_not_installed("rhdf5")
+  store <- local_example_v3_store()
+  h5ad <- read_h5ad(system.file(
+    "extdata",
+    "example.h5ad",
+    package = "anndataR"
+  ))
+  zarr <- read_zarr(store)
+
+  for (slot in c("X", "obs", "var", "obs_names", "var_names")) {
+    expect_equal(zarr[[slot]], h5ad[[slot]], label = slot)
+  }
+  # the order of the keys differs between H5AD and Zarr, so compare them by name
+  for (slot in c("layers", "obsm", "varm", "obsp", "varp", "uns")) {
+    expect_setequal(names(zarr[[slot]]), names(h5ad[[slot]]))
+    keys <- setdiff(names(h5ad[[slot]]), "rank_genes_groups")
+    expect_gt(length(keys), 0)
+    expect_equal(zarr[[slot]][keys], h5ad[[slot]][keys], label = slot)
+  }
+  # TODO: compare uns/rank_genes_groups when recarrays are read consistently, see
+  # https://github.com/scverse/anndataR/issues/409
+  expect_equal(
+    zarr$uns$rank_genes_groups$params,
+    h5ad$uns$rank_genes_groups$params
+  )
+})
 
 test_that("errors while reading a Zarr element keep the original message", {
   zarr_zip <- system.file(

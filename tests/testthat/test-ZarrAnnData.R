@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr", minimum_version = "2.1.27")
+skip_if_not_installed("Rarr", minimum_version = "2.1.45")
 
 file <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
 td <- tempdir(check = TRUE)
