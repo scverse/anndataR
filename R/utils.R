@@ -79,11 +79,8 @@ materialize_matrix <- function(mat) {
     return(mat)
   }
 
-  seed <- DelayedArray::seed(mat)
-  if (inherits(seed, "CSC_H5SparseMatrixSeed")) {
+  if (DelayedArray::is_sparse(mat)) {
     as(mat, "CsparseMatrix")
-  } else if (inherits(seed, "CSR_H5SparseMatrixSeed")) {
-    as(mat, "RsparseMatrix")
   } else {
     as.matrix(mat)
   }
