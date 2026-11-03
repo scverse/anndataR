@@ -8,6 +8,7 @@
 - Fix writing non-ASCII strings to H5AD files by using UTF-8 for string datasets (PR #555, issue #400).
 - Skip the `None` key that Python **anndata** >= 0.13 uses for `X` when reading layers through `ReticulateAnnData` and `py_to_r()`, and keep `X` when setting `layers` (PR #563, issue #514).
 - Skip the Python-written Zarr v2 roundtrip tests when the installed Python **anndata** can no longer write Zarr v2, as **anndata** main does (PR #568, issue #514).
+- Require `Rarr >= 2.1.45` to read the sharded Zarr v3 stores that Python **anndata** >= 0.13 writes by default, because older versions can return wrong values for sharded arrays (issue #514).
 
 # anndataR 1.3.3
 

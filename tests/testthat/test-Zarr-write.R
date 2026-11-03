@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr", minimum_version = "2.1.27")
+skip_if_not_installed("Rarr", minimum_version = "2.1.45")
 
 for (zarr_format in c(2, 3)) {
   # set version
