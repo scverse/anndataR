@@ -334,10 +334,10 @@ obj <- FindNeighbors(obj)
 #> Computing nearest neighbor graph
 #> Computing SNN
 obj <- RunUMAP(obj, dims = 1:10)
-#> 13:55:03 UMAP embedding parameters a = 0.9922 b = 1.112
-#> 13:55:03 Read 200 rows and found 10 numeric columns
-#> 13:55:03 Using Annoy for neighbor search, n_neighbors = 30
-#> 13:55:03 Building Annoy index with metric = cosine, n_trees = 50
+#> 08:44:59 UMAP embedding parameters a = 0.9922 b = 1.112
+#> 08:44:59 Read 200 rows and found 10 numeric columns
+#> 08:44:59 Using Annoy for neighbor search, n_neighbors = 30
+#> 08:44:59 Building Annoy index with metric = cosine, n_trees = 50
 #> 0%   10   20   30   40   50   60   70   80   90   100%
 #> [----|----|----|----|----|----|----|----|----|----|
 #> *
@@ -391,15 +391,15 @@ obj <- RunUMAP(obj, dims = 1:10)
 #> *
 #> *
 #> |
-#> 13:55:03 Writing NN index file to temp file /tmp/Rtmpf8n7EN/file1ad55b83628a
-#> 13:55:03 Searching Annoy index using 1 thread, search_k = 3000
-#> 13:55:03 Annoy recall = 100%
-#> 13:55:04 Commencing smooth kNN distance calibration using 1 thread
+#> 08:44:59 Writing NN index file to temp file /tmp/RtmpMXrdZP/file1bc11a049017
+#> 08:44:59 Searching Annoy index using 1 thread, search_k = 3000
+#> 08:44:59 Annoy recall = 100%
+#> 08:45:00 Commencing smooth kNN distance calibration using 1 thread
 #>  with target n_neighbors = 30
-#> 13:55:06 Initializing from normalized Laplacian + noise (using RSpectra)
-#> 13:55:06 Commencing optimization for 500 epochs, with 6146 positive edges
-#> 13:55:06 Using rng type: pcg
-#> 13:55:06 Optimization finished
+#> 08:45:01 Initializing from normalized Laplacian + noise (using RSpectra)
+#> 08:45:01 Commencing optimization for 500 epochs, with 6146 positive edges
+#> 08:45:01 Using rng type: pcg
+#> 08:45:02 Optimization finished
 
 as_AnnData(obj)
 #> Warning: Row names of `Loadings(seurat_obj, "pca")` do not match the expected var names

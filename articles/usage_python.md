@@ -27,9 +27,7 @@ Install required Python packages if needed:
 
 ``` r
 
-# TEMP(anndata<0.13.0): anndataR does not yet support Python anndata >= 0.13.0
-reticulate::py_require("scanpy>=1.10")
-reticulate::py_require("anndata<0.13.0")
+reticulate::py_require("scanpy")
 ```
 
 ``` r
@@ -204,7 +202,7 @@ sessionInfo()
 #>  [13] htmltools_0.5.9             S4Arrays_1.13.2            
 #>  [15] curl_8.1.0                  SparseArray_1.13.4         
 #>  [17] sass_0.4.10                 sctransform_0.4.3          
-#>  [19] parallelly_1.48.0           KernSmooth_2.23-27         
+#>  [19] parallelly_1.50.0           KernSmooth_2.23-27         
 #>  [21] bslib_0.12.0                htmlwidgets_1.6.4          
 #>  [23] desc_1.4.3                  ica_1.0-3                  
 #>  [25] httr2_1.3.0                 plyr_1.8.9                 
@@ -214,7 +212,7 @@ sessionInfo()
 #>  [33] pkgconfig_2.0.3             Matrix_1.7-6               
 #>  [35] R6_2.6.1                    fastmap_1.2.0              
 #>  [37] MatrixGenerics_1.25.0       fitdistrplus_1.2-6         
-#>  [39] future_1.80.0               shiny_1.14.0               
+#>  [39] future_1.82.0               shiny_1.14.0               
 #>  [41] digest_0.6.39               patchwork_1.3.2            
 #>  [43] S4Vectors_0.51.10           Seurat_5.6.0               
 #>  [45] tensor_1.5.1                RSpectra_0.16-2            
@@ -287,54 +285,58 @@ reticulate::py_config()
 
 reticulate::py_list_packages()
 #>              package     version               requirement
-#> 1            anndata     0.12.19          anndata==0.12.19
-#> 2   array-api-compat      1.16.0  array-api-compat==1.16.0
-#> 3            certifi  2026.10.23       certifi==2026.10.23
-#> 4        cloudpickle       3.1.2        cloudpickle==3.1.2
-#> 5          contourpy       1.4.0          contourpy==1.4.0
-#> 6             cycler      0.12.1            cycler==0.12.1
-#> 7             donfig 0.8.1.post1       donfig==0.8.1.post1
-#> 8   fast-array-utils       1.5.1   fast-array-utils==1.5.1
-#> 9          fonttools      4.68.0         fonttools==4.68.0
-#> 10         formulaic       1.2.2          formulaic==1.2.2
-#> 11     google-crc32c       1.9.0      google-crc32c==1.9.0
-#> 12              h5py      3.16.0              h5py==3.16.0
-#> 13    interface_meta       2.0.1     interface_meta==2.0.1
-#> 14            joblib       1.6.0             joblib==1.6.0
-#> 15        kiwisolver       1.5.1         kiwisolver==1.5.1
-#> 16   legacy-api-wrap         1.5      legacy-api-wrap==1.5
-#> 17          llvmlite      0.50.0          llvmlite==0.50.0
-#> 18        matplotlib      3.11.2        matplotlib==3.11.2
-#> 19           msgspec      0.22.0           msgspec==0.22.0
-#> 20            mudata      0.3.10            mudata==0.3.10
-#> 21          narwhals      2.28.0          narwhals==2.28.0
-#> 22           natsort       8.4.0            natsort==8.4.0
-#> 23          networkx         3.7             networkx==3.7
-#> 24             numba      0.68.1             numba==0.68.1
-#> 25         numcodecs      0.17.1         numcodecs==0.17.1
-#> 26             numpy       2.5.4              numpy==2.5.4
-#> 27         packaging        26.3           packaging==26.3
-#> 28            pandas       2.3.3             pandas==2.3.3
-#> 29             patsy       1.0.3              patsy==1.0.3
-#> 30            pillow      13.0.0            pillow==13.0.0
-#> 31       pynndescent       0.7.0        pynndescent==0.7.0
-#> 32         pyparsing       3.3.3          pyparsing==3.3.3
-#> 33   python-dateutil       3.0.0    python-dateutil==3.0.0
-#> 34              pytz      2026.6              pytz==2026.6
-#> 35            PyYAML       6.0.3             PyYAML==6.0.3
-#> 36            scanpy      1.12.5            scanpy==1.12.5
-#> 37      scikit-learn       1.9.1       scikit-learn==1.9.1
-#> 38             scipy      1.18.1             scipy==1.18.1
-#> 39      scverse-misc       0.1.1       scverse-misc==0.1.1
-#> 40           seaborn      0.13.2           seaborn==0.13.2
-#> 41     session-info2       0.4.2      session-info2==0.4.2
-#> 42               six      1.17.0               six==1.17.0
-#> 43       statsmodels      0.15.0       statsmodels==0.15.0
-#> 44     threadpoolctl       3.7.0      threadpoolctl==3.7.0
-#> 45              tqdm      4.70.1              tqdm==4.70.1
-#> 46 typing_extensions      4.16.0 typing_extensions==4.16.0
-#> 47            tzdata      2026.6            tzdata==2026.6
-#> 48        umap-learn      0.5.12        umap-learn==0.5.12
-#> 49             wrapt  2.6.0.dev1         wrapt==2.6.0.dev1
-#> 50              zarr       3.4.2               zarr==3.4.2
+#> 1            anndata      0.13.4           anndata==0.13.4
+#> 2    annotated-types       0.8.0    annotated-types==0.8.0
+#> 3   array-api-compat      1.16.0  array-api-compat==1.16.0
+#> 4            certifi  2026.10.23       certifi==2026.10.23
+#> 5        cloudpickle       3.1.2        cloudpickle==3.1.2
+#> 6          contourpy       1.4.0          contourpy==1.4.0
+#> 7             cycler      0.12.1            cycler==0.12.1
+#> 8             donfig 0.8.1.post1       donfig==0.8.1.post1
+#> 9   fast-array-utils       1.5.1   fast-array-utils==1.5.1
+#> 10         fonttools      4.68.0         fonttools==4.68.0
+#> 11         formulaic       1.2.2          formulaic==1.2.2
+#> 12     google-crc32c       1.9.0      google-crc32c==1.9.0
+#> 13              h5py      3.16.0              h5py==3.16.0
+#> 14    interface_meta       2.0.1     interface_meta==2.0.1
+#> 15            joblib       1.6.0             joblib==1.6.0
+#> 16        kiwisolver       1.5.1         kiwisolver==1.5.1
+#> 17   legacy-api-wrap         1.5      legacy-api-wrap==1.5
+#> 18          llvmlite      0.50.0          llvmlite==0.50.0
+#> 19        matplotlib      3.11.2        matplotlib==3.11.2
+#> 20           msgspec      0.22.0           msgspec==0.22.0
+#> 21            mudata      0.3.10            mudata==0.3.10
+#> 22          narwhals      2.28.0          narwhals==2.28.0
+#> 23           natsort       8.4.0            natsort==8.4.0
+#> 24          networkx         3.7             networkx==3.7
+#> 25             numba      0.68.1             numba==0.68.1
+#> 26         numcodecs      0.17.1         numcodecs==0.17.1
+#> 27             numpy       2.5.4              numpy==2.5.4
+#> 28         packaging        26.3           packaging==26.3
+#> 29            pandas       3.1.0             pandas==3.1.0
+#> 30             patsy       1.0.3              patsy==1.0.3
+#> 31            pillow      13.0.0            pillow==13.0.0
+#> 32          pydantic      2.14.2          pydantic==2.14.2
+#> 33 pydantic-settings      2.16.2 pydantic-settings==2.16.2
+#> 34     pydantic_core      2.50.2     pydantic_core==2.50.2
+#> 35       pynndescent       0.7.0        pynndescent==0.7.0
+#> 36         pyparsing       3.3.3          pyparsing==3.3.3
+#> 37   python-dateutil       4.0.0    python-dateutil==4.0.0
+#> 38     python-dotenv       1.2.4      python-dotenv==1.2.4
+#> 39            PyYAML       6.0.3             PyYAML==6.0.3
+#> 40            scanpy      1.12.5            scanpy==1.12.5
+#> 41      scikit-learn       1.9.1       scikit-learn==1.9.1
+#> 42             scipy      1.18.1             scipy==1.18.1
+#> 43      scverse-misc       0.1.1       scverse-misc==0.1.1
+#> 44           seaborn      0.13.2           seaborn==0.13.2
+#> 45     session-info2       0.4.2      session-info2==0.4.2
+#> 46       statsmodels      0.15.0       statsmodels==0.15.0
+#> 47     threadpoolctl       3.7.0      threadpoolctl==3.7.0
+#> 48              tqdm      4.70.1              tqdm==4.70.1
+#> 49 typing-inspection       0.4.4  typing-inspection==0.4.4
+#> 50 typing_extensions      4.16.0 typing_extensions==4.16.0
+#> 51            tzdata      2026.6            tzdata==2026.6
+#> 52        umap-learn      0.5.12        umap-learn==0.5.12
+#> 53             wrapt  2.6.0.dev1         wrapt==2.6.0.dev1
+#> 54              zarr       3.4.2               zarr==3.4.2
 ```
