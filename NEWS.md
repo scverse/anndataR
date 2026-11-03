@@ -1,3 +1,7 @@
+# anndataR devel
+
+- Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
+
 # anndataR 1.3.4
 
 - Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
