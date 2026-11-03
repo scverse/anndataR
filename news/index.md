@@ -1,5 +1,68 @@
 # Changelog
 
+## anndataR 1.3.4
+
+- Replace the internal `create_zarr()` and `create_zarr_group()` helpers
+  with
+  [`Rarr::write_zarr_group()`](https://huber-group-embl.github.io/Rarr/reference/write_zarr_group.html)
+  and require `Rarr >= 2.1.27` (PR
+  [\#490](https://github.com/scverse/anndataR/issues/490)).
+- Use zstd by default in
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+  (PR [\#540](https://github.com/scverse/anndataR/issues/540)).
+- Write length 1 `data.frame` columns and indices as arrays instead of
+  scalars (PR [\#556](https://github.com/scverse/anndataR/issues/556),
+  issue [\#553](https://github.com/scverse/anndataR/issues/553)).
+- Fix writing integer matrices containing `NA` to Zarr, which produced
+  stores that couldn’t be read back: as for H5AD, they are now written
+  as double (PR [\#546](https://github.com/scverse/anndataR/issues/546),
+  issue [\#542](https://github.com/scverse/anndataR/issues/542)).
+- Keep `NA` in double and integer matrices written to H5AD instead of
+  replacing it with `NaN`, so that `NA` and `NaN` can still be told
+  apart when reading the file back in R. Python **anndata** reads both
+  as `NaN` (PR [\#546](https://github.com/scverse/anndataR/issues/546)).
+- Fix the error and warning messages when reading or writing an element
+  fails: the original error is now shown as the cause, instead of being
+  parsed as a **cli** expression, which failed with
+  `` Could not parse cli `{}` expression `` (PR
+  [\#547](https://github.com/scverse/anndataR/issues/547), issue
+  [\#531](https://github.com/scverse/anndataR/issues/531)).
+- Check that the indices of sparse matrices fit their shape when reading
+  H5AD files and Zarr stores, with an error that suggests the indices
+  may not be 0-based (PR
+  [\#547](https://github.com/scverse/anndataR/issues/547), issue
+  [\#531](https://github.com/scverse/anndataR/issues/531)).
+- Fix writing non-ASCII strings to H5AD files by using UTF-8 for string
+  datasets (PR [\#555](https://github.com/scverse/anndataR/issues/555),
+  issue [\#400](https://github.com/scverse/anndataR/issues/400)).
+- Re-enable testing against Python **anndata** \>= 0.13, and remove the
+  warning that `ReticulateAnnData` gave for these versions (PR
+  [\#569](https://github.com/scverse/anndataR/issues/569), issue
+  [\#514](https://github.com/scverse/anndataR/issues/514)).
+- Skip the Python-written Zarr v2 roundtrip tests when the installed
+  Python **anndata** can no longer write Zarr v2, as **anndata** main
+  does (PR [\#568](https://github.com/scverse/anndataR/issues/568),
+  issue [\#514](https://github.com/scverse/anndataR/issues/514)).
+- Skip the `None` key that Python **anndata** \>= 0.13 uses for `X` when
+  reading layers through `ReticulateAnnData` and
+  [`py_to_r()`](https://rstudio.github.io/reticulate/reference/r-py-conversion.html),
+  and keep `X` when setting `layers` (PR
+  [\#563](https://github.com/scverse/anndataR/issues/563), issue
+  [\#514](https://github.com/scverse/anndataR/issues/514)).
+- Ignore the `None (.X)` entry that Python **anndata** \>= 0.13.2 lists
+  under `layers:` when comparing printed objects in the roundtrip tests
+  (PR [\#564](https://github.com/scverse/anndataR/issues/564), issue
+  [\#514](https://github.com/scverse/anndataR/issues/514)).
+- Drop 3D layers from the layers roundtrip tests, because Python
+  **anndata** \>= 0.13 refuses to write them (PR
+  [\#571](https://github.com/scverse/anndataR/issues/571), issue
+  [\#514](https://github.com/scverse/anndataR/issues/514)).
+- Require `Rarr >= 2.1.45` to read the sharded Zarr v3 stores that
+  Python **anndata** \>= 0.13 writes by default, because older versions
+  can return wrong values for sharded arrays (PR
+  [\#572](https://github.com/scverse/anndataR/issues/572), issue
+  [\#514](https://github.com/scverse/anndataR/issues/514)).
+
 ## anndataR 1.3.3
 
 - Add a strict mode for the Python tests: with
@@ -15,17 +78,6 @@
   refused to read (PR
   [\#501](https://github.com/scverse/anndataR/issues/501), PR
   [\#525](https://github.com/scverse/anndataR/issues/525)).
-- Fix the error and warning messages when reading or writing an element
-  fails: the original error is now shown as the cause, instead of being
-  parsed as a **cli** expression, which failed with
-  `` Could not parse cli `{}` expression `` (PR
-  [\#547](https://github.com/scverse/anndataR/issues/547), issue
-  [\#531](https://github.com/scverse/anndataR/issues/531)).
-- Check that the indices of sparse matrices fit their shape when reading
-  H5AD files and Zarr stores, with an error that suggests the indices
-  may not be 0-based (PR
-  [\#547](https://github.com/scverse/anndataR/issues/547), issue
-  [\#531](https://github.com/scverse/anndataR/issues/531)).
 
 ## anndataR 1.3.2
 
