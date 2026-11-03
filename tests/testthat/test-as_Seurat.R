@@ -96,6 +96,20 @@ for (layer_key in names(ad$layers)) {
   })
 }
 
+# trackstatus: class=Seurat, feature=test_get_obsp, status=done
+for (obsp_key in names(ad$obsp)) {
+  test_that(paste0("as_Seurat retains obsp key: ", obsp_key), {
+    graph_name <- paste0("RNA_", obsp_key)
+    expect_true(graph_name %in% Graphs(seu))
+
+    expect_equal(
+      as.matrix(seu[[graph_name]]),
+      as.matrix(ad$obsp[[obsp_key]]),
+      ignore_attr = TRUE
+    )
+  })
+}
+
 # trackstatus: class=Seurat, feature=test_get_uns, status=done
 for (uns_key in names(ad$uns)) {
   test_that(paste0("as_Seurat retains uns key: ", uns_key), {
