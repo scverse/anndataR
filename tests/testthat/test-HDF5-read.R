@@ -219,6 +219,27 @@ test_that("backed SingleCellExperiment has lazy assays equal to eager ones", {
   }
 })
 
+test_that("backed Seurat graphs equal the obsp of an eager AnnData", {
+  skip_if_not_installed("Seurat")
+
+  backed <- read_h5ad(filename, as = "HDF5AnnData", backed = TRUE)
+  eager <- read_h5ad(filename, as = "HDF5AnnData")
+  withr::defer({
+    backed$close()
+    eager$close()
+  })
+
+  seurat <- backed$as_Seurat()
+  for (graph in eager$obsp_keys()) {
+    expect_equal(
+      as.matrix(seurat[[paste0("RNA_", graph)]]),
+      as.matrix(eager$obsp[[graph]]),
+      ignore_attr = TRUE,
+      info = paste("graph", graph)
+    )
+  }
+})
+
 # Regression test (issue #387, reported by LouiseDck): converting a backed SCE
 # back to AnnData must preserve shape.
 test_that("round-trip of a backed SCE back to AnnData preserves shape", {
