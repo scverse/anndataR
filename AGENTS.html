@@ -112,7 +112,7 @@
 </td>
 </tr></tbody></table><p>What follows from this:</p>
 <ul><li>
-<strong>Format-level bugs go upstream.</strong> If the problem is how bytes land on disk (a chunk layout, a codec name, string encoding, metadata), file it on rhdf5 or Rarr, link it from the anndataR issue, work around it here with a <code>TODO</code> naming the upstream issue, and bump the version pin in <code>DESCRIPTION</code> once the fix is released. Recent examples: Rarr#262 (the C string encoder, merged), Rarr#111 (<code>patch_zarr_vlen_utf8()</code> waits on it), rhdf5#241 (a spurious <code>NA</code> warning, tracked in <code>inst/known_issues.yaml</code>).</li>
+<strong>Format-level bugs go upstream.</strong> If the problem is how bytes land on disk (a chunk layout, a codec name, string encoding, metadata), file it on rhdf5 or Rarr, link it from the anndataR issue, work around it here with a <code>TODO</code> naming the upstream issue, and bump the version pin in <code>DESCRIPTION</code> once the fix is released. Recent examples: Rarr#262 (the C string encoder, merged), Rarr#111 (<code>patch_zarr_vlen_utf8()</code> waits on it), rhdf5#241 (a spurious <code>NA</code> warning, tracked in <code>inst/known_issues.yaml</code> until the fix was released).</li>
 <li>
 <strong>Prefer the owner’s implementation.</strong> anndataR decides <em>what</em> to write (the spec) and passes <em>how</em> through. When the owner doesn’t provide something yet, as with auto-chunking in Rarr, implement it here pinned to Python’s behaviour and propose it upstream.</li>
 <li>

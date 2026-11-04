@@ -60,7 +60,7 @@ What follows from this:
   in `DESCRIPTION` once the fix is released. Recent examples: Rarr#262
   (the C string encoder, merged), Rarr#111 (`patch_zarr_vlen_utf8()`
   waits on it), rhdf5#241 (a spurious `NA` warning, tracked in
-  `inst/known_issues.yaml`).
+  `inst/known_issues.yaml` until the fix was released).
 - **Prefer the owner’s implementation.** anndataR decides *what* to
   write (the spec) and passes *how* through. When the owner doesn’t
   provide something yet, as with auto-chunking in Rarr, implement it
