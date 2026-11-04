@@ -340,3 +340,91 @@ construct_sparse_matrix <- function(
     new("dgRMatrix", j = indices, p = indptr, x = data, Dim = shape)
   }
 }
+
+#' Detect the storage format of an element path
+#'
+#' Determine whether `path` is an H5AD file or a Zarr store, for
+#' use by `read_elem()` and `write_elem()`
+#'
+#' @param path Path to an H5AD file or Zarr store.
+#' @param format The requested format. One of `"auto"`, `"h5ad"` or `"zarr"`.
+#' @param call The calling environment, used in error messages
+#'
+#' @details
+#' When `path` exists, its format is detected from the content. A file that
+#' passes [rhdf5::H5Fis_hdf5()] is H5AD and a directory with `.zgroup` or
+#' `zarr.json` at the top level is Zarr. When `path` doesn't exist, the
+#' extension is used.
+#'
+#' With `format = "auto"`, a format that can't be detected is an error. An
+#' explicit `format` is returned as is, unless `path` exists and is detected as
+#' the other format.
+#'
+#' @return Either `"h5ad"` or `"zarr"`
+#'
+#' @noRd
+detect_elem_format <- function(
+  path,
+  format = c("auto", "h5ad", "zarr"),
+  call = rlang::caller_env()
+) {
+  if (!rlang::is_string(path) || is.na(path) || !nzchar(path)) {
+    cli_abort(
+      "{.arg path} must be a single non-empty string, not {.obj_type_friendly {path}}",
+      call = call
+    )
+  }
+  format <- rlang::arg_match(format, error_call = call)
+
+  # Drop trailing slashes so "store.zarr/" behaves like "store.zarr"
+  path <- sub("/+$", "", path)
+
+  detected <- if (dir.exists(path)) {
+    files <- list.files(path, all.files = TRUE, no.. = TRUE)
+    if (any(c(".zgroup", "zarr.json") %in% files)) {
+      "zarr"
+    } else {
+      NA_character_
+    }
+  } else if (file.exists(path)) {
+    check_requires("Reading or writing H5AD elements", "rhdf5", where = "Bioc")
+    if (isTRUE(rhdf5::H5Fis_hdf5(path))) {
+      "h5ad"
+    } else {
+      NA_character_
+    }
+  } else {
+    ext <- tolower(tools::file_ext(path))
+    if (ext %in% c("h5ad", "h5", "hdf5", "h5mu")) {
+      "h5ad"
+    } else if (ext == "zarr") {
+      "zarr"
+    } else {
+      NA_character_
+    }
+  }
+
+  if (format == "auto") {
+    if (is.na(detected)) {
+      cli_abort(
+        c(
+          "Could not detect the format of {.path {path}}",
+          "i" = "Set {.arg format}."
+        ),
+        call = call
+      )
+    }
+    return(detected)
+  }
+
+  if (file.exists(path) && !is.na(detected) && detected != format) {
+    cli_abort(
+      c(
+        "{.arg format} is {.val {format}} but {.path {path}} is {.val {detected}}"
+      ),
+      call = call
+    )
+  }
+
+  format
+}
