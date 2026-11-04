@@ -63,6 +63,24 @@ hdf5_path_exists <- function(hdf5_file, target_path) {
   )
 }
 
+#' HDF5 group is empty
+#'
+#' Check whether a group in an HDF5 file has no children
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The path to the group, `"/"` for the file root
+#'
+#' @return Whether the group at `path` is empty
+#' @noRd
+hdf5_group_is_empty <- function(hdf5_file, path) {
+  hdf5_file$open_and_defer_close(readonly = TRUE)
+  group <- rhdf5::H5Gopen(hdf5_file$handle, path)
+  n_links <- rhdf5::H5Gget_info(group)$nlink
+  rhdf5::H5Gclose(group)
+
+  n_links == 0L
+}
+
 #' HDF5 create group
 #'
 #' Create a group in an HDF5 file

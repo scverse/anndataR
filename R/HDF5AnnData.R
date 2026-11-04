@@ -534,12 +534,7 @@ HDF5AnnData <- R6::R6Class(
         }
       }
 
-      is_empty <- if (private$.root == "/") {
-        nrow(rhdf5::h5ls(private$.hdf5_file$path)) == 0L
-      } else {
-        entries <- rhdf5::h5ls(private$.hdf5_file$path)
-        sum(entries$group == paste0("/", private$.root)) == 0L
-      }
+      is_empty <- hdf5_group_is_empty(private$.hdf5_file, private$.root)
 
       if (!is_readonly) {
         if (!is_empty) {
