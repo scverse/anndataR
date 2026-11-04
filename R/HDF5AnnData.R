@@ -393,6 +393,15 @@ HDF5AnnData <- R6::R6Class(
       compression <- match.arg(compression)
       mode <- match.arg(mode)
 
+      if (!rlang::is_string(root) || is.na(root)) {
+        cli_abort(
+          paste(
+            "{.arg root} must be a single non-missing string,",
+            "not {.obj_type_friendly {root}}."
+          )
+        )
+      }
+
       private$.mode <- mode
       private$.compression <- compression
       private$.chunk_size <- chunk_size

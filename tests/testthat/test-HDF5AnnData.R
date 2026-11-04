@@ -37,6 +37,18 @@ test_that("reading a missing root group errors", {
   )
 })
 
+test_that("invalid root values error", {
+  file <- tempfile(fileext = ".h5ad")
+
+  for (root in list(NULL, NA_character_, NA, character(0), c("a", "b"), 1)) {
+    expect_error(
+      HDF5AnnData$new(file, root = root, mode = "w"),
+      "must be a single non-missing string"
+    )
+  }
+  expect_false(file.exists(file))
+})
+
 test_that("writing a fresh AnnData at a non-root group preserves siblings", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
   rhdf5::h5createFile(h5ad_file)
