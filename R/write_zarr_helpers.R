@@ -394,13 +394,10 @@ patch_zarr_vlen_utf8 <- function(store, name, zarr_format) {
   metadata <- jsonlite::read_json(metadata_path)
 
   if (zarr_format == 2L) {
-    # Rarr versions that fix Rarr#261 record the filter themselves
-    has_vlen_utf8 <- any(vapply(
-      metadata$filters,
-      \(f) identical(f$id, "vlen-utf8"),
-      logical(1)
-    ))
-    if (!has_vlen_utf8) {
+    # Rarr adds this filter itself once Huber-group-EMBL/Rarr#111 is fixed.
+    # Fix it since Python can't read arrays that lists the filter twice.
+    filter_ids <- purrr::map_chr(metadata$filters, "id")
+    if (!"vlen-utf8" %in% filter_ids) {
       metadata$filters <- c(metadata$filters, list(list(id = "vlen-utf8")))
     }
   } else {
