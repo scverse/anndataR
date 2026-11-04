@@ -10,7 +10,7 @@ read_elem(path, name, backed = FALSE, format = c("auto", "h5ad", "zarr"), ...)
 \item{path}{Path to the H5AD file or Zarr store to read from}
 
 \item{name}{Path of the element inside the file or store, e.g. \code{"obs"} or
-\code{"obsm/X_pca"}. A leading \code{/} is optional.}
+\code{"obsm/X_pca"}}
 
 \item{backed}{Whether to return array and matrix elements as
 \link[DelayedArray:DelayedArray]{DelayedArray::DelayedArray} objects instead of reading them into memory.
@@ -27,18 +27,10 @@ read as H5AD and a directory with Zarr metadata is read as Zarr.
 \item{...}{Not currently used. Unused arguments are an error.}
 }
 \value{
-The element, as the matching R type. For example, a data frame, a
-(sparse) matrix, a vector, a factor or a named list.
+The element, as the matching R type
 }
 \description{
-Read a single element from an H5AD file or Zarr store, equivalent to
-Python \strong{anndata}'s \code{read_elem()}
-}
-\details{
-The element is read using its \code{encoding-type} and \code{encoding-version}
-attributes, so \code{name} must refer to an element written using the AnnData
-encoding. Matrices are returned without dimension names, as they are stored.
-Data frames have row names taken from their index.
+Read a single element from an H5AD file or Zarr store
 }
 \examples{
 h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
@@ -50,5 +42,9 @@ if (requireNamespace("rhdf5", quietly = TRUE)) {
   # Read a single obsm matrix
   pca <- read_elem(h5ad_file, "obsm/X_pca")
 }
+}
+\seealso{
+Other element readers and writers:
+\code{\link[=write_elem]{write_elem()}}
 }
 \concept{element readers and writers}
