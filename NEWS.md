@@ -1,6 +1,7 @@
 # anndataR devel
 
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
+- Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
 
 # anndataR 1.3.4
 
