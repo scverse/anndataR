@@ -7,7 +7,7 @@
 write_zarr(
   object,
   path,
-  compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+  compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
   ...
 )
@@ -19,9 +19,9 @@ write_zarr(
 
 \item{path}{Path of the file to write to}
 
-\item{compression}{The compression algorithm to use when writing the Zarr
-file. Can be one of \code{"none"}, \code{"gzip"}, \code{"blosc"}, \code{"zstd"},
-\code{"lzma"}, \code{"bz2"}, \code{"zlib"}, \code{"lz4"}. Defaults to \code{"none"}.
+\item{compression}{The compression to use when writing the element.
+One of \code{"zstd"}, \code{"gzip"}, \code{"blosc"}, \code{"lzma"}, \code{"bz2"},
+\code{"zlib"}, \code{"lz4"}, \code{"none"}. Defaults to \code{"zstd"}.
 See \code{help("compressors", package = "Rarr")}.}
 
 \item{mode}{The mode to open the Zarr file.

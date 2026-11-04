@@ -37,11 +37,13 @@ import scipy.sparse
 #
 # ruff format inst/scripts/example_files.py && ruff check --select I --fix inst/scripts/example_files.py
 #
-# Version: 0.5.0
-# Date: 2026-07-30
+# Version: 0.6.0
+# Date: 2026-10-29
 #
 # CHANGELOG
 #
+# v0.6.0 (2026-10-29)
+# - Write the Zarr v3 example with sharding, as anndata 0.13 does by default
 # v0.5.0 (2026-07-30)
 # - Add nullable string examples
 # - Avoid anndata/scanpy warnings
@@ -143,8 +145,6 @@ print("\n>>> Writing H5AD file...")
 adata.write_h5ad("inst/extdata/example.h5ad", compression="gzip")
 
 # Write Zarr files in both v2 and v3 formats and zip them
-# TODO: Enable sharding when Rarr supports it
-anndata.settings.auto_shard_zarr_v3 = False
 os.chdir("inst/extdata/")
 for fmt in (2, 3):
     anndata.settings.zarr_write_format = fmt

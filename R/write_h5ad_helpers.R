@@ -12,6 +12,8 @@
 #'   When `NULL`, chunking is disabled (contiguous storage, the rhdf5 default).
 #'   When a number, it is used as the target chunk size in bytes.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param force_array Whether to always write length-1 character, numeric and
+#'   logical values as arrays instead of scalars (e.g. for data frame columns)
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -28,6 +30,7 @@ write_h5ad_element <- function(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   stop_on_error = FALSE,
+  force_array = FALSE,
   ...
 ) {
   compression <- match.arg(compression)
@@ -60,7 +63,7 @@ write_h5ad_element <- function(
       }
     } else if (is.character(value)) {
       # Character values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_h5ad_string_scalar
       } else if (anyNA(value) && length(dim(value)) <= 1) {
         write_h5ad_nullable_string
@@ -69,7 +72,7 @@ write_h5ad_element <- function(
       }
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) {
       # Numeric values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_h5ad_numeric_scalar
       } else if (is.integer(value) && anyNA(value) && length(dim(value)) <= 1) {
         write_h5ad_nullable_integer
@@ -80,7 +83,7 @@ write_h5ad_element <- function(
       # Logical values
       if (anyNA(value)) {
         write_h5ad_nullable_boolean
-      } else if (length(value) == 1) {
+      } else if (!force_array && length(value) == 1) {
         # Single Booleans should be written as numeric scalars
         write_h5ad_numeric_scalar
       } else {
@@ -113,18 +116,11 @@ write_h5ad_element <- function(
       )
     },
     error = function(e) {
-      message <- paste0(
-        "Could not write element '",
-        name,
-        "' of type '",
-        class(value),
-        "':\n",
-        conditionMessage(e)
-      )
+      msg <- "Could not write element {.field {name}} of type {.cls {class(value)}}"
       if (stop_on_error) {
-        cli_abort(message)
+        cli_abort(msg, parent = e)
       } else {
-        cli_warn(message)
+        cli_warn(msg, parent = e)
         NULL
       }
     }
@@ -175,7 +171,8 @@ write_h5ad_null <- function(
   name,
   compression,
   chunk_size = "auto",
-  version = "0.1.0"
+  version = "0.1.0",
+  ...
 ) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
@@ -219,10 +216,9 @@ write_h5ad_dense_array <- function(
     value <- as.matrix(value)
   }
 
-  if (is.matrix(value) && anyNA(value)) {
-    # is.na(value) <- NaN gets ignored
-    na_indices <- is.na(value)
-    value[na_indices] <- NaN
+  if (is.integer(value) && length(dim(value)) >= 2 && anyNA(value)) {
+    # an integer array can't hold NA, but a double array can
+    storage.mode(value) <- "double"
   }
 
   if (!is.vector(value)) {
@@ -654,6 +650,11 @@ write_h5ad_numeric_scalar <- function(
 #'
 #' @inheritParams write_h5ad_element
 #' @inheritParams write_h5ad_encoding version
+#' @param index The index to use for `data.frame` elements of the mapping. Used
+#' for aligned mappings (`obsm`/`varm`), where the index of a `data.frame` must
+#' be the `obs_names`/`var_names` of the parent object. Ignored by elements
+#' that are not `data.frame`s. If `NULL` then each `data.frame` provides its
+#' own index, see `write_h5ad_data_frame()`.
 #'
 #' @noRd
 write_h5ad_mapping <- function(
@@ -662,6 +663,7 @@ write_h5ad_mapping <- function(
   name,
   compression,
   chunk_size = "auto",
+  index = NULL,
   version = "0.1.0"
 ) {
   hdf5_file$open_and_defer_close()
@@ -670,13 +672,27 @@ write_h5ad_mapping <- function(
 
   # Write mapping elements
   for (key in names(value)) {
-    write_h5ad_element(
-      value[[key]],
-      hdf5_file,
-      paste0(name, "/", key),
-      compression,
-      chunk_size = chunk_size
-    )
+    element <- value[[key]]
+    element_name <- paste0(name, "/", key)
+
+    if (!is.null(index) && is.data.frame(element)) {
+      write_h5ad_element(
+        element,
+        hdf5_file,
+        element_name,
+        compression,
+        chunk_size = chunk_size,
+        index = index
+      )
+    } else {
+      write_h5ad_element(
+        element,
+        hdf5_file,
+        element_name,
+        compression,
+        chunk_size = chunk_size
+      )
+    }
   }
 
   write_h5ad_encoding(hdf5_file, name, "dict", version)
@@ -734,7 +750,8 @@ write_h5ad_data_frame <- function(
       hdf5_file,
       paste0(name, "/", col),
       compression,
-      chunk_size = chunk_size
+      chunk_size = chunk_size,
+      force_array = TRUE
     )
   }
 
@@ -800,7 +817,8 @@ write_h5ad_data_frame_index <- function(
     hdf5_file,
     paste0(name, "/", index_name),
     compression,
-    chunk_size = chunk_size
+    chunk_size = chunk_size,
+    force_array = TRUE
   )
 }
 

@@ -11,15 +11,18 @@ known_issues <- read_known_issues()
 
 test_names <- names(da$matrix_generators)
 
-for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
+# layers must always be 2-dimensional in AnnData
+# -> https://github.com/scverse/anndata/blob/0.13.4/src/anndata/_core/storage.py#L62-L67 # nolint
+# TODO: remove once LouiseDck/dummy-anndata#1 is fixed
+test_names <- test_names[!endsWith(test_names, "_3d")]
+
+for (fmt in roundtrip_formats(ad)) {
   fmt_config <- get_fmt_config(fmt)
 
   withr::with_options(
     list("anndataR.zarr_format" = fmt_config$zarr_format),
     {
-      if (grepl("zarr", fmt_config$ext, fixed = TRUE)) {
-        ad$settings$zarr_write_format <- fmt_config$zarr_format
-      }
+      py_set_zarr_write_format(ad, fmt_config$zarr_format)
 
       for (name in test_names) {
         # first generate a python adata

@@ -126,7 +126,8 @@ HDF5AnnData <- R6::R6Class(
             private$.hdf5_file,
             hdf5_root_path(private$.root, "obsm"),
             private$.compression,
-            chunk_size = private$.chunk_size
+            chunk_size = private$.chunk_size,
+            index = self$obs_names
           )
       }
     },
@@ -157,7 +158,8 @@ HDF5AnnData <- R6::R6Class(
             private$.hdf5_file,
             hdf5_root_path(private$.root, "varm"),
             private$.compression,
-            chunk_size = private$.chunk_size
+            chunk_size = private$.chunk_size,
+            index = self$var_names
           )
       }
     },

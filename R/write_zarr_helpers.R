@@ -6,12 +6,15 @@
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element.
-#'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
-#'   `"zlib"`, `"lz4"`.
+#'   One of `"zstd"`, `"gzip"`, `"blosc"`, `"lzma"`, `"bz2"`,
+#'   `"zlib"`, `"lz4"`, `"none"`. Defaults to `"zstd"`.
+#'   See `help("compressors", package = "Rarr")`.
 #' @param zarr_format The format to write the element in, either 2 or 3 for the
 #'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
 #'   elements of a store end up in the same format.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param force_array Whether to always write length-1 character, numeric and
+#'   logical values as arrays instead of scalars (e.g. for data frame columns)
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -25,17 +28,18 @@ write_zarr_element <- function(
   store,
   name,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format,
   stop_on_error = FALSE,
+  force_array = FALSE,
   ...
 ) {
   compression <- match.arg(compression)
@@ -59,7 +63,7 @@ write_zarr_element <- function(
       }
     } else if (is.character(value)) {
       # Character values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_string_scalar
       } else if (anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_string
@@ -68,9 +72,9 @@ write_zarr_element <- function(
       }
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) {
       # Numeric values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_numeric_scalar
-      } else if (is.integer(value) && anyNA(value)) {
+      } else if (is.integer(value) && anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_integer
       } else {
         write_zarr_dense_array
@@ -79,7 +83,7 @@ write_zarr_element <- function(
       # Logical values
       if (anyNA(value)) {
         write_zarr_nullable_boolean
-      } else if (length(value) == 1) {
+      } else if (!force_array && length(value) == 1) {
         # Single Booleans should be written as numeric scalars
         write_zarr_numeric_scalar
       } else {
@@ -110,18 +114,11 @@ write_zarr_element <- function(
       )
     },
     error = function(e) {
-      message <- paste0(
-        "Could not write element '",
-        name,
-        "' of type '",
-        class(value),
-        "':\n",
-        conditionMessage(e)
-      )
+      msg <- "Could not write element {.field {name}} of type {.cls {class(value)}}"
       if (stop_on_error) {
-        cli_abort(message)
+        cli_abort(msg, parent = e)
       } else {
-        cli_warn(message)
+        cli_warn(msg, parent = e)
         NULL
       }
     }
@@ -159,7 +156,8 @@ write_zarr_null <- function(
   name,
   compression,
   zarr_format,
-  version = "0.1.0"
+  version = "0.1.0",
+  ...
 ) {
   if (isFALSE(getOption("anndataR.write_null", "TRUE"))) {
     return(invisible(NULL))
@@ -200,6 +198,11 @@ write_zarr_dense_array <- function(
   # matrices of type 'dgeMatrix' can simply be converted to a matrix
   if (inherits(value, "denseMatrix")) {
     value <- as.matrix(value)
+  }
+
+  if (is.integer(value) && length(dim(value)) >= 2 && anyNA(value)) {
+    # an integer array can't hold NA, but a double array can
+    storage.mode(value) <- "double"
   }
 
   zarr_write_compressed(
@@ -249,7 +252,7 @@ write_zarr_sparse_array <- function(
   }
 
   # Write sparse matrix
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
   zarr_write_compressed(
     store,
     paste0(name, "/indices"),
@@ -300,7 +303,7 @@ write_zarr_nullable_boolean <- function(
   version = "0.1.0"
 ) {
   # write mask and values
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- FALSE
 
@@ -340,7 +343,7 @@ write_zarr_nullable_integer <- function(
   version = "0.1.0"
 ) {
   # write mask and values
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- -1L
 
@@ -391,7 +394,12 @@ patch_zarr_vlen_utf8 <- function(store, name, zarr_format) {
   metadata <- jsonlite::read_json(metadata_path)
 
   if (zarr_format == 2L) {
-    metadata$filters <- c(metadata$filters, list(list(id = "vlen-utf8")))
+    # Rarr adds this filter itself once Huber-group-EMBL/Rarr#111 is fixed.
+    # Fix it since Python can't read arrays that lists the filter twice.
+    filter_ids <- purrr::map_chr(metadata$filters, "id")
+    if (!"vlen-utf8" %in% filter_ids) {
+      metadata$filters <- c(metadata$filters, list(list(id = "vlen-utf8")))
+    }
   } else {
     metadata$data_type <- "string"
     # There should be only one array-bytes codec
@@ -433,7 +441,7 @@ write_zarr_nullable_string <- function(
   version = "0.1.0"
 ) {
   # write mask and values
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
   value_no_na <- value
   value_no_na[is.na(value_no_na)] <- ""
 
@@ -539,7 +547,7 @@ write_zarr_categorical <- function(
   zarr_format,
   version = "0.2.0"
 ) {
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
 
   categories <- levels(value)
 
@@ -651,6 +659,11 @@ write_zarr_numeric_scalar <- function(
 #'
 #' @inheritParams write_zarr_element
 #' @inheritParams write_zarr_encoding version
+#' @param index The index to use for `data.frame` elements of the mapping. Used
+#' for aligned mappings (`obsm`/`varm`), where the index of a `data.frame` must
+#' be the `obs_names`/`var_names` of the parent object. Ignored by elements
+#' that are not `data.frame`s. If `NULL` then each `data.frame` provides its
+#' own index, see `write_zarr_data_frame()`.
 #'
 #' @noRd
 write_zarr_mapping <- function(
@@ -659,19 +672,34 @@ write_zarr_mapping <- function(
   name,
   compression,
   zarr_format,
+  index = NULL,
   version = "0.1.0"
 ) {
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
 
   # Write mapping elements
   for (key in names(value)) {
-    write_zarr_element(
-      value[[key]],
-      store,
-      paste0(name, "/", key),
-      compression,
-      zarr_format = zarr_format
-    )
+    element <- value[[key]]
+    element_name <- paste0(name, "/", key)
+
+    if (!is.null(index) && is.data.frame(element)) {
+      write_zarr_element(
+        element,
+        store,
+        element_name,
+        compression,
+        zarr_format = zarr_format,
+        index = index
+      )
+    } else {
+      write_zarr_element(
+        element,
+        store,
+        element_name,
+        compression,
+        zarr_format = zarr_format
+      )
+    }
   }
 
   write_zarr_encoding(store, name, "dict", version, zarr_format)
@@ -697,7 +725,7 @@ write_zarr_data_frame <- function(
   index = NULL,
   version = "0.2.0"
 ) {
-  create_zarr_group(store, name, zarr_format)
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
   write_zarr_encoding(store, name, "dataframe", version, zarr_format)
 
   if (is.null(index)) {
@@ -727,7 +755,8 @@ write_zarr_data_frame <- function(
       store,
       paste0(name, "/", col),
       compression,
-      zarr_format
+      zarr_format,
+      force_array = TRUE
     )
   }
 
@@ -737,7 +766,8 @@ write_zarr_data_frame <- function(
     store,
     paste0(name, "/", index_name),
     compression,
-    zarr_format
+    zarr_format,
+    force_array = TRUE
   )
 
   # Write additional data frame attributes
@@ -783,40 +813,39 @@ write_empty_zarr <- function(
   zarr_format,
   version = "0.1.0"
 ) {
-  create_zarr(store = store, zarr_format)
   write_zarr_encoding(store, "/", "anndata", "0.1.0", zarr_format)
 
   write_zarr_element(
     obs[, integer(0)],
     store,
-    "/obs",
+    "obs",
     compression,
     zarr_format
   )
   write_zarr_element(
     var[, integer(0)],
     store,
-    "/var",
+    "var",
     compression,
     zarr_format
   )
 
-  create_zarr_group(store, "layers", zarr_format)
+  Rarr::write_zarr_group(store, "layers", zarr_version = zarr_format)
   write_zarr_encoding(store, "/layers", "dict", "0.1.0", zarr_format)
 
-  create_zarr_group(store, "obsm", zarr_format)
+  Rarr::write_zarr_group(store, "obsm", zarr_version = zarr_format)
   write_zarr_encoding(store, "/obsm", "dict", "0.1.0", zarr_format)
 
-  create_zarr_group(store, "obsp", zarr_format)
+  Rarr::write_zarr_group(store, "obsp", zarr_version = zarr_format)
   write_zarr_encoding(store, "/obsp", "dict", "0.1.0", zarr_format)
 
-  create_zarr_group(store, "uns", zarr_format)
+  Rarr::write_zarr_group(store, "uns", zarr_version = zarr_format)
   write_zarr_encoding(store, "/uns", "dict", "0.1.0", zarr_format)
 
-  create_zarr_group(store, "varm", zarr_format)
+  Rarr::write_zarr_group(store, "varm", zarr_version = zarr_format)
   write_zarr_encoding(store, "/varm", "dict", "0.1.0", zarr_format)
 
-  create_zarr_group(store, "varp", zarr_format)
+  Rarr::write_zarr_group(store, "varp", zarr_version = zarr_format)
   write_zarr_encoding(store, "/varp", "dict", "0.1.0", zarr_format)
 }
 
@@ -835,14 +864,14 @@ zarr_write_compressed <- function(
   name,
   value,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format
 ) {
@@ -871,13 +900,13 @@ zarr_write_compressed <- function(
 .get_compressor <- function(compression) {
   switch(
     compression,
-    "none" = NULL,
     "zstd" = Rarr::use_zstd(),
-    "blosc" = Rarr::use_blosc(),
     "gzip" = Rarr::use_gzip(),
+    "blosc" = Rarr::use_blosc(),
     "lzma" = Rarr::use_lzma(),
     "bz2" = Rarr::use_bz2(),
     "zlib" = Rarr::use_zlib(),
-    "lz4" = Rarr::use_lz4()
+    "lz4" = Rarr::use_lz4(),
+    "none" = NULL
   )
 }
