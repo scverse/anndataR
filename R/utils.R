@@ -65,24 +65,25 @@ to_py_matrix <- function(mat) {
 }
 
 # nolint start: object_name_linter
-to_R_matrix <- function(mat, allow_backed = TRUE) {
-  if (inherits(mat, "DelayedMatrix") && isFALSE(allow_backed)) {
-    seed <- DelayedArray::seed(mat)
-    if (inherits(seed, "CSC_H5SparseMatrixSeed")) {
-      mat <- as(mat, "CsparseMatrix")
-    } else if (inherits(seed, "CSR_H5SparseMatrixSeed")) {
-      mat <- as(mat, "RsparseMatrix")
-    } else {
-      mat <- as.matrix(mat)
-    }
-  }
-
+to_R_matrix <- function(mat) {
   # nolint end: object_name_linter
   if (inherits(mat, "dgRMatrix")) {
     mat <- as(mat, "CsparseMatrix")
   }
 
   Matrix::t(mat)
+}
+
+materialize_matrix <- function(mat) {
+  if (!inherits(mat, "DelayedMatrix")) {
+    return(mat)
+  }
+
+  if (DelayedArray::is_sparse(mat)) {
+    as(mat, "CsparseMatrix")
+  } else {
+    as.matrix(mat)
+  }
 }
 
 self_name <- function(x) {

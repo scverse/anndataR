@@ -219,6 +219,116 @@ test_that("backed SingleCellExperiment has lazy assays equal to eager ones", {
   }
 })
 
+test_that("backed Seurat graphs equal the obsp of an eager AnnData", {
+  skip_if_not_installed("Seurat")
+
+  backed <- read_h5ad(filename, as = "HDF5AnnData", backed = TRUE)
+  eager <- read_h5ad(filename, as = "HDF5AnnData")
+  withr::defer({
+    backed$close()
+    eager$close()
+  })
+
+  seurat <- backed$as_Seurat()
+  for (graph in eager$obsp_keys()) {
+    expect_equal(
+      as.matrix(seurat[[paste0("RNA_", graph)]]),
+      as.matrix(eager$obsp[[graph]]),
+      ignore_attr = TRUE,
+      info = paste("graph", graph)
+    )
+  }
+})
+
+# the graphs in example.h5ad are all csr, so write one of each format
+write_graphs_h5ad <- function(path) {
+  obsp <- Matrix::sparseMatrix(
+    i = c(1, 2, 3, 5),
+    j = c(2, 3, 1, 6),
+    x = c(1, 2, 3, 4),
+    dims = c(6, 6)
+  )
+  varp <- Matrix::sparseMatrix(
+    i = c(1, 2, 3),
+    j = c(2, 3, 4),
+    x = c(1, 2, 3),
+    dims = c(4, 4)
+  )
+  adata <- AnnData(
+    X = matrix(as.numeric(1:24), 6, 4),
+    obs = data.frame(row.names = paste0("cell", 1:6)),
+    var = data.frame(row.names = paste0("gene", 1:4)),
+    layers = list(counts = matrix(as.numeric(1:24), 6, 4)),
+    obsp = list(
+      csc = obsp,
+      csr = as(obsp, "RsparseMatrix"),
+      dense = as.matrix(obsp)
+    ),
+    varp = list(
+      csc = varp,
+      csr = as(varp, "RsparseMatrix"),
+      dense = as.matrix(varp)
+    )
+  )
+  write_h5ad(adata, path)
+}
+
+test_that("backed Seurat graphs work for every format", {
+  skip_if_not_installed("Seurat")
+
+  path <- withr::local_tempfile(fileext = ".h5ad")
+  write_graphs_h5ad(path)
+
+  backed <- read_h5ad(path, as = "HDF5AnnData", backed = TRUE)
+  eager <- read_h5ad(path, as = "HDF5AnnData")
+  withr::defer({
+    backed$close()
+    eager$close()
+  })
+
+  seurat <- backed$as_Seurat()
+  for (graph in eager$obsp_keys()) {
+    expect_equal(
+      as.matrix(seurat[[paste0("RNA_", graph)]]),
+      as.matrix(eager$obsp[[graph]]),
+      ignore_attr = TRUE,
+      info = paste("graph", graph)
+    )
+  }
+})
+
+test_that("backed SingleCellExperiment pairs work for every format", {
+  suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
+
+  path <- withr::local_tempfile(fileext = ".h5ad")
+  write_graphs_h5ad(path)
+
+  backed <- read_h5ad(path, as = "HDF5AnnData", backed = TRUE)
+  eager <- read_h5ad(path, as = "HDF5AnnData")
+  withr::defer({
+    backed$close()
+    eager$close()
+  })
+
+  sce <- backed$as_SingleCellExperiment()
+  for (graph in eager$obsp_keys()) {
+    expect_equal(
+      as.matrix(SingleCellExperiment::colPair(sce, graph, asSparse = TRUE)),
+      as.matrix(eager$obsp[[graph]]),
+      ignore_attr = TRUE,
+      info = paste("colPair", graph)
+    )
+  }
+  for (graph in eager$varp_keys()) {
+    expect_equal(
+      as.matrix(SingleCellExperiment::rowPair(sce, graph, asSparse = TRUE)),
+      as.matrix(eager$varp[[graph]]),
+      ignore_attr = TRUE,
+      info = paste("rowPair", graph)
+    )
+  }
+})
+
 # Regression test (issue #387, reported by LouiseDck): converting a backed SCE
 # back to AnnData must preserve shape.
 test_that("round-trip of a backed SCE back to AnnData preserves shape", {

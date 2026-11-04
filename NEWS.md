@@ -1,18 +1,29 @@
 # anndataR devel
 
+- Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
+
+# anndataR 1.3.4
+
 - Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
-- Use zstd by default in `write_zarr()` (PR #540)
+- Use zstd by default in `write_zarr()` (PR #540).
 - Write length 1 `data.frame` columns and indices as arrays instead of scalars (PR #556, issue #553).
 - Fix writing integer matrices containing `NA` to Zarr, which produced stores that couldn't be read back: as for H5AD, they are now written as double (PR #546, issue #542).
 - Keep `NA` in double and integer matrices written to H5AD instead of replacing it with `NaN`, so that `NA` and `NaN` can still be told apart when reading the file back in R. Python **anndata** reads both as `NaN` (PR #546).
+- Fix the error and warning messages when reading or writing an element fails: the original error is now shown as the cause, instead of being parsed as a **cli** expression, which failed with ``Could not parse cli `{}` expression`` (PR #547, issue #531).
+- Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based (PR #547, issue #531).
+- Fix writing non-ASCII strings to H5AD files by using UTF-8 for string datasets (PR #555, issue #400).
+- Re-enable testing against Python **anndata** >= 0.13, and remove the warning that `ReticulateAnnData` gave for these versions (PR #569, issue #514).
+- Skip the Python-written Zarr v2 roundtrip tests when the installed Python **anndata** can no longer write Zarr v2, as **anndata** main does (PR #568, issue #514).
+- Skip the `None` key that Python **anndata** >= 0.13 uses for `X` when reading layers through `ReticulateAnnData` and `py_to_r()`, and keep `X` when setting `layers` (PR #563, issue #514).
+- Ignore the `None (.X)` entry that Python **anndata** >= 0.13.2 lists under `layers:` when comparing printed objects in the roundtrip tests (PR #564, issue #514).
+- Drop 3D layers from the layers roundtrip tests, because Python **anndata** >= 0.13 refuses to write them (PR #571, issue #514).
+- Require `Rarr >= 2.1.45` to read the sharded Zarr v3 stores that Python **anndata** >= 0.13 writes by default, because older versions can return wrong values for sharded arrays (PR #572, issue #514).
 
 # anndataR 1.3.3
 
 - Fix Zarr v2 string arrays getting the `vlen-utf8` filter twice, which Python zarr can't read, with Rarr versions that record the filter themselves (PR #557, Huber-group-EMBL/Rarr#261).
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
-- Fix the error and warning messages when reading or writing an element fails: the original error is now shown as the cause, instead of being parsed as a **cli** expression, which failed with ``Could not parse cli `{}` expression`` (PR #547, issue #531).
-- Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based (PR #547, issue #531).
 
 # anndataR 1.3.2
 
