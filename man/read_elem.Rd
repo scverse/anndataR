@@ -27,7 +27,8 @@ read as H5AD and a directory with Zarr metadata is read as Zarr.
 \item{...}{Not currently used. Unused arguments are an error.}
 }
 \value{
-The element, as the matching R type
+The element, as the matching R type. An \code{anndata} group is
+returned as a read-only \code{\link{HDF5AnnData}} or \code{\link{ZarrAnnData}} object.
 }
 \description{
 Read a single element from an H5AD file or Zarr store

@@ -17,11 +17,11 @@ write_elem(
 \item{path}{Path to the H5AD file or Zarr store to write to. Created if it
 doesn't exist.}
 
-\item{name}{Path of the element inside the file or store, e.g. \code{"uns/foo"}.
-A leading \code{/} is optional. Missing parent groups are created.}
+\item{name}{Path of the element inside the file or store. Use \code{"/"} to
+write an \code{AnnData} object to the whole file or store.}
 
-\item{value}{The value to write, e.g. a data frame, a (sparse) matrix, a
-vector, a factor or a named list}
+\item{value}{The value to write. An \code{AnnData} object is written as an
+\code{anndata} group.}
 
 \item{overwrite}{Whether to replace an element that already exists at
 \code{name}. If \code{FALSE} (default), an existing element is an error.}
@@ -38,27 +38,15 @@ new path is detected from its extension.
 \item{...}{Options for writing the element:
 \itemize{
 \item \code{compression}: The compression to use. See \code{\link[=write_h5ad]{write_h5ad()}} and
-\code{\link[=write_zarr]{write_zarr()}} for the options for each format.
-\item \code{chunk_size}: The target chunk size (H5AD only). See \code{\link[=write_h5ad]{write_h5ad()}}.
+\code{\link[=write_zarr]{write_zarr()}}.
+\item \code{chunk_size}: The target chunk size. See \code{\link[=write_h5ad]{write_h5ad()}}.
 }}
 }
 \value{
 \code{path} (invisibly)
 }
 \description{
-Write a single element to an H5AD file or Zarr store, equivalent to Python
-\strong{anndata}'s \code{write_elem()}
-}
-\details{
-\code{value} is written using the AnnData encoding, the same way as the element
-would be written by \code{\link[=write_h5ad]{write_h5ad()}} or \code{\link[=write_zarr]{write_zarr()}}.
-
-When writing to a new Zarr store, the Zarr format is set by the
-\code{anndataR.zarr_format} option (Zarr v3 by default). When writing to an
-existing store, the format of the store is used.
-
-\code{NULL} values are written as empty elements unless
-\code{options(anndataR.write_null = FALSE)} is set.
+Write a single element to an H5AD file or Zarr store
 }
 \examples{
 h5ad_file <- tempfile(fileext = ".h5ad")

@@ -104,9 +104,22 @@ read_elem <- function(
     )
   }
 
+  encoding <- read_h5ad_encoding(hdf5_file, name)
+
+  if (identical(encoding$type, "anndata")) {
+    return(HDF5AnnData$new(
+      hdf5_file$path,
+      mode = "r",
+      backed = backed,
+      root = name
+    ))
+  }
+
   read_h5ad_element(
     hdf5_file,
     name,
+    type = encoding$type,
+    version = encoding$version,
     stop_on_error = TRUE,
     backed = backed,
     ...
@@ -133,9 +146,18 @@ read_elem <- function(
     cli_abort("Element {.val {name}} not found in {.path {store}}", call = call)
   }
 
+  encoding <- read_zarr_encoding(store, name)
+
+  if (identical(encoding$type, "anndata")) {
+    adata_path <- if (name == "/") store else file.path(store, name)
+    return(ZarrAnnData$new(adata_path, mode = "r"))
+  }
+
   read_zarr_element(
     store,
     name,
+    type = encoding$type,
+    version = encoding$version,
     stop_on_error = TRUE,
     ...
   )

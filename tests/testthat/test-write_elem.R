@@ -27,7 +27,7 @@ elem_target <- function(name) {
   paste0("elem/", gsub("/", "__", name, fixed = TRUE))
 }
 
-# TODO: Scalar NA strings are written to Zarr as "NA", remove this once fixed
+# TODO: Remove once scalar NA strings are written to Zarr correctly (#581)
 drop_scalar_na_string <- function(value) {
   if (is.list(value) && !is.data.frame(value)) {
     value$scalar_character_with_nas <- NULL
@@ -187,12 +187,11 @@ test_that("write_elem() errors for unsupported arguments in ...", {
   expect_error(write_elem(zarr, "x", 1:3, zarr_format = 2), "zarr_format")
 })
 
-test_that("write_elem() errors for the root and unsupported values", {
+test_that("write_elem() errors for non-AnnData roots and unsupported values", {
   h5ad <- withr::local_tempfile(fileext = ".h5ad")
 
   expect_error(write_elem(h5ad, "/", 1:3), "root group")
   expect_error(write_elem(h5ad, "", 1:3), "root group")
-  expect_error(write_elem(h5ad, "x", adata), "not supported")
   expect_error(write_elem(h5ad, "x", function() NULL), "not supported")
 })
 
@@ -213,3 +212,87 @@ test_that("write_elem() returns the path invisibly", {
   expect_invisible(write_elem(h5ad, "x", 1:3))
   expect_identical(write_elem(h5ad, "y", 1:3), h5ad)
 })
+
+# Mappings are read back sorted by name and dense Matrix objects are read back
+# as base matrices, so normalise both before comparing
+normalise_slot <- function(x) {
+  if (!is.list(x) || is.data.frame(x)) {
+    return(x)
+  }
+  lapply(x[sort(names(x))], function(value) {
+    if (inherits(value, "denseMatrix")) as.matrix(value) else value
+  })
+}
+
+expect_adata_equal <- function(actual, expected, info = NULL) {
+  for (slot in c("X", "obs", "var", "layers", "obsm", "obsp")) {
+    expect_equal(
+      normalise_slot(actual[[slot]]),
+      normalise_slot(expected[[slot]]),
+      info = paste(info, slot)
+    )
+  }
+}
+
+small_adata <- generate_dataset(
+  n_obs = 3L,
+  n_vars = 4L,
+  layer_types = character(0),
+  obsm_types = character(0),
+  varm_types = character(0),
+  obsp_types = character(0),
+  varp_types = character(0),
+  uns_types = character(0),
+  format = "AnnData"
+)
+
+for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
+  ext <- if (fmt == "h5ad") ".h5ad" else ".zarr"
+  zarr_format <- if (fmt == "zarrv2") 2L else 3L
+
+  test_that(paste0("write_elem() writes AnnData objects to groups for ", fmt), {
+    if (fmt != "h5ad") {
+      skip_if_not_installed("Rarr")
+    }
+    withr::local_options(anndataR.zarr_format = zarr_format)
+    path <- withr::local_tempfile(fileext = ext)
+
+    write_elem(path, "other", 1:3)
+    write_elem(path, "mod/rna", adata, compression = "gzip")
+
+    result <- read_elem(path, "mod/rna")
+    expect_s3_class(result, if (fmt == "h5ad") "HDF5AnnData" else "ZarrAnnData")
+    expect_adata_equal(result, adata, info = fmt)
+    expect_equal(as.vector(read_elem(path, "other")), 1:3)
+
+    # Existing groups are only replaced with overwrite = TRUE
+    expect_error(write_elem(path, "mod/rna", small_adata), "already exists")
+    write_elem(path, "mod/rna", small_adata, overwrite = TRUE)
+    expect_adata_equal(read_elem(path, "mod/rna"), small_adata, info = fmt)
+    expect_equal(as.vector(read_elem(path, "other")), 1:3)
+  })
+
+  test_that(
+    paste0("write_elem() writes AnnData objects to the root for ", fmt),
+    {
+      if (fmt != "h5ad") {
+        skip_if_not_installed("Rarr")
+      }
+      withr::local_options(anndataR.zarr_format = zarr_format)
+      path <- withr::local_tempfile(fileext = ext)
+
+      # A new path is the same as write_h5ad()/write_zarr()
+      write_elem(path, "/", adata)
+      expect_adata_equal(read_elem(path, "/"), adata, info = fmt)
+      result <- if (fmt == "h5ad") read_h5ad(path) else read_zarr(path)
+      expect_adata_equal(result, adata, info = fmt)
+
+      # A non-empty file is only replaced with overwrite = TRUE
+      write_elem(path, "other", 1:3)
+      expect_error(write_elem(path, "/", small_adata), "not empty")
+      write_elem(path, "/", small_adata, overwrite = TRUE)
+      expect_adata_equal(read_elem(path, "/"), small_adata, info = fmt)
+      expect_error(read_elem(path, "other"), "not found")
+    }
+  )
+}
