@@ -97,7 +97,7 @@ There is also a HDF5-backed `AnnData` object:
 adata <- read_h5ad(h5ad_path, as = "HDF5AnnData")
 ```
 
-Similarly, these functionalities are provided for `.zarr` stores too. 
+Similarly, these functionalities are provided for `.zarr` stores too.
 
 ```{r zarr-path}
 zarr_path <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")
@@ -120,7 +120,7 @@ obj <- read_zarr(zarr_path, as = "Seurat")
 adata <- read_zarr(zarr_path, as = "ZarrAnnData")
 ```
 
-See `r vignette("usage_python")` for interacting with a Python `AnnData` via `r CRANpkg("reticulate")`. 
+See `r vignette("usage_python")` for interacting with a Python `AnnData` via `r CRANpkg("reticulate")`.
 
 ## Using `AnnData` objects
 
@@ -235,6 +235,35 @@ Setting `options(anndataR.zarr_format = 2)` changes the default for the rest of 
 Writing to a store that already exists always uses the format of that store, so appending to a Zarr v2 store never produces a mix of the two.
 
 See the [Zarr documentation](https://zarr.readthedocs.io/en/stable/) and the [Zarr specifications](https://zarr-specs.readthedocs.io/en/latest/specs.html) for more about the two formats.
+
+## Read and write single elements
+
+The `read_elem()` and `write_elem()` functions read and write a single element of a `.h5ad` file or `.zarr` store.
+
+Read a single element:
+
+```{r read-elem}
+read_elem(h5ad_path, "obsm/X_pca")[1:5, 1:5]
+```
+
+Add an element to an existing file.
+Missing parent groups are created, and an existing element is only replaced with `overwrite = TRUE`:
+
+```{r write-elem}
+tmpfile <- tempfile(fileext = ".h5ad")
+write_h5ad(adata, tmpfile)
+
+write_elem(tmpfile, "uns/note", "Added with write_elem()")
+read_elem(tmpfile, "uns/note")
+```
+
+An `AnnData` object can also be written to a group inside a file, for example a modality in a `.h5mu` file.
+Reading the group returns an `HDF5AnnData` (or `ZarrAnnData`) object:
+
+```{r write-elem-anndata}
+write_elem(tmpfile, "mod/rna", adata)
+read_elem(tmpfile, "mod/rna")
+```
 
 ## Subsetting `AnnData` objects {#subsetting}
 
