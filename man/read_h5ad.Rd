@@ -33,7 +33,8 @@ these apply to the group at \code{root} rather than the whole file:
 \item \code{a} creates a new file or opens an existing one for read/write.
 \item \code{r} opens an existing file for reading, the group at \code{root} must
 already exist.
-\item \verb{r+} opens an existing file for read/write.
+\item \verb{r+} opens an existing file for read/write, the group at \code{root} must
+already exist.
 \item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
 the file is created if missing but otherwise left untouched, and only the
 group at \code{root} is deleted and recreated.

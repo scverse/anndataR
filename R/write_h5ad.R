@@ -20,7 +20,8 @@
 #'   * `a` creates a new file or opens an existing one for read/write.
 #'   * `r` opens an existing file for reading, the group at `root` must
 #'     already exist.
-#'   * `r+` opens an existing file for read/write.
+#'   * `r+` opens an existing file for read/write, the group at `root` must
+#'     already exist.
 #'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
 #'     the file is created if missing but otherwise left untouched, and only the
 #'     group at `root` is deleted and recreated.

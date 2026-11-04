@@ -182,6 +182,23 @@ test_that("'r+'/'a' warn on a non-empty root group, scoped to the group", {
   )
 })
 
+test_that("'r+' errors on a missing root group but 'a' creates it", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(nested_file, root = "mod/typo", mode = "r+"),
+    "does not exist"
+  )
+  expect_false(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/typo")
+  )
+
+  HDF5AnnData$new(nested_file, root = "mod/atac", mode = "a")
+  expect_true(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/atac")
+  )
+})
+
 test_that("round-trip write_h5ad()/read_h5ad() at a non-root group works", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
   adata <- InMemoryAnnData$new(

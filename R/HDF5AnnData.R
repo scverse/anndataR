@@ -496,11 +496,16 @@ HDF5AnnData <- R6::R6Class(
       root_exists <- private$.root == "/" ||
         hdf5_path_exists(private$.hdf5_file, private$.root)
 
-      if (private$.root != "/" && is_readonly && !root_exists) {
-        # Read-only mode never creates the root group, so it must already exist
+      if (
+        private$.root != "/" && !root_exists && private$.mode %in% c("r", "r+")
+      ) {
+        # Modes 'r' and 'r+' never create the root group, so it must already
+        # exist. Use 'a', 'w' or 'w-' to create it.
         cli_abort(
           paste(
-            "Group {.val {private$.root}} does not exist in file {.file {file}}."
+            "Group {.val {private$.root}} does not exist in file {.file {file}}",
+            "but mode is set to {.val {private$.mode}}.",
+            "To create the group, use a different mode (e.g. 'a')."
           ),
           call = rlang::caller_env()
         )
@@ -730,7 +735,8 @@ HDF5AnnData <- R6::R6Class(
 #'   * `a` creates a new file or opens an existing one for read/write.
 #'   * `r` opens an existing file for reading, the group at `root` must
 #'     already exist.
-#'   * `r+` opens an existing file for read/write.
+#'   * `r+` opens an existing file for read/write, the group at `root` must
+#'     already exist.
 #'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
 #'     the file is created if missing but otherwise left untouched, and only the
 #'     group at `root` is deleted and recreated.
