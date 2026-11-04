@@ -4,7 +4,8 @@
 #'
 #' @param path Path to the H5AD file or Zarr store to write to. Created if it
 #'   doesn't exist.
-#' @param name Path of the element inside the file or store.
+#' @param name Path of the element inside the file or store. Use `"/"` to
+#'   write an `AnnData` object to the whole file or store.
 #' @param value The value to write
 #' @param overwrite Whether to replace an element that already exists at
 #'   `name`. If `FALSE` (default), an existing element is an error.
@@ -109,20 +110,22 @@ write_elem <- function(
   call = rlang::caller_env()
 ) {
   name <- hdf5_root_path("/", name)
+  is_root <- name == "/"
+  is_adata <- inherits(value, "AbstractAnnData")
 
-  # TODO: Allow writing AnnData objects to the root
-  if (name == "/") {
-    cli_abort("Writing to the root group is not supported yet", call = call)
+  check_elem_root(is_root, is_adata, call = call)
+
+  exists <- if (is_root) {
+    !hdf5_group_is_empty(hdf5_file, "/")
+  } else {
+    hdf5_path_exists(hdf5_file, name)
   }
+  check_elem_overwrite(exists, overwrite, name, hdf5_file$path, call = call)
 
-  if (hdf5_path_exists(hdf5_file, name) && !overwrite) {
-    cli_abort(
-      c(
-        "Element {.val {name}} already exists in {.path {hdf5_file$path}}",
-        "i" = "Set {.code overwrite = TRUE} to replace it"
-      ),
-      call = call
-    )
+  if (is_adata) {
+    # Mode "w" replaces only the group at `root`, or the whole file for "/"
+    value$as_HDF5AnnData(hdf5_file$path, mode = "w", root = name, ...)
+    return(invisible(NULL))
   }
 
   parent <- dirname(name)
@@ -158,25 +161,33 @@ write_elem <- function(
   call = rlang::caller_env()
 ) {
   name <- gsub("^/+|/+$", "", name)
+  is_root <- !nzchar(name)
+  is_adata <- inherits(value, "AbstractAnnData")
 
-  # TODO: Allow writing AnnData objects to the root
-  if (name == "") {
-    cli_abort("Writing to the root group is not supported yet", call = call)
-  }
+  check_elem_root(is_root, is_adata, call = call)
 
-  if (zarr_path_exists(store, name) && !overwrite) {
-    cli_abort(
-      c(
-        "Element {.val {name}} already exists in {.path {store}}",
-        "i" = "Set {.code overwrite = TRUE} to replace it"
-      ),
-      call = call
-    )
+  exists <- if (is_root) {
+    !is_zarr_empty(store)
+  } else {
+    zarr_path_exists(store, name)
   }
+  check_elem_overwrite(exists, overwrite, name, store, call = call)
 
   parent <- dirname(name)
-  if (parent != "." && !zarr_path_exists(store, parent)) {
+  if (!is_root && parent != "." && !zarr_path_exists(store, parent)) {
     Rarr::write_zarr_group(store, parent, zarr_version = zarr_format)
+  }
+
+  if (is_adata) {
+    # Mode "w" replaces the target directory, which is the whole store for "/"
+    value$as_ZarrAnnData(
+      if (is_root) store else file.path(store, name),
+      mode = "w",
+      zarr_format = zarr_format,
+      ...
+    )
+    # TODO: Update consolidated metadata once #492 is merged
+    return(invisible(NULL))
   }
 
   write_zarr_element(
@@ -189,6 +200,61 @@ write_elem <- function(
   )
 
   # TODO: Update consolidated metadata once #492 is merged
+
+  invisible(NULL)
+}
+
+#' Check an element can be written to the root
+#'
+#' Only `AbstractAnnData` objects can be written to the root group
+#'
+#' @param is_root Whether the element is the root group
+#' @param is_adata Whether the value is an `AbstractAnnData`
+#' @param call The calling environment, used in error messages
+#'
+#' @return `NULL` (invisibly)
+#'
+#' @noRd
+check_elem_root <- function(is_root, is_adata, call = rlang::caller_env()) {
+  if (is_root && !is_adata) {
+    cli_abort(
+      "Only {.cls AbstractAnnData} objects can be written to the root group",
+      call = call
+    )
+  }
+
+  invisible(NULL)
+}
+
+#' Check an existing element can be overwritten
+#'
+#' @param exists Whether the element already exists
+#' @param overwrite Whether overwriting is allowed
+#' @param name The element name, used in error messages
+#' @param path The file or store path, used in error messages
+#' @param call The calling environment, used in error messages
+#'
+#' @return `NULL` (invisibly)
+#'
+#' @noRd
+check_elem_overwrite <- function(
+  exists,
+  overwrite,
+  name,
+  path,
+  call = rlang::caller_env()
+) {
+  if (exists && !overwrite) {
+    msg <- if (name %in% c("", "/")) {
+      "{.path {path}} is not empty"
+    } else {
+      "Element {.val {name}} already exists in {.path {path}}"
+    }
+    cli_abort(
+      c(msg, "i" = "Set {.code overwrite = TRUE} to replace it"),
+      call = call
+    )
+  }
 
   invisible(NULL)
 }

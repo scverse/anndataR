@@ -104,9 +104,6 @@ test_that("read_elem() errors for unsupported encodings", {
   h5ad <- withr::local_tempfile(fileext = ".h5ad")
   write_h5ad(adata, h5ad)
 
-  # Root anndata group
-  expect_error(read_elem(h5ad, "/"), "No function for reading")
-
   # Group without encoding attributes, e.g. a .h5mu modality container
   rhdf5::h5createGroup(h5ad, "no_encoding")
   expect_error(read_elem(h5ad, "no_encoding"), "Encoding attributes not found")
@@ -130,3 +127,54 @@ test_that("read_elem() validates its arguments", {
   expect_error(read_elem(h5ad, "obs", format = "zarr"), "is \"h5ad\"")
   expect_error(read_elem(h5ad, "X", foo = 1), "foo")
 })
+
+test_that("read_elem() returns an HDF5AnnData for anndata groups", {
+  h5ad <- withr::local_tempfile(fileext = ".h5ad")
+  write_h5ad(adata, h5ad)
+
+  result <- read_elem(h5ad, "/")
+  expect_s3_class(result, "HDF5AnnData")
+  expect_equal(result$X, adata$X)
+  expect_equal(result$obs, adata$obs)
+  expect_equal(result$layers, read_h5ad(h5ad)$layers)
+
+  # Read-only
+  expect_error(result$X <- adata$X, "read-only")
+
+  # Nested groups, e.g. a modality in a .h5mu file
+  write_h5ad(adata, h5ad, mode = "a", root = "mod/rna")
+  nested <- read_elem(h5ad, "mod/rna")
+  expect_s3_class(nested, "HDF5AnnData")
+  expect_equal(nested$X, adata$X)
+})
+
+test_that("read_elem() passes backed to HDF5AnnData", {
+  skip_if_not_installed("HDF5Array")
+
+  h5ad <- withr::local_tempfile(fileext = ".h5ad")
+  write_h5ad(adata, h5ad)
+
+  expect_s4_class(read_elem(h5ad, "/", backed = TRUE)$X, "DelayedArray")
+})
+
+for (zarr_format in c(2L, 3L)) {
+  test_that(
+    paste0(
+      "read_elem() returns a ZarrAnnData for Zarr v",
+      zarr_format,
+      " anndata groups"
+    ),
+    {
+      skip_if_not_installed("Rarr")
+
+      store <- withr::local_tempfile(fileext = ".zarr")
+      write_zarr(adata, store, zarr_format = zarr_format)
+
+      result <- read_elem(store, "/")
+      expect_s3_class(result, "ZarrAnnData")
+      expect_equal(result$X, adata$X)
+      expect_equal(result$obs, adata$obs)
+      expect_error(result$X <- adata$X, "read-only")
+    }
+  )
+}
