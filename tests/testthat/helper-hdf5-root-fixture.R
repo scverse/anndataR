@@ -13,10 +13,7 @@ make_nested_h5ad_fixture <- function(root = "mod/rna", with_sibling = TRUE) {
   dest <- tempfile(fileext = ".h5ad")
 
   rhdf5::h5createFile(dest)
-  segments <- strsplit(root, "/", fixed = TRUE)[[1]]
-  for (i in seq_along(segments)) {
-    rhdf5::h5createGroup(dest, paste(segments[seq_len(i)], collapse = "/"))
-  }
+  hdf5_ensure_group_path(HDF5File$new(dest), root)
 
   if (with_sibling) {
     rhdf5::h5createGroup(dest, "mod/other_stuff")
