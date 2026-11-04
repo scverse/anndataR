@@ -1,6 +1,7 @@
 # anndataR devel
 
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
+- Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
 
 # anndataR 1.3.4
 
@@ -21,7 +22,6 @@
 
 # anndataR 1.3.3
 
-- Fix Zarr v2 string arrays getting the `vlen-utf8` filter twice, which Python zarr can't read, with Rarr versions that record the filter themselves (PR #557, Huber-group-EMBL/Rarr#261).
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
 
