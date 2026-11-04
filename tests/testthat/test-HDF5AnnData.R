@@ -202,6 +202,26 @@ test_that("round-trip write_h5ad()/read_h5ad() at a non-root group works", {
   expect_equal(roundtrip$var_names, adata$var_names)
 })
 
+test_that("adata$write_h5ad() passes root through", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  adata <- InMemoryAnnData$new(
+    X = matrix(rnorm(10 * 20), nrow = 10, ncol = 20),
+    obs = data.frame(row.names = paste0("Cell", 1:10)),
+    var = data.frame(row.names = paste0("Gene", 1:20))
+  )
+
+  adata$write_h5ad(h5ad_file, root = "mod/rna", mode = "a")
+  roundtrip <- read_h5ad(
+    h5ad_file,
+    as = "InMemoryAnnData",
+    root = "mod/rna"
+  )
+
+  expect_equal(roundtrip$X, adata$X, ignore_attr = TRUE)
+  expect_equal(roundtrip$obs_names, adata$obs_names)
+  expect_equal(roundtrip$var_names, adata$var_names)
+})
+
 adata <- HDF5AnnData$new(file, mode = "r")
 
 # GETTERS ----------------------------------------------------------------

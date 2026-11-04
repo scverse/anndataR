@@ -335,20 +335,23 @@ AbstractAnnData <- R6::R6Class(
     #' @param compression See [write_h5ad()]
     #' @param chunk_size See [write_h5ad()]
     #' @param mode See [write_h5ad()]
+    #' @param root See [write_h5ad()]
     #'
     #' @return `path` invisibly
     write_h5ad = function(
       path,
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto",
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      root = "/"
     ) {
       write_h5ad(
         object = self,
         path,
         compression = compression,
         chunk_size = chunk_size,
-        mode = mode
+        mode = mode,
+        root = root
       )
     },
     #' @description
