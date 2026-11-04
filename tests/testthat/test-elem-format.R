@@ -1,5 +1,8 @@
 make_zarr_dir <- function(meta_file) {
-  store <- withr::local_tempfile(fileext = ".zarr", .local_envir = parent.frame())
+  store <- withr::local_tempfile(
+    fileext = ".zarr",
+    .local_envir = parent.frame()
+  )
   dir.create(store)
   file.create(file.path(store, meta_file))
   store
@@ -81,8 +84,14 @@ test_that("detect_elem_format() returns an explicit format for new paths", {
   dir <- withr::local_tempdir()
 
   expect_identical(detect_elem_format(file.path(dir, "new"), "h5ad"), "h5ad")
-  expect_identical(detect_elem_format(file.path(dir, "new.txt"), "zarr"), "zarr")
-  expect_identical(detect_elem_format(file.path(dir, "new.h5ad"), "zarr"), "zarr")
+  expect_identical(
+    detect_elem_format(file.path(dir, "new.txt"), "zarr"),
+    "zarr"
+  )
+  expect_identical(
+    detect_elem_format(file.path(dir, "new.h5ad"), "zarr"),
+    "zarr"
+  )
 })
 
 test_that("detect_elem_format() errors when an explicit format doesn't match", {
@@ -100,6 +109,9 @@ test_that("detect_elem_format() validates its arguments", {
   expect_error(detect_elem_format(NULL), "single non-empty string")
   expect_error(detect_elem_format(NA_character_), "single non-empty string")
   expect_error(detect_elem_format(""), "single non-empty string")
-  expect_error(detect_elem_format(c("a.h5ad", "b.h5ad")), "single non-empty string")
+  expect_error(
+    detect_elem_format(c("a.h5ad", "b.h5ad")),
+    "single non-empty string"
+  )
   expect_error(detect_elem_format("a.h5ad", "loom"), "must be one of")
 })
