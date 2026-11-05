@@ -63,7 +63,9 @@ write_h5ad_element <- function(
       }
     } else if (is.character(value)) {
       # Character values
-      if (!force_array && length(value) == 1 && !is.matrix(value)) {
+      if (
+        !force_array && length(value) == 1 && !is.matrix(value) && !is.na(value)
+      ) {
         write_h5ad_string_scalar
       } else if (anyNA(value) && length(dim(value)) <= 1) {
         write_h5ad_nullable_string
