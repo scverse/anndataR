@@ -211,13 +211,13 @@ for (zarr_format in c(2, 3)) {
       )
     }
   })
-  
+
   test_that("backed Seurat graphs equal the obsp of an eager AnnData", {
     skip_if_not_installed("Seurat")
-    
+
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
     eager <- read_zarr(store, as = "ZarrAnnData")
-    
+
     seurat <- backed$as_Seurat()
     for (graph in eager$obsp_keys()) {
       expect_equal(
@@ -261,13 +261,13 @@ for (zarr_format in c(2, 3)) {
     )
     write_zarr(adata, store)
   }
-  
+
   test_that("backed Seurat graphs work for every format", {
     skip_if_not_installed("Seurat")
-    
+
     store <- withr::local_tempfile(fileext = ".zarr")
     write_graphs_zarr(store)
-    
+
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
     eager <- read_zarr(store, as = "ZarrAnnData")
 
@@ -281,16 +281,16 @@ for (zarr_format in c(2, 3)) {
       )
     }
   })
-  
+
   test_that("backed SingleCellExperiment pairs work for every format", {
     suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
-    
+
     store <- withr::local_tempfile(fileext = ".zarr")
     write_graphs_zarr(store)
-    
+
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
     eager <- read_zarr(store, as = "ZarrAnnData")
-    
+
     sce <- backed$as_SingleCellExperiment()
     for (graph in eager$obsp_keys()) {
       expect_equal(
@@ -309,8 +309,7 @@ for (zarr_format in c(2, 3)) {
       )
     }
   })
-  
-  
+
   # Regression test (issue #387, reported by LouiseDck): converting a backed SCE
   # back to AnnData must preserve shape.
   test_that("round-trip of a backed SCE back to AnnData preserves shape", {
@@ -450,110 +449,116 @@ for (zarr_format in c(2, 3)) {
     seurat <- read_zarr(store, as = "Seurat")
     expect_s4_class(seurat, "Seurat")
   })
-  
+
   test_that(paste("reading Zarr", zarr_format, "as InMemoryAnnData works"), {
     adata <- read_zarr(store, as = "InMemoryAnnData", mode = "r")
     expect_equal(class(adata), c("InMemoryAnnData", "AbstractAnnData", "R6"))
   })
-  
+
   test_that(paste("reading Zarr", zarr_format, " as ZarrAnnData works"), {
     adata <- read_zarr(store, as = "ZarrAnnData", mode = "r")
     expect_equal(class(adata), c("ZarrAnnData", "AbstractAnnData", "R6"))
   })
-  
-  test_that(paste("reading Zarr", zarr_format, " as backed ZarrAnnData works"), {
-    adata <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
-    
-    expect_equal(class(adata), c("ZarrAnnData", "AbstractAnnData", "R6"))
-    
-    expect_s4_class(adata$X, "DelayedArray")
-    
-    for (layer in adata$layers) {
-      expect_s4_class(layer, "DelayedArray")
-    }
-    
-    for (obsm in adata$obsm) {
-      expect_s4_class(obsm, "DelayedArray")
-    }
-    
-    for (varm in adata$varm) {
-      expect_s4_class(varm, "DelayedArray")
-    }
-    
-    for (obsp in adata$obsp) {
-      expect_s4_class(obsp, "DelayedArray")
-    }
-    
-    for (varp in adata$varp) {
-      expect_s4_class(varp, "DelayedArray")
-    }
-  })
-  
-  test_that(paste("reading Zarr", zarr_format, " as backed SingleCellExperiment works"), {
-    skip_if_not_installed("SingleCellExperiment")
-    
-    sce <- read_zarr(store, as = "SingleCellExperiment", backed = TRUE)
-    
-    expect_s4_class(sce, "SingleCellExperiment")
-    
-    for (assay_name in SummarizedExperiment::assayNames(sce)) {
-      expect_s4_class(
-        SummarizedExperiment::assay(sce, assay_name),
-        "DelayedArray"
-      )
-    }
-    
-    for (reduced_dim_name in SingleCellExperiment::reducedDimNames(sce)) {
-      reduced_dim <- SingleCellExperiment::reducedDim(sce, reduced_dim_name)
-      
-      if (inherits(reduced_dim, "LinearEmbeddingMatrix")) {
-        expect_s4_class(
-          SingleCellExperiment::sampleFactors(reduced_dim),
-          "DelayedArray"
-        )
-        expect_s4_class(
-          SingleCellExperiment::featureLoadings(reduced_dim),
-          "DelayedArray"
-        )
-      } else {
-        expect_s4_class(reduced_dim, "DelayedArray")
+
+  test_that(
+    paste("reading Zarr", zarr_format, " as backed ZarrAnnData works"),
+    {
+      adata <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
+
+      expect_equal(class(adata), c("ZarrAnnData", "AbstractAnnData", "R6"))
+
+      expect_s4_class(adata$X, "DelayedArray")
+
+      for (layer in adata$layers) {
+        expect_s4_class(layer, "DelayedArray")
+      }
+
+      for (obsm in adata$obsm) {
+        expect_s4_class(obsm, "DelayedArray")
+      }
+
+      for (varm in adata$varm) {
+        expect_s4_class(varm, "DelayedArray")
+      }
+
+      for (obsp in adata$obsp) {
+        expect_s4_class(obsp, "DelayedArray")
+      }
+
+      for (varp in adata$varp) {
+        expect_s4_class(varp, "DelayedArray")
       }
     }
-    
-    for (row_pair_name in SingleCellExperiment::rowPairNames(sce)) {
-      # SingleCellExperiment does not support DelayedArray for rowPairs
-      expect_s4_class(
-        SingleCellExperiment::rowPair(sce, row_pair_name),
-        "SelfHits"
-      )
+  )
+
+  test_that(
+    paste("reading Zarr", zarr_format, " as backed SingleCellExperiment works"),
+    {
+      skip_if_not_installed("SingleCellExperiment")
+
+      sce <- read_zarr(store, as = "SingleCellExperiment", backed = TRUE)
+
+      expect_s4_class(sce, "SingleCellExperiment")
+
+      for (assay_name in SummarizedExperiment::assayNames(sce)) {
+        expect_s4_class(
+          SummarizedExperiment::assay(sce, assay_name),
+          "DelayedArray"
+        )
+      }
+
+      for (reduced_dim_name in SingleCellExperiment::reducedDimNames(sce)) {
+        reduced_dim <- SingleCellExperiment::reducedDim(sce, reduced_dim_name)
+
+        if (inherits(reduced_dim, "LinearEmbeddingMatrix")) {
+          expect_s4_class(
+            SingleCellExperiment::sampleFactors(reduced_dim),
+            "DelayedArray"
+          )
+          expect_s4_class(
+            SingleCellExperiment::featureLoadings(reduced_dim),
+            "DelayedArray"
+          )
+        } else {
+          expect_s4_class(reduced_dim, "DelayedArray")
+        }
+      }
+
+      for (row_pair_name in SingleCellExperiment::rowPairNames(sce)) {
+        # SingleCellExperiment does not support DelayedArray for rowPairs
+        expect_s4_class(
+          SingleCellExperiment::rowPair(sce, row_pair_name),
+          "SelfHits"
+        )
+      }
+
+      for (col_pair_name in SingleCellExperiment::colPairNames(sce)) {
+        # SingleCellExperiment does not support DelayedArray for colPairs
+        expect_s4_class(
+          SingleCellExperiment::colPair(sce, col_pair_name),
+          "SelfHits"
+        )
+      }
     }
-    
-    for (col_pair_name in SingleCellExperiment::colPairNames(sce)) {
-      # SingleCellExperiment does not support DelayedArray for colPairs
-      expect_s4_class(
-        SingleCellExperiment::colPair(sce, col_pair_name),
-        "SelfHits"
-      )
-    }
-  })
-  
+  )
+
   test_that(paste("reading Zarr", zarr_format, " as backed Seurat works"), {
     skip_if_not_installed("SeuratObject")
-    
+
     seurat <- read_zarr(store, as = "Seurat", backed = TRUE)
-    
+
     expect_s4_class(seurat, "Seurat")
-    
+
     for (layer in SeuratObject::Layers(seurat)) {
       expect_s4_class(SeuratObject::LayerData(seurat, layer), "DelayedArray")
     }
-    
+
     for (reduction in SeuratObject::Reductions(seurat)) {
       # Seurat does not support DelayedArray for embeddings and loadings
       expect_true(is.matrix(SeuratObject::Embeddings(seurat, reduction)))
       expect_true(is.matrix(SeuratObject::Loadings(seurat, reduction)))
     }
-    
+
     for (graph in SeuratObject::Graphs(seurat)) {
       # Seurat does not support DelayedArray for graphs
       expect_true(inherits(seurat[[graph]], "dgCMatrix"))

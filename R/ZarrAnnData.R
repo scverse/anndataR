@@ -391,7 +391,8 @@ ZarrAnnData <- R6::R6Class(
           check_requires(
             "Reading a backed ZarrAnnData",
             c("ZarrArray", "DelayedArray"),
-            where = "Bioc", version = c("1.1.5", NA)
+            where = "Bioc",
+            version = c("1.1.5", NA)
           )
         }
 
