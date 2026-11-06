@@ -354,7 +354,7 @@ ZarrAnnData <- R6::R6Class(
       ),
       zarr_format = NULL
     ) {
-      check_requires("ZarrAnnData", "Rarr", where = "Bioc", version = "2.1.27")
+      check_requires("ZarrAnnData", "Rarr", where = "Bioc", version = "2.1.45")
 
       compression <- match.arg(compression)
       mode <- match.arg(mode)

@@ -142,7 +142,7 @@ from_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=set_X, status=done
   if (!is.null(x_mapping)) {
     adata$X <- .from_SCE_convert(
-      SummarizedExperiment::assay(sce, x_mapping, withDimnames = FALSE)
+      SummarizedExperiment::assay(sce, x_mapping)
     )
   }
 

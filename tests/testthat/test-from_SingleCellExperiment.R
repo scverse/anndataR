@@ -231,6 +231,27 @@ test_that("as_AnnData (SCE) works with empty mappings", {
   expect_warning(as_AnnData(sce, layers_mapping = c()), "argument is empty")
 })
 
+test_that("as_AnnData (SCE) uses the names of the SCE when an assay has its own", {
+  counts <- matrix(
+    as.numeric(1:12),
+    nrow = 3,
+    ncol = 4,
+    dimnames = list(paste0("assay_gene", 1:3), paste0("assay_cell", 1:4))
+  )
+  renamed_sce <- SingleCellExperiment(assays = list(counts = counts))
+  dimnames(renamed_sce) <- list(paste0("gene", 1:3), paste0("cell", 1:4))
+
+  adata <- as_AnnData(renamed_sce, x_mapping = "counts")
+
+  expect_equal(adata$obs_names, colnames(renamed_sce))
+  expect_equal(adata$var_names, rownames(renamed_sce))
+  expect_equal(
+    dimnames(adata$X),
+    list(colnames(renamed_sce), rownames(renamed_sce))
+  )
+  expect_equal(adata$X, t(counts), ignore_attr = TRUE)
+})
+
 obs_mapping <- c(obs1 = "character", obs2 = "numeric")
 var_mapping <- c(var1 = "character", var2 = "numeric")
 layers_mapping <- c(counts = "integer_matrix", data = "numeric_matrix")
