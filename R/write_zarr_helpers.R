@@ -775,14 +775,21 @@ zarr_write_compressed <- function(
 ) {
   dims <- dim(value) %||% length(value)
   data <- array(data = value, dim = dims)
+
+  # TODO: Rarr warns that the chunks are larger than the array when a dimension
+  # is empty. Can be removed after
+  # https://github.com/Huber-group-EMBL/Rarr/pull/297 is released
+  handle_warnings <- if (any(dims == 0)) suppressWarnings else identity
+
   Rarr::write_zarr_array(
     data,
     zarr_array_path = file.path(store, name),
-    chunk_dim = dims,
+    chunk_dim = ifelse(dims == 0, 1, dims),
     order = if (length(dims) > 0) "C" else "F",
     compressor = .get_compressor(compression),
     zarr_version = zarr_format
-  )
+  ) |>
+    handle_warnings()
 }
 
 #' Get Zarr compressor
