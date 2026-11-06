@@ -3,6 +3,7 @@
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
 - Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
 - Require `rhdf5 >= 2.57.13`, which fixes the spurious `NA_character_` warning for numeric datasets containing `NA`, and remove the skips in the file closure tests (PR #579, Huber-group-EMBL/rhdf5#241).
+- Error when writing a logical matrix containing `NA` to H5AD or Zarr, instead of writing a `nullable-boolean` that neither R nor Python **anndata** can read back. Convert it to numeric first (issue #545).
 
 # anndataR 1.3.4
 
