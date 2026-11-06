@@ -59,7 +59,7 @@ Suggests:
     knitr,
     processx,
     rhdf5 (>= 2.57.13),
-    Rarr (>= 2.1.45),
+    Rarr (>= 2.1.56),
     rmarkdown,
     S4Vectors,
     Seurat,

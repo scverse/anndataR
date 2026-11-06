@@ -317,6 +317,21 @@ for (zarr_format in c(2, 3)) {
         expect_equal(attrs[["encoding-type"]], "string")
       })
 
+      test_that("Writing Zarr string scalars with NA works", {
+        expect_silent(write_zarr_element(
+          NA_character_,
+          store,
+          "string_scalar_na",
+          zarr_format = zarr_format
+        ))
+        expect_true(zarr_path_exists(store, "string_scalar_na/mask"))
+        expect_true(zarr_path_exists(store, "string_scalar_na/values"))
+        attrs <- Rarr::read_zarr_attributes(
+          file.path(store, "string_scalar_na")
+        )
+        expect_equal(attrs[["encoding-type"]], "nullable-string-array")
+      })
+
       test_that("Writing Zarr numeric scalars works", {
         number <- 1.0
 
@@ -560,26 +575,6 @@ for (zarr_format in c(2, 3)) {
     }
   )
 }
-
-test_that("patch_zarr_vlen_utf8() adds the vlen-utf8 filter only once", {
-  store <- withr::local_tempfile(fileext = ".zarr")
-  dir.create(file.path(store, "strings"), recursive = TRUE)
-  metadata_path <- file.path(store, "strings", ".zarray")
-
-  for (filters in list(NULL, list(list(id = "vlen-utf8")))) {
-    jsonlite::write_json(
-      list(dtype = "|O", filters = filters, zarr_format = 2L),
-      metadata_path,
-      auto_unbox = TRUE,
-      null = "null"
-    )
-    patch_zarr_vlen_utf8(store, "strings", 2L)
-    expect_identical(
-      jsonlite::read_json(metadata_path)$filters,
-      list(list(id = "vlen-utf8"))
-    )
-  }
-})
 
 test_that("errors while writing a Zarr element keep the original message", {
   store <- withr::local_tempfile(fileext = ".zarr")
