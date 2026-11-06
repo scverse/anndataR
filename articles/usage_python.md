@@ -241,7 +241,7 @@ sessionInfo()
 #>  [91] stringr_1.6.0               spam_2.11-4                
 #>  [93] RcppHNSW_0.7.0              later_1.4.8                
 #>  [95] splines_4.6.2               dplyr_1.2.1                
-#>  [97] BiocFileCache_3.3.0         lattice_0.23-1             
+#>  [97] BiocFileCache_3.3.1         lattice_0.23-1             
 #>  [99] bit_4.6.0                   deldir_2.0-4               
 #> [101] survival_3.8-12             tidyselect_1.2.1           
 #> [103] SingleCellExperiment_1.35.2 miniUI_0.1.2               
@@ -313,12 +313,12 @@ reticulate::py_list_packages()
 #> 26         numcodecs      0.17.1         numcodecs==0.17.1
 #> 27             numpy       2.5.4              numpy==2.5.4
 #> 28         packaging        26.3           packaging==26.3
-#> 29            pandas       3.1.0             pandas==3.1.0
+#> 29            pandas       3.1.1             pandas==3.1.1
 #> 30             patsy       1.0.3              patsy==1.0.3
 #> 31            pillow      13.0.0            pillow==13.0.0
-#> 32          pydantic      2.14.2          pydantic==2.14.2
+#> 32          pydantic      2.14.3          pydantic==2.14.3
 #> 33 pydantic-settings      2.16.2 pydantic-settings==2.16.2
-#> 34     pydantic_core      2.50.2     pydantic_core==2.50.2
+#> 34     pydantic_core      2.50.4     pydantic_core==2.50.4
 #> 35       pynndescent       0.7.0        pynndescent==0.7.0
 #> 36         pyparsing       3.3.3          pyparsing==3.3.3
 #> 37   python-dateutil       4.0.0    python-dateutil==4.0.0
@@ -331,9 +331,9 @@ reticulate::py_list_packages()
 #> 44           seaborn      0.13.2           seaborn==0.13.2
 #> 45     session-info2       0.4.2      session-info2==0.4.2
 #> 46       statsmodels      0.15.0       statsmodels==0.15.0
-#> 47     threadpoolctl       3.7.0      threadpoolctl==3.7.0
+#> 47     threadpoolctl       3.8.0      threadpoolctl==3.8.0
 #> 48              tqdm      4.70.1              tqdm==4.70.1
-#> 49 typing-inspection       0.4.4  typing-inspection==0.4.4
+#> 49 typing-inspection       0.4.5  typing-inspection==0.4.5
 #> 50 typing_extensions      4.16.0 typing_extensions==4.16.0
 #> 51            tzdata      2026.6            tzdata==2026.6
 #> 52        umap-learn      0.5.12        umap-learn==0.5.12
