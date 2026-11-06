@@ -230,7 +230,7 @@ for (zarr_format in c(2, 3)) {
   })
 
   # the graphs in example_v*.zarr are all csr, so write one of each format
-  write_graphs_zarr <- function(store) {
+  write_graphs_zarr <- function(store, zarr_format) {
     obsp <- Matrix::sparseMatrix(
       i = c(1, 2, 3, 5),
       j = c(2, 3, 1, 6),
@@ -259,14 +259,14 @@ for (zarr_format in c(2, 3)) {
         dense = as.matrix(varp)
       )
     )
-    write_zarr(adata, store)
+    write_zarr(adata, store, zarr_format = zarr_format)
   }
 
   test_that("backed Seurat graphs work for every format", {
     skip_if_not_installed("Seurat")
 
     store <- withr::local_tempfile(fileext = ".zarr")
-    write_graphs_zarr(store)
+    write_graphs_zarr(store, zarr_format)
 
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
     eager <- read_zarr(store, as = "ZarrAnnData")
@@ -286,7 +286,7 @@ for (zarr_format in c(2, 3)) {
     suppressWarnings(skip_if_not_installed("SingleCellExperiment"))
 
     store <- withr::local_tempfile(fileext = ".zarr")
-    write_graphs_zarr(store)
+    write_graphs_zarr(store, zarr_format)
 
     backed <- read_zarr(store, as = "ZarrAnnData", backed = TRUE)
     eager <- read_zarr(store, as = "ZarrAnnData")
