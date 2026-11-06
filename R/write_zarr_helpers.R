@@ -81,7 +81,16 @@ write_zarr_element <- function(
       }
     } else if (is.logical(value)) {
       # Logical values
-      if (anyNA(value)) {
+      if (anyNA(value) && length(dim(value)) >= 2) {
+        cli_abort(
+          c(
+            "Writing logical matrices containing {.code NA} to Zarr is not supported",
+            "i" = "Convert it to numeric first, e.g. with {.code storage.mode(x) <- \"double\"}",
+            "i" = "Attempting to write to {.path {name}} in {.file {store}}"
+          ),
+          class = "anndataR_error_not_writable"
+        )
+      } else if (anyNA(value)) {
         write_zarr_nullable_boolean
       } else if (!force_array && length(value) == 1) {
         # Single Booleans should be written as numeric scalars
@@ -114,6 +123,10 @@ write_zarr_element <- function(
       )
     },
     error = function(e) {
+      # values that can't be written always stop, also when nested
+      if (inherits(e, "anndataR_error_not_writable")) {
+        stop(e)
+      }
       msg <- "Could not write element {.field {name}} of type {.cls {class(value)}}"
       if (stop_on_error) {
         cli_abort(msg, parent = e)
