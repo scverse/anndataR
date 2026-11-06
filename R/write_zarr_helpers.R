@@ -778,11 +778,14 @@ zarr_write_compressed <- function(
   Rarr::write_zarr_array(
     data,
     zarr_array_path = file.path(store, name),
-    chunk_dim = dims,
+    chunk_dim = ifelse(dims == 0, 1, dims),
     order = if (length(dims) > 0) "C" else "F",
     compressor = .get_compressor(compression),
     zarr_version = zarr_format
-  )
+  ) |>
+    # Can be removed after https://github.com/Huber-group-EMBL/Rarr/pull/297
+    # is merged
+    suppressWarnings()
 }
 
 #' Get Zarr compressor
