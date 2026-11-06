@@ -578,9 +578,6 @@ ZarrAnnData <- R6::R6Class(
         prev <- private$.backed
         private$.backed <- FALSE
         on.exit(private$.backed <- prev, add = TRUE)
-        # TODO: commenting call to open_and_defer_close for now,
-        # but irrelevant to Zarr
-        # Hold the file open for the whole multi-slot read (single handle).
       }
       super$as_InMemoryAnnData()
     }
