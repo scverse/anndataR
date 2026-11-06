@@ -5,6 +5,7 @@
 - Require `rhdf5 >= 2.57.13`, which fixes the spurious `NA_character_` warning for numeric datasets containing `NA`, and remove the skips in the file closure tests (PR #579, Huber-group-EMBL/rhdf5#241).
 - Write a length 1 `NA_character_` as a `nullable-string-array` to Zarr and H5AD, so that it stays missing: Zarr stored it as the string `"NA"`, and Python **anndata** read it from H5AD as an empty string (PR #585, issue #581).
 - Fix writing empty arrays to Zarr v3, which produced stores that Python **anndata** couldn't read: empty dimensions now get a chunk size of 1, as zarr-python does (PR #587, Huber-group-EMBL/Rarr#294).
+- Add `backed = TRUE` to `read_zarr()` and `as_ZarrAnnData()` to read matrices as ZarrArray-backed DelayedArrays (PR #507).
 
 # anndataR 1.3.4
 
