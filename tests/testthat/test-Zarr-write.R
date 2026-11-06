@@ -316,6 +316,21 @@ for (zarr_format in c(2, 3)) {
         expect_equal(attrs[["encoding-type"]], "string")
       })
 
+      test_that("Writing Zarr string scalars with NA works", {
+        expect_silent(write_zarr_element(
+          NA_character_,
+          store,
+          "string_scalar_na",
+          zarr_format = zarr_format
+        ))
+        expect_true(zarr_path_exists(store, "string_scalar_na/mask"))
+        expect_true(zarr_path_exists(store, "string_scalar_na/values"))
+        attrs <- Rarr::read_zarr_attributes(
+          file.path(store, "string_scalar_na")
+        )
+        expect_equal(attrs[["encoding-type"]], "nullable-string-array")
+      })
+
       test_that("Writing Zarr numeric scalars works", {
         number <- 1.0
 
