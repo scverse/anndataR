@@ -178,7 +178,7 @@ read_zarr_null <- function(store, name, version = "0.1.0", ...) {
 #'
 #' @inheritParams read_zarr_element
 #'
-#' @return A matrix or a vector if 1D
+#' @return a matrix/array or a DelayedArray if `backed = TRUE`
 #'
 #' @noRd
 read_zarr_dense_array <- function(
@@ -190,7 +190,7 @@ read_zarr_dense_array <- function(
 ) {
   version <- match.arg(version)
 
-  # Eager reads use base {rhdf5} directly
+  # Eager reads use base {Rarr} directly
   if (!isTRUE(backed)) {
     return(read_zarr_dense_array_base(store, name, version))
   }
@@ -244,7 +244,7 @@ read_zarr_csc_matrix <- function(store, name, backed = FALSE, version, ...) {
 #' @inheritParams read_zarr_element
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
 #'
-#' @return A sparse matrix/DelayedArray???, or a vector if 1D
+#' @return a sparse matrix/array or a DelayedArray if `backed = TRUE`
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
@@ -259,7 +259,7 @@ read_zarr_sparse_array <- function(
   version <- match.arg(version)
   type <- match.arg(type)
 
-  # Eager reads use base {rhdf5} directly
+  # Eager reads use base {Rarr} directly
   if (!isTRUE(backed)) {
     return(read_zarr_sparse_array_base(store, name, version, type))
   }
@@ -274,7 +274,7 @@ read_zarr_sparse_array <- function(
 #' @inheritParams read_zarr_element
 #' @param type Type of the sparse matrix, either "csr_matrix" or "csc_matrix"
 #'
-#' @return A sparse matrix/DelayedArray???, or a vector if 1D
+#' @return a sparse matrix
 #' @importFrom Matrix sparseMatrix
 #'
 #' @noRd
