@@ -830,3 +830,19 @@ for (zarr_format in c(2, 3)) {
     }
   )
 }
+
+test_that("zarr_write_compressed() passes on warnings from Rarr", {
+  local_mocked_bindings(
+    write_zarr_array = function(...) {
+      warning("warning from Rarr")
+      invisible(TRUE)
+    },
+    .package = "Rarr"
+  )
+  store <- withr::local_tempfile(fileext = ".zarr")
+
+  expect_warning(
+    zarr_write_compressed(store, "array", 1:3, "none", zarr_format = 3),
+    "warning from Rarr"
+  )
+})
