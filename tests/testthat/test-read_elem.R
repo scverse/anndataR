@@ -8,12 +8,12 @@ slots <- c("X", "obs", "var", "layers", "obsm", "varm", "obsp", "varp", "uns")
 # element through the internal reader
 expect_read_elem_matches <- function(path, read_internal) {
   for (slot in slots) {
-    testthat::expect_equal(anndataR::read_elem(path, slot), read_internal(slot), info = slot)
+    testthat::expect_equal(read_elem(path, slot), read_internal(slot), info = slot)
   }
   for (slot in c("layers", "obsm", "uns")) {
     for (key in names(adata[[slot]])) {
       name <- paste0(slot, "/", key)
-      testthat::expect_equal(anndataR::read_elem(path, name), read_internal(name), info = name)
+      testthat::expect_equal(read_elem(path, name), read_internal(name), info = name)
     }
   }
 }
