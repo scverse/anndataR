@@ -168,3 +168,39 @@ for (fmt in roundtrip_formats(ad)) {
     }
   )
 }
+
+for (fmt in roundtrip_formats(ad)) {
+  fmt_config <- get_fmt_config(fmt)
+
+  withr::with_options(
+    list("anndataR.zarr_format" = fmt_config$zarr_format),
+    {
+      test_that(
+        paste0("Scalar NA strings in uns (", fmt, ") stay missing"),
+        {
+          file_r <- withr::local_file(
+            tempfile("anndata_r_scalar_na", fileext = fmt_config$ext)
+          )
+          adata <- AnnData(
+            obs = data.frame(row.names = 1:2),
+            var = data.frame(row.names = 1:3),
+            uns = list(missing = NA_character_, literal = "NA")
+          )
+          fmt_config$r_write_fun(adata, file_r)
+
+          # read with r
+          adata_r <- fmt_config$r_read_fun(file_r)
+          expect_identical(adata_r$uns$missing, NA_character_)
+          expect_identical(adata_r$uns$literal, "NA")
+
+          # read with python
+          adata_py <- ad[[fmt_config$py_read_method]](file_r)
+          expect_true(
+            py_to_r(pd$isna(py_get_item(adata_py$uns, "missing"))$all())
+          )
+          expect_false(py_to_r(pd$isna(py_get_item(adata_py$uns, "literal"))))
+        }
+      )
+    }
+  )
+}
