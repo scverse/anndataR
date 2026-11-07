@@ -226,7 +226,7 @@ normalise_slot <- function(x) {
 
 expect_adata_equal <- function(actual, expected, info = NULL) {
   for (slot in c("X", "obs", "var", "layers", "obsm", "obsp")) {
-    expect_equal(
+    testthat::expect_equal(
       normalise_slot(actual[[slot]]),
       normalise_slot(expected[[slot]]),
       info = paste(info, slot)
