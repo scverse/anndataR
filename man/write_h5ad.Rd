@@ -41,7 +41,8 @@ already exist.
 already exist.
 \item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
 the file is created if missing but otherwise left untouched, and only the
-group at \code{root} is deleted and recreated.
+group at \code{root} is deleted and recreated. HDF5 doesn't free the space
+used by the deleted group, see the "File size" section below.
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
 exists. When \code{root != "/"}, they instead fail if the group at
 \code{root} already exists.
@@ -65,6 +66,16 @@ Write an H5AD file
 
 Compression is currently not supported for Boolean arrays, they will be
 written uncompressed.
+}
+
+\subsection{File size}{
+
+Deleting or replacing an element in an HDF5 file only unlinks it, the space
+it used is not freed. This happens when writing with \code{mode = "w"} to a
+\code{root} that already exists, or when replacing a slot of an \code{\link{HDF5AnnData}}
+opened with mode \code{"r+"} or \code{"a"}. Repeated rewrites will grow the file. To
+reclaim the space, copy the file with the \code{h5repack} command-line tool that
+comes with HDF5, e.g. \verb{h5repack old.h5ad new.h5ad}.
 }
 
 \subsection{\code{NULL} values}{

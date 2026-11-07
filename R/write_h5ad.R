@@ -24,7 +24,8 @@
 #'     already exist.
 #'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
 #'     the file is created if missing but otherwise left untouched, and only the
-#'     group at `root` is deleted and recreated.
+#'     group at `root` is deleted and recreated. HDF5 doesn't free the space
+#'     used by the deleted group, see the "File size" section below.
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already
 #'     exists. When `root != "/"`, they instead fail if the group at
 #'     `root` already exists.
@@ -40,6 +41,15 @@
 #'
 #' Compression is currently not supported for Boolean arrays, they will be
 #' written uncompressed.
+#'
+#' ## File size
+#'
+#' Deleting or replacing an element in an HDF5 file only unlinks it, the space
+#' it used is not freed. This happens when writing with `mode = "w"` to a
+#' `root` that already exists, or when replacing a slot of an [`HDF5AnnData`]
+#' opened with mode `"r+"` or `"a"`. Repeated rewrites will grow the file. To
+#' reclaim the space, copy the file with the `h5repack` command-line tool that
+#' comes with HDF5, e.g. `h5repack old.h5ad new.h5ad`.
 #'
 #' ## `NULL` values
 #'

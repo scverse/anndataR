@@ -763,7 +763,8 @@ HDF5AnnData <- R6::R6Class(
 #'     already exist.
 #'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
 #'     the file is created if missing but otherwise left untouched, and only the
-#'     group at `root` is deleted and recreated.
+#'     group at `root` is deleted and recreated. HDF5 doesn't free the space
+#'     used by the deleted group, see the "File size" section of [write_h5ad()].
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already
 #'     exists. When `root != "/"`, they instead fail if the group at
 #'     `root` already exists.

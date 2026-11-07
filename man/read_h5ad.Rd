@@ -37,7 +37,9 @@ already exist.
 already exist.
 \item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
 the file is created if missing but otherwise left untouched, and only the
-group at \code{root} is deleted and recreated.
+group at \code{root} is deleted and recreated. HDF5 doesn't free the space
+used by the deleted group, see the "File size" section of
+\code{\link[=write_h5ad]{write_h5ad()}}.
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
 exists. When \code{root != "/"}, they instead fail if the group at
 \code{root} already exists.
