@@ -110,7 +110,8 @@ Other AnnData classes:
   mode = c("a", "r", "r+", "w", "w-", "x"),
   backed = FALSE,
   compression = c("none", "gzip", "lzf"),
-  chunk_size = "auto"
+  chunk_size = "auto",
+  root = "/"
 )}
     \if{html}{\out{</div>}}
   }
@@ -138,6 +139,10 @@ for details}
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
       \item{\code{chunk_size}}{The target chunk size in bytes. See
 \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} for details}
+      \item{\code{root}}{The path to the group within the HDF5 file that the
+\code{AnnData} is stored at. Defaults to \code{"/"}, the file root. Can be
+used to read/write an \code{AnnData} from/to a group inside a file that
+also contains other content, e.g. a modality inside a \code{.h5mu} file.}
     }
     \if{html}{\out{</div>}}
   }
