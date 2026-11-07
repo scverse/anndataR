@@ -37,6 +37,41 @@ test_that("reading a missing root group errors", {
   )
 })
 
+test_that("reading a root that isn't an AnnData errors", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  for (root in c("mod/rna/uns", "mod/rna/obsm", "mod/rna/X")) {
+    expect_error(
+      HDF5AnnData$new(nested_file, root = root, mode = "r"),
+      "Element \"[a-zA-Z/]*\" in file .* is not an AnnData"
+    )
+  }
+  expect_error(
+    HDF5AnnData$new(nested_file, root = "mod/rna/obs/_index", mode = "r"),
+    "is not an AnnData"
+  )
+  # A group without an encoding
+  expect_error(
+    HDF5AnnData$new(nested_file, root = "mod", mode = "r"),
+    "is not an AnnData"
+  )
+})
+
+test_that("reading a MuData file without a root errors with a hint", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+  hdf5_write_attribute(
+    HDF5File$new(nested_file),
+    "/",
+    "encoding-type",
+    "MuData"
+  )
+
+  expect_error(
+    HDF5AnnData$new(nested_file, mode = "r"),
+    "is a MuData file.*mod/rna"
+  )
+})
+
 test_that("invalid root values error", {
   file <- tempfile(fileext = ".h5ad")
 

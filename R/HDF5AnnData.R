@@ -590,17 +590,12 @@ HDF5AnnData <- R6::R6Class(
         }
       }
 
-      # File is supposed to exist by now. Check if it is a valid H5AD file
-      attrs <- rhdf5::h5readAttributes(
-        private$.hdf5_file$path,
-        private$.root
+      # The root is supposed to exist by now. Check that it is an AnnData.
+      hdf5_check_is_anndata(
+        private$.hdf5_file,
+        private$.root,
+        call = rlang::caller_env()
       )
-      if (!all(c("encoding-type", "encoding-version") %in% names(attrs))) {
-        cli_abort(c(
-          "File {.file {file}} is not a valid H5AD file.",
-          i = "Either the file is not an H5AD file or it was created with {.pkg anndata<0.8.0}."
-        ))
-      }
 
       if (is_readonly) {
         # if any of these variables are not NULL, throw an error

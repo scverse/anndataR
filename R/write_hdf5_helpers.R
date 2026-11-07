@@ -123,6 +123,67 @@ hdf5_check_root_target <- function(
   invisible(TRUE)
 }
 
+#' Check an HDF5 element is an AnnData
+#'
+#' Abort unless the element at `root` has `encoding-type` `"anndata"`.
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param root The path to the element, `"/"` for the file root
+#'
+#' @noRd
+hdf5_check_is_anndata <- function(hdf5_file, root, call = rlang::caller_env()) {
+  encoding_type <- read_h5ad_encoding(hdf5_file, root)$type
+
+  if (identical(encoding_type, "anndata")) {
+    return(invisible(TRUE))
+  }
+
+  where <- if (root == "/") {
+    "File {.file {hdf5_file$path}}"
+  } else {
+    "Element {.val {root}} in file {.file {hdf5_file$path}}"
+  }
+
+  if (root == "/" && identical(encoding_type, "MuData")) {
+    modalities <- NULL
+    if (hdf5_path_exists(hdf5_file, "mod")) {
+      hdf5_file$open_and_defer_close(readonly = TRUE)
+      h5group <- rhdf5::H5Gopen(hdf5_file$handle, "mod")
+      withr::defer(rhdf5::H5Gclose(h5group))
+      modalities <- paste0(
+        "mod/",
+        rhdf5::h5ls(h5group, recursive = FALSE, datasetinfo = FALSE)$name
+      )
+    }
+    cli_abort(
+      c(
+        paste(where, "is a MuData file, not an AnnData."),
+        i = if (length(modalities) > 0) {
+          "Set {.arg root} to read a modality: {.or {.val {modalities}}}."
+        } else {
+          "Set {.arg root} to the path of a modality to read it."
+        }
+      ),
+      call = call
+    )
+  }
+
+  cli_abort(
+    c(
+      paste(where, "is not an AnnData."),
+      i = if (is.null(encoding_type)) {
+        paste(
+          "It has no {.val encoding-type} attribute. Either it isn't an",
+          "AnnData or it was written by {.pkg anndata} < 0.8.0."
+        )
+      } else {
+        "It has encoding type {.val {encoding_type}}."
+      }
+    ),
+    call = call
+  )
+}
+
 #' Replace an HDF5 group with another
 #'
 #' Delete the group at `target` and move `source` into its place.
