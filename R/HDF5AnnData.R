@@ -756,7 +756,8 @@ HDF5AnnData <- R6::R6Class(
 #' @param mode The mode to open the HDF5 file. When `root` is not `"/"`,
 #'   these apply to the group at `root` rather than the whole file:
 #'
-#'   * `a` creates a new file or opens an existing one for read/write.
+#'   * `a` creates a new file or opens an existing one for read/write. The group
+#'     at `root` is created if it doesn't exist yet.
 #'   * `r` opens an existing file for reading, the group at `root` must
 #'     already exist.
 #'   * `r+` opens an existing file for read/write, the group at `root` must

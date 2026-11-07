@@ -32,7 +32,8 @@ the rhdf5 default), or a number to use a specific target size in bytes.}
 \item{mode}{The mode to open the HDF5 file. When \code{root} is not \code{"/"},
 these apply to the group at \code{root} rather than the whole file:
 \itemize{
-\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{a} creates a new file or opens an existing one for read/write. The group
+at \code{root} is created if it doesn't exist yet.
 \item \code{r} opens an existing file for reading, the group at \code{root} must
 already exist.
 \item \verb{r+} opens an existing file for read/write, the group at \code{root} must
@@ -40,8 +41,7 @@ already exist.
 \item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
 the file is created if missing but otherwise left untouched, and only the
 group at \code{root} is deleted and recreated. HDF5 doesn't free the space
-used by the deleted group, see the "File size" section of
-\code{\link[=write_h5ad]{write_h5ad()}}.
+used by the deleted group, see the "File size" section of \code{\link[=write_h5ad]{write_h5ad()}}.
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
 exists. When \code{root != "/"}, they instead fail if the group at
 \code{root} already exists.

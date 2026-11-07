@@ -34,7 +34,8 @@ This only affects array-like datasets; scalar values are unaffected.}
 \item{mode}{The mode to open the HDF5 file. When \code{root} is not \code{"/"},
 these apply to the group at \code{root} rather than the whole file:
 \itemize{
-\item \code{a} creates a new file or opens an existing one for read/write.
+\item \code{a} creates a new file or opens an existing one for read/write. The group
+at \code{root} is created if it doesn't exist yet.
 \item \code{r} opens an existing file for reading, the group at \code{root} must
 already exist.
 \item \verb{r+} opens an existing file for read/write, the group at \code{root} must
