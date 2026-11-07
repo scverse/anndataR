@@ -136,6 +136,9 @@ read_zarr_encoding <- function(store, name) {
   tryCatch(
     {
       attrs <- Rarr::read_zarr_attributes(file.path(store, name))
+      if (is.null(attrs[["encoding-type"]])) {
+        stop("missing encoding-type attribute")
+      }
       list(
         type = attrs[["encoding-type"]],
         version = attrs[["encoding-version"]]

@@ -152,6 +152,9 @@ read_h5ad_encoding <- function(hdf5_file, name) {
   tryCatch(
     {
       attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name)
+      if (is.null(attrs[["encoding-type"]])) {
+        stop("missing encoding-type attribute")
+      }
       list(
         type = attrs[["encoding-type"]],
         version = attrs[["encoding-version"]]

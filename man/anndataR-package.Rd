@@ -38,6 +38,7 @@ Other contributors:
   \item Chananchida Sang-aram (\href{https://orcid.org/0000-0002-0922-0822}{ORCID}) (github: csangara) [contributor]
   \item Artür Manukyan (\href{https://orcid.org/0000-0002-0441-9517}{ORCID}) (github: Artur-man) [contributor]
   \item Hugo Gruson (\href{https://orcid.org/0000-0002-4094-1476}{ORCID}) (github: Bisaloo) [contributor]
+  \item Ellis Patrick (\href{https://orcid.org/0000-0002-5253-4747}{ORCID}) (github: ellispatrick) [contributor]
   \item Data Intuitive \email{info@data-intuitive.com} [funder]
   \item Chan Zuckerberg Initiative [funder]
   \item scverse consortium [sponsor]
