@@ -42,6 +42,154 @@ hdf5_ensure_group_path <- function(hdf5_file, path) {
   }
 }
 
+#' Check a group can be used as an AnnData root for writing
+#'
+#' Abort if writing an AnnData at `root` would overwrite or nest inside other
+#' content.
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param root The path to the AnnData group, e.g. `"mod/rna"`
+#'
+#' @noRd
+hdf5_check_root_target <- function(
+  hdf5_file,
+  root,
+  call = rlang::caller_env()
+) {
+  segments <- strsplit(gsub("^/+|/+$", "", root), "/", fixed = TRUE)[[1]]
+
+  for (i in seq_along(segments)) {
+    path <- paste(segments[seq_len(i)], collapse = "/")
+    if (!hdf5_path_exists(hdf5_file, path)) {
+      # Nothing below a missing group can exist either
+      return(invisible(TRUE))
+    }
+
+    is_root <- i == length(segments)
+    is_group <- hdf5_is_group(hdf5_file, path)
+    encoding_type <- read_h5ad_encoding(hdf5_file, path)$type
+
+    if (!is_root && (!is_group || !is.null(encoding_type))) {
+      cli_abort(
+        c(
+          "Can't write an AnnData to {.val {root}} in {.file {hdf5_file$path}}.",
+          x = paste(
+            "{.val {path}} is",
+            if (is_group) {
+              "an encoded {.val {encoding_type}} element"
+            } else {
+              "a dataset"
+            },
+            "and the AnnData would be inside it."
+          )
+        ),
+        call = call
+      )
+    }
+
+    if (is_root && !is_group) {
+      cli_abort(
+        c(
+          "Can't write an AnnData to {.val {root}} in {.file {hdf5_file$path}}.",
+          x = "{.val {root}} is a dataset inside another element."
+        ),
+        call = call
+      )
+    }
+
+    if (
+      is_root &&
+        !identical(encoding_type, "anndata") &&
+        !hdf5_group_is_empty(hdf5_file, path)
+    ) {
+      cli_abort(
+        c(
+          "Can't write an AnnData to {.val {root}} in {.file {hdf5_file$path}}.",
+          x = paste(
+            "{.val {root}} is not an AnnData",
+            if (is.null(encoding_type)) {
+              "and is not empty."
+            } else {
+              "(it has encoding type {.val {encoding_type}})."
+            }
+          ),
+          i = "Choose a different {.arg root} or remove the group first."
+        ),
+        call = call
+      )
+    }
+  }
+
+  invisible(TRUE)
+}
+
+#' Replace an HDF5 group with another
+#'
+#' Delete the group at `target` and move `source` into its place.
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param source The path of the group to move
+#' @param target The path of the group to replace
+#'
+#' @noRd
+hdf5_replace_group <- function(hdf5_file, source, target) {
+  hdf5_delete_path(hdf5_file, target)
+  hdf5_file$open_and_defer_close()
+  rhdf5::H5Lmove(hdf5_file$handle, source, hdf5_file$handle, target)
+}
+
+#' Delete an HDF5 path
+#'
+#' Unlink the object at `path` if it exists. As with any HDF5 delete, the
+#' space it used is not reclaimed.
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The path to delete
+#'
+#' @noRd
+hdf5_delete_path <- function(hdf5_file, path) {
+  if (!hdf5_path_exists(hdf5_file, path)) {
+    return(invisible(FALSE))
+  }
+
+  hdf5_file$open_and_defer_close()
+  rhdf5::H5Ldelete(hdf5_file$handle, path)
+  invisible(TRUE)
+}
+
+#' Get a temporary sibling path for an HDF5 group
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The path of the group
+#'
+#' @return A path next to `path` that doesn't exist yet
+#' @noRd
+hdf5_temp_sibling_path <- function(hdf5_file, path) {
+  path <- gsub("^/+|/+$", "", path)
+  repeat {
+    # tempfile() gives a random name without changing the RNG state
+    temp_path <- paste0(path, basename(tempfile("__anndataR_tmp_")))
+    if (!hdf5_path_exists(hdf5_file, temp_path)) {
+      return(temp_path)
+    }
+  }
+}
+
+#' HDF5 path is a group
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The path to an existing object in the file
+#'
+#' @return Whether the object at `path` is a group
+#' @noRd
+hdf5_is_group <- function(hdf5_file, path) {
+  hdf5_file$open_and_defer_close(readonly = TRUE)
+  h5obj <- rhdf5::H5Oopen(hdf5_file$handle, path)
+  withr::defer(rhdf5::H5Oclose(h5obj))
+
+  rhdf5::H5Iget_type(h5obj) == "H5I_GROUP"
+}
+
 #' HDF5 path exists
 #'
 #' Check that a path in HDF5 exists
@@ -364,7 +512,7 @@ hdf5_write_attribute <- function(
 
   if (name != "/") {
     h5obj <- rhdf5::H5Oopen(hdf5_file$handle, name)
-    on.exit(rhdf5::H5Oclose(h5obj), add = TRUE)
+    withr::defer(rhdf5::H5Oclose(h5obj))
   } else {
     h5obj <- hdf5_file$handle
   }

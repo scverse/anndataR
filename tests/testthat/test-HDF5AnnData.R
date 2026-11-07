@@ -160,6 +160,85 @@ test_that("'w' at a sub-root recreates only that group", {
   expect_identical(atac$obs_names, as.character(1:10))
 })
 
+test_that("'w' at a sub-root keeps the old group if writing fails", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(
+      nested_file,
+      root = "mod/rna",
+      mode = "w",
+      X = matrix(1:4, 2, 2),
+      obs = data.frame(row.names = 1:3),
+      var = data.frame(row.names = 1:3)
+    )
+  )
+
+  rna <- HDF5AnnData$new(nested_file, root = "mod/rna", mode = "r")
+  expect_identical(rna$shape(), c(50L, 100L))
+  # No temporary group is left behind
+  expect_setequal(
+    rhdf5::h5ls(nested_file, recursive = FALSE, datasetinfo = FALSE)$name,
+    "mod"
+  )
+  expect_setequal(
+    rhdf5::h5ls(
+      nested_file,
+      recursive = 2,
+      datasetinfo = FALSE
+    )$name,
+    c("mod", "rna", "other_stuff")
+  )
+})
+
+test_that("'w' doesn't delete a root group that isn't an AnnData", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(
+      nested_file,
+      root = "mod",
+      mode = "w",
+      obs = data.frame(row.names = 1:2),
+      var = data.frame(row.names = 1:3)
+    ),
+    "is not an AnnData"
+  )
+
+  rna <- HDF5AnnData$new(nested_file, root = "mod/rna", mode = "r")
+  expect_identical(rna$shape(), c(50L, 100L))
+  expect_true(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/other_stuff/marker")
+  )
+})
+
+test_that("writing to a root inside an AnnData element errors", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  # A dataset inside an AnnData
+  expect_error(
+    HDF5AnnData$new(
+      nested_file,
+      root = "mod/rna/obs/_index",
+      mode = "w",
+      obs = data.frame(row.names = 1:2),
+      var = data.frame(row.names = 1:3)
+    ),
+    "inside"
+  )
+  rna <- HDF5AnnData$new(nested_file, root = "mod/rna", mode = "r")
+  expect_identical(nrow(rna$obs), 50L)
+
+  # A new group inside an encoded element
+  expect_error(
+    HDF5AnnData$new(nested_file, root = "mod/rna/X/foo", mode = "a"),
+    "inside"
+  )
+  expect_false(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/rna/X/foo")
+  )
+})
+
 test_that("'r+'/'a' warn on a non-empty root group, scoped to the group", {
   h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
   obs <- data.frame(row.names = 1:10)

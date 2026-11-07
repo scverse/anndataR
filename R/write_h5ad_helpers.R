@@ -99,10 +99,7 @@ write_h5ad_element <- function(
 
   # Delete the path if it already exists
   # TODO: do this here?
-  if (hdf5_path_exists(hdf5_file, name)) {
-    hdf5_file$open_and_defer_close()
-    rhdf5::h5delete(hdf5_file$handle, name)
-  }
+  hdf5_delete_path(hdf5_file, name)
 
   tryCatch(
     {

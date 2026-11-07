@@ -513,6 +513,9 @@ HDF5AnnData <- R6::R6Class(
         )
       }
 
+      # Set when writing to a temporary group that replaces the root when done
+      target_root <- NULL
+
       if (private$.root != "/" && !is_readonly) {
         # Fail if the group exists and is not allowed to be overwritten
         if (root_exists && mode %in% c("w-", "x")) {
@@ -527,12 +530,29 @@ HDF5AnnData <- R6::R6Class(
           )
         }
 
-        # For a fresh write, delete an existing group so it can be recreated,
-        # without touching anything else in the file.
+        # Don't write into, or replace, something that isn't an AnnData
+        hdf5_check_root_target(
+          private$.hdf5_file,
+          private$.root,
+          call = rlang::caller_env()
+        )
+
+        # For a fresh write, write to a temporary sibling group and swap it
+        # at the end, so the existing group is kept if writing fails
         if (root_exists && mode == "w") {
-          private$.hdf5_file$open()
-          rhdf5::H5Ldelete(private$.hdf5_file$handle, private$.root)
-          private$.hdf5_file$close()
+          target_root <- private$.root
+          private$.root <- hdf5_temp_sibling_path(
+            private$.hdf5_file,
+            target_root
+          )
+          # If writing fails before the swap, remove the temporary group
+          on.exit(
+            if (!is.null(target_root)) {
+              hdf5_delete_path(private$.hdf5_file, private$.root)
+              private$.root <- target_root
+            },
+            add = TRUE
+          )
           root_exists <- FALSE
         }
 
@@ -606,6 +626,13 @@ HDF5AnnData <- R6::R6Class(
             self[[slot]] <- value
           }
         }
+      }
+
+      # Writing succeeded, replace the original root group
+      if (!is.null(target_root)) {
+        hdf5_replace_group(private$.hdf5_file, private$.root, target_root)
+        private$.root <- target_root
+        target_root <- NULL
       }
 
       self
