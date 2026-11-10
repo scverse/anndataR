@@ -100,6 +100,15 @@
 #' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
 #' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
 #'
+#' ## Feature names
+#'
+#' `Seurat` replaces underscores in feature names with dashes when creating an
+#' object. To be able to convert the object back to the same `AnnData`, the
+#' feature names of the resulting `Seurat` object are kept as in
+#' `adata$var_names`, with a warning. To use dashes instead, rename the features
+#' before converting, e.g.
+#' `adata$var_names <- gsub("_", "-", adata$var_names)`.
+#'
 #' @return A `Seurat` object containing the requested data from `adata`
 #'
 #' @family object converters
@@ -377,13 +386,33 @@ as_Seurat <- function(
   }
 
   counts <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, dummy_counts)
-  dimnames(counts) <- list(adata$var_names, adata$obs_names)
+  var_names <- adata$var_names
+  dimnames(counts) <- list(var_names, adata$obs_names)
+
+  # Seurat replaces underscores in feature names with dashes when creating an
+  # object, so create it with placeholder names and set the names afterwards
+  has_underscores <- any(grepl("_", var_names, fixed = TRUE))
+  if (has_underscores) {
+    cli_warn(c(
+      paste(
+        "{.code adata$var_names} contains underscores, which {.pkg Seurat}",
+        "replaces with dashes when creating an object"
+      ),
+      "i" = "The feature names of the {.cls Seurat} object are kept as in {.arg adata}"
+    ))
+    rownames(counts) <- paste0("feature", seq_along(var_names))
+  }
 
   obj <- SeuratObject::CreateSeuratObject(
     meta.data = object_metadata,
     assay = assay_name,
     counts = counts
   )
+
+  if (has_underscores) {
+    rownames(obj) <- var_names
+    rownames(counts) <- var_names
+  }
 
   # If we have used the dummy counts layer,
   # we need to add the actual dummy counts layer to the object
