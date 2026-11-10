@@ -6,6 +6,7 @@
 - Write a length 1 `NA_character_` as a `nullable-string-array` to Zarr and H5AD, so that it stays missing: Zarr stored it as the string `"NA"`, and Python **anndata** read it from H5AD as an empty string (PR #585, issue #581).
 - Regenerate the man pages, which still showed the old default `compression` of `write_zarr()` and missed a contributor (PR #594).
 - Fix writing empty arrays to Zarr v3, which produced stores that Python **anndata** couldn't read: empty dimensions now get a chunk size of 1, as zarr-python does (PR #587, Huber-group-EMBL/Rarr#294).
+- Add Umami analytics to the **{pkgdown}** site (PR #590).
 
 # anndataR 1.3.4
 

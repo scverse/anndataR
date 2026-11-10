@@ -2,6 +2,9 @@ url: https://anndataR.scverse.org/
 
 template:
   bootstrap: 5
+  includes:
+    in_header: |
+      <script defer src="https://stats.edaro.ai/script.js" data-website-id="865483f8-c12d-491a-8af2-efa3396a66dc" data-domains="anndatar.scverse.org"></script>
 
 authors:
   Robrecht Cannoodt:
