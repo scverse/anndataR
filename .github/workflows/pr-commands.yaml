@@ -20,29 +20,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: r-lib/actions/pr-fetch@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
+      ## Before fetching the PR, so that the action of the default branch is used
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: devel
 
-      ## Resolve versions that haven't reached the Bioconductor repositories yet,
-      ## see R-CMD-check-bioc.yaml
       - name: Add the Bioconductor R-universe
-        run: |
-          repos <- c(
-            BiocManager::repositories(),
-            bioc_runiverse = "https://bioc.r-universe.dev"
-          )
-          write(
-            sprintf("options(repos = %s)", deparse1(repos)),
-            file = "~/.Rprofile",
-            append = TRUE
-          )
-        shell: Rscript {0}
+        uses: ./.github/actions/add-bioc-r-universe
+
+      - uses: r-lib/actions/pr-fetch@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

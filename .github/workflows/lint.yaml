@@ -24,20 +24,8 @@ jobs:
         with:
           bioc-version: devel
 
-      ## Resolve versions that haven't reached the Bioconductor repositories yet,
-      ## see R-CMD-check-bioc.yaml
       - name: Add the Bioconductor R-universe
-        run: |
-          repos <- c(
-            BiocManager::repositories(),
-            bioc_runiverse = "https://bioc.r-universe.dev"
-          )
-          write(
-            sprintf("options(repos = %s)", deparse1(repos)),
-            file = "~/.Rprofile",
-            append = TRUE
-          )
-        shell: Rscript {0}
+        uses: ./.github/actions/add-bioc-r-universe
 
       - name: Install air
         run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh

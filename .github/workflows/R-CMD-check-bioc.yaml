@@ -88,25 +88,10 @@ jobs:
           bioc-version: ${{ needs.bioc-version.outputs.version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
 
-      ## A new version of a Bioconductor package only reaches the Bioconductor
-      ## repositories after its next build there, which can take days.
-      ## bioc.r-universe.dev builds the devel branches right away, so also use
-      ## it to resolve versions that Bioconductor doesn't have yet. The
-      ## Bioconductor repositories are listed first, so that they are used when
-      ## both have the same version.
+      ## The R-universe has the devel versions, so don't use it for a release
       - name: Add the Bioconductor R-universe
         if: needs.bioc-version.outputs.version == 'devel'
-        run: |
-          repos <- c(
-            BiocManager::repositories(),
-            bioc_runiverse = "https://bioc.r-universe.dev"
-          )
-          write(
-            sprintf("options(repos = %s)", deparse1(repos)),
-            file = "~/.Rprofile",
-            append = TRUE
-          )
-        shell: Rscript {0}
+        uses: ./.github/actions/add-bioc-r-universe
 
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
