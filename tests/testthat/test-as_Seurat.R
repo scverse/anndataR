@@ -203,8 +203,8 @@ test_that("as_Seurat works with a 0 dim AnnData", {
   )
 })
 
-# Seurat replaces underscores in feature names with dashes when creating an
-# object, see https://github.com/scverse/anndataR/issues/476
+# Seurat does not allow underscores in feature names,
+# see https://github.com/scverse/anndataR/issues/476
 underscore_cases <- list(
   "a counts layer" = list(layers = "counts", x = FALSE),
   "a data layer" = list(layers = "data", x = FALSE),
@@ -214,7 +214,7 @@ underscore_cases <- list(
 
 for (case_name in names(underscore_cases)) {
   test_that(
-    paste("as_Seurat keeps underscores in feature names with", case_name),
+    paste("as_Seurat replaces underscores in feature names with", case_name),
     {
       case <- underscore_cases[[case_name]]
       mat <- matrix(as.numeric(seq_len(200)), nrow = 10, ncol = 20)
@@ -226,14 +226,14 @@ for (case_name in names(underscore_cases)) {
         var = data.frame(row.names = paste0("gene_", 1:20), score = 1:20),
         layers = layers
       )
+      expected_names <- paste0("gene-", 1:20)
 
       warnings <- capture_warnings(seu <- adata$as_Seurat())
 
-      # warn that the names are kept, instead of that they are replaced
-      expect_match(warnings, "underscores", all = FALSE)
-      expect_no_match(warnings, "replacing with dashes")
+      # warn once, instead of Seurat warning for every layer
+      expect_length(grep("underscores", warnings, fixed = TRUE), 1)
 
-      expect_identical(rownames(seu), adata$var_names)
+      expect_identical(rownames(seu), expected_names)
       expect_identical(colnames(seu), adata$obs_names)
       for (layer in c(case$layers, if (case$x) "X")) {
         expect_equal(
@@ -243,13 +243,52 @@ for (case_name in names(underscore_cases)) {
         )
         expect_identical(
           rownames(LayerData(seu, layer = layer)),
-          adata$var_names
+          expected_names
         )
       }
       expect_identical(seu[["RNA"]][[]]$score, 1:20)
 
-      # the names survive the round trip
-      expect_identical(as_AnnData(seu)$var_names, adata$var_names)
+      # adata is left untouched
+      expect_identical(adata$var_names, paste0("gene_", 1:20))
+
+      expect_identical(as_AnnData(seu)$var_names, expected_names)
     }
   )
 }
+
+test_that("as_Seurat replaces underscores in the feature names of loadings", {
+  mat <- matrix(as.numeric(seq_len(200)), nrow = 10, ncol = 20)
+  adata <- AnnData(
+    obs = data.frame(row.names = paste0("cell_", 1:10)),
+    var = data.frame(row.names = paste0("gene_", 1:20)),
+    layers = list(counts = mat),
+    obsm = list(X_pca = matrix(as.numeric(1:30), 10, 3)),
+    varm = list(PCs = matrix(as.numeric(1:60), 20, 3))
+  )
+
+  suppressWarnings(
+    seu <- adata$as_Seurat(
+      reduction_mapping = list(
+        pca = c(key = "PC_", embeddings = "X_pca", loadings = "PCs")
+      )
+    )
+  )
+
+  expect_identical(rownames(Loadings(seu, "pca")), paste0("gene-", 1:20))
+  expect_equal(
+    Loadings(seu, "pca"),
+    adata$varm[["PCs"]],
+    ignore_attr = TRUE
+  )
+})
+
+test_that("as_Seurat fails when replacing underscores creates duplicates", {
+  mat <- matrix(as.numeric(seq_len(30)), nrow = 10, ncol = 3)
+  adata <- AnnData(
+    obs = data.frame(row.names = paste0("cell_", 1:10)),
+    var = data.frame(row.names = c("gene_1", "gene-1", "gene_2")),
+    layers = list(counts = mat)
+  )
+
+  expect_error(adata$as_Seurat(), "gene-1")
+})
