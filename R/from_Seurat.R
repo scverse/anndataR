@@ -334,6 +334,8 @@ from_Seurat <- function(
 
       mat <- expanded_mat
     }
+
+    mat
   })
 }
 
