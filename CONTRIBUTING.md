@@ -100,8 +100,7 @@ leaves the file formats to other Bioconductor packages:
   metadata) belongs in their issue trackers; link it from the anndataR
   issue and bump the version pin in `DESCRIPTION` once it is fixed.
 - **DelayedArray** provides backed (lazy) matrices, with **HDF5Array**
-  seeds for H5AD; **ZarrArray** seeds for Zarr are being added in PR
-  \#507.
+  seeds for H5AD and **ZarrArray** seeds for Zarr.
 - **Matrix** provides the in-memory sparse matrices.
 - **reticulate** and Python **anndata** are only needed for
   `ReticulateAnnData` and for the tests that compare against Python.

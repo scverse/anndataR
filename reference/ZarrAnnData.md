@@ -114,10 +114,11 @@ Other AnnData classes:
 
 - [`ZarrAnnData$uns_keys()`](#method-ZarrAnnData-uns_keys)
 
+- [`ZarrAnnData$as_InMemoryAnnData()`](#method-ZarrAnnData-as_InMemoryAnnData)
+
 Inherited methods
 
 - [`AbstractAnnData$as_HDF5AnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_HDF5AnnData)
-- [`AbstractAnnData$as_InMemoryAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_InMemoryAnnData)
 - [`AbstractAnnData$as_ReticulateAnnData()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_ReticulateAnnData)
 - [`AbstractAnnData$as_Seurat()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_Seurat)
 - [`AbstractAnnData$as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/AbstractAnnData.html#method-as_SingleCellExperiment)
@@ -148,6 +149,7 @@ Inherited methods
       uns = NULL,
       shape = NULL,
       mode = c("a", "r", "r+", "w", "w-", "x"),
+      backed = FALSE,
       compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
       zarr_format = NULL
     )
@@ -212,6 +214,12 @@ Inherited methods
 - `mode`:
 
   The mode to open the Zarr file. See
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+  for details
+
+- `backed`:
+
+  Whether the object is disk backed. See
   [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
   for details
 
@@ -343,3 +351,17 @@ See
 #### Usage
 
     ZarrAnnData$uns_keys()
+
+------------------------------------------------------------------------
+
+### `ZarrAnnData$as_InMemoryAnnData()`
+
+Convert to an
+[`InMemoryAnnData`](https://anndataR.scverse.org/reference/InMemoryAnnData.md).
+Any backed (`DelayedArray`) slots are materialized into ordinary
+in-memory matrices: an in-memory object should not stay tied to an
+on-disk file.
+
+#### Usage
+
+    ZarrAnnData$as_InMemoryAnnData()

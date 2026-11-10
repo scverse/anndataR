@@ -248,6 +248,7 @@ adata
 #>     var: 'String', 'n_cells_by_counts', 'mean_counts', 'log1p_mean_counts', 'pct_dropout_by_counts', 'total_counts', 'log1p_total_counts', 'highly_variable', 'means', 'dispersions', 'dispersions_norm'
 #>     uns: 'Bool', 'BoolNA', 'Category', 'DataFrameEmpty', 'hvg', 'Int', 'IntNA', 'IntScalar', 'leiden', 'log1p', 'neighbors', 'pca', 'rank_genes_groups', 'Sparse1D', 'String', 'String2D', 'StringNA', 'StringScalar', 'umap'
 #>     obsm: 'X_pca', 'X_umap'
+#>     varm: 'X_pca'
 #>     layers: 'counts', 'csc_counts', 'dense_counts', 'dense_X', 'X'
 #>     obsp: 'connectivities', 'distances'
 ```
@@ -318,6 +319,11 @@ write_h5ad(obj, tmpfile)
 #> ℹ To write column names for obsm[['X_umap']], store it as <data.frame> instead
 #>   of a double matrix
 #> ℹ NOTE: obs_names and var_names are stored separately
+#> Warning: Matrix column names cannot be written to a <HDF5AnnData> object, they will be
+#> lost
+#> ℹ To write column names for varm[['X_pca']], store it as <data.frame> instead
+#>   of a double matrix
+#> ℹ NOTE: obs_names and var_names are stored separately
 ```
 
 Similarly, we can write `AnnData` and other objects to `.zarr` stores
@@ -353,6 +359,11 @@ write_zarr(obj, tmpfile)
 #> Warning: Matrix column names cannot be written to a <ZarrAnnData> object, they will be
 #> lost
 #> ℹ To write column names for obsm[['X_umap']], store it as <data.frame> instead
+#>   of a double matrix
+#> ℹ NOTE: obs_names and var_names are stored separately
+#> Warning: Matrix column names cannot be written to a <ZarrAnnData> object, they will be
+#> lost
+#> ℹ To write column names for varm[['X_pca']], store it as <data.frame> instead
 #>   of a double matrix
 #> ℹ NOTE: obs_names and var_names are stored separately
 ```
@@ -573,49 +584,40 @@ sessionInfo()
 #> [15] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>   [1] RColorBrewer_1.1-3     jsonlite_2.0.0         magrittr_2.0.5        
-#>   [4] spatstat.utils_3.2-5   farver_2.1.2           rmarkdown_2.32        
-#>   [7] fs_2.1.0               ragg_1.5.2             vctrs_0.7.3           
-#>  [10] ROCR_1.0-12            spatstat.explore_3.8-3 htmltools_0.5.9       
-#>  [13] S4Arrays_1.13.2        curl_8.1.0             Rhdf5lib_2.1.0        
-#>  [16] SparseArray_1.13.4     rhdf5_2.57.20          sass_0.4.10           
-#>  [19] sctransform_0.4.3      parallelly_1.50.0      KernSmooth_2.23-27    
-#>  [22] bslib_0.12.0           htmlwidgets_1.6.4      desc_1.4.3            
-#>  [25] ica_1.0-3              httr2_1.3.0            plyr_1.8.9            
-#>  [28] plotly_4.12.1          zoo_1.9-1              cachem_1.1.0          
-#>  [31] igraph_2.3.4           mime_0.13              lifecycle_1.0.5       
-#>  [34] pkgconfig_2.0.3        Matrix_1.7-6           R6_2.6.1              
-#>  [37] fastmap_1.2.0          fitdistrplus_1.2-6     future_1.82.0         
-#>  [40] shiny_1.14.0           digest_0.6.39          paws.storage_0.11.0   
-#>  [43] patchwork_1.3.2        tensor_1.5.1           Seurat_5.6.0          
-#>  [46] RSpectra_0.16-2        irlba_2.4.1            textshaping_1.0.5     
-#>  [49] Rarr_2.1.56            progressr_1.1.0        spatstat.sparse_3.2-0 
-#>  [52] polyclip_1.10-7        httr_1.4.9             abind_1.4-8           
-#>  [55] compiler_4.6.2         withr_3.0.3            S7_0.2.2              
-#>  [58] fastDummies_1.7.6      grumpy_0.1.1           R.utils_2.13.0        
-#>  [61] MASS_7.3-66            DelayedArray_0.39.8    tools_4.6.2           
-#>  [64] lmtest_0.9-40          otel_0.2.0             httpuv_1.6.17         
-#>  [67] future.apply_1.21.0    goftest_1.2-3          R.oo_1.27.1           
-#>  [70] glue_1.8.1             nlme_3.1-171           rhdf5filters_1.25.5   
-#>  [73] promises_1.5.0         grid_4.6.2             Rtsne_0.17            
-#>  [76] cluster_2.1.8.3        reshape2_1.4.5         gtable_0.3.6          
-#>  [79] spatstat.data_3.1-9    R.methodsS3_1.8.2      tidyr_1.3.2           
-#>  [82] data.table_1.18.6.1    XVector_0.53.0         spatstat.geom_3.8-3   
-#>  [85] RcppAnnoy_0.0.23       ggrepel_0.9.8          RANN_2.6.3            
-#>  [88] pillar_1.11.1          stringr_1.6.0          spam_2.11-4           
-#>  [91] RcppHNSW_0.7.0         later_1.4.8            splines_4.6.2         
-#>  [94] dplyr_1.2.1            lattice_0.23-1         deldir_2.0-4          
-#>  [97] survival_3.8-12        paws.common_0.9.0      tidyselect_1.2.1      
-#> [100] miniUI_0.1.2           pbapply_1.7-5          knitr_1.52            
-#> [103] gridExtra_2.3.1        bookdown_0.48          scattermore_1.2       
-#> [106] xfun_0.62              stringi_1.8.9          yaml_2.3.12           
-#> [109] evaluate_1.0.5         codetools_0.2-20       tibble_3.3.1          
-#> [112] BiocManager_1.30.27    cli_3.6.6              uwot_0.2.5            
-#> [115] xtable_1.8-8           reticulate_1.47.0      systemfonts_1.3.2     
-#> [118] jquerylib_0.1.4        Rcpp_1.1.2             spatstat.random_3.5-2 
-#> [121] globals_0.20.0         png_0.1-9              spatstat.univar_3.2-0 
-#> [124] parallel_4.6.2         pkgdown_2.2.1          ggplot2_4.0.3         
-#> [127] dotCall64_1.2          listenv_1.1.0          viridisLite_0.4.3     
-#> [130] scales_1.4.0           ggridges_0.5.7         crayon_1.5.3          
-#> [133] purrr_1.2.2            rlang_1.3.0            cowplot_1.2.0
+#>   [1] pbapply_1.7-5       httr2_1.3.0         gridExtra_2.3.1    
+#>   [4] rlang_1.3.0         magrittr_2.0.5      Rarr_2.1.62        
+#>   [7] RcppAnnoy_0.0.23    otel_0.3.0          ggridges_0.5.7     
+#>  [10] compiler_4.6.2      paws.storage_0.11.0 reshape2_1.4.5     
+#>  [13] png_0.1-9           systemfonts_1.3.2   vctrs_0.7.3        
+#>  [16] stringr_1.6.0       crayon_1.5.3        pkgconfig_2.0.3    
+#>  [19] fastmap_1.2.0       XVector_0.53.0      paws.common_0.9.0  
+#>  [22] rmarkdown_2.32      ragg_1.5.2          purrr_1.2.2        
+#>  [25] xfun_0.62           cachem_1.1.0        grumpy_0.1.1       
+#>  [28] jsonlite_2.0.0      rhdf5filters_1.25.5 DelayedArray_0.39.8
+#>  [31] Rhdf5lib_2.1.0      irlba_2.4.1         parallel_4.6.2     
+#>  [34] cluster_2.1.8.3     R6_2.6.1            ica_1.0-3          
+#>  [37] stringi_1.8.9       bslib_0.12.0        RColorBrewer_1.1-3 
+#>  [40] reticulate_1.47.0   parallelly_1.50.0   scattermore_1.2    
+#>  [43] jquerylib_0.1.4     Rcpp_1.1.2          bookdown_0.48      
+#>  [46] knitr_1.52          future.apply_1.21.0 R.utils_2.13.0     
+#>  [49] sctransform_0.4.3   Matrix_1.7-6        igraph_2.3.4       
+#>  [52] tidyselect_1.2.1    abind_1.4-8         yaml_2.3.12        
+#>  [55] codetools_0.2-20    curl_8.1.0          listenv_1.1.0      
+#>  [58] plyr_1.8.9          lattice_0.23-1      tibble_3.3.1       
+#>  [61] withr_3.0.3         S7_0.2.2            evaluate_1.0.5     
+#>  [64] Rtsne_0.17          future_1.82.0       fastDummies_1.7.6  
+#>  [67] desc_1.4.3          pillar_1.11.1       BiocManager_1.30.27
+#>  [70] Seurat_6.0.0        KernSmooth_2.23-27  RcppHNSW_0.7.0     
+#>  [73] ggplot2_4.0.3       scales_1.4.0        globals_0.20.0     
+#>  [76] glue_1.8.1          tools_4.6.2         RSpectra_0.16-2    
+#>  [79] RANN_2.6.3          fs_2.1.0            dotCall64_1.2      
+#>  [82] cowplot_1.2.0       rhdf5_2.57.20       grid_4.6.2         
+#>  [85] patchwork_1.3.2     cli_3.6.6           textshaping_1.0.5  
+#>  [88] spam_2.11-4         S4Arrays_1.13.2     dplyr_1.2.1        
+#>  [91] uwot_0.2.5          gtable_0.3.6        pls_2.9-0          
+#>  [94] R.methodsS3_1.8.2   sass_0.4.10         digest_0.6.39      
+#>  [97] progressr_1.1.0     SparseArray_1.13.4  ggrepel_0.9.8      
+#> [100] htmlwidgets_1.6.4   farver_2.1.2        R.oo_1.27.1        
+#> [103] htmltools_0.5.9     pkgdown_2.2.1       lifecycle_1.0.5    
+#> [106] httr_1.4.9          MASS_7.3-66
 ```

@@ -5,7 +5,7 @@ AnnData objects, such as InMemoryAnnData or HDF5AnnData.
 See AnnData-usage for details on creating and using AnnData objects."><meta property="og:description" content="This class is an abstract representation of an AnnData object. It is
 intended to be used as a base class for concrete implementations of
 AnnData objects, such as InMemoryAnnData or HDF5AnnData.
-See AnnData-usage for details on creating and using AnnData objects."><meta property="og:image" content="https://anndataR.scverse.org/logo.svg"></head><body>
+See AnnData-usage for details on creating and using AnnData objects."><meta property="og:image" content="https://anndataR.scverse.org/logo.svg"><script defer src="https://stats.edaro.ai/script.js" data-website-id="865483f8-c12d-491a-8af2-efa3396a66dc" data-domains="anndatar.scverse.org"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -428,7 +428,7 @@ intended to be used as a base class for concrete implementations of
 <h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">as_ZarrAnnData</span><span class="op">(</span></span>
 <span>  <span class="va">file</span>,</span>
-<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
+<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"zstd"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
 <span>  zarr_format <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -496,7 +496,7 @@ intended to be used as a base class for concrete implementations of
 <h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">AbstractAnnData</span><span class="op">$</span><span class="fu">write_zarr</span><span class="op">(</span></span>
 <span>  <span class="va">path</span>,</span>
-<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"zstd"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span><span class="op">)</span>,</span>
+<span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"zstd"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"w-"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"a"</span>, <span class="st">"w"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>

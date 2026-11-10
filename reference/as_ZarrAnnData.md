@@ -12,6 +12,7 @@ as_ZarrAnnData(
   file,
   compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  backed = FALSE,
   zarr_format = NULL
 )
 ```
@@ -48,6 +49,12 @@ as_ZarrAnnData(
 
   - `w-`/`x` are synonyms, creating a file and failing if it already
     exists
+
+- backed:
+
+  Whether the object is disk backed and returns
+  [DelayedArray::DelayedArray](https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html)
+  object for matrix data. Can only be `TRUE` when `mode == "r"`.
 
 - zarr_format:
 

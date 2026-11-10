@@ -47,7 +47,7 @@ what it used to do itself is their job. The split:
 | Conversion to and from SingleCellExperiment and Seurat | anndataR | `R/as_*.R`, `R/from_*.R` |
 | Raw HDF5 reading and writing | **rhdf5** | `R/HDF5File.R` wraps the handle, `R/write_hdf5_helpers.R` |
 | Raw Zarr reading and writing: chunks, codecs, string encoding, consolidated metadata | **Rarr** | `R/Rarr_utils.R`, `zarr_write_compressed()` |
-| Backed (lazy, on-disk) matrices | **DelayedArray**, with **HDF5Array** seeds for H5AD and **ZarrArray** seeds for Zarr (#507) | `backed = TRUE` in the readers; [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md) and [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md) pass the seeds through |
+| Backed (lazy, on-disk) matrices | **DelayedArray**, with **HDF5Array** seeds for H5AD and **ZarrArray** seeds for Zarr | `backed = TRUE` in the readers; [`as_SingleCellExperiment()`](https://anndataR.scverse.org/reference/as_SingleCellExperiment.md) and [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md) pass the seeds through |
 | In-memory sparse matrices | **Matrix** (`dgCMatrix`, `dgRMatrix`); SparseArray is being evaluated in \#382 | everywhere |
 | Python interop | **reticulate** and Python **anndata** | `ReticulateAnnData`, `R/reticulate_helpers.R` |
 
@@ -79,9 +79,8 @@ What follows from this:
 These are decided; assume them when a change touches the area.
 
 - **Backed mode goes through DelayedArray seeds for both formats.**
-  HDF5Array today, ZarrArray for Zarr once \#507 lands. Backed mode
-  covers every slot, not only `X` as in Python: a `DelayedArray` in
-  `obsm` or `uns` is intentional.
+  Backed mode (using HDF5Array or ZarrArray) covers every slot, not only
+  `X` as in Python: a `DelayedArray` in `obsm` or `uns` is intentional.
 - **H5AD and Zarr share one encoding layer.** `R/read_h5ad_helpers.R`
   and `R/read_zarr_helpers.R` (and their `write_` counterparts) mirror
   each other, and \#445 is about merging them. A new encoding is added

@@ -9,6 +9,7 @@ read_zarr(
   path,
   as = c("InMemoryAnnData", "ZarrAnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
+  backed = FALSE,
   ...
 )
 ```
@@ -53,6 +54,13 @@ read_zarr(
 
   - `w-`/`x` are synonyms, creating a file and failing if it already
     exists.
+
+- backed:
+
+  Whether to read the Zarr store in backed mode, returning an object
+  containing
+  [DelayedArray::DelayedMatrix](https://rdrr.io/pkg/DelayedArray/man/DelayedArray-class.html)
+  matrices. Which slots are backed depends on the value of `as`.
 
 - ...:
 

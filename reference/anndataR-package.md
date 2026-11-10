@@ -57,6 +57,9 @@ Other contributors:
 - Hugo Gruson ([ORCID](https://orcid.org/0000-0002-4094-1476)) (github:
   Bisaloo) \[contributor\]
 
+- Ellis Patrick ([ORCID](https://orcid.org/0000-0002-5253-4747))
+  (github: ellispatrick) \[contributor\]
+
 - Data Intuitive <info@data-intuitive.com> \[funder\]
 
 - Chan Zuckerberg Initiative \[funder\]

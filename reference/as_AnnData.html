@@ -3,7 +3,7 @@
 details on how slots are mapped between objects. For more information on the
 functionality of an AnnData object, see AnnData-usage."><meta property="og:description" content="Convert other objects to an AnnData object. See the sections below for
 details on how slots are mapped between objects. For more information on the
-functionality of an AnnData object, see AnnData-usage."><meta property="og:image" content="https://anndataR.scverse.org/logo.svg"></head><body>
+functionality of an AnnData object, see AnnData-usage."><meta property="og:image" content="https://anndataR.scverse.org/logo.svg"><script defer src="https://stats.edaro.ai/script.js" data-website-id="865483f8-c12d-491a-8af2-efa3396a66dc" data-domains="anndatar.scverse.org"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -295,7 +295,7 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, t</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> v5.6 adds significant improvements in speed and efficiency, particularly for large datasets.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> v6.0 adds significant improvements in speed and efficiency, particularly for large datasets.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> For more information, see https://satijalab.org/seurat/articles/announcements.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">20000</span>, <span class="fl">1000</span>, <span class="fl">.001</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
@@ -347,10 +347,10 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing nearest neighbor graph</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Computing SNN</span>
 <span class="r-in"><span><span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span><span class="va">obj</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:34 UMAP embedding parameters a = 0.9922 b = 1.112</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:34 Read 200 rows and found 10 numeric columns</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:34 Using Annoy for neighbor search, n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:34 Building Annoy index with metric = cosine, n_trees = 50</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:29 UMAP embedding parameters a = 0.9922 b = 1.112</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:29 Read 200 rows and found 10 numeric columns</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:29 Using Annoy for neighbor search, n_neighbors = 30</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:29 Building Annoy index with metric = cosine, n_trees = 50</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 0%   10   20   30   40   50   60   70   80   90   100%</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [----|----|----|----|----|----|----|----|----|----|</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
@@ -404,15 +404,15 @@ unexpected dimensions, it will be skipped with a warning.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> *</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> |</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:34 Writing NN index file to temp file /tmp/Rtmpbsi8IZ/file1ac14d96da78</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:34 Searching Annoy index using 1 thread, search_k = 3000</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:34 Annoy recall = 100%</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:35 Commencing smooth kNN distance calibration using 1 thread</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:29 Writing NN index file to temp file /tmp/RtmpRsGx7T/file20fd8d06674</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:29 Searching Annoy index using 1 thread, search_k = 3000</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:29 Annoy recall = 100%</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:30 Commencing smooth kNN distance calibration using 1 thread</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>  with target n_neighbors = 30</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:36 Initializing from normalized Laplacian + noise (using RSpectra)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:36 Commencing optimization for 500 epochs, with 6146 positive edges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:36 Using rng type: pcg</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15:34:37 Optimization finished</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:31 Initializing from normalized Laplacian + noise (using RSpectra)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:31 Commencing optimization for 500 epochs, with 6146 positive edges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:31 Using rng type: pcg</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 13:57:32 Optimization finished</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">as_AnnData</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Row names of `Loadings(seurat_obj, <span style="color: #0000BB;">"pca"</span>)` do not match the expected var names</span>

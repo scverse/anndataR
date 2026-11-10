@@ -9,7 +9,7 @@ interface to a Zarr file and minimal data is stored in memory until it is
 requested by the user. It is primarily designed as an intermediate object
 when reading/writing Zarr files but can be useful for accessing parts of
 large files.
-See AnnData-usage for details on creating and using AnnData objects."><meta property="og:image" content="https://anndataR.scverse.org/logo.svg"></head><body>
+See AnnData-usage for details on creating and using AnnData objects."><meta property="og:image" content="https://anndataR.scverse.org/logo.svg"><script defer src="https://stats.edaro.ai/script.js" data-website-id="865483f8-c12d-491a-8af2-efa3396a66dc" data-domains="anndatar.scverse.org"></script></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -146,8 +146,8 @@ large files.</p>
 <li><p><a href="#method-ZarrAnnData-obsp_keys"><code>ZarrAnnData$obsp_keys()</code></a></p></li>
 <li><p><a href="#method-ZarrAnnData-varp_keys"><code>ZarrAnnData$varp_keys()</code></a></p></li>
 <li><p><a href="#method-ZarrAnnData-uns_keys"><code>ZarrAnnData$uns_keys()</code></a></p></li>
+<li><p><a href="#method-ZarrAnnData-as_InMemoryAnnData"><code>ZarrAnnData$as_InMemoryAnnData()</code></a></p></li>
 </ul></div><p><details><summary>Inherited methods</summary><ul><li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_HDF5AnnData"><a href="AbstractAnnData.html#method-as_HDF5AnnData"><code>AbstractAnnData$as_HDF5AnnData()</code></a></span></li>
-  <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_InMemoryAnnData"><a href="AbstractAnnData.html#method-as_InMemoryAnnData"><code>AbstractAnnData$as_InMemoryAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_ReticulateAnnData"><a href="AbstractAnnData.html#method-as_ReticulateAnnData"><code>AbstractAnnData$as_ReticulateAnnData()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_Seurat"><a href="AbstractAnnData.html#method-as_Seurat"><code>AbstractAnnData$as_Seurat()</code></a></span></li>
   <li><span class="pkg-link" data-pkg="anndataR" data-topic="AbstractAnnData" data-id="as_SingleCellExperiment"><a href="AbstractAnnData.html#method-as_SingleCellExperiment"><code>AbstractAnnData$as_SingleCellExperiment()</code></a></span></li>
@@ -173,6 +173,7 @@ large files.</p>
 <span>  uns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  shape <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"w"</span>, <span class="st">"w-"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
+<span>  backed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"zstd"</span>, <span class="st">"gzip"</span>, <span class="st">"blosc"</span>, <span class="st">"lzma"</span>, <span class="st">"bz2"</span>, <span class="st">"zlib"</span>, <span class="st">"lz4"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  zarr_format <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -216,6 +217,10 @@ both <code>X</code> or <code>obs</code> and <code>var</code> are not provided.</
       <dt><code>mode</code></dt>
 <dd><p>The mode to open the Zarr file. See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code> for
 details</p></dd>
+
+      <dt><code>backed</code></dt>
+<dd><p>Whether the object is disk backed. See <code><a href="as_ZarrAnnData.html">as_ZarrAnnData()</a></code>
+for details</p></dd>
 
       <dt><code>compression</code></dt>
 <dd><p>The compression algorithm to use. See
@@ -323,6 +328,17 @@ file will be overwritten.</p>
 <p>See <a href="AnnData-usage.html">AnnData-usage</a></p><div class="section">
 <h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">uns_keys</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-ZarrAnnData-as_InMemoryAnnData"></a><div class="section">
+<h3 id="zarranndata-as-inmemoryanndata-"><code>ZarrAnnData$as_InMemoryAnnData()</code><a class="anchor" aria-label="anchor" href="#zarranndata-as-inmemoryanndata-"></a></h3>
+<p>Convert to an <code><a href="InMemoryAnnData.html">InMemoryAnnData</a></code>. Any backed
+(<code>DelayedArray</code>) slots are materialized into ordinary in-memory
+matrices: an in-memory object should not stay tied to an on-disk file.</p><div class="section">
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ZarrAnnData</span><span class="op">$</span><span class="fu">as_InMemoryAnnData</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 </div>

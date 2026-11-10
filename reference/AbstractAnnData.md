@@ -509,7 +509,7 @@ for more details on the conversion
 
     AbstractAnnData$as_ZarrAnnData(
       file,
-      compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+      compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
       mode = c("w-", "r", "r+", "a", "w", "x"),
       zarr_format = NULL
     )
@@ -600,7 +600,7 @@ for details
 
     AbstractAnnData$write_zarr(
       path,
-      compression = c("none", "gzip", "blosc", "zstd", "lzma", "bz2", "zlib", "lz4"),
+      compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
       mode = c("w-", "r", "r+", "a", "w", "x"),
       ...
     )
