@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr", minimum_version = "2.1.45")
+skip_if_not_installed("Rarr", minimum_version = "2.1.59")
 skip_if_not_installed("ZarrArray", minimum_version = "1.1.5")
 
 for (zarr_format in c(2, 3)) {

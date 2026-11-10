@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr", minimum_version = "2.1.45")
+skip_if_not_installed("Rarr", minimum_version = "2.1.59")
 
 for (zarr_format in c(2, 3)) {
   # set version
@@ -230,6 +230,21 @@ for (zarr_format in c(2, 3)) {
           read_zarr_element(store, "int_matrix_na"),
           matrix(c(1, NA, 3:6), nrow = 3, ncol = 2)
         )
+      })
+
+      test_that("Writing Zarr logical matrices with NA fails", {
+        value <- matrix(c(TRUE, NA, FALSE, TRUE), nrow = 2, ncol = 2)
+
+        expect_error(
+          write_zarr_element(
+            value,
+            store,
+            "logical_matrix_na",
+            zarr_format = zarr_format
+          ),
+          class = "anndataR_error_not_writable"
+        )
+        expect_false(zarr_path_exists(store, "logical_matrix_na"))
       })
 
       test_that("Writing Zarr double matrices keeps NA and NaN", {
@@ -642,6 +657,33 @@ for (slot in slots) {
       from_zarr <- read_zarr(zarr)
       from_h5ad <- read_h5ad(h5ad)
       expect_equal(from_zarr[[slot]], from_h5ad[[slot]])
+    }
+  )
+}
+
+# Logical matrices with NA have no AnnData encoding, so writing them errors
+# (#545)
+for (slot in c("X", "layers", "obsm", "obsp", "uns")) {
+  test_that(
+    paste0("writing a logical matrix with NA in ", slot, " errors"),
+    {
+      skip_if_not_installed("rhdf5")
+      value <- matrix(c(TRUE, NA, FALSE, TRUE), nrow = 2, ncol = 2)
+      args <- list(
+        obs = data.frame(row.names = c("c1", "c2")),
+        var = data.frame(row.names = c("g1", "g2"))
+      )
+      args[[slot]] <- if (slot == "X") value else list(flags = value)
+      adata <- do.call(AnnData, args)
+
+      expect_error(
+        write_h5ad(adata, withr::local_tempfile(fileext = ".h5ad")),
+        class = "anndataR_error_not_writable"
+      )
+      expect_error(
+        write_zarr(adata, withr::local_tempfile(fileext = ".zarr")),
+        class = "anndataR_error_not_writable"
+      )
     }
   )
 }
