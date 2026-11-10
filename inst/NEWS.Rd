@@ -9,7 +9,7 @@
         Add support for writing Zarr v3 stores, using (i) \code{zarr_format} argument of \code{write_zarr()}/\code{as_ZarrAnnData()} or (ii) the \code{anndataR.zarr_format} option. New stores are written as Zarr v3 by default.
       }
       \item{
-        Add support for reading backed objects using \item{DelayedArray} matrices, including a \code{backed} argument for \code{HDF5AnnData} and \code{InMemoryAnnData}, and conversion of backed \code{AnnData} objects to \code{SingleCellExperiment}/\code{Seurat}.
+        Add support for reading backed objects using \pkg{DelayedArray} matrices, including a \code{backed} argument for \code{HDF5AnnData} and \code{InMemoryAnnData}, and conversion of backed \code{AnnData} objects to \code{SingleCellExperiment}/\code{Seurat}.
       }
       \item{
         Add support for \code{nullable-string-array} elements in H5AD and Zarr.
@@ -71,15 +71,16 @@
         Fix writing empty arrays to Zarr v3.
       }
       \item{
-        Fix \code{as_AnnData()} failing with \code{"`rownames(X)`` is not as expected"} when the assay of a \code{SingleCellExperiment} mapped to \code{X} has different dimnames than the object.
+        Fix \code{as_AnnData()} failing with \code{"`rownames(X)` is not as expected"} when the assay of a \code{SingleCellExperiment} mapped to \code{X} has different dimnames than the object.
       }
+    }
   }
 
   \subsection{Documentation}{
     \itemize{
       \item{
         Update CITATION to include the \pkg{anndataR} publication:
-        Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y, scverse core (2026). "anndataR improves interoperability between R and Python in single-cell transcriptomics" Bioinformatics, 42, btag288.doi:10.1093/bioinformatics/btag288 https://doi.org/10.1093/bioinformatics/btag288.
+        Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y, scverse core (2026). "anndataR improves interoperability between R and Python in single-cell transcriptomics" Bioinformatics, 42, btag288. doi:10.1093/bioinformatics/btag288 https://doi.org/10.1093/bioinformatics/btag288.
       }
       \item{
         Minor updates and simplifications to function documentation.
