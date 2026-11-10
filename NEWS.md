@@ -1,10 +1,15 @@
 # anndataR devel
 
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
+- Fix `as_AnnData()` dropping the loadings of a Seurat reduction when their row names already match the feature names of the object (PR #592).
 - Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
 - Require `rhdf5 >= 2.57.13`, which fixes the spurious `NA_character_` warning for numeric datasets containing `NA`, and remove the skips in the file closure tests (PR #579, Huber-group-EMBL/rhdf5#241).
 - Error when writing a logical matrix containing `NA` to H5AD or Zarr, instead of writing a `nullable-boolean` that neither R nor Python **anndata** can read back. Convert it to numeric first (issue #545).
+- Require `Rarr >= 2.1.59`, which fixes reading and writing Zarr stores on R 4.6.2: every zstd-compressed array failed there with `argument is of length zero` (PR #591, Huber-group-EMBL/Rarr#298).
 - Write a length 1 `NA_character_` as a `nullable-string-array` to Zarr and H5AD, so that it stays missing: Zarr stored it as the string `"NA"`, and Python **anndata** read it from H5AD as an empty string (PR #585, issue #581).
+- Regenerate the man pages, which still showed the old default `compression` of `write_zarr()` and missed a contributor (PR #594).
+- Fix writing empty arrays to Zarr v3, which produced stores that Python **anndata** couldn't read: empty dimensions now get a chunk size of 1, as zarr-python does (PR #587, Huber-group-EMBL/Rarr#294).
+- Add Umami analytics to the **{pkgdown}** site (PR #590).
 
 # anndataR 1.3.4
 

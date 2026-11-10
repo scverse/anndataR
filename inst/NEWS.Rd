@@ -1,6 +1,121 @@
 \name{NEWS}
 \title{News for Package \pkg{anndataR}}
 
+\section{Version 1.4.0, Bioconductor 3.24 Release (November 2026)}{
+
+  \subsection{New features}{
+    \itemize{
+      \item{
+        Add support for writing Zarr v3 stores, using (i) \code{zarr_format} argument of \code{write_zarr()}/\code{as_ZarrAnnData()} or (ii) the \code{anndataR.zarr_format} option. New stores are written as Zarr v3 by default.
+      }
+      \item{
+        Add support for reading backed objects using \pkg{DelayedArray} matrices, including a \code{backed} argument for \code{HDF5AnnData} and \code{InMemoryAnnData}, and conversion of backed \code{AnnData} objects to \code{SingleCellExperiment}/\code{Seurat}.
+      }
+      \item{
+        Add support for \code{nullable-string-array} elements in H5AD and Zarr.
+      }
+    }
+  }
+
+  \subsection{Minor changes}{
+    \itemize{
+      \item{
+        Support the \code{anndata.AnnData} class name used by Python \code{anndata >= 0.13}
+      }
+      \item{
+        Handle the \code{None} layer key used by Python \code{anndata >= 0.13} which stores \code{X} as a layer
+      }
+      \item{
+        Read the sharded Zarr v3 stores that Python \code{anndata >= 0.13} writes by default. This requires \pkg{Rarr} 2.1.45 or later.
+      }
+      \item{
+        Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based.
+      }
+      \item{
+        Keep \code{NA} in double and integer matrices written to H5AD instead of replacing it with \code{NaN}, so that \code{NA} and \code{NaN} can still be told apart when reading the file back in R. Python \code{anndata} reads both as \code{NaN}.
+      }
+      \item{
+        Use zstd compression by default in \code{write_zarr()}
+      }
+    }
+  }
+
+  \subsection{Bug fixes}{
+    \itemize{
+      \item{
+        Fix \code{create_zarr()} so that Zarr stores can be created at relative paths and at paths containing regex metacharacters.
+      }
+      \item{
+        Use the format of an existing Zarr store when writing to it and truncate the store when \code{mode = "w"}, so that a store can no longer end up with a mix of Zarr v2 and v3 nodes.
+      }
+      \item{
+        Write strings as VLen-UTF8 rather than as fixed-width, so that string arrays read back as variable length strings in Python \code{anndata}.
+      }
+      \item{
+        Remove the workaround for LZF compression of VLen strings in HDF5.
+        This is fixed in later versions of \pkg{rhdf5}.
+      }
+      \item{
+        Fix \code{HDF5AnnData} writing logical matrices as flat 1D datasets instead of preserving their shape.
+      }
+      \item{
+        Fix writing \code{data.frame}s in \code{obsm}/\code{varm} so that the stored index is the \code{obs_names}/\code{var_names} of the parent object instead of R's automatic row numbers
+      }
+      \item{
+        Fix writing non-ASCII strings to H5AD files by using UTF-8 for string datasets
+      }
+      \item{
+        Fix the error and warning messages when reading or writing an element fails. The original error is now shown instead of a \pkg{cli} parsing error.
+      }
+      \item{
+        Fix writing integer matrices containing \code{NA} to Zarr.
+      }
+      \item{
+        Write length 1 \code{data.frame} columns and indices as arrays instead of scalars.
+      }
+      \item{
+        Fix writing empty arrays to Zarr v3.
+      }
+      \item{
+        Fix writing a length 1 \code{NA_character_} to Zarr and H5AD, so that it stays missing when the file is read back in R or in Python \code{anndata}.
+      }
+      \item{
+        Fix \code{as_AnnData()} failing with \code{"`rownames(X)` is not as expected"} when the assay of a \code{SingleCellExperiment} mapped to \code{X} has different dimnames than the object.
+      }
+    }
+  }
+
+  \subsection{Documentation}{
+    \itemize{
+      \item{
+        Update CITATION to include the \pkg{anndataR} publication:
+        Deconinck L, Zappia L, Cannoodt R, Morgan M, Virshup I, Sang-aram C, Bredikhin D, Seurinck R, Saeys Y, scverse core (2026). "anndataR improves interoperability between R and Python in single-cell transcriptomics" Bioinformatics, 42, btag288. doi:10.1093/bioinformatics/btag288 https://doi.org/10.1093/bioinformatics/btag288.
+      }
+      \item{
+        Minor updates and simplifications to function documentation.
+      }
+    }
+  }
+
+  \subsection{Testing}{
+    \itemize{
+      \item{
+        Add Bioconductor R-universe checks
+      }
+      \item{
+        Add Zarr functionality to benchmarking
+      }
+      \item{
+        Check release branches against the appropriate Bioconductor release.
+        Run BiocCheck on \code{RELEASE_*} branches as well as on \code{devel}.
+      }
+      \item{
+        Add a strict mode for Python tests with \code{ANNDATAR_TEST_REQUIRE_PYTHON=true}
+      }
+    }
+  }
+}
+
 \section{Version 1.2.0, Bioconductor 3.23 Release (April 2026)}{
 
   \subsection{New features}{
