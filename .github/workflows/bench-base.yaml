@@ -32,6 +32,9 @@ jobs:
         with:
           bioc-version: devel
 
+      - name: Add the Bioconductor R-universe
+        uses: ./.github/actions/add-bioc-r-universe
+
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
         with:

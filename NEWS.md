@@ -10,6 +10,7 @@
 - Regenerate the man pages, which still showed the old default `compression` of `write_zarr()` and missed a contributor (PR #594).
 - Fix writing empty arrays to Zarr v3, which produced stores that Python **anndata** couldn't read: empty dimensions now get a chunk size of 1, as zarr-python does (PR #587, Huber-group-EMBL/Rarr#294).
 - Add `backed = TRUE` to `read_zarr()` and `as_ZarrAnnData()` to read matrices as ZarrArray-backed DelayedArrays (PR #507).
+- Add https://bioc.r-universe.dev as a repository in the workflows that check against Bioconductor devel, so that new versions of dependencies can be installed before they reach the Bioconductor repositories (PR #595).
 - Add Umami analytics to the **{pkgdown}** site (PR #590).
 
 # anndataR 1.3.4

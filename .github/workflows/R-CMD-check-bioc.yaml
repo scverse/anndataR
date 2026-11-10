@@ -88,6 +88,11 @@ jobs:
           bioc-version: ${{ needs.bioc-version.outputs.version }}
           bioc-mirror: ${{ matrix.config.bioc-mirror }}
 
+      ## The R-universe has the devel versions, so don't use it for a release
+      - name: Add the Bioconductor R-universe
+        if: needs.bioc-version.outputs.version == 'devel'
+        uses: ./.github/actions/add-bioc-r-universe
+
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
