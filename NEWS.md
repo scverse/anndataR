@@ -1,6 +1,7 @@
 # anndataR devel
 
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
+- Fix `as_AnnData()` dropping the loadings of a Seurat reduction when their row names already match the feature names of the object (PR #592).
 - Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
 - Require `rhdf5 >= 2.57.13`, which fixes the spurious `NA_character_` warning for numeric datasets containing `NA`, and remove the skips in the file closure tests (PR #579, Huber-group-EMBL/rhdf5#241).
 - Write a length 1 `NA_character_` as a `nullable-string-array` to Zarr and H5AD, so that it stays missing: Zarr stored it as the string `"NA"`, and Python **anndata** read it from H5AD as an empty string (PR #585, issue #581).
