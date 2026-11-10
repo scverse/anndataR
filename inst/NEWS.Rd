@@ -26,6 +26,12 @@
         Handle the \code{None} layer key used by Python \code{anndata >= 0.13} which stores \code{X} as a layer
       }
       \item{
+        Read the sharded Zarr v3 stores that Python \code{anndata >= 0.13} writes by default. This requires \pkg{Rarr} 2.1.45 or later.
+      }
+      \item{
+        Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based.
+      }
+      \item{
         Keep \code{NA} in double and integer matrices written to H5AD instead of replacing it with \code{NaN}, so that \code{NA} and \code{NaN} can still be told apart when reading the file back in R. Python \code{anndata} reads both as \code{NaN}.
       }
       \item{
@@ -69,6 +75,9 @@
       }
       \item{
         Fix writing empty arrays to Zarr v3.
+      }
+      \item{
+        Fix writing a length 1 \code{NA_character_} to Zarr and H5AD, so that it stays missing when the file is read back in R or in Python \code{anndata}.
       }
       \item{
         Fix \code{as_AnnData()} failing with \code{"`rownames(X)` is not as expected"} when the assay of a \code{SingleCellExperiment} mapped to \code{X} has different dimnames than the object.
