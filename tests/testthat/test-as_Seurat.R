@@ -202,3 +202,54 @@ test_that("as_Seurat works with a 0 dim AnnData", {
     "must have non-zero dimensions"
   )
 })
+
+# Seurat replaces underscores in feature names with dashes when creating an
+# object, see https://github.com/scverse/anndataR/issues/476
+underscore_cases <- list(
+  "a counts layer" = list(layers = "counts", x = FALSE),
+  "a data layer" = list(layers = "data", x = FALSE),
+  "counts and data layers" = list(layers = c("counts", "data"), x = FALSE),
+  "X and a counts layer" = list(layers = "counts", x = TRUE)
+)
+
+for (case_name in names(underscore_cases)) {
+  test_that(
+    paste("as_Seurat keeps underscores in feature names with", case_name),
+    {
+      case <- underscore_cases[[case_name]]
+      mat <- matrix(as.numeric(seq_len(200)), nrow = 10, ncol = 20)
+      layers <- rep(list(mat), length(case$layers))
+      names(layers) <- case$layers
+      adata <- AnnData(
+        X = if (case$x) mat else NULL,
+        obs = data.frame(row.names = paste0("cell_", 1:10)),
+        var = data.frame(row.names = paste0("gene_", 1:20), score = 1:20),
+        layers = layers
+      )
+
+      warnings <- capture_warnings(seu <- adata$as_Seurat())
+
+      # warn that the names are kept, instead of that they are replaced
+      expect_match(warnings, "underscores", all = FALSE)
+      expect_no_match(warnings, "replacing with dashes")
+
+      expect_identical(rownames(seu), adata$var_names)
+      expect_identical(colnames(seu), adata$obs_names)
+      for (layer in c(case$layers, if (case$x) "X")) {
+        expect_equal(
+          as.matrix(LayerData(seu, layer = layer)),
+          t(mat),
+          ignore_attr = TRUE
+        )
+        expect_identical(
+          rownames(LayerData(seu, layer = layer)),
+          adata$var_names
+        )
+      }
+      expect_identical(seu[["RNA"]][[]]$score, 1:20)
+
+      # the names survive the round trip
+      expect_identical(as_AnnData(seu)$var_names, adata$var_names)
+    }
+  )
+}
