@@ -69,7 +69,8 @@ Suggests:
     testthat (>= 3.0.0),
     vctrs,
     withr,
-    yaml
+    yaml,
+    ZarrArray (>= 1.1.5)
 VignetteBuilder: 
     knitr
 biocViews: SingleCell, DataImport, DataRepresentation
