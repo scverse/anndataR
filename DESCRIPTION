@@ -58,7 +58,7 @@ Suggests:
     knitr,
     processx,
     rhdf5 (>= 2.57.13),
-    Rarr (>= 2.1.45),
+    Rarr (>= 2.1.59),
     rmarkdown,
     S4Vectors,
     Seurat,
@@ -69,7 +69,8 @@ Suggests:
     testthat (>= 3.0.0),
     vctrs,
     withr,
-    yaml
+    yaml,
+    ZarrArray (>= 1.1.5)
 VignetteBuilder: 
     knitr
 biocViews: SingleCell, DataImport, DataRepresentation

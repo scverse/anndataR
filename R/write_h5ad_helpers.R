@@ -63,10 +63,10 @@ write_h5ad_element <- function(
       }
     } else if (is.character(value)) {
       # Character values
-      if (!force_array && length(value) == 1 && !is.matrix(value)) {
-        write_h5ad_string_scalar
-      } else if (anyNA(value) && length(dim(value)) <= 1) {
+      if (anyNA(value) && length(dim(value)) <= 1) {
         write_h5ad_nullable_string
+      } else if (!force_array && length(value) == 1 && !is.matrix(value)) {
+        write_h5ad_string_scalar
       } else {
         write_h5ad_string_array
       }
@@ -81,7 +81,16 @@ write_h5ad_element <- function(
       }
     } else if (is.logical(value)) {
       # Logical values
-      if (anyNA(value)) {
+      if (anyNA(value) && length(dim(value)) >= 2) {
+        cli_abort(
+          c(
+            "Writing logical matrices containing {.code NA} to H5AD is not supported",
+            "i" = "Convert it to numeric first, e.g. with {.code storage.mode(x) <- \"double\"}",
+            "i" = "Attempting to write to {.path {name}} in {.file {hdf5_file$path}}"
+          ),
+          class = "anndataR_error_not_writable"
+        )
+      } else if (anyNA(value)) {
         write_h5ad_nullable_boolean
       } else if (!force_array && length(value) == 1) {
         # Single Booleans should be written as numeric scalars
@@ -113,6 +122,10 @@ write_h5ad_element <- function(
       )
     },
     error = function(e) {
+      # values that can't be written always stop, also when nested
+      if (inherits(e, "anndataR_error_not_writable")) {
+        stop(e)
+      }
       msg <- "Could not write element {.field {name}} of type {.cls {class(value)}}"
       if (stop_on_error) {
         cli_abort(msg, parent = e)

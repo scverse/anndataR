@@ -164,6 +164,18 @@ test_that("Writing H5AD integer matrices with NA works", {
   expect_identical(roundtrip, matrix(c(1, NA, 3:6), nrow = 3, ncol = 2))
 })
 
+test_that("Writing H5AD logical matrices with NA fails", {
+  value <- matrix(c(TRUE, NA, FALSE, TRUE), nrow = 2, ncol = 2)
+
+  expect_error(
+    write_h5ad_element(value, hdf5_file, "logical_matrix_na"),
+    class = "anndataR_error_not_writable"
+  )
+
+  hdf5_file$open_and_defer_close()
+  expect_false(hdf5_path_exists(hdf5_file, "/logical_matrix_na"))
+})
+
 test_that("Writing H5AD nullable booleans works", {
   nullable <- c(TRUE, TRUE, FALSE, FALSE, FALSE)
   nullable[5] <- NA
@@ -281,6 +293,24 @@ test_that("Writing H5AD string scalars works", {
   )
   expect_true(all(c("encoding-type", "encoding-version") %in% names(attrs)))
   expect_equal(attrs[["encoding-type"]], "string")
+})
+
+test_that("Writing H5AD string scalars with NA works", {
+  expect_silent(write_h5ad_element(
+    NA_character_,
+    hdf5_file,
+    "string_scalar_na"
+  ))
+
+  hdf5_file$open_and_defer_close()
+  expect_true(hdf5_path_exists(hdf5_file, "/string_scalar_na/mask"))
+  expect_true(hdf5_path_exists(hdf5_file, "/string_scalar_na/values"))
+  attrs <- rhdf5::h5readAttributes(
+    hdf5_file$handle,
+    "string_scalar_na",
+    native = FALSE
+  )
+  expect_equal(attrs[["encoding-type"]], "nullable-string-array")
 })
 
 test_that("Writing H5AD numeric scalars works", {

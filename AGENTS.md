@@ -34,7 +34,7 @@ The split:
 | Conversion to and from SingleCellExperiment and Seurat | anndataR | `R/as_*.R`, `R/from_*.R` |
 | Raw HDF5 reading and writing | **rhdf5** | `R/HDF5File.R` wraps the handle, `R/write_hdf5_helpers.R` |
 | Raw Zarr reading and writing: chunks, codecs, string encoding, consolidated metadata | **Rarr** | `R/Rarr_utils.R`, `zarr_write_compressed()` |
-| Backed (lazy, on-disk) matrices | **DelayedArray**, with **HDF5Array** seeds for H5AD and **ZarrArray** seeds for Zarr (#507) | `backed = TRUE` in the readers; `as_SingleCellExperiment()` and `as_Seurat()` pass the seeds through |
+| Backed (lazy, on-disk) matrices | **DelayedArray**, with **HDF5Array** seeds for H5AD and **ZarrArray** seeds for Zarr | `backed = TRUE` in the readers; `as_SingleCellExperiment()` and `as_Seurat()` pass the seeds through |
 | In-memory sparse matrices | **Matrix** (`dgCMatrix`, `dgRMatrix`); SparseArray is being evaluated in #382 | everywhere |
 | Python interop | **reticulate** and Python **anndata** | `ReticulateAnnData`, `R/reticulate_helpers.R` |
 
@@ -48,7 +48,7 @@ What follows from this:
 
 These are decided; assume them when a change touches the area.
 
-- **Backed mode goes through DelayedArray seeds for both formats.** HDF5Array today, ZarrArray for Zarr once #507 lands. Backed mode covers every slot, not only `X` as in Python: a `DelayedArray` in `obsm` or `uns` is intentional.
+- **Backed mode goes through DelayedArray seeds for both formats.** Backed mode (using HDF5Array or ZarrArray) covers every slot, not only `X` as in Python: a `DelayedArray` in `obsm` or `uns` is intentional.
 - **H5AD and Zarr share one encoding layer.** `R/read_h5ad_helpers.R` and `R/read_zarr_helpers.R` (and their `write_` counterparts) mirror each other, and #445 is about merging them. A new encoding is added to both; don't let them drift further apart.
 - **Parity with Python anndata 0.13** (#514): sharded Zarr v3 stores, new encodings, and the missing API (`concat` #325, `copy` #352, `read_elem`/`write_elem` #466).
 - **Performance is measured, not guessed.** Bencher runs on every PR (`.github/workflows/bench-*.yaml`); #329 and #382 are the long-running threads on memory use.

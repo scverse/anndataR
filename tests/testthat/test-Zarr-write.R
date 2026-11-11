@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr", minimum_version = "2.1.45")
+skip_if_not_installed("Rarr", minimum_version = "2.1.59")
 
 for (zarr_format in c(2, 3)) {
   # set version
@@ -232,6 +232,21 @@ for (zarr_format in c(2, 3)) {
         )
       })
 
+      test_that("Writing Zarr logical matrices with NA fails", {
+        value <- matrix(c(TRUE, NA, FALSE, TRUE), nrow = 2, ncol = 2)
+
+        expect_error(
+          write_zarr_element(
+            value,
+            store,
+            "logical_matrix_na",
+            zarr_format = zarr_format
+          ),
+          class = "anndataR_error_not_writable"
+        )
+        expect_false(zarr_path_exists(store, "logical_matrix_na"))
+      })
+
       test_that("Writing Zarr double matrices keeps NA and NaN", {
         value <- matrix(c(1.5, NA, NaN, 4), nrow = 2, ncol = 2)
 
@@ -314,6 +329,21 @@ for (zarr_format in c(2, 3)) {
           c("encoding-type", "encoding-version") %in% names(attrs)
         ))
         expect_equal(attrs[["encoding-type"]], "string")
+      })
+
+      test_that("Writing Zarr string scalars with NA works", {
+        expect_silent(write_zarr_element(
+          NA_character_,
+          store,
+          "string_scalar_na",
+          zarr_format = zarr_format
+        ))
+        expect_true(zarr_path_exists(store, "string_scalar_na/mask"))
+        expect_true(zarr_path_exists(store, "string_scalar_na/values"))
+        attrs <- Rarr::read_zarr_attributes(
+          file.path(store, "string_scalar_na")
+        )
+        expect_equal(attrs[["encoding-type"]], "nullable-string-array")
       })
 
       test_that("Writing Zarr numeric scalars works", {
@@ -560,26 +590,6 @@ for (zarr_format in c(2, 3)) {
   )
 }
 
-test_that("patch_zarr_vlen_utf8() adds the vlen-utf8 filter only once", {
-  store <- withr::local_tempfile(fileext = ".zarr")
-  dir.create(file.path(store, "strings"), recursive = TRUE)
-  metadata_path <- file.path(store, "strings", ".zarray")
-
-  for (filters in list(NULL, list(list(id = "vlen-utf8")))) {
-    jsonlite::write_json(
-      list(dtype = "|O", filters = filters, zarr_format = 2L),
-      metadata_path,
-      auto_unbox = TRUE,
-      null = "null"
-    )
-    patch_zarr_vlen_utf8(store, "strings", 2L)
-    expect_identical(
-      jsonlite::read_json(metadata_path)$filters,
-      list(list(id = "vlen-utf8"))
-    )
-  }
-})
-
 test_that("errors while writing a Zarr element keep the original message", {
   store <- withr::local_tempfile(fileext = ".zarr")
   Rarr::write_zarr_group(store, "", zarr_version = 3)
@@ -647,6 +657,33 @@ for (slot in slots) {
       from_zarr <- read_zarr(zarr)
       from_h5ad <- read_h5ad(h5ad)
       expect_equal(from_zarr[[slot]], from_h5ad[[slot]])
+    }
+  )
+}
+
+# Logical matrices with NA have no AnnData encoding, so writing them errors
+# (#545)
+for (slot in c("X", "layers", "obsm", "obsp", "uns")) {
+  test_that(
+    paste0("writing a logical matrix with NA in ", slot, " errors"),
+    {
+      skip_if_not_installed("rhdf5")
+      value <- matrix(c(TRUE, NA, FALSE, TRUE), nrow = 2, ncol = 2)
+      args <- list(
+        obs = data.frame(row.names = c("c1", "c2")),
+        var = data.frame(row.names = c("g1", "g2"))
+      )
+      args[[slot]] <- if (slot == "X") value else list(flags = value)
+      adata <- do.call(AnnData, args)
+
+      expect_error(
+        write_h5ad(adata, withr::local_tempfile(fileext = ".h5ad")),
+        class = "anndataR_error_not_writable"
+      )
+      expect_error(
+        write_zarr(adata, withr::local_tempfile(fileext = ".zarr")),
+        class = "anndataR_error_not_writable"
+      )
     }
   )
 }
@@ -773,3 +810,96 @@ for (zarr_format in c(2, 3)) {
     }
   )
 }
+
+# An AnnData without observations, and with empty vectors in uns
+generate_empty_arrays_adata <- function() {
+  AnnData(
+    X = matrix(numeric(0), nrow = 0, ncol = 2),
+    obs = data.frame(row.names = character(0)),
+    var = data.frame(row.names = c("g1", "g2")),
+    uns = list(
+      double = numeric(0),
+      integer = integer(0),
+      logical = logical(0),
+      character = character(0)
+    )
+  )
+}
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0(
+      "write_zarr() writes empty arrays with a chunk size of 1 (v",
+      zarr_format,
+      ")"
+    ),
+    {
+      store <- withr::local_tempfile(fileext = ".zarr")
+      adata <- generate_empty_arrays_adata()
+      expect_no_warning(
+        write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      )
+
+      chunk_dim <- function(key) {
+        overview <- Rarr::zarr_overview(
+          file.path(store, key),
+          as_data_frame = TRUE
+        )
+        overview$chunk_dim[[1]]
+      }
+      expect_equal(chunk_dim("X"), c(1L, 2L))
+      expect_equal(chunk_dim("obs/_index"), 1L)
+      for (key in names(adata$uns)) {
+        expect_equal(chunk_dim(file.path("uns", key)), 1L)
+      }
+
+      from_zarr <- read_zarr(store)
+      expect_equal(from_zarr$shape(), c(0L, 2L))
+      expect_equal(from_zarr$obs_names, character(0))
+      expect_equal(from_zarr$var_names, c("g1", "g2"))
+      for (key in names(adata$uns)) {
+        expect_equal(as.vector(from_zarr$uns[[key]]), adata$uns[[key]])
+      }
+    }
+  )
+}
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0(
+      "Python can read Zarr stores with empty arrays (v",
+      zarr_format,
+      ")"
+    ),
+    {
+      skip_if_no_anndata_py()
+      skip_if_no_zarr()
+      ad <- reticulate::import("anndata", convert = FALSE)
+      store <- withr::local_tempfile(fileext = ".zarr")
+
+      adata <- generate_empty_arrays_adata()
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      py_adata <- ad$read_zarr(store)
+      expect_equal(unlist(reticulate::py_to_r(py_adata$shape)), c(0L, 2L))
+      py_uns <- reticulate::py_to_r(py_adata$uns)
+      expect_setequal(names(py_uns), names(adata$uns))
+      expect_equal(unname(lengths(py_uns)), rep(0L, length(adata$uns)))
+    }
+  )
+}
+
+test_that("zarr_write_compressed() passes on warnings from Rarr", {
+  local_mocked_bindings(
+    write_zarr_array = function(...) {
+      warning("warning from Rarr")
+      invisible(TRUE)
+    },
+    .package = "Rarr"
+  )
+  store <- withr::local_tempfile(fileext = ".zarr")
+
+  expect_warning(
+    zarr_write_compressed(store, "array", 1:3, "none", zarr_format = 3),
+    "warning from Rarr"
+  )
+})
