@@ -1,4 +1,4 @@
-# anndataR devel
+# anndataR 1.3.5
 
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
 - Fix `as_AnnData()` dropping the loadings of a Seurat reduction when their row names already match the feature names of the object (PR #592).
