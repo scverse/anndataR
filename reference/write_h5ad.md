@@ -11,6 +11,7 @@ write_h5ad(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  group = "/",
   ...
 )
 ```
@@ -45,16 +46,34 @@ write_h5ad(
 
 - mode:
 
-  The mode to open the HDF5 file.
+  The mode to open the HDF5 file. When `group` is not `"/"`, these apply
+  to the group `group` rather than the whole file:
 
-  - `a` creates a new file or opens an existing one for read/write
+  - `a` creates a new file or opens an existing one for read/write. The
+    group at `group` is created if it doesn't exist yet.
 
-  - `r+` opens an existing file for read/write
+  - `r` opens an existing file for reading, the group `group` must
+    already exist.
 
-  - `w` creates a file, truncating any existing ones
+  - `r+` opens an existing file for read/write, the group `group` must
+    already exist.
 
-  - `w-`/`x` are synonyms creating a file and failing if it already
-    exists
+  - `w` creates a file, truncating any existing ones. When
+    `group != "/"`, the file is created if missing but otherwise left
+    untouched, and only the group `group` is deleted and recreated. HDF5
+    doesn't free the space used by the deleted group, see the "File
+    size" section below.
+
+  - `w-`/`x` are synonyms, creating a file and failing if it already
+    exists. When `group != "/"`, they instead fail if the group `group`
+    already exists.
+
+- group:
+
+  The path to the group within the HDF5 file that the `AnnData` is
+  written to. Defaults to `"/"`, the file root. Can be used to write an
+  `AnnData` to a group inside a file that also contains other content,
+  e.g. a modality inside a `.h5mu` file.
 
 - ...:
 
@@ -71,6 +90,16 @@ write_h5ad(
 
 Compression is currently not supported for Boolean arrays, they will be
 written uncompressed.
+
+### File size
+
+Deleting or replacing an element in an HDF5 file only unlinks it, the
+space it used is not freed. This happens when writing with `mode = "w"`
+to a `group` that already exists, or when replacing a slot of an
+[`HDF5AnnData`](https://anndataR.scverse.org/reference/HDF5AnnData.md)
+opened with mode `"r+"` or `"a"`. Repeated rewrites will grow the file.
+To reclaim the space, copy the file with the `h5repack` command-line
+tool that comes with HDF5, e.g. `h5repack old.h5ad new.h5ad`.
 
 ### `NULL` values
 

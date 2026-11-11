@@ -190,7 +190,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] reticulate_1.47.0 anndataR_1.3.4    BiocStyle_2.41.0 
+#> [1] reticulate_1.47.0 anndataR_1.3.5    BiocStyle_2.41.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] DBI_1.3.0                   pbapply_1.7-5              

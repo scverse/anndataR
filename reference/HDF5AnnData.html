@@ -17,7 +17,7 @@ See AnnData-usage for details on creating and using AnnData objects."><meta prop
 
     <a class="navbar-brand me-2" href="../index.html">anndataR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -177,7 +177,8 @@ large files.</p>
 <span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"r"</span>, <span class="st">"r+"</span>, <span class="st">"w"</span>, <span class="st">"w-"</span>, <span class="st">"x"</span><span class="op">)</span>,</span>
 <span>  backed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  compression <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"gzip"</span>, <span class="st">"lzf"</span><span class="op">)</span>,</span>
-<span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span></span>
+<span>  chunk_size <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"/"</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
@@ -231,6 +232,12 @@ for details</p></dd>
       <dt><code>chunk_size</code></dt>
 <dd><p>The target chunk size in bytes. See
 <code><a href="as_HDF5AnnData.html">as_HDF5AnnData()</a></code> for details</p></dd>
+
+      <dt><code>group</code></dt>
+<dd><p>The path to the group within the HDF5 file that the
+<code>AnnData</code> is stored at. Defaults to <code>"/"</code>, the file root. Can be
+used to read/write an <code>AnnData</code> from/to a group inside a file that
+also contains other content, e.g. a modality inside a <code>.h5mu</code> file.</p></dd>
 
 
 </dl><p></p></div>

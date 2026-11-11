@@ -1,5 +1,81 @@
 # Changelog
 
+## anndataR 1.3.5
+
+- Add a `group` argument to
+  [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md),
+  [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md),
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
+  and `HDF5AnnData`, to read and write an `AnnData` stored in a group
+  inside an HDF5 file, e.g. a modality inside a `.h5mu` file (PR
+  [\#521](https://github.com/scverse/anndataR/issues/521), issue
+  [\#466](https://github.com/scverse/anndataR/issues/466)).
+- Fix
+  [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
+  failing with `` `rownames(X)` is not as expected `` when the assay of
+  a `SingleCellExperiment` mapped to `X` has different dimnames than the
+  object (PR [\#576](https://github.com/scverse/anndataR/issues/576),
+  issue [\#390](https://github.com/scverse/anndataR/issues/390)).
+- Fix
+  [`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
+  dropping the loadings of a Seurat reduction when their row names
+  already match the feature names of the object (PR
+  [\#592](https://github.com/scverse/anndataR/issues/592)).
+- Ensure Zarr v2 string arrays don’t get the `vlen-utf8` filter twice,
+  since an upcoming version of Rarr might already specify this (PR
+  [\#557](https://github.com/scverse/anndataR/issues/557),
+  Huber-group-EMBL/Rarr#111).
+- Fix
+  [`as_Seurat()`](https://anndataR.scverse.org/reference/as_Seurat.md)
+  failing with
+  `No feature overlap between existing object and new layer data` when
+  `var_names` contain underscores: the underscores are now replaced with
+  dashes in the feature names of the `Seurat` object, with a warning (PR
+  [\#593](https://github.com/scverse/anndataR/issues/593), issue
+  [\#476](https://github.com/scverse/anndataR/issues/476)).
+- Require `rhdf5 >= 2.57.13`, which fixes the spurious `NA_character_`
+  warning for numeric datasets containing `NA`, and remove the skips in
+  the file closure tests (PR
+  [\#579](https://github.com/scverse/anndataR/issues/579),
+  Huber-group-EMBL/rhdf5#241).
+- Error when writing a logical matrix containing `NA` to H5AD or Zarr,
+  instead of writing a `nullable-boolean` that neither R nor Python
+  **anndata** can read back. Convert it to numeric first (issue
+  [\#545](https://github.com/scverse/anndataR/issues/545)).
+- Require `Rarr >= 2.1.59`, which fixes reading and writing Zarr stores
+  on R 4.6.2: every zstd-compressed array failed there with
+  `argument is of length zero` (PR
+  [\#591](https://github.com/scverse/anndataR/issues/591),
+  Huber-group-EMBL/Rarr#298).
+- Write a length 1 `NA_character_` as a `nullable-string-array` to Zarr
+  and H5AD, so that it stays missing: Zarr stored it as the string
+  `"NA"`, and Python **anndata** read it from H5AD as an empty string
+  (PR [\#585](https://github.com/scverse/anndataR/issues/585), issue
+  [\#581](https://github.com/scverse/anndataR/issues/581)).
+- Regenerate the man pages, which still showed the old default
+  `compression` of
+  [`write_zarr()`](https://anndataR.scverse.org/reference/write_zarr.md)
+  and missed a contributor (PR
+  [\#594](https://github.com/scverse/anndataR/issues/594)).
+- Fix writing empty arrays to Zarr v3, which produced stores that Python
+  **anndata** couldn’t read: empty dimensions now get a chunk size of 1,
+  as zarr-python does (PR
+  [\#587](https://github.com/scverse/anndataR/issues/587),
+  Huber-group-EMBL/Rarr#294).
+- Add `backed = TRUE` to
+  [`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md)
+  and
+  [`as_ZarrAnnData()`](https://anndataR.scverse.org/reference/as_ZarrAnnData.md)
+  to read matrices as ZarrArray-backed DelayedArrays (PR
+  [\#507](https://github.com/scverse/anndataR/issues/507)).
+- Add <https://bioc.r-universe.dev> as a repository in the workflows
+  that check against Bioconductor devel, so that new versions of
+  dependencies can be installed before they reach the Bioconductor
+  repositories (PR
+  [\#595](https://github.com/scverse/anndataR/issues/595)).
+- Add Umami analytics to the **{pkgdown}** site (PR
+  [\#590](https://github.com/scverse/anndataR/issues/590)).
+
 ## anndataR 1.3.4
 
 - Replace the internal `create_zarr()` and `create_zarr_group()` helpers

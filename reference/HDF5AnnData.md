@@ -155,7 +155,8 @@ Inherited methods
       mode = c("a", "r", "r+", "w", "w-", "x"),
       backed = FALSE,
       compression = c("none", "gzip", "lzf"),
-      chunk_size = "auto"
+      chunk_size = "auto",
+      group = "/"
     )
 
 #### Arguments
@@ -238,6 +239,13 @@ Inherited methods
   The target chunk size in bytes. See
   [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
   for details
+
+- `group`:
+
+  The path to the group within the HDF5 file that the `AnnData` is
+  stored at. Defaults to `"/"`, the file root. Can be used to read/write
+  an `AnnData` from/to a group inside a file that also contains other
+  content, e.g. a modality inside a `.h5mu` file.
 
 #### Details
 

@@ -463,7 +463,8 @@ for more details on the conversion
       file,
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto",
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      group = "/"
     )
 
 #### Arguments
@@ -484,6 +485,11 @@ for more details on the conversion
   [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
 
 - `mode`:
+
+  See
+  [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
+
+- `group`:
 
   See
   [`as_HDF5AnnData()`](https://anndataR.scverse.org/reference/as_HDF5AnnData.md)
@@ -557,7 +563,8 @@ for details
       path,
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto",
-      mode = c("w-", "r", "r+", "a", "w", "x")
+      mode = c("w-", "r", "r+", "a", "w", "x"),
+      group = "/"
     )
 
 #### Arguments
@@ -578,6 +585,11 @@ for details
   [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
 
 - `mode`:
+
+  See
+  [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
+
+- `group`:
 
   See
   [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
