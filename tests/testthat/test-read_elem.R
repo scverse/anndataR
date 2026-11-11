@@ -150,7 +150,7 @@ test_that("read_elem() returns an HDF5AnnData for anndata groups", {
   expect_error(result$X <- adata$X, "read-only")
 
   # Nested groups, e.g. a modality in a .h5mu file
-  write_h5ad(adata, h5ad, mode = "a", root = "mod/rna")
+  write_h5ad(adata, h5ad, mode = "a", group = "mod/rna")
   nested <- read_elem(h5ad, "mod/rna")
   expect_s3_class(nested, "HDF5AnnData")
   expect_equal(nested$X, adata$X)

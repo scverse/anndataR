@@ -109,7 +109,7 @@ write_elem <- function(
   ...,
   call = rlang::caller_env()
 ) {
-  name <- hdf5_root_path("/", name)
+  name <- hdf5_group_path("/", name)
   is_root <- name == "/"
   is_adata <- inherits(value, "AbstractAnnData")
 
@@ -123,8 +123,8 @@ write_elem <- function(
   check_elem_overwrite(exists, overwrite, name, hdf5_file$path, call = call)
 
   if (is_adata) {
-    # Mode "w" replaces only the group at `root`, or the whole file for "/"
-    value$as_HDF5AnnData(hdf5_file$path, mode = "w", root = name, ...)
+    # Mode "w" replaces only the group at `name`, or the whole file for "/"
+    value$as_HDF5AnnData(hdf5_file$path, mode = "w", group = name, ...)
     return(invisible(NULL))
   }
 

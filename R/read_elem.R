@@ -94,7 +94,7 @@ read_elem <- function(
   ...,
   call = rlang::caller_env()
 ) {
-  name <- hdf5_root_path("/", name)
+  name <- hdf5_group_path("/", name)
 
   # H5Lexists() can't check the root group, which always exists
   if (name != "/" && !hdf5_path_exists(hdf5_file, name)) {
@@ -111,7 +111,7 @@ read_elem <- function(
       hdf5_file$path,
       mode = "r",
       backed = backed,
-      root = name
+      group = name
     ))
   }
 
