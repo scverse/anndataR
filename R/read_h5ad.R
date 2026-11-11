@@ -12,26 +12,26 @@
 #'     [`SingleCellExperiment::SingleCellExperiment`] object
 #'   * `"Seurat"`: Read the H5AD file as a
 #'     [`SeuratObject::Seurat`] object
-#' @param mode The mode to open the HDF5 file. When `root` is not `"/"`,
-#'   these apply to the group at `root` rather than the whole file:
+#' @param mode The mode to open the HDF5 file. When `group` is not `"/"`,
+#'   these apply to the group `group` rather than the whole file:
 #'
 #'   * `a` creates a new file or opens an existing one for read/write. The group
-#'     at `root` is created if it doesn't exist yet.
-#'   * `r` opens an existing file for reading, the group at `root` must
+#'     at `group` is created if it doesn't exist yet.
+#'   * `r` opens an existing file for reading, the group `group` must
 #'     already exist.
-#'   * `r+` opens an existing file for read/write, the group at `root` must
+#'   * `r+` opens an existing file for read/write, the group `group` must
 #'     already exist.
-#'   * `w` creates a file, truncating any existing ones. When `root != "/"`,
+#'   * `w` creates a file, truncating any existing ones. When `group != "/"`,
 #'     the file is created if missing but otherwise left untouched, and only the
-#'     group at `root` is deleted and recreated. HDF5 doesn't free the space
+#'     group `group` is deleted and recreated. HDF5 doesn't free the space
 #'     used by the deleted group, see the "File size" section of [write_h5ad()].
 #'   * `w-`/`x` are synonyms, creating a file and failing if it already
-#'     exists. When `root != "/"`, they instead fail if the group at
-#'     `root` already exists.
+#'     exists. When `group != "/"`, they instead fail if the group
+#'     `group` already exists.
 #' @param backed Whether to read the H5AD file in backed mode, returning an
 #'  object containing [DelayedArray::DelayedMatrix] matrices. Which slots are
 #'  backed depends on the value of `as`.
-#' @param root The path to the group within the HDF5 file that the `AnnData`
+#' @param group The path to the group within the HDF5 file that the `AnnData`
 #'   is stored at. Defaults to `"/"`, the file root. Can be used to read an
 #'   `AnnData` from a group inside a file that also contains other content,
 #'   e.g. a modality inside a `.h5mu` file.
@@ -60,7 +60,7 @@ read_h5ad <- function(
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
   backed = FALSE,
-  root = "/",
+  group = "/",
   ...
 ) {
   as <- match.arg(as)
@@ -70,7 +70,7 @@ read_h5ad <- function(
     path,
     mode = mode,
     backed = backed,
-    root = root
+    group = group
   )
 
   if (as == "HDF5AnnData") {

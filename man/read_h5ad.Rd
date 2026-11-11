@@ -9,7 +9,7 @@ read_h5ad(
   as = c("InMemoryAnnData", "HDF5AnnData", "SingleCellExperiment", "Seurat"),
   mode = c("r", "r+", "a", "w", "w-", "x"),
   backed = FALSE,
-  root = "/",
+  group = "/",
   ...
 )
 }
@@ -27,29 +27,29 @@ read_h5ad(
 \code{\link[SeuratObject:Seurat]{SeuratObject::Seurat}} object
 }}
 
-\item{mode}{The mode to open the HDF5 file. When \code{root} is not \code{"/"},
-these apply to the group at \code{root} rather than the whole file:
+\item{mode}{The mode to open the HDF5 file. When \code{group} is not \code{"/"},
+these apply to the group \code{group} rather than the whole file:
 \itemize{
 \item \code{a} creates a new file or opens an existing one for read/write. The group
-at \code{root} is created if it doesn't exist yet.
-\item \code{r} opens an existing file for reading, the group at \code{root} must
+at \code{group} is created if it doesn't exist yet.
+\item \code{r} opens an existing file for reading, the group \code{group} must
 already exist.
-\item \verb{r+} opens an existing file for read/write, the group at \code{root} must
+\item \verb{r+} opens an existing file for read/write, the group \code{group} must
 already exist.
-\item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
+\item \code{w} creates a file, truncating any existing ones. When \code{group != "/"},
 the file is created if missing but otherwise left untouched, and only the
-group at \code{root} is deleted and recreated. HDF5 doesn't free the space
+group \code{group} is deleted and recreated. HDF5 doesn't free the space
 used by the deleted group, see the "File size" section of \code{\link[=write_h5ad]{write_h5ad()}}.
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
-exists. When \code{root != "/"}, they instead fail if the group at
-\code{root} already exists.
+exists. When \code{group != "/"}, they instead fail if the group
+\code{group} already exists.
 }}
 
 \item{backed}{Whether to read the H5AD file in backed mode, returning an
 object containing \link[DelayedArray:DelayedMatrix]{DelayedArray::DelayedMatrix} matrices. Which slots are
 backed depends on the value of \code{as}.}
 
-\item{root}{The path to the group within the HDF5 file that the \code{AnnData}
+\item{group}{The path to the group within the HDF5 file that the \code{AnnData}
 is stored at. Defaults to \code{"/"}, the file root. Can be used to read an
 \code{AnnData} from a group inside a file that also contains other content,
 e.g. a modality inside a \code{.h5mu} file.}

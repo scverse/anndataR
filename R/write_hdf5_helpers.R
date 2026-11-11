@@ -1,25 +1,25 @@
-#' Get the path to an HDF5 element relative to a root group
+#' Get the path to an HDF5 element relative to a group
 #'
 #' Used to support reading/writing an AnnData from a group inside an HDF5
 #' file instead of the file root.
 #'
-#' @param root The path to the group within the HDF5 file that the AnnData
-#'   is rooted at. `"/"` or `""` mean the file root.
-#' @param name Name of the element, relative to `root`. May or may not have
+#' @param group The path to the group within the HDF5 file that the AnnData
+#'   is stored at. `"/"` or `""` mean the file root.
+#' @param name Name of the element, relative to `group`. May or may not have
 #'   a leading `/`.
 #'
-#' @return `name` prefixed with `root`
+#' @return `name` prefixed with `group`
 #' @noRd
-hdf5_root_path <- function(root, name) {
-  root <- gsub("^/+|/+$", "", root)
+hdf5_group_path <- function(group, name) {
+  group <- gsub("^/+|/+$", "", group)
   name <- sub("^/+", "", name)
 
-  if (root == "") {
+  if (group == "") {
     if (name == "") "/" else name
   } else if (name == "") {
-    root
+    group
   } else {
-    paste0(root, "/", name)
+    paste0(group, "/", name)
   }
 }
 
@@ -42,21 +42,21 @@ hdf5_ensure_group_path <- function(hdf5_file, path) {
   }
 }
 
-#' Check a group can be used as an AnnData root for writing
+#' Check an AnnData can be written to a group
 #'
-#' Abort if writing an AnnData at `root` would overwrite or nest inside other
+#' Abort if writing an AnnData at `group` would overwrite or nest inside other
 #' content.
 #'
 #' @param hdf5_file An `HDF5File` object
-#' @param root The path to the AnnData group, e.g. `"mod/rna"`
+#' @param group The path to the AnnData group, e.g. `"mod/rna"`
 #'
 #' @noRd
-hdf5_check_root_target <- function(
+hdf5_check_group_target <- function(
   hdf5_file,
-  root,
+  group,
   call = rlang::caller_env()
 ) {
-  segments <- strsplit(gsub("^/+|/+$", "", root), "/", fixed = TRUE)[[1]]
+  segments <- strsplit(gsub("^/+|/+$", "", group), "/", fixed = TRUE)[[1]]
 
   for (i in seq_along(segments)) {
     path <- paste(segments[seq_len(i)], collapse = "/")
@@ -72,7 +72,7 @@ hdf5_check_root_target <- function(
     if (!is_root && (!is_group || !is.null(encoding_type))) {
       cli_abort(
         c(
-          "Can't write an AnnData to {.val {root}} in {.file {hdf5_file$path}}.",
+          "Can't write an AnnData to {.val {group}} in {.file {hdf5_file$path}}.",
           x = paste(
             "{.val {path}} is",
             if (is_group) {
@@ -90,8 +90,8 @@ hdf5_check_root_target <- function(
     if (is_root && !is_group) {
       cli_abort(
         c(
-          "Can't write an AnnData to {.val {root}} in {.file {hdf5_file$path}}.",
-          x = "{.val {root}} is a dataset inside another element."
+          "Can't write an AnnData to {.val {group}} in {.file {hdf5_file$path}}.",
+          x = "{.val {group}} is a dataset inside another element."
         ),
         call = call
       )
@@ -104,16 +104,16 @@ hdf5_check_root_target <- function(
     ) {
       cli_abort(
         c(
-          "Can't write an AnnData to {.val {root}} in {.file {hdf5_file$path}}.",
+          "Can't write an AnnData to {.val {group}} in {.file {hdf5_file$path}}.",
           x = paste(
-            "{.val {root}} is not an AnnData",
+            "{.val {group}} is not an AnnData",
             if (is.null(encoding_type)) {
               "and is not empty."
             } else {
               "(it has encoding type {.val {encoding_type}})."
             }
           ),
-          i = "Choose a different {.arg root} or remove the group first."
+          i = "Choose a different {.arg group} or remove the group first."
         ),
         call = call
       )
@@ -125,26 +125,30 @@ hdf5_check_root_target <- function(
 
 #' Check an HDF5 element is an AnnData
 #'
-#' Abort unless the element at `root` has `encoding-type` `"anndata"`.
+#' Abort unless the element at `group` has `encoding-type` `"anndata"`.
 #'
 #' @param hdf5_file An `HDF5File` object
-#' @param root The path to the element, `"/"` for the file root
+#' @param group The path to the element, `"/"` for the file root
 #'
 #' @noRd
-hdf5_check_is_anndata <- function(hdf5_file, root, call = rlang::caller_env()) {
-  encoding_type <- read_h5ad_encoding(hdf5_file, root)$type
+hdf5_check_is_anndata <- function(
+  hdf5_file,
+  group,
+  call = rlang::caller_env()
+) {
+  encoding_type <- read_h5ad_encoding(hdf5_file, group)$type
 
   if (identical(encoding_type, "anndata")) {
     return(invisible(TRUE))
   }
 
-  where <- if (root == "/") {
+  where <- if (group == "/") {
     "File {.file {hdf5_file$path}}"
   } else {
-    "Element {.val {root}} in file {.file {hdf5_file$path}}"
+    "Element {.val {group}} in file {.file {hdf5_file$path}}"
   }
 
-  if (root == "/" && identical(encoding_type, "MuData")) {
+  if (group == "/" && identical(encoding_type, "MuData")) {
     modalities <- NULL
     if (hdf5_path_exists(hdf5_file, "mod")) {
       hdf5_file$open_and_defer_close(readonly = TRUE)
@@ -159,9 +163,9 @@ hdf5_check_is_anndata <- function(hdf5_file, root, call = rlang::caller_env()) {
       c(
         paste(where, "is a MuData file, not an AnnData."),
         i = if (length(modalities) > 0) {
-          "Set {.arg root} to read a modality: {.or {.val {modalities}}}."
+          "Set {.arg group} to read a modality: {.or {.val {modalities}}}."
         } else {
-          "Set {.arg root} to the path of a modality to read it."
+          "Set {.arg group} to the path of a modality to read it."
         }
       ),
       call = call

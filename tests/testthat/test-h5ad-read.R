@@ -106,7 +106,7 @@ test_that("reading H5AD as backed SingleCellExperiment works", {
 test_that("read_h5ad() supports reading from a non-root group", {
   nested_file <- make_nested_h5ad_fixture("mod/rna")
 
-  adata <- read_h5ad(nested_file, as = "InMemoryAnnData", root = "mod/rna")
+  adata <- read_h5ad(nested_file, as = "InMemoryAnnData", group = "mod/rna")
   adata_root <- read_h5ad(file, as = "InMemoryAnnData")
 
   expect_equal(adata$obs_names, adata_root$obs_names)

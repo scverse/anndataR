@@ -1,19 +1,19 @@
 #' Build an HDF5 file with an H5AD written at a non-root group
 #'
-#' Copies the bundled `example.h5ad` fixture into a group at `root` inside a
+#' Copies the bundled `example.h5ad` fixture into a group `group` inside a
 #' new file, optionally alongside unrelated sibling content, to test reading
 #' and writing an `AnnData` from/to a sub-path of an HDF5 file.
 #'
-#' @param root The group path to copy the example H5AD into
+#' @param group The group path to copy the example H5AD into
 #' @param with_sibling Whether to add unrelated sibling content to the file
 #'
 #' @return Path to the new HDF5 file
-make_nested_h5ad_fixture <- function(root = "mod/rna", with_sibling = TRUE) {
+make_nested_h5ad_fixture <- function(group = "mod/rna", with_sibling = TRUE) {
   src <- system.file("extdata", "example.h5ad", package = "anndataR")
   dest <- tempfile(fileext = ".h5ad")
 
   rhdf5::h5createFile(dest)
-  hdf5_ensure_group_path(HDF5File$new(dest), root)
+  hdf5_ensure_group_path(HDF5File$new(dest), group)
 
   if (with_sibling) {
     rhdf5::h5createGroup(dest, "mod/other_stuff")
@@ -27,11 +27,11 @@ make_nested_h5ad_fixture <- function(root = "mod/rna", with_sibling = TRUE) {
 
   items <- rhdf5::h5ls(h5src, recursive = FALSE)$name
   for (item in items) {
-    rhdf5::H5Ocopy(h5src, item, h5dest, paste0(root, "/", item))
+    rhdf5::H5Ocopy(h5src, item, h5dest, paste0(group, "/", item))
   }
 
   attrs <- rhdf5::h5readAttributes(h5src, "/")
-  h5obj <- rhdf5::H5Oopen(h5dest, root)
+  h5obj <- rhdf5::H5Oopen(h5dest, group)
   withr::defer(rhdf5::H5Oclose(h5obj))
   for (nm in names(attrs)) {
     rhdf5::h5writeAttribute(attrs[[nm]], h5obj, name = nm, asScalar = TRUE)

@@ -273,7 +273,7 @@ AbstractAnnData <- R6::R6Class(
     #' @param compression See [as_HDF5AnnData()]
     #' @param chunk_size See [as_HDF5AnnData()]
     #' @param mode See [as_HDF5AnnData()]
-    #' @param root See [as_HDF5AnnData()]
+    #' @param group See [as_HDF5AnnData()]
     #'
     #' @return An [`HDF5AnnData`] object
     as_HDF5AnnData = function(
@@ -281,7 +281,7 @@ AbstractAnnData <- R6::R6Class(
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto",
       mode = c("w-", "r", "r+", "a", "w", "x"),
-      root = "/"
+      group = "/"
     ) {
       as_HDF5AnnData(
         adata = self,
@@ -289,7 +289,7 @@ AbstractAnnData <- R6::R6Class(
         compression = compression,
         chunk_size = chunk_size,
         mode = mode,
-        root = root
+        group = group
       )
     },
     #' @description
@@ -335,7 +335,7 @@ AbstractAnnData <- R6::R6Class(
     #' @param compression See [write_h5ad()]
     #' @param chunk_size See [write_h5ad()]
     #' @param mode See [write_h5ad()]
-    #' @param root See [write_h5ad()]
+    #' @param group See [write_h5ad()]
     #'
     #' @return `path` invisibly
     write_h5ad = function(
@@ -343,7 +343,7 @@ AbstractAnnData <- R6::R6Class(
       compression = c("none", "gzip", "lzf"),
       chunk_size = "auto",
       mode = c("w-", "r", "r+", "a", "w", "x"),
-      root = "/"
+      group = "/"
     ) {
       write_h5ad(
         object = self,
@@ -351,7 +351,7 @@ AbstractAnnData <- R6::R6Class(
         compression = compression,
         chunk_size = chunk_size,
         mode = mode,
-        root = root
+        group = group
       )
     },
     #' @description

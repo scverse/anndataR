@@ -10,7 +10,7 @@ write_h5ad(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  root = "/",
+  group = "/",
   ...
 )
 }
@@ -31,25 +31,25 @@ behaviour. Set to \code{NULL} to disable chunking (contiguous storage,
 the rhdf5 default), or a number to use a specific target size in bytes.
 This only affects array-like datasets; scalar values are unaffected.}
 
-\item{mode}{The mode to open the HDF5 file. When \code{root} is not \code{"/"},
-these apply to the group at \code{root} rather than the whole file:
+\item{mode}{The mode to open the HDF5 file. When \code{group} is not \code{"/"},
+these apply to the group \code{group} rather than the whole file:
 \itemize{
 \item \code{a} creates a new file or opens an existing one for read/write. The group
-at \code{root} is created if it doesn't exist yet.
-\item \code{r} opens an existing file for reading, the group at \code{root} must
+at \code{group} is created if it doesn't exist yet.
+\item \code{r} opens an existing file for reading, the group \code{group} must
 already exist.
-\item \verb{r+} opens an existing file for read/write, the group at \code{root} must
+\item \verb{r+} opens an existing file for read/write, the group \code{group} must
 already exist.
-\item \code{w} creates a file, truncating any existing ones. When \code{root != "/"},
+\item \code{w} creates a file, truncating any existing ones. When \code{group != "/"},
 the file is created if missing but otherwise left untouched, and only the
-group at \code{root} is deleted and recreated. HDF5 doesn't free the space
+group \code{group} is deleted and recreated. HDF5 doesn't free the space
 used by the deleted group, see the "File size" section below.
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
-exists. When \code{root != "/"}, they instead fail if the group at
-\code{root} already exists.
+exists. When \code{group != "/"}, they instead fail if the group
+\code{group} already exists.
 }}
 
-\item{root}{The path to the group within the HDF5 file that the \code{AnnData}
+\item{group}{The path to the group within the HDF5 file that the \code{AnnData}
 is written to. Defaults to \code{"/"}, the file root. Can be used to write an
 \code{AnnData} to a group inside a file that also contains other content,
 e.g. a modality inside a \code{.h5mu} file.}
@@ -73,7 +73,7 @@ written uncompressed.
 
 Deleting or replacing an element in an HDF5 file only unlinks it, the space
 it used is not freed. This happens when writing with \code{mode = "w"} to a
-\code{root} that already exists, or when replacing a slot of an \code{\link{HDF5AnnData}}
+\code{group} that already exists, or when replacing a slot of an \code{\link{HDF5AnnData}}
 opened with mode \code{"r+"} or \code{"a"}. Repeated rewrites will grow the file. To
 reclaim the space, copy the file with the \code{h5repack} command-line tool that
 comes with HDF5, e.g. \verb{h5repack old.h5ad new.h5ad}.
