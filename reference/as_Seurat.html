@@ -191,6 +191,20 @@ In order to indicate the <code>adata$X</code> slot, you use <code>NA</code> as t
 The name you provide for <code>x_mapping</code> may not be a name in <code>layers_mapping</code>.</p>
 </div>
 
+<div class="section">
+<h3 id="feature-names">Feature names<a class="anchor" aria-label="anchor" href="#feature-names"></a></h3>
+
+
+<p><code>Seurat</code> does not allow underscores in feature names. If <code>adata$var_names</code>
+contains underscores, they are replaced with dashes in the resulting <code>Seurat</code>
+object, with a warning. This is also what <code>Seurat</code> does when creating an
+object. <code>adata</code> itself is not modified, so converting the <code>Seurat</code> object
+back with <code><a href="as_AnnData.html">as_AnnData()</a></code> gives an <code>AnnData</code> with dashes in its <code>var_names</code>.</p>
+<p>If replacing the underscores results in duplicate feature names (e.g.
+<code>"gene_1"</code> and <code>"gene-1"</code>), an error is raised. In that case, rename the
+features before converting.</p>
+</div>
+
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -155,6 +155,20 @@ indicate the `adata$X` slot, you use `NA` as the value in the vector.
 The name you provide for `x_mapping` may not be a name in
 `layers_mapping`.
 
+### Feature names
+
+`Seurat` does not allow underscores in feature names. If
+`adata$var_names` contains underscores, they are replaced with dashes in
+the resulting `Seurat` object, with a warning. This is also what
+`Seurat` does when creating an object. `adata` itself is not modified,
+so converting the `Seurat` object back with
+[`as_AnnData()`](https://anndataR.scverse.org/reference/as_AnnData.md)
+gives an `AnnData` with dashes in its `var_names`.
+
+If replacing the underscores results in duplicate feature names (e.g.
+`"gene_1"` and `"gene-1"`), an error is raised. In that case, rename the
+features before converting.
+
 ## See also
 
 Other object converters:
