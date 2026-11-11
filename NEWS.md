@@ -1,9 +1,40 @@
+# anndataR devel
+
+- Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
+- Fix `as_AnnData()` dropping the loadings of a Seurat reduction when their row names already match the feature names of the object (PR #592).
+- Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
+- Require `rhdf5 >= 2.57.13`, which fixes the spurious `NA_character_` warning for numeric datasets containing `NA`, and remove the skips in the file closure tests (PR #579, Huber-group-EMBL/rhdf5#241).
+- Error when writing a logical matrix containing `NA` to H5AD or Zarr, instead of writing a `nullable-boolean` that neither R nor Python **anndata** can read back. Convert it to numeric first (issue #545).
+- Require `Rarr >= 2.1.59`, which fixes reading and writing Zarr stores on R 4.6.2: every zstd-compressed array failed there with `argument is of length zero` (PR #591, Huber-group-EMBL/Rarr#298).
+- Write a length 1 `NA_character_` as a `nullable-string-array` to Zarr and H5AD, so that it stays missing: Zarr stored it as the string `"NA"`, and Python **anndata** read it from H5AD as an empty string (PR #585, issue #581).
+- Regenerate the man pages, which still showed the old default `compression` of `write_zarr()` and missed a contributor (PR #594).
+- Fix writing empty arrays to Zarr v3, which produced stores that Python **anndata** couldn't read: empty dimensions now get a chunk size of 1, as zarr-python does (PR #587, Huber-group-EMBL/Rarr#294).
+- Add `backed = TRUE` to `read_zarr()` and `as_ZarrAnnData()` to read matrices as ZarrArray-backed DelayedArrays (PR #507).
+- Add https://bioc.r-universe.dev as a repository in the workflows that check against Bioconductor devel, so that new versions of dependencies can be installed before they reach the Bioconductor repositories (PR #595).
+- Add Umami analytics to the **{pkgdown}** site (PR #590).
+
+# anndataR 1.3.4
+
+- Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
+- Use zstd by default in `write_zarr()` (PR #540).
+- Write length 1 `data.frame` columns and indices as arrays instead of scalars (PR #556, issue #553).
+- Fix writing integer matrices containing `NA` to Zarr, which produced stores that couldn't be read back: as for H5AD, they are now written as double (PR #546, issue #542).
+- Keep `NA` in double and integer matrices written to H5AD instead of replacing it with `NaN`, so that `NA` and `NaN` can still be told apart when reading the file back in R. Python **anndata** reads both as `NaN` (PR #546).
+- Fix the error and warning messages when reading or writing an element fails: the original error is now shown as the cause, instead of being parsed as a **cli** expression, which failed with ``Could not parse cli `{}` expression`` (PR #547, issue #531).
+- Check that the indices of sparse matrices fit their shape when reading H5AD files and Zarr stores, with an error that suggests the indices may not be 0-based (PR #547, issue #531).
+- Fix writing non-ASCII strings to H5AD files by using UTF-8 for string datasets (PR #555, issue #400).
+- Re-enable testing against Python **anndata** >= 0.13, and remove the warning that `ReticulateAnnData` gave for these versions (PR #569, issue #514).
+- Skip the Python-written Zarr v2 roundtrip tests when the installed Python **anndata** can no longer write Zarr v2, as **anndata** main does (PR #568, issue #514).
+- Skip the `None` key that Python **anndata** >= 0.13 uses for `X` when reading layers through `ReticulateAnnData` and `py_to_r()`, and keep `X` when setting `layers` (PR #563, issue #514).
+- Ignore the `None (.X)` entry that Python **anndata** >= 0.13.2 lists under `layers:` when comparing printed objects in the roundtrip tests (PR #564, issue #514).
+- Drop 3D layers from the layers roundtrip tests, because Python **anndata** >= 0.13 refuses to write them (PR #571, issue #514).
+- Require `Rarr >= 2.1.45` to read the sharded Zarr v3 stores that Python **anndata** >= 0.13 writes by default, because older versions can return wrong values for sharded arrays (PR #572, issue #514).
+
 # anndataR 1.3.3
 
 - Chunk Zarr arrays by default, with a `chunk_size` argument for `write_zarr()`, `as_ZarrAnnData()` and `ZarrAnnData` as for HDF5 writes. Chunk shapes match those written by Python **anndata**, so large stores can be read a block at a time and need less memory to write. Previously each array was written as a single chunk; `chunk_size = NULL` keeps that layout (PR #543, issue #541).
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
-- Replace the internal `create_zarr()` and `create_zarr_group()` helpers with `Rarr::write_zarr_group()` and require `Rarr >= 2.1.27` (PR #490).
 
 # anndataR 1.3.2
 
@@ -163,7 +194,7 @@ Backported from the development branch (PR #489):
 
 ## Minor changes
 
-- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe 
+- Refactor setter methods in `HDF5AnnData` and `InMemoryAnnData` to use pipe
   operators for cleaner code (PR #328)
 - Add explanatory comments for matrix generation alignment with Python
   **dummy-anndata** (PR #328)
@@ -175,11 +206,11 @@ Backported from the development branch (PR #489):
 
 ## Bug fixes
 
-- Add compression parameter to additional write operations in `HDF5AnnData` 
+- Add compression parameter to additional write operations in `HDF5AnnData`
   for consistency (PR #328)
 - Directly use `obs_names` and `var_names` properties instead of corresponding
   indirect S3 methods `rownames` and `colnames` (PR #328)
-- Fix error message variable name in `.validate_aligned_array()` method 
+- Fix error message variable name in `.validate_aligned_array()` method
   (expected_colnames → expected_rownames) (PR #328)
 - Fix Seurat conversion for PCA loadings with variable feature subsets (PR #328)
   - Seurat PCA loadings only contain variable features, not all genes
@@ -241,7 +272,7 @@ Backported from the development branch (PR #489):
   (PR #284)
   - There will still be a warning if neither of this is present as it may
     affect compatibility with **{Seurat}** functions
-    
+
 ## Minor changes
 
 - Use accessor functions/methods instead of direct slot access where possible

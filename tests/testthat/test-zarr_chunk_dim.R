@@ -25,9 +25,10 @@ test_that("zarr_chunk_dim uses a number as the target chunk size in bytes", {
   expect_true(all(result <= c(1e4, 10)))
 })
 
-test_that("zarr_chunk_dim leaves scalars and empty arrays alone", {
+test_that("zarr_chunk_dim leaves scalars alone and gives empty dimensions a chunk of 1", {
   expect_equal(zarr_chunk_dim(integer(0), "double"), integer(0))
-  expect_equal(zarr_chunk_dim(c(0L, 5L), "double"), c(0L, 5L))
+  expect_equal(zarr_chunk_dim(c(0L, 5L), "double"), c(1L, 5L))
+  expect_equal(zarr_chunk_dim(c(0L, 5L), "double", chunk_size = NULL), c(1L, 5L))
 })
 
 test_that("zarr_chunk_dim sizes elements as Python anndata writes them", {

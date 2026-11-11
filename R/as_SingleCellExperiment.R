@@ -469,20 +469,7 @@ as_SingleCellExperiment <- function(
   }
 
   purrr::map(mapping, function(.item) {
-    mat <- adata[[slot]][[.item]]
-
     # A SelfHits can not be created from a DelayedArray so we convert to a matrix
-    if (inherits(mat, "DelayedArray")) {
-      seed <- DelayedArray::seed(mat)
-      if (inherits(seed, "CSC_H5SparseMatrixSeed")) {
-        mat <- as(mat, "CsparseMatrix")
-      } else if (inherits(seed, "CSR_H5SparseMatrixSeed")) {
-        mat <- as(mat, "RsparseMatrix")
-      } else {
-        mat <- as.matrix(mat)
-      }
-    }
-
-    mat
+    materialize_matrix(adata[[slot]][[.item]])
   })
 }

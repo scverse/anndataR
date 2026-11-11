@@ -106,7 +106,7 @@ check_r_packages <- function(what, requires, where, version = NULL) {
         "{.run {install_fun}({missing_str})}"
       )
     )
-    if (length(version_str) > 0) {
+    if (any(has_version)) {
       msg <- c(
         msg,
         "i" = "{cli::qty(version_str)}Minimum version{?s} required: {.val {version_str}}"
@@ -115,19 +115,6 @@ check_r_packages <- function(what, requires, where, version = NULL) {
 
     cli_abort(msg, call = caller_env())
   }
-}
-
-#' Get the version of a Python package
-#'
-#' @param package Name of the Python package
-#'
-#' @return The version as a [package_version()] object. Pre-release and local
-#'   suffixes (e.g. `0.13.0rc1`) are dropped.
-#' @noRd
-py_package_version <- function(package) {
-  metadata <- reticulate::import("importlib.metadata", convert = TRUE)
-  version <- metadata$version(package)
-  package_version(sub("^([0-9]+(\\.[0-9]+)*).*$", "\\1", version))
 }
 
 #' Format package list for installation command

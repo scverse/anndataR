@@ -149,6 +149,18 @@ test_that("as_AnnData (Seurat) retains pca", {
   )
 })
 
+test_that("as_AnnData (Seurat) retains loadings in the order of the features", {
+  # compute the pca on all features, in the order of the object
+  obj_all <- RunPCA(obj, features = rownames(obj), npcs = 10L, verbose = FALSE)
+  loadings <- Loadings(obj_all, reduction = "pca")
+  expect_identical(rownames(loadings), rownames(obj_all))
+
+  ad_all <- as_AnnData(obj_all)
+
+  expect_contains(ad_all$varm_keys(), "pca")
+  expect_equal(ad_all$varm[["pca"]], loadings, ignore_attr = TRUE)
+})
+
 test_that("as_AnnData (Seurat) retains umap", {
   msg <- message_if_known(
     backend = "from_Seurat",

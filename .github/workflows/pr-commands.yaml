@@ -20,14 +20,18 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: r-lib/actions/pr-fetch@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
+      ## Before fetching the PR, so that the action of the default branch is used
       - name: Setup R and Bioconductor
         uses: grimbough/bioc-actions/setup-bioc@v1
         with:
           bioc-version: devel
+
+      - name: Add the Bioconductor R-universe
+        uses: ./.github/actions/add-bioc-r-universe
+
+      - uses: r-lib/actions/pr-fetch@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

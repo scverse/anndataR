@@ -61,6 +61,8 @@ ReticulateAnnData <- R6::R6Class(
           private$.py_anndata,
           "layers"
         )$keys())
+        # skip the None key that holds X in anndata >= 0.13
+        keys <- Filter(Negate(is.null), keys)
         for (name in keys) {
           out[[name]] <- py_to_r(reticulate::py_get_attr(
             private$.py_anndata,
@@ -77,7 +79,22 @@ ReticulateAnnData <- R6::R6Class(
           expected_rownames = rownames(self),
           expected_colnames = colnames(self)
         )
-        reticulate::py_set_attr(private$.py_anndata, "layers", r_to_py(value))
+
+        py_value <- lapply(value, r_to_py)
+        py_layers <- reticulate::py_get_attr(private$.py_anndata, "layers")
+
+        # delete the old layers, keeping the None key that holds X
+        bi <- reticulate::import_builtins()
+        for (name in bi$list(py_layers$keys())) {
+          if (!is.null(name)) {
+            reticulate::py_del_item(py_layers, name)
+          }
+        }
+
+        # set the new layers in the assigned order
+        for (name in names(py_value)) {
+          reticulate::py_set_item(py_layers, name, py_value[[name]])
+        }
         self
       }
     },
@@ -291,26 +308,6 @@ ReticulateAnnData <- R6::R6Class(
     ) {
       check_requires("ReticulateAnnData", "reticulate", where = "CRAN")
       check_requires("ReticulateAnnData", "anndata", where = "Python")
-
-      # anndata >= 0.13 is not fully supported yet
-      if (py_package_version("anndata") >= "0.13") {
-        cli_warn(
-          c(
-            paste(
-              "Python {.pkg anndata} >= 0.13 detected, which is not fully",
-              "supported by {.pkg anndataR} yet"
-            ),
-            i = "Some functionality may not work as expected",
-            i = paste(
-              "Pin an earlier version with",
-              "{.code reticulate::py_require(\"anndata<0.13\")}",
-              "before Python is initialized"
-            )
-          ),
-          .frequency = "once",
-          .frequency_id = "anndataR_py_anndata_0.13"
-        )
-      }
 
       if (!is.null(py_anndata)) {
         # Use existing Python AnnData object (class name depends on the

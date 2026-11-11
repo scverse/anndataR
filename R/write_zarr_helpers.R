@@ -6,8 +6,9 @@
 #' @param store A Zarr store instance
 #' @param name Name of the element within the Zarr store
 #' @param compression The compression to use when writing the element.
-#'   One of `"none"`, `"gzip"`, `"blosc"`, `"zstd"`, `"lzma"`, `"bz2"`,
-#'   `"zlib"`, `"lz4"`.
+#'   One of `"zstd"`, `"gzip"`, `"blosc"`, `"lzma"`, `"bz2"`,
+#'   `"zlib"`, `"lz4"`, `"none"`. Defaults to `"zstd"`.
+#'   See `help("compressors", package = "Rarr")`.
 #' @param zarr_format The format to write the element in, either 2 or 3 for the
 #'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
 #'   elements of a store end up in the same format.
@@ -16,6 +17,8 @@
 #'   `NULL`, each array is written as a single chunk.
 #'   When a number, it is used as the target chunk size in bytes.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
+#' @param force_array Whether to always write length-1 character, numeric and
+#'   logical values as arrays instead of scalars (e.g. for data frame columns)
 #' @param ... Additional arguments passed to writing functions
 #'
 #' @noRd
@@ -29,18 +32,19 @@ write_zarr_element <- function(
   store,
   name,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format,
   chunk_size = "auto",
   stop_on_error = FALSE,
+  force_array = FALSE,
   ...
 ) {
   compression <- match.arg(compression)
@@ -64,27 +68,36 @@ write_zarr_element <- function(
       }
     } else if (is.character(value)) {
       # Character values
-      if (length(value) == 1 && !is.matrix(value)) {
-        write_zarr_string_scalar
-      } else if (anyNA(value) && length(dim(value)) <= 1) {
+      if (anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_string
+      } else if (!force_array && length(value) == 1 && !is.matrix(value)) {
+        write_zarr_string_scalar
       } else {
         write_zarr_string_array
       }
     } else if (is.numeric(value) || inherits(value, "denseMatrix")) {
       # Numeric values
-      if (length(value) == 1 && !is.matrix(value)) {
+      if (!force_array && length(value) == 1 && !is.matrix(value)) {
         write_zarr_numeric_scalar
-      } else if (is.integer(value) && anyNA(value)) {
+      } else if (is.integer(value) && anyNA(value) && length(dim(value)) <= 1) {
         write_zarr_nullable_integer
       } else {
         write_zarr_dense_array
       }
     } else if (is.logical(value)) {
       # Logical values
-      if (anyNA(value)) {
+      if (anyNA(value) && length(dim(value)) >= 2) {
+        cli_abort(
+          c(
+            "Writing logical matrices containing {.code NA} to Zarr is not supported",
+            "i" = "Convert it to numeric first, e.g. with {.code storage.mode(x) <- \"double\"}",
+            "i" = "Attempting to write to {.path {name}} in {.file {store}}"
+          ),
+          class = "anndataR_error_not_writable"
+        )
+      } else if (anyNA(value)) {
         write_zarr_nullable_boolean
-      } else if (length(value) == 1) {
+      } else if (!force_array && length(value) == 1) {
         # Single Booleans should be written as numeric scalars
         write_zarr_numeric_scalar
       } else {
@@ -116,18 +129,15 @@ write_zarr_element <- function(
       )
     },
     error = function(e) {
-      message <- paste0(
-        "Could not write element '",
-        name,
-        "' of type '",
-        class(value),
-        "':\n",
-        conditionMessage(e)
-      )
+      # values that can't be written always stop, also when nested
+      if (inherits(e, "anndataR_error_not_writable")) {
+        stop(e)
+      }
+      msg <- "Could not write element {.field {name}} of type {.cls {class(value)}}"
       if (stop_on_error) {
-        cli_abort(message)
+        cli_abort(msg, parent = e)
       } else {
-        cli_warn(message)
+        cli_warn(msg, parent = e)
         NULL
       }
     }
@@ -211,6 +221,11 @@ write_zarr_dense_array <- function(
   # matrices of type 'dgeMatrix' can simply be converted to a matrix
   if (inherits(value, "denseMatrix")) {
     value <- as.matrix(value)
+  }
+
+  if (is.integer(value) && length(dim(value)) >= 2 && anyNA(value)) {
+    # an integer array can't hold NA, but a double array can
+    storage.mode(value) <- "double"
   }
 
   zarr_write_compressed(
@@ -386,59 +401,6 @@ write_zarr_nullable_integer <- function(
   write_zarr_encoding(store, name, "nullable-integer", version, zarr_format)
 }
 
-#' Patch Zarr array metadata to declare VLen-UTF8 strings
-#'
-#' TEMPORARY WORKAROUND. Rarr has no interface for writing VLen-UTF8 strings, so
-#' the array is written with a placeholder data type and its metadata is then
-#' rewritten by hand: a `vlen-utf8` filter for Zarr v2, and the `bytes` codec
-#' swapped for `vlen-utf8` plus a `string` data type for Zarr v3.
-#'
-#' Editing metadata behind Rarr's back like this is fragile, and it means the
-#' array on disk briefly disagrees with what Rarr thinks it wrote.
-#'
-#' TODO: Remove this function and pass the string type to Rarr directly once
-#' https://github.com/Huber-group-EMBL/Rarr/issues/111 is resolved.
-#'
-#' @param store The location of the Zarr store
-#' @param name Name of the array within the store
-#' @param zarr_format The format the array was written in
-#'
-#' @noRd
-patch_zarr_vlen_utf8 <- function(store, name, zarr_format) {
-  metadata_path <- file.path(
-    store,
-    name,
-    if (zarr_format == 2L) ".zarray" else "zarr.json"
-  )
-  check_requires("write_zarr", "jsonlite", where = "CRAN")
-  metadata <- jsonlite::read_json(metadata_path)
-
-  if (zarr_format == 2L) {
-    metadata$filters <- c(metadata$filters, list(list(id = "vlen-utf8")))
-  } else {
-    metadata$data_type <- "string"
-    # There should be only one array-bytes codec
-    metadata$codecs <- lapply(
-      metadata$codecs,
-      function(codec) {
-        if (codec$name == "bytes") {
-          list(name = "vlen-utf8")
-        } else {
-          codec
-        }
-      }
-    )
-  }
-
-  jsonlite::write_json(
-    metadata,
-    metadata_path,
-    auto_unbox = TRUE,
-    pretty = TRUE,
-    null = "null"
-  )
-}
-
 #' Write Zarr nullable string
 #'
 #' Write a nullable string to a Zarr store
@@ -511,45 +473,21 @@ write_zarr_string_array <- function(
   chunk_size = "auto",
   version = "0.2.0"
 ) {
-  dims <- dim(value) %||% length(value)
-
-  # if dims is zero, fix chunk dim to 1, but raises warnings
-  # https://github.com/Huber-group-EMBL/Rarr/issues/89
-  chunk_dims <- ifelse(
-    dims == 0,
-    1,
-    zarr_chunk_dim(dims, "character", chunk_size)
-  )
-
   # replace NA to "NA" (as in rhdf5:::.h5postProcessDataset)
   # to read as "NA" -> NA later after Rarr:read_zarr_array
   value[is.na(value)] <- "NA"
 
-  # suppress chunk dim warnings
-  suppressWarnings({
-    Rarr::create_empty_zarr_array(
-      file.path(store, name),
-      dim = dims,
-      chunk_dim = chunk_dims,
-      order = if (length(dims) > 0) "C" else "F",
-      # placeholder type, rewritten to a string type just below
-      data_type = "|O",
-      compressor = .get_compressor(compression),
-      zarr_version = zarr_format
-    )
-  })
-  # TODO: Remove this call, and write the array as strings directly, once
-  # https://github.com/Huber-group-EMBL/Rarr/issues/111 is resolved
-  patch_zarr_vlen_utf8(store, name, zarr_format)
-
-  if (all(dims != 0)) {
-    data <- array(data = value, dim = dims)
-    Rarr::update_zarr_array(
-      data,
-      zarr_array_path = file.path(store, name),
-      index = lapply(dims, seq_len)
-    )
-  }
+  # As of Rarr 2.1.56, writing character arrays as VLen-UTF8 is the default as
+  # long as there are no NA values in the array.
+  # And NA values have been removed just above.
+  zarr_write_compressed(
+    store,
+    name,
+    value,
+    compression,
+    zarr_format,
+    chunk_size = chunk_size
+  )
 
   write_zarr_encoding(store, name, "string-array", version, zarr_format)
 }
@@ -643,24 +581,7 @@ write_zarr_string_scalar <- function(
   version = "0.2.0"
 ) {
   # Write scalar
-  value <- array(data = value, dim = 1)
-  Rarr::create_empty_zarr_array(
-    zarr_array_path = file.path(store, name),
-    # placeholder type, rewritten to a string type just below
-    data_type = "|O",
-    dim = 1,
-    chunk_dim = 1,
-    compressor = .get_compressor(compression),
-    zarr_version = zarr_format
-  )
-  # TODO: Remove this call, and write the scalar as a string directly, once
-  # https://github.com/Huber-group-EMBL/Rarr/issues/111 is resolved
-  patch_zarr_vlen_utf8(store, name, zarr_format)
-  Rarr::update_zarr_array(
-    value,
-    zarr_array_path = file.path(store, name),
-    index = list(1)
-  )
+  zarr_write_compressed(store, name, value, compression, zarr_format)
 
   # Write attributes
   write_zarr_encoding(store, name, "string", version, zarr_format)
@@ -797,7 +718,8 @@ write_zarr_data_frame <- function(
       paste0(name, "/", col),
       compression,
       zarr_format,
-      chunk_size = chunk_size
+      chunk_size = chunk_size,
+      force_array = TRUE
     )
   }
 
@@ -808,7 +730,8 @@ write_zarr_data_frame <- function(
     paste0(name, "/", index_name),
     compression,
     zarr_format,
-    chunk_size = chunk_size
+    chunk_size = chunk_size,
+    force_array = TRUE
   )
 
   # Write additional data frame attributes
@@ -910,14 +833,14 @@ zarr_write_compressed <- function(
   name,
   value,
   compression = c(
-    "none",
+    "zstd",
     "gzip",
     "blosc",
-    "zstd",
     "lzma",
     "bz2",
     "zlib",
-    "lz4"
+    "lz4",
+    "none"
   ),
   zarr_format,
   chunk_size = "auto",
@@ -925,6 +848,12 @@ zarr_write_compressed <- function(
 ) {
   dims <- dim(value) %||% length(value)
   data <- array(data = value, dim = dims)
+
+  # TODO: Rarr warns that the chunks are larger than the array when a dimension
+  # is empty. Can be removed after
+  # https://github.com/Huber-group-EMBL/Rarr/pull/297 is released
+  handle_warnings <- if (any(dims == 0)) suppressWarnings else identity
+
   Rarr::write_zarr_array(
     data,
     zarr_array_path = file.path(store, name),
@@ -937,7 +866,8 @@ zarr_write_compressed <- function(
     order = if (length(dims) > 0) "C" else "F",
     compressor = .get_compressor(compression),
     zarr_version = zarr_format
-  )
+  ) |>
+    handle_warnings()
 }
 
 #' Get Zarr compressor
@@ -953,14 +883,14 @@ zarr_write_compressed <- function(
 .get_compressor <- function(compression) {
   switch(
     compression,
-    "none" = NULL,
     "zstd" = Rarr::use_zstd(),
-    "blosc" = Rarr::use_blosc(),
     "gzip" = Rarr::use_gzip(),
+    "blosc" = Rarr::use_blosc(),
     "lzma" = Rarr::use_lzma(),
     "bz2" = Rarr::use_bz2(),
     "zlib" = Rarr::use_zlib(),
-    "lz4" = Rarr::use_lz4()
+    "lz4" = Rarr::use_lz4(),
+    "none" = NULL
   )
 }
 
@@ -989,8 +919,13 @@ zarr_chunk_dim <- function(
   # - "auto"   -> zarr's auto-chunking
   # - NULL     -> a single chunk
   # - <number> -> use provided byte size as target
-  if (length(dims) == 0 || any(dims == 0) || is.null(chunk_size)) {
+  if (length(dims) == 0) {
     return(dims)
+  }
+  # empty dimensions get a chunk size of 1, as Zarr requires chunks of at least
+  # one element
+  if (any(dims == 0) || is.null(chunk_size)) {
+    return(ifelse(dims == 0, 1L, dims))
   }
   target_size <- if (identical(chunk_size, "auto")) NULL else chunk_size
   hdf5_auto_chunk(

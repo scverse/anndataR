@@ -1,4 +1,4 @@
-skip_if_not_installed("Rarr", minimum_version = "2.1.27")
+skip_if_not_installed("Rarr", minimum_version = "2.1.59")
 
 for (zarr_format in c(2, 3)) {
   # set version
@@ -73,11 +73,20 @@ for (zarr_format in c(2, 3)) {
           array,
           store,
           "dense_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "dense_array"))
         expect_equal(zarr_node_format(store, "dense_array"), zarr_format)
+        expect_equal(
+          {
+            zarr_ov <- Rarr::zarr_overview(
+              file.path(store, "dense_array"),
+              as_data_frame = TRUE
+            )
+            zarr_ov$compressor
+          },
+          "zstd"
+        )
         attrs <- Rarr::read_zarr_attributes(file.path(store, "dense_array"))
         expect_true(all(
           c("encoding-type", "encoding-version") %in% names(attrs)
@@ -113,7 +122,6 @@ for (zarr_format in c(2, 3)) {
           csc_array,
           store,
           "csc_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csc_array"))
@@ -132,7 +140,6 @@ for (zarr_format in c(2, 3)) {
           csr_array,
           store,
           "csr_array",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "csr_array"))
@@ -208,6 +215,50 @@ for (zarr_format in c(2, 3)) {
         expect_equal(attrs[["encoding-type"]], "nullable-integer")
       })
 
+      test_that("Writing Zarr integer matrices with NA works", {
+        value <- matrix(c(1L, NA, 3:6), nrow = 3, ncol = 2)
+
+        expect_silent(write_zarr_element(
+          value,
+          store,
+          "int_matrix_na",
+          zarr_format = zarr_format
+        ))
+        attrs <- Rarr::read_zarr_attributes(file.path(store, "int_matrix_na"))
+        expect_equal(attrs[["encoding-type"]], "array")
+        expect_identical(
+          read_zarr_element(store, "int_matrix_na"),
+          matrix(c(1, NA, 3:6), nrow = 3, ncol = 2)
+        )
+      })
+
+      test_that("Writing Zarr logical matrices with NA fails", {
+        value <- matrix(c(TRUE, NA, FALSE, TRUE), nrow = 2, ncol = 2)
+
+        expect_error(
+          write_zarr_element(
+            value,
+            store,
+            "logical_matrix_na",
+            zarr_format = zarr_format
+          ),
+          class = "anndataR_error_not_writable"
+        )
+        expect_false(zarr_path_exists(store, "logical_matrix_na"))
+      })
+
+      test_that("Writing Zarr double matrices keeps NA and NaN", {
+        value <- matrix(c(1.5, NA, NaN, 4), nrow = 2, ncol = 2)
+
+        expect_silent(write_zarr_element(
+          value,
+          store,
+          "dbl_matrix_na",
+          zarr_format = zarr_format
+        ))
+        expect_identical(read_zarr_element(store, "dbl_matrix_na"), value)
+      })
+
       test_that("Writing Zarr string arrays works", {
         string <- LETTERS[1:5]
 
@@ -280,6 +331,21 @@ for (zarr_format in c(2, 3)) {
         expect_equal(attrs[["encoding-type"]], "string")
       })
 
+      test_that("Writing Zarr string scalars with NA works", {
+        expect_silent(write_zarr_element(
+          NA_character_,
+          store,
+          "string_scalar_na",
+          zarr_format = zarr_format
+        ))
+        expect_true(zarr_path_exists(store, "string_scalar_na/mask"))
+        expect_true(zarr_path_exists(store, "string_scalar_na/values"))
+        attrs <- Rarr::read_zarr_attributes(
+          file.path(store, "string_scalar_na")
+        )
+        expect_equal(attrs[["encoding-type"]], "nullable-string-array")
+      })
+
       test_that("Writing Zarr numeric scalars works", {
         number <- 1.0
 
@@ -311,7 +377,6 @@ for (zarr_format in c(2, 3)) {
           mapping,
           store,
           "mapping",
-          compression = "none",
           zarr_format = zarr_format
         ))
         expect_true(zarr_path_exists(store, "mapping"))
@@ -637,4 +702,318 @@ test_that("write_zarr() and as_ZarrAnnData() keep their positional arguments", {
   store_v2 <- withr::local_tempfile(fileext = ".zarr")
   as_ZarrAnnData(dummy, store_v2, "none", "w-", 2L)
   expect_equal(zarr_node_format(store_v2, ""), 2L)
+})
+
+test_that("errors while writing a Zarr element keep the original message", {
+  store <- withr::local_tempfile(fileext = ".zarr")
+  Rarr::write_zarr_group(store, "", zarr_version = 3)
+
+  local_mocked_bindings(
+    write_zarr_dense_array = function(...) stop("value not in {0,...,n}")
+  )
+  value <- matrix(rnorm(20), nrow = 5, ncol = 4)
+  expect_warning(
+    write_zarr_element(value, store, "error_array"),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+  expect_error(
+    write_zarr_element(value, store, "error_array", stop_on_error = TRUE),
+    "value not in {0,...,n}",
+    fixed = TRUE
+  )
+})
+
+# Integer matrices with NA are written as for H5AD: as double, with NaN for NA
+# (#542)
+slots <- c("X", "layers", "obsm", "varm", "obsp", "varp")
+
+for (slot in slots) {
+  test_that(
+    paste0(
+      "an integer matrix with NA in ",
+      slot,
+      " reads back from Zarr as from H5AD"
+    ),
+    {
+      skip_if_not_installed("rhdf5")
+      types <- list(
+        x_type = if (slot == "X") {
+          "integer_matrix_with_nas"
+        } else {
+          "numeric_matrix"
+        },
+        layer_types = character(0),
+        obs_types = character(0),
+        var_types = character(0),
+        obsm_types = character(0),
+        varm_types = character(0),
+        obsp_types = character(0),
+        varp_types = character(0),
+        uns_types = character(0)
+      )
+      if (slot != "X") {
+        types[[paste0(
+          sub("s$", "", slot),
+          "_types"
+        )]] <- "integer_matrix_with_nas"
+      }
+      adata <- do.call(
+        generate_dataset,
+        c(list(n_obs = 10L, n_vars = 20L, format = "AnnData"), types)
+      )
+
+      zarr <- withr::local_tempfile(fileext = ".zarr")
+      h5ad <- withr::local_tempfile(fileext = ".h5ad")
+      write_zarr(adata, zarr)
+      write_h5ad(adata, h5ad)
+
+      from_zarr <- read_zarr(zarr)
+      from_h5ad <- read_h5ad(h5ad)
+      expect_equal(from_zarr[[slot]], from_h5ad[[slot]])
+    }
+  )
+}
+
+# Logical matrices with NA have no AnnData encoding, so writing them errors
+# (#545)
+for (slot in c("X", "layers", "obsm", "obsp", "uns")) {
+  test_that(
+    paste0("writing a logical matrix with NA in ", slot, " errors"),
+    {
+      skip_if_not_installed("rhdf5")
+      value <- matrix(c(TRUE, NA, FALSE, TRUE), nrow = 2, ncol = 2)
+      args <- list(
+        obs = data.frame(row.names = c("c1", "c2")),
+        var = data.frame(row.names = c("g1", "g2"))
+      )
+      args[[slot]] <- if (slot == "X") value else list(flags = value)
+      adata <- do.call(AnnData, args)
+
+      expect_error(
+        write_h5ad(adata, withr::local_tempfile(fileext = ".h5ad")),
+        class = "anndataR_error_not_writable"
+      )
+      expect_error(
+        write_zarr(adata, withr::local_tempfile(fileext = ".zarr")),
+        class = "anndataR_error_not_writable"
+      )
+    }
+  )
+}
+
+test_that("Python anndata reads an integer matrix with NA written to Zarr", {
+  skip_if_no_anndata_py()
+  adata <- generate_dataset(
+    n_obs = 10L,
+    n_vars = 20L,
+    x_type = "integer_matrix_with_nas",
+    layer_types = character(0),
+    obs_types = character(0),
+    var_types = character(0),
+    obsm_types = character(0),
+    varm_types = character(0),
+    obsp_types = character(0),
+    varp_types = character(0),
+    uns_types = character(0),
+    format = "AnnData"
+  )
+  zarr <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr(adata, zarr)
+
+  ad <- reticulate::import("anndata", convert = FALSE)
+  np <- reticulate::import("numpy", convert = FALSE)
+  x <- reticulate::py_to_r(np$asarray(ad$read_zarr(zarr)$X))
+  expect_equal(is.na(x), is.na(adata$X), ignore_attr = TRUE)
+  expect_equal(x[!is.na(x)], as.double(adata$X[!is.na(adata$X)]))
+})
+
+test_that("NA and NaN in double matrices survive a round trip through Python", {
+  skip_if_no_anndata_py()
+  value <- matrix(c(1.5, NA, NaN, 4), nrow = 2, ncol = 2)
+  adata <- AnnData(
+    X = value,
+    obs = data.frame(row.names = c("a", "b")),
+    var = data.frame(row.names = c("x", "y"))
+  )
+  ad <- reticulate::import("anndata", convert = FALSE)
+
+  zarr <- withr::local_tempfile(fileext = ".zarr")
+  zarr_py <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr(adata, zarr)
+  ad$read_zarr(zarr)$write_zarr(zarr_py)
+  expect_identical(unname(read_zarr(zarr_py)$X), value)
+
+  h5ad <- withr::local_tempfile(fileext = ".h5ad")
+  h5ad_py <- withr::local_tempfile(fileext = ".h5ad")
+  write_h5ad(adata, h5ad)
+  ad$read_h5ad(h5ad)$write_h5ad(h5ad_py)
+  expect_identical(unname(read_h5ad(h5ad_py)$X), value)
+})
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0(
+      "write_zarr() writes length 1 data frame columns and indices as arrays (v",
+      zarr_format,
+      ")"
+    ),
+    {
+      store <- withr::local_tempfile(fileext = ".zarr")
+      adata <- AnnData(
+        X = matrix(1, 1, 2),
+        obs = data.frame(
+          ct = "T cell",
+          n = 3L,
+          x = 1.5,
+          flag = TRUE,
+          na_int = NA_integer_,
+          na_chr = NA_character_,
+          row.names = "c1"
+        ),
+        var = data.frame(row.names = c("g1", "g2"))
+      )
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+
+      encoding <- function(key) {
+        read_zarr_encoding(store, key)$type
+      }
+      expect_equal(encoding("obs/_index"), "string-array")
+      expect_equal(encoding("obs/ct"), "string-array")
+      expect_equal(encoding("obs/n"), "array")
+      expect_equal(encoding("obs/x"), "array")
+      expect_equal(encoding("obs/flag"), "array")
+      expect_equal(encoding("obs/na_int"), "nullable-integer")
+      expect_equal(encoding("obs/na_chr"), "nullable-string-array")
+
+      # A single variable
+      adata <- AnnData(
+        X = matrix(1, 2, 1),
+        obs = data.frame(row.names = c("c1", "c2")),
+        var = data.frame(row.names = "g")
+      )
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      expect_equal(encoding("var/_index"), "string-array")
+
+      expect_equal(read_zarr(store)$var_names, "g")
+    }
+  )
+}
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0(
+      "Python can read Zarr stores with length 1 var (v",
+      zarr_format,
+      ")"
+    ),
+    {
+      skip_if_no_anndata_py()
+      skip_if_no_zarr()
+      ad <- reticulate::import("anndata", convert = FALSE)
+      store <- withr::local_tempfile(fileext = ".zarr")
+
+      adata <- AnnData(
+        X = matrix(1, 2, 1),
+        obs = data.frame(row.names = c("c1", "c2")),
+        var = data.frame(row.names = "g")
+      )
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      py_adata <- ad$read_zarr(store)
+      expect_equal(reticulate::py_to_r(py_adata$n_vars), 1L)
+    }
+  )
+}
+
+# An AnnData without observations, and with empty vectors in uns
+generate_empty_arrays_adata <- function() {
+  AnnData(
+    X = matrix(numeric(0), nrow = 0, ncol = 2),
+    obs = data.frame(row.names = character(0)),
+    var = data.frame(row.names = c("g1", "g2")),
+    uns = list(
+      double = numeric(0),
+      integer = integer(0),
+      logical = logical(0),
+      character = character(0)
+    )
+  )
+}
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0(
+      "write_zarr() writes empty arrays with a chunk size of 1 (v",
+      zarr_format,
+      ")"
+    ),
+    {
+      store <- withr::local_tempfile(fileext = ".zarr")
+      adata <- generate_empty_arrays_adata()
+      expect_no_warning(
+        write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      )
+
+      chunk_dim <- function(key) {
+        overview <- Rarr::zarr_overview(
+          file.path(store, key),
+          as_data_frame = TRUE
+        )
+        overview$chunk_dim[[1]]
+      }
+      expect_equal(chunk_dim("X"), c(1L, 2L))
+      expect_equal(chunk_dim("obs/_index"), 1L)
+      for (key in names(adata$uns)) {
+        expect_equal(chunk_dim(file.path("uns", key)), 1L)
+      }
+
+      from_zarr <- read_zarr(store)
+      expect_equal(from_zarr$shape(), c(0L, 2L))
+      expect_equal(from_zarr$obs_names, character(0))
+      expect_equal(from_zarr$var_names, c("g1", "g2"))
+      for (key in names(adata$uns)) {
+        expect_equal(as.vector(from_zarr$uns[[key]]), adata$uns[[key]])
+      }
+    }
+  )
+}
+
+for (zarr_format in c(2, 3)) {
+  test_that(
+    paste0(
+      "Python can read Zarr stores with empty arrays (v",
+      zarr_format,
+      ")"
+    ),
+    {
+      skip_if_no_anndata_py()
+      skip_if_no_zarr()
+      ad <- reticulate::import("anndata", convert = FALSE)
+      store <- withr::local_tempfile(fileext = ".zarr")
+
+      adata <- generate_empty_arrays_adata()
+      write_zarr(adata, store, mode = "w", zarr_format = zarr_format)
+      py_adata <- ad$read_zarr(store)
+      expect_equal(unlist(reticulate::py_to_r(py_adata$shape)), c(0L, 2L))
+      py_uns <- reticulate::py_to_r(py_adata$uns)
+      expect_setequal(names(py_uns), names(adata$uns))
+      expect_equal(unname(lengths(py_uns)), rep(0L, length(adata$uns)))
+    }
+  )
+}
+
+test_that("zarr_write_compressed() passes on warnings from Rarr", {
+  local_mocked_bindings(
+    write_zarr_array = function(...) {
+      warning("warning from Rarr")
+      invisible(TRUE)
+    },
+    .package = "Rarr"
+  )
+  store <- withr::local_tempfile(fileext = ".zarr")
+
+  expect_warning(
+    zarr_write_compressed(store, "array", 1:3, "none", zarr_format = 3),
+    "warning from Rarr"
+  )
 })

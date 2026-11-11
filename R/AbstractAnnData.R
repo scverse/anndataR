@@ -304,14 +304,14 @@ AbstractAnnData <- R6::R6Class(
     as_ZarrAnnData = function(
       file,
       compression = c(
-        "none",
+        "zstd",
         "gzip",
         "blosc",
-        "zstd",
         "lzma",
         "bz2",
         "zlib",
-        "lz4"
+        "lz4",
+        "none"
       ),
       mode = c("w-", "r", "r+", "a", "w", "x"),
       zarr_format = NULL,
@@ -366,14 +366,14 @@ AbstractAnnData <- R6::R6Class(
     write_zarr = function(
       path,
       compression = c(
-        "none",
+        "zstd",
         "gzip",
         "blosc",
-        "zstd",
         "lzma",
         "bz2",
         "zlib",
-        "lz4"
+        "lz4",
+        "none"
       ),
       mode = c("w-", "r", "r+", "a", "w", "x"),
       ...,

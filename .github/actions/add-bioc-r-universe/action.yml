@@ -1,0 +1,26 @@
+name: Add the Bioconductor R-universe
+description: >
+  Add https://bioc.r-universe.dev to the repositories that R installs packages
+  from. Needs BiocManager, so run it after grimbough/bioc-actions/setup-bioc.
+
+## A new version of a Bioconductor package only reaches the Bioconductor
+## repositories after its next build there, which can take days.
+## bioc.r-universe.dev builds the devel branches right away, so also use it to
+## resolve versions that Bioconductor doesn't have yet. The Bioconductor
+## repositories are listed first, so that they are used when both have the same
+## version.
+runs:
+  using: composite
+  steps:
+    - name: Add the Bioconductor R-universe
+      run: |
+        repos <- c(
+          BiocManager::repositories(),
+          bioc_runiverse = "https://bioc.r-universe.dev"
+        )
+        write(
+          sprintf("options(repos = %s)", deparse1(repos)),
+          file = "~/.Rprofile",
+          append = TRUE
+        )
+      shell: Rscript {0}

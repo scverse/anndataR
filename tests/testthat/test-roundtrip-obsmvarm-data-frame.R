@@ -24,7 +24,7 @@ r_adata <- function(obsm, varm) {
   )
 }
 
-for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
+for (fmt in roundtrip_formats(ad)) {
   fmt_config <- get_fmt_config(fmt)
   # The Zarr backend needs {Rarr}, which `skip_if_no_zarr()` does not check
   skip_without <- if (fmt == "h5ad") "rhdf5" else "Rarr"
@@ -32,9 +32,7 @@ for (fmt in c("h5ad", "zarrv2", "zarrv3")) {
   withr::with_options(
     list("anndataR.zarr_format" = fmt_config$zarr_format),
     {
-      if (grepl("zarr", fmt_config$ext, fixed = TRUE)) {
-        ad$settings$zarr_write_format <- fmt_config$zarr_format
-      }
+      py_set_zarr_write_format(ad, fmt_config$zarr_format)
 
       test_that(
         paste0(

@@ -51,6 +51,8 @@ py_to_r.collections.abc.Mapping <- function(x) {
   out <- list()
   bi <- reticulate::import_builtins()
   keys <- bi$list(x$keys())
+  # skip None keys, such as the one holding X in anndata >= 0.13
+  keys <- Filter(Negate(is.null), keys)
   for (name in keys) {
     out[[name]] <- reticulate::py_to_r(x[[name]])
   }
