@@ -65,24 +65,25 @@ to_py_matrix <- function(mat) {
 }
 
 # nolint start: object_name_linter
-to_R_matrix <- function(mat, allow_backed = TRUE) {
-  if (inherits(mat, "DelayedMatrix") && isFALSE(allow_backed)) {
-    seed <- DelayedArray::seed(mat)
-    if (inherits(seed, "CSC_H5SparseMatrixSeed")) {
-      mat <- as(mat, "CsparseMatrix")
-    } else if (inherits(seed, "CSR_H5SparseMatrixSeed")) {
-      mat <- as(mat, "RsparseMatrix")
-    } else {
-      mat <- as.matrix(mat)
-    }
-  }
-
+to_R_matrix <- function(mat) {
   # nolint end: object_name_linter
   if (inherits(mat, "dgRMatrix")) {
     mat <- as(mat, "CsparseMatrix")
   }
 
   Matrix::t(mat)
+}
+
+materialize_matrix <- function(mat) {
+  if (!inherits(mat, "DelayedMatrix")) {
+    return(mat)
+  }
+
+  if (DelayedArray::is_sparse(mat)) {
+    as(mat, "CsparseMatrix")
+  } else {
+    as.matrix(mat)
+  }
 }
 
 self_name <- function(x) {
@@ -276,7 +277,7 @@ warn_matrix_dimnames_not_writeable <- function(
 #' Build a `dgCMatrix` or `dgRMatrix` from raw data, index, and pointer vectors.
 #'
 #' @param data Non-zero values. Coerced to `double`.
-#' @param indices Column indices (CSC) or row indices (CSR), 0-based. Coerced
+#' @param indices Row indices (CSC) or column indices (CSR), 0-based. Coerced
 #'   to `integer`.
 #' @param indptr Index pointers, 0-based. Coerced to `integer`.
 #' @param shape Matrix dimensions. Coerced to `integer`.
@@ -298,6 +299,21 @@ construct_sparse_matrix <- function(
   indices <- as.integer(indices)
   indptr <- as.integer(indptr)
   shape <- as.integer(shape)
+
+  # check that the indices fit in the shape
+  if (length(indices) > 0L) {
+    index_range <- range(indices)
+    n_minor <- if (type == "csc_matrix") shape[[1]] else shape[[2]]
+    if (index_range[[1]] < 0L || index_range[[2]] >= n_minor) {
+      cli_abort(c(
+        paste(
+          "Sparse matrix indices range from {index_range[[1]]} to {index_range[[2]]},",
+          "which does not fit shape [{shape[[1]]}, {shape[[2]]}]"
+        ),
+        "i" = "Indices must be 0-based and smaller than {n_minor}"
+      ))
+    }
+  }
 
   # The Matrix package validity checks require that indices are sorted within
   # each major axis group (row indices within columns for CSC, column indices

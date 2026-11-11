@@ -43,6 +43,9 @@ jobs:
         with:
           bioc-version: devel
 
+      - name: Add the Bioconductor R-universe
+        uses: ./.github/actions/add-bioc-r-universe
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: local::.
@@ -51,11 +54,9 @@ jobs:
 
       - name: Configure python dependencies and reticulate
         run: |
-          # TEMP(anndata<0.13.0): pin added in PR #481, revert once anndataR
-          # supports Python anndata >= 0.13.0
           # TEMP(mudata<0.4): mudata 0.4 cannot read the legacy example .h5mu
           # file, revert once issue #511 is resolved
-          pip install "anndata<0.13.0" scanpy "mudata<0.4"
+          pip install anndata scanpy "mudata<0.4"
           echo "RETICULATE_PYTHON=$(which python3)" >> ~/.Renviron
           echo "Python configured for reticulate:" && Rscript -e 'reticulate::py_config()'
 

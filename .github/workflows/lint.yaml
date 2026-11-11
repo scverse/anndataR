@@ -24,6 +24,9 @@ jobs:
         with:
           bioc-version: devel
 
+      - name: Add the Bioconductor R-universe
+        uses: ./.github/actions/add-bioc-r-universe
+
       - name: Install air
         run: curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh
 
