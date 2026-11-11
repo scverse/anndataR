@@ -1,5 +1,6 @@
 # anndataR 1.3.5
 
+- Add a `group` argument to `read_h5ad()`, `write_h5ad()`, `as_HDF5AnnData()` and `HDF5AnnData`, to read and write an `AnnData` stored in a group inside an HDF5 file, e.g. a modality inside a `.h5mu` file (PR #521, issue #466).
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
 - Fix `as_AnnData()` dropping the loadings of a Seurat reduction when their row names already match the feature names of the object (PR #592).
 - Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
