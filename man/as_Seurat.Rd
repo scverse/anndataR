@@ -130,6 +130,19 @@ of \code{Layers(seurat)} and values are keys of \code{layers} in \code{adata}.
 In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in the vector.
 The name you provide for \code{x_mapping} may not be a name in \code{layers_mapping}.
 }
+
+\subsection{Feature names}{
+
+\code{Seurat} does not allow underscores in feature names. If \code{adata$var_names}
+contains underscores, they are replaced with dashes in the resulting \code{Seurat}
+object, with a warning. This is also what \code{Seurat} does when creating an
+object. \code{adata} itself is not modified, so converting the \code{Seurat} object
+back with \code{\link[=as_AnnData]{as_AnnData()}} gives an \code{AnnData} with dashes in its \code{var_names}.
+
+If replacing the underscores results in duplicate feature names (e.g.
+\code{"gene_1"} and \code{"gene-1"}), an error is raised. In that case, rename the
+features before converting.
+}
 }
 \examples{
 \dontshow{if (rlang::is_installed("Seurat")) withAutoprint(\{ # examplesIf}
