@@ -9,10 +9,13 @@
         Add support for writing Zarr v3 stores, using (i) \code{zarr_format} argument of \code{write_zarr()}/\code{as_ZarrAnnData()} or (ii) the \code{anndataR.zarr_format} option. New stores are written as Zarr v3 by default.
       }
       \item{
-        Add support for reading backed objects using \pkg{DelayedArray} matrices, including a \code{backed} argument for \code{HDF5AnnData} and \code{InMemoryAnnData}, and conversion of backed \code{AnnData} objects to \code{SingleCellExperiment}/\code{Seurat}.
+        Add support for reading backed objects using \pkg{DelayedArray} matrices, including a \code{backed} argument for \code{HDF5AnnData}, \code{ZarrAnnData} and \code{InMemoryAnnData}, and conversion of backed \code{AnnData} objects to \code{SingleCellExperiment}/\code{Seurat}.
       }
       \item{
         Add support for \code{nullable-string-array} elements in H5AD and Zarr.
+      }
+      \item{
+        Add a \code{group} argument to \code{read_h5ad()}, \code{write_h5ad()}, \code{as_HDF5AnnData()} and \code{HDF5AnnData}, to read and write an \code{AnnData} stored in a group inside an HDF5 file, e.g. a modality inside a \code{.h5mu} file.
       }
     }
   }
@@ -36,6 +39,12 @@
       }
       \item{
         Use zstd compression by default in \code{write_zarr()}
+      }
+      \item{
+        Error when writing a logical matrix containing \code{NA} to H5AD or Zarr, instead of writing a \code{nullable-boolean} that neither R nor Python \code{anndata} can read back. Convert it to numeric first.
+      }
+      \item{
+        Require \pkg{rhdf5} 2.57.13 or later, which fixes a spurious \code{NA_character_} warning for numeric datasets containing \code{NA}, and \pkg{Rarr} 2.1.59 or later, which fixes reading and writing zstd-compressed Zarr arrays on R 4.6.2.
       }
     }
   }
@@ -81,6 +90,15 @@
       }
       \item{
         Fix \code{as_AnnData()} failing with \code{"`rownames(X)` is not as expected"} when the assay of a \code{SingleCellExperiment} mapped to \code{X} has different dimnames than the object.
+      }
+      \item{
+        Fix \code{as_AnnData()} dropping the loadings of a Seurat reduction when their row names already match the feature names of the object.
+      }
+      \item{
+        Fix \code{as_Seurat()} failing with \code{"No feature overlap between existing object and new layer data"} when \code{var_names} contain underscores. The underscores are now replaced with dashes in the feature names of the \code{Seurat} object, with a warning.
+      }
+      \item{
+        Don't add the \code{vlen-utf8} filter twice to Zarr v2 string arrays, which newer versions of \pkg{Rarr} add themselves.
       }
     }
   }
