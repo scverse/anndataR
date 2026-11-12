@@ -42,6 +42,33 @@ hdf5_ensure_group_path <- function(hdf5_file, path) {
   }
 }
 
+#' Read the encoding type of an HDF5 element, if it has one
+#'
+#' Unlike `read_h5ad_encoding()`, which aborts when the `encoding-type`
+#' attribute is missing, this returns `NULL` for an element without one, so
+#' that plain groups (e.g. `mod` in a `.h5mu` file) can be told apart from
+#' encoded elements.
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name The path to the element
+#'
+#' @return The encoding type, or `NULL` if the element has none
+#'
+#' @noRd
+hdf5_encoding_type_or_null <- function(hdf5_file, name) {
+  hdf5_file$open_and_defer_close(readonly = TRUE)
+
+  attrs <- tryCatch(
+    rhdf5::h5readAttributes(hdf5_file$handle, name),
+    error = function(e) {
+      cli_abort(
+        "Encoding attributes not found for element {.val {name}} in {.path {hdf5_file$path}}"
+      )
+    }
+  )
+  attrs[["encoding-type"]]
+}
+
 #' Check an AnnData can be written to a group
 #'
 #' Abort if writing an AnnData at `group` would overwrite or nest inside other
@@ -67,7 +94,7 @@ hdf5_check_group_target <- function(
 
     is_root <- i == length(segments)
     is_group <- hdf5_is_group(hdf5_file, path)
-    encoding_type <- read_h5ad_encoding(hdf5_file, path)$type
+    encoding_type <- hdf5_encoding_type_or_null(hdf5_file, path)
 
     if (!is_root && (!is_group || !is.null(encoding_type))) {
       cli_abort(
@@ -136,7 +163,7 @@ hdf5_check_is_anndata <- function(
   group,
   call = rlang::caller_env()
 ) {
-  encoding_type <- read_h5ad_encoding(hdf5_file, group)$type
+  encoding_type <- hdf5_encoding_type_or_null(hdf5_file, group)
 
   if (identical(encoding_type, "anndata")) {
     return(invisible(TRUE))
