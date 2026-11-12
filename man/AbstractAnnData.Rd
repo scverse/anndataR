@@ -389,7 +389,8 @@ See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for more details on the conv
   file,
   compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  zarr_format = NULL
+  zarr_format = NULL,
+  chunk_size = "auto"
 )}
     \if{html}{\out{</div>}}
   }
@@ -400,6 +401,7 @@ See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for more details on the conv
       \item{\code{compression}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
       \item{\code{mode}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
       \item{\code{zarr_format}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
+      \item{\code{chunk_size}}{See \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}}}
     }
     \if{html}{\out{</div>}}
   }
@@ -455,7 +457,8 @@ See \code{\link[=write_zarr]{write_zarr()}} for details
   path,
   compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  ...
+  ...,
+  chunk_size = "auto"
 )}
     \if{html}{\out{</div>}}
   }
@@ -466,6 +469,7 @@ See \code{\link[=write_zarr]{write_zarr()}} for details
       \item{\code{compression}}{See \code{\link[=write_zarr]{write_zarr()}}}
       \item{\code{mode}}{See \code{\link[=write_zarr]{write_zarr()}}}
       \item{\code{...}}{See \code{\link[=write_zarr]{write_zarr()}}}
+      \item{\code{chunk_size}}{See \code{\link[=write_zarr]{write_zarr()}}}
     }
     \if{html}{\out{</div>}}
   }

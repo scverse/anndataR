@@ -9,8 +9,9 @@ as_ZarrAnnData(
   file,
   compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
   mode = c("w-", "r", "r+", "a", "w", "x"),
+  zarr_format = NULL,
   backed = FALSE,
-  zarr_format = NULL
+  chunk_size = "auto"
 )
 }
 \arguments{
@@ -32,10 +33,6 @@ See \code{help("compressors", package = "Rarr")}.}
 \item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists
 }}
 
-\item{backed}{Whether the object is disk backed and returns
-\link[DelayedArray:DelayedArray]{DelayedArray::DelayedArray} object for matrix data. Can only be \code{TRUE}
-when \code{mode == "r"}.}
-
 \item{zarr_format}{The format to use when creating the Zarr store. Should be
 either 2 or 3 for Zarr v2 or v3 formats, respectively. The default can also
 be set using the \code{anndataR.zarr_format} option, e.g.
@@ -44,6 +41,17 @@ be set using the \code{anndataR.zarr_format} option, e.g.
 When an existing store is opened, that store's format is used instead and
 setting \code{zarr_format} to a different format is an error. Use
 \code{mode = "w"} to rewrite an existing store in another format.}
+
+\item{backed}{Whether the object is disk backed and returns
+\link[DelayedArray:DelayedArray]{DelayedArray::DelayedArray} object for matrix data. Can only be \code{TRUE}
+when \code{mode == "r"}.}
+
+\item{chunk_size}{The target chunk size in bytes to use when writing
+Zarr arrays. When \code{"auto"} (default), chunks are chosen as Python's
+\strong{zarr} chooses them (as \code{\link[=as_HDF5AnnData]{as_HDF5AnnData()}} does with h5py's algorithm,
+but with zarr's limits), so chunk shapes match those written by Python
+\strong{anndata}. Set to \code{NULL} to write each array as a single chunk, or a
+number to use a specific target size in bytes, capped at 64 MB per chunk.}
 }
 \value{
 A \code{\link{ZarrAnnData}} object with the same data as the input \code{AnnData}
