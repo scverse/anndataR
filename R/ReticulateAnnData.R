@@ -34,7 +34,7 @@ ReticulateAnnData <- R6::R6Class(
 
       if (missing(value)) {
         # trackstatus: class=ReticulateAnnData, feature=get_X, status=done
-        py_to_r(reticulate::py_get_attr(private$.py_anndata, "X"))
+        py_to_r_matrix(reticulate::py_get_attr(private$.py_anndata, "X"))
       } else {
         # trackstatus: class=ReticulateAnnData, feature=set_X, status=done
         value <- private$.validate_aligned_array(
@@ -64,7 +64,7 @@ ReticulateAnnData <- R6::R6Class(
         # skip the None key that holds X in anndata >= 0.13
         keys <- Filter(Negate(is.null), keys)
         for (name in keys) {
-          out[[name]] <- py_to_r(reticulate::py_get_attr(
+          out[[name]] <- py_to_r_matrix(reticulate::py_get_attr(
             private$.py_anndata,
             "layers"
           )[[name]])

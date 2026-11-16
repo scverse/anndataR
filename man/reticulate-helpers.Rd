@@ -6,6 +6,8 @@
 \alias{py_to_r.anndata._core.anndata.AnnData}
 \alias{py_to_r.anndata.AnnData}
 \alias{r_to_py.AbstractAnnData}
+\alias{r_to_py.SparseMatrix}
+\alias{r_to_py.DelayedMatrix}
 \title{Reticulate Helper Functions for AnnData Conversion}
 \usage{
 \method{py_to_r}{collections.abc.Mapping}(x)
@@ -15,9 +17,15 @@
 \method{py_to_r}{anndata.AnnData}(x)
 
 \method{r_to_py}{AbstractAnnData}(x, convert = TRUE)
+
+\method{r_to_py}{SparseMatrix}(x, convert = FALSE)
+
+\method{r_to_py}{DelayedMatrix}(x, convert = FALSE)
 }
 \arguments{
-\item{x}{An AbstractAnnData object (any anndataR implementation)}
+\item{x}{An AbstractAnnData object (any anndataR implementation), a
+\code{SparseMatrix} from \strong{SparseArray} or a \code{DelayedMatrix}. Sparse matrices are
+converted to a \strong{scipy} CSC matrix.}
 
 \item{convert}{Whether to convert the result (passed to reticulate)}
 }
