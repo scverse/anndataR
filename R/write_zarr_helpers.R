@@ -44,6 +44,9 @@ write_zarr_element <- function(
 ) {
   compression <- match.arg(compression)
 
+  # Materialize on write
+  value <- realize_matrix_for_write(value)
+
   # Sparse matrices
   write_fun <-
     if (is.null(value)) {
@@ -51,6 +54,9 @@ write_zarr_element <- function(
     } else if (inherits(value, "sparseMatrix")) {
       # Sparse matrices
       write_zarr_sparse_array
+    } else if (inherits(value, "SVT_SparseMatrix")) {
+      # Sparse matrices that are too large for a sparseMatrix
+      write_zarr_large_sparse_array
     } else if (is.factor(value)) {
       # Categoricals
       write_zarr_categorical
@@ -290,6 +296,83 @@ write_zarr_sparse_array <- function(
 
   # Add encoding
   write_zarr_encoding(store, name, type, version, zarr_format)
+
+  # Write shape attribute
+  Rarr::write_zarr_attributes(
+    file.path(store, name),
+    list(shape = dim(value)),
+    zarr_version = zarr_format
+  )
+}
+
+#' Write Zarr large sparse array
+#'
+#' Write a sparse array with too many non-zero values for a `sparseMatrix` to a
+#' Zarr store. It is written in blocks, with a 64-bit `indptr`.
+#'
+#' @inheritParams write_zarr_element
+#' @inheritParams write_zarr_encoding version
+#'
+#' @noRd
+write_zarr_large_sparse_array <- function(
+  value,
+  store,
+  name,
+  compression,
+  zarr_format,
+  version = "0.1.0"
+) {
+  version <- match.arg(version)
+
+  zarr_check_long_index(SparseArray::nzcount(value))
+
+  layout <- svt_write_layout(value)
+  indptr <- layout$indptr
+  nnz <- indptr[[length(indptr)]]
+
+  Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
+  arrays <- c(indices = "integer", data = "double")
+  for (array in names(arrays)) {
+    Rarr::create_empty_zarr_array(
+      file.path(store, name, array),
+      dim = nnz,
+      # The whole array doesn't fit in one chunk, as codecs are limited to 2 GB
+      chunk_dim = min(nnz, 2^22),
+      data_type = arrays[[array]],
+      order = "C",
+      compressor = .get_compressor(compression),
+      zarr_version = zarr_format
+    )
+  }
+
+  for (bound in layout$bounds) {
+    block <- svt_block(layout$value, bound)
+    count <- length(block@x)
+    if (count > 0L) {
+      index <- list(seq(indptr[[bound[[1L]]]] + 1, length.out = count))
+      Rarr::update_zarr_array(
+        file.path(store, name, "indices"),
+        block@i,
+        index = index
+      )
+      Rarr::update_zarr_array(
+        file.path(store, name, "data"),
+        block@x,
+        index = index
+      )
+    }
+  }
+
+  zarr_write_int64(
+    store,
+    paste0(name, "/indptr"),
+    indptr,
+    compression,
+    zarr_format
+  )
+
+  # Add encoding
+  write_zarr_encoding(store, name, "csc_matrix", version, zarr_format)
 
   # Write shape attribute
   Rarr::write_zarr_attributes(
