@@ -240,6 +240,12 @@ from_SingleCellExperiment <- function(
     } else {
       object
     }
+  } else if (inherits(object, "SparseMatrix")) {
+    if (transpose) {
+      t(object)
+    } else {
+      object
+    }
   } else if (inherits(object, "matrix") || inherits(object, "Matrix")) {
     if (inherits(object, "denseMatrix")) {
       object <- as.matrix(object)
