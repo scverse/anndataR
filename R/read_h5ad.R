@@ -38,6 +38,19 @@
 #' @param ... Extra arguments provided to the `as_*` conversion function for the
 #'   object specified by `as`
 #'
+#' @details
+#'
+#' ## Large sparse matrices
+#'
+#' A `dgCMatrix` or `dgRMatrix` can hold at most 2^31 - 1 non-zero values. Sparse
+#' matrices with more non-zero values are read as an `SVT_SparseMatrix`, which
+#' requires the **SparseArray** package. Use `backed = TRUE` to avoid reading
+#' these matrices into memory.
+#' See the
+#' [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html)
+#' for what works where, and how much
+#' memory it takes.
+#'
 #' @return The object specified by `as`
 #' @export
 #'

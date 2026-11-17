@@ -30,6 +30,8 @@ navbar:
         href: articles/usage_singlecellexperiment.html
       - text: Interact with Python AnnData objects
         href: articles/usage_python.html
+      - text: Large matrices
+        href: articles/large_matrices.html
       - text: -------
       - text: Development
       - text: Software design

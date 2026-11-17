@@ -21,6 +21,13 @@
 #'
 #' @details
 #'
+#' ## Large sparse matrices
+#'
+#' Sparse matrices with more than 2^31 - 1 non-zero values can't be written to
+#' Zarr yet, because **Rarr** can't access the array elements after position
+#' 2^31 - 1. Use H5AD for these matrices instead. See the
+#' [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html) for details.
+#'
 #' ## Zarr format
 #'
 #' New stores are written in the Zarr v3 format. Pass `zarr_format = 2` to write

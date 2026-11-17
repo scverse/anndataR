@@ -48,6 +48,19 @@ The object specified by \code{as}
 \description{
 Read data from a Zarr store
 }
+\details{
+\subsection{Large sparse matrices}{
+
+A \code{dgCMatrix} or \code{dgRMatrix} can hold at most 2^31 - 1 non-zero values. Sparse
+matrices with more non-zero values can't be read from Zarr yet, because
+\strong{Rarr} can't access the array elements after position 2^31 - 1. Use H5AD for
+these matrices instead.
+See the
+\href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article}
+for what works where, and how much
+memory it takes.
+}
+}
 \examples{
 # Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
 zarr_dir <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")

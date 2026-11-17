@@ -41,6 +41,14 @@ See \code{help("compressors", package = "Rarr")}.}
 Write a Zarr file
 }
 \details{
+\subsection{Large sparse matrices}{
+
+Sparse matrices with more than 2^31 - 1 non-zero values can't be written to
+Zarr yet, because \strong{Rarr} can't access the array elements after position
+2^31 - 1. Use H5AD for these matrices instead. See the
+\href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article} for details.
+}
+
 \subsection{Zarr format}{
 
 New stores are written in the Zarr v3 format. Pass \code{zarr_format = 2} to write

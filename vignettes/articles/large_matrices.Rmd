@@ -1,0 +1,122 @@
+---
+title: Large matrices
+package: anndataR
+output: BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{Large matrices}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+Some single-cell datasets have more than 2^31 - 1 (about 2.1 billion) non-zero values.
+This limit comes from R: the `p` slot of a `dgCMatrix` or `dgRMatrix` from **Matrix** is an integer vector, so these classes can't hold that many values.
+Python has no such limit, so these files do exist.
+
+This article describes what **anndataR** does with these matrices, and what isn't possible.
+
+## Choosing how to read a large matrix
+
+For most large files, start with a backed read.
+It takes almost no memory, and the matrix stays on disk until you use it:
+
+```{r}
+# as a SingleCellExperiment, the matrices are DelayedMatrix objects
+sce <- read_h5ad("large.h5ad", as = "SingleCellExperiment", backed = TRUE)
+
+# or as an HDF5AnnData
+adata <- read_h5ad("large.h5ad", as = "HDF5AnnData", backed = TRUE)
+```
+
+If you need the matrix in memory, read it as usual.
+**anndataR** then returns an `SVT_SparseMatrix` from **SparseArray** for each matrix over the limit.
+Matrices below the limit are still a `dgCMatrix` or `dgRMatrix`.
+
+```{r}
+BiocManager::install("SparseArray")
+
+adata <- read_h5ad("large.h5ad")
+class(adata$X)
+#> [1] "SVT_SparseMatrix"
+```
+
+An `SVT_SparseMatrix` works with subsetting, `t()`, `rowSums()`, `%*%` and most other things you would do with a matrix.
+It can't be converted to a `dgCMatrix` or `dgRMatrix`, as those can't hold it.
+
+## What works where
+
+| | Below the limit | Over the limit |
+|---|---|---|
+| `read_h5ad()` | `dgCMatrix` / `dgRMatrix` | `SVT_SparseMatrix` |
+| `read_h5ad(backed = TRUE)` | `DelayedMatrix` | `DelayedMatrix` |
+| `write_h5ad()` | Same encoding as the matrix | `SVT_SparseMatrix` and `DelayedMatrix` are written as `csc_matrix` with a 64-bit `indptr` |
+| `read_zarr()`, `write_zarr()` | `dgCMatrix` / `dgRMatrix` | **Not possible yet**, see [Zarr](#zarr) |
+| `AnnDataView`, `InMemoryAnnData` | Yes | Yes, holds the `SVT_SparseMatrix` |
+| `as_SingleCellExperiment()`: `assays` | `dgCMatrix` | `SVT_SparseMatrix` |
+| `as_SingleCellExperiment()`: `obsp`, `varp` | `SelfHits` | **Not possible**, a `SelfHits` is built from a `dgCMatrix` |
+| `as_Seurat()`: layers | `dgCMatrix` | `DelayedMatrix`, see [Seurat](#seurat) |
+| `as_Seurat()`: `obsp` | `Graph` | **Not possible**, a `Graph` is a `dgCMatrix` |
+| `as_AnnData()` from `SingleCellExperiment` | Yes | Yes, for `SVT_SparseMatrix` and `DelayedMatrix` assays |
+| `as_AnnData()` from `Seurat` | Yes | Yes, for `DelayedMatrix` layers |
+| `ReticulateAnnData` | `dgCMatrix` / `dgRMatrix` | `SVT_SparseMatrix` in both directions |
+
+`obsp` and `varp` matrices are usually far smaller than `X`, so these limits rarely matter in practice.
+
+Other limits:
+
+- Each dimension of a matrix must be smaller than 2^31 in R, whatever the class. Python has no such limit.
+- `SeuratObject` layers stored with **BPCells** are not supported by `as_AnnData()`, they are converted to a dense matrix.
+
+## Memory
+
+These are the peak memory and time on a CSR and a CSC matrix with 2.2 billion non-zero values (250,000 × 30,000), measured with `tests/testthat/test-large-sparse-real.R`:
+
+| Operation | Peak memory | Time |
+|---|---|---|
+| `read_h5ad(backed = TRUE)`, as an `HDF5AnnData` | 1 GB | Seconds |
+| `read_h5ad()`, CSC | 35 GB | 2 minutes |
+| `read_h5ad()`, CSR | 52 GB | 3 minutes |
+| `read_h5ad()` on CSC, then `write_h5ad()` | 47 GB | 4 minutes |
+| `read_h5ad()` on CSC, then to `SingleCellExperiment` and back | 53 GB | 5 minutes |
+| `read_h5ad()` on CSC, then `as_Seurat()` | 40 GB | 8 minutes |
+| `as_Seurat()` on a backed file | 2 GB | 9 minutes |
+
+As a rule of thumb, expect 12 bytes per non-zero value for the matrix itself, 16 bytes per value while reading CSC, and 24 bytes per value while reading CSR.
+CSR takes more because an `SVT_SparseMatrix` is stored by column, so the matrix is transposed after reading it, and both copies exist for a moment.
+Values are always stored as doubles, also when the file has 32-bit floats.
+
+By that rule, a CSR matrix with 3.8 billion values takes about 90 GB to read into memory.
+A backed read of that file took 1 GB.
+
+## Zarr
+
+`read_zarr()` and `write_zarr()` can't handle sparse matrices over the limit for now, and fail with an error that points here.
+**Rarr** turns positions into integers, so it can't access the elements of an array after position 2^31 - 1.
+**anndataR** already has the code for these matrices, and it will start working as soon as **Rarr** supports this.
+In the meantime, you can convert the store to H5AD with Python **anndata**.
+
+Backed reads of Zarr stores are being added in [#507](https://github.com/scverse/anndataR/pull/507).
+
+## Seurat
+
+**Seurat** can't store an `SVT_SparseMatrix`, so `as_Seurat()` stores these layers as a `DelayedMatrix`, and tells you so.
+Not all of **Seurat** works with this.
+`NormalizeData()` works, while `FindVariableFeatures()` fails with `'VST.default' is not implemented yet`.
+This applies to every `DelayedMatrix` layer, so also to `read_h5ad(as = "Seurat", backed = TRUE)`.
+
+## Dense matrices
+
+Dense matrices have no limit on the number of values in R, other than the memory you have.
+`read_h5ad()`, `write_h5ad()` and `read_zarr()` work on dense matrices with more than 2^31 - 1 values.
+
+`write_zarr()` currently needs about 5 times the size of a large array, because it writes each array as a single chunk.
+This applies to the arrays of sparse matrices too, and is being fixed in [#543](https://github.com/scverse/anndataR/pull/543).
+
+## Writing for Python
+
+Matrices over the limit are always written as `csc_matrix`, because an `SVT_SparseMatrix` is stored by column.
+Python **anndata** reads this fine.
+If you need CSR, for example because you read the file in backed mode and access it by cell, you can convert it in Python afterwards.
