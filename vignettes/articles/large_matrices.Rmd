@@ -31,6 +31,8 @@ sce <- read_h5ad("large.h5ad", as = "SingleCellExperiment", backed = TRUE)
 adata <- read_h5ad("large.h5ad", as = "HDF5AnnData", backed = TRUE)
 ```
 
+Always set `as`: the default, `"InMemoryAnnData"`, reads every matrix into memory, even with `backed = TRUE`.
+
 If you need the matrix in memory, read it as usual.
 **anndataR** then returns an `SVT_SparseMatrix` from **SparseArray** for each matrix over the limit.
 Matrices below the limit are still a `dgCMatrix` or `dgRMatrix`.
@@ -51,7 +53,7 @@ It can't be converted to a `dgCMatrix` or `dgRMatrix`, as those can't hold it.
 | | Below the limit | Over the limit |
 |---|---|---|
 | `read_h5ad()` | `dgCMatrix` / `dgRMatrix` | `SVT_SparseMatrix` |
-| `read_h5ad(backed = TRUE)` | `DelayedMatrix` | `DelayedMatrix` |
+| `read_h5ad(as = "HDF5AnnData", backed = TRUE)` | `DelayedMatrix` | `DelayedMatrix` |
 | `write_h5ad()` | Same encoding as the matrix | `SVT_SparseMatrix` and `DelayedMatrix` are written as `csc_matrix` with a 64-bit `indptr` |
 | `read_zarr()`, `write_zarr()` | `dgCMatrix` / `dgRMatrix` | **Not possible yet**, see [Zarr](#zarr) |
 | `AnnDataView`, `InMemoryAnnData` | Yes | Yes, holds the `SVT_SparseMatrix` |
@@ -76,7 +78,7 @@ These are the peak memory and time on a CSR and a CSC matrix with 2.2 billion no
 
 | Operation | Peak memory | Time |
 |---|---|---|
-| `read_h5ad(backed = TRUE)`, as an `HDF5AnnData` | 1 GB | Seconds |
+| `read_h5ad(as = "HDF5AnnData", backed = TRUE)` | 1 GB | Seconds |
 | `read_h5ad()`, CSC | 35 GB | 2 minutes |
 | `read_h5ad()`, CSR | 52 GB | 3 minutes |
 | `read_h5ad()` on CSC, then `write_h5ad()` | 47 GB | 4 minutes |

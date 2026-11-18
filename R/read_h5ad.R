@@ -44,8 +44,9 @@
 #'
 #' A `dgCMatrix` or `dgRMatrix` can hold at most 2^31 - 1 non-zero values. Sparse
 #' matrices with more non-zero values are read as an `SVT_SparseMatrix`, which
-#' requires the **SparseArray** package. Use `backed = TRUE` to avoid reading
-#' these matrices into memory.
+#' requires the **SparseArray** package. To avoid reading these matrices into
+#' memory, use `backed = TRUE` with any `as` other than `"InMemoryAnnData"`, which
+#' always holds its matrices in memory.
 #' See the
 #' [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html)
 #' for what works where, and how much
