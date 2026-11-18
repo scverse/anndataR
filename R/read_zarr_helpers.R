@@ -141,7 +141,7 @@ read_zarr_element_keys <- function(
 #'
 #' @noRd
 read_zarr_encoding <- function(store, name) {
-  tryCatch(
+  encoding <- tryCatch(
     {
       attrs <- Rarr::read_zarr_attributes(file.path(store, name))
       list(
@@ -154,6 +154,40 @@ read_zarr_encoding <- function(store, name) {
         "Encoding attributes not found for element {.val {name}} in {.path {store}}"
       )
     }
+  )
+
+  if (is.null(encoding$type)) {
+    return(guess_zarr_encoding(store, name))
+  }
+  encoding
+}
+
+#' Guess the encoding of a Zarr element without encoding metadata
+#'
+#' @inheritParams read_zarr_element
+#'
+#' @return See `guess_encoding()`
+#' @noRd
+guess_zarr_encoding <- function(store, name) {
+  check_requires(
+    "Reading a Zarr element without encoding metadata",
+    "jsonlite"
+  )
+
+  path <- file.path(store, name)
+  metadata_file <- zarr_array_metadata_file(path)
+  metadata <- if (file.exists(metadata_file)) {
+    jsonlite::read_json(metadata_file)
+  }
+  is_group <- is.null(metadata) || identical(metadata$node_type, "group")
+
+  guess_encoding(
+    store,
+    name,
+    is_group = is_group,
+    is_scalar = length(metadata$shape) == 0L,
+    is_string = !is_group &&
+      Rarr::zarr_overview(path, as_data_frame = TRUE)$data_type == "string"
   )
 }
 

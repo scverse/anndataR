@@ -67,7 +67,7 @@ hdf5_check_group_target <- function(
 
     is_root <- i == length(segments)
     is_group <- hdf5_is_group(hdf5_file, path)
-    encoding_type <- read_h5ad_encoding(hdf5_file, path)$type
+    encoding_type <- read_h5ad_encoding(hdf5_file, path, guess = FALSE)$type
 
     if (!is_root && (!is_group || !is.null(encoding_type))) {
       cli_abort(
@@ -136,7 +136,7 @@ hdf5_check_is_anndata <- function(
   group,
   call = rlang::caller_env()
 ) {
-  encoding_type <- read_h5ad_encoding(hdf5_file, group)$type
+  encoding_type <- read_h5ad_encoding(hdf5_file, group, guess = FALSE)$type
 
   if (identical(encoding_type, "anndata")) {
     return(invisible(TRUE))

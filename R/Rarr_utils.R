@@ -103,3 +103,14 @@ zarr_path_exists <- function(store, target_path) {
     }
   }
 }
+
+#' Get the path of the metadata file of a Zarr array
+#'
+#' @param path Path to the Zarr array
+#'
+#' @return The path of `zarr.json` for Zarr v3 and `.zarray` for Zarr v2
+#' @noRd
+zarr_array_metadata_file <- function(path) {
+  metadata_file <- file.path(path, "zarr.json")
+  if (file.exists(metadata_file)) metadata_file else file.path(path, ".zarray")
+}

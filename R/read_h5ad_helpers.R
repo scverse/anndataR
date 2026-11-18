@@ -142,14 +142,17 @@ read_h5ad_element_keys <- function(
 #' Read the encoding and version of an element in a H5AD file
 #'
 #' @inheritParams read_h5ad_element
+#' @param guess Whether to guess the encoding of an element without encoding
+#'   metadata, as Python **anndata** does when reading it. Without guessing, the
+#'   `type` of such an element is `NULL`.
 #'
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_h5ad_encoding <- function(hdf5_file, name) {
+read_h5ad_encoding <- function(hdf5_file, name, guess = TRUE) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
-  tryCatch(
+  encoding <- tryCatch(
     {
       attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name)
       list(
@@ -162,6 +165,33 @@ read_h5ad_encoding <- function(hdf5_file, name) {
         "Encoding attributes not found for element {.val {name}} in {.path {hdf5_file$path}}"
       )
     }
+  )
+
+  if (guess && is.null(encoding$type)) {
+    return(guess_h5ad_encoding(hdf5_file, name))
+  }
+  encoding
+}
+
+#' Guess the encoding of an H5AD element without encoding metadata
+#'
+#' @inheritParams read_h5ad_element
+#'
+#' @return See `guess_encoding()`
+#' @noRd
+guess_h5ad_encoding <- function(hdf5_file, name) {
+  parent <- rhdf5::H5Gopen(hdf5_file$handle, dirname(name))
+  on.exit(rhdf5::H5Gclose(parent), add = TRUE)
+
+  info <- rhdf5::h5ls(parent, recursive = FALSE)
+  info <- info[info$name == basename(name), ]
+
+  guess_encoding(
+    hdf5_file$path,
+    name,
+    is_group = info$otype == "H5I_GROUP",
+    is_scalar = info$dim == "( 0 )",
+    is_string = info$dclass == "STRING"
   )
 }
 

@@ -340,3 +340,40 @@ construct_sparse_matrix <- function(
     new("dgRMatrix", j = indices, p = indptr, x = data, Dim = shape)
   }
 }
+
+#' Guess the encoding of an element without encoding metadata
+#'
+#' Python anndata reads these elements as well: a group as a dict, and an array
+#' as whatever it holds.
+#'
+#' @param path Path to the file or store
+#' @param name Name of the element
+#' @param is_group Whether the element is a group
+#' @param is_scalar Whether the element is a scalar
+#' @param is_string Whether the element holds strings
+#'
+#' @return A list with the `type` and `version` of the encoding, as returned by
+#'   `read_h5ad_encoding()` and `read_zarr_encoding()`
+#' @noRd
+guess_encoding <- function(path, name, is_group, is_scalar, is_string) {
+  # file-backed objects read an element each time it is accessed
+  cli_warn(
+    "Element {.val {name}} was written without encoding metadata",
+    .frequency = "once",
+    .frequency_id = paste(path, name)
+  )
+
+  type <- if (is_group) {
+    "dict"
+  } else if (is_scalar && is_string) {
+    "string"
+  } else if (is_scalar) {
+    "numeric-scalar"
+  } else if (is_string) {
+    "string-array"
+  } else {
+    "array"
+  }
+
+  list(type = type, version = NULL)
+}

@@ -1,3 +1,7 @@
+# anndataR devel
+
+- Fix `read_h5ad()` and `read_zarr()` losing all of `uns` when one of its elements has no encoding metadata. As in Python, these elements are now read with a warning (issue #583).
+
 # anndataR 1.3.5
 
 - Add a `group` argument to `read_h5ad()`, `write_h5ad()`, `as_HDF5AnnData()` and `HDF5AnnData`, to read and write an `AnnData` stored in a group inside an HDF5 file, e.g. a modality inside a `.h5mu` file (PR #521, issue #466).
