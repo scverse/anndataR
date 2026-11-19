@@ -84,11 +84,19 @@ These are the peak memory and time on a CSR and a CSC matrix with 2.2 billion no
 | `read_h5ad()`, CSC | 35 GB | 2 minutes |
 | `read_h5ad()`, CSR | 52 GB | 3 minutes |
 | `read_h5ad()` on CSC, then `write_h5ad()` | 47 GB | 4 minutes |
+| `read_zarr()`, CSC | 43 GB | 5 minutes |
+| `read_zarr()`, CSR | 50 GB | 6 minutes |
+| `read_h5ad()` on CSC, then `write_zarr()` | 57 GB | 6 minutes |
 | `read_h5ad()` on CSC, then to `SingleCellExperiment` and back | 53 GB | 5 minutes |
 | `read_h5ad()` on CSC, then `as_Seurat()` | 40 GB | 8 minutes |
 | `as_Seurat()` on a backed file | 2 GB | 9 minutes |
+| A **scipy** CSC matrix to R with **reticulate** | 57 GB | 3 minutes |
+
+Zarr v2 and v3 gave the same numbers.
 
 As a rule of thumb, expect 12 bytes per non-zero value for the matrix itself, 16 bytes per value while reading CSC, and 24 bytes per value while reading CSR.
+Converting an R matrix to **scipy** with `reticulate::r_to_py()` takes about 28 bytes per value: R and Python each hold a copy, and **scipy** stores the `indices` as 64-bit integers once the `indptr` is.
+That is more than 60 GB for the matrix above, which we haven't measured to the end yet.
 CSR takes more because an `SVT_SparseMatrix` is stored by column, so the matrix is transposed after reading it, and both copies exist for a moment.
 Values are always stored as doubles, also when the file has 32-bit floats.
 
