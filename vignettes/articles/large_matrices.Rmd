@@ -57,7 +57,7 @@ It can't be converted to a `dgCMatrix` or `dgRMatrix`, as those can't hold it.
 | `read_h5ad(as = "HDF5AnnData", backed = TRUE)` | `DelayedMatrix` | `DelayedMatrix` |
 | `write_h5ad()` | Same encoding as the matrix | `SVT_SparseMatrix` and `DelayedMatrix` are written as `csc_matrix` with a 64-bit `indptr` |
 | `read_zarr()` | `dgCMatrix` / `dgRMatrix` | `SVT_SparseMatrix` |
-| `read_zarr(as = "ZarrAnnData", backed = TRUE)` | `DelayedMatrix` | **Not possible yet**, see [Zarr](#zarr) |
+| `read_zarr(as = "ZarrAnnData", backed = TRUE)` | `DelayedMatrix` | `DelayedMatrix` |
 | `write_zarr()` | Same encoding as the matrix | `SVT_SparseMatrix` and `DelayedMatrix` are written as `csc_matrix` with a 64-bit `indptr` |
 | `AnnDataView`, `InMemoryAnnData` | Yes | Yes, holds the `SVT_SparseMatrix` |
 | `as_SingleCellExperiment()`: `assays` | `dgCMatrix` | `SVT_SparseMatrix` |
@@ -106,12 +106,7 @@ A backed read of that file took 1 GB.
 
 ## Zarr
 
-`read_zarr()` and `write_zarr()` handle sparse matrices over the limit the same way as `read_h5ad()` and `write_h5ad()`.
-
-Backed reads of these matrices from Zarr aren't possible yet, and fail with an error that points here.
-**Rarr** can't read 64-bit integers that don't fit in an R integer ([Huber-group-EMBL/Rarr#289](https://github.com/Huber-group-EMBL/Rarr/issues/289)), and the `indptr` of these matrices has such values.
-**anndataR** works around this when it reads the matrix into memory, but a backed read goes through **ZarrArray**, which reads the `indptr` with **Rarr**.
-Until this is fixed, read the matrix into memory, or convert the store to H5AD with Python **anndata** and read that with `backed = TRUE`.
+`read_zarr()` and `write_zarr()` handle sparse matrices over the limit the same way as `read_h5ad()` and `write_h5ad()`, also with `backed = TRUE`.
 
 ## Seurat
 

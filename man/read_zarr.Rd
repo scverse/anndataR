@@ -53,9 +53,9 @@ Read data from a Zarr store
 
 A \code{dgCMatrix} or \code{dgRMatrix} can hold at most 2^31 - 1 non-zero values. Sparse
 matrices with more non-zero values are read as an \code{SVT_SparseMatrix}, which
-requires the \strong{SparseArray} package. They can't be read with \code{backed = TRUE}
-yet, because \strong{Rarr} can't read their 64-bit \code{indptr}. Read them into memory,
-or use H5AD with \code{backed = TRUE} instead.
+requires the \strong{SparseArray} package. To avoid reading these matrices into
+memory, use \code{backed = TRUE} with any \code{as} other than \code{"InMemoryAnnData"}, which
+always holds its matrices in memory.
 See the
 \href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article}
 for what works where, and how much

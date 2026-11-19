@@ -220,13 +220,6 @@ test_that("backed reads of more than 2^31 - 1 non-zero values work", {
 test_that("a large Zarr can be read backed", {
   skip_unless_part("read_backed")
   skip_if_not_installed("ZarrArray")
-  msg <- message_if_known(
-    backend = "ZarrAnnData",
-    slot = "X",
-    dtype = "large_csr_matrix",
-    process = "read_backed"
-  )
-  skip_if(!is.null(msg), msg)
 
   for (zarr_format in c("zarr_v2", "zarr_v3")) {
     X <- read_zarr(paths[[zarr_format]], as = "ZarrAnnData", backed = TRUE)$X

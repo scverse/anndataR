@@ -15,13 +15,3 @@ known_issues:
     proposed_solution: Investigate if this is a problem or not.
     to_investigate: True
     to_fix: False
-  - backend: ZarrAnnData
-    slot: [X, layers, obsm, varm, obsp, varp, uns]
-    dtype: [large_csr_matrix, large_csc_matrix]
-    process: [read_backed]
-    error_message: |-
-      Sparse matrices with more than 2^31 - 1 non-zero values can't be read from Zarr with `backed = TRUE` yet, as Rarr can't read their 64-bit indptr (https://github.com/Huber-group-EMBL/Rarr/issues/289)
-    description: Rarr reads 64-bit integers above 2^31 - 1 as NA, so ZarrArray can't read the indptr of a sparse matrix with more non-zero values than that (Huber-group-EMBL/Rarr#289).
-    proposed_solution: Wait for Huber-group-EMBL/Rarr#289, then remove zarr_check_backed_indptr(), bump Rarr in DESCRIPTION and remove this entry.
-    to_investigate: False
-    to_fix: True

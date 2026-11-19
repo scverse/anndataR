@@ -248,22 +248,15 @@ test_that("64-bit Zarr integers round trip above the 32-bit range", {
   skip_if_not_installed("Rarr", minimum_version = "2.1.45")
   values <- c(0, 1, 2^31 - 1, 2^31, 2^31 + 2^32, 3e9, 5e9, 2^40 + 7, 2^52 + 1)
 
-  expect_identical(double_bits_to_int64(int64_to_double_bits(values)), values)
-
   for (zarr_format in 2:3) {
     store <- withr::local_tempdir()
     Rarr::write_zarr_group(store, "", zarr_version = zarr_format)
     zarr_write_int64(store, "x", values, "zstd", zarr_format)
-    expect_identical(zarr_read_int64(file.path(store, "x")), values)
+    expect_identical(
+      as.double(Rarr::read_zarr_array(file.path(store, "x"))),
+      values
+    )
   }
-})
-
-test_that("zarr_read_int64() also reads arrays with other types", {
-  skip_if_not_installed("Rarr", minimum_version = "2.1.45")
-  store <- withr::local_tempdir()
-  Rarr::write_zarr_group(store, "", zarr_version = 3L)
-  zarr_write_compressed(store, "x", c(0L, 5L, 9L), "zstd", zarr_format = 3L)
-  expect_identical(zarr_read_int64(file.path(store, "x")), c(0, 5, 9))
 })
 
 test_that("64-bit Zarr integers are compatible with Python", {
@@ -298,7 +291,7 @@ test_that("64-bit Zarr integers are compatible with Python", {
       zarr_format = zarr_format
     )
     reticulate::py_set_item(array, everything, py_values)
-    expect_identical(zarr_read_int64(path), values)
+    expect_identical(as.double(Rarr::read_zarr_array(path)), values)
   }
 
   # Sharded arrays only exist in Zarr v3
@@ -312,7 +305,7 @@ test_that("64-bit Zarr integers are compatible with Python", {
     zarr_format = 3L
   )
   reticulate::py_set_item(array, everything, py_values)
-  expect_identical(zarr_read_int64(path), values)
+  expect_identical(as.double(Rarr::read_zarr_array(path)), values)
 })
 
 # A sparse matrix with two major elements and 2^31 + 10 non-zero values. Only
@@ -354,41 +347,12 @@ write_large_zarr_sparse <- function(store, type, zarr_format) {
 for (type in c("csr_matrix", "csc_matrix")) {
   test_that(paste("backed Zarr reads a large", type), {
     skip_if_not_installed("ZarrArray")
-    msg <- message_if_known(
-      backend = "ZarrAnnData",
-      slot = "X",
-      dtype = paste0("large_", type),
-      process = "read_backed"
-    )
-    skip_if(!is.null(msg), msg)
 
     for (zarr_format in 2:3) {
       store <- withr::local_tempfile(fileext = ".zarr")
       write_large_zarr_sparse(store, type, zarr_format)
       X <- read_zarr_sparse_array(store, "X", backed = TRUE, type = type)
       expect_s4_class(X, "DelayedMatrix")
-    }
-  })
-
-  test_that(paste("backed Zarr explains why it can't read a large", type), {
-    skip_if_not_installed("ZarrArray")
-    skip_if(
-      is.null(message_if_known(
-        backend = "ZarrAnnData",
-        slot = "X",
-        dtype = paste0("large_", type),
-        process = "read_backed"
-      )),
-      "Backed Zarr reads of large sparse matrices are no longer a known issue"
-    )
-
-    for (zarr_format in 2:3) {
-      store <- withr::local_tempfile(fileext = ".zarr")
-      write_large_zarr_sparse(store, type, zarr_format)
-      expect_error(
-        read_zarr_sparse_array(store, "X", backed = TRUE, type = type),
-        "Rarr/issues/289"
-      )
     }
   })
 }

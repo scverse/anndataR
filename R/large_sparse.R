@@ -195,17 +195,16 @@ svt_write_blocks <- function(layout, write_slice) {
   invisible()
 }
 
-#' Convert 64-bit integers to and from doubles with the same bytes
+#' Convert 64-bit integers to doubles with the same bytes
 #'
-#' {Rarr} can only read and write 64-bit integers that fit in an R integer. A
-#' 64-bit array read as `float64` keeps its bytes, whatever its codecs do with
-#' them, and this converts those doubles to the value of the integer.
+#' {Rarr} can't write doubles to a 64-bit integer array. Written as `float64`,
+#' these doubles have the bytes of the integers, so changing the data type in
+#' the metadata afterwards gives the 64-bit integers.
 #'
 #' Values can't be larger than `2^53`, the largest integer a double can hold
 #' exactly. As an index pointer that would be far more than fits in memory.
 #'
-#' @param x A numeric vector of whole numbers (`int64_to_double_bits()`), or of
-#'   doubles read as `float64` (`double_bits_to_int64()`)
+#' @param x A numeric vector of whole numbers
 #'
 #' @return A numeric vector
 #' @noRd
@@ -223,60 +222,6 @@ int64_to_double_bits <- function(x) {
     size = 8L,
     endian = "little"
   )
-}
-
-#' @rdname int64_to_double_bits
-#' @noRd
-double_bits_to_int64 <- function(x) {
-  bytes <- as.numeric(writeBin(x, raw(), size = 8L, endian = "little"))
-  colSums(matrix(bytes, nrow = 8L) * 256^(0:7))
-}
-
-#' Read a Zarr array of 64-bit integers as doubles
-#'
-#' TODO: Replace with `Rarr::read_zarr_array()` when it can return 64-bit
-#' integers that don't fit in an R integer. For now it makes those `NA`, see
-#' https://github.com/Huber-group-EMBL/Rarr/issues/289.
-#'
-#' @param path Path to the Zarr array
-#'
-#' @return A numeric vector
-#' @noRd
-zarr_read_int64 <- function(path) {
-  values <- withCallingHandlers(
-    as.double(Rarr::read_zarr_array(path)),
-    warning = function(w) {
-      if (grepl("Integer overflow", conditionMessage(w), fixed = TRUE)) {
-        invokeRestart("muffleWarning")
-      }
-    }
-  )
-  if (!anyNA(values)) {
-    return(values)
-  }
-
-  metadata_file <- zarr_array_metadata_file(path)
-  metadata <- readChar(metadata_file, file.size(metadata_file))
-
-  float_metadata <- sub(
-    '("dtype"\\s*:\\s*"[<>])[iu]8"',
-    '\\1f8"',
-    sub('("data_type"\\s*:\\s*")u?int64"', '\\1float64"', metadata)
-  )
-  if (identical(float_metadata, metadata)) {
-    return(values)
-  }
-
-  # The array is read through a copy with different metadata. An indptr has 8
-  # bytes for each row or column, so this copy is small.
-  copy_dir <- tempfile("anndataR-int64")
-  dir.create(copy_dir)
-  on.exit(unlink(copy_dir, recursive = TRUE), add = TRUE)
-  file.copy(path, copy_dir, recursive = TRUE)
-  copy <- file.path(copy_dir, basename(path))
-  writeChar(float_metadata, zarr_array_metadata_file(copy), eos = NULL)
-
-  double_bits_to_int64(as.vector(Rarr::read_zarr_array(copy)))
 }
 
 #' Write a Zarr array of 64-bit integers
@@ -310,62 +255,6 @@ zarr_write_int64 <- function(store, name, value, compression, zarr_format) {
   writeChar(metadata, metadata_file, eos = NULL)
 
   invisible()
-}
-
-#' Check that a backed read can use the index pointers of a Zarr sparse matrix
-#'
-#' A backed read goes through {ZarrArray}, which reads `indptr` with
-#' `Rarr::read_zarr_array()`. That makes 64-bit integers that don't fit in an R
-#' integer `NA`, and the read then fails with an error that doesn't say why. This
-#' fails with an informative error instead. Only the last index pointer is read,
-#' as it is the largest.
-#'
-#' TODO: Remove when {Rarr} can read these integers and bump the version in
-#' `DESCRIPTION`, see https://github.com/Huber-group-EMBL/Rarr/issues/289.
-#'
-#' @param store Path to the Zarr store
-#' @param name Name of the sparse matrix in the store
-#' @param n_pointers Length of `indptr`
-#' @param call The environment to report the error from
-#'
-#' @noRd
-zarr_check_backed_indptr <- function(
-  store,
-  name,
-  n_pointers,
-  call = rlang::caller_env()
-) {
-  last_pointer <- withCallingHandlers(
-    Rarr::read_zarr_array(
-      file.path(store, name, "indptr"),
-      index = list(n_pointers)
-    ),
-    warning = function(w) {
-      if (grepl("Integer overflow", conditionMessage(w), fixed = TRUE)) {
-        invokeRestart("muffleWarning")
-      }
-    }
-  )
-  if (!anyNA(last_pointer)) {
-    return(invisible(TRUE))
-  }
-
-  cli_abort(
-    c(
-      paste(
-        "Sparse matrices with more than 2^31 - 1 non-zero values can't be",
-        "read from Zarr with {.code backed = TRUE} yet, as {.pkg Rarr} can't",
-        "read their 64-bit {.field indptr}",
-        "({.url https://github.com/Huber-group-EMBL/Rarr/issues/289})"
-      ),
-      "i" = paste(
-        "Read the matrix into memory with {.code backed = FALSE}, or use H5AD",
-        "instead, see",
-        "{.url https://anndataR.scverse.org/articles/large_matrices.html}"
-      )
-    ),
-    call = call
-  )
 }
 
 #' Convert a large Python sparse matrix to R
