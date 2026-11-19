@@ -15,6 +15,7 @@ knitr::opts_chunk$set(eval = FALSE)
 Some single-cell datasets have more than 2^31 - 1 (about 2.1 billion) non-zero values.
 This limit comes from R: the `p` slot of a `dgCMatrix` or `dgRMatrix` from **Matrix** is an integer vector, so these classes can't hold that many values.
 Python has no such limit, so these files do exist.
+**Matrix** plans to lift the limit after its 1.8-0 release ([R-Forge #6611](https://r-forge.r-project.org/tracker/index.php?func=detail&aid=6611&group_id=61&atid=297)), but there is no timeline yet.
 
 This article describes what **anndataR** does with these matrices, and what isn't possible.
 

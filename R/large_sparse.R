@@ -7,6 +7,9 @@
 #' This is a function so that tests can lower the limit, as matrices that are
 #' really this large need tens of gigabytes of memory.
 #'
+#' TODO: Revisit when {Matrix} supports a 64-bit `p` slot, see
+#' https://r-forge.r-project.org/tracker/index.php?func=detail&aid=6611&group_id=61&atid=297
+#'
 #' @return The maximum number of non-zero values
 #' @noRd
 sparse_max_nnz <- function() {
