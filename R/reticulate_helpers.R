@@ -135,7 +135,11 @@ r_to_py.SparseMatrix <- function(x, convert = FALSE) {
       np$asarray(reticulate::np_array(indptr))$astype("int64"),
       convert = FALSE
     ),
-    shape = reticulate::tuple(bi$int(nrow(x)), bi$int(ncol(x)), convert = FALSE),
+    shape = reticulate::tuple(
+      bi$int(nrow(x)),
+      bi$int(ncol(x)),
+      convert = FALSE
+    ),
     copy = FALSE
   )
 }

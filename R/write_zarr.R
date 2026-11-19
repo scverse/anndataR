@@ -23,9 +23,9 @@
 #'
 #' ## Large sparse matrices
 #'
-#' Sparse matrices with more than 2^31 - 1 non-zero values can't be written to
-#' Zarr yet, because **Rarr** can't access the array elements after position
-#' 2^31 - 1. Use H5AD for these matrices instead. See the
+#' Sparse matrices with more than 2^31 - 1 non-zero values, which are stored as
+#' an `SVT_SparseMatrix`, are written in the `csc_matrix` encoding with a 64-bit
+#' `indptr`. Python **anndata** can read these. See the
 #' [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html) for details.
 #'
 #' ## Zarr format

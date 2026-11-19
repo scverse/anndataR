@@ -43,9 +43,9 @@ Write a Zarr file
 \details{
 \subsection{Large sparse matrices}{
 
-Sparse matrices with more than 2^31 - 1 non-zero values can't be written to
-Zarr yet, because \strong{Rarr} can't access the array elements after position
-2^31 - 1. Use H5AD for these matrices instead. See the
+Sparse matrices with more than 2^31 - 1 non-zero values, which are stored as
+an \code{SVT_SparseMatrix}, are written in the \code{csc_matrix} encoding with a 64-bit
+\code{indptr}. Python \strong{anndata} can read these. See the
 \href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article} for details.
 }
 

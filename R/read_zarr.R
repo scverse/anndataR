@@ -30,9 +30,10 @@
 #' ## Large sparse matrices
 #'
 #' A `dgCMatrix` or `dgRMatrix` can hold at most 2^31 - 1 non-zero values. Sparse
-#' matrices with more non-zero values can't be read from Zarr yet, because
-#' **Rarr** can't access the array elements after position 2^31 - 1. Use H5AD for
-#' these matrices instead.
+#' matrices with more non-zero values are read as an `SVT_SparseMatrix`, which
+#' requires the **SparseArray** package. They can't be read with `backed = TRUE`
+#' yet, because **Rarr** can't read their 64-bit `indptr`. Read them into memory,
+#' or use H5AD with `backed = TRUE` instead.
 #' See the
 #' [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html)
 #' for what works where, and how much

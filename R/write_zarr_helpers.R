@@ -324,8 +324,6 @@ write_zarr_large_sparse_array <- function(
 ) {
   version <- match.arg(version)
 
-  zarr_check_long_index(SparseArray::nzcount(value))
-
   layout <- svt_write_layout(value)
   indptr <- layout$indptr
   nnz <- indptr[[length(indptr)]]
