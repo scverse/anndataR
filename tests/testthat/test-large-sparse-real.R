@@ -217,6 +217,31 @@ test_that("backed reads of more than 2^31 - 1 non-zero values work", {
   }
 })
 
+test_that("a large Zarr can be read backed", {
+  skip_unless_part("read_backed")
+  skip_if_not_installed("ZarrArray")
+  msg <- message_if_known(
+    backend = "ZarrAnnData",
+    slot = "X",
+    dtype = "large_csr_matrix",
+    process = "read_backed"
+  )
+  skip_if(!is.null(msg), msg)
+
+  for (zarr_format in c("zarr_v2", "zarr_v3")) {
+    X <- read_zarr(paths[[zarr_format]], as = "ZarrAnnData", backed = TRUE)$X
+    expect_s4_class(X, "DelayedMatrix")
+    expect_identical(dim(X), c(n_major, n_minor))
+    for (i in test_majors) {
+      expect_equal(
+        as.vector(as.matrix(X[i, 1:9, drop = FALSE])),
+        expected_major(i),
+        info = paste(zarr_format, i)
+      )
+    }
+  }
+})
+
 # Written files are kept for the "reread_*" parts, which remove them
 writers <- list(
   h5ad = list(

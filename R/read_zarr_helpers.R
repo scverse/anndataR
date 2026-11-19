@@ -298,6 +298,13 @@ read_zarr_sparse_array <- function(
     return(read_zarr_sparse_array_base(store, name, version, type))
   }
 
+  shape <- unlist(
+    Rarr::read_zarr_attributes(file.path(store, name))$shape,
+    use.names = FALSE
+  )
+  n_major <- if (type == "csr_matrix") shape[[1]] else shape[[2]]
+  zarr_check_backed_indptr(store, name, n_pointers = n_major + 1)
+
   t(ZarrArray::ZarrSparseMatrix(store, group = name))
 }
 
@@ -336,7 +343,6 @@ read_zarr_sparse_array_base <- function(
 
   # Is 64-bit when there are too many non-zero values for an R integer
   indptr <- zarr_read_int64(file.path(store, name, "indptr"))
-  zarr_check_long_index(indptr[[length(indptr)]])
 
   read_sparse_matrix(
     read_slice = read_slice,

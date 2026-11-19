@@ -198,7 +198,11 @@ test_that("reading a large H5AD sorts indices and checks them", {
   # Swap the first two indices and values of the first row
   indices <- as.vector(rhdf5::h5read(path, "X/indices"))
   values <- as.vector(rhdf5::h5read(path, "X/data"))
-  rhdf5::h5write(indices[c(2L, 1L, seq_along(indices)[-(1:2)])], path, "X/indices")
+  rhdf5::h5write(
+    indices[c(2L, 1L, seq_along(indices)[-(1:2)])],
+    path,
+    "X/indices"
+  )
   rhdf5::h5write(values[c(2L, 1L, seq_along(values)[-(1:2)])], path, "X/data")
   rhdf5::h5closeAll()
 
@@ -229,20 +233,6 @@ test_that("a missing SparseArray gives an informative error", {
     read_h5ad_element(HDF5File$new(path), "X", stop_on_error = TRUE),
     "requires SparseArray"
   )
-})
-
-test_that("Zarr arrays that Rarr can't access give an informative error", {
-  skip_if_not_installed("Rarr", minimum_version = "2.1.45")
-  local_mocked_bindings(rarr_has_long_index = function() FALSE)
-
-  expect_true(zarr_check_long_index(.Machine$integer.max))
-  expect_error(zarr_check_long_index(2^31), "large_matrices")
-})
-
-test_that("rarr_has_long_index() can tell from Rarr itself", {
-  skip_if_not_installed("Rarr", minimum_version = "2.1.45")
-  expect_type(rarr_has_long_index(), "logical")
-  expect_length(rarr_has_long_index(), 1L)
 })
 
 test_that("py_to_r_matrix() looks at nnz without overflowing", {
@@ -323,6 +313,91 @@ test_that("64-bit Zarr integers are compatible with Python", {
   )
   reticulate::py_set_item(array, everything, py_values)
   expect_identical(zarr_read_int64(path), values)
+})
+
+# A sparse matrix with two major elements and 2^31 + 10 non-zero values. Only
+# the indptr has values, data and indices have no chunks, so this takes no
+# memory or disk space. That is enough to see whether a backed read gets past
+# the indptr.
+write_large_zarr_sparse <- function(store, type, zarr_format) {
+  nnz <- 2^31 + 10
+  Rarr::write_zarr_group(store, "", zarr_version = zarr_format)
+  Rarr::write_zarr_group(store, "X", zarr_version = zarr_format)
+  zarr_write_int64(store, "X/indptr", c(0, 2^30, nnz), "zstd", zarr_format)
+  arrays <- c(data = "double", indices = "integer")
+  for (array in names(arrays)) {
+    Rarr::create_empty_zarr_array(
+      file.path(store, "X", array),
+      dim = nnz,
+      chunk_dim = 2^22,
+      data_type = arrays[[array]],
+      fill_value = 0,
+      zarr_version = zarr_format
+    )
+  }
+  shape <- if (type == "csr_matrix") {
+    list(2L, .Machine$integer.max)
+  } else {
+    list(.Machine$integer.max, 2L)
+  }
+  Rarr::write_zarr_attributes(
+    file.path(store, "X"),
+    new.zattrs = list(
+      `encoding-type` = type,
+      `encoding-version` = "0.1.0",
+      shape = shape
+    ),
+    zarr_version = zarr_format
+  )
+}
+
+for (type in c("csr_matrix", "csc_matrix")) {
+  test_that(paste("backed Zarr reads a large", type), {
+    skip_if_not_installed("ZarrArray")
+    msg <- message_if_known(
+      backend = "ZarrAnnData",
+      slot = "X",
+      dtype = paste0("large_", type),
+      process = "read_backed"
+    )
+    skip_if(!is.null(msg), msg)
+
+    for (zarr_format in 2:3) {
+      store <- withr::local_tempfile(fileext = ".zarr")
+      write_large_zarr_sparse(store, type, zarr_format)
+      X <- read_zarr_sparse_array(store, "X", backed = TRUE, type = type)
+      expect_s4_class(X, "DelayedMatrix")
+    }
+  })
+
+  test_that(paste("backed Zarr explains why it can't read a large", type), {
+    skip_if_not_installed("ZarrArray")
+    skip_if(
+      is.null(message_if_known(
+        backend = "ZarrAnnData",
+        slot = "X",
+        dtype = paste0("large_", type),
+        process = "read_backed"
+      )),
+      "Backed Zarr reads of large sparse matrices are no longer a known issue"
+    )
+
+    for (zarr_format in 2:3) {
+      store <- withr::local_tempfile(fileext = ".zarr")
+      write_large_zarr_sparse(store, type, zarr_format)
+      expect_error(
+        read_zarr_sparse_array(store, "X", backed = TRUE, type = type),
+        "Rarr/issues/289"
+      )
+    }
+  })
+}
+
+test_that("backed Zarr reads sparse matrices below the limit as before", {
+  skip_if_not_installed("ZarrArray")
+  store <- withr::local_tempfile(fileext = ".zarr")
+  write_zarr(new_adata(X = csr), store)
+  expect_same_matrix(read_zarr(store, as = "ZarrAnnData", backed = TRUE)$X)
 })
 
 test_that("large SVT writes can be read by Python", {
@@ -459,7 +534,11 @@ test_that("is_numeric_matrix() doesn't read a backed matrix", {
   expect_false(is_numeric_matrix(data.frame(a = c("x", "y"))))
   expect_false(is_numeric_matrix(matrix("a", 2L, 2L)))
   skip_if_not_installed("DelayedArray")
-  expect_false(is_numeric_matrix(DelayedArray::DelayedArray(matrix("a", 2L, 2L))))
+  expect_false(is_numeric_matrix(DelayedArray::DelayedArray(matrix(
+    "a",
+    2L,
+    2L
+  ))))
 })
 
 test_that("materialize_matrix() converts SVT to a CsparseMatrix", {
@@ -624,7 +703,9 @@ test_that("reticulate conversion of SVT and DelayedMatrix below the limit", {
 
   skip_if_not_installed("DelayedArray")
   delayed <- DelayedArray::DelayedArray(svt)
-  expect_same_matrix(reticulate::py_to_r(reticulate::r_to_py(delayed)$toarray()))
+  expect_same_matrix(reticulate::py_to_r(reticulate::r_to_py(
+    delayed
+  )$toarray()))
   dense_delayed <- DelayedArray::DelayedArray(dense)
   expect_same_matrix(reticulate::py_to_r(reticulate::r_to_py(dense_delayed)))
 })

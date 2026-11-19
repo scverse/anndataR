@@ -156,7 +156,10 @@ svt_write_layout <- function(value) {
   if (BiocGenerics::type(value) != "double") {
     BiocGenerics::type(value) <- "double"
   }
-  indptr <- c(0, cumsum(MatrixGenerics::colSums(SparseArray::is_nonzero(value))))
+  indptr <- c(
+    0,
+    cumsum(MatrixGenerics::colSums(SparseArray::is_nonzero(value)))
+  )
 
   list(
     value = value,
@@ -216,7 +219,8 @@ double_bits_to_int64 <- function(x) {
 #' Read a Zarr array of 64-bit integers as doubles
 #'
 #' TODO: Replace with `Rarr::read_zarr_array()` when it can return 64-bit
-#' integers that don't fit in an R integer. For now it makes those `NA`.
+#' integers that don't fit in an R integer. For now it makes those `NA`, see
+#' https://github.com/Huber-group-EMBL/Rarr/issues/289.
 #'
 #' @param path Path to the Zarr array
 #'
@@ -262,7 +266,8 @@ zarr_read_int64 <- function(path) {
 #' Write a Zarr array of 64-bit integers
 #'
 #' TODO: Replace with `Rarr::write_zarr_array()` when it can write 64-bit
-#' integers that don't fit in an R integer. For now it fails on doubles.
+#' integers that don't fit in an R integer. For now it fails on doubles, see
+#' https://github.com/Huber-group-EMBL/Rarr/issues/289.
 #'
 #' @param store Path to the Zarr store
 #' @param name Name of the array in the store
@@ -291,66 +296,59 @@ zarr_write_int64 <- function(store, name, value, compression, zarr_format) {
   invisible()
 }
 
-#' Check that {Rarr} can access a number of array elements
+#' Check that a backed read can use the index pointers of a Zarr sparse matrix
 #'
-#' `Rarr::read_zarr_array()` and `Rarr::update_zarr_array()` coerce `index` to
-#' integers, so positions above `.Machine$integer.max` give the fill value with
-#' only a coercion warning. This fails with an informative error instead.
+#' A backed read goes through {ZarrArray}, which reads `indptr` with
+#' `Rarr::read_zarr_array()`. That makes 64-bit integers that don't fit in an R
+#' integer `NA`, and the read then fails with an error that doesn't say why. This
+#' fails with an informative error instead. Only the last index pointer is read,
+#' as it is the largest.
 #'
-#' TODO: Remove when {Rarr} supports this and bump the version in `DESCRIPTION`.
+#' TODO: Remove when {Rarr} can read these integers and bump the version in
+#' `DESCRIPTION`, see https://github.com/Huber-group-EMBL/Rarr/issues/289.
 #'
-#' @param nnz The number of elements in the array
+#' @param store Path to the Zarr store
+#' @param name Name of the sparse matrix in the store
+#' @param n_pointers Length of `indptr`
 #' @param call The environment to report the error from
 #'
 #' @noRd
-zarr_check_long_index <- function(nnz, call = rlang::caller_env()) {
-  if (nnz <= .Machine$integer.max || rarr_has_long_index()) {
+zarr_check_backed_indptr <- function(
+  store,
+  name,
+  n_pointers,
+  call = rlang::caller_env()
+) {
+  last_pointer <- withCallingHandlers(
+    Rarr::read_zarr_array(
+      file.path(store, name, "indptr"),
+      index = list(n_pointers)
+    ),
+    warning = function(w) {
+      if (grepl("Integer overflow", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+  if (!anyNA(last_pointer)) {
     return(invisible(TRUE))
   }
 
   cli_abort(
     c(
       paste(
-        "Zarr arrays with more than 2^31 - 1 elements can't be read or written",
-        "as {.pkg Rarr} can't access the elements after that"
+        "Sparse matrices with more than 2^31 - 1 non-zero values can't be",
+        "read from Zarr with {.code backed = TRUE} yet, as {.pkg Rarr} can't",
+        "read their 64-bit {.field indptr}",
+        "({.url https://github.com/Huber-group-EMBL/Rarr/issues/289})"
       ),
       "i" = paste(
-        "Use H5AD for this matrix instead, see",
+        "Read the matrix into memory with {.code backed = FALSE}, or use H5AD",
+        "instead, see",
         "{.url https://anndataR.scverse.org/articles/large_matrices.html}"
       )
     ),
     call = call
-  )
-}
-
-#' Check whether {Rarr} can access elements above `.Machine$integer.max`
-#'
-#' An array without chunks is only metadata, so asking for an element of a very
-#' large one takes no memory or disk space.
-#'
-#' @return Whether {Rarr} can access these elements
-#' @noRd
-rarr_has_long_index <- function() {
-  path <- tempfile("anndataR-long-index", fileext = ".zarr")
-  on.exit(unlink(path, recursive = TRUE), add = TRUE)
-
-  n_elements <- .Machine$integer.max + 10
-  tryCatch(
-    {
-      Rarr::create_empty_zarr_array(
-        path,
-        dim = n_elements,
-        chunk_dim = 2^20,
-        data_type = "integer",
-        fill_value = 1L
-      )
-      identical(
-        as.vector(Rarr::read_zarr_array(path, index = list(n_elements))),
-        1L
-      )
-    },
-    error = function(e) FALSE,
-    warning = function(w) FALSE
   )
 }
 
