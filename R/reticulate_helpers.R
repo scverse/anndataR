@@ -114,24 +114,20 @@ r_to_py.SparseMatrix <- function(x, convert = FALSE) {
   indptr <- layout$indptr
   nnz <- bi$int(indptr[[length(indptr)]])
 
-  data <- np$empty(nnz, dtype = "float64")
-  # scipy copies int32 indices to int64 if indptr needs 64 bits
-  indices <- np$empty(nnz, dtype = "int64")
-  for (bound in layout$bounds) {
-    block <- svt_block(layout$value, bound)
-    count <- length(block@x)
-    if (count > 0L) {
-      offset <- indptr[[bound[[1L]]]]
-      slice <- bi$slice(bi$int(offset), bi$int(offset + count))
-      data$`__setitem__`(slice, reticulate::np_array(block@x))
-      indices$`__setitem__`(slice, reticulate::np_array(block@i))
-    }
-  }
+  arrays <- list(
+    data = np$empty(nnz, dtype = "float64"),
+    # scipy copies int32 indices to int64 if indptr needs 64 bits
+    indices = np$empty(nnz, dtype = "int64")
+  )
+  svt_write_blocks(layout, function(what, start, values) {
+    slice <- bi$slice(bi$int(start - 1), bi$int(start - 1 + length(values)))
+    arrays[[what]]$`__setitem__`(slice, reticulate::np_array(values))
+  })
 
   sp$csc_matrix(
     reticulate::tuple(
-      data,
-      indices,
+      arrays$data,
+      arrays$indices,
       np$asarray(reticulate::np_array(indptr))$astype("int64"),
       convert = FALSE
     ),

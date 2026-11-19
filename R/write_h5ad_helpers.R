@@ -378,29 +378,16 @@ write_h5ad_large_sparse_array <- function(
     )
   }
 
-  for (bound in layout$bounds) {
-    block <- svt_block(layout$value, bound)
-    count <- length(block@x)
-    if (count > 0L) {
-      start <- indptr[[bound[[1L]]]] + 1
-      rhdf5::h5write(
-        block@i,
-        hdf5_file$handle,
-        paste0(name, "/indices"),
-        native = FALSE,
-        start = start,
-        count = count
-      )
-      rhdf5::h5write(
-        block@x,
-        hdf5_file$handle,
-        paste0(name, "/data"),
-        native = FALSE,
-        start = start,
-        count = count
-      )
-    }
-  }
+  svt_write_blocks(layout, function(what, start, values) {
+    rhdf5::h5write(
+      values,
+      hdf5_file$handle,
+      paste0(name, "/", what),
+      native = FALSE,
+      start = start,
+      count = length(values)
+    )
+  })
 
   hdf5_write_dataset(
     hdf5_file = hdf5_file,

@@ -168,15 +168,28 @@ svt_write_layout <- function(value) {
   )
 }
 
-#' Get a block of columns of an `SVT_SparseMatrix` as a `CsparseMatrix`
+#' Write the `indices` and `data` of an `SVT_SparseMatrix` in blocks
 #'
-#' @param value An `SVT_SparseMatrix`
-#' @param bound The first and last column of the block
+#' The counterpart of `read_slice` in `read_sparse_matrix()`. Each block of
+#' columns is converted to a `CsparseMatrix`, so only one block is held twice.
 #'
-#' @return A `CsparseMatrix`
+#' @param layout The result of `svt_write_layout()`
+#' @param write_slice A function with arguments `what` (`"indices"` or
+#'   `"data"`), `start` (1-based) and `values`, which writes `values` to that
+#'   array from position `start`
+#'
 #' @noRd
-svt_block <- function(value, bound) {
-  as(value[, bound[[1L]]:bound[[2L]], drop = FALSE], "CsparseMatrix")
+svt_write_blocks <- function(layout, write_slice) {
+  for (bound in layout$bounds) {
+    columns <- bound[[1L]]:bound[[2L]]
+    block <- as(layout$value[, columns, drop = FALSE], "CsparseMatrix")
+    if (length(block@x) > 0L) {
+      start <- layout$indptr[[bound[[1L]]]] + 1
+      write_slice("indices", start, block@i)
+      write_slice("data", start, block@x)
+    }
+  }
+  invisible()
 }
 
 #' Convert 64-bit integers to and from doubles with the same bytes

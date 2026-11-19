@@ -343,23 +343,13 @@ write_zarr_large_sparse_array <- function(
     )
   }
 
-  for (bound in layout$bounds) {
-    block <- svt_block(layout$value, bound)
-    count <- length(block@x)
-    if (count > 0L) {
-      index <- list(seq(indptr[[bound[[1L]]]] + 1, length.out = count))
-      Rarr::update_zarr_array(
-        file.path(store, name, "indices"),
-        block@i,
-        index = index
-      )
-      Rarr::update_zarr_array(
-        file.path(store, name, "data"),
-        block@x,
-        index = index
-      )
-    }
-  }
+  svt_write_blocks(layout, function(what, start, values) {
+    Rarr::update_zarr_array(
+      file.path(store, name, what),
+      values,
+      index = list(seq(start, length.out = length(values)))
+    )
+  })
 
   zarr_write_int64(
     store,
