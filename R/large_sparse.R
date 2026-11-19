@@ -102,7 +102,7 @@ read_sparse_matrix <- function(read_slice, indptr, shape, type) {
     block <- construct_sparse_matrix(
       data = read_block("data"),
       indices = read_block("indices"),
-      indptr = indptr[first:(last + 1L)] - offset,
+      indptr = indptr[seq(first, last + 1L)] - offset,
       shape = c(n_minor, last - first + 1L),
       type = "csc_matrix"
     )
