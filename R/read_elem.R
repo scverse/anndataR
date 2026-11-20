@@ -15,7 +15,8 @@
 #'   * `"zarr"`: Read `path` as a Zarr store
 #' @param ... Not currently used. Unused arguments are an error.
 #'
-#' @return The element, as the matching R type
+#' @return The element, as the matching R type. An `anndata` group is
+#'   returned as a read-only [`HDF5AnnData`] or [`ZarrAnnData`] object.
 #'
 #' @export
 #'

@@ -6,7 +6,8 @@
 #'   doesn't exist.
 #' @param name Path of the element inside the file or store. Use `"/"` to
 #'   write an `AnnData` object to the whole file or store.
-#' @param value The value to write
+#' @param value The value to write. An `AnnData` object is written as an
+#'   `anndata` group.
 #' @param overwrite Whether to replace an element that already exists at
 #'   `name`. If `FALSE` (default), an existing element is an error.
 #' @param format The format of `path`. One of:
