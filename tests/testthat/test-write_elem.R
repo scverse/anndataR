@@ -150,6 +150,56 @@ test_that("write_elem() parent groups can be read back with the AnnData", {
   }
 })
 
+for (format in c("h5ad", "zarr_v2", "zarr_v3")) {
+  test_that(
+    paste("write_elem() checks where an element would be written,", format),
+    {
+      small <- generate_dataset(n_obs = 3L, n_vars = 2L, format = "AnnData")
+      if (format == "h5ad") {
+        path <- withr::local_tempfile(fileext = ".h5ad")
+        write_h5ad(small, path)
+      } else {
+        skip_if_not_installed("Rarr")
+        path <- withr::local_tempfile(fileext = ".zarr")
+        zarr_format <- if (format == "zarr_v2") 2L else 3L
+        write_zarr(small, path, zarr_format = zarr_format)
+      }
+
+      # Nothing can be written inside an array
+      expect_error(
+        write_elem(path, "X/foo", 1:3),
+        "\"X\" is an array, not a group"
+      )
+      expect_error(
+        write_elem(path, "X/foo", small),
+        "\"X\" is an array, not a group"
+      )
+
+      # An AnnData can't be written inside an encoded element
+      expect_error(
+        write_elem(path, "uns/sub", small),
+        "\"uns\" is an encoded \"dict\" element"
+      )
+
+      # An AnnData can only replace an AnnData or an empty group
+      expect_error(
+        write_elem(path, "uns", small, overwrite = TRUE),
+        "\"uns\" is not an AnnData"
+      )
+
+      # Nothing was written
+      read <- if (format == "h5ad") read_h5ad else read_zarr
+      result <- read(path, as = "InMemoryAnnData")
+      expect_equal(result$X, small$X)
+      expect_setequal(names(result$uns), names(small$uns))
+
+      # A plain group can hold an AnnData, as in a .h5mu file
+      write_elem(path, "mod/rna", small)
+      expect_equal(read_elem(path, "mod/rna")$X, small$X)
+    }
+  )
+}
+
 test_that("write_elem() only replaces existing elements with overwrite = TRUE", {
   h5ad <- withr::local_tempfile(fileext = ".h5ad")
   write_elem(h5ad, "x", 1:3)
