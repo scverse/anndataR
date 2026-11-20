@@ -341,6 +341,39 @@ construct_sparse_matrix <- function(
   }
 }
 
+#' Read an item of a collection, skipping it on error
+#'
+#' Used by `read_h5ad_collection()` and `read_zarr_collection()`, so that an
+#' item that can't be read is left out with a warning instead of failing its
+#' parent, e.g. all of `uns`
+#'
+#' @param expr An expression that reads the item, with `stop_on_error = TRUE`
+#' @param name The path of the item, used in the warning
+#'
+#' @return The item, or a `skipped_item` marker if reading it failed
+#'
+#' @noRd
+read_collection_item <- function(expr, name) {
+  tryCatch(
+    expr,
+    error = function(e) {
+      cli_warn("Skipping element {.field {name}}", parent = e)
+      structure(list(), class = "skipped_item")
+    }
+  )
+}
+
+#' Drop skipped items from a collection
+#'
+#' @param items A named list returned by `read_collection_item()` calls
+#'
+#' @return `items` without the `skipped_item` markers. `NULL` items are kept.
+#'
+#' @noRd
+drop_skipped_items <- function(items) {
+  items[!vapply(items, inherits, logical(1), what = "skipped_item")]
+}
+
 #' Abort on an element without encoding metadata
 #'
 #' Shared by `read_h5ad_encoding()` and `read_zarr_encoding()`, so the error
@@ -352,13 +385,13 @@ construct_sparse_matrix <- function(
 #'
 #' @noRd
 abort_missing_encoding <- function(name, path, call = rlang::caller_env()) {
-  # TODO: Read these elements as Python anndata does, see #583
+  # TODO: Read these elements as Python anndata does, see #134
   cli_abort(
     c(
       "Element {.val {name}} in {.path {path}} has no {.field encoding-type} attribute",
       "i" = paste(
         "Reading elements without encoding metadata is not supported yet,",
-        "see {.url https://github.com/scverse/anndataR/issues/583}"
+        "see {.url https://github.com/scverse/anndataR/issues/134}"
       ),
       "i" = "Add encoding metadata to this element, or remove it from the file"
     ),

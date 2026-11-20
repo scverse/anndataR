@@ -30,35 +30,35 @@ read_zarr_element <- function(
     return(NULL)
   }
 
-  if (is.null(type)) {
-    encoding_list <- read_zarr_encoding(store, name)
-    type <- encoding_list$type
-    version <- encoding_list$version
-  }
-
-  read_fun <- switch(
-    type,
-    "null" = read_zarr_null,
-    "array" = read_zarr_dense_array,
-    "rec-array" = read_zarr_rec_array,
-    "csr_matrix" = read_zarr_csr_matrix,
-    "csc_matrix" = read_zarr_csc_matrix,
-    "dataframe" = read_zarr_data_frame,
-    "dict" = read_zarr_mapping,
-    "string" = read_zarr_string_scalar,
-    "numeric-scalar" = read_zarr_numeric_scalar,
-    "categorical" = read_zarr_categorical,
-    "string-array" = read_zarr_string_array,
-    "nullable-integer" = read_zarr_nullable_integer,
-    "nullable-boolean" = read_zarr_nullable_boolean,
-    "nullable-string-array" = read_zarr_nullable_string,
-    cli_abort(
-      "No function for reading Zarr encoding {.cls {type}} for element {.val {name}}"
-    )
-  )
-
   tryCatch(
     {
+      if (is.null(type)) {
+        encoding_list <- read_zarr_encoding(store, name)
+        type <- encoding_list$type
+        version <- encoding_list$version
+      }
+
+      read_fun <- switch(
+        type,
+        "null" = read_zarr_null,
+        "array" = read_zarr_dense_array,
+        "rec-array" = read_zarr_rec_array,
+        "csr_matrix" = read_zarr_csr_matrix,
+        "csc_matrix" = read_zarr_csc_matrix,
+        "dataframe" = read_zarr_data_frame,
+        "dict" = read_zarr_mapping,
+        "string" = read_zarr_string_scalar,
+        "numeric-scalar" = read_zarr_numeric_scalar,
+        "categorical" = read_zarr_categorical,
+        "string-array" = read_zarr_string_array,
+        "nullable-integer" = read_zarr_nullable_integer,
+        "nullable-boolean" = read_zarr_nullable_boolean,
+        "nullable-string-array" = read_zarr_nullable_string,
+        cli_abort(
+          "No function for reading Zarr encoding {.cls {type}} for element {.val {name}}"
+        )
+      )
+
       read_fun(
         store = store,
         name = name,
@@ -68,7 +68,11 @@ read_zarr_element <- function(
       )
     },
     error = function(e) {
-      msg <- "Error reading element {.field {name}} of type {.cls {type}}"
+      msg <- if (is.null(type)) {
+        "Error reading element {.field {name}}"
+      } else {
+        "Error reading element {.field {name}} of type {.cls {type}}"
+      }
       if (stop_on_error) {
         cli_abort(msg, parent = e)
       } else {
@@ -559,18 +563,20 @@ read_zarr_collection <- function(store, name, item_names, backed = FALSE, ...) {
     item_names,
     function(item_name) {
       new_name <- paste0(name, "/", item_name)
-      encoding <- read_zarr_encoding(store, new_name)
-      read_zarr_element(
-        store = store,
-        name = new_name,
-        type = encoding$type,
-        version = encoding$version,
-        backed = backed
+      read_collection_item(
+        read_zarr_element(
+          store = store,
+          name = new_name,
+          stop_on_error = TRUE,
+          backed = backed
+        ),
+        new_name
       )
     }
   )
   names(items) <- item_names
-  items
+
+  drop_skipped_items(items)
 }
 
 #' Read Zarr mapping keys

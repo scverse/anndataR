@@ -24,12 +24,14 @@ known_issues:
       - no_encoding
     process: [read]
     error_message: |-
-      Error reading element uns/nested of type <dict>
+      Skipping element uns/nested/citation
+      Caused by error in `read_h5ad_element()`:
+      ! Error reading element uns/nested/citation
       Caused by error in `read_h5ad_encoding()`:
       ! Element "uns/nested/citation" in 'file.h5ad' has no encoding-type attribute
-      ℹ Reading elements without encoding metadata is not supported yet, see <https://github.com/scverse/anndataR/issues/583>
+      ℹ Reading elements without encoding metadata is not supported yet, see <https://github.com/scverse/anndataR/issues/134>
       ℹ Add encoding metadata to this element, or remove it from the file
-    description: An element without encoding metadata can't be read, and its parent is dropped, e.g. all of `uns` for `uns/citation` in some CELLxGENE files (issue #583).
-    proposed_solution: Guess the encoding from the kind of node, as Python anndata does with an `OldFormatWarning` (PR #598).
+    description: An element without encoding metadata, e.g. `uns/citation` in some CELLxGENE files, is skipped with a warning, while Python anndata reads it with an `OldFormatWarning` (issues #134, #583).
+    proposed_solution: Guess the encoding from the kind of node, as Python anndata does, as part of reading files from older anndata versions (issue #134).
     to_investigate: False
     to_fix: True
