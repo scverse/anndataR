@@ -16,16 +16,16 @@ adata <- AnnData(
 )
 missing <- c("uns/nested/citation", "obs/missing")
 
-# Write `adata` and remove the encoding metadata of the `missing` elements, like
+# Write `adata` and remove the encoding metadata of `elements`, like
 # `uns/citation` in some CELLxGENE files (#583)
-write_without_encoding <- function(format) {
+write_without_encoding <- function(format, elements = missing) {
   if (format == "h5ad") {
     path <- withr::local_tempfile(
       fileext = ".h5ad",
       .local_envir = parent.frame()
     )
     adata$write_h5ad(path)
-    for (element in missing) {
+    for (element in elements) {
       for (attr in c("encoding-type", "encoding-version")) {
         rhdf5::h5deleteAttribute(path, element, attr)
       }
@@ -39,7 +39,7 @@ write_without_encoding <- function(format) {
     .local_envir = parent.frame()
   )
   adata$write_zarr(path, zarr_format = zarr_format)
-  for (element in file.path(path, missing)) {
+  for (element in file.path(path, elements)) {
     if (zarr_format == 2L) {
       unlink(file.path(element, ".zattrs"))
     } else {
@@ -112,6 +112,35 @@ for (format in names(formats)) {
       expect_error(
         read_elem(path, "uns/nested/citation"),
         "\"uns/nested/citation\".*has no.*encoding-type"
+      )
+    }
+  )
+
+  test_that(
+    paste("a top-level slot that can't be read is an error,", format),
+    {
+      skip_if_not_installed(fmt$pkg)
+
+      # Without encoding metadata
+      if (format == "h5ad") {
+        path <- write_without_encoding(format, elements = "uns")
+        expect_error(
+          fmt$read(path, as = "InMemoryAnnData"),
+          "\"uns\".*has no.*encoding-type"
+        )
+      }
+
+      # With an unknown encoding
+      path <- write_without_encoding(format, elements = character(0))
+      if (format == "h5ad") {
+        write_h5ad_encoding(HDF5File$new(path), "uns", "unknown", "0.1.0")
+      } else {
+        zarr_format <- if (format == "zarr_v2") 2L else 3L
+        write_zarr_encoding(path, "uns", "unknown", "0.1.0", zarr_format)
+      }
+      expect_error(
+        fmt$read(path, as = "InMemoryAnnData"),
+        "No function for reading .* encoding <unknown>"
       )
     }
   )
