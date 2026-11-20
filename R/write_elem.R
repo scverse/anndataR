@@ -55,6 +55,13 @@ write_elem <- function(
 
   format <- detect_elem_format(path, format)
 
+  # remove a file or store created by this call if writing fails
+  done <- FALSE
+  new_path <- sub("/+$", "", path)
+  if (!file.exists(new_path)) {
+    on.exit(if (!done) unlink(new_path, recursive = TRUE), add = TRUE)
+  }
+
   switch(
     format,
     h5ad = {
@@ -86,6 +93,7 @@ write_elem <- function(
       .write_elem_zarr(path, name, value, overwrite, zarr_format, ...)
     }
   )
+  done <- TRUE
 
   invisible(path)
 }

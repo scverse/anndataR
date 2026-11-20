@@ -287,6 +287,28 @@ test_that("write_elem() validates its arguments", {
   expect_false(file.exists(h5ad))
 })
 
+test_that("a failed write_elem() leaves no new file or store behind", {
+  dir <- withr::local_tempdir()
+
+  for (ext in c("h5ad", "zarr")) {
+    if (ext == "zarr") {
+      skip_if_not_installed("Rarr")
+    }
+    path <- file.path(dir, paste0("new.", ext))
+
+    expect_error(write_elem(path, "/", 1), "root group")
+    expect_false(file.exists(path))
+
+    expect_error(write_elem(path, "x", new.env()))
+    expect_false(file.exists(path))
+
+    # An existing file or store is kept
+    write_elem(path, "x", 1:3)
+    expect_error(write_elem(path, "y", new.env()))
+    expect_equal(as.vector(read_elem(path, "x")), 1:3)
+  }
+})
+
 test_that("write_elem() returns the path invisibly", {
   h5ad <- withr::local_tempfile(fileext = ".h5ad")
 
