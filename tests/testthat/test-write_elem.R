@@ -287,6 +287,21 @@ test_that("write_elem() validates its arguments", {
   expect_false(file.exists(h5ad))
 })
 
+test_that("write_elem() creates a Zarr store in an empty directory", {
+  skip_if_not_installed("Rarr")
+  dir <- withr::local_tempdir()
+
+  empty_zarr <- file.path(dir, "empty.zarr")
+  dir.create(empty_zarr)
+  write_elem(empty_zarr, "x", 1:3)
+  expect_equal(as.vector(read_elem(empty_zarr, "x")), 1:3)
+
+  empty <- file.path(dir, "empty")
+  dir.create(empty)
+  write_elem(empty, "x", 1:3, format = "zarr")
+  expect_equal(as.vector(read_elem(empty, "x")), 1:3)
+})
+
 test_that("a failed write_elem() leaves no new file or store behind", {
   dir <- withr::local_tempdir()
 

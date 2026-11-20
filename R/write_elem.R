@@ -80,7 +80,8 @@ write_elem <- function(
       check_elem_dots("compression", ...)
 
       path <- sub("/+$", "", path)
-      zarr_format <- if (dir.exists(path)) {
+      is_new <- length(list.files(path, all.files = TRUE, no.. = TRUE)) == 0
+      zarr_format <- if (!is_new) {
         get_zarr_format(path)
       } else {
         zarr_format <- check_zarr_format(

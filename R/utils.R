@@ -437,14 +437,18 @@ detect_elem_format <- function(
   # Drop trailing slashes so "store.zarr/" behaves like "store.zarr"
   path <- sub("/+$", "", path)
 
-  detected <- if (dir.exists(path)) {
-    files <- list.files(path, all.files = TRUE, no.. = TRUE)
+  is_dir <- dir.exists(path)
+  files <- if (is_dir) list.files(path, all.files = TRUE, no.. = TRUE)
+  # An empty directory is detected from its extension, like a new path
+  has_content <- if (is_dir) length(files) > 0 else file.exists(path)
+
+  detected <- if (is_dir && has_content) {
     if (any(c(".zgroup", "zarr.json") %in% files)) {
       "zarr"
     } else {
       NA_character_
     }
-  } else if (file.exists(path)) {
+  } else if (has_content) {
     check_requires("Reading or writing H5AD elements", "rhdf5", where = "Bioc")
     if (isTRUE(rhdf5::H5Fis_hdf5(path))) {
       "h5ad"
@@ -475,7 +479,7 @@ detect_elem_format <- function(
     return(detected)
   }
 
-  if (file.exists(path) && !is.na(detected) && detected != format) {
+  if (has_content && !is.na(detected) && detected != format) {
     cli_abort(
       c(
         "{.arg format} is {.val {format}} but {.path {path}} is {.val {detected}}"
