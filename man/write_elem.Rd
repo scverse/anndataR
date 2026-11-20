@@ -20,8 +20,7 @@ doesn't exist.}
 \item{name}{Path of the element inside the file or store. Use \code{"/"} to
 write an \code{AnnData} object to the whole file or store.}
 
-\item{value}{The value to write. An \code{AnnData} object is written as an
-\code{anndata} group.}
+\item{value}{The value to write}
 
 \item{overwrite}{Whether to replace an element that already exists at
 \code{name}. If \code{FALSE} (default), an existing element is an error.}

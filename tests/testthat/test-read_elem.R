@@ -98,15 +98,45 @@ test_that("read_elem() errors for missing paths and elements", {
   expect_error(read_elem(h5ad, "obsm/missing"), "not found")
 })
 
-test_that("read_elem() errors for missing Zarr elements and backed Zarr", {
+test_that("read_elem() errors for missing Zarr elements", {
   skip_if_not_installed("Rarr")
 
   store <- withr::local_tempfile(fileext = ".zarr")
   write_zarr(adata, store)
 
   expect_error(read_elem(store, "missing"), "not found")
-  expect_error(read_elem(store, "X", backed = TRUE), "not yet supported")
 })
+
+for (zarr_format in c(2L, 3L)) {
+  test_that(
+    paste0(
+      "read_elem() with backed = TRUE returns a DelayedArray for Zarr v",
+      zarr_format
+    ),
+    {
+      skip_if_not_installed("Rarr", minimum_version = "2.1.59")
+      skip_if_not_installed("ZarrArray", minimum_version = "1.1.5")
+
+      store <- withr::local_tempfile(fileext = ".zarr")
+      write_zarr(adata, store, zarr_format = zarr_format)
+
+      X <- read_elem(store, "X", backed = TRUE)
+      expect_s4_class(X, "DelayedArray")
+      expect_equal(as.matrix(X), read_elem(store, "X"))
+
+      sparse <- read_elem(store, "obsm/numeric_csparse", backed = TRUE)
+      expect_s4_class(sparse, "DelayedArray")
+      expect_equal(
+        as.matrix(sparse),
+        as.matrix(read_elem(store, "obsm/numeric_csparse"))
+      )
+
+      result <- read_elem(store, "/", backed = TRUE)
+      expect_s3_class(result, "ZarrAnnData")
+      expect_s4_class(result$X, "DelayedArray")
+    }
+  )
+}
 
 test_that("read_elem() errors for unsupported encodings", {
   h5ad <- withr::local_tempfile(fileext = ".h5ad")

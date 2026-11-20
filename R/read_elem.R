@@ -7,7 +7,6 @@
 #'   `"obsm/X_pca"`
 #' @param backed Whether to return array and matrix elements as
 #'   [DelayedArray::DelayedArray] objects instead of reading them into memory.
-#'   Only supported for H5AD files.
 #' @param format The format of `path`. One of:
 #'
 #'   * `"auto"`: Detect the format from `path`. A file that is an HDF5 file is
@@ -68,10 +67,14 @@ read_elem <- function(
     zarr = {
       check_requires("Reading Zarr elements", "Rarr", where = "Bioc")
       if (backed) {
-        # TODO: Support backed Zarr elements once #507 is merged
-        cli_abort("{.code backed = TRUE} is not yet supported for Zarr stores")
+        check_requires(
+          "Reading backed Zarr elements",
+          c("ZarrArray", "DelayedArray"),
+          where = "Bioc",
+          version = c("1.1.5", NA)
+        )
       }
-      .read_elem_zarr(path, name, ...)
+      .read_elem_zarr(path, name, backed = backed, ...)
     }
   )
 }
@@ -130,13 +133,20 @@ read_elem <- function(
 #'
 #' @param store Path to the Zarr store
 #' @param name Path of the element inside the store
+#' @param backed Whether to return a `DelayedArray` for array/matrix elements
 #' @param ... Passed to `read_zarr_element()`
 #' @param call The calling environment, used in error messages
 #'
 #' @return The element
 #'
 #' @noRd
-.read_elem_zarr <- function(store, name, ..., call = rlang::caller_env()) {
+.read_elem_zarr <- function(
+  store,
+  name,
+  backed = FALSE,
+  ...,
+  call = rlang::caller_env()
+) {
   name <- gsub("^/+|/+$", "", name)
   if (name == "") {
     name <- "/"
@@ -150,7 +160,7 @@ read_elem <- function(
 
   if (identical(encoding$type, "anndata")) {
     adata_path <- if (name == "/") store else file.path(store, name)
-    return(ZarrAnnData$new(adata_path, mode = "r"))
+    return(ZarrAnnData$new(adata_path, mode = "r", backed = backed))
   }
 
   read_zarr_element(
@@ -159,6 +169,7 @@ read_elem <- function(
     type = encoding$type,
     version = encoding$version,
     stop_on_error = TRUE,
+    backed = backed,
     ...
   )
 }
