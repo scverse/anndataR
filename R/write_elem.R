@@ -115,6 +115,15 @@ write_elem <- function(
   is_adata <- inherits(value, "AbstractAnnData")
 
   check_elem_root(is_root, is_adata, call = call)
+  if (!is_root) {
+    check_elem_target(
+      name,
+      is_adata,
+      function(path) hdf5_node_info(hdf5_file, path),
+      hdf5_file$path,
+      call = call
+    )
+  }
 
   exists <- if (is_root) {
     !hdf5_group_is_empty(hdf5_file, "/")
@@ -169,6 +178,13 @@ write_elem <- function(
   is_adata <- inherits(value, "AbstractAnnData")
 
   check_elem_root(is_root, is_adata, call = call)
+  check_elem_target(
+    name,
+    is_adata,
+    function(path) zarr_node_info(store, path),
+    store,
+    call = call
+  )
 
   exists <- if (is_root) {
     !is_zarr_empty(store)
@@ -231,6 +247,78 @@ elem_parent_paths <- function(name) {
     function(i) paste(segments[seq_len(i)], collapse = "/"),
     character(1)
   )
+}
+
+#' Check where an element would be written
+#'
+#' Abort if a parent of `name` is an array, or, for an AnnData, if a parent is
+#' an encoded element or `name` is something other than an empty group or an
+#' AnnData. The H5AD rules come from `hdf5_check_group_target()`; this applies
+#' them to both formats.
+#'
+#' @param name Path of the element, without leading or trailing slashes
+#' @param is_adata Whether the value is an `AbstractAnnData`
+#' @param node_info A function taking a path and returning `NULL` or a list as
+#'   returned by `hdf5_node_info()` or `zarr_node_info()`
+#' @param path The file or store path, used in error messages
+#' @param call The calling environment, used in error messages
+#'
+#' @return `NULL` (invisibly)
+#'
+#' @noRd
+check_elem_target <- function(
+  name,
+  is_adata,
+  node_info,
+  path,
+  call = rlang::caller_env()
+) {
+  what <- if (is_adata) "an AnnData" else "an element"
+  header <- "Can't write {what} to {.val {name}} in {.path {path}}"
+
+  for (parent in elem_parent_paths(name)) {
+    info <- node_info(parent)
+    if (is.null(info)) {
+      # nothing below a missing group can exist either
+      return(invisible(NULL))
+    }
+    if (!info$is_group) {
+      cli_abort(
+        c(header, x = "{.val {parent}} is an array, not a group."),
+        call = call
+      )
+    }
+    if (is_adata && !is.null(info$encoding)) {
+      cli_abort(
+        c(
+          header,
+          x = paste(
+            "{.val {parent}} is an encoded {.val {info$encoding}} element",
+            "and the AnnData would be inside it."
+          )
+        ),
+        call = call
+      )
+    }
+  }
+
+  info <- if (is_adata && nzchar(name)) node_info(name)
+  if (
+    !is.null(info) &&
+      !identical(info$encoding, "anndata") &&
+      !info$is_empty
+  ) {
+    cli_abort(
+      c(
+        header,
+        x = "{.val {name}} is not an AnnData and is not empty.",
+        i = "Choose a different {.arg name} or remove the element first."
+      ),
+      call = call
+    )
+  }
+
+  invisible(NULL)
 }
 
 #' Check an element can be written to the root

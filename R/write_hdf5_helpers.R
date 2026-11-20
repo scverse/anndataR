@@ -282,6 +282,29 @@ hdf5_is_group <- function(hdf5_file, path) {
   rhdf5::H5Iget_type(h5obj) == "H5I_GROUP"
 }
 
+#' Describe an object in an HDF5 file
+#'
+#' Mirrors `zarr_node_info()`
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The path of the object in the file
+#'
+#' @return `NULL` if the object doesn't exist, otherwise a list with
+#'   `is_group`, `encoding` (the `encoding-type`, or `NULL`) and `is_empty`
+#' @noRd
+hdf5_node_info <- function(hdf5_file, path) {
+  if (!hdf5_path_exists(hdf5_file, path)) {
+    return(NULL)
+  }
+
+  is_group <- hdf5_is_group(hdf5_file, path)
+  list(
+    is_group = is_group,
+    encoding = hdf5_encoding_type_or_null(hdf5_file, path),
+    is_empty = is_group && hdf5_group_is_empty(hdf5_file, path)
+  )
+}
+
 #' HDF5 path exists
 #'
 #' Check that a path in HDF5 exists
