@@ -1,6 +1,6 @@
 # anndataR devel
 
-- Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores. (PR #582, issue #566).
+- Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores (PR #582, issue #566).
 
 # anndataR 1.3.5
 
