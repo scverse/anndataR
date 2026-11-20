@@ -111,12 +111,43 @@ test_that("write_elem() creates parent groups", {
   h5ad <- withr::local_tempfile(fileext = ".h5ad")
   write_elem(h5ad, "/a/b/c", 1:3)
   expect_equal(as.vector(read_elem(h5ad, "a/b/c")), 1:3)
+  expect_equal(as.vector(read_elem(h5ad, "a")$b$c), 1:3)
 
   skip_if_not_installed("Rarr")
   zarr <- withr::local_tempfile(fileext = ".zarr")
   write_elem(zarr, "/a/b/c", 1:3)
   expect_equal(as.vector(read_elem(zarr, "a/b/c")), 1:3)
-  expect_true(zarr_path_exists(zarr, "a/b"))
+  expect_equal(as.vector(read_elem(zarr, "a")$b$c), 1:3)
+})
+
+test_that("write_elem() parent groups can be read back with the AnnData", {
+  for (format in c("h5ad", "zarr")) {
+    if (format == "zarr") {
+      skip_if_not_installed("Rarr")
+    }
+    path <- withr::local_tempfile(fileext = paste0(".", format))
+    small <- AnnData(
+      obs = data.frame(row.names = "cell"),
+      var = data.frame(row.names = "gene"),
+      uns = list(a = 1L)
+    )
+    if (format == "h5ad") {
+      write_h5ad(small, path)
+    } else {
+      write_zarr(small, path)
+    }
+
+    write_elem(path, "uns/results/scores", c(0.1, 0.2))
+
+    read <- if (format == "h5ad") read_h5ad else read_zarr
+    expect_no_warning(result <- read(path, as = "InMemoryAnnData"))
+    expect_equal(result$uns$a, 1L, info = format)
+    expect_equal(
+      as.vector(result$uns$results$scores),
+      c(0.1, 0.2),
+      info = format
+    )
+  }
 })
 
 test_that("write_elem() only replaces existing elements with overwrite = TRUE", {

@@ -129,9 +129,12 @@ write_elem <- function(
     return(invisible(NULL))
   }
 
-  parent <- dirname(name)
-  if (parent != ".") {
-    hdf5_ensure_group_path(hdf5_file, parent)
+  # missing parents become dicts, so they can be read back
+  for (parent in elem_parent_paths(name)) {
+    if (!hdf5_path_exists(hdf5_file, parent)) {
+      hdf5_create_group(hdf5_file, parent)
+      write_h5ad_encoding(hdf5_file, parent, "dict", "0.1.0")
+    }
   }
 
   write_h5ad_element(value, hdf5_file, name, stop_on_error = TRUE, ...)
@@ -174,9 +177,15 @@ write_elem <- function(
   }
   check_elem_overwrite(exists, overwrite, name, store, call = call)
 
-  parent <- dirname(name)
-  if (!is_root && parent != "." && !zarr_path_exists(store, parent)) {
-    Rarr::write_zarr_group(store, parent, zarr_version = zarr_format)
+  # missing parents become dicts, so they can be read back, except above an
+  # AnnData, whose parents are plain groups as in a .h5mu file
+  for (parent in elem_parent_paths(name)) {
+    if (!zarr_path_exists(store, parent)) {
+      Rarr::write_zarr_group(store, parent, zarr_version = zarr_format)
+      if (!is_adata) {
+        write_zarr_encoding(store, parent, "dict", "0.1.0", zarr_format)
+      }
+    }
   }
 
   if (is_adata) {
@@ -203,6 +212,25 @@ write_elem <- function(
   # TODO: Update consolidated metadata once #492 is merged
 
   invisible(NULL)
+}
+
+#' Paths of the parents of an element
+#'
+#' @param name Path of the element, without leading or trailing slashes
+#'
+#' @return The paths of all parents of `name`, outermost first, e.g.
+#'   `c("a", "a/b")` for `"a/b/c"`. Empty for the root or a top-level element.
+#'
+#' @noRd
+elem_parent_paths <- function(name) {
+  segments <- strsplit(name, "/", fixed = TRUE)[[1]]
+  n_parents <- max(length(segments) - 1L, 0L)
+
+  vapply(
+    seq_len(n_parents),
+    function(i) paste(segments[seq_len(i)], collapse = "/"),
+    character(1)
+  )
 }
 
 #' Check an element can be written to the root
