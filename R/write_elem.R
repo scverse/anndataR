@@ -282,8 +282,11 @@ check_elem_target <- function(
   path,
   call = rlang::caller_env()
 ) {
-  what <- if (is_adata) "an AnnData" else "an element"
-  header <- "Can't write {what} to {.val {name}} in {.path {path}}"
+  header <- paste(
+    "Can't write",
+    if (is_adata) "an AnnData" else "an element",
+    "to {.val {name}} in {.path {path}}"
+  )
 
   for (parent in elem_parent_paths(name)) {
     info <- node_info(parent)
