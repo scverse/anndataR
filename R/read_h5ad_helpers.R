@@ -30,35 +30,35 @@ read_h5ad_element <- function(
     return(NULL)
   }
 
+  if (is.null(type)) {
+    encoding_list <- read_h5ad_encoding(hdf5_file, name)
+    type <- encoding_list$type
+    version <- encoding_list$version
+  }
+
+  read_fun <- switch(
+    type,
+    "null" = read_h5ad_null,
+    "array" = read_h5ad_dense_array,
+    "rec-array" = read_h5ad_rec_array,
+    "csr_matrix" = read_h5ad_csr_matrix,
+    "csc_matrix" = read_h5ad_csc_matrix,
+    "dataframe" = read_h5ad_data_frame,
+    "dict" = read_h5ad_mapping,
+    "string" = read_h5ad_string_scalar,
+    "numeric-scalar" = read_h5ad_numeric_scalar,
+    "categorical" = read_h5ad_categorical,
+    "string-array" = read_h5ad_string_array,
+    "nullable-integer" = read_h5ad_nullable_integer,
+    "nullable-boolean" = read_h5ad_nullable_boolean,
+    "nullable-string-array" = read_h5ad_nullable_string,
+    cli_abort(
+      "No function for reading H5AD encoding {.cls {type}} for element {.val {name}}"
+    )
+  )
+
   tryCatch(
     {
-      if (is.null(type)) {
-        encoding_list <- read_h5ad_encoding(hdf5_file, name)
-        type <- encoding_list$type
-        version <- encoding_list$version
-      }
-
-      read_fun <- switch(
-        type,
-        "null" = read_h5ad_null,
-        "array" = read_h5ad_dense_array,
-        "rec-array" = read_h5ad_rec_array,
-        "csr_matrix" = read_h5ad_csr_matrix,
-        "csc_matrix" = read_h5ad_csc_matrix,
-        "dataframe" = read_h5ad_data_frame,
-        "dict" = read_h5ad_mapping,
-        "string" = read_h5ad_string_scalar,
-        "numeric-scalar" = read_h5ad_numeric_scalar,
-        "categorical" = read_h5ad_categorical,
-        "string-array" = read_h5ad_string_array,
-        "nullable-integer" = read_h5ad_nullable_integer,
-        "nullable-boolean" = read_h5ad_nullable_boolean,
-        "nullable-string-array" = read_h5ad_nullable_string,
-        cli_abort(
-          "No function for reading H5AD encoding {.cls {type}} for element {.val {name}}"
-        )
-      )
-
       read_fun(
         hdf5_file = hdf5_file,
         name = name,
@@ -68,11 +68,7 @@ read_h5ad_element <- function(
       )
     },
     error = function(e) {
-      msg <- if (is.null(type)) {
-        "Error reading element {.field {name}}"
-      } else {
-        "Error reading element {.field {name}} of type {.cls {type}}"
-      }
+      msg <- "Error reading element {.field {name}} of type {.cls {type}}"
       if (stop_on_error) {
         cli_abort(msg, parent = e)
       } else {

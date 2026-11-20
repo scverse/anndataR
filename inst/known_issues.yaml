@@ -25,8 +25,6 @@ known_issues:
     process: [read]
     error_message: |-
       Skipping element uns/nested/citation
-      Caused by error in `read_h5ad_element()`:
-      ! Error reading element uns/nested/citation
       Caused by error in `read_h5ad_encoding()`:
       ! Element "uns/nested/citation" in 'file.h5ad' has no encoding-type attribute
       ℹ Reading elements without encoding metadata is not supported yet, see <https://github.com/scverse/anndataR/issues/134>
