@@ -65,10 +65,29 @@ test_that("detect_elem_format() errors when the format is unclear", {
     "Could not detect the format"
   )
 
-  # Existing directory without Zarr metadata
-  empty_dir <- file.path(dir, "empty.zarr")
+  # Existing directory with content but without Zarr metadata
+  other_dir <- file.path(dir, "other.zarr")
+  dir.create(other_dir)
+  file.create(file.path(other_dir, "file.txt"))
+  expect_error(detect_elem_format(other_dir), "Could not detect the format")
+
+  # Empty directory without an extension
+  empty_dir <- file.path(dir, "empty")
   dir.create(empty_dir)
   expect_error(detect_elem_format(empty_dir), "Could not detect the format")
+})
+
+test_that("detect_elem_format() treats an empty directory like a new path", {
+  dir <- withr::local_tempdir()
+
+  empty_zarr <- file.path(dir, "empty.zarr")
+  dir.create(empty_zarr)
+  expect_equal(detect_elem_format(empty_zarr), "zarr")
+  expect_equal(detect_elem_format(empty_zarr, "zarr"), "zarr")
+
+  empty <- file.path(dir, "empty")
+  dir.create(empty)
+  expect_equal(detect_elem_format(empty, "zarr"), "zarr")
 })
 
 test_that("detect_elem_format() errors for an existing non-HDF5 file", {
