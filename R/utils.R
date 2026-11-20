@@ -341,6 +341,31 @@ construct_sparse_matrix <- function(
   }
 }
 
+#' Abort on an element without encoding metadata
+#'
+#' Shared by `read_h5ad_encoding()` and `read_zarr_encoding()`, so the error
+#' names the element at fault in both formats
+#'
+#' @param name The path of the element inside the file or store
+#' @param path The path of the H5AD file or Zarr store
+#' @param call The calling environment, used in error messages
+#'
+#' @noRd
+abort_missing_encoding <- function(name, path, call = rlang::caller_env()) {
+  # TODO: Read these elements as Python anndata does, see #583
+  cli_abort(
+    c(
+      "Element {.val {name}} in {.path {path}} has no {.field encoding-type} attribute",
+      "i" = paste(
+        "Reading elements without encoding metadata is not supported yet,",
+        "see {.url https://github.com/scverse/anndataR/issues/583}"
+      ),
+      "i" = "Add encoding metadata to this element, or remove it from the file"
+    ),
+    call = call
+  )
+}
+
 #' Detect the storage format of an element path
 #'
 #' Determine whether `path` is an H5AD file or a Zarr store, for

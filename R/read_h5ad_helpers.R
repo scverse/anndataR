@@ -149,22 +149,22 @@ read_h5ad_element_keys <- function(
 read_h5ad_encoding <- function(hdf5_file, name) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
-  tryCatch(
-    {
-      attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name)
-      if (is.null(attrs[["encoding-type"]])) {
-        stop("missing encoding-type attribute")
-      }
-      list(
-        type = attrs[["encoding-type"]],
-        version = attrs[["encoding-version"]]
-      )
-    },
+  attrs <- tryCatch(
+    rhdf5::h5readAttributes(hdf5_file$handle, name),
     error = function(e) {
       cli_abort(
         "Encoding attributes not found for element {.val {name}} in {.path {hdf5_file$path}}"
       )
     }
+  )
+
+  if (is.null(attrs[["encoding-type"]])) {
+    abort_missing_encoding(name, hdf5_file$path)
+  }
+
+  list(
+    type = attrs[["encoding-type"]],
+    version = attrs[["encoding-version"]]
   )
 }
 

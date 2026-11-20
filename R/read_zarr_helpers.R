@@ -141,22 +141,22 @@ read_zarr_element_keys <- function(
 #'
 #' @noRd
 read_zarr_encoding <- function(store, name) {
-  tryCatch(
-    {
-      attrs <- Rarr::read_zarr_attributes(file.path(store, name))
-      if (is.null(attrs[["encoding-type"]])) {
-        stop("missing encoding-type attribute")
-      }
-      list(
-        type = attrs[["encoding-type"]],
-        version = attrs[["encoding-version"]]
-      )
-    },
+  attrs <- tryCatch(
+    Rarr::read_zarr_attributes(file.path(store, name)),
     error = function(e) {
       cli_abort(
         "Encoding attributes not found for element {.val {name}} in {.path {store}}"
       )
     }
+  )
+
+  if (is.null(attrs[["encoding-type"]])) {
+    abort_missing_encoding(name, store)
+  }
+
+  list(
+    type = attrs[["encoding-type"]],
+    version = attrs[["encoding-version"]]
   )
 }
 

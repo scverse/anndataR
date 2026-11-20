@@ -114,7 +114,7 @@ test_that("read_elem() errors for unsupported encodings", {
 
   # Group without encoding attributes, e.g. a .h5mu modality container
   rhdf5::h5createGroup(h5ad, "no_encoding")
-  expect_error(read_elem(h5ad, "no_encoding"), "Encoding attributes not found")
+  expect_error(read_elem(h5ad, "no_encoding"), "has no.*encoding-type")
 
   # raw group
   rhdf5::h5createGroup(h5ad, "raw")
