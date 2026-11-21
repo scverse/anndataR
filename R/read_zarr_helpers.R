@@ -334,12 +334,10 @@ read_zarr_sparse_array_base <- function(
     as.vector(values)
   }
 
-  # Is 64-bit when there are too many non-zero values for an R integer
-  indptr <- as.double(Rarr::read_zarr_array(file.path(store, name, "indptr")))
-
   read_sparse_matrix(
     read_slice = read_slice,
-    indptr = indptr,
+    # Rarr returns doubles if the values don't fit in an R integer
+    indptr = read_slice("indptr"),
     shape = as.vector(unlist(attrs$shape, use.names = FALSE)),
     type = type
   )
