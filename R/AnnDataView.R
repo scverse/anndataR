@@ -51,6 +51,7 @@ AnnDataView <- R6::R6Class(
         is.data.frame(x) ||
           is.matrix(x) ||
           inherits(x, "Matrix") ||
+          inherits(x, "SparseArray") ||
           inherits(x, "DelayedArray")
       ) {
         result <- x

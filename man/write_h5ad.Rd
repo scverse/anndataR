@@ -63,6 +63,14 @@ e.g. a modality inside a \code{.h5mu} file.}
 Write an H5AD file
 }
 \details{
+\subsection{Large sparse matrices}{
+
+Sparse matrices with more than 2^31 - 1 non-zero values, which are stored as
+an \code{SVT_SparseMatrix}, are written in the \code{csc_matrix} encoding with a 64-bit
+\code{indptr}. Python \strong{anndata} can read these. See the
+\href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article} for details.
+}
+
 \subsection{Compression}{
 
 Compression is currently not supported for Boolean arrays, they will be

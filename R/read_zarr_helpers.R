@@ -294,14 +294,20 @@ read_zarr_sparse_array_base <- function(
 
   attrs <- Rarr::read_zarr_attributes(file.path(store, name))
 
-  construct_sparse_matrix(
-    data = as.vector(Rarr::read_zarr_array(file.path(store, name, "data"))),
-    indices = as.vector(Rarr::read_zarr_array(file.path(
-      store,
-      name,
-      "indices"
-    ))),
-    indptr = as.vector(Rarr::read_zarr_array(file.path(store, name, "indptr"))),
+  read_slice <- function(what, start = NULL, count = NULL) {
+    path <- file.path(store, name, what)
+    values <- if (is.null(start)) {
+      Rarr::read_zarr_array(path)
+    } else {
+      Rarr::read_zarr_array(path, index = list(seq(start, length.out = count)))
+    }
+    as.vector(values)
+  }
+
+  read_sparse_matrix(
+    read_slice = read_slice,
+    # Rarr returns doubles if the values don't fit in an R integer
+    indptr = read_slice("indptr"),
     shape = as.vector(unlist(attrs$shape, use.names = FALSE)),
     type = type
   )

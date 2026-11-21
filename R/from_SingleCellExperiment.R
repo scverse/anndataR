@@ -234,9 +234,9 @@ from_SingleCellExperiment <- function(
     as.data.frame(object)
   } else if (inherits(object, "SimpleList")) {
     as.list(object)
-  } else if (inherits(object, "DelayedArray")) {
+  } else if (inherits(object, c("DelayedArray", "SparseMatrix"))) {
     if (transpose) {
-      DelayedArray::t(object)
+      BiocGenerics::t(object)
     } else {
       object
     }

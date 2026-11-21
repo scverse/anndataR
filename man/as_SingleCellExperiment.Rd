@@ -136,6 +136,16 @@ In order to indicate the \code{adata$X} slot, you use \code{NA} as the value in 
 vector. The name you provide for \code{x_mapping} may not be a name in
 \code{assays_mapping}.
 }
+
+\subsection{Large sparse matrices}{
+
+Sparse matrices with more than 2^31 - 1 non-zero values are stored in \code{assays}
+as an \code{SVT_SparseMatrix}. See the
+\href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article}
+for details.
+\code{obsp} and \code{varp} are stored as \code{SelfHits}, so they can't have more non-zero
+values than that.
+}
 }
 \examples{
 \dontshow{if (rlang::is_installed("SingleCellExperiment")) withAutoprint(\{ # examplesIf}

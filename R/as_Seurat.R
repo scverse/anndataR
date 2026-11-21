@@ -112,6 +112,14 @@
 #' `"gene_1"` and `"gene-1"`), an error is raised. In that case, rename the
 #' features before converting.
 #'
+#' ## Large sparse matrices
+#'
+#' `Seurat` can't store a matrix with more than 2^31 - 1 non-zero values as a
+#' `dgCMatrix`, so these are stored as a `DelayedMatrix`. Not all **Seurat**
+#' functions work with this, for example `FindVariableFeatures()` doesn't. A
+#' `Graph` is a `dgCMatrix`, so `obsp` can't have more non-zero values than that.
+#' See the [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html) for details.
+#'
 #' @return A `Seurat` object containing the requested data from `adata`
 #'
 #' @family object converters
@@ -379,7 +387,7 @@ as_Seurat <- function(
 .as_Seurat_get_matrix <- function(adata, layer_name) {
   # nolint end: object_name_linter
   if (is.na(layer_name)) {
-    return(to_R_matrix(adata$X))
+    return(.as_Seurat_layer(adata$X))
   }
 
   if (!.as_Seurat_is_atomic_character(layer_name)) {
@@ -395,8 +403,40 @@ as_Seurat <- function(
     )
   }
 
-  # check if dgRMatrix and convert to dgCMatrix
-  to_R_matrix(adata$layers[[layer_name]])
+  .as_Seurat_layer(adata$layers[[layer_name]])
+}
+
+# Seurat can't store a SparseMatrix, but can store a DelayedMatrix
+# nolint start: object_name_linter
+.as_Seurat_layer <- function(mat) {
+  # nolint end: object_name_linter
+  if (!inherits(mat, "SparseMatrix")) {
+    # check if dgRMatrix and convert to dgCMatrix
+    return(to_R_matrix(mat))
+  }
+
+  mat <- as_csparse_or_svt(mat)
+  if (!inherits(mat, "SVT_SparseMatrix")) {
+    return(to_R_matrix(mat))
+  }
+
+  check_requires(
+    "Storing a sparse matrix with more than 2^31 - 1 non-zero values in Seurat",
+    "DelayedArray",
+    where = "Bioc"
+  )
+  cli_inform(c(
+    paste(
+      "A layer has too many non-zero values for a {.cls dgCMatrix} so it is",
+      "stored as a {.cls DelayedMatrix}"
+    ),
+    "i" = paste(
+      "Not all {.pkg Seurat} functions work with this,",
+      "for example {.fn FindVariableFeatures} doesn't"
+    )
+  ))
+  # Transposing lazily doesn't take a second copy of the matrix
+  DelayedArray::t(DelayedArray::DelayedArray(mat))
 }
 
 # nolint start: object_name_linter
@@ -655,7 +695,7 @@ as_Seurat <- function(
 .as_Seurat_guess_reductions <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   purrr::map(adata$obsm_keys(), function(.obsm) {
-    if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
+    if (!is_numeric_matrix(adata$obsm[[.obsm]])) {
       return(NULL)
     }
 

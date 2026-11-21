@@ -54,7 +54,7 @@ py_to_r.collections.abc.Mapping <- function(x) {
   # skip None keys, such as the one holding X in anndata >= 0.13
   keys <- Filter(Negate(is.null), keys)
   for (name in keys) {
-    out[[name]] <- reticulate::py_to_r(x[[name]])
+    out[[name]] <- py_to_r_matrix(x[[name]])
   }
   out
 }
@@ -92,4 +92,58 @@ r_to_py.AbstractAnnData <- function(x, convert = TRUE) {
     ret_adata <- as_ReticulateAnnData(x)
     ret_adata$py_anndata()
   }
+}
+
+#' @rdname reticulate-helpers
+#' @param x An AbstractAnnData object (any anndataR implementation), a
+#'   `SparseMatrix` from **SparseArray** or a `DelayedMatrix`. Sparse matrices are
+#'   converted to a **scipy** CSC matrix.
+#' @export
+#' @importFrom reticulate r_to_py
+#' @method r_to_py SparseMatrix
+r_to_py.SparseMatrix <- function(x, convert = FALSE) {
+  x <- as_csparse_or_svt(x)
+  if (!inherits(x, "SVT_SparseMatrix")) {
+    return(r_to_py(x, convert = convert))
+  }
+
+  bi <- reticulate::import_builtins(convert = FALSE)
+  np <- reticulate::import("numpy", convert = FALSE)
+  sp <- reticulate::import("scipy.sparse", convert = FALSE)
+
+  layout <- svt_write_layout(x)
+  nnz <- bi$int(layout$nnz)
+
+  arrays <- list(
+    data = np$empty(nnz, dtype = "float64"),
+    # scipy copies int32 indices to int64 if indptr needs 64 bits
+    indices = np$empty(nnz, dtype = "int64")
+  )
+  svt_write_blocks(layout, function(what, start, values) {
+    slice <- bi$slice(bi$int(start - 1), bi$int(start - 1 + length(values)))
+    arrays[[what]]$`__setitem__`(slice, reticulate::np_array(values))
+  })
+
+  sp$csc_matrix(
+    reticulate::tuple(
+      arrays$data,
+      arrays$indices,
+      np$asarray(reticulate::np_array(layout$indptr))$astype("int64"),
+      convert = FALSE
+    ),
+    shape = reticulate::tuple(
+      bi$int(nrow(x)),
+      bi$int(ncol(x)),
+      convert = FALSE
+    ),
+    copy = FALSE
+  )
+}
+
+#' @rdname reticulate-helpers
+#' @export
+#' @importFrom reticulate r_to_py
+#' @method r_to_py DelayedMatrix
+r_to_py.DelayedMatrix <- function(x, convert = FALSE) {
+  r_to_py(realize_matrix_for_write(x), convert = convert)
 }

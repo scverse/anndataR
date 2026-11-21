@@ -105,6 +105,15 @@
 #' vector. The name you provide for `x_mapping` may not be a name in
 #' `assays_mapping`.
 #'
+#' ## Large sparse matrices
+#'
+#' Sparse matrices with more than 2^31 - 1 non-zero values are stored in `assays`
+#' as an `SVT_SparseMatrix`. See the
+#' [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html)
+#' for details.
+#' `obsp` and `varp` are stored as `SelfHits`, so they can't have more non-zero
+#' values than that.
+#'
 #' @return A `SingleCellExperiment` object containing the requested data from
 #'   `adata`
 #'
@@ -293,7 +302,7 @@ as_SingleCellExperiment <- function(
 .as_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
   purrr::map(adata$obsm_keys(), function(.obsm) {
-    if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
+    if (!is_numeric_matrix(adata$obsm[[.obsm]])) {
       return(NULL)
     }
 

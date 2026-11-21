@@ -283,45 +283,76 @@ hdf5_write_dataset <- function(
 
   hdf5_file$open_and_defer_close()
 
-  # Compute chunk sizes
-  # - "auto"   → mimic h5py's auto-chunking algorithm
-  # - NULL     → no chunking (contiguous storage, rhdf5 default)
-  # - <number> → use provided byte size as target
-  if (identical(chunk_size, "auto")) {
-    chunk <- hdf5_auto_chunk(dims, storage.mode(value), target_size = NULL)
-  } else if (is.null(chunk_size)) {
-    chunk <- NULL
-  } else {
-    chunk <- hdf5_auto_chunk(
-      dims,
-      storage.mode(value),
-      target_size = chunk_size
-    )
-  }
-
-  # When no chunking or no compression, set level = 0 to prevent rhdf5 from
-  # warning about "Compression (level > 0) requires chunking"
-  level <- if (is.null(chunk) || compression == "none") 0L else 6L
-
   # Use UTF-8 strings if not set
   if (is.null(H5type) && is.character(value)) {
     H5type <- hdf5_string_type()
     value[] <- enc2utf8(value)
   }
 
+  hdf5_create_dataset(
+    hdf5_file,
+    name,
+    dims,
+    storage.mode(value),
+    H5type = H5type,
+    compression = compression,
+    chunk_size = chunk_size
+  )
+
+  rhdf5::h5write(value, hdf5_file$handle, name, native = FALSE, ...)
+}
+
+#' Create a dataset in a HDF5 file
+#'
+#' Create an empty HDF5 dataset with chosen compression (can be none)
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param name Name of the element within the H5AD file
+#' @param dims Dimensions of the dataset
+#' @param storage_mode The storage mode of the values, see [storage.mode()]
+#' @inheritParams hdf5_write_dataset
+#'
+#' @noRd
+hdf5_create_dataset <- function(
+  hdf5_file,
+  name,
+  dims,
+  storage_mode,
+  H5type = NULL,
+  compression = c("none", "gzip", "lzf"),
+  chunk_size = "auto"
+) {
+  compression <- match.arg(compression)
+
+  hdf5_file$open_and_defer_close()
+
+  # Compute chunk sizes
+  # - "auto"   → mimic h5py's auto-chunking algorithm
+  # - NULL     → no chunking (contiguous storage, rhdf5 default)
+  # - <number> → use provided byte size as target
+  if (identical(chunk_size, "auto")) {
+    chunk <- hdf5_auto_chunk(dims, storage_mode, target_size = NULL)
+  } else if (is.null(chunk_size)) {
+    chunk <- NULL
+  } else {
+    chunk <- hdf5_auto_chunk(dims, storage_mode, target_size = chunk_size)
+  }
+
+  # When no chunking or no compression, set level = 0 to prevent rhdf5 from
+  # warning about "Compression (level > 0) requires chunking"
+  level <- if (is.null(chunk) || compression == "none") 0L else 6L
+
   rhdf5::h5createDataset(
     hdf5_file$handle,
     name,
     dims,
-    storage.mode = storage.mode(value),
+    storage.mode = storage_mode,
     H5type = H5type,
     chunk = chunk,
     level = level,
     filter = toupper(compression),
     native = FALSE
   )
-
-  rhdf5::h5write(value, hdf5_file$handle, name, native = FALSE, ...)
 }
 
 #' Get HDF5 dataset type
