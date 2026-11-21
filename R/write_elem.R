@@ -55,7 +55,7 @@ write_elem <- function(
 
   format <- detect_elem_format(path, format)
 
-  # remove a file or store created by this call if writing fails
+  # if the file was created by this call and writing fails, remove the file or store
   done <- FALSE
   new_path <- sub("/+$", "", path)
   if (!file.exists(new_path)) {
