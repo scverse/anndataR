@@ -360,8 +360,6 @@ write_h5ad_large_sparse_array <- function(
   version <- match.arg(version)
 
   layout <- svt_write_layout(value)
-  indptr <- layout$indptr
-  nnz <- indptr[[length(indptr)]]
 
   hdf5_file$open_and_defer_close()
 
@@ -371,7 +369,7 @@ write_h5ad_large_sparse_array <- function(
     hdf5_create_dataset(
       hdf5_file,
       paste0(name, "/", array),
-      nnz,
+      layout$nnz,
       arrays[[array]],
       compression = compression,
       chunk_size = chunk_size
@@ -392,7 +390,7 @@ write_h5ad_large_sparse_array <- function(
   hdf5_write_dataset(
     hdf5_file = hdf5_file,
     name = paste0(name, "/indptr"),
-    value = indptr,
+    value = layout$indptr,
     H5type = "H5T_STD_I64LE",
     compression = compression,
     chunk_size = chunk_size

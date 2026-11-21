@@ -147,8 +147,8 @@ realize_matrix_for_write <- function(value) {
 #'
 #' @param value An `SVT_SparseMatrix`
 #'
-#' @return A list with `value`, its `indptr` as a double and the `bounds` of the
-#'   blocks to write
+#' @return A list with `value`, its `indptr` as a double, its number of non-zero
+#'   values `nnz` and the `bounds` of the blocks to write
 #' @noRd
 svt_write_layout <- function(value) {
   check_requires(
@@ -164,6 +164,7 @@ svt_write_layout <- function(value) {
   list(
     value = value,
     indptr = unname(indptr),
+    nnz = indptr[[length(indptr)]],
     bounds = sparse_block_bounds(indptr)
   )
 }

@@ -111,8 +111,7 @@ r_to_py.SparseMatrix <- function(x, convert = FALSE) {
   sp <- reticulate::import("scipy.sparse", convert = FALSE)
 
   layout <- svt_write_layout(as(x, "SVT_SparseMatrix"))
-  indptr <- layout$indptr
-  nnz <- bi$int(indptr[[length(indptr)]])
+  nnz <- bi$int(layout$nnz)
 
   arrays <- list(
     data = np$empty(nnz, dtype = "float64"),
@@ -128,7 +127,7 @@ r_to_py.SparseMatrix <- function(x, convert = FALSE) {
     reticulate::tuple(
       arrays$data,
       arrays$indices,
-      np$asarray(reticulate::np_array(indptr))$astype("int64"),
+      np$asarray(reticulate::np_array(layout$indptr))$astype("int64"),
       convert = FALSE
     ),
     shape = reticulate::tuple(

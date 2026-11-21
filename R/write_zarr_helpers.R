@@ -325,17 +325,15 @@ write_zarr_large_sparse_array <- function(
   version <- match.arg(version)
 
   layout <- svt_write_layout(value)
-  indptr <- layout$indptr
-  nnz <- indptr[[length(indptr)]]
 
   Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
   arrays <- c(indices = "integer", data = "double")
   for (array in names(arrays)) {
     Rarr::create_empty_zarr_array(
       file.path(store, name, array),
-      dim = nnz,
+      dim = layout$nnz,
       # The whole array doesn't fit in one chunk, as codecs are limited to 2 GB
-      chunk_dim = min(nnz, 2^22),
+      chunk_dim = min(layout$nnz, 2^22),
       data_type = arrays[[array]],
       order = "C",
       compressor = .get_compressor(compression),
@@ -354,7 +352,7 @@ write_zarr_large_sparse_array <- function(
   zarr_write_int64(
     store,
     paste0(name, "/indptr"),
-    indptr,
+    layout$indptr,
     compression,
     zarr_format
   )
