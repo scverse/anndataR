@@ -142,11 +142,14 @@ read_h5ad_element_keys <- function(
 #' Read the encoding and version of an element in a H5AD file
 #'
 #' @inheritParams read_h5ad_element
+#' @param required Whether to abort if the element has no `encoding-type`.
+#'   If `FALSE`, `type` is `NULL` for such an element, e.g. a plain group like
+#'   `mod` in a `.h5mu` file.
 #'
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_h5ad_encoding <- function(hdf5_file, name) {
+read_h5ad_encoding <- function(hdf5_file, name, required = TRUE) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
   attrs <- tryCatch(
@@ -158,7 +161,7 @@ read_h5ad_encoding <- function(hdf5_file, name) {
     }
   )
 
-  if (is.null(attrs[["encoding-type"]])) {
+  if (required && is.null(attrs[["encoding-type"]])) {
     abort_missing_encoding(name, hdf5_file$path)
   }
 

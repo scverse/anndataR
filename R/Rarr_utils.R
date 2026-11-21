@@ -102,7 +102,7 @@ zarr_node_info <- function(store, path) {
 
   list(
     is_group = is_group,
-    encoding = Rarr::read_zarr_attributes(node)[["encoding-type"]],
+    encoding = read_zarr_encoding(store, path, required = FALSE)$type,
     is_empty = is_group && all(files %in% ZARR_METADATA_FILES)
   )
 }

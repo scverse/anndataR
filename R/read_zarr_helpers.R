@@ -136,11 +136,12 @@ read_zarr_element_keys <- function(
 #' Read the encoding and version of an element in a Zarr store
 #'
 #' @inheritParams read_zarr_element
+#' @inheritParams read_h5ad_encoding
 #'
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_zarr_encoding <- function(store, name) {
+read_zarr_encoding <- function(store, name, required = TRUE) {
   attrs <- tryCatch(
     Rarr::read_zarr_attributes(file.path(store, name)),
     error = function(e) {
@@ -150,7 +151,7 @@ read_zarr_encoding <- function(store, name) {
     }
   )
 
-  if (is.null(attrs[["encoding-type"]])) {
+  if (required && is.null(attrs[["encoding-type"]])) {
     abort_missing_encoding(name, store)
   }
 
