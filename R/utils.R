@@ -355,39 +355,247 @@ construct_sparse_matrix <- function(
   }
 }
 
-#' Guess the encoding of an element without encoding metadata
+#' Read an item of a collection, skipping it on error
 #'
-#' Python anndata reads these elements as well: a group as a dict, and an array
-#' as whatever it holds.
+#' Used by `read_h5ad_collection()` and `read_zarr_collection()`, so that an
+#' item that can't be read is left out with a warning instead of failing its
+#' parent, e.g. all of `uns`
 #'
-#' @param path Path to the file or store
-#' @param name Name of the element
-#' @param is_group Whether the element is a group
-#' @param is_scalar Whether the element is a scalar
-#' @param is_string Whether the element holds strings
+#' @param expr An expression that reads the item, with `stop_on_error = TRUE`
+#' @param name The path of the item, used in the warning
 #'
-#' @return A list with the `type` and `version` of the encoding, as returned by
-#'   `read_h5ad_encoding()` and `read_zarr_encoding()`
+#' @return The item, or a `skipped_item` marker if reading it failed
+#'
 #' @noRd
-guess_encoding <- function(path, name, is_group, is_scalar, is_string) {
-  # file-backed objects read an element each time it is accessed
-  cli_warn(
-    "Element {.val {name}} was written without encoding metadata",
-    .frequency = "once",
-    .frequency_id = paste(path, name)
+read_collection_item <- function(expr, name) {
+  tryCatch(
+    expr,
+    error = function(e) {
+      cli_warn("Skipping element {.field {name}}", parent = e)
+      structure(list(), class = "skipped_item")
+    }
+  )
+}
+
+#' Drop skipped items from a collection
+#'
+#' @param items A named list returned by `read_collection_item()` calls
+#'
+#' @return `items` without the `skipped_item` markers. `NULL` items are kept.
+#'
+#' @noRd
+drop_skipped_items <- function(items) {
+  items[!vapply(items, inherits, logical(1), what = "skipped_item")]
+}
+
+#' Abort on an element without encoding metadata
+#'
+#' Shared by `read_h5ad_encoding()` and `read_zarr_encoding()`, so the error
+#' names the element at fault in both formats
+#'
+#' @param name The path of the element inside the file or store
+#' @param path The path of the H5AD file or Zarr store
+#' @param call The calling environment, used in error messages
+#'
+#' @noRd
+abort_missing_encoding <- function(name, path, call = rlang::caller_env()) {
+  # TODO: Read these elements as Python anndata does, see #134
+  cli_abort(
+    c(
+      "Element {.val {name}} in {.path {path}} has no {.field encoding-type} attribute",
+      "i" = paste(
+        "Reading elements without encoding metadata is not supported yet,",
+        "see {.url https://github.com/scverse/anndataR/issues/134}"
+      ),
+      "i" = "Add encoding metadata to this element, or remove it from the file"
+    ),
+    call = call
+  )
+}
+
+#' Paths of the parents of an element
+#'
+#' @param name Path of the element, without leading or trailing slashes
+#'
+#' @return The paths of all parents of `name`, outermost first, e.g.
+#'   `c("a", "a/b")` for `"a/b/c"`. Empty for the root or a top-level element.
+#'
+#' @noRd
+elem_parent_paths <- function(name) {
+  segments <- strsplit(name, "/", fixed = TRUE)[[1]]
+  n_parents <- max(length(segments) - 1L, 0L)
+
+  vapply(
+    seq_len(n_parents),
+    function(i) paste(segments[seq_len(i)], collapse = "/"),
+    character(1)
+  )
+}
+
+#' Check where an element would be written
+#'
+#' Abort if a parent of `name` is an array, or, for an AnnData, if a parent is
+#' an encoded element or `name` is something other than an empty group or an
+#' AnnData. Used by `write_elem()` for both formats and by `HDF5AnnData`.
+#'
+#' @param name Path of the element, without leading or trailing slashes
+#' @param is_adata Whether the value is an `AbstractAnnData`
+#' @param node_info A function taking a path and returning `NULL` or a list as
+#'   returned by `hdf5_node_info()` or `zarr_node_info()`
+#' @param path The file or store path, used in error messages
+#' @param arg The argument `name` came from, used in error messages
+#' @param call The calling environment, used in error messages
+#'
+#' @return `NULL` (invisibly)
+#'
+#' @noRd
+check_elem_target <- function(
+  name,
+  is_adata,
+  node_info,
+  path,
+  arg = "name",
+  call = rlang::caller_env()
+) {
+  header <- paste(
+    "Can't write",
+    if (is_adata) "an AnnData" else "an element",
+    "to {.val {name}} in {.path {path}}"
   )
 
-  type <- if (is_group) {
-    "dict"
-  } else if (is_scalar && is_string) {
-    "string"
-  } else if (is_scalar) {
-    "numeric-scalar"
-  } else if (is_string) {
-    "string-array"
-  } else {
-    "array"
+  for (parent in elem_parent_paths(name)) {
+    info <- node_info(parent)
+    if (is.null(info)) {
+      # nothing below a missing group can exist either
+      return(invisible(NULL))
+    }
+    if (!info$is_group) {
+      cli_abort(
+        c(header, x = "{.val {parent}} is an array, not a group."),
+        call = call
+      )
+    }
+    if (is_adata && !is.null(info$encoding)) {
+      cli_abort(
+        c(
+          header,
+          x = paste(
+            "{.val {parent}} is an encoded {.val {info$encoding}} element",
+            "and the AnnData would be inside it."
+          )
+        ),
+        call = call
+      )
+    }
   }
 
-  list(type = type, version = NULL)
+  info <- if (is_adata && nzchar(name)) node_info(name)
+  if (
+    !is.null(info) &&
+      !identical(info$encoding, "anndata") &&
+      !info$is_empty
+  ) {
+    cli_abort(
+      c(
+        header,
+        x = "{.val {name}} is not an AnnData and is not empty.",
+        i = "Choose a different {.arg {arg}} or remove the element first."
+      ),
+      call = call
+    )
+  }
+
+  invisible(NULL)
+}
+
+#' Detect the storage format of an element path
+#'
+#' Determine whether `path` is an H5AD file or a Zarr store, for
+#' use by `read_elem()` and `write_elem()`
+#'
+#' @param path Path to an H5AD file or Zarr store.
+#' @param format The requested format. One of `"auto"`, `"h5ad"` or `"zarr"`.
+#' @param call The calling environment, used in error messages
+#'
+#' @details
+#' When `path` exists, its format is detected from the content. A file that
+#' passes [rhdf5::H5Fis_hdf5()] is H5AD and a directory with `.zgroup` or
+#' `zarr.json` at the top level is Zarr. When `path` doesn't exist, the
+#' extension is used.
+#'
+#' With `format = "auto"`, a format that can't be detected is an error. An
+#' explicit `format` is returned as is, unless `path` exists and is detected as
+#' the other format.
+#'
+#' @return Either `"h5ad"` or `"zarr"`
+#'
+#' @noRd
+detect_elem_format <- function(
+  path,
+  format = c("auto", "h5ad", "zarr"),
+  call = rlang::caller_env()
+) {
+  if (!rlang::is_string(path) || is.na(path) || !nzchar(path)) {
+    cli_abort(
+      "{.arg path} must be a single non-empty string, not {.obj_type_friendly {path}}",
+      call = call
+    )
+  }
+  format <- rlang::arg_match(format, error_call = call)
+
+  # Drop trailing slashes so "store.zarr/" behaves like "store.zarr"
+  path <- sub("/+$", "", path)
+
+  is_dir <- dir.exists(path)
+  files <- if (is_dir) list.files(path, all.files = TRUE, no.. = TRUE)
+  # An empty directory is detected from its extension, like a new path
+  has_content <- if (is_dir) length(files) > 0 else file.exists(path)
+
+  detected <- if (is_dir && has_content) {
+    if (any(c(".zgroup", "zarr.json") %in% files)) {
+      "zarr"
+    } else {
+      NA_character_
+    }
+  } else if (has_content) {
+    check_requires("Reading or writing H5AD elements", "rhdf5", where = "Bioc")
+    if (isTRUE(rhdf5::H5Fis_hdf5(path))) {
+      "h5ad"
+    } else {
+      NA_character_
+    }
+  } else {
+    ext <- tolower(tools::file_ext(path))
+    if (ext %in% c("h5ad", "h5", "hdf5", "h5mu")) {
+      "h5ad"
+    } else if (ext == "zarr") {
+      "zarr"
+    } else {
+      NA_character_
+    }
+  }
+
+  if (format == "auto") {
+    if (is.na(detected)) {
+      cli_abort(
+        c(
+          "Could not detect the format of {.path {path}}",
+          "i" = "Set {.arg format}."
+        ),
+        call = call
+      )
+    }
+    return(detected)
+  }
+
+  if (has_content && !is.na(detected) && detected != format) {
+    cli_abort(
+      c(
+        "{.arg format} is {.val {format}} but {.path {path}} is {.val {detected}}"
+      ),
+      call = call
+    )
+  }
+
+  format
 }

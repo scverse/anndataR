@@ -136,19 +136,14 @@ read_zarr_element_keys <- function(
 #' Read the encoding and version of an element in a Zarr store
 #'
 #' @inheritParams read_zarr_element
+#' @inheritParams read_h5ad_encoding
 #'
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_zarr_encoding <- function(store, name) {
-  encoding <- tryCatch(
-    {
-      attrs <- Rarr::read_zarr_attributes(file.path(store, name))
-      list(
-        type = attrs[["encoding-type"]],
-        version = attrs[["encoding-version"]]
-      )
-    },
+read_zarr_encoding <- function(store, name, required = TRUE) {
+  attrs <- tryCatch(
+    Rarr::read_zarr_attributes(file.path(store, name)),
     error = function(e) {
       cli_abort(
         "Encoding attributes not found for element {.val {name}} in {.path {store}}"
@@ -156,38 +151,13 @@ read_zarr_encoding <- function(store, name) {
     }
   )
 
-  if (is.null(encoding$type)) {
-    return(guess_zarr_encoding(store, name))
+  if (required && is.null(attrs[["encoding-type"]])) {
+    abort_missing_encoding(name, store)
   }
-  encoding
-}
 
-#' Guess the encoding of a Zarr element without encoding metadata
-#'
-#' @inheritParams read_zarr_element
-#'
-#' @return See `guess_encoding()`
-#' @noRd
-guess_zarr_encoding <- function(store, name) {
-  check_requires(
-    "Reading a Zarr element without encoding metadata",
-    "jsonlite"
-  )
-
-  path <- file.path(store, name)
-  metadata_file <- zarr_array_metadata_file(path)
-  metadata <- if (file.exists(metadata_file)) {
-    jsonlite::read_json(metadata_file)
-  }
-  is_group <- is.null(metadata) || identical(metadata$node_type, "group")
-
-  guess_encoding(
-    store,
-    name,
-    is_group = is_group,
-    is_scalar = length(metadata$shape) == 0L,
-    is_string = !is_group &&
-      Rarr::zarr_overview(path, as_data_frame = TRUE)$data_type == "string"
+  list(
+    type = attrs[["encoding-type"]],
+    version = attrs[["encoding-version"]]
   )
 }
 
@@ -596,18 +566,20 @@ read_zarr_collection <- function(store, name, item_names, backed = FALSE, ...) {
     item_names,
     function(item_name) {
       new_name <- paste0(name, "/", item_name)
-      encoding <- read_zarr_encoding(store, new_name)
-      read_zarr_element(
-        store = store,
-        name = new_name,
-        type = encoding$type,
-        version = encoding$version,
-        backed = backed
+      read_collection_item(
+        read_zarr_element(
+          store = store,
+          name = new_name,
+          stop_on_error = TRUE,
+          backed = backed
+        ),
+        new_name
       )
     }
   )
   names(items) <- item_names
-  items
+
+  drop_skipped_items(items)
 }
 
 #' Read Zarr mapping keys

@@ -1,6 +1,7 @@
-# anndataR devel
+# anndataR 1.3.6
 
-- Fix `read_h5ad()` and `read_zarr()` losing all of `uns` when one of its elements has no encoding metadata. As in Python, these elements are now read with a warning (issue #583).
+- Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores (PR #582, issue #566).
+- Fix `read_h5ad()` and `read_zarr()` losing a whole element, e.g. all of `uns`, when one of its items can't be read. That item is now skipped with a warning naming it (PR #582, issue #583).
 - Fix reading sparse matrices with more than 2^31 - 1 non-zero values, which gave `X = NULL` with a warning. They are now read as an `SVT_SparseMatrix` from `read_h5ad()`, `read_zarr()` and `ReticulateAnnData`, which requires **SparseArray**, and can be written by `write_h5ad()` and `write_zarr()`, converted to `SingleCellExperiment`, and converted to `Seurat` as a `DelayedMatrix`. Zarr needs **Rarr** >= 2.1.64. See the new [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html) for what works where (issue #301).
 - Fix `AnnDataView` returning `SparseArray` matrices without subsetting them (issue #301).
 - Fix `as_AnnData()` warning about, and not transposing, a `SparseMatrix` assay of a `SingleCellExperiment`, and densifying a `DelayedMatrix` layer of a `Seurat` object (issue #301).

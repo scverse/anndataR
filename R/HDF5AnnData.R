@@ -533,9 +533,12 @@ HDF5AnnData <- R6::R6Class(
         }
 
         # Don't write into, or replace, something that isn't an AnnData
-        hdf5_check_group_target(
-          private$.hdf5_file,
-          private$.group,
+        check_elem_target(
+          gsub("^/+|/+$", "", private$.group),
+          is_adata = TRUE,
+          node_info = function(path) hdf5_node_info(private$.hdf5_file, path),
+          path = file,
+          arg = "group",
           call = rlang::caller_env()
         )
 

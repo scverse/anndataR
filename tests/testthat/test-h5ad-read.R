@@ -135,37 +135,3 @@ test_that("reading H5AD as backed Seurat works", {
     expect_true(inherits(seurat[[graph]], "dgCMatrix"))
   }
 })
-
-test_that("reading H5AD elements without encoding metadata works", {
-  path <- withr::local_tempfile(fileext = ".h5ad")
-  uns <- list(
-    string = "text",
-    number = 1.5,
-    logical = TRUE,
-    strings = c("x", "y"),
-    numbers = c(1, 2, 3),
-    dict = list(nested = 2),
-    encoded = "kept"
-  )
-  AnnData(
-    obs = data.frame(row.names = "cell"),
-    var = data.frame(row.names = "gene"),
-    uns = uns
-  )$write_h5ad(path)
-
-  stripped <- paste0("uns/", setdiff(names(uns), "encoded"))
-  for (name in stripped) {
-    rhdf5::h5deleteAttribute(path, name, "encoding-type")
-    rhdf5::h5deleteAttribute(path, name, "encoding-version")
-  }
-
-  warnings <- capture_warnings(result <- read_h5ad(path)$uns)
-
-  expect_length(warnings, length(stripped))
-  expect_match(warnings, "without encoding metadata", all = TRUE)
-  expect_setequal(names(result), names(uns))
-  expect_identical(
-    lapply(result[names(uns)], as.vector),
-    lapply(uns, as.vector)
-  )
-})
