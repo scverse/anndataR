@@ -133,14 +133,25 @@ realize_matrix_for_write <- function(value) {
   }
 
   if (inherits(value, "SparseMatrix")) {
-    value <- if (SparseArray::nzcount(value) <= sparse_max_nnz()) {
-      as(value, "CsparseMatrix")
-    } else {
-      as(value, "SVT_SparseMatrix")
-    }
+    value <- as_csparse_or_svt(value)
   }
 
   value
+}
+
+#' Convert a `SparseMatrix` to a `CsparseMatrix` if it fits in one
+#'
+#' @param x A `SparseMatrix`
+#'
+#' @return A `CsparseMatrix`, or an `SVT_SparseMatrix` if `x` has too many
+#'   non-zero values for a `CsparseMatrix`
+#' @noRd
+as_csparse_or_svt <- function(x) {
+  if (SparseArray::nzcount(x) <= sparse_max_nnz()) {
+    as(x, "CsparseMatrix")
+  } else {
+    as(x, "SVT_SparseMatrix")
+  }
 }
 
 #' Prepare writing an `SVT_SparseMatrix` in blocks

@@ -415,8 +415,9 @@ as_Seurat <- function(
     return(to_R_matrix(mat))
   }
 
-  if (SparseArray::nzcount(mat) <= sparse_max_nnz()) {
-    return(to_R_matrix(as(mat, "CsparseMatrix")))
+  mat <- as_csparse_or_svt(mat)
+  if (!inherits(mat, "SVT_SparseMatrix")) {
+    return(to_R_matrix(mat))
   }
 
   check_requires(

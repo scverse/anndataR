@@ -102,15 +102,16 @@ r_to_py.AbstractAnnData <- function(x, convert = TRUE) {
 #' @importFrom reticulate r_to_py
 #' @method r_to_py SparseMatrix
 r_to_py.SparseMatrix <- function(x, convert = FALSE) {
-  if (SparseArray::nzcount(x) <= sparse_max_nnz()) {
-    return(r_to_py(as(x, "CsparseMatrix"), convert = convert))
+  x <- as_csparse_or_svt(x)
+  if (!inherits(x, "SVT_SparseMatrix")) {
+    return(r_to_py(x, convert = convert))
   }
 
   bi <- reticulate::import_builtins(convert = FALSE)
   np <- reticulate::import("numpy", convert = FALSE)
   sp <- reticulate::import("scipy.sparse", convert = FALSE)
 
-  layout <- svt_write_layout(as(x, "SVT_SparseMatrix"))
+  layout <- svt_write_layout(x)
   nnz <- bi$int(layout$nnz)
 
   arrays <- list(
