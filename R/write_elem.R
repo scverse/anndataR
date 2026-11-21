@@ -54,12 +54,12 @@ write_elem <- function(
   }
 
   format <- detect_elem_format(path, format)
+  path <- sub("/+$", "", path)
 
   # if the file was created by this call and writing fails, remove the file or store
   done <- FALSE
-  new_path <- sub("/+$", "", path)
-  if (!file.exists(new_path)) {
-    on.exit(if (!done) unlink(new_path, recursive = TRUE), add = TRUE)
+  if (!file.exists(path)) {
+    on.exit(if (!done) unlink(path, recursive = TRUE), add = TRUE)
   }
 
   switch(
@@ -79,16 +79,14 @@ write_elem <- function(
       check_requires("Writing Zarr elements", "Rarr", where = "Bioc")
       check_elem_dots("compression", ...)
 
-      path <- sub("/+$", "", path)
       is_new <- length(list.files(path, all.files = TRUE, no.. = TRUE)) == 0
-      zarr_format <- if (!is_new) {
-        get_zarr_format(path)
+      zarr_format <- if (is_new) {
+        check_zarr_format(getOption("anndataR.zarr_format", 3L))
       } else {
-        zarr_format <- check_zarr_format(
-          getOption("anndataR.zarr_format", 3L)
-        )
+        get_zarr_format(path)
+      }
+      if (is_new) {
         Rarr::write_zarr_group(path, "", zarr_version = zarr_format)
-        zarr_format
       }
 
       .write_elem_zarr(path, name, value, overwrite, zarr_format, ...)
