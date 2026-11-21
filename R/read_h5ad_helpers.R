@@ -142,26 +142,32 @@ read_h5ad_element_keys <- function(
 #' Read the encoding and version of an element in a H5AD file
 #'
 #' @inheritParams read_h5ad_element
+#' @param required Whether to abort if the element has no `encoding-type`.
+#'   If `FALSE`, `type` is `NULL` for such an element, e.g. a plain group like
+#'   `mod` in a `.h5mu` file.
 #'
 #' @return A named list with names type and version
 #'
 #' @noRd
-read_h5ad_encoding <- function(hdf5_file, name) {
+read_h5ad_encoding <- function(hdf5_file, name, required = TRUE) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
-  tryCatch(
-    {
-      attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name)
-      list(
-        type = attrs[["encoding-type"]],
-        version = attrs[["encoding-version"]]
-      )
-    },
+  attrs <- tryCatch(
+    rhdf5::h5readAttributes(hdf5_file$handle, name),
     error = function(e) {
       cli_abort(
         "Encoding attributes not found for element {.val {name}} in {.path {hdf5_file$path}}"
       )
     }
+  )
+
+  if (required && is.null(attrs[["encoding-type"]])) {
+    abort_missing_encoding(name, hdf5_file$path)
+  }
+
+  list(
+    type = attrs[["encoding-type"]],
+    version = attrs[["encoding-version"]]
   )
 }
 
@@ -713,20 +719,23 @@ read_h5ad_collection <- function(
 ) {
   hdf5_file$open_and_defer_close(readonly = TRUE)
 
-  lapply(
+  items <- lapply(
     item_names,
     function(item_name) {
       new_name <- paste0(name, "/", item_name)
-      encoding <- read_h5ad_encoding(hdf5_file, new_name)
-      read_h5ad_element(
-        hdf5_file = hdf5_file,
-        name = new_name,
-        type = encoding$type,
-        version = encoding$version,
-        backed = backed,
-        ...
+      read_collection_item(
+        read_h5ad_element(
+          hdf5_file = hdf5_file,
+          name = new_name,
+          stop_on_error = TRUE,
+          backed = backed,
+          ...
+        ),
+        new_name
       )
     }
-  ) |>
-    setNames(item_names)
+  )
+  names(items) <- item_names
+
+  drop_skipped_items(items)
 }

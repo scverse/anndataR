@@ -32,95 +32,11 @@ hdf5_group_path <- function(group, name) {
 #'
 #' @noRd
 hdf5_ensure_group_path <- function(hdf5_file, path) {
-  segments <- strsplit(path, "/", fixed = TRUE)[[1]]
-
-  for (i in seq_along(segments)) {
-    segment_path <- paste(segments[seq_len(i)], collapse = "/")
+  for (segment_path in c(elem_parent_paths(path), path)) {
     if (!hdf5_path_exists(hdf5_file, segment_path)) {
       hdf5_create_group(hdf5_file, segment_path)
     }
   }
-}
-
-#' Check an AnnData can be written to a group
-#'
-#' Abort if writing an AnnData at `group` would overwrite or nest inside other
-#' content.
-#'
-#' @param hdf5_file An `HDF5File` object
-#' @param group The path to the AnnData group, e.g. `"mod/rna"`
-#'
-#' @noRd
-hdf5_check_group_target <- function(
-  hdf5_file,
-  group,
-  call = rlang::caller_env()
-) {
-  segments <- strsplit(gsub("^/+|/+$", "", group), "/", fixed = TRUE)[[1]]
-
-  for (i in seq_along(segments)) {
-    path <- paste(segments[seq_len(i)], collapse = "/")
-    if (!hdf5_path_exists(hdf5_file, path)) {
-      # Nothing below a missing group can exist either
-      return(invisible(TRUE))
-    }
-
-    is_root <- i == length(segments)
-    is_group <- hdf5_is_group(hdf5_file, path)
-    encoding_type <- read_h5ad_encoding(hdf5_file, path)$type
-
-    if (!is_root && (!is_group || !is.null(encoding_type))) {
-      cli_abort(
-        c(
-          "Can't write an AnnData to {.val {group}} in {.file {hdf5_file$path}}.",
-          x = paste(
-            "{.val {path}} is",
-            if (is_group) {
-              "an encoded {.val {encoding_type}} element"
-            } else {
-              "a dataset"
-            },
-            "and the AnnData would be inside it."
-          )
-        ),
-        call = call
-      )
-    }
-
-    if (is_root && !is_group) {
-      cli_abort(
-        c(
-          "Can't write an AnnData to {.val {group}} in {.file {hdf5_file$path}}.",
-          x = "{.val {group}} is a dataset inside another element."
-        ),
-        call = call
-      )
-    }
-
-    if (
-      is_root &&
-        !identical(encoding_type, "anndata") &&
-        !hdf5_group_is_empty(hdf5_file, path)
-    ) {
-      cli_abort(
-        c(
-          "Can't write an AnnData to {.val {group}} in {.file {hdf5_file$path}}.",
-          x = paste(
-            "{.val {group}} is not an AnnData",
-            if (is.null(encoding_type)) {
-              "and is not empty."
-            } else {
-              "(it has encoding type {.val {encoding_type}})."
-            }
-          ),
-          i = "Choose a different {.arg group} or remove the group first."
-        ),
-        call = call
-      )
-    }
-  }
-
-  invisible(TRUE)
 }
 
 #' Check an HDF5 element is an AnnData
@@ -136,7 +52,7 @@ hdf5_check_is_anndata <- function(
   group,
   call = rlang::caller_env()
 ) {
-  encoding_type <- read_h5ad_encoding(hdf5_file, group)$type
+  encoding_type <- read_h5ad_encoding(hdf5_file, group, required = FALSE)$type
 
   if (identical(encoding_type, "anndata")) {
     return(invisible(TRUE))
@@ -253,6 +169,29 @@ hdf5_is_group <- function(hdf5_file, path) {
   withr::defer(rhdf5::H5Oclose(h5obj))
 
   rhdf5::H5Iget_type(h5obj) == "H5I_GROUP"
+}
+
+#' Describe an object in an HDF5 file
+#'
+#' Mirrors `zarr_node_info()`
+#'
+#' @param hdf5_file An `HDF5File` object
+#' @param path The path of the object in the file
+#'
+#' @return `NULL` if the object doesn't exist, otherwise a list with
+#'   `is_group`, `encoding` (the `encoding-type`, or `NULL`) and `is_empty`
+#' @noRd
+hdf5_node_info <- function(hdf5_file, path) {
+  if (!hdf5_path_exists(hdf5_file, path)) {
+    return(NULL)
+  }
+
+  is_group <- hdf5_is_group(hdf5_file, path)
+  list(
+    is_group = is_group,
+    encoding = read_h5ad_encoding(hdf5_file, path, required = FALSE)$type,
+    is_empty = is_group && hdf5_group_is_empty(hdf5_file, path)
+  )
 }
 
 #' HDF5 path exists

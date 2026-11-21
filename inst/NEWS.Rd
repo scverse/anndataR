@@ -17,6 +17,9 @@
       \item{
         Add a \code{group} argument to \code{read_h5ad()}, \code{write_h5ad()}, \code{as_HDF5AnnData()} and \code{HDF5AnnData}, to read and write an \code{AnnData} stored in a group inside an HDF5 file, e.g. a modality inside a \code{.h5mu} file.
       }
+      \item{
+        Add \code{read_elem()} and \code{write_elem()} to read and write a single element of an H5AD file or Zarr store, e.g. \code{read_elem(path, "obsm/X_pca")}, without reading the whole object. With \code{backed = TRUE}, \code{read_elem()} returns arrays and matrices as \pkg{DelayedArray} objects.
+      }
     }
   }
 
@@ -99,6 +102,9 @@
       }
       \item{
         Don't add the \code{vlen-utf8} filter twice to Zarr v2 string arrays, which newer versions of \pkg{Rarr} add themselves.
+      }
+      \item{
+        Fix \code{read_h5ad()} and \code{read_zarr()} losing a whole element, e.g. all of \code{uns}, when one of its items can't be read, such as an item without encoding metadata. That item is now skipped with a warning naming it.
       }
     }
   }

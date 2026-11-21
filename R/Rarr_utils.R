@@ -76,6 +76,37 @@ is_zarr_empty <- function(store) {
   all(files %in% ZARR_METADATA_FILES)
 }
 
+#' Describe a node in a Zarr store
+#'
+#' @param store Path to a Zarr store
+#' @param path The path of the node within the store
+#'
+#' @return `NULL` if the node doesn't exist, otherwise a list with `is_group`,
+#'   `encoding` (the `encoding-type`, or `NULL`) and `is_empty`
+#'
+#' @noRd
+zarr_node_info <- function(store, path) {
+  if (!zarr_path_exists(store, path)) {
+    return(NULL)
+  }
+
+  node <- file.path(store, path)
+  files <- list.files(node, all.files = TRUE, no.. = TRUE)
+  is_group <- if (any(c(".zgroup", ".zarray") %in% files)) {
+    ".zgroup" %in% files
+  } else {
+    check_requires("Reading Zarr metadata", "jsonlite", where = "CRAN")
+    metadata <- jsonlite::read_json(file.path(node, "zarr.json"))
+    identical(metadata$node_type, "group")
+  }
+
+  list(
+    is_group = is_group,
+    encoding = read_zarr_encoding(store, path, required = FALSE)$type,
+    is_empty = is_group && all(files %in% ZARR_METADATA_FILES)
+  )
+}
+
 #' Zarr path exists
 #'
 #' Check that a path in Zarr exists
