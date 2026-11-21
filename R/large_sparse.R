@@ -147,18 +147,15 @@ realize_matrix_for_write <- function(value) {
 #'
 #' @param value An `SVT_SparseMatrix`
 #'
-#' @return A list with `value` as a double matrix, its `indptr` as a double and
-#'   the `bounds` of the blocks to write
+#' @return A list with `value`, its `indptr` as a double and the `bounds` of the
+#'   blocks to write
 #' @noRd
 svt_write_layout <- function(value) {
   check_requires(
     "Writing a sparse matrix with more than 2^31 - 1 non-zero values",
-    c("BiocGenerics", "MatrixGenerics"),
+    "MatrixGenerics",
     where = "Bioc"
   )
-  if (BiocGenerics::type(value) != "double") {
-    BiocGenerics::type(value) <- "double"
-  }
   indptr <- c(
     0,
     cumsum(MatrixGenerics::colSums(SparseArray::is_nonzero(value)))
@@ -175,6 +172,7 @@ svt_write_layout <- function(value) {
 #'
 #' The counterpart of `read_slice` in `read_sparse_matrix()`. Each block of
 #' columns is converted to a `CsparseMatrix`, so only one block is held twice.
+#' The `data` is written as doubles, whatever the type of the matrix.
 #'
 #' @param layout The result of `svt_write_layout()`
 #' @param write_slice A function with arguments `what` (`"indices"` or
@@ -189,7 +187,8 @@ svt_write_blocks <- function(layout, write_slice) {
     if (length(block@x) > 0L) {
       start <- layout$indptr[[bound[[1L]]]] + 1
       write_slice("indices", start, block@i)
-      write_slice("data", start, block@x)
+      # a logical matrix gives an lgCMatrix
+      write_slice("data", start, as.double(block@x))
     }
   }
   invisible()

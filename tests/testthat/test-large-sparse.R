@@ -152,23 +152,23 @@ for (backend in names(backends)) {
     })
     expect_same_matrix(be$read(path)$X, with_na)
   })
-}
 
-test_that("SVT matrices with other types are written as double", {
-  skip_if_not_installed("rhdf5")
-  integer_svt <- svt
-  SparseArray::type(integer_svt) <- "integer"
-  expected <- dense
-  storage.mode(expected) <- "integer"
-  expected <- expected + 0
+  test_that(paste(backend, "writes SVT matrices of other types as double"), {
+    skip_if_backend_unavailable(backend)
+    counts <- dense
+    counts[counts != 0] <- seq_len(sum(counts != 0))
+    storage.mode(counts) <- "integer"
 
-  path <- withr::local_tempfile(fileext = ".h5ad")
-  local({
-    local_small_nnz_limit()
-    write_h5ad(new_adata(X = integer_svt), path, mode = "w")
+    for (typed in list(counts, dense != 0)) {
+      path <- withr::local_tempfile(fileext = be$ext)
+      local({
+        local_small_nnz_limit()
+        be$write(new_adata(X = as(typed, "SVT_SparseMatrix")), path)
+      })
+      expect_same_matrix(be$read(path)$X, typed + 0)
+    }
   })
-  expect_same_matrix(read_h5ad(path)$X, expected)
-})
+}
 
 test_that("large H5AD indptr is stored as 64-bit integers", {
   skip_if_not_installed("rhdf5")
