@@ -190,7 +190,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] reticulate_1.47.0 anndataR_1.3.5    BiocStyle_2.41.0 
+#> [1] reticulate_1.47.0 anndataR_1.3.6    BiocStyle_2.41.0 
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] DBI_1.3.0                   pbapply_1.7-5              
@@ -200,7 +200,7 @@ sessionInfo()
 #>   [9] RSQLite_3.53.3              matrixStats_1.5.0          
 #>  [11] ggridges_0.5.7              compiler_4.6.2             
 #>  [13] reshape2_1.4.5              png_0.1-9                  
-#>  [15] systemfonts_1.3.2           vctrs_0.7.3                
+#>  [15] systemfonts_1.3.3           vctrs_0.7.3                
 #>  [17] stringr_1.6.0               pkgconfig_2.0.3            
 #>  [19] fastmap_1.2.0               dbplyr_2.6.0               
 #>  [21] XVector_0.53.0              rmarkdown_2.32             
@@ -224,29 +224,29 @@ sessionInfo()
 #>  [57] curl_8.1.0                  listenv_1.1.0              
 #>  [59] plyr_1.8.9                  lattice_0.23-1             
 #>  [61] tibble_3.3.1                withr_3.0.3                
-#>  [63] Biobase_2.73.2              S7_0.2.2                   
+#>  [63] Biobase_2.73.2              S7_1.0.0                   
 #>  [65] evaluate_1.0.5              Rtsne_0.17                 
 #>  [67] future_1.82.0               fastDummies_1.7.6          
-#>  [69] desc_1.4.3                  BiocFileCache_3.3.2        
+#>  [69] desc_1.4.3                  BiocFileCache_3.3.3        
 #>  [71] filelock_1.0.3              pillar_1.11.1              
 #>  [73] BiocManager_1.30.27         MatrixGenerics_1.25.0      
 #>  [75] Seurat_6.0.0                KernSmooth_2.23-27         
 #>  [77] stats4_4.6.2                generics_0.1.4             
 #>  [79] RcppHNSW_0.7.0              sp_2.2-4                   
-#>  [81] S4Vectors_0.51.10           ggplot2_4.0.3              
+#>  [81] S4Vectors_0.51.10           ggplot2_4.0.4              
 #>  [83] scales_1.4.0                globals_0.20.0             
 #>  [85] glue_1.8.1                  tools_4.6.2                
 #>  [87] RSpectra_0.16-2             RANN_2.6.3                 
 #>  [89] fs_2.1.0                    dotCall64_1.2              
 #>  [91] cowplot_1.2.0               grid_4.6.2                 
 #>  [93] SingleCellExperiment_1.35.2 patchwork_1.3.2            
-#>  [95] cli_3.6.6                   textshaping_1.0.5          
-#>  [97] spam_2.11-4                 S4Arrays_1.13.2            
+#>  [95] cli_3.6.6                   textshaping_1.1.0          
+#>  [97] spam_2.11-4                 S4Arrays_1.13.3            
 #>  [99] dplyr_1.2.1                 uwot_0.2.5                 
 #> [101] gtable_0.3.6                pls_2.9-0                  
-#> [103] sass_0.4.10                 digest_0.6.39              
-#> [105] progressr_1.1.0             BiocGenerics_0.59.12       
-#> [107] SparseArray_1.13.4          ggrepel_0.9.8              
+#> [103] sass_0.5.0                  digest_0.6.39              
+#> [105] progressr_1.1.0             BiocGenerics_0.59.13       
+#> [107] SparseArray_1.13.5          ggrepel_0.9.8              
 #> [109] htmlwidgets_1.6.4           SeuratObject_5.4.0         
 #> [111] farver_2.1.2                memoise_2.0.1              
 #> [113] htmltools_0.5.9             pkgdown_2.2.1              
@@ -264,7 +264,7 @@ reticulate::py_config()
 #> pythonhome:     /opt/hostedtoolcache/Python/3.14.10/x64:/opt/hostedtoolcache/Python/3.14.10/x64
 #> version:        3.14.10 (main, Oct 26 2026, 14:17:03) [GCC 15.2.0]
 #> numpy:          /opt/hostedtoolcache/Python/3.14.10/x64/lib/python3.14/site-packages/numpy
-#> numpy_version:  2.5.4
+#> numpy_version:  2.5.5
 #> scanpy:         /opt/hostedtoolcache/Python/3.14.10/x64/lib/python3.14/site-packages/scanpy
 #> 
 #> NOTE: Python version was forced by RETICULATE_PYTHON
@@ -274,8 +274,8 @@ reticulate::py_list_packages()
 #> 1            anndata      0.13.4           anndata==0.13.4
 #> 2    annotated-types       0.8.0    annotated-types==0.8.0
 #> 3   array-api-compat      1.16.0  array-api-compat==1.16.0
-#> 4            certifi  2026.10.23       certifi==2026.10.23
-#> 5        cloudpickle       3.1.2        cloudpickle==3.1.2
+#> 4            certifi  2026.11.20       certifi==2026.11.20
+#> 5        cloudpickle       3.1.3        cloudpickle==3.1.3
 #> 6          contourpy       1.4.0          contourpy==1.4.0
 #> 7             cycler      0.12.1            cycler==0.12.1
 #> 8             donfig 0.8.1.post1       donfig==0.8.1.post1
@@ -292,25 +292,25 @@ reticulate::py_list_packages()
 #> 19        matplotlib      3.11.2        matplotlib==3.11.2
 #> 20           msgspec      0.22.0           msgspec==0.22.0
 #> 21            mudata      0.3.10            mudata==0.3.10
-#> 22          narwhals      2.28.0          narwhals==2.28.0
+#> 22          narwhals      2.29.0          narwhals==2.29.0
 #> 23           natsort       8.4.0            natsort==8.4.0
 #> 24          networkx         3.7             networkx==3.7
 #> 25             numba      0.68.1             numba==0.68.1
 #> 26         numcodecs      0.17.1         numcodecs==0.17.1
-#> 27             numpy       2.5.4              numpy==2.5.4
+#> 27             numpy       2.5.5              numpy==2.5.5
 #> 28         packaging        26.3           packaging==26.3
 #> 29            pandas       3.1.1             pandas==3.1.1
 #> 30             patsy       1.0.3              patsy==1.0.3
 #> 31            pillow      13.0.0            pillow==13.0.0
-#> 32          pydantic      2.14.3          pydantic==2.14.3
-#> 33 pydantic-settings      2.16.2 pydantic-settings==2.16.2
-#> 34     pydantic_core      2.50.4     pydantic_core==2.50.4
+#> 32          pydantic      2.14.4          pydantic==2.14.4
+#> 33 pydantic-settings      2.16.3 pydantic-settings==2.16.3
+#> 34     pydantic_core      2.50.5     pydantic_core==2.50.5
 #> 35       pynndescent       0.7.0        pynndescent==0.7.0
 #> 36         pyparsing       3.3.3          pyparsing==3.3.3
 #> 37   python-dateutil       4.0.0    python-dateutil==4.0.0
 #> 38     python-dotenv       1.2.4      python-dotenv==1.2.4
-#> 39            PyYAML       6.0.3             PyYAML==6.0.3
-#> 40            scanpy      1.12.5            scanpy==1.12.5
+#> 39            PyYAML       6.0.4             PyYAML==6.0.4
+#> 40            scanpy      1.12.6            scanpy==1.12.6
 #> 41      scikit-learn       1.9.1       scikit-learn==1.9.1
 #> 42             scipy      1.18.1             scipy==1.18.1
 #> 43      scverse-misc       0.1.1       scverse-misc==0.1.1

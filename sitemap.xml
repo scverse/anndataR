@@ -33,9 +33,11 @@
 <url><loc>https://anndataR.scverse.org/reference/as_ZarrAnnData.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/generate_dataset.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/index.html</loc></url>
+<url><loc>https://anndataR.scverse.org/reference/read_elem.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/read_h5ad.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/read_zarr.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/reticulate-helpers.html</loc></url>
+<url><loc>https://anndataR.scverse.org/reference/write_elem.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/write_h5ad.html</loc></url>
 <url><loc>https://anndataR.scverse.org/reference/write_zarr.html</loc></url>
 </urlset>

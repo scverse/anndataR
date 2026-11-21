@@ -387,6 +387,53 @@ the [Zarr
 specifications](https://zarr-specs.readthedocs.io/en/latest/specs.html)
 for more about the two formats.
 
+### Read and write single elements
+
+The [`read_elem()`](https://anndataR.scverse.org/reference/read_elem.md)
+and
+[`write_elem()`](https://anndataR.scverse.org/reference/write_elem.md)
+functions read and write a single element of a `.h5ad` file or `.zarr`
+store.
+
+Read a single element:
+
+``` r
+
+read_elem(h5ad_path, "obsm/X_pca")[1:5, 1:5]
+#>            [,1]       [,2]        [,3]        [,4]       [,5]
+#> [1,] -0.4240965  1.4115343 -0.23507446  0.00399762  0.7365680
+#> [2,]  1.0950217 -0.6963571  0.21885595 -0.94411570  1.2832800
+#> [3,]  1.0511135  0.1205820 -0.97908187 -0.34295848  0.6014627
+#> [4,]  0.4773089 -2.0792575  0.02419011  0.34283489  0.5780702
+#> [5,]  0.6219473  0.4584906  1.60706770  1.25019360 -1.2909310
+```
+
+Add an element to an existing file. Missing parent groups are created,
+and an existing element is only replaced with `overwrite = TRUE`:
+
+``` r
+
+tmpfile <- tempfile(fileext = ".h5ad")
+write_h5ad(adata, tmpfile)
+
+write_elem(tmpfile, "uns/note", "Added with write_elem()")
+read_elem(tmpfile, "uns/note")
+#> [1] "Added with write_elem()"
+```
+
+An `AnnData` object can also be written to a group inside a file, for
+example a modality in a `.h5mu` file. Reading the group returns an
+`HDF5AnnData` (or `ZarrAnnData`) object:
+
+``` r
+
+write_elem(tmpfile, "mod/rna", adata)
+read_elem(tmpfile, "mod/rna")
+#> HDF5AnnData object with n_obs × n_vars = 10 × 10
+#>     obs: 'cell_type'
+#>     var: 'gene_name'
+```
+
 ### Subsetting `AnnData` objects
 
 *[anndataR](https://bioconductor.org/packages/3.24/anndataR)* provides
@@ -574,27 +621,27 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] anndataR_1.3.5              SingleCellExperiment_1.35.2
+#>  [1] anndataR_1.3.6              SingleCellExperiment_1.35.2
 #>  [3] SummarizedExperiment_1.43.0 Biobase_2.73.2             
 #>  [5] GenomicRanges_1.65.4        Seqinfo_1.3.2              
 #>  [7] IRanges_2.47.5              S4Vectors_0.51.10          
-#>  [9] BiocGenerics_0.59.12        generics_0.1.4             
+#>  [9] BiocGenerics_0.59.13        generics_0.1.4             
 #> [11] MatrixGenerics_1.25.0       matrixStats_1.5.0          
 #> [13] SeuratObject_5.4.0          sp_2.2-4                   
 #> [15] BiocStyle_2.41.0           
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] pbapply_1.7-5       httr2_1.3.0         gridExtra_2.3.1    
-#>   [4] rlang_1.3.0         magrittr_2.0.5      Rarr_2.1.66        
+#>   [4] rlang_1.3.0         magrittr_2.0.5      Rarr_2.1.69        
 #>   [7] RcppAnnoy_0.0.23    otel_0.3.0          ggridges_0.5.7     
 #>  [10] compiler_4.6.2      paws.storage_0.11.0 reshape2_1.4.5     
-#>  [13] png_0.1-9           systemfonts_1.3.2   vctrs_0.7.3        
+#>  [13] png_0.1-9           systemfonts_1.3.3   vctrs_0.7.3        
 #>  [16] stringr_1.6.0       crayon_1.5.3        pkgconfig_2.0.3    
 #>  [19] fastmap_1.2.0       XVector_0.53.0      paws.common_0.9.0  
 #>  [22] rmarkdown_2.32      ragg_1.5.2          purrr_1.2.2        
-#>  [25] xfun_0.62           cachem_1.1.0        grumpy_0.1.1       
+#>  [25] xfun_0.62           cachem_1.1.0        grumpy_0.2.0       
 #>  [28] jsonlite_2.0.0      rhdf5filters_1.25.5 DelayedArray_0.39.8
-#>  [31] Rhdf5lib_2.1.0      irlba_2.4.1         parallel_4.6.2     
+#>  [31] Rhdf5lib_2.1.1      irlba_2.4.1         parallel_4.6.2     
 #>  [34] cluster_2.1.8.3     R6_2.6.1            ica_1.0-3          
 #>  [37] stringi_1.8.9       bslib_0.12.0        RColorBrewer_1.1-3 
 #>  [40] reticulate_1.47.0   parallelly_1.50.0   scattermore_1.2    
@@ -604,19 +651,19 @@ sessionInfo()
 #>  [52] tidyselect_1.2.1    abind_1.4-8         yaml_2.3.12        
 #>  [55] codetools_0.2-20    curl_8.1.0          listenv_1.1.0      
 #>  [58] plyr_1.8.9          lattice_0.23-1      tibble_3.3.1       
-#>  [61] withr_3.0.3         S7_0.2.2            evaluate_1.0.5     
+#>  [61] withr_3.0.3         S7_1.0.0            evaluate_1.0.5     
 #>  [64] Rtsne_0.17          future_1.82.0       fastDummies_1.7.6  
 #>  [67] desc_1.4.3          pillar_1.11.1       BiocManager_1.30.27
 #>  [70] Seurat_6.0.0        KernSmooth_2.23-27  RcppHNSW_0.7.0     
-#>  [73] ggplot2_4.0.3       scales_1.4.0        globals_0.20.0     
+#>  [73] ggplot2_4.0.4       scales_1.4.0        globals_0.20.0     
 #>  [76] glue_1.8.1          tools_4.6.2         RSpectra_0.16-2    
 #>  [79] RANN_2.6.3          fs_2.1.0            dotCall64_1.2      
 #>  [82] cowplot_1.2.0       rhdf5_2.57.20       grid_4.6.2         
-#>  [85] patchwork_1.3.2     cli_3.6.6           textshaping_1.0.5  
-#>  [88] spam_2.11-4         S4Arrays_1.13.2     dplyr_1.2.1        
+#>  [85] patchwork_1.3.2     cli_3.6.6           textshaping_1.1.0  
+#>  [88] spam_2.11-4         S4Arrays_1.13.3     dplyr_1.2.1        
 #>  [91] uwot_0.2.5          gtable_0.3.6        pls_2.9-0          
-#>  [94] R.methodsS3_1.8.2   sass_0.4.10         digest_0.6.39      
-#>  [97] progressr_1.1.0     SparseArray_1.13.4  ggrepel_0.9.8      
+#>  [94] R.methodsS3_1.8.2   sass_0.5.0          digest_0.6.39      
+#>  [97] progressr_1.1.0     SparseArray_1.13.5  ggrepel_0.9.8      
 #> [100] htmlwidgets_1.6.4   farver_2.1.2        R.oo_1.27.1        
 #> [103] htmltools_0.5.9     pkgdown_2.2.1       lifecycle_1.0.5    
 #> [106] httr_1.4.9          MASS_7.3-66

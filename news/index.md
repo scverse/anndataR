@@ -1,5 +1,23 @@
 # Changelog
 
+## anndataR 1.3.6
+
+- Add
+  [`read_elem()`](https://anndataR.scverse.org/reference/read_elem.md)
+  and
+  [`write_elem()`](https://anndataR.scverse.org/reference/write_elem.md)
+  for reading and writing single elements of H5AD files and Zarr stores
+  (PR [\#582](https://github.com/scverse/anndataR/issues/582), issue
+  [\#566](https://github.com/scverse/anndataR/issues/566)).
+- Fix
+  [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md)
+  and
+  [`read_zarr()`](https://anndataR.scverse.org/reference/read_zarr.md)
+  losing a whole element, e.g. all of `uns`, when one of its items can’t
+  be read. That item is now skipped with a warning naming it (PR
+  [\#582](https://github.com/scverse/anndataR/issues/582), issue
+  [\#583](https://github.com/scverse/anndataR/issues/583)).
+
 ## anndataR 1.3.5
 
 - Add a `group` argument to

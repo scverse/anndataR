@@ -191,6 +191,9 @@ A BibTeX entry for LaTeX users is
   [`get_generator_types()`](https://anndataR.scverse.org/reference/generate_dataset.md)
   : Generate a mock dataset
 
+- [`read_elem()`](https://anndataR.scverse.org/reference/read_elem.md) :
+  Read an element
+
 - [`read_h5ad()`](https://anndataR.scverse.org/reference/read_h5ad.md) :
   Read H5AD
 
@@ -202,6 +205,9 @@ A BibTeX entry for LaTeX users is
   [`py_to_r(`*`<anndata.AnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   [`r_to_py(`*`<AbstractAnnData>`*`)`](https://anndataR.scverse.org/reference/reticulate-helpers.md)
   : Reticulate Helper Functions for AnnData Conversion
+
+- [`write_elem()`](https://anndataR.scverse.org/reference/write_elem.md)
+  : Write an element
 
 - [`write_h5ad()`](https://anndataR.scverse.org/reference/write_h5ad.md)
   : Write H5AD

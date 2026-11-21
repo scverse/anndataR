@@ -262,20 +262,20 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] Seurat_6.0.0       SeuratObject_5.4.0 sp_2.2-4           anndataR_1.3.5    
+#> [1] Seurat_6.0.0       SeuratObject_5.4.0 sp_2.2-4           anndataR_1.3.6    
 #> [5] BiocStyle_2.41.0  
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] pbapply_1.7-5       httr2_1.3.0         gridExtra_2.3.1    
-#>   [4] rlang_1.3.0         magrittr_2.0.5      Rarr_2.1.66        
+#>   [4] rlang_1.3.0         magrittr_2.0.5      Rarr_2.1.69        
 #>   [7] RcppAnnoy_0.0.23    otel_0.3.0          matrixStats_1.5.0  
 #>  [10] ggridges_0.5.7      compiler_4.6.2      paws.storage_0.11.0
-#>  [13] png_0.1-9           systemfonts_1.3.2   vctrs_0.7.3        
+#>  [13] png_0.1-9           systemfonts_1.3.3   vctrs_0.7.3        
 #>  [16] reshape2_1.4.5      stringr_1.6.0       crayon_1.5.3       
 #>  [19] pkgconfig_2.0.3     fastmap_1.2.0       paws.common_0.9.0  
 #>  [22] rmarkdown_2.32      ragg_1.5.2          purrr_1.2.2        
-#>  [25] xfun_0.62           cachem_1.1.0        grumpy_0.1.1       
-#>  [28] jsonlite_2.0.0      rhdf5filters_1.25.5 Rhdf5lib_2.1.0     
+#>  [25] xfun_0.62           cachem_1.1.0        grumpy_0.2.0       
+#>  [28] jsonlite_2.0.0      rhdf5filters_1.25.5 Rhdf5lib_2.1.1     
 #>  [31] irlba_2.4.1         parallel_4.6.2      cluster_2.1.8.3    
 #>  [34] R6_2.6.1            ica_1.0-3           bslib_0.12.0       
 #>  [37] stringi_1.8.9       RColorBrewer_1.1-3  reticulate_1.47.0  
@@ -285,18 +285,18 @@ sessionInfo()
 #>  [49] Matrix_1.7-6        igraph_2.3.4        tidyselect_1.2.1   
 #>  [52] yaml_2.3.12         codetools_0.2-20    curl_8.1.0         
 #>  [55] listenv_1.1.0       lattice_0.23-1      tibble_3.3.1       
-#>  [58] plyr_1.8.9          withr_3.0.3         S7_0.2.2           
+#>  [58] plyr_1.8.9          withr_3.0.3         S7_1.0.0           
 #>  [61] evaluate_1.0.5      Rtsne_0.17          future_1.82.0      
 #>  [64] fastDummies_1.7.6   desc_1.4.3          pillar_1.11.1      
 #>  [67] BiocManager_1.30.27 KernSmooth_2.23-27  generics_0.1.4     
-#>  [70] RcppHNSW_0.7.0      ggplot2_4.0.3       scales_1.4.0       
+#>  [70] RcppHNSW_0.7.0      ggplot2_4.0.4       scales_1.4.0       
 #>  [73] globals_0.20.0      glue_1.8.1          tools_4.6.2        
 #>  [76] RSpectra_0.16-2     RANN_2.6.3          fs_2.1.0           
 #>  [79] dotCall64_1.2       cowplot_1.2.0       rhdf5_2.57.20      
 #>  [82] grid_4.6.2          patchwork_1.3.2     cli_3.6.6          
-#>  [85] textshaping_1.0.5   spam_2.11-4         dplyr_1.2.1        
+#>  [85] textshaping_1.1.0   spam_2.11-4         dplyr_1.2.1        
 #>  [88] uwot_0.2.5          gtable_0.3.6        pls_2.9-0          
-#>  [91] R.methodsS3_1.8.2   sass_0.4.10         digest_0.6.39      
+#>  [91] R.methodsS3_1.8.2   sass_0.5.0          digest_0.6.39      
 #>  [94] progressr_1.1.0     ggrepel_0.9.8       htmlwidgets_1.6.4  
 #>  [97] farver_2.1.2        R.oo_1.27.1         htmltools_0.5.9    
 #> [100] pkgdown_2.2.1       lifecycle_1.0.5     httr_1.4.9         

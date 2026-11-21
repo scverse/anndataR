@@ -144,6 +144,28 @@ tracker](https://github.com/scverse/anndataR/issues?q=sort%3Aupdated-desc+is%3Ai
 
 Investigate if this is a problem or not.
 
+### Issue: An element without encoding metadata, e.g. `uns/citation` in some CELLxGENE files, is skipped with a warning, while Python anndata reads it with an `OldFormatWarning` (issues
+
+- Affected backend: `HDF5AnnData`, `ZarrAnnData`
+- Affected slot(s): `uns`
+- Affected dtype(s): `no_encoding`
+- Probable cause: read
+- To investigate: FALSE
+- To fix: TRUE
+
+#### Error message
+
+    Skipping element uns/nested/citation
+    Caused by error in `read_h5ad_encoding()`:
+    ! Element "uns/nested/citation" in 'file.h5ad' has no encoding-type attribute
+    ℹ Reading elements without encoding metadata is not supported yet, see <https://github.com/scverse/anndataR/issues/134>
+    ℹ Add encoding metadata to this element, or remove it from the file
+
+#### Proposed solution
+
+Guess the encoding from the kind of node, as Python anndata does, as
+part of reading files from older anndata versions (issue
+
 ## Session info
 
 ``` r
@@ -177,13 +199,13 @@ sessionInfo()
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] jsonlite_2.0.0      compiler_4.6.2      BiocManager_1.30.27
-    ##  [4] tidyselect_1.2.1    jquerylib_0.1.4     systemfonts_1.3.2  
-    ##  [7] textshaping_1.0.5   yaml_2.3.12         fastmap_1.2.0      
+    ##  [4] tidyselect_1.2.1    jquerylib_0.1.4     systemfonts_1.3.3  
+    ##  [7] textshaping_1.1.0   yaml_2.3.12         fastmap_1.2.0      
     ## [10] R6_2.6.1            generics_0.1.4      htmlwidgets_1.6.4  
     ## [13] bookdown_0.48       desc_1.4.3          bslib_0.12.0       
     ## [16] pillar_1.11.1       rlang_1.3.0         cachem_1.1.0       
     ## [19] stringi_1.8.9       xfun_0.62           fs_2.1.0           
-    ## [22] sass_0.4.10         otel_0.3.0          cli_3.6.6          
+    ## [22] sass_0.5.0          otel_0.3.0          cli_3.6.6          
     ## [25] pkgdown_2.2.1       withr_3.0.3         magrittr_2.0.5     
     ## [28] digest_0.6.39       lifecycle_1.0.5     vctrs_0.7.3        
     ## [31] evaluate_1.0.5      glue_1.8.1          ragg_1.5.2         
