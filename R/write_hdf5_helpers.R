@@ -32,10 +32,7 @@ hdf5_group_path <- function(group, name) {
 #'
 #' @noRd
 hdf5_ensure_group_path <- function(hdf5_file, path) {
-  segments <- strsplit(path, "/", fixed = TRUE)[[1]]
-
-  for (i in seq_along(segments)) {
-    segment_path <- paste(segments[seq_len(i)], collapse = "/")
+  for (segment_path in c(elem_parent_paths(path), path)) {
     if (!hdf5_path_exists(hdf5_file, segment_path)) {
       hdf5_create_group(hdf5_file, segment_path)
     }
