@@ -316,15 +316,20 @@ test_that("64-bit Zarr integers are compatible with Python", {
   expect_identical(as.double(Rarr::read_zarr_array(path)), values)
 })
 
-# A sparse matrix with two major elements and 2^31 + 10 non-zero values. Only
-# the indptr has values, data and indices have no chunks, so this takes no
-# memory or disk space. That is enough to see whether a backed read gets past
-# the indptr.
+# A sparse matrix with 2^31 + 10 non-zero values in full rows (or columns) of
+# 2^15 values. Only the indptr has values, data and indices have no chunks, so
+# this takes no memory or disk space. That is enough to see whether a backed
+# read gets past the indptr.
+# SparseArray allocates 10 bytes per element of the minor axis when it reads
+# a block, so that axis is kept small: on macOS, R limits vectors to 16 GB.
 write_large_zarr_sparse <- function(store, type, zarr_format) {
+  n_minor <- 2^15
   nnz <- 2^31 + 10
+  indptr <- c(seq(0, 2^31, by = n_minor), nnz)
+  n_major <- length(indptr) - 1L
   Rarr::write_zarr_group(store, "", zarr_version = zarr_format)
   Rarr::write_zarr_group(store, "X", zarr_version = zarr_format)
-  zarr_write_int64(store, "X/indptr", c(0, 2^30, nnz), "zstd", zarr_format)
+  zarr_write_int64(store, "X/indptr", indptr, "zstd", zarr_format)
   arrays <- c(data = "double", indices = "integer")
   for (array in names(arrays)) {
     Rarr::create_empty_zarr_array(
@@ -337,9 +342,9 @@ write_large_zarr_sparse <- function(store, type, zarr_format) {
     )
   }
   shape <- if (type == "csr_matrix") {
-    list(2L, .Machine$integer.max)
+    list(as.integer(n_major), as.integer(n_minor))
   } else {
-    list(.Machine$integer.max, 2L)
+    list(as.integer(n_minor), as.integer(n_major))
   }
   Rarr::write_zarr_attributes(
     file.path(store, "X"),
