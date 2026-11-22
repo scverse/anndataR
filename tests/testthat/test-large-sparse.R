@@ -7,7 +7,7 @@ skip_if_not_installed("MatrixGenerics")
 # runs the real code path on a small matrix. See test-large-sparse-real.R for
 # the same checks on a matrix that really is too large.
 local_small_nnz_limit <- function(env = parent.frame()) {
-  local_mocked_bindings(
+  testthat::local_mocked_bindings(
     sparse_max_nnz = function() 10,
     sparse_block_nnz = function() 7,
     .package = "anndataR",
@@ -44,7 +44,7 @@ new_adata <- function(X = NULL, layers = NULL) {
 expect_same_matrix <- function(object, expected = dense) {
   object <- as.matrix(object)
   dimnames(object) <- NULL
-  expect_equal(object, expected)
+  testthat::expect_equal(object, expected)
 }
 
 backends <- list(
@@ -67,9 +67,9 @@ backends <- list(
 
 skip_if_backend_unavailable <- function(backend) {
   if (backend == "h5ad") {
-    skip_if_not_installed("rhdf5")
+    testthat::skip_if_not_installed("rhdf5")
   } else {
-    skip_if_not_installed("Rarr", minimum_version = "2.1.45")
+    testthat::skip_if_not_installed("Rarr", minimum_version = "2.1.45")
   }
 }
 

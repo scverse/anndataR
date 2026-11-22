@@ -26,7 +26,10 @@ skip_if_no_zarr()
 
 large_part <- Sys.getenv("ANNDATAR_TEST_LARGE_PART", "all")
 skip_unless_part <- function(part) {
-  skip_if(!large_part %in% c("all", part), paste("Not running part", part))
+  testthat::skip_if(
+    !large_part %in% c("all", part),
+    paste("Not running part", part)
+  )
 }
 
 cache_dir <- Sys.getenv("ANNDATAR_TEST_LARGE_DIR", tempfile("anndataR-large"))
@@ -157,10 +160,10 @@ make_large_fixtures(cache_dir)
 paths <- fixture_paths(cache_dir)
 
 expect_large_csr <- function(X) {
-  expect_identical(dim(X), c(n_major, n_minor))
-  expect_identical(SparseArray::nzcount(X), nnz)
+  testthat::expect_identical(dim(X), c(n_major, n_minor))
+  testthat::expect_identical(SparseArray::nzcount(X), nnz)
   for (i in test_majors) {
-    expect_equal(
+    testthat::expect_equal(
       as.vector(as.matrix(X[i, 1:9, drop = FALSE])),
       expected_major(i),
       info = i
@@ -169,10 +172,10 @@ expect_large_csr <- function(X) {
 }
 
 expect_large_csc <- function(X) {
-  expect_identical(dim(X), c(n_minor, n_major))
-  expect_identical(SparseArray::nzcount(X), nnz)
+  testthat::expect_identical(dim(X), c(n_minor, n_major))
+  testthat::expect_identical(SparseArray::nzcount(X), nnz)
   for (i in test_majors) {
-    expect_equal(
+    testthat::expect_equal(
       as.vector(as.matrix(X[1:9, i, drop = FALSE])),
       expected_major(i),
       info = i
