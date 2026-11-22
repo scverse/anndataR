@@ -238,10 +238,18 @@ test_that("a missing SparseArray gives an informative error", {
 test_that("py_to_r_matrix() looks at nnz without overflowing", {
   skip_if_no_anndata_py()
   bi <- reticulate::import_builtins(convert = FALSE)
+  expect_identical(reticulate::py_to_r(bi$float(bi$int(2.2e9))), 2.2e9)
+})
+
+test_that("reticulate overflows on Python ints above the R integer range", {
+  skip_if_no_anndata_py()
+  # A C long is 32 bits on Windows, so there the conversion leaves an
+  # OverflowError set that breaks the next call into Python
+  skip_on_os("windows")
+  bi <- reticulate::import_builtins(convert = FALSE)
   # Documents why nnz is read as a float. If this starts failing, reticulate no
   # longer overflows and bi$float() in py_to_r_matrix() can go.
   expect_lt(reticulate::py_to_r(bi$int(2.2e9)), 0)
-  expect_identical(reticulate::py_to_r(bi$float(bi$int(2.2e9))), 2.2e9)
 })
 
 test_that("64-bit Zarr integers round trip above the 32-bit range", {
