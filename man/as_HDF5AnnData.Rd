@@ -10,7 +10,8 @@ as_HDF5AnnData(
   compression = c("none", "gzip", "lzf"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
-  backed = FALSE
+  backed = FALSE,
+  group = "/"
 )
 }
 \arguments{
@@ -28,18 +29,32 @@ automatically using an algorithm that mimics h5py's auto-chunking
 behaviour. Set to \code{NULL} to disable chunking (contiguous storage,
 the rhdf5 default), or a number to use a specific target size in bytes.}
 
-\item{mode}{The mode to open the HDF5 file:
+\item{mode}{The mode to open the HDF5 file. When \code{group} is not \code{"/"},
+these apply to the group \code{group} rather than the whole file:
 \itemize{
-\item \code{a} creates a new file or opens an existing one for read/write
-\item \code{r} opens an existing file for reading
-\item \verb{r+} opens an existing file for read/write
-\item \code{w} creates a file, truncating any existing ones
-\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already exists
+\item \code{a} creates a new file or opens an existing one for read/write. The group
+at \code{group} is created if it doesn't exist yet.
+\item \code{r} opens an existing file for reading, the group \code{group} must
+already exist.
+\item \verb{r+} opens an existing file for read/write, the group \code{group} must
+already exist.
+\item \code{w} creates a file, truncating any existing ones. When \code{group != "/"},
+the file is created if missing but otherwise left untouched, and only the
+group \code{group} is deleted and recreated. HDF5 doesn't free the space
+used by the deleted group, see the "File size" section of \code{\link[=write_h5ad]{write_h5ad()}}.
+\item \verb{w-}/\code{x} are synonyms, creating a file and failing if it already
+exists. When \code{group != "/"}, they instead fail if the group
+\code{group} already exists.
 }}
 
 \item{backed}{Whether the object is disk backed and returns
 \link[DelayedArray:DelayedArray]{DelayedArray::DelayedArray} object for matrix data. Can only be \code{TRUE}
 when \code{mode == "r"}.}
+
+\item{group}{The path to the group within the HDF5 file that the \code{AnnData}
+is stored at. Defaults to \code{"/"}, the file root. Can be used to write an
+\code{AnnData} to a group inside a file that also contains other content,
+e.g. a modality inside a \code{.h5mu} file.}
 }
 \value{
 An \code{\link{HDF5AnnData}} object with the same data as the input \code{AnnData}

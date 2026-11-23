@@ -1,8 +1,15 @@
-# anndataR devel
+# anndataR 1.3.6
 
+- Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores (PR #582, issue #566).
+- Fix `read_h5ad()` and `read_zarr()` losing a whole element, e.g. all of `uns`, when one of its items can't be read. That item is now skipped with a warning naming it (PR #582, issue #583).
+
+# anndataR 1.3.5
+
+- Add a `group` argument to `read_h5ad()`, `write_h5ad()`, `as_HDF5AnnData()` and `HDF5AnnData`, to read and write an `AnnData` stored in a group inside an HDF5 file, e.g. a modality inside a `.h5mu` file (PR #521, issue #466).
 - Fix `as_AnnData()` failing with `` `rownames(X)` is not as expected `` when the assay of a `SingleCellExperiment` mapped to `X` has different dimnames than the object (PR #576, issue #390).
 - Fix `as_AnnData()` dropping the loadings of a Seurat reduction when their row names already match the feature names of the object (PR #592).
 - Ensure Zarr v2 string arrays don't get the `vlen-utf8` filter twice, since an upcoming version of Rarr might already specify this (PR #557, Huber-group-EMBL/Rarr#111).
+- Fix `as_Seurat()` failing with `No feature overlap between existing object and new layer data` when `var_names` contain underscores: the underscores are now replaced with dashes in the feature names of the `Seurat` object, with a warning (PR #593, issue #476).
 - Require `rhdf5 >= 2.57.13`, which fixes the spurious `NA_character_` warning for numeric datasets containing `NA`, and remove the skips in the file closure tests (PR #579, Huber-group-EMBL/rhdf5#241).
 - Error when writing a logical matrix containing `NA` to H5AD or Zarr, instead of writing a `nullable-boolean` that neither R nor Python **anndata** can read back. Convert it to numeric first (issue #545).
 - Require `Rarr >= 2.1.59`, which fixes reading and writing Zarr stores on R 4.6.2: every zstd-compressed array failed there with `argument is of length zero` (PR #591, Huber-group-EMBL/Rarr#298).

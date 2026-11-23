@@ -10,6 +10,349 @@ test_that("opening H5AD works", {
   expect_true(inherits(adata, "HDF5AnnData"))
 })
 
+test_that("reading an HDF5AnnData at a non-root group works", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  nested_adata <- HDF5AnnData$new(nested_file, group = "mod/rna", mode = "r")
+  root_adata <- HDF5AnnData$new(file, mode = "r")
+
+  expect_equal(nested_adata$X, root_adata$X)
+  expect_equal(nested_adata$layers, root_adata$layers)
+  expect_equal(nested_adata$obsm, root_adata$obsm)
+  expect_equal(nested_adata$varm, root_adata$varm)
+  expect_equal(nested_adata$obsp, root_adata$obsp)
+  expect_equal(nested_adata$varp, root_adata$varp)
+  expect_equal(nested_adata$obs, root_adata$obs)
+  expect_equal(nested_adata$var, root_adata$var)
+  expect_equal(nested_adata$obs_names, root_adata$obs_names)
+  expect_equal(nested_adata$var_names, root_adata$var_names)
+})
+
+test_that("reading a missing group errors", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(nested_file, group = "mod/does_not_exist", mode = "r"),
+    "does not exist"
+  )
+})
+
+test_that("reading a group that isn't an AnnData errors", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  for (group in c("mod/rna/uns", "mod/rna/obsm", "mod/rna/X")) {
+    expect_error(
+      HDF5AnnData$new(nested_file, group = group, mode = "r"),
+      "Element \"[a-zA-Z/]*\" in file .* is not an AnnData"
+    )
+  }
+  expect_error(
+    HDF5AnnData$new(nested_file, group = "mod/rna/obs/_index", mode = "r"),
+    "is not an AnnData"
+  )
+  # A group without an encoding
+  expect_error(
+    HDF5AnnData$new(nested_file, group = "mod", mode = "r"),
+    "is not an AnnData"
+  )
+})
+
+test_that("reading a MuData file without a group errors with a hint", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+  hdf5_write_attribute(
+    HDF5File$new(nested_file),
+    "/",
+    "encoding-type",
+    "MuData"
+  )
+
+  expect_error(
+    HDF5AnnData$new(nested_file, mode = "r"),
+    "is a MuData file.*mod/rna"
+  )
+})
+
+test_that("invalid group values error", {
+  file <- tempfile(fileext = ".h5ad")
+
+  for (group in list(NULL, NA_character_, NA, character(0), c("a", "b"), 1)) {
+    expect_error(
+      HDF5AnnData$new(file, group = group, mode = "w"),
+      "must be a single non-missing string"
+    )
+  }
+  expect_false(file.exists(file))
+})
+
+test_that("writing a fresh AnnData at a non-root group preserves siblings", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  rhdf5::h5createFile(h5ad_file)
+  rhdf5::h5createGroup(h5ad_file, "mod")
+  rhdf5::h5createGroup(h5ad_file, "mod/other_stuff")
+  rhdf5::h5write("hello", h5ad_file, "mod/other_stuff/marker")
+
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  h5ad <- HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    group = "mod/rna",
+    mode = "w-"
+  )
+
+  expect_identical(h5ad$obs_names, as.character(1:10))
+  expect_equal(
+    rhdf5::h5read(h5ad_file, "mod/other_stuff/marker"),
+    "hello",
+    ignore_attr = TRUE
+  )
+})
+
+test_that("nested intermediate groups are auto-created", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+
+  expect_no_error(
+    HDF5AnnData$new(
+      h5ad_file,
+      obs = obs,
+      var = var,
+      group = "mod/rna",
+      mode = "w-"
+    )
+  )
+})
+
+test_that("'w-'/'x' fail if the group already exists, not the file", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    group = "mod/rna",
+    mode = "w-"
+  )
+
+  expect_error(
+    HDF5AnnData$new(
+      h5ad_file,
+      obs = obs,
+      var = var,
+      group = "mod/rna",
+      mode = "w-"
+    ),
+    "already exists"
+  )
+
+  # A different group in the same (now-existing) file is unaffected
+  expect_no_error(
+    HDF5AnnData$new(
+      h5ad_file,
+      obs = obs,
+      var = var,
+      group = "mod/atac",
+      mode = "w-"
+    )
+  )
+})
+
+test_that("'w' at a non-root group recreates only that group", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    group = "mod/rna",
+    mode = "w-"
+  )
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    group = "mod/atac",
+    mode = "w-"
+  )
+
+  new_obs <- data.frame(row.names = 1:5)
+  new_var <- data.frame(row.names = 1:8)
+  h5ad <- HDF5AnnData$new(
+    h5ad_file,
+    obs = new_obs,
+    var = new_var,
+    group = "mod/rna",
+    mode = "w"
+  )
+
+  expect_identical(h5ad$obs_names, as.character(1:5))
+  # The sibling modality is untouched
+  atac <- HDF5AnnData$new(h5ad_file, group = "mod/atac", mode = "r")
+  expect_identical(atac$obs_names, as.character(1:10))
+})
+
+test_that("'w' at a non-root group keeps the old group if writing fails", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(
+      nested_file,
+      group = "mod/rna",
+      mode = "w",
+      X = matrix(1:4, 2, 2),
+      obs = data.frame(row.names = 1:3),
+      var = data.frame(row.names = 1:3)
+    )
+  )
+
+  rna <- HDF5AnnData$new(nested_file, group = "mod/rna", mode = "r")
+  expect_identical(rna$shape(), c(50L, 100L))
+  # No temporary group is left behind
+  expect_setequal(
+    rhdf5::h5ls(nested_file, recursive = FALSE, datasetinfo = FALSE)$name,
+    "mod"
+  )
+  expect_setequal(
+    rhdf5::h5ls(
+      nested_file,
+      recursive = 2,
+      datasetinfo = FALSE
+    )$name,
+    c("mod", "rna", "other_stuff")
+  )
+})
+
+test_that("'w' doesn't delete a group that isn't an AnnData", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(
+      nested_file,
+      group = "mod",
+      mode = "w",
+      obs = data.frame(row.names = 1:2),
+      var = data.frame(row.names = 1:3)
+    ),
+    "is not an AnnData"
+  )
+
+  rna <- HDF5AnnData$new(nested_file, group = "mod/rna", mode = "r")
+  expect_identical(rna$shape(), c(50L, 100L))
+  expect_true(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/other_stuff/marker")
+  )
+})
+
+test_that("writing to a group inside an AnnData element errors", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  # A dataset inside an AnnData
+  expect_error(
+    HDF5AnnData$new(
+      nested_file,
+      group = "mod/rna/obs/_index",
+      mode = "w",
+      obs = data.frame(row.names = 1:2),
+      var = data.frame(row.names = 1:3)
+    ),
+    "inside"
+  )
+  rna <- HDF5AnnData$new(nested_file, group = "mod/rna", mode = "r")
+  expect_identical(nrow(rna$obs), 50L)
+
+  # A new group inside an encoded element
+  expect_error(
+    HDF5AnnData$new(nested_file, group = "mod/rna/X/foo", mode = "a"),
+    "inside"
+  )
+  expect_false(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/rna/X/foo")
+  )
+})
+
+test_that("'r+'/'a' warn on a non-empty group, scoped to the group", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  obs <- data.frame(row.names = 1:10)
+  var <- data.frame(row.names = 1:20)
+  HDF5AnnData$new(
+    h5ad_file,
+    obs = obs,
+    var = var,
+    group = "mod/rna",
+    mode = "w-"
+  )
+
+  expect_warning(
+    HDF5AnnData$new(h5ad_file, group = "mod/rna", mode = "r+"),
+    "non-empty group"
+  )
+  expect_warning(
+    HDF5AnnData$new(h5ad_file, group = "mod/rna", mode = "a"),
+    "non-empty group"
+  )
+})
+
+test_that("'r+' errors on a missing group but 'a' creates it", {
+  nested_file <- make_nested_h5ad_fixture("mod/rna")
+
+  expect_error(
+    HDF5AnnData$new(nested_file, group = "mod/typo", mode = "r+"),
+    "does not exist"
+  )
+  expect_false(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/typo")
+  )
+
+  HDF5AnnData$new(nested_file, group = "mod/atac", mode = "a")
+  expect_true(
+    hdf5_path_exists(HDF5File$new(nested_file), "mod/atac")
+  )
+})
+
+test_that("round-trip write_h5ad()/read_h5ad() at a non-root group works", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  adata <- InMemoryAnnData$new(
+    X = matrix(rnorm(10 * 20), nrow = 10, ncol = 20),
+    obs = data.frame(row.names = paste0("Cell", 1:10)),
+    var = data.frame(row.names = paste0("Gene", 1:20))
+  )
+
+  write_h5ad(adata, h5ad_file, group = "mod/rna", mode = "a")
+  roundtrip <- read_h5ad(
+    h5ad_file,
+    as = "InMemoryAnnData",
+    group = "mod/rna"
+  )
+
+  expect_equal(roundtrip$X, adata$X, ignore_attr = TRUE)
+  expect_equal(roundtrip$obs_names, adata$obs_names)
+  expect_equal(roundtrip$var_names, adata$var_names)
+})
+
+test_that("adata$write_h5ad() passes group through", {
+  h5ad_file <- withr::local_tempfile(fileext = ".h5mu")
+  adata <- InMemoryAnnData$new(
+    X = matrix(rnorm(10 * 20), nrow = 10, ncol = 20),
+    obs = data.frame(row.names = paste0("Cell", 1:10)),
+    var = data.frame(row.names = paste0("Gene", 1:20))
+  )
+
+  adata$write_h5ad(h5ad_file, group = "mod/rna", mode = "a")
+  roundtrip <- read_h5ad(
+    h5ad_file,
+    as = "InMemoryAnnData",
+    group = "mod/rna"
+  )
+
+  expect_equal(roundtrip$X, adata$X, ignore_attr = TRUE)
+  expect_equal(roundtrip$obs_names, adata$obs_names)
+  expect_equal(roundtrip$var_names, adata$var_names)
+})
+
 adata <- HDF5AnnData$new(file, mode = "r")
 
 # GETTERS ----------------------------------------------------------------

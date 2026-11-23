@@ -100,6 +100,18 @@
 #' In order to indicate the `adata$X` slot, you use `NA` as the value in the vector.
 #' The name you provide for `x_mapping` may not be a name in `layers_mapping`.
 #'
+#' ## Feature names
+#'
+#' `Seurat` does not allow underscores in feature names. If `adata$var_names`
+#' contains underscores, they are replaced with dashes in the resulting `Seurat`
+#' object, with a warning. This is also what `Seurat` does when creating an
+#' object. `adata` itself is not modified, so converting the `Seurat` object
+#' back with [as_AnnData()] gives an `AnnData` with dashes in its `var_names`.
+#'
+#' If replacing the underscores results in duplicate feature names (e.g.
+#' `"gene_1"` and `"gene-1"`), an error is raised. In that case, rename the
+#' features before converting.
+#'
 #' @return A `Seurat` object containing the requested data from `adata`
 #'
 #' @family object converters
@@ -200,7 +212,7 @@ as_Seurat <- function(
 
   # store obs and var names
   obs_names <- adata$obs_names
-  var_names <- adata$var_names
+  var_names <- .as_Seurat_process_var_names(adata$var_names)
 
   # check seurat layers (which includes the X mapping)
   if (!is.null(x_mapping)) {
@@ -231,7 +243,8 @@ as_Seurat <- function(
     adata,
     layers_mapping,
     object_metadata,
-    assay_name
+    assay_name,
+    var_names
   )
 
   # trackstatus: class=Seurat, feature=get_var, status=done
@@ -242,6 +255,7 @@ as_Seurat <- function(
   )
 
   if (ncol(assay_metadata) != 0) {
+    rownames(assay_metadata) <- var_names
     obj[[assay_name]] <- SeuratObject::AddMetaData(
       obj[[assay_name]],
       metadata = assay_metadata
@@ -258,7 +272,8 @@ as_Seurat <- function(
     reductions <- .as_Seurat_process_reduction_mapping(
       adata,
       reduction_mapping,
-      assay_name
+      assay_name,
+      var_names
     )
     for (.red in names(reductions)) {
       obj[[.red]] <- reductions[[.red]]
@@ -309,6 +324,41 @@ as_Seurat <- function(
 }
 
 # nolint start: object_name_linter
+.as_Seurat_process_var_names <- function(var_names) {
+  # nolint end: object_name_linter
+  if (!any(grepl("_", var_names, fixed = TRUE))) {
+    return(var_names)
+  }
+
+  # Seurat does not allow underscores in feature names
+  new_names <- gsub("_", "-", var_names, fixed = TRUE)
+
+  if (anyDuplicated(new_names) > 0) {
+    cli_abort(
+      c(
+        paste(
+          "{.code adata$var_names} contains underscores, but replacing them",
+          "with dashes results in duplicate feature names"
+        ),
+        "i" = "Duplicate names: {.val {unique(new_names[duplicated(new_names)])}}",
+        "i" = "Rename the features in {.arg adata} before converting"
+      ),
+      call = rlang::caller_env()
+    )
+  }
+
+  cli_warn(c(
+    paste(
+      "{.code adata$var_names} contains underscores, which {.pkg Seurat}",
+      "does not allow in feature names"
+    ),
+    "i" = "The underscores are replaced with dashes in the {.cls Seurat} object"
+  ))
+
+  new_names
+}
+
+# nolint start: object_name_linter
 .as_Seurat_is_atomic_character <- function(x) {
   # nolint end: object_name_linter
   is.character(x) && length(x) == 1 && !is.na(x)
@@ -355,7 +405,8 @@ as_Seurat <- function(
   adata,
   layers_mapping,
   object_metadata,
-  assay_name
+  assay_name,
+  var_names
 ) {
   if (
     !"counts" %in% names(layers_mapping) &&
@@ -377,7 +428,7 @@ as_Seurat <- function(
   }
 
   counts <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, dummy_counts)
-  dimnames(counts) <- list(adata$var_names, adata$obs_names)
+  dimnames(counts) <- list(var_names, adata$obs_names)
 
   obj <- SeuratObject::CreateSeuratObject(
     meta.data = object_metadata,
@@ -398,10 +449,12 @@ as_Seurat <- function(
   for (i in seq_along(layers_mapping)) {
     layer_name <- names(layers_mapping)[i]
     if (layer_name != dummy_counts) {
+      layer <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, layer_name)
+      rownames(layer) <- var_names
       SeuratObject::LayerData(
         obj,
         layer = layer_name,
-      ) <- .as_Seurat_get_matrix_by_key(adata, layers_mapping, layer_name)
+      ) <- layer
     }
   }
 
@@ -415,7 +468,8 @@ as_Seurat <- function(
   assay_name,
   key,
   obsm_embedding,
-  varm_loadings
+  varm_loadings,
+  var_names
 ) {
   if (!.as_Seurat_is_atomic_character(key)) {
     cli_abort(
@@ -475,7 +529,7 @@ as_Seurat <- function(
       )
     } else {
       load <- as.matrix(adata$varm[[varm_loadings]])
-      rownames(load) <- adata$var_names
+      rownames(load) <- var_names
       load
     }
 
@@ -514,7 +568,8 @@ as_Seurat <- function(
 .as_Seurat_process_reduction_mapping <- function(
   adata,
   reduction_mapping,
-  assay_name
+  assay_name,
+  var_names
 ) {
   # nolint end: object_length_linter object_name_linter
 
@@ -560,7 +615,8 @@ as_Seurat <- function(
       assay_name = assay_name,
       key = reduction["key"],
       obsm_embedding = reduction["embeddings"],
-      varm_loadings = varm_loadings
+      varm_loadings = varm_loadings,
+      var_names = var_names
     )
 
     if (!is.null(dr)) {
