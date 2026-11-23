@@ -2,6 +2,7 @@
 
 - Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores (PR #582, issue #566).
 - Fix `read_h5ad()` and `read_zarr()` losing a whole element, e.g. all of `uns`, when one of its items can't be read. That item is now skipped with a warning naming it (PR #582, issue #583).
+- Chunk Zarr arrays by default, with a `chunk_size` argument for `write_zarr()`, `as_ZarrAnnData()`, `ZarrAnnData` and `write_elem()` as for HDF5 writes. Chunk shapes match those written by Python **anndata**, so large stores can be read a block at a time and need less memory to write. Previously each array was written as a single chunk; `chunk_size = NULL` keeps that layout (PR #543, issue #541).
 
 # anndataR 1.3.5
 

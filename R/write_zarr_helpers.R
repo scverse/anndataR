@@ -12,6 +12,10 @@
 #' @param zarr_format The format to write the element in, either 2 or 3 for the
 #'   Zarr v2 or v3 formats. Always passed explicitly by the caller so that all
 #'   elements of a store end up in the same format.
+#' @param chunk_size Target chunk size in bytes. When `"auto"` (default), the
+#'   chunk size is determined automatically by `zarr_chunk_dim()`. When
+#'   `NULL`, each array is written as a single chunk.
+#'   When a number, it is used as the target chunk size in bytes.
 #' @param stop_on_error Whether to stop on error or generate a warning instead
 #' @param force_array Whether to always write length-1 character, numeric and
 #'   logical values as arrays instead of scalars (e.g. for data frame columns)
@@ -38,6 +42,7 @@ write_zarr_element <- function(
     "none"
   ),
   zarr_format,
+  chunk_size = "auto",
   stop_on_error = FALSE,
   force_array = FALSE,
   ...
@@ -119,6 +124,7 @@ write_zarr_element <- function(
         name = name,
         compression = compression,
         zarr_format = zarr_format,
+        chunk_size = chunk_size,
         ...
       )
     },
@@ -169,6 +175,7 @@ write_zarr_null <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.1.0",
   ...
 ) {
@@ -196,6 +203,7 @@ write_zarr_null <- function(
 #'
 #' @inheritParams write_zarr_element
 #' @inheritParams write_zarr_encoding version
+#' @param element_bytes Passed to `zarr_chunk_dim()`
 #'
 #' @noRd
 write_zarr_dense_array <- function(
@@ -204,7 +212,9 @@ write_zarr_dense_array <- function(
   name,
   compression,
   zarr_format,
-  version = "0.2.0"
+  chunk_size = "auto",
+  version = "0.2.0",
+  element_bytes = NULL
 ) {
   version <- match.arg(version)
 
@@ -223,7 +233,9 @@ write_zarr_dense_array <- function(
     name,
     value,
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size,
+    element_bytes = element_bytes
   )
 
   # Write attributes
@@ -244,6 +256,7 @@ write_zarr_sparse_array <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   version <- match.arg(version)
@@ -271,21 +284,24 @@ write_zarr_sparse_array <- function(
     paste0(name, "/indices"),
     attr(value, indices_attr),
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
   zarr_write_compressed(
     store,
     paste0(name, "/indptr"),
     value@p,
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
   zarr_write_compressed(
     store,
     paste0(name, "/data"),
     value@x,
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
 
   # Add encoding
@@ -313,6 +329,7 @@ write_zarr_nullable_boolean <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   # write mask and values
@@ -325,14 +342,16 @@ write_zarr_nullable_boolean <- function(
     paste0(name, "/values"),
     value_no_na,
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
   zarr_write_compressed(
     store,
     paste0(name, "/mask"),
     is.na(value),
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
 
   # Write attributes
@@ -353,6 +372,7 @@ write_zarr_nullable_integer <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   # write mask and values
@@ -365,14 +385,16 @@ write_zarr_nullable_integer <- function(
     paste0(name, "/values"),
     value_no_na,
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
   zarr_write_compressed(
     store,
     paste0(name, "/mask"),
     is.na(value),
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
 
   # Write attributes
@@ -393,6 +415,7 @@ write_zarr_nullable_string <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   # write mask and values
@@ -405,14 +428,16 @@ write_zarr_nullable_string <- function(
     store,
     paste0(name, "/values"),
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
   zarr_write_compressed(
     store,
     paste0(name, "/mask"),
     is.na(value),
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
 
   # Write attributes
@@ -445,6 +470,7 @@ write_zarr_string_array <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   # replace NA to "NA" (as in rhdf5:::.h5postProcessDataset)
@@ -454,7 +480,14 @@ write_zarr_string_array <- function(
   # As of Rarr 2.1.56, writing character arrays as VLen-UTF8 is the default as
   # long as there are no NA values in the array.
   # And NA values have been removed just above.
-  zarr_write_compressed(store, name, value, compression, zarr_format)
+  zarr_write_compressed(
+    store,
+    name,
+    value,
+    compression,
+    zarr_format,
+    chunk_size = chunk_size
+  )
 
   write_zarr_encoding(store, name, "string-array", version, zarr_format)
 }
@@ -473,6 +506,7 @@ write_zarr_categorical <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   Rarr::write_zarr_group(store, name, zarr_version = zarr_format)
@@ -491,14 +525,25 @@ write_zarr_categorical <- function(
     store,
     paste0(name, "/categories"),
     compression,
-    zarr_format = zarr_format
+    zarr_format = zarr_format,
+    chunk_size = chunk_size
   )
   write_zarr_dense_array(
     codes,
     store,
     paste0(name, "/codes"),
     compression,
-    zarr_format
+    zarr_format,
+    chunk_size = chunk_size,
+    # chunked as Python anndata chunks codes, which pandas stores in the
+    # smallest signed integer type that holds them
+    element_bytes = if (length(categories) < 127L) {
+      1L
+    } else if (length(categories) < 32767L) {
+      2L
+    } else {
+      4L
+    }
   )
 
   # Write encoding
@@ -532,6 +577,7 @@ write_zarr_string_scalar <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   # Write scalar
@@ -555,6 +601,7 @@ write_zarr_numeric_scalar <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.2.0"
 ) {
   # Write scalar
@@ -583,6 +630,7 @@ write_zarr_mapping <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   index = NULL,
   version = "0.1.0"
 ) {
@@ -600,6 +648,7 @@ write_zarr_mapping <- function(
         element_name,
         compression,
         zarr_format = zarr_format,
+        chunk_size = chunk_size,
         index = index
       )
     } else {
@@ -608,7 +657,8 @@ write_zarr_mapping <- function(
         store,
         element_name,
         compression,
-        zarr_format = zarr_format
+        zarr_format = zarr_format,
+        chunk_size = chunk_size
       )
     }
   }
@@ -633,6 +683,7 @@ write_zarr_data_frame <- function(
   name,
   compression,
   zarr_format,
+  chunk_size = "auto",
   index = NULL,
   version = "0.2.0"
 ) {
@@ -667,6 +718,7 @@ write_zarr_data_frame <- function(
       paste0(name, "/", col),
       compression,
       zarr_format,
+      chunk_size = chunk_size,
       force_array = TRUE
     )
   }
@@ -678,6 +730,7 @@ write_zarr_data_frame <- function(
     paste0(name, "/", index_name),
     compression,
     zarr_format,
+    chunk_size = chunk_size,
     force_array = TRUE
   )
 
@@ -722,6 +775,7 @@ write_empty_zarr <- function(
   var,
   compression,
   zarr_format,
+  chunk_size = "auto",
   version = "0.1.0"
 ) {
   write_zarr_encoding(store, "/", "anndata", "0.1.0", zarr_format)
@@ -731,14 +785,16 @@ write_empty_zarr <- function(
     store,
     "obs",
     compression,
-    zarr_format
+    zarr_format,
+    chunk_size = chunk_size
   )
   write_zarr_element(
     var[, integer(0)],
     store,
     "var",
     compression,
-    zarr_format
+    zarr_format,
+    chunk_size = chunk_size
   )
 
   Rarr::write_zarr_group(store, "layers", zarr_version = zarr_format)
@@ -769,6 +825,8 @@ write_empty_zarr <- function(
 #'
 #' @noRd
 #'
+#' @param element_bytes Passed to `zarr_chunk_dim()`
+#'
 #' @return  Returns (invisibly) `TRUE` if the array is successfully written.
 zarr_write_compressed <- function(
   store,
@@ -784,7 +842,9 @@ zarr_write_compressed <- function(
     "lz4",
     "none"
   ),
-  zarr_format
+  zarr_format,
+  chunk_size = "auto",
+  element_bytes = NULL
 ) {
   dims <- dim(value) %||% length(value)
   data <- array(data = value, dim = dims)
@@ -797,7 +857,12 @@ zarr_write_compressed <- function(
   Rarr::write_zarr_array(
     data,
     zarr_array_path = file.path(store, name),
-    chunk_dim = ifelse(dims == 0, 1, dims),
+    chunk_dim = zarr_chunk_dim(
+      dims,
+      storage.mode(data),
+      chunk_size,
+      element_bytes = element_bytes
+    ),
     order = if (length(dims) > 0) "C" else "F",
     compressor = .get_compressor(compression),
     zarr_version = zarr_format
@@ -826,5 +891,60 @@ zarr_write_compressed <- function(
     "zlib" = Rarr::use_zlib(),
     "lz4" = Rarr::use_lz4(),
     "none" = NULL
+  )
+}
+
+#' Compute chunk dimensions for a Zarr array
+#'
+#' Zarr arrays are chunked with the algorithm used for HDF5 datasets,
+#' `hdf5_auto_chunk()`, with the size constants and element sizes of Python's
+#' zarr (`zarr.core.chunk_grids._guess_chunks()`), so that a large array is not
+#' a single chunk and chunk shapes match those of Python **anndata**.
+#'
+#' @param dims Integer vector of array dimensions
+#' @param storage_mode Storage mode of the data ("double", "integer", etc.)
+#' @param element_bytes The size of one element in bytes. When `NULL`
+#'   (default), the size Python anndata writes for `storage_mode`.
+#' @inheritParams write_zarr_element
+#'
+#' @return Integer vector of chunk dimensions
+#'
+#' @noRd
+zarr_chunk_dim <- function(
+  dims,
+  storage_mode,
+  chunk_size = "auto",
+  element_bytes = NULL
+) {
+  # - "auto"   -> zarr's auto-chunking
+  # - NULL     -> a single chunk
+  # - <number> -> use provided byte size as target
+  if (length(dims) == 0) {
+    return(dims)
+  }
+  # empty dimensions get a chunk size of 1, as Zarr requires chunks of at least
+  # one element
+  if (any(dims == 0) || is.null(chunk_size)) {
+    return(ifelse(dims == 0, 1L, dims))
+  }
+  target_size <- if (identical(chunk_size, "auto")) NULL else chunk_size
+  hdf5_auto_chunk(
+    dims,
+    storage_mode,
+    target_size = target_size,
+    # element sizes as Python anndata writes them (bool, int32, float64), with
+    # variable-length strings counted as one byte, as zarr counts them
+    element_bytes = element_bytes %||%
+      switch(
+        storage_mode,
+        logical = 1L,
+        character = 1L,
+        integer = 4L,
+        8L
+      ),
+    # zarr constants
+    chunk_base = 256L * 1024L, # 256 KB - multiplier for target calculation
+    chunk_min = 128L * 1024L, # 128 KB - soft lower limit
+    chunk_max = 64L * 1024L * 1024L # 64 MB - hard upper limit
   )
 }

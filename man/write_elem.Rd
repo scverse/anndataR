@@ -39,7 +39,8 @@ new path is detected from its extension.
 \itemize{
 \item \code{compression}: The compression to use. See \code{\link[=write_h5ad]{write_h5ad()}} and
 \code{\link[=write_zarr]{write_zarr()}}.
-\item \code{chunk_size}: The target chunk size. See \code{\link[=write_h5ad]{write_h5ad()}}.
+\item \code{chunk_size}: The target chunk size. See \code{\link[=write_h5ad]{write_h5ad()}} and
+\code{\link[=write_zarr]{write_zarr()}}.
 }}
 }
 \value{

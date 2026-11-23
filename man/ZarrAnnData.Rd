@@ -108,7 +108,8 @@ Other AnnData classes:
   mode = c("a", "r", "r+", "w", "w-", "x"),
   backed = FALSE,
   compression = c("zstd", "gzip", "blosc", "lzma", "bz2", "zlib", "lz4", "none"),
-  zarr_format = NULL
+  zarr_format = NULL,
+  chunk_size = "auto"
 )}
     \if{html}{\out{</div>}}
   }
@@ -135,6 +136,8 @@ for details}
       \item{\code{compression}}{The compression algorithm to use. See
 \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
       \item{\code{zarr_format}}{The Zarr format to use. See
+\code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
+      \item{\code{chunk_size}}{The target chunk size in bytes. See
 \code{\link[=as_ZarrAnnData]{as_ZarrAnnData()}} for details}
     }
     \if{html}{\out{</div>}}
