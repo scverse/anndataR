@@ -2,6 +2,7 @@
 
 - Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores (PR #582, issue #566).
 - Fix `read_h5ad()` and `read_zarr()` losing a whole element, e.g. all of `uns`, when one of its items can't be read. That item is now skipped with a warning naming it (PR #582, issue #583).
+- Chunk Zarr arrays by default, with a `chunk_size` argument for `write_zarr()`, `as_ZarrAnnData()`, `ZarrAnnData` and `write_elem()` as for HDF5 writes. Chunk shapes match those written by Python **anndata**, so large stores can be read a block at a time and need less memory to write. Previously each array was written as a single chunk; `chunk_size = NULL` keeps that layout (PR #543, issue #541).
 
 # anndataR 1.3.5
 
@@ -39,7 +40,6 @@
 
 # anndataR 1.3.3
 
-- Chunk Zarr arrays by default, with a `chunk_size` argument for `write_zarr()`, `as_ZarrAnnData()` and `ZarrAnnData` as for HDF5 writes. Chunk shapes match those written by Python **anndata**, so large stores can be read a block at a time and need less memory to write. Previously each array was written as a single chunk; `chunk_size = NULL` keeps that layout (PR #543, issue #541).
 - Add a strict mode for the Python tests: with `ANNDATAR_TEST_REQUIRE_PYTHON=true`, the Python skip helpers error with the actual import error instead of skipping, so that a broken Python environment can't silently skip all Python tests. Used by scverse/integration-testing to test against anndata main (PR #533, issue #515).
 - Fix writing `data.frame`s in `obsm`/`varm` so that the stored index is the `obs_names`/`var_names` of the parent object instead of R's automatic row numbers, which produced files that Python **anndata** refused to read (PR #501, PR #525).
 
