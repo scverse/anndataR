@@ -21,7 +21,8 @@
 #'
 #'   * `compression`: The compression to use. See [write_h5ad()] and
 #'     [write_zarr()].
-#'   * `chunk_size`: The target chunk size. See [write_h5ad()].
+#'   * `chunk_size`: The target chunk size. See [write_h5ad()] and
+#'     [write_zarr()].
 #'
 #' @return `path` (invisibly)
 #' @export
@@ -77,7 +78,11 @@ write_elem <- function(
     },
     zarr = {
       check_requires("Writing Zarr elements", "Rarr", where = "Bioc")
-      check_elem_dots("compression", ...)
+      check_elem_dots(c("compression", "chunk_size"), ...)
+      dots <- rlang::list2(...)
+      if ("chunk_size" %in% names(dots)) {
+        check_chunk_size(dots$chunk_size)
+      }
 
       is_new <- length(list.files(path, all.files = TRUE, no.. = TRUE)) == 0
       zarr_format <- if (is_new) {

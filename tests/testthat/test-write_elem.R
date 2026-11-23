@@ -244,8 +244,38 @@ test_that("write_elem() passes options in ... to the writers", {
 
   skip_if_not_installed("Rarr")
   zarr <- withr::local_tempfile(fileext = ".zarr")
+  zarr_chunk_dim <- function(name) {
+    unlist(
+      Rarr::zarr_overview(
+        file.path(zarr, name),
+        as_data_frame = TRUE
+      )$chunk_dim
+    )
+  }
+
   write_elem(zarr, "gzip", mat, compression = "gzip")
   expect_equal(read_elem(zarr, "gzip"), mat)
+
+  write_elem(zarr, "single", mat, chunk_size = NULL)
+  expect_equal(zarr_chunk_dim("single"), dim(mat))
+
+  # 400 bytes is 50 doubles, so the 200 values are split
+  write_elem(zarr, "chunked", mat, chunk_size = 400)
+  expect_true(prod(zarr_chunk_dim("chunked")) < length(mat))
+  expect_equal(read_elem(zarr, "chunked"), mat)
+})
+
+test_that("write_elem() rejects an invalid chunk_size before writing to Zarr", {
+  skip_if_not_installed("Rarr")
+  zarr <- withr::local_tempfile(fileext = ".zarr")
+  mat <- matrix(as.numeric(1:6), nrow = 2)
+  write_elem(zarr, "x", mat)
+
+  expect_error(
+    write_elem(zarr, "x", mat * 2, overwrite = TRUE, chunk_size = -1),
+    "chunk_size"
+  )
+  expect_equal(read_elem(zarr, "x"), mat)
 })
 
 test_that("write_elem() errors for unsupported arguments in ...", {
@@ -264,7 +294,6 @@ test_that("write_elem() errors for unsupported arguments in ...", {
 
   skip_if_not_installed("Rarr")
   zarr <- withr::local_tempfile(fileext = ".zarr")
-  expect_error(write_elem(zarr, "x", 1:3, chunk_size = 100), "chunk_size")
   expect_error(write_elem(zarr, "x", 1:3, zarr_format = 2), "zarr_format")
 })
 
