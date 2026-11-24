@@ -44,6 +44,9 @@ write_zarr_element <- function(
 ) {
   compression <- match.arg(compression)
 
+  # Materialize on write
+  value <- materialize_matrix(value)
+
   # Sparse matrices
   write_fun <-
     if (is.null(value)) {

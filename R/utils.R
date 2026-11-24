@@ -75,7 +75,7 @@ to_R_matrix <- function(mat) {
 }
 
 materialize_matrix <- function(mat) {
-  if (!inherits(mat, "DelayedMatrix")) {
+  if (!inherits(mat, "DelayedArray")) {
     return(mat)
   }
 
