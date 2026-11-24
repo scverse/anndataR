@@ -350,13 +350,23 @@ read_h5ad_sparse_array_base <- function(
   hdf5_file$open_and_defer_close(readonly = TRUE)
   attrs <- rhdf5::h5readAttributes(hdf5_file$handle, name, native = FALSE)
 
-  h5group <- rhdf5::H5Gopen(hdf5_file$handle, name)
-  on.exit(rhdf5::H5Gclose(h5group), add = TRUE)
+  read_slice <- function(what, start = NULL, count = NULL) {
+    as.vector(rhdf5::h5read(
+      hdf5_file$handle,
+      paste0(name, "/", what),
+      start = start,
+      count = count
+    ))
+  }
 
-  construct_sparse_matrix(
-    data = as.vector(h5group$data),
-    indices = as.vector(h5group$indices),
-    indptr = as.vector(h5group$indptr),
+  read_sparse_matrix(
+    read_slice = read_slice,
+    # Is 64-bit when there are too many non-zero values for an R integer
+    indptr = as.vector(rhdf5::h5read(
+      hdf5_file$handle,
+      paste0(name, "/indptr"),
+      bit64conversion = "double"
+    )),
     shape = as.vector(attrs[["shape"]]),
     type = type
   )

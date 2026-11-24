@@ -58,7 +58,7 @@ get_initial_var <- function(var, X, shape) {
 to_py_matrix <- function(mat) {
   if (inherits(mat, "dgCMatrix")) {
     mat <- as(mat, "RsparseMatrix")
-  } else if (!inherits(mat, "dgRMatrix")) {
+  } else if (!inherits(mat, c("dgRMatrix", "SparseMatrix", "DelayedMatrix"))) {
     mat <- as.matrix(mat)
   }
   Matrix::t(mat)
@@ -74,8 +74,21 @@ to_R_matrix <- function(mat) {
   Matrix::t(mat)
 }
 
+# backed matrices and SVT matrices can be too large to realize just to get the type
+is_numeric_matrix <- function(mat) {
+  if (inherits(mat, c("DelayedArray", "SparseArray"))) {
+    return(BiocGenerics::type(mat) %in% c("double", "integer"))
+  }
+
+  is.numeric(as.matrix(mat))
+}
+
 materialize_matrix <- function(mat) {
-  if (!inherits(mat, "DelayedMatrix")) {
+  if (inherits(mat, "SparseMatrix")) {
+    return(as(mat, "CsparseMatrix"))
+  }
+
+  if (!inherits(mat, "DelayedArray")) {
     return(mat)
   }
 
@@ -279,7 +292,8 @@ warn_matrix_dimnames_not_writeable <- function(
 #' @param data Non-zero values. Coerced to `double`.
 #' @param indices Row indices (CSC) or column indices (CSR), 0-based. Coerced
 #'   to `integer`.
-#' @param indptr Index pointers, 0-based. Coerced to `integer`.
+#' @param indptr Index pointers, 0-based. Coerced to `integer`, so the matrix must
+#'   fit in a `dgCMatrix` or `dgRMatrix`. See `read_sparse_matrix()` for larger ones.
 #' @param shape Matrix dimensions. Coerced to `integer`.
 #' @param type Either `"csc_matrix"` or `"csr_matrix"`.
 #'

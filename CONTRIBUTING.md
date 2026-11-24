@@ -36,6 +36,7 @@ BiocCheck::BiocCheck()
 
 Some tests require Python **anndata** and are skipped if it is not available.
 Set `ANNDATAR_TEST_REQUIRE_PYTHON=true` to make them fail instead.
+The tests in `test-large-sparse-real.R` need about 60 GB of memory and only run with `ANNDATAR_TEST_LARGE=true`, see the top of that file.
 
 ### Testing
 

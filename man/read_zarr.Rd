@@ -48,6 +48,20 @@ The object specified by \code{as}
 \description{
 Read data from a Zarr store
 }
+\details{
+\subsection{Large sparse matrices}{
+
+A \code{dgCMatrix} or \code{dgRMatrix} can hold at most 2^31 - 1 non-zero values. Sparse
+matrices with more non-zero values are read as an \code{SVT_SparseMatrix}, which
+requires the \strong{SparseArray} package. To avoid reading these matrices into
+memory, use \code{backed = TRUE} with any \code{as} other than \code{"InMemoryAnnData"}, which
+always holds its matrices in memory.
+See the
+\href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article}
+for what works where, and how much
+memory it takes.
+}
+}
 \examples{
 # Please use "example_v3.zarr.zip" for AnnData stored as Zarr version 3
 zarr_dir <- system.file("extdata", "example_v2.zarr.zip", package = "anndataR")

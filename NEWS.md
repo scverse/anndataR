@@ -2,6 +2,12 @@
 
 - Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores (PR #582, issue #566).
 - Fix `read_h5ad()` and `read_zarr()` losing a whole element, e.g. all of `uns`, when one of its items can't be read. That item is now skipped with a warning naming it (PR #582, issue #583).
+- Fix `write_zarr()` failing on backed objects with "Writing <DelayedMatrix> objects to Zarr is not supported" (PR #601, issue #559).
+- Don't read backed `obsm` matrices into memory when guessing the mapping in `as_SingleCellExperiment()` and `as_Seurat()` (PR #602).
+- Fix reading sparse matrices with more than 2^31 - 1 non-zero values, which gave `X = NULL` with a warning. They are now read as an `SVT_SparseMatrix` from `read_h5ad()`, `read_zarr()` and `ReticulateAnnData`, which requires **SparseArray**, and can be written by `write_h5ad()` and `write_zarr()`, converted to `SingleCellExperiment`, and converted to `Seurat` as a `DelayedMatrix`. Zarr needs **Rarr** >= 2.1.64. See the new [large matrices article](https://anndataR.scverse.org/articles/large_matrices.html) for what works where (issue #301).
+- Fix `AnnDataView` returning `SparseArray` matrices without subsetting them (issue #301).
+- Fix `as_AnnData()` warning about, and not transposing, a `SparseMatrix` assay of a `SingleCellExperiment`, and densifying a `DelayedMatrix` layer of a `Seurat` object (issue #301).
+- Add converting a `SparseMatrix` or `DelayedMatrix` to Python with `reticulate::r_to_py()` (issue #301).
 
 # anndataR 1.3.5
 

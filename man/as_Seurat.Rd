@@ -143,6 +143,15 @@ If replacing the underscores results in duplicate feature names (e.g.
 \code{"gene_1"} and \code{"gene-1"}), an error is raised. In that case, rename the
 features before converting.
 }
+
+\subsection{Large sparse matrices}{
+
+\code{Seurat} can't store a matrix with more than 2^31 - 1 non-zero values as a
+\code{dgCMatrix}, so these are stored as a \code{DelayedMatrix}. Not all \strong{Seurat}
+functions work with this, for example \code{FindVariableFeatures()} doesn't. A
+\code{Graph} is a \code{dgCMatrix}, so \code{obsp} can't have more non-zero values than that.
+See the \href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article} for details.
+}
 }
 \examples{
 \dontshow{if (rlang::is_installed("Seurat")) withAutoprint(\{ # examplesIf}

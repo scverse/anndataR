@@ -36,13 +36,7 @@ write_h5ad_element <- function(
   compression <- match.arg(compression)
 
   # Materialize on write
-  if (inherits(value, "DelayedArray")) {
-    value <- if (DelayedArray::is_sparse(value)) {
-      as(value, "CsparseMatrix")
-    } else {
-      as.matrix(value)
-    }
-  }
+  value <- realize_matrix_for_write(value)
 
   # Sparse matrices
   write_fun <-
@@ -51,6 +45,9 @@ write_h5ad_element <- function(
     } else if (inherits(value, "sparseMatrix")) {
       # Sparse matrices
       write_h5ad_sparse_array
+    } else if (inherits(value, "SVT_SparseMatrix")) {
+      # Sparse matrices that are too large for a sparseMatrix
+      write_h5ad_large_sparse_array
     } else if (is.factor(value)) {
       # Categoricals
       write_h5ad_categorical
@@ -332,6 +329,73 @@ write_h5ad_sparse_array <- function(
     chunk_size = chunk_size
   )
   write_h5ad_encoding(hdf5_file, name, type, version)
+
+  # Write shape attribute
+  hdf5_write_attribute(
+    hdf5_file,
+    name,
+    "shape",
+    dim(value),
+    is_scalar = FALSE
+  )
+}
+
+#' Write H5AD large sparse array
+#'
+#' Write a sparse array with too many non-zero values for a `sparseMatrix` to an
+#' H5AD file. It is written in blocks, with a 64-bit `indptr`.
+#'
+#' @inheritParams write_h5ad_element
+#' @inheritParams write_h5ad_encoding version
+#'
+#' @noRd
+write_h5ad_large_sparse_array <- function(
+  value,
+  hdf5_file,
+  name,
+  compression,
+  chunk_size = "auto",
+  version = "0.1.0"
+) {
+  version <- match.arg(version)
+
+  layout <- svt_write_layout(value)
+
+  hdf5_file$open_and_defer_close()
+
+  hdf5_create_group(hdf5_file, name)
+  arrays <- c(indices = "integer", data = "double")
+  for (array in names(arrays)) {
+    hdf5_create_dataset(
+      hdf5_file,
+      paste0(name, "/", array),
+      layout$nnz,
+      arrays[[array]],
+      compression = compression,
+      chunk_size = chunk_size
+    )
+  }
+
+  svt_write_blocks(layout, function(what, start, values) {
+    rhdf5::h5write(
+      values,
+      hdf5_file$handle,
+      paste0(name, "/", what),
+      native = FALSE,
+      start = start,
+      count = length(values)
+    )
+  })
+
+  hdf5_write_dataset(
+    hdf5_file = hdf5_file,
+    name = paste0(name, "/indptr"),
+    value = layout$indptr,
+    H5type = "H5T_STD_I64LE",
+    compression = compression,
+    chunk_size = chunk_size
+  )
+  write_h5ad_encoding(hdf5_file, name, "csc_matrix", version)
 
   # Write shape attribute
   hdf5_write_attribute(

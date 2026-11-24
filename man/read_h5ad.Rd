@@ -63,6 +63,20 @@ The object specified by \code{as}
 \description{
 Read data from a H5AD file
 }
+\details{
+\subsection{Large sparse matrices}{
+
+A \code{dgCMatrix} or \code{dgRMatrix} can hold at most 2^31 - 1 non-zero values. Sparse
+matrices with more non-zero values are read as an \code{SVT_SparseMatrix}, which
+requires the \strong{SparseArray} package. To avoid reading these matrices into
+memory, use \code{backed = TRUE} with any \code{as} other than \code{"InMemoryAnnData"}, which
+always holds its matrices in memory.
+See the
+\href{https://anndataR.scverse.org/articles/large_matrices.html}{large matrices article}
+for what works where, and how much
+memory it takes.
+}
+}
 \examples{
 h5ad_file <- system.file("extdata", "example.h5ad", package = "anndataR")
 

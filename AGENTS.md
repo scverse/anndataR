@@ -35,14 +35,14 @@ The split:
 | Raw HDF5 reading and writing | **rhdf5** | `R/HDF5File.R` wraps the handle, `R/write_hdf5_helpers.R` |
 | Raw Zarr reading and writing: chunks, codecs, string encoding, consolidated metadata | **Rarr** | `R/Rarr_utils.R`, `zarr_write_compressed()` |
 | Backed (lazy, on-disk) matrices | **DelayedArray**, with **HDF5Array** seeds for H5AD and **ZarrArray** seeds for Zarr | `backed = TRUE` in the readers; `as_SingleCellExperiment()` and `as_Seurat()` pass the seeds through |
-| In-memory sparse matrices | **Matrix** (`dgCMatrix`, `dgRMatrix`); SparseArray is being evaluated in #382 | everywhere |
+| In-memory sparse matrices | **Matrix** (`dgCMatrix`, `dgRMatrix`), and **SparseArray** (`SVT_SparseMatrix`) only above 2^31 - 1 non-zero values, which don't fit the former (#301); using it more widely is being evaluated in #382 | everywhere, `R/large_sparse.R` |
 | Python interop | **reticulate** and Python **anndata** | `ReticulateAnnData`, `R/reticulate_helpers.R` |
 
 What follows from this:
 
 - **Format-level bugs go upstream.** If the problem is how bytes land on disk (a chunk layout, a codec name, string encoding, metadata), file it on rhdf5 or Rarr, link it from the anndataR issue, work around it here with a `TODO` naming the upstream issue, and bump the version pin in `DESCRIPTION` once the fix is released. Recent examples: Rarr#262 (the C string encoder, merged), Rarr#111 (`patch_zarr_vlen_utf8()` waits on it), rhdf5#241 (a spurious `NA` warning, tracked in `inst/known_issues.yaml` until the fix was released).
 - **Prefer the owner's implementation.** anndataR decides *what* to write (the spec) and passes *how* through. When the owner doesn't provide something yet, as with auto-chunking in Rarr, implement it here pinned to Python's behaviour and propose it upstream.
-- **The storage stack is optional.** rhdf5, Rarr, DelayedArray, HDF5Array and ZarrArray are in `Suggests`, as are Seurat and SingleCellExperiment, and are loaded through `check_requires(what, requires, where, version)`. A new call into one of them needs a `check_requires()` guard and a matching `skip_if_*()` in the tests. Matrix and reticulate are `Imports` and always available; Python **anndata** itself is optional and checked with `check_requires(..., where = "Python")`.
+- **The storage stack is optional.** rhdf5, Rarr, DelayedArray, HDF5Array, ZarrArray and SparseArray are in `Suggests`, as are Seurat and SingleCellExperiment, and are loaded through `check_requires(what, requires, where, version)`. A new call into one of them needs a `check_requires()` guard and a matching `skip_if_*()` in the tests. Matrix and reticulate are `Imports` and always available; Python **anndata** itself is optional and checked with `check_requires(..., where = "Python")`.
 
 ## Direction
 
@@ -67,6 +67,7 @@ Open questions, not direction; don't build on them yet:
 - R data frames can't hold duplicate row names, Python can. Reading a file with duplicate `obs_names` or `var_names` is not handled yet (#256); don't add fixtures that assume it is.
 - `NULL` in `uns` is written as an empty dataset, as anndata >= 0.12 does; `options(anndataR.write_null = FALSE)` turns that off.
 - Every getter and setter carries a `# trackstatus: class=..., feature=..., status=...` comment; the development-status article is generated from them, so a new feature gets one.
+- `test-large-sparse.R` lowers `sparse_max_nnz()` with a mock to run the code for more than 2^31 - 1 non-zero values on a tiny matrix. `test-large-sparse-real.R` uses a real one, and only runs with `ANNDATAR_TEST_LARGE=true`: it needs about 60 GB of memory.
 - `man/` is generated. Never hand-edit it; run `devtools::document()` with the roxygen2 version pinned in `DESCRIPTION`.
 
 ## Testing against Python
