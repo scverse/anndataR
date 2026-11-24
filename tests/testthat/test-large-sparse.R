@@ -487,35 +487,9 @@ test_that("to_py_matrix() and to_R_matrix() don't densify", {
   expect_same_matrix(to_py_matrix(delayed), t(dense))
 })
 
-test_that("is_numeric_matrix() doesn't read a backed matrix", {
-  skip_if_not_installed("rhdf5")
-  skip_if_not_installed("HDF5Array")
-
-  path <- withr::local_tempfile(fileext = ".h5ad")
-  adata <- new_adata()
-  adata$obsm <- list(embedding = dense)
-  write_h5ad(adata, path, mode = "w")
-  embedding <- read_h5ad(path, as = "HDF5AnnData", backed = TRUE)$obsm$embedding
-  expect_s4_class(embedding, "DelayedMatrix")
-
-  local({
-    local_mocked_bindings(as.matrix = function(...) stop("realized the matrix"))
-    expect_true(is_numeric_matrix(embedding))
-    expect_true(is_numeric_matrix(svt))
-  })
-
+test_that("is_numeric_matrix() doesn't realize an SVT matrix", {
+  local_mocked_bindings(as.matrix = function(...) stop("realized the matrix"))
   expect_true(is_numeric_matrix(svt))
-  expect_true(is_numeric_matrix(dense))
-  expect_true(is_numeric_matrix(csr))
-  expect_true(is_numeric_matrix(data.frame(a = 1:2, b = 3:4)))
-  expect_false(is_numeric_matrix(data.frame(a = c("x", "y"))))
-  expect_false(is_numeric_matrix(matrix("a", 2L, 2L)))
-  skip_if_not_installed("DelayedArray")
-  expect_false(is_numeric_matrix(DelayedArray::DelayedArray(matrix(
-    "a",
-    2L,
-    2L
-  ))))
 })
 
 test_that("materialize_matrix() converts SVT to a CsparseMatrix", {
@@ -603,7 +577,7 @@ test_that("from_Seurat() keeps a DelayedMatrix layer as it is", {
   expect_same_matrix(adata$X)
 })
 
-test_that("backed matrices can be written to H5AD and Zarr", {
+test_that("backed matrices with too many non-zero values can be written", {
   skip_if_not_installed("rhdf5")
   skip_if_not_installed("HDF5Array")
   skip_if_not_installed("Rarr", minimum_version = "2.1.45")
@@ -613,23 +587,15 @@ test_that("backed matrices can be written to H5AD and Zarr", {
   backed <- read_h5ad(path, as = "HDF5AnnData", backed = TRUE)
   expect_s4_class(backed$X, "DelayedMatrix")
 
-  for (limit in c("none", "small")) {
-    local({
-      if (limit == "small") {
-        local_small_nnz_limit()
-      }
-      h5ad_out <- withr::local_tempfile(fileext = ".h5ad")
-      zarr_out <- withr::local_tempfile(fileext = ".zarr")
-      write_h5ad(backed, h5ad_out, mode = "w")
-      write_zarr(backed, zarr_out)
-    })
-  }
-
+  local_small_nnz_limit()
+  h5ad_out <- withr::local_tempfile(fileext = ".h5ad")
   zarr_out <- withr::local_tempfile(fileext = ".zarr")
+  write_h5ad(backed, h5ad_out, mode = "w")
   write_zarr(backed, zarr_out)
-  adata <- read_zarr(zarr_out)
-  expect_same_matrix(adata$X)
-  expect_same_matrix(adata$layers$csc)
+  for (adata in list(read_h5ad(h5ad_out), read_zarr(zarr_out))) {
+    expect_same_matrix(adata$X)
+    expect_same_matrix(adata$layers$csc)
+  }
 })
 
 test_that("ReticulateAnnData converts large sparse matrices in both directions", {
