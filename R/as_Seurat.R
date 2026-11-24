@@ -655,7 +655,7 @@ as_Seurat <- function(
 .as_Seurat_guess_reductions <- function(adata) {
   # nolint end: object_name_linter object_length_linter
   purrr::map(adata$obsm_keys(), function(.obsm) {
-    if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
+    if (!is_numeric_matrix(adata$obsm[[.obsm]])) {
       return(NULL)
     }
 

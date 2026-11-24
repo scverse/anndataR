@@ -293,7 +293,7 @@ as_SingleCellExperiment <- function(
 .as_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
   purrr::map(adata$obsm_keys(), function(.obsm) {
-    if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
+    if (!is_numeric_matrix(adata$obsm[[.obsm]])) {
       return(NULL)
     }
 

@@ -74,6 +74,15 @@ to_R_matrix <- function(mat) {
   Matrix::t(mat)
 }
 
+# a backed matrix can be too large to realize just to get its type
+is_numeric_matrix <- function(mat) {
+  if (inherits(mat, "DelayedArray")) {
+    return(DelayedArray::type(mat) %in% c("double", "integer"))
+  }
+
+  is.numeric(as.matrix(mat))
+}
+
 materialize_matrix <- function(mat) {
   if (!inherits(mat, "DelayedMatrix")) {
     return(mat)
