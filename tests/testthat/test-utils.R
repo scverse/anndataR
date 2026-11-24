@@ -48,6 +48,24 @@ test_that("materialize_matrix realizes dense DelayedMatrix objects", {
   expect_identical(result, dense_matrix)
 })
 
+test_that("is_numeric_matrix works with matrices and data frames", {
+  expect_true(is_numeric_matrix(as.matrix(col_matrix)))
+  expect_true(is_numeric_matrix(row_matrix))
+  expect_true(is_numeric_matrix(data.frame(a = 1:2, b = 3:4)))
+  expect_false(is_numeric_matrix(data.frame(a = c("x", "y"))))
+  expect_false(is_numeric_matrix(matrix("a", 2L, 2L)))
+})
+
+test_that("is_numeric_matrix checks a DelayedMatrix without realizing it", {
+  skip_if_not_installed("DelayedArray")
+
+  numeric_matrix <- DelayedArray::DelayedArray(as.matrix(col_matrix))
+  character_matrix <- DelayedArray::DelayedArray(matrix("a", 2L, 2L))
+  local_mocked_bindings(as.matrix = function(...) stop("realized the matrix"))
+  expect_true(is_numeric_matrix(numeric_matrix))
+  expect_false(is_numeric_matrix(character_matrix))
+})
+
 test_that("construct_sparse_matrix errors on out-of-range indices", {
   # 1-based row indices for a 3 x 4 CSC matrix
   expect_error(

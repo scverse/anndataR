@@ -254,3 +254,28 @@ test_that("as_SCE works with unnamed mappings", {
     )
   )
 })
+
+test_that("guessing reducedDims doesn't read backed obsm matrices", {
+  skip_if_not_installed("rhdf5")
+  skip_if_not_installed("HDF5Array")
+
+  adata <- AnnData(
+    obs = data.frame(row.names = paste0("cell", 1:10)),
+    var = data.frame(row.names = paste0("gene", 1:5)),
+    obsm = list(X_pca = matrix(rnorm(30), 10, 3))
+  )
+  path <- withr::local_tempfile(fileext = ".h5ad")
+  write_h5ad(adata, path, mode = "w")
+  backed <- read_h5ad(path, as = "HDF5AnnData", backed = TRUE)
+  expect_s4_class(backed$obsm$X_pca, "DelayedMatrix")
+
+  expected <- .as_SCE_guess_reducedDims(adata)
+  realize <- as.matrix
+  local_mocked_bindings(as.matrix = function(x, ...) {
+    if (inherits(x, "DelayedArray")) {
+      stop("realized a backed matrix")
+    }
+    realize(x, ...)
+  })
+  expect_equal(.as_SCE_guess_reducedDims(backed), expected)
+})
