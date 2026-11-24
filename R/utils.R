@@ -88,7 +88,7 @@ materialize_matrix <- function(mat) {
     return(as(mat, "CsparseMatrix"))
   }
 
-  if (!inherits(mat, "DelayedMatrix")) {
+  if (!inherits(mat, "DelayedArray")) {
     return(mat)
   }
 
