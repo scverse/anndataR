@@ -2,6 +2,7 @@
 
 - Add `read_elem()` and `write_elem()` for reading and writing single elements of H5AD files and Zarr stores (PR #582, issue #566).
 - Fix `read_h5ad()` and `read_zarr()` losing a whole element, e.g. all of `uns`, when one of its items can't be read. That item is now skipped with a warning naming it (PR #582, issue #583).
+- Fix `write_zarr()` failing on backed objects with "Writing <DelayedMatrix> objects to Zarr is not supported" (PR #601, issue #559).
 
 # anndataR 1.3.5
 
