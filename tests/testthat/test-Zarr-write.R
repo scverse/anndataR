@@ -888,6 +888,57 @@ for (zarr_format in c(2, 3)) {
   )
 }
 
+test_that("writing a backed HDF5AnnData to Zarr materializes its DelayedMatrix slots", {
+  skip_if_not_installed("HDF5Array")
+
+  filename <- system.file("extdata", "example.h5ad", package = "anndataR")
+  backed <- HDF5AnnData$new(filename, mode = "r", backed = TRUE)
+  withr::defer(backed$close())
+
+  store <- withr::local_tempfile(fileext = ".zarr")
+  expect_no_error(write_zarr(backed, store))
+
+  roundtrip <- read_zarr(store)
+  expect_false(inherits(roundtrip$X, "DelayedArray"))
+  expect_equal(as.matrix(roundtrip$X), as.matrix(backed$X))
+  for (layer in names(backed$layers)) {
+    expect_equal(
+      as.matrix(roundtrip$layers[[layer]]),
+      as.matrix(backed$layers[[layer]])
+    )
+  }
+})
+
+test_that("writing a backed ZarrAnnData to Zarr materializes its DelayedMatrix slots", {
+  skip_if_not_installed("ZarrArray", minimum_version = "1.1.5")
+
+  zarr_zip <- system.file(
+    "extdata",
+    "example_v3.zarr.zip",
+    package = "anndataR"
+  )
+  td <- withr::local_tempdir()
+  unzip(zarr_zip, exdir = td)
+  backed <- read_zarr(
+    file.path(td, "example_v3.zarr"),
+    as = "ZarrAnnData",
+    backed = TRUE
+  )
+
+  store <- withr::local_tempfile(fileext = ".zarr")
+  expect_no_error(write_zarr(backed, store))
+
+  roundtrip <- read_zarr(store)
+  expect_false(inherits(roundtrip$X, "DelayedArray"))
+  expect_equal(as.matrix(roundtrip$X), as.matrix(backed$X))
+  for (layer in names(backed$layers)) {
+    expect_equal(
+      as.matrix(roundtrip$layers[[layer]]),
+      as.matrix(backed$layers[[layer]])
+    )
+  }
+})
+
 test_that("zarr_write_compressed() passes on warnings from Rarr", {
   local_mocked_bindings(
     write_zarr_array = function(...) {
