@@ -256,7 +256,7 @@ hdf5_create_group <- function(hdf5_file, name) {
 #' @param value Value to write
 #' @param H5type Datatype to write, see [rhdf5::h5createDataset()]
 #' @param compression The compression to use when writing the element. Can be
-#'   one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#'   one of `"none"`, `"gzip"`, `"lzf"` or `"zstd"`. Defaults to `"zstd"`.
 #' @param chunk_size Target chunk size in bytes. When `"auto"` (default), the
 #'   chunk size is determined automatically using `hdf5_auto_chunk()`.
 #'   When `NULL`, chunking is disabled (contiguous storage, the rhdf5 default).
@@ -269,7 +269,7 @@ hdf5_write_dataset <- function(
   name,
   value,
   H5type = NULL,
-  compression = c("none", "gzip", "lzf"),
+  compression = c("zstd", "gzip", "lzf", "none"),
   chunk_size = "auto",
   ...
 ) {
@@ -426,8 +426,8 @@ hdf5_write_scalar <- function(
 #' @param value Value to write
 #' @param is_scalar Whether to use a scalar data space
 #' @param compression The compression to use when writing the element. Can be
-#'   one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`. CURRENTLY NOT
-#'   IMPLEMENTED!
+#'   one of `"none"`, `"gzip"`, `"lzf"` or `"zstd"`. Defaults to `"zstd"`. 
+#'   CURRENTLY NOT IMPLEMENTED!
 #'
 #' @noRd
 hdf5_write_boolean_dataset <- function(
@@ -435,7 +435,7 @@ hdf5_write_boolean_dataset <- function(
   name,
   value,
   is_scalar = FALSE,
-  compression = c("none", "gzip", "lzf"),
+  compression = c("zstd", "gzip", "lzf", "none"),
   chunk_size = "auto"
 ) {
   # Based on https://stackoverflow.com/a/74653515/4384120

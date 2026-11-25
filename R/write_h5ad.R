@@ -7,7 +7,8 @@
 #'   [`SeuratObject::Seurat`] object
 #' @param path Path of the file to write to
 #' @param compression The compression algorithm to use when writing the HDF5
-#'   file. Can be one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#'   file. Can be one of `"none"`, `"gzip"`, `"lzf"` or `"zstd"`. Defaults to
+#'  `"zstd"`.
 #' @param chunk_size The target chunk size in bytes to use when writing HDF5
 #'   datasets. When `"auto"` (default), the chunk size is determined
 #'   automatically using an algorithm that mimics h5py's auto-chunking
@@ -122,7 +123,7 @@
 write_h5ad <- function(
   object,
   path,
-  compression = c("none", "gzip", "lzf"),
+  compression = c("zstd", "gzip", "lzf", "none"),
   chunk_size = "auto",
   mode = c("w-", "r", "r+", "a", "w", "x"),
   group = "/",
