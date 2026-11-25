@@ -6,7 +6,7 @@
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' one of `"none"`, `"gzip"`, `"lzf"` or `"zstd"`. Defaults to `"zstd"`.
 #' @param chunk_size Target chunk size in bytes. When `"auto"` (default), the
 #'   chunk size is determined automatically using `hdf5_auto_chunk()`.
 #'   When `NULL`, chunking is disabled (contiguous storage, the rhdf5 default).
@@ -27,7 +27,7 @@ write_h5ad_element <- function(
   value,
   hdf5_file,
   name,
-  compression = c("none", "gzip", "lzf"),
+  compression = c("zstd", "gzip", "lzf", "none"),
   chunk_size = "auto",
   stop_on_error = FALSE,
   force_array = FALSE,
@@ -442,7 +442,7 @@ write_h5ad_nullable_integer <- function(
 #' @param hdf5_file An `HDF5File` object
 #' @param name Name of the element within the H5AD file
 #' @param compression The compression to use when writing the element. Can be
-#' one of `"none"`, `"gzip"` or `"lzf"`. Defaults to `"none"`.
+#' one of `"none"`, `"gzip"`, `"lzf"` or `"zstd"`.
 #' @param version Encoding version of the element to write
 # nolint start: object_length_linter
 write_h5ad_nullable_string <- function(
