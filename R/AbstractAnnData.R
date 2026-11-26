@@ -197,17 +197,20 @@ AbstractAnnData <- R6::R6Class(
       metadata_mapping = TRUE
     ) {
       # nolint end: object_name_linter
-      as_SingleCellExperiment(
-        self,
-        x_mapping = x_mapping,
-        assays_mapping = assays_mapping,
-        colData_mapping = colData_mapping,
-        rowData_mapping = rowData_mapping,
-        reducedDims_mapping = reducedDims_mapping,
-        colPairs_mapping = colPairs_mapping, # nolint
-        rowPairs_mapping = rowPairs_mapping, # nolint
-        metadata_mapping = metadata_mapping
-      )
+
+      # Load everything into memory once to avoid repeated reads in each
+      # downstream function call
+      as_InMemoryAnnData(self) |>
+        as_SingleCellExperiment(
+          x_mapping = x_mapping,
+          assays_mapping = assays_mapping,
+          colData_mapping = colData_mapping,
+          rowData_mapping = rowData_mapping,
+          reducedDims_mapping = reducedDims_mapping,
+          colPairs_mapping = colPairs_mapping, # nolint
+          rowPairs_mapping = rowPairs_mapping, # nolint
+          metadata_mapping = metadata_mapping
+        )
     },
     #' @description
     #' Convert to `Seurat`
@@ -234,17 +237,19 @@ AbstractAnnData <- R6::R6Class(
       graph_mapping = TRUE,
       misc_mapping = TRUE
     ) {
-      as_Seurat(
-        self,
-        assay_name = assay_name,
-        x_mapping = x_mapping,
-        layers_mapping = layers_mapping,
-        object_metadata_mapping = object_metadata_mapping,
-        assay_metadata_mapping = assay_metadata_mapping,
-        reduction_mapping = reduction_mapping,
-        graph_mapping = graph_mapping,
-        misc_mapping = misc_mapping
-      )
+      # Load everything into memory once to avoid repeated reads in each
+      # downstream function call
+      as_InMemoryAnnData(self) |>
+        as_Seurat(
+          assay_name = assay_name,
+          x_mapping = x_mapping,
+          layers_mapping = layers_mapping,
+          object_metadata_mapping = object_metadata_mapping,
+          assay_metadata_mapping = assay_metadata_mapping,
+          reduction_mapping = reduction_mapping,
+          graph_mapping = graph_mapping,
+          misc_mapping = misc_mapping
+        )
     },
     #' @description
     #' Convert to an [`InMemoryAnnData`]
