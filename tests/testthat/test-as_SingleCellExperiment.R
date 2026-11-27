@@ -276,10 +276,9 @@ test_that("read_XXX(as = 'SCE') reads each element just once", {
 
   untrace("read_zarr_element", where = asNamespace("anndataR"))
 
-  # FIXME: var/_index and obs/_index are still many times
-  expect_all_equal(
-    as.vector(table(elements[elements %notin% c("var/_index", "obs/_index")])),
-    1L
+  # FIXME: var/_index and obs/_index are still read many times
+  expect_snapshot(
+    table(elements)
   )
 
   # Same for HDF5
@@ -299,9 +298,8 @@ test_that("read_XXX(as = 'SCE') reads each element just once", {
 
   untrace("read_h5ad_element", where = asNamespace("anndataR"))
 
-  # FIXME: var/_index and obs/_index are still many times
-  expect_all_equal(
-    as.vector(table(elements[elements %notin% c("var/_index", "obs/_index")])),
-    1L
+  # FIXME: var/_index and obs/_index are still read many times
+  expect_snapshot(
+    table(elements)
   )
 })
