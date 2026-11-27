@@ -208,12 +208,16 @@ as_SingleCellExperiment <- function(
   # trackstatus: class=SingleCellExperiment, feature=get_X, status=done
   # trackstatus: class=SingleCellExperiment, feature=get_layers, status=done
 
+  # Read X and layers once rather in each loop iteration
+  x <- adata$X
+  layers <- if (!all(is.na(assays_mapping))) adata$layers
+
   if (!is.null(x_mapping)) {
     assays_mapping <- setNames(
       c(NA, assays_mapping),
       c(x_mapping, names(assays_mapping))
     )
-  } else if (!is.null(adata$X)) {
+  } else if (!is.null(x)) {
     assays_mapping[["X"]] <- NA
   }
   if (anyDuplicated(names(assays_mapping)) > 0) {
@@ -229,9 +233,9 @@ as_SingleCellExperiment <- function(
     to <- names(assays_mapping)[[i]]
     sce_assays[[to]] <-
       if (is.na(from)) {
-        to_R_matrix(adata$X)
+        to_R_matrix(x)
       } else {
-        to_R_matrix(adata$layers[[from]])
+        to_R_matrix(layers[[from]])
       }
   }
 
@@ -292,8 +296,10 @@ as_SingleCellExperiment <- function(
 # nolint start: object_length_linter object_name_linter
 .as_SCE_guess_reducedDims <- function(adata) {
   # nolint end: object_length_linter object_name_linter
-  purrr::map(adata$obsm_keys(), function(.obsm) {
-    if (!is.numeric(as.matrix(adata$obsm[[.obsm]]))) {
+  obsm <- adata$obsm
+
+  purrr::map(names(obsm), function(.obsm) {
+    if (!is.numeric(as.matrix(obsm[[.obsm]]))) {
       return(NULL)
     }
 
@@ -304,7 +310,7 @@ as_SingleCellExperiment <- function(
 
     mapping
   }) |>
-    setNames(adata$obsm_keys()) |>
+    setNames(names(obsm)) |>
     purrr::compact()
 }
 
@@ -316,8 +322,9 @@ as_SingleCellExperiment <- function(
     return(list())
   }
 
+  s <- adata[[slot]]
   purrr::map(mapping, function(.item) {
-    adata[[slot]][[.item]]
+    s[[.item]]
   })
 }
 
@@ -338,8 +345,9 @@ as_SingleCellExperiment <- function(
     return(S4Vectors::DataFrame(row.names = row_names))
   }
 
+  s <- adata[[slot]]
   purrr::map(mapping, function(.item) {
-    adata[[slot]][[.item]]
+    s[[.item]]
   }) |>
     S4Vectors::DataFrame(row.names = row_names)
 }
@@ -468,8 +476,9 @@ as_SingleCellExperiment <- function(
     return(list())
   }
 
+  s <- adata[[slot]]
   purrr::map(mapping, function(.item) {
     # A SelfHits can not be created from a DelayedArray so we convert to a matrix
-    materialize_matrix(adata[[slot]][[.item]])
+    materialize_matrix(s[[.item]])
   })
 }

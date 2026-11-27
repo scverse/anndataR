@@ -254,3 +254,52 @@ test_that("as_SCE works with unnamed mappings", {
     )
   )
 })
+
+test_that("read_XXX(as = 'SCE') reads each element just once", {
+  f <- withr::local_tempdir()
+  unzip(
+    system.file("extdata", "example_v3.zarr.zip", package = "anndataR"),
+    exdir = f
+  )
+
+  # Store the name of each zarr element read
+  elements <- character()
+
+  trace(
+    "read_zarr_element",
+    quote(elements <<- c(elements, name)),
+    where = asNamespace("anndataR"),
+    print = FALSE
+  )
+
+  read_zarr(file.path(f, "example_v3.zarr"), as = "SingleCellExperiment")
+
+  untrace("read_zarr_element", where = asNamespace("anndataR"))
+
+  # FIXME: var/_index and obs/_index are still read many times
+  expect_snapshot(
+    table(elements)
+  )
+
+  # Same for HDF5
+  elements <- character()
+
+  trace(
+    "read_h5ad_element",
+    quote(elements <<- c(elements, name)),
+    where = asNamespace("anndataR"),
+    print = FALSE
+  )
+
+  read_h5ad(
+    system.file("extdata", "example.h5ad", package = "anndataR"),
+    as = "SingleCellExperiment"
+  )
+
+  untrace("read_h5ad_element", where = asNamespace("anndataR"))
+
+  # FIXME: var/_index and obs/_index are still read many times
+  expect_snapshot(
+    table(elements)
+  )
+})
